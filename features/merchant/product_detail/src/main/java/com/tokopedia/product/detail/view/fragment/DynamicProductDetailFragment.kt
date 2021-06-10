@@ -9,6 +9,7 @@ import android.content.Intent
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
 import android.util.SparseIntArray
@@ -126,6 +127,7 @@ import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActio
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.listener.PartialButtonActionListener
 import com.tokopedia.product.detail.view.util.*
+import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.widget.*
@@ -469,6 +471,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     pdpUiUpdater?.updateVariantSelected(mapOfSelectedVariantOption)
                     val variantLevelOne = listOfVariantSelected?.firstOrNull()
                     updateVariantDataToExistingProductData(if (variantLevelOne != null) listOf(variantLevelOne) else listOf())
+                    scrollVariantToSelectedPosition()
                 }
             }
         }
@@ -571,6 +574,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    private fun scrollVariantToSelectedPosition() {
+        val vh = getViewHolderByPosition(getComponentPositionBeforeUpdate(pdpUiUpdater?.productSingleVariant)) as? ProductSingleVariantViewHolder
+        Handler().postDelayed({
+            vh?.scrollToPosition(pdpUiUpdater?.productSingleVariant?.variantLevelOne?.getPositionOfSelected() ?: -1)
+        }, 200)
     }
 
     private fun trackVideoState() {
@@ -1661,13 +1671,18 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+    private fun onSuccessAtcTokoNow(result: AddToCartDataModel) {
+        view?.showToasterSuccess(result.data.message.firstOrNull()
+                ?: "", ctaText = getString(R.string.pdp_see_label), ctaListener = {
+            gotoCart()
+        })
+        updateButtonState()
+    }
 
     private fun onSuccessAtc(result: AddToCartDataModel) {
         val cartId = result.data.cartId
-        //todo change
         if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
-            view?.showToasterSuccess(result.data.message.firstOrNull() ?: "")
-            updateButtonState()
+            onSuccessAtcTokoNow(result)
             return
         }
 
@@ -2009,6 +2024,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             viewModel.onVariantClicked(viewModel.variantData, pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant, isPartialySelected, variantOptions.level,
                     variantOptions.imageOriginal)
         }
+    }
+
+    override fun onVariantEmptyAndSelectedClicked() {
+        goToAtcVariant()
     }
 
     private fun goToAtcVariant() {

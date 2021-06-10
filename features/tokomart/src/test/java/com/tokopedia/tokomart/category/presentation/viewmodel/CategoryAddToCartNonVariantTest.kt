@@ -19,6 +19,8 @@ class CategoryAddToCartNonVariantTest: CategoryTestFixtures(), Callback {
         addToCartTestHelper = AddToCartNonVariantTestHelper(
                 categoryViewModel,
                 addToCartUseCase,
+                updateCartUseCase,
+                getMiniCartListSimplifiedUseCase,
                 this,
         )
     }
@@ -35,5 +37,20 @@ class CategoryAddToCartNonVariantTest: CategoryTestFixtures(), Callback {
     @Test
     fun `test add to cart failed`() {
         addToCartTestHelper.`test add to cart failed`()
+    }
+
+    @Test
+    fun `add to cart with current quantity should do nothing`() {
+        addToCartTestHelper.`add to cart with current quantity should do nothing`()
+    }
+
+    @Test
+    fun `add to cart to update quantity success`() {
+        addToCartTestHelper.`add to cart to update quantity success`()
+    }
+
+    @Test
+    fun `add to cart to update quantity failed`() {
+        addToCartTestHelper.`add to cart to update quantity failed`()
     }
 }

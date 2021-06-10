@@ -46,5 +46,5 @@ data class ProductInfoP2UiData(
         var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary(),
         var imageReviews: ImageReview? = null,
         var helpfulReviews: List<Review>? = null,
-        var miniCart: Map<String, MiniCartItem>? = null
+        var miniCart: MutableMap<String, MiniCartItem>? = null
 )

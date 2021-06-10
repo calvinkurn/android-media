@@ -21,8 +21,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
-import com.tokopedia.discovery.common.Event
-import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery.common.utils.UrlParamUtils
@@ -35,7 +33,6 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -49,17 +46,21 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
-import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokomart.searchcategory.presentation.customview.StickySingleHeaderView
 import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.ProductItemDecoration
-import com.tokopedia.tokomart.searchcategory.presentation.listener.*
+import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.CategoryFilterListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.ProductItemListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toDp
 
 abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
@@ -367,18 +368,14 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().miniCartWidgetLiveData.observe(this::updateMiniCartWidget)
         getViewModel().isShowMiniCartLiveData.observe(this::updateMiniCartWidgetVisibility)
         getViewModel().isRefreshPageLiveData.observe(this::scrollToTop)
-        getViewModel().updatedVisitableIndicesLiveData.observeEvent(this::notifyAdapterItemChange)
-        getViewModel().addToCartEventMessageLiveData.observeEvent(this::showAddToCartMessage)
+        getViewModel().updatedVisitableIndicesLiveData.observe(this::notifyAdapterItemChange)
+        getViewModel().cartEventMessageLiveData.observe(this::showAddToCartMessage)
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
 
     protected fun <T> LiveData<T>.observe(observer: Observer<T>) {
         observe(viewLifecycleOwner, observer)
-    }
-
-    protected fun <T> LiveData<Event<T>>.observeEvent(onChanged: (T) -> Unit) {
-        observe(viewLifecycleOwner, EventObserver(onChanged))
     }
 
     protected open fun submitList(visitableList: List<Visitable<*>>) {
@@ -408,7 +405,7 @@ abstract class BaseSearchCategoryFragment:
         RouteManager.route(
                 context,
                 ApplinkConstInternalTokoMart.CATEGORY_LIST,
-                SearchApiConst.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE
+                getViewModel().warehouseId,
         )
     }
 
@@ -508,10 +505,10 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onViewClickCategoryFilterChip(option, isSelected)
     }
 
-    private fun updateMiniCartWidget(miniCartWidgetData: MiniCartWidgetData?) {
-        miniCartWidgetData ?: return
+    private fun updateMiniCartWidget(miniCartSimplifiedData: MiniCartSimplifiedData?) {
+        miniCartSimplifiedData ?: return
 
-        miniCartWidget?.updateData(miniCartWidgetData)
+        miniCartWidget?.updateData(miniCartSimplifiedData)
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {

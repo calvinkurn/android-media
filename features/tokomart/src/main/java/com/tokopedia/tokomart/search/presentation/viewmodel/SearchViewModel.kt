@@ -6,6 +6,7 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokomart.search.utils.SEARCH_FIRST_PAGE_USE_CASE
@@ -37,6 +38,7 @@ class SearchViewModel @Inject constructor (
         getProductCountUseCase: UseCase<String>,
         getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         addToCartUseCase: AddToCartUseCase,
+        updateCartUseCase: UpdateCartUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
 ): BaseSearchCategoryViewModel(
@@ -46,6 +48,7 @@ class SearchViewModel @Inject constructor (
         getProductCountUseCase,
         getMiniCartListSimplifiedUseCase,
         addToCartUseCase,
+        updateCartUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
 ) {

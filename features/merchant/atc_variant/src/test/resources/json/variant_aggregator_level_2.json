@@ -1610,7 +1610,7 @@
           "stock": {
             "isBuyable": true,
             "maximumOrder": "0",
-            "minimumOrder": "1",
+            "minimumOrder": "2",
             "stock": "10",
             "stockWording": "Stok tinggal &lt;20, beli segera!",
             "stockWordingHTML": "Stok Mau Habis"

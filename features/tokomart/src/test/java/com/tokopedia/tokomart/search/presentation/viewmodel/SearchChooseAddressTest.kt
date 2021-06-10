@@ -6,6 +6,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.jsonToObject
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_QUERY_PARAMS
+import com.tokopedia.tokomart.util.SearchCategoryDummyUtils.dummyChooseAddressData
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.slot
@@ -42,6 +43,7 @@ class SearchChooseAddressTest: SearchTestFixtures() {
                 SearchApiConst.USER_LAT,
                 SearchApiConst.USER_LONG,
                 SearchApiConst.USER_POST_CODE,
+                SearchApiConst.USER_WAREHOUSE_ID,
         )
 
         shouldNotContainKeys.forEach {

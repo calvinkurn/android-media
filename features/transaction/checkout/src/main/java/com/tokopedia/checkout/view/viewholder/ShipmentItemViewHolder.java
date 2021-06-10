@@ -957,12 +957,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         String discountedPrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(selectedCourierItemData.getDiscountedRate(), false));
         if (selectedCourierItemData.getDiscountedRate() == 0 && shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
-            labelSelectedSingleShippingTitle.setText(selectedCourierItemData.getEstimatedTimeDelivery() + " (" + discountedPrice + ")");
+            labelSelectedSingleShippingTitle.setText(selectedCourierItemData.getName() + " (" + discountedPrice + ")");
             labelSelectedSingleShippingOriginalPrice.setVisibility(View.GONE);
             labelSelectedSingleShippingDiscountedPrice.setVisibility(View.GONE);
         } else if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
             String originalPrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(selectedCourierItemData.getShippingRate(), false));
-            labelSelectedSingleShippingTitle.setText(selectedCourierItemData.getEstimatedTimeDelivery() + " (");
+            labelSelectedSingleShippingTitle.setText(selectedCourierItemData.getName() + " (");
             labelSelectedSingleShippingOriginalPrice.setPaintFlags(labelSelectedSingleShippingOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             labelSelectedSingleShippingOriginalPrice.setText(originalPrice);
             labelSelectedSingleShippingDiscountedPrice.setText(" " + discountedPrice + ")");
@@ -970,7 +970,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             labelSelectedSingleShippingDiscountedPrice.setVisibility(View.VISIBLE);
         } else {
             String price = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(selectedCourierItemData.getShipperPrice(), false));
-            labelSelectedSingleShippingTitle.setText(selectedCourierItemData.getEstimatedTimeDelivery() + " (" + price + ")");
+            labelSelectedSingleShippingTitle.setText(selectedCourierItemData.getName() + " (" + price + ")");
             labelSelectedSingleShippingOriginalPrice.setVisibility(View.GONE);
             labelSelectedSingleShippingDiscountedPrice.setVisibility(View.GONE);
         }
@@ -1687,6 +1687,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             cbDropshipper.setEnabled(false);
             llDropshipper.setClickable(false);
             mIconTooltip.setClickable(false);
+            rlCartSubTotal.setClickable(false);
             textInputLayoutShipperName.getTextFieldInput().setClickable(false);
             textInputLayoutShipperName.getTextFieldInput().setFocusable(false);
             textInputLayoutShipperName.getTextFieldInput().setFocusableInTouchMode(false);
@@ -1701,6 +1702,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llInsurance.setClickable(true);
             llDropshipper.setClickable(true);
             mIconTooltip.setClickable(true);
+            rlCartSubTotal.setClickable(true);
             textInputLayoutShipperName.getTextFieldInput().setClickable(true);
             textInputLayoutShipperName.getTextFieldInput().setFocusable(true);
             textInputLayoutShipperName.getTextFieldInput().setFocusableInTouchMode(true);

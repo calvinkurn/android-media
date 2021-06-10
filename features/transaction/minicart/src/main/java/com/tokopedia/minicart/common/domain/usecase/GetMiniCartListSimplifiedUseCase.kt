@@ -57,6 +57,21 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
               total_product_price
               available_section {
                 available_group {
+                  shop {
+                    shop_id
+                    shop_name
+                    shop_type_info {
+                      title_fmt
+                    }
+                  }
+                  shipment_information {                                        
+                    free_shipping {
+                      eligible
+                    }
+                    free_shipping_extra {
+                      eligible
+                    }
+                  }
                   cart_details {
                     cart_id
                     product {
@@ -64,12 +79,42 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                       product_id
                       product_quantity
                       product_notes
+                      campaign_id
+                      product_tracker_data {
+                        attribution
+                      }
+                      product_weight
+                      slash_price_label                                                                   
+                      warehouse_id                      
+                      category_id
+                      category
+                      product_name
+                      variant_description_detail {
+                        variant_name
+                      }
+                      product_price
+                      product_quantity
                     }
                   }
                 }
               }
               unavailable_section {
                 unavailable_group {
+                  shop {
+                    shop_id
+                    shop_name
+                    shop_type_info {
+                      title_fmt
+                    }
+                  }
+                  shipment_information {                                        
+                    free_shipping {
+                      eligible
+                    }
+                    free_shipping_extra {
+                      eligible
+                    }
+                  }
                   cart_details {
                     cart_id
                     product {
@@ -77,6 +122,21 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                       product_id
                       product_quantity
                       product_notes                      
+                      campaign_id
+                      product_tracker_data {
+                        attribution
+                      }
+                      product_weight
+                      slash_price_label                                                                   
+                      warehouse_id                      
+                      category_id
+                      category
+                      product_name
+                      variant_description_detail {
+                        variant_name
+                      }
+                      product_price
+                      product_quantity
                     }
                   }
                 }

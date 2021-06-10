@@ -32,7 +32,9 @@ object AtcCommonMapper {
                         trackerListNamePdp: String,
                         categoryName: String,
                         shippingMinPrice: Int,
-                        userId: String
+                        userId: String,
+                        isTokoNow:Boolean,
+                        selectedStock:Int
     ): Any {
         return when (actionButtonCart) {
             ProductDetailCommonConstant.OCS_BUTTON -> {
@@ -72,7 +74,8 @@ object AtcCommonMapper {
                 AddToCartRequestParams().apply {
                     productId = selectedChild?.productId?.toLongOrZero() ?: 0L
                     shopId = shopIdInt
-                    quantity = selectedChild?.getFinalMinOrder() ?: 0
+                    quantity = if (isTokoNow) selectedStock else selectedChild?.getFinalMinOrder()
+                            ?: 0
                     notes = ""
                     attribution = trackerAttributionPdp
                     listTracker = trackerListNamePdp
