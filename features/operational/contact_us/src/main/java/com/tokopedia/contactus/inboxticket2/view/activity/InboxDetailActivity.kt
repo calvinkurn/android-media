@@ -321,8 +321,9 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     override fun showNoTicketView(messageError: List<String?>?) {
+        hideProgressBar()
         noTicketFound.show()
-        tvNoTicket.text = messageError?.get(0) ?: ""
+        tvNoTicket.text = messageError?.getOrNull(0) ?: ""
         tvOkButton.setOnClickListener { finish() }
     }
 

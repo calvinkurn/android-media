@@ -5,7 +5,7 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    style="@style/Theme.White.Background">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -50,22 +50,26 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_count_current"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
+                app:typographyWeight="reguler"
+                app:typographyType="body_2"
                 android:gravity="end"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tv_count_total"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="1" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_count_total"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
+                app:typographyWeight="reguler"
+                app:typographyType="body_2"
                 android:gravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/iv_previous_up"
@@ -80,6 +84,7 @@
                 android:layout_marginRight="@dimen/dp_12"
                 android:background="?selectableItemBackground"
                 android:tint="@color/grey_700"
+                android:contentDescription="@null"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/iv_next_down"
                 app:layout_constraintTop_toTopOf="parent"
@@ -94,6 +99,7 @@
                 android:background="?selectableItemBackground"
                 android:rotation="180"
                 android:tint="@color/grey_700"
+                android:contentDescription="@null"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -167,11 +173,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ProgressBar
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/prog_bar"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
-            android:layout_gravity="center" />
+            app:loader_type="circular"
+            android:layout_gravity="center"/>
     </FrameLayout>
 
     <FrameLayout

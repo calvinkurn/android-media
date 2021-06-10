@@ -53,6 +53,7 @@
                 android:id="@+id/close_search"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:contentDescription="@null"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -207,11 +208,11 @@
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone">
-
-        <ProgressBar
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/prog_bar"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
-            android:layout_gravity="center" />
+            app:loader_type="circular"
+            android:layout_gravity="center"/>
     </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

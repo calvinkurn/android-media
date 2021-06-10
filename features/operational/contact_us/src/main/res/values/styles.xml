@@ -50,4 +50,8 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <style name="Theme.White.Background" parent="Base.Theme">
+        <item name="android:background">@color/white</item>
+    </style>
+
 </resources>
