@@ -7,6 +7,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -20,6 +21,7 @@ import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapter
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.SummaryTransactionBottomSheet
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
@@ -55,6 +57,9 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     private var updateCartDebounceJob: Job? = null
     private var calculationDebounceJob: Job? = null
 
+    private var globalEventObserver: Observer<GlobalEvent>? = null
+    private var bottomSheetUiModelObserver: Observer<MiniCartListUiModel>? = null
+
     fun show(context: Context?,
              fragmentManager: FragmentManager,
              lifecycleOwner: LifecycleOwner,
@@ -69,6 +74,14 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     fun dismiss() {
+        globalEventObserver?.let {
+            viewModel?.globalEvent?.removeObserver(it)
+            globalEventObserver = null
+        }
+        bottomSheetUiModelObserver?.let {
+            viewModel?.miniCartListListBottomSheetUiModel?.removeObserver(it)
+            bottomSheetUiModelObserver = null
+        }
         bottomSheet?.dismiss()
     }
 
@@ -112,7 +125,10 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     private fun initializeViewModel(fragmentManager: FragmentManager, viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
         this.viewModel = viewModel
-        observeGlobalEvent(fragmentManager, viewModel, lifecycleOwner)
+        viewModel.initializeGlobalState()
+        initializeGlobalEventObserver(viewModel, fragmentManager)
+        initializeBottomSheetUiModelObserver()
+        observeGlobalEvent(viewModel, lifecycleOwner)
         observeMiniCartListUiModel(viewModel, lifecycleOwner)
     }
 
@@ -154,8 +170,8 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         analytics.eventClickBuy(pageName, products)
     }
 
-    private fun observeGlobalEvent(fragmentManager: FragmentManager, viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
-        viewModel.globalEvent.observe(lifecycleOwner, {
+    private fun initializeGlobalEventObserver(viewModel: MiniCartWidgetViewModel, fragmentManager: FragmentManager) {
+        globalEventObserver = Observer<GlobalEvent> {
             when (it.state) {
                 GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
                     onSuccessDeleteCartItem(it, viewModel)
@@ -176,7 +192,37 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                     onFailedUpdateCartForCheckout(it, viewModel, fragmentManager)
                 }
             }
-        })
+        }
+    }
+
+    private fun initializeBottomSheetUiModelObserver(){
+        bottomSheetUiModelObserver = Observer<MiniCartListUiModel> {
+            if (it.isFirstLoad) {
+                analytics.eventLoadMiniCartBottomSheetSuccess(it.getMiniCartProductUiModelList())
+                val overweightData = it.getMiniCartTickerWarningUiModel()
+                if (overweightData != null) {
+                    analytics.eventViewErrorTickerOverweightInMiniCart(overweightData.warningMessage)
+                }
+            }
+            hideLoading()
+            hideProgressLoading()
+            bottomSheet?.setTitle(it.title)
+            if (rvMiniCartList?.isComputingLayout == true) {
+                rvMiniCartList?.post {
+                    adapter?.updateList(it.visitables)
+                }
+            } else {
+                adapter?.updateList(it.visitables)
+            }
+            updateTotalAmount(it.miniCartWidgetUiModel)
+            adjustRecyclerViewPaddingBottom()
+        }
+    }
+
+    private fun observeGlobalEvent(viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
+        globalEventObserver?.let {
+            viewModel.globalEvent.observe(lifecycleOwner, it)
+        }
     }
 
     private fun onFailedUpdateCartForCheckout(globalEvent: GlobalEvent, viewModel: MiniCartWidgetViewModel, fragmentManager: FragmentManager) {
@@ -197,7 +243,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             bottomSheet?.context.let {
                 hideProgressLoading()
                 bottomSheetListener?.onBottomSheetSuccessUpdateCartForCheckout()
-                bottomSheet?.dismiss()
+                dismiss()
             }
         }
     }
@@ -236,27 +282,9 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     private fun observeMiniCartListUiModel(viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
-        viewModel.miniCartListListBottomSheetUiModel.observe(lifecycleOwner, {
-            if (it.isFirstLoad) {
-                analytics.eventLoadMiniCartBottomSheetSuccess(it.getMiniCartProductUiModelList())
-                val overweightData = it.getMiniCartTickerWarningUiModel()
-                if (overweightData != null) {
-                    analytics.eventViewErrorTickerOverweightInMiniCart(overweightData.warningMessage)
-                }
-            }
-            hideLoading()
-            hideProgressLoading()
-            bottomSheet?.setTitle(it.title)
-            if (rvMiniCartList?.isComputingLayout == true) {
-                rvMiniCartList?.post {
-                    adapter?.updateList(it.visitables)
-                }
-            } else {
-                adapter?.updateList(it.visitables)
-            }
-            updateTotalAmount(it.miniCartWidgetUiModel)
-            adjustRecyclerViewPaddingBottom()
-        })
+        bottomSheetUiModelObserver?.let {
+            viewModel.miniCartListListBottomSheetUiModel.observe(lifecycleOwner, it)
+        }
     }
 
     private fun adjustRecyclerViewPaddingBottom() {

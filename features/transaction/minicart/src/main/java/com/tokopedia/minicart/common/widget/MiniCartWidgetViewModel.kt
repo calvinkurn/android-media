@@ -58,6 +58,10 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         _currentShopIds.value = shopIds
     }
 
+    fun initializeGlobalState() {
+        _globalEvent.value = GlobalEvent()
+    }
+
     fun getLatestWidgetState(shopIds: List<String>? = null) {
         if (shopIds != null) {
             initializeShopIds(shopIds)

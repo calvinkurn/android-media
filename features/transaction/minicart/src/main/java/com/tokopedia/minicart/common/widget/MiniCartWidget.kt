@@ -89,6 +89,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun initializeViewModel(fragment: Fragment) {
         viewModel = ViewModelProvider(fragment, viewModelFactory).get(MiniCartWidgetViewModel::class.java)
+        viewModel?.initializeGlobalState()
         observeGlobalEvent(fragment)
         observeMiniCartWidgetUiModel(fragment)
     }
