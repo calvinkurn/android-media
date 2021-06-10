@@ -29,7 +29,6 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_96"
-        android:translationY="-1.97dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailDropShipperLabel"
