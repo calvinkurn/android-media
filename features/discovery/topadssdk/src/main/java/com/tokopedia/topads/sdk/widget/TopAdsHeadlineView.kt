@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.listener.TopAdsAddToCartClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
@@ -30,11 +31,11 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
     init {
         val view = View.inflate(context, R.layout.layout_widget_topads_headline, this)
         topadsBannerView = view.findViewById(R.id.top_ads_banner)
-        shimmerView= view.findViewById(R.id.shimmer_view)
+        shimmerView = view.findViewById(R.id.shimmer_view)
         topadsBannerView.setTopAdsBannerClickListener(TopAdsBannerClickListener { _, appLink, _ ->
             RouteManager.route(context, appLink)
         })
-        topadsBannerView.setTopAdsImpressionListener(object : TopAdsItemImpressionListener(){
+        topadsBannerView.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
         })
     }
 
@@ -57,4 +58,13 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
     fun hideShimmerView() {
         shimmerView.hide()
     }
+
+    fun setHasAddToCartButton(hasAddToCartButton: Boolean) {
+        topadsBannerView.setHasAddToCartButton(hasAddToCartButton)
+    }
+
+    fun setAddToCartClickListener(topAdsAddToCartClickListener: TopAdsAddToCartClickListener) {
+        topadsBannerView.setAddToCartClickListener(topAdsAddToCartClickListener)
+    }
+
 }

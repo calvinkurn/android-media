@@ -119,6 +119,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -3415,6 +3416,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val productName = recommendationItem.name
         val imageUrl = recommendationItem.imageUrl
         val url = "${recommendationItem.clickUrl}&click_source=ATC_direct_click"
+
+        activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, url, productId, productName, imageUrl) }
+    }
+
+    override fun sendATCTrackingURL(bannerShopProductViewModel: BannerShopProductViewModel) {
+        val productId = bannerShopProductViewModel.productId.toString()
+        val productName = bannerShopProductViewModel.productName
+        val imageUrl = bannerShopProductViewModel.imageUrl
+        val url = "${bannerShopProductViewModel.adsClickUrl}&click_source=ATC_direct_click"
 
         activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, url, productId, productName, imageUrl) }
     }
