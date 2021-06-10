@@ -6,5 +6,5 @@ data class HomeLayoutListUiModel(
     val result: List<Visitable<*>>,
     val isInitialLoad: Boolean = false,
     val isLoadState: Boolean = false,
-    val state: String = ""
+    val state: Int = 0
 )

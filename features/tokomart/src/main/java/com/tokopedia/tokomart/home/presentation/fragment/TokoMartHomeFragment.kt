@@ -449,7 +449,7 @@ class TokoMartHomeFragment: Fragment(),
         }
     }
 
-    private fun needToShowHeaderBackground(state: String) {
+    private fun needToShowHeaderBackground(state: Int) {
         when (state) {
             HomeLayoutState.SHOW -> {
                 showHeaderBackground()
