@@ -30,7 +30,7 @@ object Const {
         const val SHOP_INSIGHT = "seller-statistic"
         const val BUYER_INSIGHT = "wawasan-pembeli"
         const val PRODUCT_INSIGHT = "seller-statistic#wawasan-produk"
-        const val OPERATIONAL_INSIGHT = "seller-statistic#wawasan-produk"
+        const val OPERATIONAL_INSIGHT = "seller-statistic#wawasan-operasional"
     }
 
     object BottomSheet {
