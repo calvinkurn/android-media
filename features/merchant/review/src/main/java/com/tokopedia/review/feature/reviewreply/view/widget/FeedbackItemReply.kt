@@ -95,7 +95,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
             rvItemAttachmentFeedback?.hide()
         } else {
             replyReviewFeedbackImageAdapter.setAttachmentUiData(element.attachments)
-            replyReviewFeedbackImageAdapter.setFeedbackId(element.feedbackID.toString())
+            replyReviewFeedbackImageAdapter.setFeedbackId(element.feedbackID)
             replyReviewFeedbackImageAdapter.setProductTitle(productReply.productName.toString())
             replyReviewFeedbackImageAdapter.submitList(element.attachments)
             rvItemAttachmentFeedback?.show()

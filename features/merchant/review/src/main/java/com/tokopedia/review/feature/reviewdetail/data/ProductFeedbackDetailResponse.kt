@@ -32,8 +32,8 @@ data class ProductFeedbackDetailResponse(
                 val attachments: List<Attachment> = listOf(),
                 @SerializedName("autoReply")
                 val autoReply: Boolean = false,
-                @SerializedName("feedbackID")
-                val feedbackID: Long? = 0,
+                @SerializedName("feedbackIDStr")
+                val feedbackID: String = "",
                 @SerializedName("rating")
                 val rating: Int? = 0,
                 @SerializedName("replyText")

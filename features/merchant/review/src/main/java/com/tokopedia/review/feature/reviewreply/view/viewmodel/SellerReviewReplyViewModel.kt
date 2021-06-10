@@ -92,7 +92,7 @@ class SellerReviewReplyViewModel @Inject constructor(
         })
     }
 
-    fun updateReviewReply(feedbackId: Long, responseMessage: String) {
+    fun updateReviewReply(feedbackId: String, responseMessage: String) {
         launchCatchError(block = {
             val responseUpdateReply = withContext(dispatcherProvider.io) {
                 updateSellerResponseUseCase.params = UpdateSellerResponseUseCase.createParams(

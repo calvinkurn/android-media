@@ -101,7 +101,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     private var chipFilterBundle = ""
 
-    private var productID: Long = 0L
+    private var productID: String = ""
     private var productName = ""
     private var variantName = ""
     private var productImageUrl = ""
@@ -129,7 +129,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     override fun onCreate(savedInstanceState: Bundle?) {
         context?.let {
             activity?.intent?.run {
-                productID = getIntExtra(PRODUCT_ID, 0).toLong()
+                productID = getStringExtra(PRODUCT_ID) ?: ""
                 chipFilterBundle = getStringExtra(CHIP_FILTER) ?: ReviewConstants.ALL_VALUE
                 productImageUrl = getStringExtra(PRODUCT_IMAGE) ?: ""
             }
@@ -500,7 +500,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         tracking.eventClickOptionFeedbackReview(
                 userSession.shopId.orEmpty(),
                 productID.toString(),
-                data.feedbackID.toString()
+                data.feedbackID
         )
         optionFeedbackDetailUnify?.setData(optionDetailListItemUnify)
 
@@ -511,7 +511,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                 tracking.eventClickCloseFeedbackOptionBottomSheet(
                         userSession.shopId.orEmpty(),
                         productID.toString(),
-                        data.feedbackID.toString()
+                        data.feedbackID
                 )
                 dismiss()
             }
@@ -540,10 +540,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                         1 -> {
                             tracking.eventClickReportOnBottomSheet(userSession.shopId.orEmpty(),
                                     productID.toString(),
-                                    data.feedbackID.toString())
+                                    data.feedbackID)
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
                             intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, userSession.shopId.toInt())
-                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, data.feedbackID.toString())
+                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, data.feedbackID)
                             startActivity(intent)
                             bottomSheetOptionFeedback?.dismiss()
                         }
@@ -592,7 +592,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     override fun onParentTopicFilterClicked() {
         tracking.eventClickSortOrFilterTopics(
                 userSession.shopId.orEmpty(),
-                productID.toString())
+                productID)
 
         val bottomSheet = PopularTopicsBottomSheet(activity, tracking, userSession, productID, ::onTopicsClicked)
         viewModelProductReviewDetail?.getFilterTopicData()?.let { bottomSheet.setTopicListData(it) }
@@ -603,7 +603,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     override fun onRatingCheckBoxClicked(ratingAndState: Pair<Int, Boolean>, ratingSelected: Int, adapterPosition: Int) {
         tracking.eventClickStarFilter(
                 shopId = userSession.shopId.orEmpty(),
-                productId = productID.toString(),
+                productId = productID,
                 starSelected = ratingSelected.toString(),
                 isActive = ratingAndState.second.toString()
         )

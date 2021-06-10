@@ -18,13 +18,13 @@ class UpdateSellerResponseUseCase @Inject constructor(
         private const val RESPONSE_MESSAGE = "responseMessage"
         const val UPDATE_REVIEW_REPLY_MUTATION_CLASS_NAME = "UpdateReviewReply"
         const val UPDATE_REVIEW_REPLY_MUTATION = """
-            mutation update_review_reply(${'$'}feedbackID: Int!, ${'$'}responseMessage: String!) {
-                productrevUpdateSellerResponse(feedbackID: ${'$'}feedbackID, responseMessage: ${'$'}responseMessage) {
+            mutation update_review_reply(${'$'}feedbackID: String!, ${'$'}responseMessage: String!) {
+                productrevUpdateSellerResponseV2(feedbackID: ${'$'}feedbackID, responseMessage: ${'$'}responseMessage) {
                     success
                     data {
-                      shopID
-                      feedbackID
-                      responseBy
+                      shopIDStr
+                      feedbackIDStr
+                      responseByStr
                       responseMessage
                     }
                   }
@@ -32,8 +32,8 @@ class UpdateSellerResponseUseCase @Inject constructor(
         """
 
         @JvmStatic
-        fun createParams(productId: Long, responseMessage: String): Map<String, Any> =
-                mapOf(FEEDBACK_ID to productId, RESPONSE_MESSAGE to responseMessage)
+        fun createParams(feedbackID: String, responseMessage: String): Map<String, Any> =
+                mapOf(FEEDBACK_ID to feedbackID, RESPONSE_MESSAGE to responseMessage)
     }
 
     var params = mapOf<String, Any>()

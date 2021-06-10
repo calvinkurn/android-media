@@ -39,8 +39,8 @@ data class InboxReviewResponse(
                 @SerializedName("attachments")
                 val attachments: List<Attachment> = listOf(),
                 @Expose
-                @SerializedName("feedbackID")
-                val feedbackID: Long? = 0,
+                @SerializedName("feedbackIDStr")
+                val feedbackID: String = "",
                 @Expose
                 @SerializedName("invoiceID")
                 val invoiceID: String? = "",
@@ -82,8 +82,8 @@ data class InboxReviewResponse(
             )
             data class Product(
                     @Expose
-                    @SerializedName("productID")
-                    val productID: Long? = 0,
+                    @SerializedName("productIDStr")
+                    val productID: String = "",
                     @Expose
                     @SerializedName("productName")
                     val productName: String? = "",
@@ -99,8 +99,8 @@ data class InboxReviewResponse(
             ) {
                 data class ProductVariant(
                         @Expose
-                        @SerializedName("variantID")
-                        val variantID: Long? = 0,
+                        @SerializedName("variantIDStr")
+                        val variantID: String = "",
                         @Expose
                         @SerializedName("variantName")
                         val variantName: String? = ""
@@ -108,8 +108,8 @@ data class InboxReviewResponse(
             }
             data class User(
                     @Expose
-                    @SerializedName("userID")
-                    val userID: Long? = 0,
+                    @SerializedName("userIDStr")
+                    val userID: String = "",
                     @Expose
                     @SerializedName("userName")
                     val userName: String? = ""

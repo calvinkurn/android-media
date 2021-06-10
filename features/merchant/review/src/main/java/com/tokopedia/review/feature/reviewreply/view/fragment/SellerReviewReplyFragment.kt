@@ -132,8 +132,8 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         when (item.itemId) {
             R.id.menu_option_product_detail -> {
                 tracking.eventClickThreeDotsMenu(shopId.toString(),
-                        productReplyUiModel?.productID.orZero().toString(),
-                        feedbackUiModel?.feedbackID.orZero().toString())
+                        productReplyUiModel?.productID ?: "",
+                        feedbackUiModel?.feedbackID ?: "")
                 initBottomSheetReplyReview()
             }
         }
@@ -258,19 +258,19 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
             if (replyEditText.text?.isNotEmpty() == true) {
                 tracking.eventClickSendReviewReply(
                         shopId.toString(),
-                        productReplyUiModel?.productID.orZero().toString(),
-                        feedbackUiModel?.feedbackID.orZero().toString(),
+                        productReplyUiModel?.productID ?: "",
+                        feedbackUiModel?.feedbackID ?: "",
                         replyEditText?.text.toString(),
                         (!isEmptyReply).toString()
                 )
                 if (isEmptyReply) {
                     viewModelReviewReply?.insertReviewReply(
-                            feedbackUiModel?.feedbackID.orZero(),
-                            productReplyUiModel?.productID.orZero(),
+                            feedbackUiModel?.feedbackID?.toLongOrZero() ?: 0L,
+                            productReplyUiModel?.productID?.toLongOrZero() ?: 0L,
                             shopId,
                             replyEditText?.text.toString())
                 } else {
-                    viewModelReviewReply?.updateReviewReply(feedbackUiModel?.feedbackID.orZero(),
+                    viewModelReviewReply?.updateReviewReply(feedbackUiModel?.feedbackID ?: "",
                             replyEditText?.text.toString())
                 }
             }
@@ -365,8 +365,8 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         }
         tvReplyEdit?.setOnClickListener {
             tracking.eventClickEditReviewResponse(shopId.toString(),
-                    productReplyUiModel?.productID.orZero().toString(),
-                    feedbackUiModel?.feedbackID.orZero().toString()
+                    productReplyUiModel?.productID ?: "",
+                    feedbackUiModel?.feedbackID ?: ""
             )
             reviewReplyTextBoxWidget?.show()
             showTextReplyEditText(feedbackUiModel?.replyText.orEmpty())
@@ -374,13 +374,13 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
         replyEditText?.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) tracking.eventClickResponseReview(
                     shopId.toString(),
-                    productReplyUiModel?.productID.orZero().toString(),
-                    feedbackUiModel?.feedbackID.orZero().toString())
+                    productReplyUiModel?.productID ?: "",
+                    feedbackUiModel?.feedbackID ?: "")
         }
         reviewReplyTextBoxWidget?.clickAddTemplate {
             tracking.eventClickAddTemplateReview(shopId.toString(),
-                    productReplyUiModel?.productID.orZero().toString(),
-                    feedbackUiModel?.feedbackID.orZero().toString())
+                    productReplyUiModel?.productID ?: "",
+                    feedbackUiModel?.feedbackID ?: "")
             initBottomSheetAddTemplate()
         }
     }
@@ -440,11 +440,11 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
                     when (position) {
                         0 -> {
                             tracking.eventClickItemReportOnBottomSheet(shopId.toString(),
-                                    productReplyUiModel?.productID.orZero().toString(),
-                                    feedbackUiModel?.feedbackID?.orZero().toString())
+                                    productReplyUiModel?.productID ?: "",
+                                    feedbackUiModel?.feedbackID ?: "")
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
                             intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId)
-                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, feedbackUiModel?.feedbackID.toString())
+                            intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, feedbackUiModel?.feedbackID ?: "")
                             startActivity(intent)
                             bottomSheetReplyReview?.dismiss()
                         }
@@ -491,8 +491,8 @@ class SellerReviewReplyFragment : BaseDaggerFragment(), ReviewTemplateListViewHo
     override fun onItemReviewTemplateClicked(view: View, title: String) {
         val message = replyTemplateList?.firstOrNull { it.title == title }?.message
         tracking.eventClickItemReviewTemplate(shopId.toString(),
-                productReplyUiModel?.productID.orZero().toString(),
-                feedbackUiModel?.feedbackID?.orZero().toString(),
+                productReplyUiModel?.productID ?: "",
+                feedbackUiModel?.feedbackID ?: "",
                 message.orEmpty())
         val replyText = StringBuilder().append(replyEditText?.text.toString()).append(message.orEmpty()).toString()
         showTextReplyEditText(replyText)
