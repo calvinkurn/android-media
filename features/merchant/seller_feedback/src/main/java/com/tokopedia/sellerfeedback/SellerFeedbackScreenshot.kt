@@ -16,7 +16,7 @@ import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragment
 class SellerFeedbackScreenshot(val context: Context) : Screenshot(context.contentResolver) {
 
     companion object {
-        const val THRESHOLD_TIME = 1000L
+        private const val THRESHOLD_TIME = 1000L
     }
 
     private var lastTimeCall = 0L
