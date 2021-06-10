@@ -99,7 +99,7 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify(), CategoryListListener
 
     private fun initView(inflater: LayoutInflater, container: ViewGroup?) {
         val itemView = inflater.inflate(R.layout.bottomsheet_tokomart_category_list, container)
-        val menuTitle = itemView.context.getString(R.string.tokomart_category_list_bottom_sheet_title)
+        menuTitle = itemView.context.getString(R.string.tokomart_category_list_bottom_sheet_title)
         accordionCategoryList = itemView.findViewById(R.id.accordion_category_list)
         loader = itemView.findViewById(R.id.loader)
         globalError = itemView.findViewById(R.id.layout_global_error_category_list)
@@ -130,6 +130,7 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify(), CategoryListListener
     }
 
     private fun showCategoryList(categoryList: List<CategoryListItemUiModel>) {
+        setTitle(menuTitle)
         categoryList.forEach { category ->
             val accordionDataUnify = AccordionDataUnify(
                 title = category.name,
@@ -185,6 +186,7 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify(), CategoryListListener
         } else {
             actionClickListenerTryAgain()
         }
+        setTitle("")
     }
 
     private fun showGlobalErrorPageNotFound(){
