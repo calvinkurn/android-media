@@ -20,7 +20,6 @@ class CatalogInfoViewHolder(private val view: View,
                             private val catalogDetailListener: CatalogDetailListener) : AbstractViewHolder<CatalogInfoDataModel>(view) {
 
     private var imagesAdapter: CatalogImagesAdapter? = null
-
     companion object {
         val LAYOUT = R.layout.item_catalog_product_info
     }

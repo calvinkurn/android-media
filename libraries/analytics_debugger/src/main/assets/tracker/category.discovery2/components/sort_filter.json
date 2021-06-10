@@ -3,25 +3,25 @@
   "mode": "exact",
   "query": [
     {
-      "sessionIris": "{{.*}}",
-      "eventCategory": "{{.*}}",
+      "sessionIris": ".*",
+      "eventCategory": ".*",
       "eventAction": "click on detailed filter",
       "event": "clickDiscovery",
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     },
     {
-      "sessionIris": "{{.*}}",
-      "eventCategory": "{{.*}}",
+      "sessionIris": ".*",
+      "eventCategory": ".*",
       "eventAction": "click quick filter",
       "event": "clickDiscovery",
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     },
     {
-      "sessionIris": "{{.*}}",
-      "eventCategory": "{{.*}}",
+      "sessionIris": ".*",
+      "eventCategory": ".*",
       "eventAction": "click on apply filter",
       "event": "clickDiscovery",
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     }
   ]
 }

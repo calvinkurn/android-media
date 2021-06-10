@@ -39,10 +39,11 @@ object QueryHomeWallet {
             "    }\n" +
             "}"
 
-    val tokopointsListQuery: String = "query{\n" +
-            "    tokopointsDrawerList{\n" +
+    val tokopointsListQuery: String = "query tokopointsDrawerList(\$apiVersion:String){\n" +
+            "    tokopointsDrawerList(apiVersion: \$apiVersion){\n" +
             "        offFlag\n" +
             "        drawerList{" +
+            "           type\n" +
             "           iconImageURL\n" +
             "           redirectURL\n" +
             "           redirectAppLink\n" +

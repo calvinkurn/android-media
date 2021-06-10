@@ -36,6 +36,7 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
     val bankNotSupported: LiveData<String> = _bankNotSupported
 
     private var foundPrefix: Boolean = false
+    var categoryName: String = ""
 
     fun getMenuDetail(rawQuery: String, menuId: String) {
         launchCatchError(block = {
@@ -49,6 +50,7 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
                                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build())
             }.getSuccessData<RechargeCCMenuDetailResponse>()
 
+            categoryName = data.menuDetail.menuName
             if (data.menuDetail.tickers.isNotEmpty()) {
                 tickers.postValue(data.menuDetail.tickers)
             } else {
@@ -108,7 +110,8 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
                         return@map _rechargeCreditCard.postValue(RechargeCreditCard(
                                 it.operator.id,
                                 it.operator.attribute.defaultProductId,
-                                it.operator.attribute.imageUrl
+                                it.operator.attribute.imageUrl,
+                                it.operator.attribute.name
                         ))
                     }
                 }

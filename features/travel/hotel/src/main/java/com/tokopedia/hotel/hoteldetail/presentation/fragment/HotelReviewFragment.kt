@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.ReviewAdapterTypeFactory
@@ -134,7 +135,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
             isFirstTime = false
         }
         param.page = page - 1
-        reviewViewModel.getReview(GraphqlHelper.loadRawString(resources, R.raw.gql_get_hotel_review), param)
+        reviewViewModel.getReview(HotelGqlQuery.PROPERTY_REVIEW, param)
 
     }
 

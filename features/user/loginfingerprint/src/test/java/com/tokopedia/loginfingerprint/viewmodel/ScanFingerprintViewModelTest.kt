@@ -10,7 +10,7 @@ import com.tokopedia.loginfingerprint.data.model.ValidateFingerprintResult
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.domain.usecase.ValidateFingerprintUseCase
 import com.tokopedia.loginfingerprint.util.InstantTaskExecutorRule
-import com.tokopedia.loginfingerprint.utils.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -35,7 +35,7 @@ class ScanFingerprintViewModelTest : Spek({
     val fingerprintSetting = mockk<FingerprintSetting>(relaxed = true)
     val cryptographyUtils = mockk<Cryptography>(relaxed = true)
 
-    val dispatcher = TestDispatcherProvider()
+    val dispatcher = CoroutineTestDispatchersProvider
 
     val viewModel = ScanFingerprintViewModel(
             dispatcher = dispatcher,

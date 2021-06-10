@@ -8,6 +8,8 @@ import android.net.Uri
 import android.os.Build
 import android.service.voice.VoiceInteractionService
 import androidx.slice.SliceManager
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import timber.log.Timber
 
 class SlicePermission {
@@ -36,10 +38,10 @@ class SlicePermission {
                     }
                 }
             } else {
-                Timber.w("P2#SLICE_GRANT_PERMISSION#NULL_PROVIDER")
+                ServerLogger.log(Priority.P2, "SLICE_GRANT_PERMISSION", mapOf("type" to "NULL_PROVIDER"))
             }
         } catch (e : Exception){
-            Timber.w("P2#SLICE_GRANT_PERMISSION#"+e)
+            ServerLogger.log(Priority.P2, "SLICE_GRANT_PERMISSION", mapOf("type" to e.toString()))
         }
     }
 

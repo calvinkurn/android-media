@@ -4,4 +4,6 @@
     <string name="sob_header_text_page_1">Atur stok dan terima \npesanan dengan cepat dan \nmudah</string>
     <string name="sob_header_text_page_2">Balas chat pembelimu di \nmana saja, kapan saja \n</string>
     <string name="sob_header_text_page_3">Pasang promosi dan iklan \nuntuk memajukan bisnismu \n</string>
+
+    <string name="sob_illustration_content_desc">Sellerapp Onboarding Illustration</string>
 </resources>

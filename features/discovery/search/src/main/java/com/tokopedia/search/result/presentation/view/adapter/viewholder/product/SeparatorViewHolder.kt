@@ -4,12 +4,12 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.SeparatorViewModel
+import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import kotlinx.android.synthetic.main.search_result_product_separator.view.*
 
-class SeparatorViewHolder(itemView: View) : AbstractViewHolder<SeparatorViewModel>(itemView) {
+class SeparatorViewHolder(itemView: View) : AbstractViewHolder<SeparatorDataView>(itemView) {
 
-    override fun bind(element: SeparatorViewModel) {
+    override fun bind(element: SeparatorDataView) {
         itemView.searchProductSeparator?.visibility = View.VISIBLE
     }
 

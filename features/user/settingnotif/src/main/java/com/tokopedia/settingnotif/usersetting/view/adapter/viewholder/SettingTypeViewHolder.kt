@@ -16,7 +16,7 @@ class SettingTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     private val settingTypeIcon: IconUnify? = itemView.findViewById(R.id.img_main_setting)
     private val settingTypeName: TextView? = itemView.findViewById(R.id.tv_setting_type)
 
-    fun bind(settingType: SettingTypeDataView, settingTypeContract: SettingTypeFragment.SettingTypeContract) {
+    fun bind(settingType: SettingTypeDataView, settingTypeContract: SettingTypeFragment.SettingTypeContract?) {
         if (settingType.iconUnify != -1) {
             settingTypeIcon?.setImage(settingType.iconUnify)
         } else if (settingType.icon != 0) {
@@ -25,7 +25,7 @@ class SettingTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         settingTypeName?.text = itemView.context.getString(settingType.name)
 
         itemView.setOnClickListener {
-            settingTypeContract.openSettingField(settingType)
+            settingTypeContract?.openSettingField(settingType)
         }
     }
 

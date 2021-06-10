@@ -17,14 +17,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ivFlightOrderTogglePassengerDetail"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         app:layout_constraintBottom_toBottomOf="@id/tgFlightOrderPassengerDetailTitle"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/tgFlightOrderPassengerDetailTitle"
-        app:srcCompat="@drawable/ic_system_action_arrow_up_gray_24" />
+        app:icon_name="CHEVRON_UP" />
 
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
         android:id="@+id/rvFlightOrderPassengerDetail"

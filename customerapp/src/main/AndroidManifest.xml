@@ -117,6 +117,7 @@
             android:name="APPSFLYER_KEY"
             android:value="@string/appsflyer_key_ma"/>
 
+        <meta-data android:name="asset_statements" android:resource="@string/asset_statements" />
 
         <provider
             android:name="com.facebook.internal.FacebookInitProvider"

@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="dp_22">22dp</dimen>
-    <dimen name="dp_18">18dp</dimen>
+    <dimen name="dp_80">80dp</dimen>
     <dimen name="dp_56">56dp</dimen> <!-- not recommended -->
+    <dimen name="dp_40">40dp</dimen>
+    <dimen name="dp_32">32dp</dimen>
+    <dimen name="dp_22">22dp</dimen>
+    <dimen name="dp_20">20dp</dimen>
+    <dimen name="dp_18">18dp</dimen>
+    <dimen name="dp_16">16dp</dimen>
+    <dimen name="dp_14">14dp</dimen>
+    <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_5">5dp</dimen> <!-- not recommended -->
+    <dimen name="dp_0">0dp</dimen>
+
+    <dimen name="sp_17">17sp</dimen>
+    <dimen name="sp_14">14sp</dimen>
+
     <dimen name="admin_no_permission_image_margin">40dp</dimen>
     <dimen name="admin_no_permission_title_margin">40dp</dimen>
     <dimen name="admin_no_permission_desc_margin">20dp</dimen>

@@ -1,7 +1,7 @@
 package com.tokopedia.flight.search_universal.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.util.FlightDateUtil
 import java.util.*
@@ -11,8 +11,8 @@ import javax.inject.Inject
  * @author by furqan on 10/03/2020
  */
 class FlightSearchUniversalViewModel @Inject constructor(
-        private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+        private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     fun generatePairOfMinAndMaxDateForDeparture(): Pair<Date, Date> {
         val minDate = FlightDateUtil.getCurrentDate()

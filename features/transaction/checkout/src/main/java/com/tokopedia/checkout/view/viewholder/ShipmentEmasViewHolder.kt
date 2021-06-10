@@ -9,11 +9,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
-import com.tokopedia.design.component.Tooltip
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(itemView) {
     private val buyEmas: CheckBox = itemView.findViewById(R.id.cb_emas)
@@ -37,13 +37,12 @@ class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionLi
     }
 
     private fun showBottomSheet(egoldAttributeModel: EgoldAttributeModel) {
-        val tooltip = Tooltip(imgEmasInfo.context)
-        tooltip.setTitle(egoldAttributeModel.titleText)
-        tooltip.setDesc(egoldAttributeModel.tooltipText)
-        tooltip.setTextButton(imgEmasInfo.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
-        tooltip.setWithIcon(false)
-        tooltip.btnAction.setOnClickListener { v: View? -> tooltip.dismiss() }
-        tooltip.show()
+        GeneralBottomSheet().apply {
+            setTitle(egoldAttributeModel.titleText ?: "")
+            setDesc(egoldAttributeModel.tooltipText ?: "")
+            setButtonText(imgEmasInfo.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
+            setButtonOnClickListener { it.dismiss() }
+        }.show(llContainer.context, shipmentAdapterActionListener.currentFragmentManager)
     }
 
     companion object {

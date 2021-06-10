@@ -1,13 +1,13 @@
 {
-  "readme": "click back on product shipping page",
+  "readme": "click shipping insurance button",
   "mode": "subset",
   "query": [
     {
       "event" : "clickEditProduct",
       "eventCategory" : "edit product page",
       "eventAction" : "click shipping insurance button",
-      "eventLabel" : "{{.*}}",
-      "shopId" : "{{.+}}"
+      "eventLabel" : ".*",
+      "shopId" : ".+"
     }
   ]
 }

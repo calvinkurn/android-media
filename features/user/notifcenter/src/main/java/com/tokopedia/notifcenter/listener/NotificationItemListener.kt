@@ -16,4 +16,5 @@ interface NotificationItemListener {
     fun trackNotificationImpression(element: NotificationItemViewBean)
     fun onSuccessAddToCart(message: String)
     fun showMessageError(e: Throwable?)
+    fun onItemMultipleStockHandlerClick(notification: NotificationItemViewBean)
 }

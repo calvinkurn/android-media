@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_digital_checkout_bottom_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusableInTouchMode="true">
+
+    <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
+        android:id="@+id/digitalPromoBtnView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTotalPaymentLabel"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:text="@string/digital_checkout_total_payment_label"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toStartOf="@id/btnCheckout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/digitalPromoBtnView"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvTotalPayment"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tvTotalPaymentLabel"
+        app:layout_constraintStart_toStartOf="@id/tvTotalPaymentLabel"
+        app:layout_constraintTop_toBottomOf="@id/tvTotalPaymentLabel"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Rp.102.500" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnCheckout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:minWidth="@dimen/digital_checkout_checkout_button_min_width"
+        android:text="@string/digital_cart_checkout_pay_label_cta"
+        app:layout_constraintBottom_toBottomOf="@id/tvTotalPayment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/digitalPromoBtnView"
+        app:unifyButtonSize="medium" />
+</androidx.constraintlayout.widget.ConstraintLayout>

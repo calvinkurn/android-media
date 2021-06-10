@@ -8,6 +8,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.keys.Keys;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -58,7 +60,10 @@ public class MoengageAnalytics extends ContextAnalytics {
             };
             Weaver.Companion.executeWeaveCoRoutineWithFirebase(installTrackingWeave, RemoteConfigKey.ENABLE_ASYNC_INSTALLTRACK, context);
         } catch(Exception ex){
-            Timber.w("P2#INIT_MOENGAGE#error;name='%s'", ex.getMessage());
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "error");
+            messageMap.put("name", ex.getMessage());
+            ServerLogger.log(Priority.P2, "INIT_MOENGAGE", messageMap);
         }
     }
 

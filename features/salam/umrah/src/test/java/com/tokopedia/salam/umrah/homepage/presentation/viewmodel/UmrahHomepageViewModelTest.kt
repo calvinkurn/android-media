@@ -1,7 +1,7 @@
 package com.tokopedia.salam.umrah.homepage.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.salam.umrah.UmrahDispatchersProviderTest
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
 import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
 import com.tokopedia.salam.umrah.common.usecase.UmrahSearchParameterUseCase
@@ -39,7 +39,7 @@ class UmrahHomepageViewModelTest {
     @RelaxedMockK
     lateinit var umrahTravelAgentsUseCase: UmrahTravelAgentsUseCase
 
-    private val dispatcher = UmrahDispatchersProviderTest()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var umrahHomepageViewModel: UmrahHomepageViewModel
     val flags = listOf("TRAVEL_AGENT_FEATURED_ON_HOMEPAGE")
 

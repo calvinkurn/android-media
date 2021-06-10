@@ -32,6 +32,7 @@ class SellerOnboardingFragment : Fragment() {
         const val SELLER_ONBOARDING_URL_1 = "https://ecs7.tokopedia.net/android/others/sellerapp_onboarding_1_webp.webp"
         const val SELLER_ONBOARDING_URL_2 = "https://ecs7.tokopedia.net/android/others/sellerapp_onboarding_2_webp.webp"
         const val SELLER_ONBOARDING_URL_3 = "https://ecs7.tokopedia.net/android/others/sellerapp_onboarding_3_webp.webp"
+
         fun newInstance(): SellerOnboardingFragment = SellerOnboardingFragment()
     }
 

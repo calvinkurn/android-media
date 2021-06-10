@@ -37,7 +37,7 @@ class CreditCardRegistrationBottomSheet : BottomSheetUnify() {
     private var component: PdpSimulationComponent? = null
 
     private val credCardViewModel: CreditCardViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProviders.of(parentFragment!!, viewModelFactory.get())
+        val viewModelProvider = ViewModelProviders.of(requireParentFragment(), viewModelFactory.get())
         viewModelProvider.get(CreditCardViewModel::class.java)
     }
 

@@ -128,19 +128,19 @@
           "type": "keyword"
         },
         {
-          "id": "0",
-          "template": "list_single_line",
-          "image_url": "https://ecs7.tokopedia.net/img/autocomplete/icTime-3x.png",
-          "applink": "tokopedia://search?q=baju&source=universe&st=product",
-          "url": "/search?q=baju&source=universe&st=product",
-          "title": "tas",
-          "subtitle": "",
-          "icon_title": "",
-          "icon_subtitle": "",
-          "label": "",
+          "id": "2400899",
+          "template": "list_double_line",
+          "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/shops-1/2017/12/22/2400899/2400899_a1a81e3e-9067-4685-a62f-7be063df8377.png",
+          "applink": "tokopedia://shop/2400899?source=universe&st=product",
+          "url": "/samsung?source=universe&st=product",
+          "title": "Samsung Mobile Indonesia",
+          "subtitle": "Jakarta",
+          "icon_title": "https://ecs7.tokopedia.net/img/official_store_badge.png",
+          "icon_subtitle": "https://ecs7.tokopedia.net/img/autocomplete/location.png",
+          "label": "Toko",
           "label_type": "",
-          "shortcut_image": "https://ecs7.tokopedia.net/img/autocomplete/ic-close-3x.png",
-          "type": "keyword"
+          "shortcut_image": "",
+          "type": "shop"
         }
       ]
     },
@@ -397,6 +397,48 @@
           "label_type": "",
           "shortcut_image": "",
           "type": ""
+        }
+      ]
+    },
+    {
+      "id": "list_product_line",
+      "header": "Barang di Waktu Indonesia Belanja",
+      "label_action": "",
+      "feature_id": "list_product_line",
+      "items": [
+        {
+          "id": "20100612",
+          "template": "list_product_line",
+          "type": "product",
+          "applink": "tokopedia://product/20100686",
+          "url": "/bgsport/bola-sepak-3",
+          "title": "Sneakers Redknot Koketo York Denim",
+          "subtitle": "Rp126.000",
+          "image_url": "https://images.tokopedia.net/img/cache/100-square/product-1/2020/5/1/625127637/625127637_1d6bddb3-5e33-47b7-9723-f365603182c0_720_720.jpg",
+          "icon_title": "",
+          "icon_subtitle": "",
+          "label": "",
+          "label_type": "",
+          "shortcut_image": "",
+          "discount_percentage": "20",
+          "original_price": "Rp1.000.000"
+        },
+        {
+          "id": "20100612",
+          "template": "list_product_line",
+          "type": "product",
+          "applink": "tokopedia://product/20100686",
+          "url": "/bgsport/bola-sepak-3",
+          "title": "Sneakers Air Jordan 1 MID CHICAGO",
+          "subtitle": "Rp2.547.000",
+          "image_url": "https://images.tokopedia.net/img/cache/100-square/product-1/2019/10/20/298794/298794_0bd710bf-ffe0-4db5-8987-cbaf4a5e2fb4_1067_1067.jpg",
+          "icon_title": "",
+          "icon_subtitle": "",
+          "label": "",
+          "label_type": "",
+          "shortcut_image": "",
+          "discount_percentage": "",
+          "original_price": ""
         }
       ]
     }

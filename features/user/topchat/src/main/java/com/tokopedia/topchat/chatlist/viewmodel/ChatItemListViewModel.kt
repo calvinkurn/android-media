@@ -305,7 +305,7 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     private fun onSuccessLoadChatBlastSellerMetaData(metaData: ChatBlastSellerMetadata) {
-        val broadCastUrl = metaData.url
+        val broadCastUrl = metaData.urlBroadcast
         broadCastButtonVisibility(true)
         setBroadcastButtonUrl(broadCastUrl)
     }

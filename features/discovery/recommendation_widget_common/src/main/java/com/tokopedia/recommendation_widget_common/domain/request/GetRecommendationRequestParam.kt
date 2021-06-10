@@ -9,7 +9,8 @@ data class GetRecommendationRequestParam(
         val pageName: String = "",
         val categoryIds: List<String> = listOf(),
         val xSource: String = "",
-        val xDevice: String = ""
+        val xDevice: String = "",
+        val location: String = ""
 
 ) {
     private val PAGE_NUMBER = "pageNumber"

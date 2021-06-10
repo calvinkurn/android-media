@@ -25,9 +25,11 @@ class ImageAnnouncementViewModel
 constructor(
         messageId: String, fromUid: String, from: String, fromRole: String,
         attachmentId: String, attachmentType: String, replyTime: String, val imageUrl: String,
-        val redirectUrl: String, message: String, val blastId: Long, source: String
+        val redirectUrl: String, message: String, val blastId: Long, source: String,
+        val isHideBanner: Boolean
 ) : BaseChatViewModel(
-        messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message, source
+        messageId, fromUid, from, fromRole, attachmentId,
+        attachmentType, replyTime, message, source
 ), Visitable<BaseChatTypeFactory> {
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {

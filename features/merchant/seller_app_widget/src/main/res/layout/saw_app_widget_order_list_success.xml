@@ -185,7 +185,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvSawOrderShopName"
             android:layout_alignStart="@+id/tvSawOrderShopName"
-            android:textColor="@color/Green_G500"
+            android:textColor="@color/Unify_G500"
             android:textSize="@dimen/unify_font_10"
             android:textStyle="bold"
             tools:text="5 Pesanan Baru" />
@@ -269,7 +269,7 @@
                 android:layout_marginTop="@dimen/unify_space_12"
                 android:layout_marginBottom="@dimen/unify_space_12"
                 android:text="@string/saw_ready_to_ship"
-                android:textColor="@color/Green_G500"
+                android:textColor="@color/Unify_G500"
                 android:textSize="@dimen/unify_space_12"
                 android:textStyle="bold" />
 

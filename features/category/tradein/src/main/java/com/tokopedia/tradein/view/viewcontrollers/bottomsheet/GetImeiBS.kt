@@ -68,6 +68,7 @@ class GetImeiBS(val vm: TradeInHomeViewModel) : BottomSheetUnify() {
 
                 etWrapper?.textAreaInput?.text.toString().length == 15 -> {
                     vm.onInitialPriceClick(etWrapper?.textAreaInput?.text.toString())
+                    dismiss()
                 }
             }
         }

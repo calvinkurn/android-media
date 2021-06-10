@@ -64,13 +64,14 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                 }
             });
             if(bg!=null) {
-                if (cpm.getCpmShop().isPowerMerchant()) {
+                if (cpm.getCpmShop().isOfficial()) {
+                    bg.setImageResource(R.drawable.bg_os_ads);
+                } else if(cpm.getCpmShop().isPMPro()) {
+                    bg.setImageResource(R.drawable.bg_pm_pro_ads);
+                } else if (cpm.getCpmShop().isPowerMerchant()) {
                     bg.setImageResource(R.drawable.bg_pm_ads);
                 } else {
                     bg.setImageResource(R.drawable.bg_rm_ads);
-                }
-                if (cpm.getCpmShop().isOfficial()) {
-                    bg.setImageResource(R.drawable.bg_os_ads);
                 }
             }
             if(shopImage!=null){

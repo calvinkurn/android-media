@@ -4,7 +4,7 @@
         <shape>
             <stroke
                 android:width="@dimen/play_product_action_container_shadow_height"
-                android:color="@color/play_product_sheet_divider"/>
+                android:color="@color/play_dms_product_sheet_divider"/>
         </shape>
     </item>
     <item android:top="@dimen/play_product_action_container_shadow_height">

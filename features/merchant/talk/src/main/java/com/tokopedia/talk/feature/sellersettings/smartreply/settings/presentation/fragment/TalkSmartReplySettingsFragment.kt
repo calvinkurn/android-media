@@ -1,11 +1,11 @@
 package com.tokopedia.talk.feature.sellersettings.smartreply.settings.presentation.fragment
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -73,7 +73,6 @@ class TalkSmartReplySettingsFragment : BaseDaggerFragment(), HasComponent<TalkSm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViewReferences(view)
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         showLoading()
         observeSmartReplyData()
         setToolbarTitle()

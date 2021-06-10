@@ -8,11 +8,11 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.SearchProductCountViewModel
+import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
 import kotlinx.android.synthetic.main.search_result_product_count_layout.view.*
 
-class SearchProductCountViewHolder(itemView: View, private val listener: SearchNavigationClickListener): AbstractViewHolder<SearchProductCountViewModel>(itemView) {
+class SearchProductCountViewHolder(itemView: View, private val listener: SearchNavigationClickListener): AbstractViewHolder<SearchProductCountDataView>(itemView) {
 
     companion object {
         @JvmField
@@ -20,25 +20,25 @@ class SearchProductCountViewHolder(itemView: View, private val listener: SearchN
         val LAYOUT = R.layout.search_result_product_count_layout
     }
 
-    override fun bind(element: SearchProductCountViewModel) {
+    override fun bind(element: SearchProductCountDataView) {
         bindCountTitle(element)
         bindChangeViewListener(element)
     }
 
-    private fun bindCountTitle(element: SearchProductCountViewModel) {
+    private fun bindCountTitle(element: SearchProductCountDataView) {
         itemView.searchProductCountTitle?.shouldShowWithAction(element.productCountString.isNotEmpty()) {
             val countTitle = "<b>" + element.productCountString + "</b>" + " hasil pencarian"
             itemView.searchProductCountTitle?.text = MethodChecker.fromHtml(countTitle)
         }
     }
 
-    private fun bindChangeViewListener(element: SearchProductCountViewModel) {
+    private fun bindChangeViewListener(element: SearchProductCountDataView) {
         itemView.searchProductCountChangeViewButton?.setOnClickListener {
             listener.onChangeViewClicked(element.position)
         }
     }
 
-    override fun bind(element: SearchProductCountViewModel?, payloads: MutableList<Any>) {
+    override fun bind(element: SearchProductCountDataView?, payloads: MutableList<Any>) {
         val payload = payloads.getOrNull(0) ?: return
 
         when(payload) {

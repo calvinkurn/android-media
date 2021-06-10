@@ -1,0 +1,75 @@
+[
+  {
+    "data": {
+      "gamiCrack": {
+        "resultStatus": {
+          "code": "200",
+          "message": [
+            "success"
+          ],
+          "reason": ""
+        },
+        "imageUrl": "https://ecs7.tokopedia.net/img/blog/promo/2019/12/KAI-65k_Catalog-Detail-Banner-Lite-640x213.jpg",
+        "benefitText": [
+          "Yay, kamu dapat hadiah",
+          "Kupon Cashback \u0026 1000000 TokoPoints \u0026 1000 OVO Points"
+        ],
+        "benefits": [
+          {
+            "displayType": "catalog",
+            "text": "1 Kupon Cashback",
+            "color": "#ffffff",
+            "size": "small",
+            "benefitType": "coupon",
+            "imageURL": "",
+            "dummyCode": "HCKQTUDVAUNDIANMITRA-0",
+            "referenceID": "2618",
+            "isAutoApply": false,
+            "autoApplyMsg": "",
+            "isBigPrize": false
+          },
+          {
+            "displayType": "card",
+            "text": "1000000 TokoPoints",
+            "color": "#ffffff",
+            "size": "small",
+            "benefitType": "reward_point",
+            "imageURL": "https://ecs7.tokopedia.net/assets/images/gamification/benefit/points.png",
+            "dummyCode": "",
+            "referenceID": "",
+            "isAutoApply": false,
+            "autoApplyMsg": "",
+            "isBigPrize": false
+          },
+          {
+            "displayType": "card",
+            "text": "1000 OVO Points",
+            "color": "#ffffff",
+            "size": "small",
+            "benefitType": "ovo_points",
+            "imageURL": "https://ecs7.tokopedia.net/assets/images/gamification/benefit/ovo.png",
+            "dummyCode": "",
+            "referenceID": "",
+            "isAutoApply": false,
+            "autoApplyMsg": "",
+            "isBigPrize": false
+          }
+        ],
+        "actionButton": [
+          {
+            "text": "",
+            "url": "",
+            "applink": "",
+            "type": "invisible",
+            "backgroundColor": "orange"
+          }
+        ],
+        "recommendation": {
+          "isShow": true,
+          "shopID": "",
+          "pageName": "giftbox_page"
+        }
+      }
+    }
+  }
+]

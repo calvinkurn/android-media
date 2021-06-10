@@ -8,6 +8,7 @@ import com.tokopedia.promocheckout.common.R
 import com.tokopedia.promocheckout.common.domain.model.DataResponseCheckPromoCode
 import com.tokopedia.promocheckout.common.domain.model.DataVoucher
 import com.tokopedia.promocheckout.common.domain.model.ResponseCheckPromoCode
+import com.tokopedia.promocheckout.common.util.PromoQuery
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -28,7 +29,7 @@ class CheckPromoCodeUseCase(val resources: Resources, val graphqlUseCase: Graphq
         variables[PARAM_PROMO_SUGGESTED] = requestParams?.getBoolean(PARAM_PROMO_SUGGESTED, false)?:false
         variables[ONE_CLICK_SHIPMENT] = requestParams?.getBoolean(ONE_CLICK_SHIPMENT, false)?:false
 
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources, R.raw.check_promo_code), DataResponseCheckPromoCode::class.java, variables, false)
+        val graphqlRequest = GraphqlRequest(PromoQuery.promoCheckPromoCode(), DataResponseCheckPromoCode::class.java, variables, false)
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .flatMap {

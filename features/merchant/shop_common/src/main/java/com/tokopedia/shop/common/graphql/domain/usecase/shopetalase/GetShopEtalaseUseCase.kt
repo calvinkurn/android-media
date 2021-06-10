@@ -36,6 +36,7 @@ class GetShopEtalaseUseCase @Inject constructor(
                 "      useAce\n" +
                 "      badge\n" +
                 "      aceDefaultSort\n" +
+                "      imageURL\n" +
                 "    }\n" +
                 "    error {\n" +
                 "      message\n" +

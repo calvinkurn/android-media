@@ -39,8 +39,9 @@ class GetHomeDynamicChannelsRepository @Inject constructor(
         private const val TOKEN = "token"
         private const val NUM_OF_CHANNEL = "numOfChannel"
         private const val PARAMS = "param"
+        private const val LOCATION = "location"
 
-        fun buildParams(groupIds: String = "", token: String = "", numOfChannel: Int = 0, queryParams: String = "", doQueryHash: Boolean = false)
+        fun buildParams(groupIds: String = "", token: String = "", numOfChannel: Int = 0, queryParams: String = "", locationParams: String = "", doQueryHash: Boolean = false)
         :RequestParams{
             val params = RequestParams.create()
             params.parameters.clear()
@@ -48,6 +49,7 @@ class GetHomeDynamicChannelsRepository @Inject constructor(
             params.putString(GROUP_IDS, groupIds)
             params.putString(TOKEN, token)
             params.putInt(NUM_OF_CHANNEL, numOfChannel)
+            params.putString(LOCATION, locationParams)
             return params
         }
     }

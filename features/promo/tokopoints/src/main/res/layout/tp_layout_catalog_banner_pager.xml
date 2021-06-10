@@ -23,7 +23,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/view_pager_banner"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:indicator_color="@color/tp_ticker_indicator_default_color"
+        app:indicator_color="@color/Unify_N200_32"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

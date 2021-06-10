@@ -31,6 +31,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.workManager
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.encryption)
+    implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.remoteConfig)
 

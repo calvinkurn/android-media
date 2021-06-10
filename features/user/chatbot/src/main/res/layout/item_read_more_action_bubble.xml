@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingTop="@dimen/unify_space_12"
+    android:paddingBottom="@dimen/unify_space_12">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/read_more_options"
+        app:typographyType="heading_5"
+        tools:text="Selengkapnya"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing_lvl3"
+        android:paddingRight="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:id="@+id/arrow_up_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_arrow_down"
+        app:layout_constraintLeft_toRightOf="@id/read_more_options"
+        app:layout_constraintTop_toTopOf="@id/read_more_options"
+        app:layout_constraintBottom_toBottomOf="@id/read_more_options"
+        android:contentDescription="@null"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

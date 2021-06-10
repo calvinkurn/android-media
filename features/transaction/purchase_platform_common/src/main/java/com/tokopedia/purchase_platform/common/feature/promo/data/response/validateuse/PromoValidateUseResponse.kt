@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse
 
-import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
+import javax.annotation.Generated
 
 @Generated("com.robohorse.robopojogenerator")
 data class PromoValidateUseResponse(
@@ -9,23 +9,11 @@ data class PromoValidateUseResponse(
         @field:SerializedName("codes")
         val codes: List<String> = emptyList(),
 
-        @field:SerializedName("promo_code_id")
-        val promoCodeId: Int = 0,
-
         @field:SerializedName("voucher_orders")
         val voucherOrders: List<VoucherOrdersItem> = emptyList(),
 
-        @field:SerializedName("cashback_advocate_referral_amount")
-        val cashbackAdvocateReferralAmount: Int = 0,
-
         @field:SerializedName("clashing_info_detail")
         val clashingInfoDetail: ClashingInfoDetail = ClashingInfoDetail(),
-
-        @field:SerializedName("cashback_wallet_amount")
-        val cashbackWalletAmount: Int = 0,
-
-        @field:SerializedName("discount_amount")
-        val discountAmount: Int = 0,
 
         @field:SerializedName("title_description")
         val titleDescription: String = "",
@@ -50,9 +38,6 @@ data class PromoValidateUseResponse(
 
         @field:SerializedName("coupon_description")
         val couponDescription: String = "",
-
-        @field:SerializedName("benefit_details")
-        val benefitDetails: List<BenefitDetailsItem> = emptyList(),
 
         @field:SerializedName("additional_info")
         val additionalInfo: AdditionalInfo = AdditionalInfo(),

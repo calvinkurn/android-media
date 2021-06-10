@@ -6,12 +6,16 @@ import android.os.Bundle;
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.customer_mid_app.R;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -42,7 +46,9 @@ public class PurchaseNotifier {
 
                 ApplinkBuildAndShowNotification.showApplinkNotification(context, bundle);
 
-                Timber.w("P2#PUSH_NOTIF_UNUSED#'PurchaseNotifier'");
+                Map<String, String> messageMap = new HashMap<>();
+                messageMap.put("type", "PurchaseNotifier");
+                ServerLogger.log(Priority.P2, "PUSH_NOTIF_UNUSED", messageMap);
             }
         } catch (Exception e) {
             e.printStackTrace();

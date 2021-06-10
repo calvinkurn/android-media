@@ -71,7 +71,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         context?.let {
             val dividerItemDecoration = DividerItemDecoration(it, DividerItemDecoration.VERTICAL)
             ContextCompat.getDrawable(it, R.drawable.divider_list_card)?.let { it1 -> dividerItemDecoration.setDrawable(it1) }
-            getRecyclerView(view).addItemDecoration(dividerItemDecoration)
+            getRecyclerView(view)?.addItemDecoration(dividerItemDecoration)
         }
         view.authenticateCreditCard.setOnClickListener {
             activity?.run {

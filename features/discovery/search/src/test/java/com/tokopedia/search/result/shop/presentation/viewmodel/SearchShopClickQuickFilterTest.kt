@@ -8,7 +8,7 @@ import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.sear
 import com.tokopedia.search.shouldBe
 import org.junit.Test
 
-internal class SearchShopClickQuickFilterTest: SearchShopViewModelTestFixtures() {
+internal class SearchShopClickQuickFilterTest: SearchShopDataViewTestFixtures() {
 
     @Test
     fun `Click to Apply Quick Filter`() {

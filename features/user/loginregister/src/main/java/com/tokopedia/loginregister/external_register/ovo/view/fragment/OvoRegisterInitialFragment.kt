@@ -13,6 +13,7 @@ import com.tokopedia.loginregister.external_register.base.fragment.ExternalRegis
 import com.tokopedia.loginregister.external_register.base.viewmodel.ExternalRegisterViewModel
 import com.tokopedia.loginregister.external_register.ovo.view.activity.OvoFinalPageActivity
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
+import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.usecase.coroutines.Fail
@@ -113,7 +114,7 @@ class OvoRegisterInitialFragment: ExternalRegisterInitialFragment() {
 
     fun onSuccessOvoRegister(registerRequestDataResult: RegisterInfo){
         userSession.clearToken()
-        userSession.setToken(registerRequestDataResult.accessToken, "Bearer", registerRequestDataResult.refreshToken)
+        userSession.setToken(registerRequestDataResult.accessToken, "Bearer", EncoderDecoder.Encrypt(registerRequestDataResult.refreshToken, userSession.refreshTokenIV))
 
         if (registerRequestDataResult.enable2Fa) {
             enableSkip2Fa = registerRequestDataResult.enableSkip2Fa

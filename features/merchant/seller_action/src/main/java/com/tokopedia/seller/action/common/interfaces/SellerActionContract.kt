@@ -3,6 +3,7 @@ package com.tokopedia.seller.action.common.interfaces
 import android.net.Uri
 import com.tokopedia.seller.action.common.presentation.slices.SellerSlice
 import com.tokopedia.seller.action.order.domain.model.Order
+import kotlin.collections.HashMap
 
 class SellerActionContract {
 

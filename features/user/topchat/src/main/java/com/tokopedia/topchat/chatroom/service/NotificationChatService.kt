@@ -16,6 +16,8 @@ import androidx.core.app.RemoteInput
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.chat_common.data.ReplyChatViewModel
 import com.tokopedia.device.info.DeviceConnectionInfo
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -131,7 +133,7 @@ class NotificationChatService : JobIntentService() {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         jobScheduler?.cancelAll()
                     }
-                    Timber.w("P2#PUSH_NOTIF_REPLY_CHAT#'ErrorReplyChat';error='%s';", e?.message)
+                    ServerLogger.log(Priority.P2, "PUSH_NOTIF_REPLY_CHAT", mapOf("type" to "ErrorReplyChat", "error" to e?.message.orEmpty()))
                 }
             }
         })

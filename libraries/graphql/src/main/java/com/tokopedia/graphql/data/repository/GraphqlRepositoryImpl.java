@@ -21,6 +21,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.graphql.util.CacheHelper;
 import com.tokopedia.graphql.util.LoggingUtils;
 import com.tokopedia.graphql.util.NullCheckerKt;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -101,7 +103,11 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                         }
                     } catch (JsonSyntaxException jse) {
                         jse.printStackTrace();
-                        Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests);
+                        Map<String, String> messageMap = new HashMap<>();
+                        messageMap.put("type", "json");
+                        messageMap.put("err", Log.getStackTraceString(jse));
+                        messageMap.put("req", String.valueOf(requests));
+                        ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR", messageMap);
                     } catch (Exception e) {
                         e.printStackTrace();
                         //Just to avoid any accidental data loss
@@ -155,7 +161,11 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                 Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests.get(i).getQuery()) + " KEY: " + copyRequests.get(i).cacheKey());
             }
         } catch (JsonSyntaxException jse) {
-            Timber.w(GraphqlConstant.TIMBER_JSON_PARSE_TAG, Log.getStackTraceString(jse), requests);
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "json");
+            messageMap.put("err", Log.getStackTraceString(jse));
+            messageMap.put("req", String.valueOf(requests));
+            ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR", messageMap);
         } catch (Exception e) {
             e.printStackTrace();
         }

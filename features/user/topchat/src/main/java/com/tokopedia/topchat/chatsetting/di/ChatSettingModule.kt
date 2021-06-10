@@ -24,5 +24,4 @@ class ChatSettingModule(val context: Context) {
     @ChatSettingScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-
 }

@@ -52,9 +52,13 @@ class WholeSalePriceInputAdapter(private val textListener: WholeSaleInputViewHol
         if (isWholeSalePriceEmpty && productPrice > 0.toBigInteger()) {
             if (position == 0) wholeSaleInputModel.price = (productPrice - 1.toBigInteger()).toString()
             else {
-                val previousInputModel = wholeSaleInputModelList[position - 1]
-                val priceRecommendation = previousInputModel.price.toBigInteger() - 1.toBigInteger()
-                wholeSaleInputModel.price = priceRecommendation.toString()
+                wholeSaleInputModel.price = try {
+                    val previousInputModel = wholeSaleInputModelList[position - 1]
+                    val priceRecommendation = previousInputModel.price.toBigInteger() - 1.toBigInteger()
+                    priceRecommendation.toString()
+                } catch (e: Exception) {
+                    ""
+                }
             }
         }
 

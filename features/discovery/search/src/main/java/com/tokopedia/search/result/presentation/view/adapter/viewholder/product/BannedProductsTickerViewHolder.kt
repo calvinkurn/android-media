@@ -4,10 +4,10 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel
+import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
 import kotlinx.android.synthetic.main.search_result_banned_products_ticker_layout.view.*
 
-class BannedProductsTickerViewHolder(itemView: View): AbstractViewHolder<BannedProductsTickerViewModel>(itemView) {
+class BannedProductsTickerViewHolder(itemView: View): AbstractViewHolder<BannedProductsTickerDataView>(itemView) {
 
     companion object {
         @JvmField
@@ -15,7 +15,7 @@ class BannedProductsTickerViewHolder(itemView: View): AbstractViewHolder<BannedP
         val LAYOUT = R.layout.search_result_banned_products_ticker_layout
     }
 
-    override fun bind(element: BannedProductsTickerViewModel?) {
+    override fun bind(element: BannedProductsTickerDataView?) {
         if (element == null) return
 
         itemView.searchResultBannedProductsTicker?.visibility = View.VISIBLE

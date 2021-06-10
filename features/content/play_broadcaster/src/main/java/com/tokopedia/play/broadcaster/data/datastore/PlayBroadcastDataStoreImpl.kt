@@ -49,7 +49,7 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
                 },
                 selectedCoverData = SerializableCoverData(
                         coverImageUriString = coverImage.toString(),
-                        coverTitle = cover.title,
+                        coverTitle = "", //TODO("Handle This")
                         coverSource = coverSource.sourceString,
                         productId = if (coverSource is CoverSource.Product) coverSource.id else null
                 )
@@ -73,7 +73,6 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
                                 coverImage = Uri.parse(data.selectedCoverData.coverImageUriString),
                                 coverSource = CoverSource.getFromSourceString(data.selectedCoverData.coverSource, data.selectedCoverData.productId)
                         ),
-                        title = data.selectedCoverData.coverTitle,
                         state = SetupDataState.Uploaded
                 )
         )

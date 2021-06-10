@@ -18,7 +18,11 @@ data class PreOrder(
 
         @SerializedName("isActive")
         @Expose
-        val isActive: Boolean = false
+        val isActive: Boolean = false,
+
+        @SerializedName("preorderInDays")
+        @Expose
+        val preorderInDays: Long = 0L
 ) {
     fun isPreOrderActive(): Boolean {
         return (isActive && duration > 0)

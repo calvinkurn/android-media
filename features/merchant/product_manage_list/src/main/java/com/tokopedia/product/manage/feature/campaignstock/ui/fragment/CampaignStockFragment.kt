@@ -23,6 +23,7 @@ import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_SOURCE
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
@@ -50,6 +51,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
     companion object {
         private const val MAIN_TAB_POSITION = 0
+        const val DEFAULT_SOURCE = "manage product"
 
         @JvmStatic
         fun createInstance(): CampaignStockFragment = CampaignStockFragment()
@@ -68,6 +70,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
 
     private val productIds by lazy {
         activity?.intent?.getStringArrayExtra(CampaignStockActivity.PRODUCT_ID)
+    }
+
+    private val source by lazy {
+        activity?.intent?.getStringExtra(EXTRA_SOURCE)?: DEFAULT_SOURCE
     }
 
     private var isVariant: Boolean? = null
@@ -163,6 +169,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                                 putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME, productName)
                                 putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STOCK, stock)
                                 putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STATUS, status.name)
+                                putExtra(ProductManageCommonConstant.EXTRA_UPDATE_VARIANTS_MAP, variantsMap)
                             }
                             activity?.run {
                                 setResult(Activity.RESULT_OK, resultIntent)
@@ -202,7 +209,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             this@CampaignStockFragment.tabs_campaign_stock?.getUnifyTabLayout()?.selectedTabPosition?.let { tabPosition ->
                 val isMainStock = tabPosition == MAIN_TAB_POSITION
                 isVariant?.run {
-                    ProductManageTracking.eventClickAllocationSaveStock(this, isMainStock)
+                    ProductManageTracking.eventClickAllocationSaveStock(this, isMainStock, source)
                 }
             }
         }
@@ -355,6 +362,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                 errorMessage?.run {
                     putExtra(ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE, this)
                 }
+                putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_ID, productIds?.firstOrNull().orEmpty())
             }
             setResult(Activity.RESULT_CANCELED, intent)
             finish()
@@ -372,7 +380,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                                      stock: Int,
                                      isCampaign: Boolean,
                                      access: ProductManageAccess) =
-            CampaignMainStockFragment.createInstance(isVariant, sellableProductUIList, isActive, stock, isCampaign, access, this)
+            CampaignMainStockFragment.createInstance(
+                    isVariant, sellableProductUIList,
+                    isActive, stock, isCampaign,
+                    access, source, this)
 
     private fun getReservedStockFragment(isVariant: Boolean,
                                          reservedEventInfoUiList: ArrayList<ReservedEventInfoUiModel>,

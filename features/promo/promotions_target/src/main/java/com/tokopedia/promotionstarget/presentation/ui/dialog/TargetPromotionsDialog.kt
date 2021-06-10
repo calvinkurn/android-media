@@ -65,7 +65,7 @@ import com.tokopedia.promotionstarget.presentation.ui.dialog.BtnType.Companion.R
 import com.tokopedia.promotionstarget.presentation.ui.dialog.PopUpVersion.Companion.AUTO_CLAIM
 import com.tokopedia.promotionstarget.presentation.ui.dialog.PopUpVersion.Companion.NORMAL
 import com.tokopedia.promotionstarget.presentation.ui.recycleViewHelper.CouponItemDecoration
-import com.tokopedia.promotionstarget.presentation.ui.viewmodel.TargetPromotionsDialogVM
+import com.tokopedia.promotionstarget.presentation.ui.viewmodel.TargetPromotionsDialogViewModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -92,7 +92,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
     private lateinit var tvTitleRight: AppCompatTextView
     private lateinit var tvSubTitleRight: AppCompatTextView
 
-    lateinit var viewModel: TargetPromotionsDialogVM
+    lateinit var viewModel: TargetPromotionsDialogViewModel
     private lateinit var gratificationData: GratificationData
     private var catalogId: Int = 0
     private lateinit var claimCouponApi: ClaimCouponApi
@@ -526,6 +526,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         }
 
         if (couponDetailList.isEmpty()) {
+            imageView.visibility = View.VISIBLE
             imageView.loadImageWithNoPlaceholder(data.popGratificationClaim?.imageUrl) { success ->
                 expandBottomSheet()
                 viewFlipper.displayedChild = CONTAINER_IMAGE
@@ -880,7 +881,7 @@ class TargetPromotionsDialog(val subscriber: GratificationSubscriber) {
         component.inject(this)
         activity.run {
             val viewModelProvider = ViewModelProviders.of(activityContext, viewModelFactory)
-            viewModel = viewModelProvider[TargetPromotionsDialogVM::class.java]
+            viewModel = viewModelProvider[TargetPromotionsDialogViewModel::class.java]
         }
     }
 

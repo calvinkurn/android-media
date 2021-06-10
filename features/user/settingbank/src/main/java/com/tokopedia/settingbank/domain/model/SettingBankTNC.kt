@@ -1,7 +1,9 @@
 package com.tokopedia.settingbank.domain.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class SettingBankTNC(
         @SerializedName("RichieGetTNCBankAccount")
@@ -21,8 +23,9 @@ data class RichieGetTNCBankAccount (
         val data : TemplateData
 )
 
+@Parcelize
 data class TemplateData (
         @SerializedName("template")
         @Expose
         val template : String
-)
+) : Parcelable

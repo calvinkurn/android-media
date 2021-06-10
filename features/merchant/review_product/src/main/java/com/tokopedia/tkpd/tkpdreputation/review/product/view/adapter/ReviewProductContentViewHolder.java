@@ -19,6 +19,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ImageAtt
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.util.TimeUtil;
+import com.tokopedia.unifycomponents.HtmlLinkHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,6 @@ import java.util.List;
 public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewProductModelContent> {
     public static final int LAYOUT = R.layout.item_product_review;
     private static final int MAX_CHAR = 50;
-    private static final String MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>";
     public static final int UNLIKE_STATUS = 3;
     public static final int LIKE_STATUS_ACTIVE = 1;
     public static final String WIB = "WIB";
@@ -285,12 +285,11 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         }
     }
 
-    private Spanned getReview(String review) {
+    private CharSequence getReview(String review) {
         if (MethodChecker.fromHtml(review).length() > MAX_CHAR) {
             String subDescription = MethodChecker.fromHtml(review).toString().substring(0, MAX_CHAR);
-            return MethodChecker
-                    .fromHtml(subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
-                            + MORE_DESCRIPTION);
+            return new HtmlLinkHelper(context, subDescription.replaceAll("(\r\n|\n)", "<br />") + "... "
+                    + context.getString(R.string.review_expand)).getSpannedString();
         } else {
             return MethodChecker.fromHtml(review);
         }

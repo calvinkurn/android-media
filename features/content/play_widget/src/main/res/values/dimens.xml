@@ -37,4 +37,12 @@
 
     <dimen name="play_widget_unify_loader_size">40dp</dimen>
     <dimen name="play_widget_info_image_size">40dp</dimen>
+
+    <!--Play Widget Channel Medium-->
+    <dimen name="play_widget_channel_medium_promo_height">50dp</dimen>
+
+    <!--Contextual Promo-->
+    <dimen name="play_widget_card_small_promo_radius">4dp</dimen>
+    <dimen name="play_widget_card_medium_promo_additional_context_width">69dp</dimen>
+    <dimen name="play_widget_card_medium_promo_additional_context_height">21dp</dimen>
 </resources>

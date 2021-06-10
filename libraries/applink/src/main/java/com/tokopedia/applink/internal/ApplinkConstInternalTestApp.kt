@@ -7,14 +7,11 @@ import com.tokopedia.applink.constant.DeeplinkConstant
  */
 object ApplinkConstInternalTestApp {
 
-    @JvmField
-    val HOST_TESTAPP = "testapp"
+    const val HOST_TESTAPP = "testapp"
 
-    @JvmField
-    val INTERNAL_TESTAPP = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_TESTAPP}"
+    const val INTERNAL_TESTAPP = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_TESTAPP}"
 
     // TestApp LoginActivity
     // tokopedia-android-internal://testapp/login
-    @JvmField
-    val LOGIN = "$INTERNAL_TESTAPP/login"
+    const val LOGIN = "$INTERNAL_TESTAPP/login"
 }

@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
@@ -17,6 +18,7 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
@@ -413,6 +415,35 @@ class ShipmentPresenterValidateUseFinalTest {
         verifySequence {
             view.activityContext
             view.renderErrorCheckPromoShipmentData(any())
+        }
+    }
+
+    @Test
+    fun `WHEN validate use status get akamai exception THEN should show error and reset courier and clear promo`() {
+        // Given
+        val validateUsePromoRequest = ValidateUsePromoRequest().apply {
+            codes = mutableListOf("a", "b")
+            orders = mutableListOf(
+                    OrdersItem().apply {
+                        codes = mutableListOf("c")
+                    }
+            )
+        }
+        presenter.setLatValidateUseRequest(validateUsePromoRequest)
+        val message = "error"
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(AkamaiErrorException(message))
+        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(ClearPromoUiModel())
+
+        // When
+        presenter.checkPromoCheckoutFinalShipment(validateUsePromoRequest, 0, "")
+
+        // Then
+        verifySequence {
+            view.showToastError(message)
+            view.resetAllCourier()
+            view.cancelAllCourierPromo()
+            view.doResetButtonPromoCheckout()
         }
     }
 

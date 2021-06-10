@@ -22,7 +22,7 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl6"
         android:gravity="center"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintEnd_toStartOf="@+id/tv_close"
         app:layout_constraintStart_toEndOf="@+id/iv_switch"
         app:layout_constraintTop_toTopOf="parent"
@@ -37,10 +37,10 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:minWidth="@dimen/layout_lvl3"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_Static_White"
         android:textStyle="bold"
         app:drawableRightCompat="@drawable/ic_system_close_default"
-        app:drawableTint="@color/Neutral_N0"
+        app:drawableTint="@color/Unify_Static_White"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

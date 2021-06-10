@@ -11,9 +11,9 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAMS_PAGE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAMS_PAGE_PDP
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
-import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
 import com.tokopedia.product.detail.view.util.doActionIfNotNull
+import com.tokopedia.product.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.usecase.coroutines.UseCase
 import timber.log.Timber
 import javax.inject.Inject
@@ -43,11 +43,13 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
     private var forceRefresh: Boolean = false
     private var mapOfParam: Map<String, Any?> = mapOf()
     private var isUserSessionActive = false
+    private var shouldExecuteRates = false
 
-    suspend fun executeOnBackground(mapOfParams: Map<String, Any?>, forceRefresh: Boolean, isUserSessionActive: Boolean): ProductInfoP3 {
+    suspend fun executeOnBackground(mapOfParams: Map<String, Any?>, forceRefresh: Boolean, isUserSessionActive: Boolean, shouldExecuteRates: Boolean): ProductInfoP3 {
         this.mapOfParam = mapOfParams
         this.forceRefresh = forceRefresh
         this.isUserSessionActive = isUserSessionActive
+        this.shouldExecuteRates = shouldExecuteRates
         return executeOnBackground()
     }
 
@@ -61,7 +63,7 @@ class GetProductInfoP3UseCase @Inject constructor(private val rawQueries: Map<St
         val p3Request = mutableListOf<GraphqlRequest>()
 
         //region RatesEstimate
-        if (isUserSessionActive && shopDomain != null) {
+        if (isUserSessionActive && shopDomain != null && shouldExecuteRates) {
             val estimationParams = generateRateEstimateParam(weight, shopDomain, origin)
             val estimationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION],
                     RatesEstimationModel.Response::class.java, estimationParams)

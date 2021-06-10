@@ -1,6 +1,5 @@
 package com.tokopedia.shop.pageheader.domain.interactor
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -8,8 +7,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
@@ -87,7 +85,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
     private fun getIsShopOfficialRequest(shopId: Int): GraphqlRequest {
         val params = GqlGetIsShopOsUseCase.createParams(shopId)
         return createGraphqlRequest<GetIsShopOfficialStore.Response>(
-                mapQuery[GQLQueryNamedConstant.GET_IS_OFFICIAL].orEmpty(),
+                GqlGetIsShopOsUseCase.QUERY,
                 params.parameters
         )
     }
@@ -95,7 +93,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
     private fun getIsShopPowerMerchantRequest(shopId: Int): GraphqlRequest {
         val params = GqlGetIsShopPmUseCase.createParams(shopId)
         return createGraphqlRequest<GetIsShopPowerMerchant.Response>(
-                mapQuery[GQLQueryNamedConstant.GET_IS_POWER_MERCHANT].orEmpty(),
+                GqlGetIsShopPmUseCase.QUERY,
                 params.parameters
         )
     }
@@ -116,7 +114,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
     private fun getShopInfoHomeTypeDataRequest(shopId: Int): GraphqlRequest {
         val params = GqlShopPageGetHomeType.createParams(shopId)
         return createGraphqlRequest<ShopPageGetHomeType.Response>(
-                mapQuery[ShopPageHeaderConstant.SHOP_PAGE_GET_HOME_TYPE].orEmpty(),
+                GqlShopPageGetHomeType.QUERY,
                 params.parameters
         )
     }

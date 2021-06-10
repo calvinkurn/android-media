@@ -11,11 +11,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Irfan Khoirul on 23/04/18.
- */
-
-public class ShipmentCartItemModel implements ShipmentData, Parcelable {
+public class ShipmentCartItemModel implements Parcelable {
 
     private boolean allItemError;
     private boolean isError;
@@ -27,16 +23,15 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private List<ShopShipment> shopShipmentList;
 
     // Shop data
-    private int shopId;
+    private long shopId;
     private String shopName;
-    private boolean isGoldMerchant;
-    private boolean isOfficialStore;
-    private String shopBadge;
     private int orderNumber;
     private String preOrderInfo;
+    private boolean isFreeShippingExtra;
     private String freeShippingBadgeUrl;
     private String shopLocation;
     private String shopAlertMessage;
+    private ShopTypeInfoData shopTypeInfoData;
 
     // Cart item state
     private String cartString;
@@ -70,11 +65,12 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     // for robinhood III
     private boolean isBlackbox;
-    private int addressId;
+    private String addressId;
     private String blackboxInfo;
 
     private boolean isFulfillment;
-    private int fulfillmentId;
+    private String fulfillmentBadgeUrl;
+    private long fulfillmentId;
 
     // promo stacking
     private boolean hasPromoList;
@@ -106,15 +102,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         selectedShipmentDetailData = in.readParcelable(ShipmentDetailData.class.getClassLoader());
         shopShipmentList = in.createTypedArrayList(ShopShipment.CREATOR);
         orderNumber = in.readInt();
-        shopId = in.readInt();
+        shopId = in.readLong();
         shopName = in.readString();
         preOrderInfo = in.readString();
+        isFreeShippingExtra = in.readByte() != 0;
         freeShippingBadgeUrl = in.readString();
         shopLocation = in.readString();
         shopAlertMessage = in.readString();
-        isGoldMerchant = in.readByte() != 0;
-        isOfficialStore = in.readByte() != 0;
-        shopBadge = in.readString();
+        shopTypeInfoData = in.readParcelable(ShopTypeInfoData.class.getClassLoader());
         cartString = in.readString();
         shippingId = in.readInt();
         spId = in.readInt();
@@ -138,10 +133,11 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         useCourierRecommendation = in.readByte() != 0;
         isHidingCourier = in.readByte() != 0;
         isBlackbox = in.readByte() != 0;
-        addressId = in.readInt();
+        addressId = in.readString();
         blackboxInfo = in.readString();
         isFulfillment = in.readByte() != 0;
-        fulfillmentId = in.readInt();
+        fulfillmentBadgeUrl = in.readString();
+        fulfillmentId = in.readLong();
         hasPromoList = in.readByte() != 0;
         voucherLogisticItemUiModel = in.readParcelable(VoucherLogisticItemUiModel.class.getClassLoader());
         isLeasingProduct = in.readByte() != 0;
@@ -160,15 +156,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeParcelable(selectedShipmentDetailData, flags);
         dest.writeTypedList(shopShipmentList);
         dest.writeInt(orderNumber);
-        dest.writeInt(shopId);
+        dest.writeLong(shopId);
         dest.writeString(shopName);
         dest.writeString(preOrderInfo);
+        dest.writeByte((byte) (isFreeShippingExtra ? 1 : 0));
         dest.writeString(freeShippingBadgeUrl);
         dest.writeString(shopLocation);
         dest.writeString(shopAlertMessage);
-        dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
-        dest.writeByte((byte) (isOfficialStore ? 1 : 0));
-        dest.writeString(shopBadge);
+        dest.writeParcelable(shopTypeInfoData, flags);
         dest.writeString(cartString);
         dest.writeInt(shippingId);
         dest.writeInt(spId);
@@ -187,15 +182,16 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeByte((byte) (stateDropshipperHasError ? 1 : 0));
         dest.writeByte((byte) (stateLoadingCourierState ? 1 : 0));
         dest.writeByte((byte) (stateHasLoadCourierState ? 1 : 0));
-        dest.writeByte((byte) (stateHasLoadCourierTradeInDropOffState ? 1: 0));
+        dest.writeByte((byte) (stateHasLoadCourierTradeInDropOffState ? 1 : 0));
         dest.writeByte((byte) (stateHasExtraMarginTop ? 1 : 0));
         dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
         dest.writeByte((byte) (isHidingCourier ? 1 : 0));
         dest.writeByte((byte) (isBlackbox ? 1 : 0));
-        dest.writeInt(addressId);
+        dest.writeString(addressId);
         dest.writeString(blackboxInfo);
         dest.writeByte((byte) (isFulfillment ? 1 : 0));
-        dest.writeInt(fulfillmentId);
+        dest.writeString(fulfillmentBadgeUrl);
+        dest.writeLong(fulfillmentId);
         dest.writeByte((byte) (hasPromoList ? 1 : 0));
         dest.writeParcelable(voucherLogisticItemUiModel, flags);
         dest.writeByte((byte) (isLeasingProduct ? 1 : 0));
@@ -239,8 +235,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setProductIsPreorder(shipmentCartItemModel.isProductIsPreorder());
         newShipmentCartItemModel.setProductFinsurance(shipmentCartItemModel.isProductFinsurance());
         newShipmentCartItemModel.setProductFcancelPartial(shipmentCartItemModel.isProductFcancelPartial());
-        newShipmentCartItemModel.setOfficialStore(shipmentCartItemModel.isOfficialStore());
-        newShipmentCartItemModel.setGoldMerchant(shipmentCartItemModel.isGoldMerchant());
         newShipmentCartItemModel.setShopShipmentList(shipmentCartItemModel.getShopShipmentList());
         newShipmentCartItemModel.setOrderNumber(shipmentCartItemModel.getOrderNumber());
         newShipmentCartItemModel.setHidingCourier(shipmentCartItemModel.isHidingCourier());
@@ -254,16 +248,17 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setStateLoadingCourierState(shipmentCartItemModel.isStateLoadingCourierState());
         newShipmentCartItemModel.setStateHasLoadCourierState(shipmentCartItemModel.isStateHasLoadCourierState());
         newShipmentCartItemModel.setStateHasExtraMarginTop(shipmentCartItemModel.isStateHasExtraMarginTop());
-        newShipmentCartItemModel.setShopBadge(shipmentCartItemModel.getShopBadge());
         newShipmentCartItemModel.setIsBlackbox(shipmentCartItemModel.getIsBlackbox());
         newShipmentCartItemModel.setAddressId(shipmentCartItemModel.getAddressId());
-        newShipmentCartItemModel.setFulfillment(shipmentCartItemModel.isFulfillment);
+        newShipmentCartItemModel.setFulfillment(shipmentCartItemModel.isFulfillment());
+        newShipmentCartItemModel.setFulfillmentBadgeUrl(shipmentCartItemModel.getFulfillmentBadgeUrl());
         newShipmentCartItemModel.setFulfillmentId(shipmentCartItemModel.getFulfillmentId());
         newShipmentCartItemModel.setBlackboxInfo(shipmentCartItemModel.getBlackboxInfo());
         newShipmentCartItemModel.setHasPromoList(shipmentCartItemModel.getHasPromoList());
         newShipmentCartItemModel.setVoucherLogisticItemUiModel(shipmentCartItemModel.getVoucherLogisticItemUiModel());
         newShipmentCartItemModel.setIsLeasingProduct(shipmentCartItemModel.getIsLeasingProduct());
         newShipmentCartItemModel.setListPromoCodes(shipmentCartItemModel.getListPromoCodes());
+        newShipmentCartItemModel.setShopTypeInfoData(shipmentCartItemModel.getShopTypeInfoData());
         return newShipmentCartItemModel;
     }
 
@@ -299,11 +294,11 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.errorDescription = errorDescription;
     }
 
-    public int getShopId() {
+    public long getShopId() {
         return shopId;
     }
 
-    public void setShopId(int shopId) {
+    public void setShopId(long shopId) {
         this.shopId = shopId;
     }
 
@@ -403,22 +398,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.cartItemModels = cartItemModels;
     }
 
-    public boolean isGoldMerchant() {
-        return isGoldMerchant;
-    }
-
-    public void setGoldMerchant(boolean goldMerchant) {
-        isGoldMerchant = goldMerchant;
-    }
-
-    public boolean isOfficialStore() {
-        return isOfficialStore;
-    }
-
-    public void setOfficialStore(boolean officialStore) {
-        isOfficialStore = officialStore;
-    }
-
     public List<ShopShipment> getShopShipmentList() {
         return shopShipmentList;
     }
@@ -435,9 +414,13 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         isHidingCourier = hidingCourier;
     }
 
-    public String getCartString() { return cartString; }
+    public String getCartString() {
+        return cartString;
+    }
 
-    public void setCartString(String cartString) { this.cartString = cartString; }
+    public void setCartString(String cartString) {
+        this.cartString = cartString;
+    }
 
     public int getShippingId() {
         return shippingId;
@@ -511,14 +494,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.stateHasExtraMarginTop = stateHasExtraMarginTop;
     }
 
-    public String getShopBadge() {
-        return shopBadge;
-    }
-
-    public void setShopBadge(String shopBadge) {
-        this.shopBadge = shopBadge;
-    }
-
     public boolean getIsBlackbox() {
         return isBlackbox;
     }
@@ -527,11 +502,11 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.isBlackbox = blackbox;
     }
 
-    public int getAddressId() {
+    public String getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(int addressId) {
+    public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 
@@ -543,19 +518,33 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         isFulfillment = fulfillment;
     }
 
-    public int getFulfillmentId() {
+    public String getFulfillmentBadgeUrl() {
+        return fulfillmentBadgeUrl;
+    }
+
+    public void setFulfillmentBadgeUrl(String fulfillmentBadgeUrl) {
+        this.fulfillmentBadgeUrl = fulfillmentBadgeUrl;
+    }
+
+    public long getFulfillmentId() {
         return fulfillmentId;
     }
 
-    public void setFulfillmentId(int fulfillmentId) {
+    public void setFulfillmentId(long fulfillmentId) {
         this.fulfillmentId = fulfillmentId;
     }
 
-    public String getBlackboxInfo() { return blackboxInfo; }
+    public String getBlackboxInfo() {
+        return blackboxInfo;
+    }
 
-    public void setBlackboxInfo(String blackboxInfo) { this.blackboxInfo = blackboxInfo; }
+    public void setBlackboxInfo(String blackboxInfo) {
+        this.blackboxInfo = blackboxInfo;
+    }
 
-    public boolean getHasPromoList() { return hasPromoList; }
+    public boolean getHasPromoList() {
+        return hasPromoList;
+    }
 
     public void setHasPromoList(boolean hasPromoList) {
         this.hasPromoList = hasPromoList;
@@ -577,13 +566,21 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.saveStateFlag = saveStateFlag;
     }
 
-    public boolean getIsLeasingProduct() { return isLeasingProduct; }
+    public boolean getIsLeasingProduct() {
+        return isLeasingProduct;
+    }
 
-    public void setIsLeasingProduct(boolean leasingProduct) { isLeasingProduct = leasingProduct; }
+    public void setIsLeasingProduct(boolean leasingProduct) {
+        isLeasingProduct = leasingProduct;
+    }
 
-    public int getBookingFee() { return bookingFee; }
+    public int getBookingFee() {
+        return bookingFee;
+    }
 
-    public void setBookingFee(int bookingFee) { this.bookingFee = bookingFee; }
+    public void setBookingFee(int bookingFee) {
+        this.bookingFee = bookingFee;
+    }
 
     public boolean isDropshipperDisable() {
         return isDropshipperDisable;
@@ -657,6 +654,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.preOrderInfo = preOrderInfo;
     }
 
+    public boolean isFreeShippingExtra() {
+        return isFreeShippingExtra;
+    }
+
+    public void setFreeShippingExtra(boolean freeShippingExtra) {
+        isFreeShippingExtra = freeShippingExtra;
+    }
+
     public String getFreeShippingBadgeUrl() {
         return freeShippingBadgeUrl;
     }
@@ -681,6 +686,14 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         this.shopAlertMessage = shopAlertMessage;
     }
 
+    public ShopTypeInfoData getShopTypeInfoData() {
+        return shopTypeInfoData;
+    }
+
+    public void setShopTypeInfoData(ShopTypeInfoData shopTypeInfoData) {
+        this.shopTypeInfoData = shopTypeInfoData;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -693,8 +706,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(isAllItemError(), that.isAllItemError())
                 .append(isError(), that.isError())
                 .append(getShopId(), that.getShopId())
-                .append(isGoldMerchant(), that.isGoldMerchant())
-                .append(isOfficialStore(), that.isOfficialStore())
                 .append(getWeightUnit(), that.getWeightUnit())
                 .append(isProductFinsurance(), that.isProductFinsurance())
                 .append(isProductFcancelPartial(), that.isProductFcancelPartial())
@@ -717,8 +728,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
                 .append(getErrorDescription())
                 .append(getShopId())
                 .append(getShopName())
-                .append(isGoldMerchant())
-                .append(isOfficialStore())
                 .append(getWeightUnit())
                 .append(isProductFinsurance())
                 .append(isProductFcancelPartial())

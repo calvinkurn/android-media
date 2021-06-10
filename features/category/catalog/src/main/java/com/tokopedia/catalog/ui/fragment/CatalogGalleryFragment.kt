@@ -1,16 +1,15 @@
 package com.tokopedia.catalog.ui.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.gallery.CatalogBottomGalleyRecyclerViewAdapter
 import com.tokopedia.catalog.adapter.gallery.CatalogGalleryImagePagerAdapter
-import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
 import com.tokopedia.catalog.model.raw.CatalogImage
 import kotlinx.android.synthetic.main.fragment_catalog_gallery.*
 
@@ -65,20 +64,6 @@ class CatalogGalleryFragment : Fragment() {
                 override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
 
                 override fun onPageSelected(position: Int) {
-                    when {
-                        previousPosition >= 0 -> when {
-                            previousPosition > position -> CatalogDetailAnalytics.sendEvent(
-                                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                                    CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
-                                    catalogId)
-                            previousPosition < position -> CatalogDetailAnalytics.sendEvent(
-                                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                                    CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
-                                    catalogId)
-                        }
-                    }
                     previousPosition = position
                     if(SHOW_BOTTOM_GALLERY){
                         catalogBottomGalleyRecyclerViewAdapter.changeSelectedPosition(position)
@@ -100,11 +85,6 @@ class CatalogGalleryFragment : Fragment() {
     }
 
     private val onImageClick : (Int) -> Unit = {adapterPosition ->
-        CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                CatalogDetailAnalytics.EventKeys.EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.CLICK_CATALOG_IMAGE,
-                catalogId)
         view_pager_intermediary.setCurrentItem(adapterPosition, true)
         catalogBottomGalleyRecyclerViewAdapter.changeSelectedPosition(adapterPosition)
         catalogBottomGalleyRecyclerViewAdapter.notifyDataSetChanged()

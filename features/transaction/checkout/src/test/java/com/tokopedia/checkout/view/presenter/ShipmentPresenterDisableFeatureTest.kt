@@ -3,9 +3,9 @@ package com.tokopedia.checkout.view.presenter
 import com.google.gson.Gson
 import com.tokopedia.checkout.UnitTestFileUtils
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormGqlResponse
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormGqlResponse
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormResponse
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
@@ -23,9 +23,11 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.utils.each
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -107,6 +109,9 @@ class ShipmentPresenterDisableFeatureTest {
     @MockK(relaxed = true)
     private lateinit var view: ShipmentContract.View
 
+    @MockK
+    private lateinit var chosenAddressRequestHelper: ChosenAddressRequestHelper
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private val gson = Gson()
@@ -118,7 +123,7 @@ class ShipmentPresenterDisableFeatureTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        getShipmentAddressFormGqlUseCase = GetShipmentAddressFormGqlUseCase("", graphqlUseCase, ShipmentMapper(), TestSchedulers)
+        getShipmentAddressFormGqlUseCase = GetShipmentAddressFormGqlUseCase("", graphqlUseCase, ShipmentMapper(), TestSchedulers, chosenAddressRequestHelper)
         presenter = ShipmentPresenter(
                 compositeSubscription, checkoutUseCase, getShipmentAddressFormGqlUseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase, saveShipmentStateGqlUseCase,
@@ -138,6 +143,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
@@ -158,6 +164,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
@@ -178,6 +185,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
@@ -198,6 +206,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
@@ -218,6 +227,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
@@ -238,6 +248,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
         )
         every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+        every { chosenAddressRequestHelper.addChosenAddressParam(any()) } returns RequestParams.create()
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")

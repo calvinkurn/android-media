@@ -3,10 +3,8 @@
     package="com.tokopedia.df.base.sellerapp">
 
     <dist:module
+        dist:onDemand="false"
         dist:title="@string/onboarding_sellerapp_name">
-        <dist:delivery>
-            <dist:install-time/>
-        </dist:delivery>
         <dist:fusing dist:include="true" />
     </dist:module>
 

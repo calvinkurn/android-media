@@ -1,7 +1,6 @@
 package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.play.helper.*
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.play.andThen
 import com.tokopedia.play.robot.play.andWhen
@@ -11,12 +10,6 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.LikeSource
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -28,12 +21,7 @@ class PlayViewModelFieldTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val dispatchers: CoroutineDispatcherProvider = TestCoroutineDispatchersProvider
-
-    private val pinnedBuilder = PlayPinnedModelBuilder()
     private val channelInfoBuilder = PlayChannelInfoModelBuilder()
-    private val shareInfoBuilder = PlayShareInfoModelBuilder()
-    private val quickReplyBuilder = PlayQuickReplyModelBuilder()
     private val cartInfoBuilder = PlayCartInfoModelBuilder()
     private val partnerInfoBuilder = PlayPartnerInfoModelBuilder()
     private val totalViewBuilder = PlayTotalViewModelBuilder()
@@ -41,20 +29,7 @@ class PlayViewModelFieldTest {
     private val statusInfoBuilder = PlayStatusInfoModelBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
     private val videoModelBuilder = PlayVideoModelBuilder()
-
     private val responseBuilder = PlayResponseBuilder()
-    private val classBuilder = ClassBuilder()
-    private val uiModelMapper = classBuilder.getPlayUiModelMapper()
-
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(dispatchers.main)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
 
     @Test
     fun `given video player is set, when page is created and video player is retrieved, it should return the same one`() {
@@ -267,7 +242,7 @@ class PlayViewModelFieldTest {
                                     likeInfo = likeBuilder.buildCompleteData(
                                             param = initialChannelData.likeInfo.param,
                                             status = likeBuilder.buildStatus(
-                                                    totalLike = totalLike.toInt(),
+                                                    totalLike = totalLike.toLong(),
                                                     totalLikeFormatted = totalLike,
                                                     isLiked = isLiked,
                                                     source = LikeSource.Network

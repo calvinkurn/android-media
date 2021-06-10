@@ -7,8 +7,8 @@
             android:name=".homepage.presentation.activity.FlightHomepageActivity"
             android:label="@string/flight_dashboard_toolbar_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight">
-            <intent-filter android:autoVerify="true">
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -19,7 +19,7 @@
                     android:path="@string/path_flight_dashboard"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -32,37 +32,37 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".airport.view.activity.FlightAirportPickerActivity"
+            android:name=".search.presentation.activity.FlightSearchActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".searchV4.presentation.activity.FlightSearchActivity"
+            android:name=".search.presentation.activity.FlightSearchReturnActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
-            android:name=".searchV4.presentation.activity.FlightSearchReturnActivity"
-            android:label="@string/search_flight"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".passenger.view.activity.FlightBookingAmenityActivity"
             android:label="@string/flight_booking_luggage_toolbar_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".passenger.view.activity.FlightBookingPassengerActivity"
             android:label="@string/flight_booking_passenger_toolbar_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".cancellationV2.presentation.activity.FlightCancellationPassengerActivity"
+            android:name=".cancellation.presentation.activity.FlightCancellationPassengerActivity"
             android:label="@string/activity_label_flight_cancellation"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight">
-            <intent-filter android:autoVerify="true">
+            android:theme="@style/Theme.WhiteUnify" />
+        <activity
+            android:name=".cancellation_navigation.presentation.FlightCancellationActivity"
+            android:label="@string/activity_label_flight_cancellation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -75,27 +75,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".cancellationV2.presentation.activity.FlightCancellationReasonActivity"
+            android:name=".cancellation.presentation.activity.FlightCancellationReasonActivity"
             android:label="@string/activity_label_flight_cancellation"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight"
+            android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".cancellationV2.presentation.activity.FlightCancellationReviewActivity"
+            android:name=".cancellation.presentation.activity.FlightCancellationReviewActivity"
             android:label="@string/activity_label_flight_review_cancellation"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".cancellation.view.activity.FlightCancellationTermsAndConditionsActivity"
+            android:name=".cancellation.presentation.activity.FlightCancellationTermsAndConditionsActivity"
             android:label="@string/flight_cancellation_terms_and_condition_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".orderdetail.presentation.activity.FlightOrderDetailActivity"
             android:label="@string/flight_order_list"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight">
-            <intent-filter android:autoVerify="true">
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -106,7 +106,7 @@
                     android:pathPattern="@string/path_flight_order_detail"
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -122,37 +122,37 @@
             android:name=".orderdetail.presentation.activity.FlightOrderDetailWebCheckInActivity"
             android:label="@string/flight_order_list"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".orderdetail.presentation.activity.FlightOrderDetailBrowserActivity"
             android:label="@string/flight_order_list"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".cancellationV2.presentation.activity.FlightCancellationChooseReasonActivity"
+            android:name=".cancellation.presentation.activity.FlightCancellationChooseReasonActivity"
             android:label="@string/flight_cancellation_reason_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".detail.view.activity.FlightInvoiceActivity"
             android:label="@string/flight_order_invoice_toolbar_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".bookingV3.presentation.activity.FlightBookingActivity"
+            android:name=".booking.presentation.activity.FlightBookingActivity"
             android:label="@string/flight_booking_toolbar_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".cancellationdetail.presentation.activity.FlightOrderCancellationListActivity"
             android:label="@string/flight_cancellation_list_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
             android:name=".cancellationdetail.presentation.activity.FlightOrderCancellationDetailActivity"
             android:label="@string/flight_cancellation_list_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
+            android:theme="@style/Theme.WhiteUnify" />
     </application>
 
 </manifest>

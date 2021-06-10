@@ -1,5 +1,7 @@
 package com.tokopedia.catalog.ui.fragment
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +16,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.youtube.player.YouTubeApiServiceUtil
+import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.catalog.R
 import com.tokopedia.catalog.adapter.CatalogDetailAdapter
 import com.tokopedia.catalog.adapter.CatalogDetailDiffUtil
@@ -29,11 +34,13 @@ import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
 import com.tokopedia.catalog.model.raw.CatalogImage
+import com.tokopedia.catalog.model.raw.VideoComponentData
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
 import com.tokopedia.catalog.model.util.CatalogUtil
 import com.tokopedia.catalog.model.util.nestedrecyclerview.NestedRecyclerView
 import com.tokopedia.catalog.ui.activity.CatalogGalleryActivity
+import com.tokopedia.catalog.ui.activity.CatalogYoutubePlayerActivity
 import com.tokopedia.catalog.ui.bottomsheet.CatalogPreferredProductsBottomSheet
 import com.tokopedia.catalog.ui.bottomsheet.CatalogSpecsAndDetailBottomSheet
 import com.tokopedia.catalog.viewmodel.CatalogDetailPageViewModel
@@ -52,6 +59,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_catalog_detail_page.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -70,6 +78,7 @@ class CatalogDetailPageFragment : Fragment(),
     private var fullSpecificationDataModel = CatalogFullSpecificationDataModel(arrayListOf())
 
     private var catalogId: String = ""
+    private var catalogUrl: String = ""
 
     private var navToolbar: NavToolbar? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
@@ -77,6 +86,8 @@ class CatalogDetailPageFragment : Fragment(),
     private var catalogPageRecyclerView: NestedRecyclerView? = null
     private var shimmerLayout : ScrollView? = null
     private var mBottomSheetBehavior : BottomSheetBehavior<FrameLayout>? = null
+
+    private lateinit var userSession: UserSession
 
     private val catalogAdapterFactory by lazy(LazyThreadSafetyMode.NONE) { CatalogDetailAdapterFactoryImpl(this) }
 
@@ -117,9 +128,10 @@ class CatalogDetailPageFragment : Fragment(),
             catalogId = requireArguments().getString(ARG_EXTRA_CATALOG_ID, "")
         }
         activity?.let { observer ->
+            userSession = UserSession(observer)
             val viewModelProvider = ViewModelProvider(observer, viewModelFactory)
             catalogDetailPageViewModel = viewModelProvider.get(CatalogDetailPageViewModel::class.java)
-            catalogDetailPageViewModel.getProductCatalog(catalogId)
+            catalogDetailPageViewModel.getProductCatalog(catalogId,userSession.userId,CatalogConstant.DEVICE)
             showShimmer()
         }
 
@@ -138,8 +150,8 @@ class CatalogDetailPageFragment : Fragment(),
 
     private fun setUpBottomSheet(){
         requireActivity().supportFragmentManager.beginTransaction().replace(
-                R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogId)
-        ).commit()
+                R.id.bottom_sheet_fragment_container, CatalogPreferredProductsBottomSheet.newInstance(catalogId,catalogUrl),
+                CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG).commit()
 
         mBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_fragment_container)
         mBottomSheetBehavior?.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
@@ -152,6 +164,14 @@ class CatalogDetailPageFragment : Fragment(),
                 }
                 else if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     isBottomSheetOpen = true
+                }else if (newState == BottomSheetBehavior.STATE_DRAGGING){
+                    if(!isBottomSheetOpen){
+                        CatalogDetailAnalytics.sendEvent(
+                                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                                CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
+                                catalogId,userSession.userId)
+                    }
                 }
             }
         })
@@ -164,8 +184,10 @@ class CatalogDetailPageFragment : Fragment(),
                     it.data.listOfComponents.forEach { component ->
                         catalogUiUpdater.updateModel(component)
                     }
+                    catalogUrl = catalogUiUpdater.productInfoMap?.url ?: ""
                     fullSpecificationDataModel = it.data.fullSpecificationDataModel
                     updateUi()
+                    setCatalogUrlForTracking()
                 }
                 is Fail -> {
                     onError(it.throwable)
@@ -173,6 +195,14 @@ class CatalogDetailPageFragment : Fragment(),
             }
 
         })
+    }
+
+    private fun setCatalogUrlForTracking() {
+        activity?.supportFragmentManager?.findFragmentByTag(CatalogPreferredProductsBottomSheet.PREFFERED_PRODUCT_BOTTOMSHEET_TAG)?.let { fragment ->
+            if(fragment is CatalogPreferredProductsBottomSheet){
+                fragment.setCatalogUrl(catalogUrl)
+            }
+        }
     }
 
 
@@ -193,13 +223,14 @@ class CatalogDetailPageFragment : Fragment(),
             shimmerLayout?.show()
             bottom_sheet_fragment_container.show()
             global_error.hide()
-            catalogDetailPageViewModel.getProductCatalog(catalogId)
+            catalogDetailPageViewModel.getProductCatalog(catalogId,userSession.userId,CatalogConstant.DEVICE)
         }
     }
 
     private fun initNavToolbar() {
         navToolbar = view?.findViewById(R.id.catalog_navtoolbar)
         navToolbar?.apply {
+            viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
                     IconBuilder()
                             .addIcon(IconList.ID_SHARE) {
@@ -232,7 +263,7 @@ class CatalogDetailPageFragment : Fragment(),
         catalogPageRecyclerView?.show()
         bottom_sheet_fragment_container.show()
         val newData = catalogUiUpdater.mapOfData.values.toList()
-        submitList(newData ?: listOf())
+        submitList(newData)
     }
 
     private fun submitList(visitables: List<BaseCatalogDataModel>) {
@@ -296,6 +327,11 @@ class CatalogDetailPageFragment : Fragment(),
 
     override fun onProductImageClick(catalogImage: CatalogImage, position: Int) {
         showImage(position)
+        CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.EventKeys.EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_CATALOG_IMAGE,
+                catalogId,userSession.userId)
     }
 
     override fun onViewMoreSpecificationsClick() {
@@ -303,8 +339,43 @@ class CatalogDetailPageFragment : Fragment(),
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                 CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
-                catalogId)
+                catalogId,userSession.userId)
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.SPECIFICATION)
+    }
+
+    override fun playVideo(catalogVideo: VideoComponentData, position: Int) {
+        context?.let {
+            CatalogDetailAnalytics.sendEvent(
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                    CatalogDetailAnalytics.ActionKeys.CLICK_VIDEO_WIDGET,
+                    catalogId,userSession.userId)
+            if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
+                    == YouTubeInitializationResult.SUCCESS) {
+                catalogVideo.url?.let {videoUrl ->
+                    // Sending only one video so selectedIndex to be 0 always
+                    startActivity(CatalogYoutubePlayerActivity.createIntent(it, listOf(videoUrl) , 0))
+                }
+            } else {
+                // Handle if user didn't have any apps to open Youtube * Usually rooted phone
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW,
+                            Uri.parse(CatalogConstant.URL_YOUTUBE + catalogVideo.videoId)))
+                } catch (e: Throwable) {
+                }
+            }
+        }
+    }
+
+    override fun comparisionCatalogClicked(comparisionCatalogId: String) {
+        context?.let {
+            CatalogDetailAnalytics.sendEvent(
+                    CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                    CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                    CatalogDetailAnalytics.ActionKeys.CLICK_COMPARISION_CATALOG,
+                    "origin: $catalogId - destination: $comparisionCatalogId",userSession.userId)
+            RouteManager.route(it,"${CatalogConstant.CATALOG_URL}${comparisionCatalogId}")
+        }
     }
 
     override fun hideFloatingLayout() {
@@ -316,6 +387,11 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun onViewMoreDescriptionClick() {
+        CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_MORE_DESCRIPTION,
+                catalogId,userSession.userId)
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.DESCRIPTION)
     }
 

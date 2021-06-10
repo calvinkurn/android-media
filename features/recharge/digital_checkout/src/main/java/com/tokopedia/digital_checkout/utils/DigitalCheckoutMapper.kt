@@ -75,6 +75,7 @@ object DigitalCheckoutMapper {
                 attributesDigital.isEnableVoucher = attributes.enableVoucher
                 if (attributes.isCouponActive) attributesDigital.isCouponActive = 1 else attributesDigital.isCouponActive = 0
                 attributesDigital.voucherAutoCode = attributes.voucher
+                attributesDigital.adminFee = attributes.adminFee.toFloat()
 
                 val userInputPrice = responseRechargeGetCart.response.openPaymentConfig
                 if (userInputPrice.maxPayment != 0.0 && userInputPrice.minPayment != 0.0) {
@@ -141,6 +142,7 @@ object DigitalCheckoutMapper {
 
             cartDigitalInfoData.attributes = attributesDigital
             cartDigitalInfoData.id = responseRechargeGetCart.response.id
+            cartDigitalInfoData.productId = responseRechargeGetCart.response.productId
             cartDigitalInfoData.isInstantCheckout = responseRechargeGetCart.response.isInstantCheckout
             cartDigitalInfoData.isNeedOtp = responseRechargeGetCart.response.isOtpRequired
             cartDigitalInfoData.smsState = responseRechargeGetCart.response.sms_state
@@ -167,21 +169,18 @@ object DigitalCheckoutMapper {
 
     fun buildCheckoutData(cartDigitalInfoData: CartDigitalInfoData, accessToken: String?,
                           requestCheckoutDataParameter: DigitalCheckoutDataParameter): DigitalCheckoutDataParameter {
-        val digitalCheckoutDataParameter = DigitalCheckoutDataParameter()
-        digitalCheckoutDataParameter.cartId = cartDigitalInfoData.id
-        digitalCheckoutDataParameter.accessToken = accessToken ?: ""
-        digitalCheckoutDataParameter.walletRefreshToken = ""
-        digitalCheckoutDataParameter.ipAddress = DeviceUtil.localIpAddress
-        digitalCheckoutDataParameter.relationId = cartDigitalInfoData.id
-        digitalCheckoutDataParameter.relationType = cartDigitalInfoData.type
-        digitalCheckoutDataParameter.transactionAmount = cartDigitalInfoData.attributes.pricePlain
-        digitalCheckoutDataParameter.userAgent = DeviceUtil.userAgentForApiCall
-        digitalCheckoutDataParameter.isNeedOtp = cartDigitalInfoData.isNeedOtp
+        //not override digitalCheckoutDataParameter's fintechproduct, subscription check and input price (for keeping don't keep state)
+        requestCheckoutDataParameter.cartId = cartDigitalInfoData.id
+        requestCheckoutDataParameter.accessToken = accessToken ?: ""
+        requestCheckoutDataParameter.walletRefreshToken = ""
+        requestCheckoutDataParameter.ipAddress = DeviceUtil.localIpAddress
+        requestCheckoutDataParameter.relationId = cartDigitalInfoData.id
+        requestCheckoutDataParameter.relationType = cartDigitalInfoData.type
+        requestCheckoutDataParameter.transactionAmount = cartDigitalInfoData.attributes.pricePlain
+        requestCheckoutDataParameter.userAgent = DeviceUtil.userAgentForApiCall
+        requestCheckoutDataParameter.isNeedOtp = cartDigitalInfoData.isNeedOtp
 
-        if (requestCheckoutDataParameter.isFintechProductChecked) digitalCheckoutDataParameter.isFintechProductChecked = true
-        if (requestCheckoutDataParameter.isSubscriptionChecked) digitalCheckoutDataParameter.isSubscriptionChecked = true
-
-        return digitalCheckoutDataParameter
+        return requestCheckoutDataParameter
     }
 
     fun getRequestBodyCheckout(checkoutData: DigitalCheckoutDataParameter,
@@ -209,18 +208,18 @@ object DigitalCheckoutMapper {
 
         attributes.subscribe = checkoutData.isSubscriptionChecked
 
-        if (checkoutData.isFintechProductChecked) {
-            fintechProduct?.run {
-                attributes.fintechProduct = listOf(RequestBodyCheckout.FintechProductCheckout(
-                        transactionType = transactionType,
-                        tierId = tierId.toIntOrZero(),
-                        userId = attributes.identifier.userId?.toLongOrNull() ?: 0,
-                        fintechAmount = fintechAmount.toLong(),
-                        fintechPartnerAmount = fintechPartnerAmount.toLong(),
-                        productName = info.title
-                ))
-            }
+        val fintechProductsCheckout = mutableListOf<RequestBodyCheckout.FintechProductCheckout>()
+        checkoutData.fintechProducts.values.forEach { fintech ->
+            fintechProductsCheckout.add(RequestBodyCheckout.FintechProductCheckout(
+                    transactionType = fintech.transactionType,
+                    tierId = fintech.tierId.toIntOrZero(),
+                    userId = attributes.identifier.userId?.toLongOrNull() ?: 0,
+                    fintechAmount = fintech.fintechAmount.toLong(),
+                    fintechPartnerAmount = fintech.fintechPartnerAmount.toLong(),
+                    productName = fintech.info.title
+            ))
         }
+        attributes.fintechProduct = fintechProductsCheckout
 
         requestBodyCheckout.attributes = attributes
         requestBodyCheckout.relationships = CheckoutRelationships(

@@ -40,7 +40,6 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsFreeClaim)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.baseListSeller)
-    implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.remoteConfig)
@@ -58,7 +57,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.playServicesDependencies.core
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.graphql)

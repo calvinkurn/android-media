@@ -11,11 +11,14 @@ import kotlin.math.roundToInt
 abstract class ProductItemViewHolder(
         itemView: View,
         protected val productListener: ProductListener
-) : AbstractViewHolder<ProductItemViewModel>(itemView) {
+) : AbstractViewHolder<ProductItemDataView>(itemView) {
 
     protected val context = itemView.context!!
 
-    protected fun ProductItemViewModel.toProductCardModel(productImage: String): ProductCardModel {
+    protected fun ProductItemDataView.toProductCardModel(
+            productImage: String,
+            isWideContent: Boolean,
+    ): ProductCardModel {
         return ProductCardModel(
                 productImageUrl = productImage,
                 productName = productName,
@@ -25,16 +28,17 @@ abstract class ProductItemViewHolder(
                 priceRange = priceRange ?: "",
                 shopBadgeList = badgesList.toProductCardModelShopBadges(),
                 shopLocation = shopCity,
-                freeOngkir = freeOngkirViewModel.toProductCardModelFreeOngkir(),
+                freeOngkir = freeOngkirDataView.toProductCardModelFreeOngkir(),
                 isTopAds = isTopAds || isOrganicAds,
                 countSoldRating = ratingString,
                 hasThreeDots = true,
                 labelGroupList = labelGroupList.toProductCardModelLabelGroup(),
-                labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant()
+                labelGroupVariantList = labelGroupVariantList.toProductCardModelLabelGroupVariant(),
+                isWideContent = isWideContent,
         )
     }
 
-    private fun List<BadgeItemViewModel>?.toProductCardModelShopBadges(): List<ProductCardModel.ShopBadge> {
+    private fun List<BadgeItemDataView>?.toProductCardModelShopBadges(): List<ProductCardModel.ShopBadge> {
         return this?.map {
             ProductCardModel.ShopBadge(it.isShown, it.imageUrl)
         } ?: listOf()
@@ -47,26 +51,26 @@ abstract class ProductItemViewHolder(
             this
     }
 
-    private fun FreeOngkirViewModel.toProductCardModelFreeOngkir(): ProductCardModel.FreeOngkir {
+    private fun FreeOngkirDataView.toProductCardModelFreeOngkir(): ProductCardModel.FreeOngkir {
         return ProductCardModel.FreeOngkir(isActive, imageUrl)
     }
 
-    private fun List<LabelGroupViewModel>?.toProductCardModelLabelGroup(): List<ProductCardModel.LabelGroup> {
+    private fun List<LabelGroupDataView>?.toProductCardModelLabelGroup(): List<ProductCardModel.LabelGroup> {
         return this?.map {
             ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl = it.imageUrl)
         } ?: listOf()
     }
 
-    private fun List<LabelGroupVariantViewModel>?.toProductCardModelLabelGroupVariant(): List<ProductCardModel.LabelGroupVariant> {
+    private fun List<LabelGroupVariantDataView>?.toProductCardModelLabelGroupVariant(): List<ProductCardModel.LabelGroupVariant> {
         return this?.map {
             ProductCardModel.LabelGroupVariant(type = it.type, typeVariant = it.typeVariant, title = it.title, hexColor = it.hexColor)
         } ?: listOf()
     }
 
-    protected fun createImageProductViewHintListener(productItem: ProductItemViewModel): ViewHintListener {
+    protected fun createImageProductViewHintListener(productItemData: ProductItemDataView): ViewHintListener {
         return object: ViewHintListener {
             override fun onViewHint() {
-                productListener.onProductImpressed(productItem)
+                productListener.onProductImpressed(productItemData, adapterPosition)
             }
         }
     }

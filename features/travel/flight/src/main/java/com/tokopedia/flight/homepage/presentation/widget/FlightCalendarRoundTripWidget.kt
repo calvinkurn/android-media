@@ -4,7 +4,6 @@ import android.app.Application
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.calendar.SubTitle
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
@@ -89,7 +88,7 @@ class FlightCalendarRoundTripWidget : SelectionRangeCalendarWidget() {
             val dateFare = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.dateFare)
             minDate?.let { date ->
                 subTitleList.add(SubTitle(dateFare,
-                        if (!dateFare.before(date)) it.displayedFare else " ", if (it.isLowestFare) getString(R.string.flight_calendar_lowest_fare_price_color) else ""))
+                        if (!dateFare.before(date)) it.displayedFare else " ", if (it.isLowestFare) getString(R.string.flight_dms_calendar_lowest_fare_price_color) else ""))
             }
         }
         return subTitleList

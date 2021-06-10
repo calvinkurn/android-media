@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_PRICE_BID
@@ -23,8 +24,10 @@ import com.tokopedia.topads.dashboard.data.model.DataBudget
 import com.tokopedia.topads.dashboard.data.model.TopadsGetDailyBudgetRecommendation
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopadsDailyBudgetRecomAdapter
+import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment.Companion.BUDGET_RECOM
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 import kotlinx.android.synthetic.main.topads_dash_recon_daily_budget_list.*
 import javax.inject.Inject
@@ -34,17 +37,30 @@ import javax.inject.Inject
  * Created by Pika on 20/7/20.
  */
 
-class TopAdsInsightBaseBidFragment(private val dailyBudgetRecommendData: TopadsGetDailyBudgetRecommendation?) : BaseDaggerFragment() {
+const val CLICK_TERAPKAN = "click - terapkan"
+class TopAdsInsightBaseBidFragment : BaseDaggerFragment() {
 
+    private var dailyBudgetRecommendData: TopadsGetDailyBudgetRecommendation? = null
     private lateinit var adapter: TopadsDailyBudgetRecomAdapter
     private var currentPosition = 0
+    @Inject
+    lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    companion object {
+        fun createInstance(bundle: Bundle): TopAdsInsightBaseBidFragment {
+            val fragment = TopAdsInsightBaseBidFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
 
     override fun getScreenName(): String {
         return TopAdsInsightBaseBidFragment::class.java.name
     }
 
-    @Inject
-    lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
 
     override fun initInjector() {
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
@@ -52,7 +68,7 @@ class TopAdsInsightBaseBidFragment(private val dailyBudgetRecommendData: TopadsG
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = TopadsDailyBudgetRecomAdapter(::onButtonClick)
+        adapter = TopadsDailyBudgetRecomAdapter(userSession, ::onButtonClick)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }
 
@@ -62,19 +78,22 @@ class TopAdsInsightBaseBidFragment(private val dailyBudgetRecommendData: TopadsG
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        getArgumentData()
         swipeRefreshLayout?.setOnRefreshListener {
             loadData()
         }
         if (dailyBudgetRecommendData?.data?.isEmpty() == true)
             setEmptyState()
         else {
-            if (dailyBudgetRecommendData != null) {
-                setAdapterData(dailyBudgetRecommendData)
-            }
+            dailyBudgetRecommendData?.let { setAdapterData(it) }
         }
         rvDailyBudget?.adapter = adapter
         rvDailyBudget?.layoutManager = LinearLayoutManager(context)
         rvDailyBudget?.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+    }
+
+    private fun getArgumentData() {
+        dailyBudgetRecommendData = arguments?.getParcelable(BUDGET_RECOM)
     }
 
     private fun setEmptyState() {
@@ -132,7 +151,9 @@ class TopAdsInsightBaseBidFragment(private val dailyBudgetRecommendData: TopadsG
 
     private fun onButtonClick(pos: Int) {
         currentPosition = pos
-        topAdsDashboardPresenter.getGroupInfo(resources, adapter.items[pos].groupId.toString(), ::onSuccessGroupInfo)
+        topAdsDashboardPresenter.getGroupInfo(resources, adapter.items[pos].groupId, ::onSuccessGroupInfo)
+        val eventLabel = "${adapter.items[pos].groupId} - ${adapter.items[pos].suggestedPriceDaily} - ${adapter.items[pos].setPotensiKlik} - ${adapter.items[pos].setCurrentBid}"
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_TERAPKAN, eventLabel, userSession.userId)
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {

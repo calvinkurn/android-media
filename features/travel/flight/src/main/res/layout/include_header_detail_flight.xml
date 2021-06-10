@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
     tools:showIn="@layout/item_flight_detail">
 
     <RelativeLayout
@@ -81,9 +80,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/airline_refundable_info"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
                 android:background="@drawable/bg_rect_stroke_flight_grey"
                 android:paddingLeft="@dimen/padding_16"
                 android:paddingTop="@dimen/spacing_lvl3"
@@ -129,11 +125,11 @@
             app:typographyWeight="bold"
             tools:text="323088926194" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/copy_pnr"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
-            app:srcCompat="@drawable/flight_ic_copy_order" />
+            app:icon_name="COPY" />
     </LinearLayout>
 
     <View

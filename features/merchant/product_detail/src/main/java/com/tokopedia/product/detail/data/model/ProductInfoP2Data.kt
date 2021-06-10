@@ -10,8 +10,11 @@ import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommend
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
 import com.tokopedia.product.detail.data.model.nearestwarehouse.NearestWarehouseResponse
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
+import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimate
+import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkir
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
+import com.tokopedia.product.detail.data.model.restrictioninfo.UniqueSellingPointTokoCabang
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureP2
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -105,6 +108,18 @@ data class ProductInfoP2Data(
         @SerializedName("merchantVoucherSummary")
         @Expose
         var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary(),
+
+        @SerializedName("ratesEstimate")
+        @Expose
+        var ratesEstimate: List<P2RatesEstimate> = listOf(),
+
+        @SerializedName("bebasOngkir")
+        @Expose
+        var bebasOngkir: BebasOngkir = BebasOngkir(),
+
+        @SerializedName("uniqueSellingPoint")
+        @Expose
+        var uspTokoCabangData: UniqueSellingPointTokoCabang = UniqueSellingPointTokoCabang(),
 
         @SerializedName("mostHelpFulReviewData")
         @Expose

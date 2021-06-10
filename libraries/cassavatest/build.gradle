@@ -17,9 +17,16 @@ android {
 
 dependencies {
     api project(rootProject.ext.libraries.analyticsDebugger)
-	implementation rootProject.ext.unifyDependencies.principles
+    implementation project(rootProject.ext.libraries.keys)
+
+    implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
     implementation rootProject.ext.testDependencies.junit
-
+    implementation rootProject.ext.testDependencies.androidxTest
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
 }

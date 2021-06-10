@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="dp_2">2dp</dimen>
+    <dimen name="dp_4">4dp</dimen>
     <dimen name="dp_9">9dp</dimen>
+    <dimen name="dp_16">16dp</dimen>
+    <dimen name="dp_40">40dp</dimen>
+    <dimen name="dp_56">56dp</dimen>
+    <dimen name="dp_64">64dp</dimen>
+    <dimen name="dp_72">72dp</dimen>
+    <dimen name="dp_100">100dp</dimen>
+    <dimen name="dp_140">140dp</dimen>
+    <dimen name="dp_210">210dp</dimen>
+    <dimen name="max_cashback_desc_width">115dp</dimen>
 </resources>

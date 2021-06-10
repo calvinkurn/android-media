@@ -63,7 +63,7 @@
         android:layout_marginRight="@dimen/dp_15"
         android:layout_marginTop="@dimen/dp_2"
         android:layout_marginBottom="@dimen/dp_2"
-        android:background="@color/grey_300"
+        android:background="@color/Unify_N100"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/icon_tick_sort"
         app:layout_constraintRight_toLeftOf="@+id/icon_filter"

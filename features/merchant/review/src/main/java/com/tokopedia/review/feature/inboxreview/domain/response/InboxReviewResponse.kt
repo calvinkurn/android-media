@@ -67,7 +67,10 @@ data class InboxReviewResponse(
                 val reviewTime: String? = "",
                 @Expose
                 @SerializedName("user")
-                val user: User = User()
+                val user: User = User(),
+                @SerializedName("isKejarUlasan")
+                @Expose
+                val isKejarUlasan: Boolean = false
         ) {
             data class Attachment(
                     @Expose

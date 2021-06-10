@@ -67,7 +67,8 @@ object InboxReviewMapper {
                             invoiceID = it.invoiceID.orEmpty(),
                             sellerUser = userSession.name,
                             isReplied = inboxReviewResponse.filterBy?.getStatusFilter(prefixStatus)?.isAnswered
-                                    ?: false
+                                    ?: false,
+                            isKejarUlasan = it.isKejarUlasan
                     )
             )
         }
@@ -149,7 +150,8 @@ object InboxReviewMapper {
                 reviewTime = data.reviewTime,
                 reviewerName = data.username,
                 variantName = data.variantName,
-                sellerUser = data.sellerUser
+                sellerUser = data.sellerUser,
+                isKejarUlasan = data.isKejarUlasan
         )
     }
 

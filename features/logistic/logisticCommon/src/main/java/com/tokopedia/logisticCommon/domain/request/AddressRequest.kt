@@ -15,5 +15,11 @@ data class AddressRequest(
     @SerializedName("show_address")
     val showAddress: Boolean,
     @SerializedName("show_corner")
-    val showCorner: Boolean
+    val showCorner: Boolean,
+    @SerializedName("whitelist_chosen_address")
+    val whitelistChosenAddress: Boolean = true,
+    @SerializedName("previous_state")
+    val previousState: Int? = null,
+    @SerializedName("local_state_chosen_address_id")
+    val localStateChosenAddressId: Int? = null
 )

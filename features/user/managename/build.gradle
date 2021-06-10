@@ -38,7 +38,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
 
     // Internal Dependencies
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -62,6 +61,7 @@ dependencies {
     androidTestImplementation project(rootProject.ext.libraries.tkpddesign)
     testImplementation project(rootProject.ext.libraries.tkpddesign)
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     // Debug tools
     implementation rootProject.ext.debugToolsDependencies.chuck

@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -22,18 +21,18 @@ import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
 class DynamicInitialStateViewHolder(
         itemView: View,
         private val listener: InitialStateItemClickListener
-) : AbstractViewHolder<DynamicInitialStateSearchViewModel>(itemView) {
+) : AbstractViewHolder<DynamicInitialStateSearchDataView>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_dynamic_initial_state
     }
 
-    override fun bind(element: DynamicInitialStateSearchViewModel) {
+    override fun bind(element: DynamicInitialStateSearchDataView) {
         bindContent(element)
     }
 
-    private fun bindContent(element: DynamicInitialStateSearchViewModel) {
+    private fun bindContent(element: DynamicInitialStateSearchDataView) {
         itemView.recyclerView?.let {
             it.layoutManager = createLayoutManager()
             it.adapter = createAdapter(element.list)

@@ -140,7 +140,7 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
         }
         dialog.setSecondaryCTAClickListener {
             analytics?.eventClickDialogExit()
-            fragment?.deleteTmpFile()
+            fragment?.deleteTmpFile(deleteKtp = true, deleteFace = true)
             dialog.dismiss()
             setResult(KYCConstant.USER_EXIT)
             finish()

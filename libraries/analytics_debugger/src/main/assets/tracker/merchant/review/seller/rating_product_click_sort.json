@@ -1,33 +1,35 @@
 {
-  "readme": "Rating Product - click sort in bottom sheet",
+  "readme": "Rating Product - click sort",
   "mode": "exact",
   "query": [
     {
-      "event" : "clickReview",
-      "eventCategory" : "ulasan - rating produk",
-      "eventAction" : "click - rating product tab",
-      "eventLabel" : "{{.*}}",
-      "shopId": "{{\\d{1,}}}",
-      "sessionIris": "{{.{1,}}}",
-      "screenName": "rating produk"
+      "networkSpeed": ".*",
+      "clientId": ".*",
+      "isLoggedInStatus": "true|false",
+      "appsflyerId": ".*",
+      "shopId": ".*",
+      "screenName": "rating produk",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".*"
     },
     {
-      "event" : "clickReview",
-      "eventCategory" : "ulasan - rating produk",
-      "eventAction" : "click - sort on rating product page",
-      "eventLabel" : "{{.*}}",
-      "shopId": "{{\\d{1,}}}",
-      "sessionIris": "{{.{1,}}}",
-      "screenName": "rating produk"
+      "eventCategory": "ulasan - rating produk",
+      "shopId": ".+",
+      "screenName": "rating produk",
+      "event": "clickReview",
+      "eventAction": "click - sort on rating product page",
+      "sessionIris": ".*",
+      "eventLabel": ""
     },
     {
-      "event" : "clickReview",
-      "eventCategory" : "ulasan - rating produk",
-      "eventAction" : "click - select sort on bottomsheet",
-      "eventLabel" : "{{sortBy:.*;}}",
-      "shopId": "{{\\d{1,}}}",
-      "sessionIris": "{{.{1,}}}",
-      "screenName": "rating produk"
+      "eventCategory": "ulasan - rating produk",
+      "shopId": ".+",
+      "screenName": "rating produk",
+      "event": "clickReview",
+      "eventAction": "click - select sort on bottomsheet",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     }
   ]
 }

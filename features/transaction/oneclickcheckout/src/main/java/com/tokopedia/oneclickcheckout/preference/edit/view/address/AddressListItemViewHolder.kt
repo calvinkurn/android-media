@@ -43,7 +43,7 @@ class AddressListItemViewHolder(itemView: View, private val listener: AddressLis
         itemAddressRadio.skipAnimation()
 
         cardAddressList.setOnClickListener {
-            listener.onSelect(data.id)
+            listener.onSelect(data)
         }
     }
 

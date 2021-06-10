@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="flight_chips_info_text">#009bff</color>
-
-    <color name="flight_search_reverse_background">@color/Unify_N50</color>
-
-    <color name="flight_ticket_dash_color">#DCDCDC</color>
-
-</resources>

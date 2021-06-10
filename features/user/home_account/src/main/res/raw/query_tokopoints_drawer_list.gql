@@ -1,0 +1,23 @@
+{
+  tokopointsDrawerList(apiVersion:"3.0.0") {
+    offFlag
+    drawerList {
+      type
+      iconImageURL
+      redirectURL
+      redirectAppLink
+      sectionContent{
+        type
+        textAttributes{
+          text
+          color
+          isBold
+        }
+        tagAttributes {
+          text
+          backgroundColor
+        }
+      }
+    }
+  }
+}

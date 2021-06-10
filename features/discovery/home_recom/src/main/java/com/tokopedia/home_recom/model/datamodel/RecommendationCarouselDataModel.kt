@@ -3,7 +3,6 @@ package com.tokopedia.home_recom.model.datamodel
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactory
 import com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder
-import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 /**
@@ -25,7 +24,7 @@ class RecommendationCarouselDataModel(
 
     override fun type(typeFactory: HomeRecommendationTypeFactory): Int = typeFactory.type(this)
 
-    fun contains(item: RecommendationItem) = products.asSequence().any { it.productItem.productId == item.productId }
+    fun contains(item: RecommendationItem) = products.any { it.productItem.productId == item.productId }
 
-    fun contains(id: Int) = products.asSequence().any { it.productItem.productId == id }
+    fun contains(id: Int) = products.any { it.productItem.productId == id }
 }

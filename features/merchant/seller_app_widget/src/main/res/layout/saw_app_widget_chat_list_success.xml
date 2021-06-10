@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvSawChatShopName"
         android:layout_alignStart="@+id/tvSawChatShopName"
-        android:textColor="@color/light_G500"
+        android:textColor="@color/Unify_G500"
         android:textSize="@dimen/unify_font_10"
         android:textStyle="bold"
         tools:text="5 Pesanan Baru" />

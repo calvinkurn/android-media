@@ -12,7 +12,7 @@ class CatalogPagerAdapter(private val catalogProductsContainerDataModel: Catalog
     private val pageCount = 1
 
     override fun getItem(position: Int): Fragment {
-        return CatalogDetailProductListingFragment.newInstance(catalogProductsContainerDataModel.catalogId)
+        return CatalogDetailProductListingFragment.newInstance(catalogProductsContainerDataModel.catalogId,catalogProductsContainerDataModel.catalogUrl)
     }
 
     override fun getCount(): Int {

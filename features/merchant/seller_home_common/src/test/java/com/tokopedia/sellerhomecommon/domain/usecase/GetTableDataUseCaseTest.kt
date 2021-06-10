@@ -5,6 +5,7 @@ import com.tokopedia.sellerhomecommon.domain.mapper.TableMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetTableDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.utils.TestHelper
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -48,7 +49,7 @@ class GetTableDataUseCaseTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        getTableDataUseCase = GetTableDataUseCase(gqlRepository, mapper)
+        getTableDataUseCase = GetTableDataUseCase(gqlRepository, mapper, CoroutineTestDispatchersProvider)
     }
 
     @Test

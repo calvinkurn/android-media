@@ -10,15 +10,20 @@ import com.tokopedia.topchat.stub.chatsearch.di.ChatSearchModuleTest
 import com.tokopedia.topchat.stub.chatsearch.di.ChatSearchUsecaseStub
 import com.tokopedia.topchat.stub.chatsearch.di.DaggerChatSearchComponentTest
 import com.tokopedia.topchat.stub.chatsearch.usecase.GetSearchQueryUseCaseStub
+import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
+import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 
 class ChatSearchFragmentStub: ChatSearchFragment() {
 
     private lateinit var getSearchQueryUsecase: GetSearchQueryUseCaseStub
 
     override fun initInjector() {
+        val baseComponent = DaggerFakeBaseAppComponent.builder()
+                .fakeAppModule(FakeAppModule(context!!.applicationContext))
+                .build()
         DaggerChatSearchComponentTest
                 .builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .fakeBaseAppComponent(baseComponent)
                 .chatSearchModuleTest(ChatSearchModuleTest())
                 .chatSearchUsecaseStub(ChatSearchUsecaseStub(getSearchQueryUsecase))
                 .build()

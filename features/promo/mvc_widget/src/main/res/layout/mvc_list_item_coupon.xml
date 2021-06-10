@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_2"
-        android:textColor="#31353B"
+        android:textColor="@color/Unify_N700"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="Cashback 10% hingga Rp150.000" />
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
         app:typographyType="body_3"
-        android:textColor="@color/mvcw_6831353B"
+        android:textColor="@color/Unify_N700_68"
         tools:text="Berakhir dalam 10 hari • Sisa 20 kupon" />
 
     <View

@@ -23,7 +23,6 @@
         android:layout_height="@dimen/dp_200"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/price_range"
         android:layout_width="wrap_content"
@@ -62,7 +61,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/price_range"
         app:typographyType="body_3" />
-
 
     <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="match_parent"
@@ -106,7 +104,6 @@
                 android:lineSpacingExtra="6sp"
                 android:text="@string/range_start"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toTopOf="@+id/budgetEditText"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seekbar"
                 app:typographyType="body_3" />
@@ -119,7 +116,6 @@
                 android:lineSpacingExtra="6sp"
                 android:text="@string/range_end"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toTopOf="@+id/budgetEditText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seekbar"
                 app:typographyType="body_3" />
@@ -162,9 +158,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
                 app:typographyType="heading_4" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </com.tokopedia.unifycomponents.CardUnify>
 
     <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
@@ -181,7 +175,6 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_submit"
@@ -223,5 +216,4 @@
         android:text="@string/info_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:typographyType="body_3" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

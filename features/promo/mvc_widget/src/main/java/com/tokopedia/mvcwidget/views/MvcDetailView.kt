@@ -9,6 +9,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.Toast
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
@@ -23,7 +24,9 @@ import com.tokopedia.mvcwidget.*
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.mvc_layout_bottomsheet_button.view.*
 import javax.inject.Inject
 
 class MvcDetailView @JvmOverloads constructor(
@@ -34,6 +37,7 @@ class MvcDetailView @JvmOverloads constructor(
     var viewFlipper: ViewFlipper
     var globalError: GlobalError
     var addBottomMarginOnToast = false
+
     private val widgetImpression = WidgetImpression()
 
     override fun getWidgetImpression(): WidgetImpression {
@@ -67,8 +71,6 @@ class MvcDetailView @JvmOverloads constructor(
         rv = findViewById(R.id.rv)
         viewFlipper = findViewById(R.id.viewFlipper)
         globalError = findViewById(R.id.mvcDetailGlobalError)
-        rv.layoutParams.height = Resources.getSystem().displayMetrics.heightPixels
-
         rv.layoutManager = LinearLayoutManager(context)
         rv.adapter = adapter
 
@@ -226,7 +228,7 @@ class MvcDetailView @JvmOverloads constructor(
                 }
                 val spannableString2 = SpannableString(sb.toString())
 
-                spannableString2.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, R.color.mvcw_red)), sb.toString().length - quotaTextLength, sb.toString().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannableString2.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600)), sb.toString().length - quotaTextLength, sb.toString().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 val mvcListItem = MvcCouponListItem(it.tagImageURLs, it.title ?: "", it.minimumUsageLabel
                         ?: "", spannableString2)
                 tempCouponList.add(mvcListItem)

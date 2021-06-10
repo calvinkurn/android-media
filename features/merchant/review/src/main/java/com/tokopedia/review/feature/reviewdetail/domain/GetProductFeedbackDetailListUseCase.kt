@@ -38,6 +38,7 @@ class GetProductFeedbackDetailListUseCase @Inject constructor(
                     }
                     variantName
                     reviewerName
+                    isKejarUlasan
                 }
                 topics {
                     title

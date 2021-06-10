@@ -231,6 +231,8 @@
     <string name="hotel_share_add_email">Tambah E-mail</string>
     <string name="hotel_share_empty_email_error">E-mail harus diisi</string>
     <string name="hotel_share_format_email_error">Format e-mail salah</string>
+    <string name="hotel_save_as_image">Simpan gambar</string>
+    <string name="hotel_save_as_image_success">Gambar berhasil disimpan</string>
 
     <string name="hotel_error_no_internet_connection_title">Nggak ada koneksi Internet</string>
     <string name="hotel_error_no_internet_connection_subtitle">"Kamu bisa pindah tempat atau cek paket data / jaringan Wi-Fi."</string>
@@ -246,6 +248,7 @@
 
     <string name="hotel_url_empty_room_listing">https://ecs7.tokopedia.net/img/attachment/2019/8/20/5512496/5512496_f86e4cbb-c385-455e-9a2f-ff6394a967aa.png</string>
     <string name="hotel_url_empty_search_result">https://ecs7.tokopedia.net/img/android/hotel/emptySearchResult.png</string>
+    <string name="hotel_url_empty_search_map_result">https://images.tokopedia.net/img/android/hotel/search/ic_hotel_search_map_no_result.png</string>
     <string name="hotel_url_no_indonesian_review">https://ecs7.tokopedia.net/img/android/hotel/noIndonesianReview.png</string>
     <string name="hotel_url_no_match_search_suggestion">https://ecs7.tokopedia.net/img/android/hotel/noMatchSearchSuggestion.png</string>
     <string name="hotel_url_no_review">https://ecs7.tokopedia.net/img/android/hotel/noReview.png</string>
@@ -283,4 +286,26 @@
     <string name="hotel_cancellation_hyperlink_close_tag">&lt;&#47;hyperlink&gt;</string>
     <string name="hotel_cancellation_a_hyperlink_open_tag">&lt;a href=""&gt;</string>
     <string name="hotel_cancellation_a_hyperlink_close_tag">&lt;&#47;a&gt;</string>
+
+    <string name="hotel_invoice_download_button">Unduh</string>
+    <string name="hotel_promo_btn_default_title">Makin hemat dengan promo</string>
+    <string name="hotel_pay_at_hotel_promo_header_title">Pakai Promo</string>
+    <string name="hotel_payathotel_promo_desc">Yaah, nggak ada promo yang bisa dipakai di transaksi ini</string>
+    <string name="hotel_payathotel_promo_button_title">Kembali ke Pemesanan</string>
+    <string name="hotel_search_map_around_here">Cari di sekitar sini</string>
+    <string name="hotel_search_map_search_with_map">Cari dengan peta</string>
+    <string name="hotel_search_map_coach_mark_map_title">Sekarang bisa cari pakai peta, lho!</string>
+    <string name="hotel_search_map_coach_mark_map_desc">Klik di peta atau geser daftar hotel ke bawah untuk lihat pencarian kamu dalam bentuk peta.</string>
+    <string name="hotel_search_map_coach_mark_list_title">Mau balik ke tampilan sebelumnya?</string>
+    <string name="hotel_search_map_coach_mark_list_desc">Gampang, tinggal geser ke atas dan tampilan peta bakal otomatis tertutup.</string>
+    <string name="hotel_search_map_coach_mark_filter_title">Mau sesuaikan pencarianmu?</string>
+    <string name="hotel_search_map_coach_mark_filter_desc">Urutkan dan pilih penginapan berdasarkan harga, bintang, atau kategori lainnya di sini.</string>
+    <string name="hotel_search_map_list_title">Lihat lebih banyak</string>
+    <string name="hotel_search_map_no_result_title">Maaf, nggak ketemu hotel sesuai kriteria ini</string>
+    <string name="hotel_search_map_no_result_subtitle">Coba ubah lokasi petamu, geser ke area lain, atau hapus pilihan filter kamu.</string>
+    <string name="hotel_list_per_night">/malam</string>
+    <string name="hotel_header_title_nearby">Hotel dekat lokasimu</string>
+    <string name="hotel_header_title_nearby_area">Hotel di area pilihanmu</string>
+    <string name="hotel_sticky_calendar_content_desc">Hotel calendar</string>
+    <string name="hotel_review_booking_logo">Booking.com logo</string>
 </resources>

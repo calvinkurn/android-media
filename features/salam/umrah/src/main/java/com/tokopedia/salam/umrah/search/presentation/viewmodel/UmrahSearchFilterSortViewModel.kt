@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
 import com.tokopedia.salam.umrah.common.usecase.UmrahSearchParameterUseCase
-import com.tokopedia.salam.umrah.common.util.UmrahDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,7 +16,7 @@ import javax.inject.Inject
  */
 
 class UmrahSearchFilterSortViewModel @Inject constructor(private val useCase: UmrahSearchParameterUseCase,
-                                                         dispatcher: UmrahDispatchersProvider) : BaseViewModel(dispatcher.Main) {
+                                                         dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
 
     private val privateUmrahSearchParameter by lazy { MutableLiveData<Result<UmrahSearchParameterEntity>>() }
     val umrahSearchParameter: LiveData<Result<UmrahSearchParameterEntity>>

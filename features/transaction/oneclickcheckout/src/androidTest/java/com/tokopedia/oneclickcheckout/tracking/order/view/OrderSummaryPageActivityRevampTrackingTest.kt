@@ -13,8 +13,6 @@ import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
 import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_NO_PROFILE_REVAMP_RESPONSE_PATH
-import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
@@ -70,21 +68,26 @@ class OrderSummaryPageActivityRevampTrackingTest {
 
     @Test
     fun performRevampAnalyticsActions() {
-        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_NO_PROFILE_REVAMP_RESPONSE_PATH
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH
         activityRule.launchActivity(null)
 
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
-            clickAddPreferenceForNewBuyer()
-
-            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH
-            clickAddOrChangePreferenceRevamp(null)
-
-            clickAddOrChangePreferenceRevamp {
-                clickUsePreferenceRevamp(1)
-            }
+        //    Deprecated Test (will delete in next iteration)
+//            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_ONE_PROFILE_REVAMP_RESPONSE_PATH
+//            clickAddPreferenceForNewBuyer()
+//
+//            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH
+//            clickAddOrChangePreferenceRevamp(null)
+//
+//            clickAddOrChangePreferenceRevamp {
+//                clickEditPreference(1)
+//            }
+//
+//            clickAddOrChangePreferenceRevamp {
+//                clickUsePreferenceRevamp(1)
+//            }
 
             clickChangeAddressRevamp()
             closeBottomSheet()

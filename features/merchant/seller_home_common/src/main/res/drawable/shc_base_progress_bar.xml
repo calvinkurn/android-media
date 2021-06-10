@@ -4,7 +4,7 @@
         <shape>
             <cornwers
                 android:radius="@dimen/dp_7"/>
-            <solid android:color="@color/Neutral_N75"/>
+            <solid android:color="@color/Unify_N75"/>
         </shape>
     </item>
 </layer-list>

@@ -255,34 +255,34 @@ class PlayCoverCameraActivity : AppCompatActivity() {
 
     private fun setImmediateCapture() {
         if (!isTimerRunning) {
-            tvTimer0.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
-            tvTimer5.setTextColor(MethodChecker.getColor(this, R.color.play_white_68))
-            tvTimer10.setTextColor(MethodChecker.getColor(this, R.color.play_white_68))
+            tvTimer0.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            tvTimer5.setTextColor(MethodChecker.getColor(this, R.color.play_dms_white_68))
+            tvTimer10.setTextColor(MethodChecker.getColor(this, R.color.play_dms_white_68))
             cameraTimerEnum = CameraTimerEnum.Immediate
         }
     }
 
     private fun setTimerFiveSecondsCapture() {
         if (!isTimerRunning) {
-            tvTimer0.setTextColor(MethodChecker.getColor(this, R.color.play_white_68))
-            tvTimer5.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
-            tvTimer10.setTextColor(MethodChecker.getColor(this, R.color.play_white_68))
+            tvTimer0.setTextColor(MethodChecker.getColor(this, R.color.play_dms_white_68))
+            tvTimer5.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            tvTimer10.setTextColor(MethodChecker.getColor(this, R.color.play_dms_white_68))
             cameraTimerEnum = CameraTimerEnum.Five
         }
     }
 
     private fun setTimerTenSecondsCapture() {
         if (!isTimerRunning) {
-            tvTimer0.setTextColor(MethodChecker.getColor(this, R.color.play_white_68))
-            tvTimer5.setTextColor(MethodChecker.getColor(this, R.color.play_white_68))
-            tvTimer10.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+            tvTimer0.setTextColor(MethodChecker.getColor(this, R.color.play_dms_white_68))
+            tvTimer5.setTextColor(MethodChecker.getColor(this, R.color.play_dms_white_68))
+            tvTimer10.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
             cameraTimerEnum = CameraTimerEnum.Ten
         }
     }
 
     private fun requestRequiredPermission() {
         permissionHelper.requestMultiPermissionsFullFlow(
-                permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE),
+                permissions = arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE),
                 requestCode = REQUEST_CODE_PERMISSION,
                 permissionResultListener = object : PermissionResultListener {
                     override fun onRequestPermissionResult(): PermissionStatusHandler {
@@ -299,7 +299,7 @@ class PlayCoverCameraActivity : AppCompatActivity() {
     }
 
     private fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(
-            arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+            arrayOf(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE)
     )
 
     companion object {

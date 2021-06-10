@@ -2,10 +2,13 @@ package com.tokopedia.managepassword.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.managepassword.changepassword.domain.data.ChangePasswordData
 import com.tokopedia.managepassword.changepassword.domain.data.ChangePasswordResponseModel
 import com.tokopedia.managepassword.changepassword.domain.usecase.ChangePasswordUseCase
+import com.tokopedia.managepassword.changepassword.domain.usecase.ChangePasswordV2UseCase
 import com.tokopedia.managepassword.changepassword.view.viewmodel.ChangePasswordViewModel
 import com.tokopedia.managepassword.changepassword.view.viewmodel.LiveDataValidateResult
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -27,9 +30,11 @@ class ChangePasswordViewModelTestJunit {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     val changePasswordUsecase = mockk<ChangePasswordUseCase>(relaxed = true)
+    val changePasswordV2UseCase = mockk<ChangePasswordV2UseCase>(relaxed = true)
+    val generatePublicKeyUseCase = mockk<GeneratePublicKeyUseCase>(relaxed = true)
 
     val dispatcher = TestCoroutineDispatcher()
-    private var observer = mockk<Observer<Result<ChangePasswordResponseModel>>>(relaxed = true)
+    private var observer = mockk<Observer<Result<ChangePasswordData>>>(relaxed = true)
     private var validatePasswordObserver = mockk<Observer<LiveDataValidateResult>>(relaxed = true)
     val mockThrowable = mockk<Throwable>(relaxed = true)
 
@@ -45,6 +50,8 @@ class ChangePasswordViewModelTestJunit {
     fun setUp() {
         viewModel = ChangePasswordViewModel(
                 changePasswordUsecase,
+                changePasswordV2UseCase,
+                generatePublicKeyUseCase,
                 dispatcher
         )
         viewModel.response.observeForever(observer)
@@ -54,16 +61,16 @@ class ChangePasswordViewModelTestJunit {
 
     @Test
     fun `submitChangePassword Success`() {
-        var changePassword = ChangePasswordResponseModel.ChangePassword()
+        var changePassword = ChangePasswordData()
         val changePasswordResponseModel = ChangePasswordResponseModel(changePassword)
 
         every { changePasswordUsecase.submit(any(), any()) } answers {
             firstArg<(ChangePasswordResponseModel) -> Unit>().invoke(changePasswordResponseModel)
         }
-        viewModel.submitChangePassword(encode, new, confirmation, validationToken)
+        viewModel.submitChangePassword(new, confirmation)
 
         /* Then */
-        verify { observer.onChanged(Success(changePasswordResponseModel)) }
+        verify { observer.onChanged(Success(changePasswordResponseModel.changePassword)) }
     }
 
     @Test
@@ -72,7 +79,7 @@ class ChangePasswordViewModelTestJunit {
         every { changePasswordUsecase.submit(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
-        viewModel.submitChangePassword(encode, new, confirmation, validationToken)
+        viewModel.submitChangePassword(new, confirmation)
 
         /* Then */
         verify { observer.onChanged(Fail(mockThrowable)) }

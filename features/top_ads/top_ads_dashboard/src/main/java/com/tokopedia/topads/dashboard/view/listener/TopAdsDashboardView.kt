@@ -10,13 +10,13 @@ import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 
 interface TopAdsDashboardView : CustomerView {
 
-    fun onLoadTopAdsShopDepositError(throwable: Throwable)
-
     fun onErrorGetShopInfo(throwable: Throwable)
 
     fun onErrorGetStatisticsInfo(throwable: Throwable)
 
     fun onSuccessAdStatus(data: AdStatusResponse.TopAdsGetShopInfo.Data)
+
+    fun onError(message:String)
 
 }
 

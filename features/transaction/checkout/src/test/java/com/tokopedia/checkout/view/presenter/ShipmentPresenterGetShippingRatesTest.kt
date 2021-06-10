@@ -6,6 +6,7 @@ import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
@@ -147,7 +148,9 @@ class ShipmentPresenterGetShippingRatesTest {
         val products = ArrayList<Product>()
         val cartString = "123-abc"
         val isTradeInDropOff = false
-        val recipientAddressModel = RecipientAddressModel()
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
         val isForceReload = false
         val skipMvc = true
 
@@ -205,8 +208,9 @@ class ShipmentPresenterGetShippingRatesTest {
         val cartString = "123-abc"
         val isTradeInDropOff = true
         val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
             locationDataModel = LocationDataModel().apply {
-                district = 1
+                district = "1"
                 postalCode = "1"
                 latitude = "1"
                 longitude = "1"
@@ -271,7 +275,9 @@ class ShipmentPresenterGetShippingRatesTest {
         val products = ArrayList<Product>()
         val cartString = "123-abc"
         val isTradeInDropOff = true
-        val recipientAddressModel = RecipientAddressModel()
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
         val isForceReload = false
         val skipMvc = false
 

@@ -1,12 +1,15 @@
 package com.tokopedia.hotel.search.data.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertySafetyBadge
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
 
+@SuppressLint("")
 data class Property(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         @Expose
         val id: Long = 0,
@@ -59,6 +62,8 @@ data class Property(
         @Expose
         val propertySafetyBadge: PropertySafetyBadge = PropertySafetyBadge()
 ) : Visitable<PropertyAdapterTypeFactory> {
+
+    var isForHorizontalItem: Boolean = false
 
     override fun type(typeFactory: PropertyAdapterTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0

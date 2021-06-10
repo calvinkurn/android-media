@@ -5,14 +5,19 @@ apply from: "$rootProject.projectDir/buildconfig/dependencies/dependency-librari
 apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: "de.mannodermaus.android-junit5"
+apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
         jcenter()
         mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://maven.google.com" }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.androidjunit5
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
@@ -131,6 +136,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJava
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
+
+    api rootProject.ext.miscDependencies.coroutineTest
 }
 
 project.ext {

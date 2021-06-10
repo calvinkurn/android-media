@@ -16,21 +16,23 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         app:srcCompat="@drawable/unify_globalerrors_connection"
-        android:layout_marginBottom="@dimen/margin_small"/>
+        android:layout_marginBottom="@dimen/margin_small"
+        tools:ignore="contentDescription"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/notification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textColor="@color/black"
+        app:typographyType="heading_5"
+        android:textColor="@color/Unify_N700"
         android:gravity="center"
         android:text="@string/msg_under_maintenance" />
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/checking"
+        app:loader_type="circular"
         android:indeterminate="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="@dimen/unify_space_40"
+        android:layout_height="@dimen/unify_space_40" />
 
 </LinearLayout>

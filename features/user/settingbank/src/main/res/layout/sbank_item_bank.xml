@@ -3,29 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/dp_16"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_18"
-    android:paddingEnd="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:paddingStart="@dimen/unify_space_16"
+    android:paddingLeft="@dimen/unify_space_16"
+    android:paddingTop="@dimen/unify_space_16"
+    android:paddingEnd="@dimen/unify_space_16"
+    android:paddingRight="@dimen/unify_space_16">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBankNameWithAbbreviation"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
         app:typographyWeight="bold"
-        android:textColor="@color/Neutral_N700_96"/>
+        android:textColor="@color/Unify_N700_96"/>
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/viewDivider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@color/unify_N75"
-        android:layout_marginTop="@dimen/dp_18"
+        android:layout_height="@dimen/sbank_dp_1"
+        android:background="@color/Unify_N75"
+        android:layout_marginTop="@dimen/unify_space_16"
         app:layout_constraintTop_toBottomOf="@id/tvBankNameWithAbbreviation"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

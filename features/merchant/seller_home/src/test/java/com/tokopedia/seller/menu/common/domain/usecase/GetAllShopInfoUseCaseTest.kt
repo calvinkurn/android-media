@@ -3,6 +3,7 @@ package com.tokopedia.seller.menu.common.domain.usecase
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
+import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,13 +35,13 @@ class GetAllShopInfoUseCaseTest {
     lateinit var getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase
 
     @RelaxedMockK
-    lateinit var shopStatusTypeUseCase: ShopStatusTypeUseCase
-
-    @RelaxedMockK
     lateinit var topAdsAutoTypeUseCase: TopAdsAutoTopupUseCase
 
     @RelaxedMockK
     lateinit var topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase
+
+    @RelaxedMockK
+    lateinit var getUserShopInfoUseCase: GetUserShopInfoUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -59,7 +60,7 @@ class GetAllShopInfoUseCaseTest {
                 balanceInfoUseCase,
                 getShopBadgeUseCase,
                 getShopTotalFollowersUseCase,
-                shopStatusTypeUseCase,
+                getUserShopInfoUseCase,
                 topAdsAutoTypeUseCase,
                 topAdsDashboardDepositUseCase,
                 coroutineTestRule.dispatchers
@@ -70,6 +71,7 @@ class GetAllShopInfoUseCaseTest {
     fun `success get all shop info`() = runBlocking {
         val balanceSuccess = OthersBalance()
         val shopTypeSuccess = PowerMerchantStatus.Active
+        val userShopInfoWrapper = UserShopInfoWrapper(shopType = shopTypeSuccess)
         val totalFollowersSuccess = anyLong()
         val shopBadgeUrlSuccess = anyString()
         val topAdsDepositSuccess = anyFloat()
@@ -82,7 +84,7 @@ class GetAllShopInfoUseCaseTest {
         )
 
         val partialShopInfo = PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo(
-                shopTypeSuccess,
+                userShopInfoWrapper,
                 totalFollowersSuccess,
                 shopBadgeUrlSuccess
         )
@@ -96,10 +98,6 @@ class GetAllShopInfoUseCaseTest {
         coEvery {
             balanceInfoUseCase.executeOnBackground()
         } returns balanceSuccess
-
-        coEvery {
-            shopStatusTypeUseCase.executeOnBackground()
-        } returns shopTypeSuccess
 
         coEvery {
             getShopTotalFollowersUseCase.executeOnBackground()
@@ -117,15 +115,19 @@ class GetAllShopInfoUseCaseTest {
             topAdsAutoTypeUseCase.executeOnBackground()
         } returns isTopAdsAutoTopupSuccess
 
+        coEvery {
+            getUserShopInfoUseCase.executeOnBackground()
+        } returns userShopInfoWrapper
+
         val allShopInfo = mGetAllShopInfoUseCase.executeOnBackground()
 
         coVerify {
             balanceInfoUseCase.executeOnBackground()
-            shopStatusTypeUseCase.executeOnBackground()
             getShopTotalFollowersUseCase.executeOnBackground()
             getShopBadgeUseCase.executeOnBackground()
             topAdsDashboardDepositUseCase.executeOnBackground()
             topAdsAutoTypeUseCase.executeOnBackground()
+            getUserShopInfoUseCase.executeOnBackground()
         }
 
         assertEquals(allShopInfo, allShopInfoSuccess)

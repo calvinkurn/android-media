@@ -84,7 +84,6 @@
                 android:paddingRight="@dimen/spacing_lvl3"
                 android:visibility="gone"
                 app:descriptionText="@string/ticker_warning_can_only_change_shopname_once"
-                app:tckv_content_text_size="@dimen/dp_12"
                 app:tickerShapeType="loose"
                 app:tickerType="warning"
                 tools:visibility="visible" />
@@ -96,6 +95,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"
+                android:theme="@style/TextDarkMode"
                 app:text_field_counter="60"
                 app:text_field_input_type="text"
                 app:text_field_label="@string/shop_edit_name_input_label" />
@@ -107,6 +107,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"
+                android:theme="@style/TextDarkMode"
                 app:text_field_counter="24"
                 app:text_field_input_type="text"
                 app:text_field_label="@string/shop_edit_domain_input_label"
@@ -122,11 +123,12 @@
                 android:visibility="gone"
                 tools:visibility="visible" />
 
-            <com.tokopedia.unifycomponents.DividerUnify
+            <View
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/spacing_lvl4"
+                android:background="@color/Unify_N50"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/shopDomainSuggestions" />
@@ -138,6 +140,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"
+                android:theme="@style/TextDarkMode"
                 app:text_field_counter="48"
                 app:text_field_input_type="text"
                 app:text_field_label="@string/shop_slogan_label" />
@@ -149,6 +152,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingRight="@dimen/spacing_lvl4"
+                android:theme="@style/TextDarkMode"
                 app:text_field_counter="140"
                 app:text_field_input_type="text"
                 app:text_field_label="@string/shop_description_label" />

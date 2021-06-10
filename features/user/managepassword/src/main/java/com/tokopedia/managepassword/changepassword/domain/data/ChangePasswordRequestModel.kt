@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class ChangePasswordRequestModel(
         @Expose
         @SerializedName("encode")
-        val encode: String = "",
+        val encode: String = "encode",
         @Expose
         @SerializedName("new_password")
         val newPassword: String = "",
@@ -15,5 +15,5 @@ data class ChangePasswordRequestModel(
         val repeatPassword: String = "",
         @Expose
         @SerializedName("validatetoken")
-        val validateToken: String = ""
+        val validateToken: String = "token"
 )

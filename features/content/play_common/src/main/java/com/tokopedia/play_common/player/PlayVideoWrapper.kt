@@ -119,10 +119,8 @@ class PlayVideoWrapper private constructor(
                     val prepareState = currentPrepareState
                     if (!currentWindow.isLive && !currentWindow.isDynamic && prepareState is PlayVideoPrepareState.Prepared && prepareState.positionHandle is VideoPositionHandle.NotHandled) {
                         val lastPosition = prepareState.positionHandle.lastPosition
-                        if (lastPosition != null && currentWindow.durationMs >= lastPosition) {
-                            videoPlayer.seekTo(lastPosition)
-                            currentPrepareState = prepareState.copy(positionHandle = VideoPositionHandle.Handled)
-                        }
+                        if (lastPosition != null && currentWindow.durationMs >= lastPosition) videoPlayer.seekTo(lastPosition)
+                        currentPrepareState = prepareState.copy(positionHandle = VideoPositionHandle.Handled)
                     }
                 }
             } catch (e: Exception) {}

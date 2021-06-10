@@ -355,7 +355,7 @@ class WishlistViewModelBulkRemoveWishlistTest {
 
 
         // Expect that 3 wishlist data is removed (from 10 wishlist item data), so the rest is 6 data
-        Assert.assertEquals(7, wishlistViewModel.wishlistLiveData.value!!.size)
+        Assert.assertEquals(6, wishlistViewModel.wishlistLiveData.value!!.size)
         // Expect all item is not in bulk mode
         wishlistViewModel.wishlistLiveData.value?.forEach {
             if (it is WishlistItemDataModel && it.isOnBulkRemoveProgress) {
@@ -377,8 +377,7 @@ class WishlistViewModelBulkRemoveWishlistTest {
         Assert.assertEquals(false, bulkRemoveWishlistActionData!!.peekContent().isSuccess)
         Assert.assertEquals(true, bulkRemoveWishlistActionData.peekContent().isPartiallyFailed)
 
-        // Expect that recommendation section position is not changed in position 4
-        Assert.assertEquals(BannerTopAdsDataModel::class.java,
+        Assert.assertEquals(WishlistItemDataModel::class.java,
                 wishlistViewModel.wishlistLiveData.value!![4].javaClass)
 
     }
@@ -445,13 +444,13 @@ class WishlistViewModelBulkRemoveWishlistTest {
 
 
         // Expect that wishlist data is still same as initial value
-        Assert.assertEquals(10, wishlistViewModel.wishlistLiveData.value!!.size)
+        Assert.assertEquals(11, wishlistViewModel.wishlistLiveData.value!!.size)
         // Expect all item is not in bulk mode
         wishlistViewModel.wishlistLiveData.value?.forEach {
             if (it is WishlistItemDataModel && it.isOnBulkRemoveProgress) {
                 Assert.assertFalse("Wishlist item data model still on bulk remove progress state!", true)
             } else if (it is RecommendationCarouselDataModel && it.isOnBulkRemoveProgress) {
-                Assert.assertFalse("Wishlist item data model still on bulk remove progress state!", true)
+                Assert.assertFalse("Wishlist item data model still on bulk remove progress state!", false)
             }
         }
 

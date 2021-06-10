@@ -7,14 +7,5 @@
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_marginStart="@dimen/dp_16"
-        android:id="@+id/transaction_title"
-        app:loader_type="line"
-        android:layout_width="@dimen/dp_150"
-        android:layout_height="@dimen/sp_14"
-        android:text="@string/title_transaction_section"
-        app:typographyType="heading_4"/>
 
 </LinearLayout>

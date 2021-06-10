@@ -24,6 +24,8 @@ public interface LinkerConstants {
     String MOBILE_DOMAIN = "https://m.tokopedia.com/";
     String FEATURE_GATE_BRANCH_LINKS = "mainapp_activate_branch_links";
     String APP_SHOW_REFERRAL_BUTTON = "app_show_referral_button";
+    String enableBranchReinitFlow = "android_enable_branch_reinitflow";
+    String ENABLE_XIAOMI_PAI_TRACKING = "android_enable_xiaomi_pai_tracking";
     String STRING_FORMAT_TAG = "%s - %s";
     String STRING_FORMAT_DESKTOP_URL = "%s%s";
     String STRING_FORMAT_GROUP_CHAT = "groupchat/%s%sutm_source=%s&utm_medium=%s&utm_campaign=%s&utm_content=%s";
@@ -113,7 +115,8 @@ public interface LinkerConstants {
     String UTM_MEDIUM = "utm_medium";
     String UTM_CAMPAIGN = "utm_campaign";
     String UTM_TERM = "utm_term";
-    String SCREEN_NAME = "screenName";
+    String SCREEN_NAME_KEY = "screenName";
+    String SCREEN_NAME_VALUE = "Deeplink Page";
 
     String CONTENT = "content";
     String CONTENT_TYPE = "content_type";
@@ -125,4 +128,5 @@ public interface LinkerConstants {
     String LEVEL3_ID = "level3_id";
     String SKU = "sku";
     String CONTENT_ID = "content_id";
+    String BRANCH_LINK_DOMAIN="tokopedia.link/";
 }

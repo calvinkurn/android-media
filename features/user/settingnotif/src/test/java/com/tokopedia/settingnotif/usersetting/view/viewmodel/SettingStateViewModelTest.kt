@@ -76,9 +76,8 @@ class SettingStateViewModelTest {
                 .isNotEmpty())
     }
 
-    @Test fun `it should added pinned of email activation`() {
-        val fakeEmail = "isfhani.ghiath@tokopedia.com"
-        every { userSession.email } returns fakeEmail
+    @Test fun `it should added pinned of adding email`() {
+        every { userSession.email } returns ""
 
         viewModel.addPinnedEmailItems(
                 UserSettingDataView(emptyList())

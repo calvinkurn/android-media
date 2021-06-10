@@ -2,9 +2,11 @@ package com.tokopedia.notifications.data
 
 import android.app.Application
 import android.util.Log
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.PushController
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
@@ -14,10 +16,10 @@ import com.tokopedia.notifications.data.model.Amplification
 import com.tokopedia.notifications.data.model.AmplificationNotifier
 import com.tokopedia.notifications.domain.AmplificationUseCase
 import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
-import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
+import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.AmplificationCMInApp
+import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor
 import com.tokopedia.notifications.utils.NextFetchCacheManager
 import com.tokopedia.user.session.UserSession
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import com.tokopedia.abstraction.common.utils.GraphqlHelper.loadRawString as loadRaw
 
@@ -53,6 +55,7 @@ object AmplificationDataSource {
         RepositoryManager.initRepository(application)
 
         amplificationUseCase.execute {
+
             val webHook = it.webhookAttributionNotifier
             pushData(application, webHook)
             inAppData(application, webHook)
@@ -75,10 +78,12 @@ object AmplificationDataSource {
         if (amplification.inAppData.isNotEmpty()) {
             amplification.inAppData.forEach {
                 try {
-                    val cmInApp = Gson().fromJson(it, CMInApp::class.java)
+                    val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
+                    val amplificationCMInApp: AmplificationCMInApp = gson.fromJson(it, AmplificationCMInApp::class.java)
 
+                    val cmInApp = CmInAppBundleConvertor.getCmInApp(amplificationCMInApp)
                     // flag if this data comes from amplification fetch API
-                    cmInApp.isAmplification = true
+                    amplificationCMInApp.isAmplification = true
 
                     // storage to local storage
                     RepositoryManager
@@ -90,8 +95,11 @@ object AmplificationDataSource {
                     // send amplification tracker
                     sendAmplificationInAppEvent(application, INAPP_DELIVERED, cmInApp)
                 } catch (e: Exception) {
-                    Timber.w("${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
-                            .take(CMConstant.TimberTags.MAX_LIMIT)}';data=''")
+                    ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                            mapOf("type" to "exception",
+                                    "err" to Log.getStackTraceString(e)
+                                            .take(CMConstant.TimberTags.MAX_LIMIT),
+                                    "data" to ""))
                 }
             }
         }

@@ -5,7 +5,7 @@
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -30,7 +30,7 @@
         android:lineHeight="@dimen/sp_22"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/ar_text_dob_warning"
-        android:textColor="@color/clr_ae31353b"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,7 @@
         android:background="?attr/selectableItemBackground"
         android:lineHeight="@dimen/sp_20"
         android:text="Pilih Tanggal"
-        android:textColor="@color/black_36"
+        android:textColor="@color/Unify_N700_32"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toStartOf="@+id/iv_arrow_down"
         app:layout_constraintLeft_toLeftOf="@+id/tv_dob_warning"
@@ -68,7 +68,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_4"
-        android:background="@color/dividerColor"
+        android:background="@color/Unify_N75"
         app:layout_constraintEnd_toEndOf="@+id/iv_arrow_down"
         app:layout_constraintStart_toStartOf="@+id/ed_edit_dob"
         app:layout_constraintTop_toBottomOf="@+id/ed_edit_dob" />
@@ -83,7 +83,7 @@
         android:paddingTop="@dimen/dp_12"
         android:paddingBottom="@dimen/dp_12"
         android:text="@string/label_save"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/tv_dob_warning"

@@ -48,18 +48,22 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                     val nextItem = chatItemPojoByDate.replies.getOrNull(replyIndex + 1)
                     when {
                         // Merge broadcast bubble
-                        chatDateTime.isBroadCast() && chatDateTime.isAlsoTheSameBroadcast(nextItem) -> {
+                        chatDateTime.isBroadCast() &&
+                                chatDateTime.isAlsoTheSameBroadcast(nextItem) -> {
                             val broadcast = mergeBroadcast(
                                     replyIndex,
                                     chatItemPojoByDate.replies,
                                     chatDateTime.blastId
                             )
-                            val broadcastUiModel = createBroadCastUiModel(chatDateTime, broadcast.first)
+                            val broadcastUiModel = createBroadCastUiModel(
+                                    chatDateTime, broadcast.first
+                            )
                             listChat.add(broadcastUiModel)
                             replyIndex += broadcast.second
                         }
                         // Merge product bubble
-                        hasAttachment(chatDateTime) && chatDateTime.isAlsoProductAttachment(nextItem) -> {
+                        hasAttachment(chatDateTime) &&
+                                chatDateTime.isAlsoProductAttachment(nextItem) -> {
                             val products = mergeProduct(
                                     replyIndex,
                                     chatItemPojoByDate.replies,
@@ -88,37 +92,27 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     override fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        return MessageViewModel(
-                messageId = chatItemPojoByDateByTime.msgId.toString(),
-                fromUid = chatItemPojoByDateByTime.senderId.toString(),
-                from = chatItemPojoByDateByTime.senderName,
-                fromRole = chatItemPojoByDateByTime.role,
-                attachmentId = chatItemPojoByDateByTime.attachment?.id ?: "",
-                attachmentType = chatItemPojoByDateByTime.attachment?.type.toString(),
-                replyTime = chatItemPojoByDateByTime.replyTime,
-                startTime = "",
-                isRead = chatItemPojoByDateByTime.isRead,
-                isDummy = false,
-                isSender = !chatItemPojoByDateByTime.isOpposite,
-                message = chatItemPojoByDateByTime.msg,
-                source = chatItemPojoByDateByTime.source,
-                blastId = chatItemPojoByDateByTime.blastId,
-                fraudStatus = chatItemPojoByDateByTime.fraudStatus
-        )
+        return MessageViewModel(chatItemPojoByDateByTime)
     }
 
     private fun createBroadCastUiModel(chatDateTime: Reply, model: Map<String, Visitable<*>>): BroadCastUiModel {
         return BroadCastUiModel(chatDateTime, model, chatDateTime.isOpposite)
     }
 
-    private fun mergeBroadcast(index: Int, replies: List<Reply>, blastId: Long): Pair<Map<String, Visitable<*>>, Int> {
+    private fun mergeBroadcast(
+            index: Int, replies: List<Reply>, blastId: Long
+    ): Pair<Map<String, Visitable<*>>, Int> {
         val broadcast = ArrayMap<String, Visitable<*>>()
         var idx = index
         while (idx < replies.size) {
             val reply = replies[idx]
             val replyType = reply.attachmentType.toString()
             val nextReply = replies.getOrNull(idx + 1)
-            if (reply.isProductAttachment() && reply.isAlsoProductAttachment(nextReply) && reply.blastId == blastId) {
+            if (
+                    reply.isProductAttachment() &&
+                    reply.isAlsoProductAttachment(nextReply) &&
+                    reply.blastId == blastId
+            ) {
                 val products = mergeProduct(idx, replies, reply.isBroadCast())
                 val carouselProducts = createCarouselProduct(reply, products)
                 broadcast[TYPE_IMAGE_CAROUSEL] = carouselProducts

@@ -29,7 +29,7 @@ public class ShipmentDetailData implements Parcelable {
     private String shopId;
     private List<ShippingCourierUiModel> shippingCourierUiModels;
     private boolean isBlackbox;
-    private int addressId;
+    private String addressId;
     private boolean preorder;
     private boolean isTradein;
     private Boolean isOrderPriority;
@@ -58,7 +58,7 @@ public class ShipmentDetailData implements Parcelable {
         shopId = in.readString();
         shippingCourierUiModels = in.createTypedArrayList(ShippingCourierUiModel.CREATOR);
         isBlackbox = in.readByte() != 0;
-        addressId = in.readInt();
+        addressId = in.readString();
         preorder = in.readByte() != 0;
         isTradein = in.readByte() != 0;
         byte tmpIsOrderPriority = in.readByte();
@@ -213,11 +213,11 @@ public class ShipmentDetailData implements Parcelable {
         isBlackbox = blackbox;
     }
 
-    public int getAddressId() {
+    public String getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(int addressId) {
+    public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 
@@ -277,7 +277,7 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeByte((byte) (courierPromoApplied ? 1 : 0));
         dest.writeString(shopId);
         dest.writeByte((byte) (isBlackbox ? 1 : 0));
-        dest.writeInt(addressId);
+        dest.writeString(addressId);
         dest.writeByte((byte) (preorder ? 1 : 0));
         dest.writeTypedList(shippingCourierUiModels);
         dest.writeByte((byte) (isTradein ? 1 : 0));

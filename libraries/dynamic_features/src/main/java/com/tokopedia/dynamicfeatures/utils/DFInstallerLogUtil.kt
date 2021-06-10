@@ -2,11 +2,12 @@ package com.tokopedia.dynamicfeatures.utils
 
 import android.content.Context
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 /**
  * Created by hendry on 2019-10-03.
@@ -30,66 +31,63 @@ object DFInstallerLogUtil {
                            fallbackUrl: String = "") {
 
         GlobalScope.launch(Dispatchers.IO + CoroutineExceptionHandler { _, _ -> }) {
-            val messageBuilder = StringBuilder()
+            val messageMap = mutableMapOf<String, String>()
             var successText = success.toString()
             if (!success && errorList.isEmpty()) {
                 successText = "NA"
             }
 
             //Success or error information
-            messageBuilder.append(message)
-            messageBuilder.append(";mod_name=$modulesName")
-            messageBuilder.append(";success=$successText")
-            messageBuilder.append(";dl_times=$downloadTimes")
-            messageBuilder.append(";err='${Utils.getError(success, errorList)}'")
+            messageMap["type"] = message
+            messageMap["mod_name"] = modulesName
+            messageMap["success"] = successText
+            messageMap["dl_times"] = downloadTimes.toString()
+            messageMap["err"] = Utils.getError(success, errorList)
 
             //Size information
-            messageBuilder.append(";mod_size=")
             if (moduleSize >= 0) {
-                messageBuilder.append(Utils.getSizeInMB(moduleSize))
+                messageMap["mod_size"] = Utils.getSizeInMB(moduleSize)
             } else {
-                messageBuilder.append(-1)
+                messageMap["mod_size"] = "-1"
             }
-            messageBuilder.append(";phone_size=")
             val phoneSize = StorageUtils.getTotalInternalSpaceBytes(context)
             if (phoneSize >= 0) {
-                messageBuilder.append(Utils.getSizeInMB(phoneSize))
+                messageMap["phone_size"] = Utils.getSizeInMB(phoneSize)
             } else {
-                messageBuilder.append(-1)
+                messageMap["phone_size"] = "-1"
             }
-            messageBuilder.append(";free_bef=")
             if (freeInternalStorageBeforeDownload >= 0) {
-                messageBuilder.append(Utils.getSizeInMB(freeInternalStorageBeforeDownload))
+                messageMap["free_bef"] = Utils.getSizeInMB(freeInternalStorageBeforeDownload)
             } else {
-                messageBuilder.append(-1)
+                messageMap["free_bef"] = "-1"
             }
-            messageBuilder.append(";free_aft=")
+
             try {
-                messageBuilder.append(Utils.getSizeInMB(StorageUtils.getFreeSpaceBytes(context)))
+                messageMap["free_aft"] = Utils.getSizeInMB(StorageUtils.getFreeSpaceBytes(context))
             } catch (ignored: Exception) {
-                messageBuilder.append(-1)
+                messageMap["free_aft"] = "-1"
             }
-            messageBuilder.append(";cache_size='${Utils.getSizeInMB(StorageUtils.getInternalCacheSize(context))}'")
+
+            messageMap["cache_size"] = Utils.getSizeInMB(StorageUtils.getInternalCacheSize(context))
 
             // Additional download information
-            messageBuilder.append(";dl_duration=${Utils.getDownloadDuration(startDownloadTime, endDownloadTime)}")
-            messageBuilder.append(";start_progress=")
+            messageMap["dl_duration"] = Utils.getDownloadDuration(startDownloadTime, endDownloadTime)
             if (startDownloadPercentage <= 0) {
-                messageBuilder.append("0")
+                messageMap["start_progress"] = "0"
             } else {
-                messageBuilder.append(Utils.getFormattedNumber(startDownloadPercentage))
+                messageMap["start_progress"] = Utils.getFormattedNumber(startDownloadPercentage)
             }
-            messageBuilder.append(";dl_service=$singletonService")
-            messageBuilder.append(";deeplink='$deeplink'")
-            messageBuilder.append(";fallback_url='$fallbackUrl'")
+            messageMap["dl_service"] = singletonService.toString()
+            messageMap["deeplink"] = deeplink
+            messageMap["fallback_url"] = fallbackUrl
 
             //Play service information
-            messageBuilder.append(";play_str='${PlayServiceUtils.getPlayStoreVersionName(context)}'")
-            messageBuilder.append(";play_str_l=${PlayServiceUtils.getPlayStoreLongVersionCode(context)}")
-            messageBuilder.append(";play_srv=${PlayServiceUtils.getPlayServiceLongVersionCode(context)}")
-            messageBuilder.append(";installer_pkg=${PlayServiceUtils.getInstallerPackageName(context)}")
+            messageMap["play_str"] = PlayServiceUtils.getPlayStoreVersionName(context)
+            messageMap["play_str_l"] = PlayServiceUtils.getPlayStoreLongVersionCode(context).toString()
+            messageMap["play_srv"] = PlayServiceUtils.getPlayServiceLongVersionCode(context).toString()
+            messageMap["installer_pkg"] = PlayServiceUtils.getInstallerPackageName(context)
 
-            Timber.w("P1#$tag#$messageBuilder")
+            ServerLogger.log(Priority.P1, tag, messageMap)
         }
     }
 }

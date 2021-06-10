@@ -2,6 +2,7 @@ package com.tokopedia.shop.product.view.datamodel
 
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
@@ -42,8 +43,8 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
     var etalaseType: Int? = null
     var hideGimmick: Boolean = false
 
-    override fun type(typeFactory: ShopProductAdapterTypeFactory): Int {
-        return typeFactory.type(this)
+    override fun type(typeFactory: ShopProductAdapterTypeFactory?): Int {
+        return typeFactory?.type(this).orZero()
     }
 
     constructor() {}
@@ -60,8 +61,8 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
         isPo = TextApiUtils.isValueTrue(shopProduct.productPreorder)
         totalReview = shopProduct.productReviewCount
         isWholesale = TextApiUtils.isValueTrue(shopProduct.productWholesale)
-        if (shopProduct.badges != null && shopProduct.badges.size > 0) {
-            for (badge in shopProduct.badges) {
+        if (shopProduct.badges != null && shopProduct?.badges?.size.orZero() > 0) {
+            for (badge in shopProduct.badges.orEmpty()) {
                 if (BADGE_FREE_RETURN.equals(badge.title, ignoreCase = true)) {
                     isFreeReturn = true
                     break
@@ -71,11 +72,11 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
         val shopProductLabelList = shopProduct.labels
         if (shopProductLabelList != null) {
             for (shopProductLabel in shopProductLabelList) {
-                if (shopProductLabel.title.startsWith(LABEL_CASHBACK)) {
+                if (shopProductLabel.title?.startsWith(LABEL_CASHBACK) == true) {
                     var cashbackText = shopProductLabel.title
-                    cashbackText = cashbackText.replace(LABEL_CASHBACK, "")
-                    cashbackText = cashbackText.replace(LABEL_PERCENTAGE, "")
-                    val cashbackPercentage = java.lang.Double.parseDouble(cashbackText.trim { it <= ' ' })
+                    cashbackText = cashbackText?.replace(LABEL_CASHBACK, "")
+                    cashbackText = cashbackText?.replace(LABEL_PERCENTAGE, "")
+                    val cashbackPercentage = java.lang.Double.parseDouble(cashbackText?.trim { it <= ' ' }.orEmpty())
                     cashback = cashbackPercentage
                     break
                 }

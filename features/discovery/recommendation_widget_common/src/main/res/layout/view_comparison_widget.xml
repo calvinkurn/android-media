@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/comparison_widget_container"
+    android:animateLayoutChanges="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginBottom="16dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_header_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:text="Test"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btn_see_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold"
+            android:clickable="true"
+            android:focusable="true"
+            android:lineSpacingExtra="@dimen/sp_6"
+            android:text="@string/comparison_see_more_title"
+            android:textColor="@color/Unify_G500"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:visibility="gone"
+            app:typographyType="heading_5"/>
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_comparison_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <FrameLayout
+        android:id="@+id/btn_container"
+        android:background="@drawable/bg_button_comparison_widget"
+        android:layout_marginTop="-60dp"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_gravity="bottom"
+            android:layout_margin="16dp"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost"
+            android:id="@+id/btn_collapse"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:text="@string/comparison_see_more_specs" />
+    </FrameLayout>
+</LinearLayout>

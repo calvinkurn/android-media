@@ -9,6 +9,8 @@ data class CartDigitalInfoData(
 
         var id: String = "",
 
+        var productId: String = "",
+
         var attributes: AttributesDigitalData = AttributesDigitalData(),
 
         var title: String = "",
@@ -35,7 +37,7 @@ data class CartDigitalInfoData(
 
         var showSubscriptionsView: Boolean = false,
 
-        var crossSellingConfig: CrossSellingConfig = CrossSellingConfig()
+        var crossSellingConfig: CrossSellingConfig = CrossSellingConfig(),
 ) : Parcelable {
 
     @Parcelize

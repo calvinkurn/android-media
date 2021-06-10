@@ -34,7 +34,7 @@ class TopAdsRecomGroupBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
     private lateinit var adapter: TopadsRecomGroupBsAdapter
-    var onItemClick: ((groupId: Int) -> Unit)? = null
+    var onItemClick: ((groupId: String) -> Unit)? = null
     var onNewGroup: ((name: String) -> Unit)? = null
     var groupList: List<GroupListDataItem> = listOf()
 

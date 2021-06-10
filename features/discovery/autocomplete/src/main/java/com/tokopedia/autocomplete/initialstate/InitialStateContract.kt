@@ -3,9 +3,9 @@ package com.tokopedia.autocomplete.initialstate
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignViewModel
+import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
-import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
 
 interface InitialStateContract {
     interface View : CustomerView {
@@ -23,13 +23,13 @@ interface InitialStateContract {
 
         fun finish()
 
-        fun trackEventClickRecentSearch(label: String, adapterPosition: Int)
+        fun trackEventClickRecentSearch(label: String)
 
         fun trackEventClickRecentShop(label: String, userId: String)
 
         fun trackEventClickSeeMoreRecentSearch(userId: String)
 
-        fun renderCompleteRecentSearch(recentSearchViewModel: RecentSearchViewModel)
+        fun renderCompleteRecentSearch(recentSearchDataView: RecentSearchDataView)
 
         fun dropKeyBoard()
 
@@ -63,6 +63,6 @@ interface InitialStateContract {
 
         fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
 
-        fun onCuratedCampaignCardClicked(curatedCampaignViewModel: CuratedCampaignViewModel)
+        fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView)
     }
 }

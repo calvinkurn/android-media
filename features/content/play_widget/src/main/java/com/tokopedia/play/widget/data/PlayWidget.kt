@@ -34,7 +34,13 @@ data class PlayWidgetItem(
 
 data class PlayWidgetItemConfig(
         @SerializedName("hasPromo") val hasPromo: Boolean = false,
-        @SerializedName("isReminderSet") val isReminderSet: Boolean = false
+        @SerializedName("isReminderSet") val isReminderSet: Boolean = false,
+        @SerializedName("promo_labels") val promoLabels: List<PlayWidgetPromoLabel> = emptyList(),
+)
+
+data class PlayWidgetPromoLabel(
+        @SerializedName("text") val text: String = "",
+        @SerializedName("type") val type: String = "",
 )
 
 data class PlayWidgetItemPartner(

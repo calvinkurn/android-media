@@ -12,11 +12,17 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.managepassword.R
 import com.tokopedia.managepassword.addpassword.analytics.AddPasswordAnalytics
 import com.tokopedia.managepassword.addpassword.view.viewmodel.AddPasswordViewModel
 import com.tokopedia.managepassword.di.ManagePasswordComponent
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,6 +39,9 @@ import javax.inject.Inject
 
 class AddPasswordFragment : BaseDaggerFragment() {
 
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
+
+    private var isEnableEncryption = false
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -60,6 +69,36 @@ class AddPasswordFragment : BaseDaggerFragment() {
             }
         }
         initObserver()
+        fetchRemoteConfig()
+    }
+
+    private fun fetchRemoteConfig() {
+        if (context != null) {
+            val firebaseRemoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context)
+            isEnableEncryption = firebaseRemoteConfig.getBoolean(SessionConstants.FirebaseConfig.CONFIG_ADD_PASSWORD_ENCRYPTION, false)
+        }
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform {
+        if (!::remoteConfigInstance.isInitialized) {
+            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        }
+        return remoteConfigInstance.abTestPlatform
+    }
+
+    fun isEnableEncryptRollout(): Boolean {
+        val rolloutKey = if(GlobalConfig.isSellerApp()) {
+            SessionConstants.Rollout.ROLLOUT_ADD_PASS_ENCRYPTION_SELLER
+        } else {
+            SessionConstants.Rollout.ROLLOUT_ADD_PASS_ENCRYPTION
+        }
+
+        val variant = getAbTestPlatform().getString(rolloutKey)
+        return variant.isNotEmpty()
+    }
+
+    private fun isUseEncryption(): Boolean {
+        return isEnableEncryptRollout() && isEnableEncryption
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -91,7 +130,11 @@ class AddPasswordFragment : BaseDaggerFragment() {
                 showLoading()
                 btnSubmit?.isEnabled = false
                 tracker.onClickSubmit()
-                viewModel.createPassword(password, passwordConfirmation)
+                if(isUseEncryption()){
+                    viewModel.createPasswordV2(password, passwordConfirmation)
+                }else {
+                    viewModel.createPassword(password, passwordConfirmation)
+                }
             }
         }
     }

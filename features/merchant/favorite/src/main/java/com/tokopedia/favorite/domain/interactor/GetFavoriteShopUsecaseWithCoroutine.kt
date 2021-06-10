@@ -2,7 +2,6 @@ package com.tokopedia.favorite.domain.interactor
 
 import com.tokopedia.favorite.domain.FavoriteRepository
 import com.tokopedia.favorite.domain.model.FavoriteShop
-import com.tokopedia.favorite.view.FavoriteDispatcherProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject

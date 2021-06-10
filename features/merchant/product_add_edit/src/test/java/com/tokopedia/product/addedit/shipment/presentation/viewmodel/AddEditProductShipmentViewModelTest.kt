@@ -1,19 +1,32 @@
 package com.tokopedia.product.addedit.shipment.presentation.viewmodel
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import io.mockk.MockKAnnotations
+import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
 class AddEditProductShipmentViewModelTest {
 
-    private val coroutineDispatcher = TestCoroutineDispatcher()
+    @get:Rule
+    val instantTaskExcecutorRule = InstantTaskExecutorRule()
+
+    @RelaxedMockK
+    lateinit var saveProductDraftUseCase: SaveProductDraftUseCase
 
     private val viewModel: AddEditProductShipmentViewModel by lazy {
-        AddEditProductShipmentViewModel(coroutineDispatcher)
+        AddEditProductShipmentViewModel(saveProductDraftUseCase, CoroutineTestDispatchersProvider)
+    }
+
+    @Before
+    fun setup() {
+        MockKAnnotations.init(this)
     }
 
     @Test

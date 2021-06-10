@@ -6,12 +6,16 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.PaymentData
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.track.TrackApp
 import org.json.JSONArray
 import org.json.JSONException
+import org.json.JSONObject
 import timber.log.Timber
+import kotlin.math.log
 
 class BranchHelperValidation {
-    val TAG = "P2#BRANCH_VALIDATION#"
     val VALUE_IDR = "IDR"
     private val CONTENT_TYPE = "product"
     private val ADD_TO_CART = "ADD_TO_CART"
@@ -36,7 +40,8 @@ class BranchHelperValidation {
 
         }catch (e: Exception){
             e.printStackTrace()
-            logging("error;reason=exception_validatePURCHASE;data='$PURCHASE'ex='${Log.getStackTraceString(e)}'")
+            val messageMap = mapOf("type" to "error", "reason" to "exception_validatePURCHASE", "data" to PURCHASE, "ex" to Log.getStackTraceString(e))
+            logging(messageMap)
         }
 
     }
@@ -56,7 +61,8 @@ class BranchHelperValidation {
 
         }catch (e: Exception){
             e.printStackTrace()
-            logging("error;reason=exception_validateADD_TO_CART;data='$ADD_TO_CART'ex='${Log.getStackTraceString(e)}'")
+            val messageMap = mapOf("type" to "error", "reason" to "exception_validateADD_TO_CART", "data" to ADD_TO_CART, "ex" to Log.getStackTraceString(e))
+            logging(messageMap)
         }
     }
 
@@ -74,140 +80,187 @@ class BranchHelperValidation {
             validateContent(VIEW_ITEM,linkerData.content)
         }catch (e: Exception){
             e.printStackTrace()
-            logging("error;reason=exception_validateVIEW_ITEM;data='$VIEW_ITEM'ex='${Log.getStackTraceString(e)}'")
+            val messageMap = mapOf("type" to "error", "reason" to "exception_validateVIEW_ITEM", "data" to VIEW_ITEM, "ex" to Log.getStackTraceString(e))
+            logging(messageMap)
+        }
+    }
+
+    fun logSkipDeeplinkNonBranchLink(referringParams: JSONObject, isFirstOpen:Boolean){
+        try {
+            val clickTime = referringParams.optString("+click_timestamp")
+            val utm_medium = referringParams.optString("utm_medium")
+            val utm_source = referringParams.optString("utm_source")
+            val campaign = referringParams.optString("~campaign")
+            val android_deeplink_path = referringParams.optString(LinkerConstants.KEY_ANDROID_DEEPLINK_PATH)
+            val clicked_branch_link = referringParams.optString("+clicked_branch_link")
+            val is_first_session = referringParams.optString("+is_first_session").toString()
+            val feature = referringParams.optString("~feature")
+            val channel = referringParams.optString("~channel")
+            val clientId = TrackApp.getInstance().gtm.clientIDString
+
+            val messageMap = mapOf("type" to "validation", "reason" to "SkipDeeplinkNonBranchLink", "click_time" to clickTime, "utm_medium" to utm_medium,
+                    "utm_source" to utm_source, "campaign" to campaign, "android_deeplink_path" to android_deeplink_path, "clicked_branch_link" to clicked_branch_link,
+                    "is_first_session" to is_first_session, "client_id" to clientId,"is_first_open" to (isFirstOpen?:false).toString(),"feature" to feature,"channel" to channel)
+            logging(messageMap)
+        }catch (e: Exception){
+            e.printStackTrace()
+            val messageMap = mapOf("type" to "error", "reason" to "exception_skipDeeplink", "data" to "logSkipDeeplinkNonBranchLink", "ex" to Log.getStackTraceString(e))
+            logging(messageMap)
         }
     }
 
     private fun validatePaymentId(paymentId: String) {
         if (paymentId.isNullOrBlank()) {
-            logging("validation;reason=paymentId_blank;data=''")
+            val messageMap = mapOf("type" to "validation", "reason" to "paymentId_blank", "data" to "")
+            logging(messageMap)
         }
     }
 
     private fun validateOrderId(orderID: String) {
         if (orderID.isNullOrBlank()) {
-            logging("validation;reason=orderId_blank;data=''")
+            val messageMap = mapOf("type" to "validation", "reason" to "orderId_blank", "data" to "")
+            logging(messageMap)
         }
     }
 
     private fun isFromNotNative(isFromNative: Boolean, paymentId: String, orderId:String) {
         if (!isFromNative) {
-            logging("validation;reason=transaction_not_new_thankspage;id='$paymentId';order_id='$orderId'")
+            val messageMap = mapOf("type" to "validation", "reason" to "transaction_not_new_thankspage", "id" to paymentId, "order_id" to orderId)
+            logging(messageMap)
         }
     }
 
     private fun validateRevenue(revenuePrice: Double) {
         if (revenuePrice <= 0) {
-            logging("validation;reason=revenue_blank;revenue='$revenuePrice'")
+            val messageMap = mapOf("type" to "validation", "reason" to "revenue_blank", "revenue" to revenuePrice.toString())
+            logging(messageMap)
         }
     }
 
-
     private fun validateShipping(shippingPrice: Double) {
         if (shippingPrice <= 0) {
-            logging("validation;reason=shippingPrice_blank;shipping_price='$shippingPrice'")
+            val messageMap = mapOf("type" to "validation", "reason" to "shippingPrice_blank", "shipping_price" to shippingPrice.toString())
+            logging(messageMap)
         }
     }
 
 
     fun exceptionStringToDouble(ex: String, type: String) {
-        logging("error;reason=exceptionStringToDouble;err='$ex';type='$type'")
+        val messageMap = mapOf("type" to "error", "reason" to "exceptionStringToDouble", "err" to ex, "type" to type)
+        logging(messageMap)
     }
 
     fun exceptionToSendEvent(ex: String, type: String) {
-        logging("error;reason=exceptionToSendEvent;err='$ex';type='$type'")
+        val messageMap = mapOf("type" to "error", "reason" to "exceptionToSendEvent", "err" to ex, "type" to type)
+        logging(messageMap)
     }
 
     private fun validateNewBuyer(isNewBuyer: Boolean, productType: String) {
         if (isNewBuyer && LinkerConstants.PRODUCTTYPE_DIGITAL.equals(productType, true)) {
-            logging("validation;reason=validateNewBuyer;new_buyer='$isNewBuyer';product_type='$productType'")
+            val messageMap = mapOf("type" to "validation", "reason" to "validateNewBuyer", "new_buyer" to isNewBuyer.toString(), "product_type" to productType)
+            logging(messageMap)
         }
     }
 
     private fun validateMonthlyNewBuyer(isMonthlyNewBuyer: Boolean, productType: String) {
         if (isMonthlyNewBuyer && LinkerConstants.PRODUCTTYPE_DIGITAL.equals(productType, true)) {
-            logging("validation;reason=validateMonthlyNewBuyer;monthly_new_buyer='$isMonthlyNewBuyer';product_type='$productType'")
+            val messageMap = mapOf("type" to "validation", "reason" to "validateMonthlyNewBuyer", "monthly_new_buyer" to isMonthlyNewBuyer.toString(), "product_type" to productType)
+            logging(messageMap)
         }
     }
 
    private fun validateCurrency(eventName: String ,currency: String){
         if (!VALUE_IDR.equals(currency)) {
-            logging("validation;reason=currency_invalid;eventName='$eventName';data='$currency'")
+            val messageMap = mapOf("type" to "validation", "reason" to "currency_invalid", "eventName" to eventName, "data" to currency)
+            logging(messageMap)
         }
     }
 
     private fun validateProductPrice(eventName: String ,price: Double){
         if (price <= 0) {
-            logging("validation;reason=productprice_blank;eventName='$eventName';data='$price'")
+            val messageMap = mapOf("type" to "validation", "reason" to "productprice_blank", "eventName" to eventName, "data" to price.toString())
+            logging(messageMap)
         }
     }
 
     private fun validateProductId(eventName: String ,productId: String?){
         if (productId.isNullOrBlank()) {
-            logging("validation;reason=productId_blank;eventName='$eventName';data=''")
+            val messageMap = mapOf("type" to "validation", "reason" to "productId_blank", "eventName" to eventName, "data" to "")
+            logging(messageMap)
         }
     }
 
     fun validateQuantity(eventName: String, quantity: String,productId: String, userId:String) {
         if (LinkerUtils.convertToDouble(quantity,"quantity validation" ) <= 0) {
-            logging("validation;reason=quantity_blank;eventName='$eventName';quantity='$quantity';productId='$productId';userId='$userId'")
+            val messageMap = mapOf("type" to "validation", "reason" to "quantity_blank", "eventName" to eventName, "quantity" to quantity, "productId" to productId, "userId" to userId)
+            logging(messageMap)
         }
     }
 
     private fun validateContentId(eventName: String ,contentId: String) {
         if (contentId.isNullOrBlank()) {
-            logging("validation;reason=contentId_blank;eventName='$eventName';data=''")
+            val messageMap = mapOf("type" to "validation", "reason" to "contentId_blank", "eventName" to eventName, "data" to "")
+            logging(messageMap)
         }
     }
 
     private fun validateProductName(eventName: String ,productName: String?){
         if (productName.isNullOrBlank()) {
-            logging("validation;reason=productName_blank;eventName='$eventName';data=''")
+            val messageMap = mapOf("type" to "validation", "reason" to "productName_blank", "eventName" to eventName, "data" to "")
+            logging(messageMap)
         }
     }
 
     private fun validateProductCate3(eventName: String ,ProductCate3: String){
         if (ProductCate3.isNullOrBlank()) {
-            logging("validation;reason=ProductCate3_blank;eventName='$eventName';data=''")
+            val messageMap = mapOf("type" to "validation", "reason" to "ProductCate3_blank", "eventName" to eventName, "data" to "")
+            logging(messageMap)
         }
     }
 
     private fun validateUser(eventName: String ,userId: String){
         if (userId.isNullOrBlank()) {
-            logging("validation;reason=userId_blank;eventName='$eventName';data=''")
+            val messageMap = mapOf("type" to "validation", "reason" to "userId_blank", "eventName" to eventName, "data" to "")
+            logging(messageMap)
         }else if(userId.trim() == "0"){
-            logging("validation;reason=userId_blank;eventName='$eventName';data='$userId'")
+            val messageMap = mapOf("type" to "validation", "reason" to "userId_blank", "eventName" to eventName, "data" to "")
+            logging(messageMap)
         }
     }
 
     private fun validateContentType(eventName: String, contentType: String) {
         if (CONTENT_TYPE != contentType) {
-            logging("validation;reason=contentType_invalid;eventName='$eventName';data='$contentType'")
+            val messageMap = mapOf("type" to "validation", "reason" to "contentType_invalid", "eventName" to eventName, "data" to contentType)
+            logging(messageMap)
         }
     }
 
     private fun validateContent(eventName: String, content: String) {
         if (TextUtils.isEmpty(content)) {
-            logging("validation;reason=content_array_blank;eventName='$eventName';data=''")
+            val messageMap = mapOf("type" to "validation", "reason" to "content_array_blank", "eventName" to eventName, "data" to "")
+            logging(messageMap)
         } else {
             try {
                 val contentarray = JSONArray(content)
                 if (contentarray.length() < 1) {
-                    logging("validation;reason=content_array_invalid;eventName='$eventName';data='$content'")
+                    val messageMap = mapOf("type" to "validation", "reason" to "content_array_invalid", "eventName" to eventName, "data" to content)
+                    logging(messageMap)
                 }
             } catch (e: JSONException) {
-                logging("error;reason=content_array_exception;eventName='$eventName';data='$content'")
+                val messageMap = mapOf("type" to "error", "reason" to "content_array_exception", "eventName" to eventName, "data" to content)
+                logging(messageMap)
             }
         }
     }
 
     private fun validateProductType( productType: String) {
         if (!(LinkerConstants.PRODUCTTYPE_DIGITAL == productType || LinkerConstants.PRODUCTTYPE_MARKETPLACE == productType)) {
-            logging("validation;reason=validateProductType;eventName='';data='$productType'")
+            val messageMap = mapOf("type" to "validation", "reason" to "validateProductType", "eventName" to "", "data" to productType)
+            logging(messageMap)
         }
     }
 
-    private fun logging(log:String){
-        Timber.w(TAG + log)
+    private fun logging(messageMap: Map<String, String>){
+        ServerLogger.log(Priority.P2, "BRANCH_VALIDATION", messageMap)
     }
 }

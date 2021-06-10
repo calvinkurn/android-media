@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.sellerhome.R
+import com.tokopedia.unifyprinciples.Typography
 
 class LottieBottomNav : LinearLayout {
 
@@ -35,12 +36,12 @@ class LottieBottomNav : LinearLayout {
     private var titleList: MutableList<TextView> = ArrayList()
     private var containerList: MutableList<LinearLayout> = ArrayList()
     private var itemCount: Int = 1
-    private var buttonContainerBackgroundColor: Int = Color.WHITE
+    private var buttonContainerBackgroundColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
     private var buttonsHeight: Float = DEFAULT_HEIGHT
     private var selectedItem: Int? = null
     private var containerWidth: Int = 0
     private var navbarContainer: LinearLayout? = null
-    private var buttonColor: Int = Color.GRAY
+    private var buttonColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300)
     private var activeButtonColor: Int = Color.TRANSPARENT
 
     constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) {
@@ -61,6 +62,10 @@ class LottieBottomNav : LinearLayout {
         containerWidth = parentWidth
         resizeContainer()
         adjustBadgePosition()
+    }
+
+    fun getMenuViewByIndex(index: Int): View? {
+        return containerList.getOrNull(index)
     }
 
     fun setBadge(badgeValue: Int = 0, iconPosition: Int, visibility: Int = View.VISIBLE) {
@@ -144,10 +149,10 @@ class LottieBottomNav : LinearLayout {
         val a = context.obtainStyledAttributes(attrs, R.styleable.LottieBottomNav)
         val defaultButtonHeight = DEFAULT_HEIGHT * context.resources.displayMetrics.density
 
-        buttonContainerBackgroundColor = a.getColor(R.styleable.LottieBottomNav_buttonContainerBackgroundColor, context.getResColor(R.color.Neutral_N0))
+        buttonContainerBackgroundColor = a.getColor(R.styleable.LottieBottomNav_buttonContainerBackgroundColor, context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
         buttonsHeight = a.getDimension(R.styleable.LottieBottomNav_buttonsHeight, defaultButtonHeight)
 
-        buttonColor = a.getColor(R.styleable.LottieBottomNav_buttonColor, context.getResColor(R.color.grey_500))
+        buttonColor = a.getColor(R.styleable.LottieBottomNav_buttonColor, context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N200))
         activeButtonColor = a.getColor(R.styleable.LottieBottomNav_activeButtonColor, context.getResColor(R.color.transparent))
         a.recycle()
 
@@ -303,7 +308,7 @@ class LottieBottomNav : LinearLayout {
             buttonContainer.addView(imageContainer)
 
             // add text view to show title
-            val title = TextView(context)
+            val title = Typography(context)
             title.layoutParams = txtLayoutParam
             title.text = bottomMenu.title
             title.tag = context.getString(R.string.tag_title_textview) + bottomMenu.id

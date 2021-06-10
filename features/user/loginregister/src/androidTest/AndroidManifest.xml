@@ -15,12 +15,18 @@
             android:value="true" />
 
         <activity
-            android:name="com.tokopedia.loginregister.login.stub.activity.LoginEmailPhoneActivityStub"
+            android:name=".login.behaviour.activity.LoginActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
             android:name=".registerinitial.stub.RegisterInitialActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_id_ma" />
+
     </application>
+
+
 </manifest>

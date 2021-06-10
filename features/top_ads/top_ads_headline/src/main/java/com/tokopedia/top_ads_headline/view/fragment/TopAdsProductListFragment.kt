@@ -19,6 +19,7 @@ import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.Category
 import com.tokopedia.top_ads_headline.data.TopAdsHeadlineTabModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
+import com.tokopedia.top_ads_headline.view.activity.GROUP_NAME
 import com.tokopedia.top_ads_headline.view.activity.IS_EDITED
 import com.tokopedia.top_ads_headline.view.activity.SELECTED_PRODUCT_LIST
 import com.tokopedia.top_ads_headline.view.adapter.CategoryListAdapter
@@ -26,6 +27,7 @@ import com.tokopedia.top_ads_headline.view.adapter.ProductListAdapter
 import com.tokopedia.top_ads_headline.view.adapter.SINGLE_SELECTION
 import com.tokopedia.top_ads_headline.view.viewmodel.DEFAULT_RECOMMENDATION_TAB_ID
 import com.tokopedia.top_ads_headline.view.viewmodel.TopAdsProductListViewModel
+import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.data.util.SpaceItemDecoration
 import com.tokopedia.topads.common.data.util.Utils
@@ -46,6 +48,9 @@ const val MAX_PRODUCT_SELECTION = 10
 private const val MIN_CATEGORY_SHOWN = 2
 private const val RECOMMENDATION_TAB_POSITION = 0
 private const val ALL_PRODUCTS_TAB_POSITION = 1
+private const val VIEW_PILIH_PRODUK = "view - pilih produk"
+private const val CLICK_TIPS_PILIH_PRODUK = "click - tips on pilih produk page"
+private const val CLICK_SIMPAN_PILIH_PRODUK = "click - simpan on pilih produk page"
 
 class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.ProductListAdapterListener {
 
@@ -66,6 +71,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private var isDataEnded = false
     private var linearLayoutManager = LinearLayoutManager(context)
     private var selectedTopAdsProductMap: HashMap<Category, ArrayList<TopAdsProductModel>> = HashMap()
+    private var selectedProductList = mutableListOf<TopAdsProductModel>()
 
     companion object {
         fun newInstance(): TopAdsProductListFragment = TopAdsProductListFragment()
@@ -290,6 +296,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         }
         tooltipBtn.addItem(tooltipView)
         tooltipBtn.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormClickEvent(CLICK_TIPS_PILIH_PRODUK, "{${userSession.shopId} - {${arguments?.getString(GROUP_NAME)}}", userSession.userId)
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
                 add(TipsUiHeaderModel(R.string.topads_headline_tips_choosing_product))
@@ -357,6 +364,8 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     private fun onSuccessGetProductList(data: List<TopAdsProductModel>, eof: Boolean) {
         if (data.isNotEmpty()) {
+            selectedProductList.clear()
+            selectedProductList.addAll(data)
             hideEmptyView()
             productsListAdapter.setProductList(data as ArrayList<TopAdsProductModel>)
             setTabCount(data.size)
@@ -365,6 +374,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
             if (!btnNext.isEnabled) {
                 setTickerAndBtn()
             }
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceViewEvent(VIEW_PILIH_PRODUK, "{${userSession.shopId}} - {${arguments?.getString(GROUP_NAME)}}", data, userSession.userId)
         } else {
             showEmptyView()
         }
@@ -406,6 +416,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     private fun setResultAndFinish() {
         setTickerAndBtn()
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceCLickEvent(CLICK_SIMPAN_PILIH_PRODUK, "{${userSession.shopId} - {${arguments?.getString(GROUP_NAME)}}", selectedProductList, userSession.userId)
         if (ticker.isVisible) {
             return
         }

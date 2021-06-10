@@ -3,6 +3,7 @@ package com.tokopedia.topads.edit.view.adapter.edit_product.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.view.adapter.edit_product.viewmodel.EditProductItemViewModel
 import kotlinx.android.synthetic.main.topads_edit_layout_product_list_item_edit_product.view.*
@@ -30,7 +31,8 @@ class EditProductItemViewHolder(val view: View, var actionChecked: ((pos: Int) -
             view.include.imageViewRating5.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.topads_ic_rating_active))
             view.product_price.text = it.data.adPriceBidFmt
             view.delete.setOnClickListener {
-                actionChecked?.invoke(adapterPosition)
+                if (adapterPosition != RecyclerView.NO_POSITION)
+                    actionChecked?.invoke(adapterPosition)
             }
         }
     }

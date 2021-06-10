@@ -1,8 +1,8 @@
 package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
-import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleViewModel
-import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchViewModel
+import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchTitleDataView
+import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchDataView
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.autocomplete.shouldBe
 import io.mockk.every
@@ -44,23 +44,23 @@ internal class RefreshPopularSearchTest: InitialStatePresenterTestFixtures() {
         val visitableList = slotVisitableList.captured
 
         val refreshedPopularSearchNewSection = refreshedInitialStateData.find { it.featureId == ID_POPULAR_SEARCH }!!
-        val refreshedPopularSearchViewModel = visitableList[5] as PopularSearchViewModel
+        val refreshedPopularSearchDataView = visitableList[5] as PopularSearchDataView
 
-        refreshedPopularSearchViewModel.verifyPopularSearch(refreshedPopularSearchNewSection)
+        refreshedPopularSearchDataView.verifyPopularSearch(refreshedPopularSearchNewSection)
 
-        val popularSearchTitle = visitableList[6] as PopularSearchTitleViewModel
-        val popularSearchViewModel = visitableList[7] as PopularSearchViewModel
+        val popularSearchTitle = visitableList[6] as PopularSearchTitleDataView
+        val popularSearchDataView = visitableList[7] as PopularSearchDataView
         val popularSearchData = initialStateData.find { it.featureId == popularSearchTitle.featureId }!!
 
-        popularSearchViewModel.verifyPopularSearch(popularSearchData)
+        popularSearchDataView.verifyPopularSearch(popularSearchData)
     }
 
-    private fun PopularSearchViewModel.verifyPopularSearch(dynamicInitialStateData: InitialStateData) {
+    private fun PopularSearchDataView.verifyPopularSearch(dynamicInitialStateData: InitialStateData) {
         list.size shouldBe dynamicInitialStateData.items.size
 
-        list.forEachIndexed { index, dynamicInitialStateItemViewModel ->
-            dynamicInitialStateItemViewModel.title shouldBe dynamicInitialStateData.items[index].title
-            dynamicInitialStateItemViewModel.subtitle shouldBe dynamicInitialStateData.items[index].subtitle
+        list.forEachIndexed { index, dynamicInitialStateItemDataView ->
+            dynamicInitialStateItemDataView.title shouldBe dynamicInitialStateData.items[index].title
+            dynamicInitialStateItemDataView.subtitle shouldBe dynamicInitialStateData.items[index].subtitle
         }
     }
 

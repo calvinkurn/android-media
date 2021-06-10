@@ -17,7 +17,8 @@
         tools:visibility="visible"
         />
 
-    <include layout="@layout/layout_total_view"
+    <include
+        layout="@layout/layout_total_view"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginStart="@dimen/spacing_lvl2"

@@ -3,15 +3,16 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_chips_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/TextView.Small.BlackSecondary"
+        android:layout_marginTop="@dimen/dp_8"
         android:paddingTop="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_10"
-        android:paddingLeft="@dimen/dp_12"
-        android:paddingRight="@dimen/dp_12"
+        android:paddingStart="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_8"
         android:background="@drawable/bg_chips_item_layout" />
 
 </RelativeLayout>

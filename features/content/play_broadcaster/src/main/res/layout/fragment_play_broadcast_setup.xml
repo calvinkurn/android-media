@@ -58,7 +58,7 @@
         android:paddingTop="@dimen/spacing_lvl3"
         android:paddingEnd="@dimen/play_dp_12"
         android:paddingBottom="@dimen/spacing_lvl3"
-        android:textColor="@color/dark_N700_68"
+        android:textColor="@color/play_dms_white_68"
         app:layout_constraintBottom_toTopOf="@id/barrier_top_action_bottom_info"
         app:layout_constraintEnd_toEndOf="@id/btn_setup"
         app:layout_constraintStart_toStartOf="@id/follower_view"

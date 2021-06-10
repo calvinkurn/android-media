@@ -18,7 +18,8 @@ data class ProductTickerInfoDataModel(
         var closedInfo: ShopInfo.ClosedInfo? = ShopInfo.ClosedInfo(),
         var isProductWarehouse: Boolean = false,
         var isProductInCampaign: Boolean = false,
-        var isOutOfStock: Boolean = false
+        var isOutOfStock: Boolean = false,
+        var isUpcomingType:Boolean = false
 
 ) : DynamicPdpDataModel {
 
@@ -54,6 +55,7 @@ data class ProductTickerInfoDataModel(
                     && isStatusInfoTheSame(newData.statusInfo)
                     && isClosedInfoTheSame(newData.closedInfo)
                     && generalTickerInfoDataModel?.size == newData.generalTickerInfoDataModel?.size
+                    && isUpcomingType == newData.isUpcomingType
         } else {
             false
         }

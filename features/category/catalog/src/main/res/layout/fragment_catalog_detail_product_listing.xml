@@ -44,7 +44,7 @@
         app:layout_constrainedHeight="true"
         android:paddingStart="@dimen/unify_space_12"
         android:paddingEnd="@dimen/unify_space_12"
-        android:paddingBottom="@dimen/unify_space_64"
+        android:paddingBottom="@dimen/unify_space_96"
         app:layout_constraintTop_toBottomOf="@+id/search_product_quick_sort_filter"/>
 
     <include

@@ -36,7 +36,8 @@ class TradeInHomeViewModel @Inject constructor(
     var imeiResponseLiveData: MutableLiveData<String?> = MutableLiveData()
     var tradeInHomeStateLiveData: MutableLiveData<TradeInHomeState> = MutableLiveData()
     var imei: String? = null
-    var finalPrice : String = "-"
+    var finalPrice: String = "-"
+    var xSessionId: String = "-"
 
     var tradeInType: Int = TRADEIN_OFFLINE
 
@@ -71,7 +72,7 @@ class TradeInHomeViewModel @Inject constructor(
         if (response != null && response.deviceDiagInputRepsponse != null) {
             val result = HomeResult()
             result.isSuccess = true
-            if(tradeInParams.newPrice - diagnostics.tradeInPrice >= 0)
+            if (tradeInParams.newPrice - diagnostics.tradeInPrice >= 0)
                 finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInParams.newPrice - diagnostics.tradeInPrice, true)
             if (response.deviceDiagInputRepsponse.isEligible) {
                 if (homeResultData.value?.deviceDisplayName != null) {
@@ -163,7 +164,7 @@ class TradeInHomeViewModel @Inject constructor(
         result.isSuccess = true
         result.maxPrice = maxPrice
         result.minPrice = minPrice
-        if(tradeInParams.newPrice - maxPrice >= 0)
+        if (tradeInParams.newPrice - maxPrice >= 0)
             finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInParams.newPrice - maxPrice, true)
         if (diagnosedPrice > 0) {
             if (tradeInType != TRADEIN_MONEYIN) {
@@ -177,7 +178,7 @@ class TradeInHomeViewModel @Inject constructor(
             }
             result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true)
         } else {
-            if(maxPrice > tradeInParams.newPrice && tradeInType != TRADEIN_MONEYIN){
+            if (maxPrice > tradeInParams.newPrice && tradeInType != TRADEIN_MONEYIN) {
                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
             } else {
                 result.displayMessage = String.format("%1\$s",
@@ -222,6 +223,10 @@ class TradeInHomeViewModel @Inject constructor(
         progBarVisibility.value = true
         this.tradeInType = tradeinType
         laku6TradeIn.getMinMaxPrice(this)
+    }
+
+    fun initSessionId(laku6TradeIn: Laku6TradeIn) {
+        xSessionId = laku6TradeIn.xSessionId
     }
 
     fun getIMEI(laku6TradeIn: Laku6TradeIn, imei: String?) {

@@ -1,9 +1,10 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.sellerhomecommon.common.const.MetricsType
+import com.tokopedia.sellerhomecommon.domain.model.GetMultiLineGraphResponse
 import com.tokopedia.sellerhomecommon.domain.model.LineModel
 import com.tokopedia.sellerhomecommon.domain.model.MultiTrendLineMetricModel
-import com.tokopedia.sellerhomecommon.domain.model.MultiTrendlineWidgetDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import javax.inject.Inject
 
@@ -11,17 +12,18 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 26/10/20
  */
 
-class MultiLineGraphMapper @Inject constructor() {
+class MultiLineGraphMapper @Inject constructor(): BaseResponseMapper<GetMultiLineGraphResponse, List<MultiLineGraphDataUiModel>> {
 
-    fun mapRemoteModelToUiModel(items: List<MultiTrendlineWidgetDataModel>?, isFromCache: Boolean): List<MultiLineGraphDataUiModel> {
-        return items.orEmpty()
+    override fun mapRemoteDataToUiData(response: GetMultiLineGraphResponse, isFromCache: Boolean): List<MultiLineGraphDataUiModel> {
+        return response.fetchMultiTrendlineWidgetData?.fetchMultiTrendlineData.orEmpty()
                 .filter { !it.dataKey.isNullOrBlank() }
                 .map {
                     MultiLineGraphDataUiModel(
                             dataKey = it.dataKey.orEmpty(),
                             error = it.errorMsg.orEmpty(),
                             isFromCache = isFromCache,
-                            metrics = getMetrics(it.multiTrendlineData?.metrics.orEmpty())
+                            metrics = getMetrics(it.multiTrendlineData?.metrics.orEmpty()),
+                            showWidget = it.showWidget.orFalse()
                     )
                 }
     }

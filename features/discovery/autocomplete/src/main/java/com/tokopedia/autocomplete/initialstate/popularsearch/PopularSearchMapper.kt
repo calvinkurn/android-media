@@ -26,5 +26,5 @@ fun InitialStateData.convertPopularSearchToVisitableList(): MutableList<Visitabl
         )
         childList.add(model)
     }
-    return arrayListOf(PopularSearchViewModel(this.featureId, childList))
+    return arrayListOf(PopularSearchDataView(this.featureId, childList))
 }

@@ -13,7 +13,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -41,7 +41,7 @@
             android:label="@string/product_detail_courier"
             android:theme="@style/Theme.White"/>
 
-        <activity android:name=".estimasiongkir.view.activity.RatesEstimationDetailActivity"
+        <activity android:name="com.tokopedia.product.estimasiongkir.view.activity.RatesEstimationDetailActivity"
             android:label="@string/label_rates_estimation_detail"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>

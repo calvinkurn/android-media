@@ -1,7 +1,7 @@
 package com.tokopedia.logisticaddaddress.data;
 
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.uimodel.CoordinateUiModel;
 import com.tokopedia.logisticaddaddress.di.GeolocationScope;
-import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.network.utils.TKPDMapParam;
 
 import java.util.Map;
@@ -37,7 +37,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         compositeSubscription.add(mapsRepository.getLatLng(paramaters)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CoordinateViewModel>() {
+                .subscribe(new Subscriber<CoordinateUiModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -50,7 +50,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     }
 
                     @Override
-                    public void onNext(CoordinateViewModel model) {
+                    public void onNext(CoordinateUiModel model) {
                         listener.onSuccess(model);
                     }
                 }));
@@ -64,7 +64,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         compositeSubscription.add(mapsRepository.getLatLngFromGeocode(paramaters)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CoordinateViewModel>() {
+                .subscribe(new Subscriber<CoordinateUiModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -77,7 +77,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     }
 
                     @Override
-                    public void onNext(CoordinateViewModel model) {
+                    public void onNext(CoordinateUiModel model) {
                         listener.onSuccess(model);
                     }
                 }));

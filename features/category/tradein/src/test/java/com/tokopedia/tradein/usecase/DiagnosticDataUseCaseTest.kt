@@ -1,12 +1,13 @@
 package com.tokopedia.tradein.usecase
 
-import android.content.Context
-import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.common_tradein.model.ValidateTradePDP
+import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.tradein.model.*
+import com.tokopedia.tradein.model.DeviceDiagGQL
+import com.tokopedia.tradein.model.DeviceDiagParams
 import com.tokopedia.tradein.repository.TradeInRepository
 import io.mockk.*
 import junit.framework.Assert.assertEquals
@@ -27,7 +28,6 @@ class DiagnosticDataUseCaseTest {
     var rule = InstantTaskExecutorRule()
 
     private val tradeInRepository: TradeInRepository = mockk(relaxed = true)
-    private val resources: Resources = mockk()
 
     var diagnosticDataUseCase = spyk(DiagnosticDataUseCase(tradeInRepository))
 
@@ -71,43 +71,6 @@ class DiagnosticDataUseCaseTest {
 
     /**************************** createRequestParamsDeviceDiag() *******************************************/
 
-    /**************************** createRequestParamsKYCStatus() *******************************************/
-
-    @Test
-    fun createRequestParamsKYCStatus() {
-        val variables = diagnosticDataUseCase.createRequestParamsKYCStatus()
-
-        assertEquals(variables["projectID"], 4)
-
-    }
-    /**************************** createRequestParamsKYCStatus() *******************************************/
-
-    /**************************** getQueries() *******************************************/
-
-    @Test
-    fun `getQueries Is User KYC`() {
-        every { tradeInParams.isUseKyc } returns 1
-        mockkStatic(GraphqlHelper::class)
-        every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-
-        val queries = diagnosticDataUseCase.getQueries(tradeInParams)
-
-        assertEquals(queries.size, 2)
-    }
-
-    @Test
-    fun `getQueries Is User not KYC`() {
-        every { tradeInParams.isUseKyc } returns 0
-        mockkStatic(GraphqlHelper::class)
-        every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-
-        val queries = diagnosticDataUseCase.getQueries(tradeInParams)
-
-        assertEquals(queries.size, 1)
-    }
-
-    /**************************** getQueries() *******************************************/
-
     /**************************** getDiagnosticData() *******************************************/
 
     @Test(expected = RuntimeException::class)
@@ -116,8 +79,7 @@ class DiagnosticDataUseCaseTest {
         runBlocking {
             mockkStatic(GraphqlHelper::class)
             every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            coEvery { graphqlResponse.getData<DeviceDiagGQL>(DeviceDiagGQL::class.java) } returns null
-            coEvery { tradeInRepository.getGQLData(any(), any(), any()) } returns graphqlResponse
+            coEvery { tradeInRepository.getGQLData(any(), any(), any(), any()) } returns graphqlResponse
 
             diagnosticDataUseCase.getDiagnosticData(tradeInParams, tradeInType)
         }
@@ -125,40 +87,15 @@ class DiagnosticDataUseCaseTest {
 
     @Test
     fun getDiagnosticData() {
-        val graphqlResponse = mockk<GraphqlResponse>(relaxed = true)
         val deviceDiagGQL = mockk<DeviceDiagGQL>(relaxed = true)
         runBlocking {
             mockkStatic(GraphqlHelper::class)
             every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            every { tradeInParams.isUseKyc } returns 0
-            coEvery { graphqlResponse.getData<DeviceDiagGQL>(DeviceDiagGQL::class.java) } returns deviceDiagGQL
-            coEvery { graphqlResponse.getData<KYCDetailGQL>(KYCDetailGQL::class.java) } returns null
-            coEvery { tradeInRepository.getGQLData(any(), any(), any()) } returns graphqlResponse
+            coEvery { tradeInRepository.getGQLData(any(), DeviceDiagGQL::class.java, any(), CacheType.ALWAYS_CLOUD)} returns deviceDiagGQL
 
             val variable = diagnosticDataUseCase.getDiagnosticData(tradeInParams, tradeInType)
 
             assertEquals(variable, deviceDiagGQL.diagResponse)
-        }
-    }
-
-    @Test
-    fun getDiagnosticDataKYC() {
-        val graphqlResponse = mockk<GraphqlResponse>(relaxed = true)
-        val deviceDiagGQL = mockk<DeviceDiagGQL>(relaxed = true)
-        val kycDetailGQL = mockk<KYCDetailGQL>(relaxed = true)
-        val deviceDataResponse = DeviceDataResponse()
-        runBlocking {
-            mockkStatic(GraphqlHelper::class)
-            every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            coEvery { tradeInParams.isUseKyc } returns 1
-            coEvery { deviceDiagGQL.diagResponse } returns deviceDataResponse
-            coEvery { graphqlResponse.getData<DeviceDiagGQL>(DeviceDiagGQL::class.java) } returns deviceDiagGQL
-            coEvery { graphqlResponse.getData<KYCDetailGQL>(KYCDetailGQL::class.java) } returns kycDetailGQL
-            coEvery { tradeInRepository.getGQLData(any(), any(), any()) } returns graphqlResponse
-
-            val variable = diagnosticDataUseCase.getDiagnosticData(tradeInParams, tradeInType)
-
-            assertEquals(variable?.kycDetails, kycDetailGQL.kycDetails)
         }
     }
 

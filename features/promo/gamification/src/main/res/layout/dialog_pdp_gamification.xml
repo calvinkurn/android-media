@@ -8,7 +8,7 @@
     tools:background="@drawable/header_bottom_sheet_rounded_white"
     tools:orientation="vertical">
 
-    <TextView
+    <View
         android:id="@+id/tray_close"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_4"
@@ -29,7 +29,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTitle"
-                android:text="@string/gami_produk_rekomendasi"
+                android:text="@string/gami_pdp_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"

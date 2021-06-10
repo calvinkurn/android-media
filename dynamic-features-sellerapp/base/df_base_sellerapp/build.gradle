@@ -111,4 +111,9 @@ dependencies {
     implementation project(rootProject.ext.features.sellerMenu)
     implementation project(rootProject.ext.features.sellerAction)
     implementation project(rootProject.ext.features.snapshot)
+
+    // Order Management
+    implementation project(rootProject.ext.features.ordermanagementhistory)
+
+    implementation project(rootProject.ext.libraries.imagePicker)
 }

@@ -3,7 +3,6 @@ package com.tokopedia.topupbills.telco.postpaid.widget
 import android.content.Context
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.AttrRes
@@ -61,6 +60,12 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
         setButtonEnquiry(false)
     }
 
+    fun resetEnquiryResult() {
+        btnEnquiry.show()
+        titleEnquiryResult.gone()
+        enquiryResult.gone()
+    }
+
     fun setButtonEnquiry(enable: Boolean) {
         btnEnquiry.isEnabled = enable
     }
@@ -71,12 +76,14 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
 
     fun showEnquiryResultPostpaid(telcoEnquiryData: TelcoEnquiryData) {
         enquiryResult.removeAllViews()
-        for (item in telcoEnquiryData.enquiry.attributes.mainInfoList) {
-            if (!TextUtils.isEmpty(item.value)) {
-                val billsResult = DigitalTelcoBillsResultWidget(context)
-                billsResult.setLabel(item.label)
-                billsResult.setValue(item.value)
-                enquiryResult.addView(billsResult)
+        if (telcoEnquiryData.enquiry.attributes.mainInfoList != null) {
+            for (item in telcoEnquiryData.enquiry.attributes.mainInfoList) {
+                if (!TextUtils.isEmpty(item.value)) {
+                    val billsResult = DigitalTelcoBillsResultWidget(context)
+                    billsResult.setLabel(item.label)
+                    billsResult.setValue(item.value)
+                    enquiryResult.addView(billsResult)
+                }
             }
         }
         btnEnquiry.gone()

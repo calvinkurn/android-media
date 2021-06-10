@@ -246,7 +246,7 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(getRecyclerView(view).layoutManager) {
+        return object : EndlessRecyclerViewScrollListener(getRecyclerView(view)?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
                 loadData(page)
@@ -271,6 +271,13 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         //if product data only one, check product stock
         if (notification.products.isSingleItem()) {
             viewModel.isProductStockHandler(notification.notificationId)
+        }
+    }
+
+    override fun onItemMultipleStockHandlerClick(notification: NotificationItemViewBean) {
+        val productData = notification.getAtcProduct()
+        productData?.let {
+            viewModel.isProductStockHandlerMultiple(notification.notificationId, it)
         }
     }
 

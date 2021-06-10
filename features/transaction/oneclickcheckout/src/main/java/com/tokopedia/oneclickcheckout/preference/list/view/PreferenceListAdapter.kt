@@ -10,10 +10,7 @@ class PreferenceListAdapter(private val listener: PreferenceListAdapterListener,
 
     private var list: ArrayList<ProfilesItemModel> = ArrayList()
 
-    private var isNewLayout: Boolean = false
-
-    fun submitList(newList: List<ProfilesItemModel>?, isNewLayout: Boolean) {
-        this.isNewLayout = isNewLayout
+    fun submitList(newList: List<ProfilesItemModel>?) {
         list.clear()
         if (newList != null) {
             list.addAll(newList)
@@ -26,20 +23,14 @@ class PreferenceListAdapter(private val listener: PreferenceListAdapterListener,
             NewMainPreferenceListViewHolder.LAYOUT -> NewMainPreferenceListViewHolder(
                     LayoutInflater.from(parent.context).inflate(NewMainPreferenceListViewHolder.LAYOUT, parent, false),
                     listener)
-            NewPreferenceListViewHolder.LAYOUT -> NewPreferenceListViewHolder(
+            else -> NewPreferenceListViewHolder(
                     LayoutInflater.from(parent.context).inflate(NewPreferenceListViewHolder.LAYOUT, parent, false),
-                    listener)
-            else -> PreferenceListViewHolder(
-                    LayoutInflater.from(parent.context).inflate(PreferenceListViewHolder.LAYOUT, parent, false),
                     listener)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is PreferenceListViewHolder -> {
-                holder.bind(list[position], currentProfileId, itemCount)
-            }
             is NewMainPreferenceListViewHolder -> {
                 holder.bind(list[position], currentProfileId, itemCount)
             }
@@ -50,9 +41,6 @@ class PreferenceListAdapter(private val listener: PreferenceListAdapterListener,
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (!isNewLayout) {
-            return PreferenceListViewHolder.LAYOUT
-        }
         val mainProfile = list[position].status == MAIN_PROFILE_STATUS
         return if (mainProfile) NewMainPreferenceListViewHolder.LAYOUT else NewPreferenceListViewHolder.LAYOUT
     }

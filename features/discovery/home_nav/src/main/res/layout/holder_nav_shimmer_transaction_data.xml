@@ -2,18 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_4"
-    android:orientation="vertical">
-
-    <include
-        layout="@layout/holder_transaction_list_shimmer"/>
-
-    <LinearLayout
-        android:layout_marginTop="@dimen/dp_13"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+    android:layout_marginTop="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:orientation="horizontal">
 
         <include
             layout="@layout/holder_transaction_payment_shimmer"/>
@@ -23,7 +14,5 @@
             android:layout_width="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
             layout="@layout/holder_transaction_payment_shimmer"/>
-    </LinearLayout>
-
 
 </LinearLayout>

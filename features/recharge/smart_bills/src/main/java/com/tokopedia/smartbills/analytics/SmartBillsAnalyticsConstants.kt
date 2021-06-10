@@ -28,6 +28,8 @@ interface SmartBillsAnalyticConstants {
             const val CLICK_BAYAR_PARTIAL = "click bayar partial"
             const val CLICK_BAYAR_FAILED = "click bayar gagal"
             const val CLICK_DETAIL = "click detail"
+            const val CLICK_TOOL_TIP = "click on tooltip icon"
+            const val CLICK_MORE_LEARN = "click pelajari selengkapnya"
         }
     }
 

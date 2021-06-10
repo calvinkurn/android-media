@@ -1,8 +1,6 @@
 package com.tokopedia.ordermanagement.snapshot.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSession
@@ -23,10 +21,6 @@ class SnapshotModule(val context: Context) {
     @SnapshotScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
-
-    @SnapshotScope
-    @Provides
-    fun provideMainDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @SnapshotScope
     @Provides

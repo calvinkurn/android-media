@@ -16,6 +16,7 @@ class CMInAppManagerTest {
 
     private val remoteMessage: RemoteMessage = mockk(relaxed = true)
     private val cmInAppManager:CMInAppManager = spyk(CMInAppManager.getInstance())
+    private val cmActivityLifecycleHandler :CmActivityLifecycleHandler = spyk(CmActivityLifecycleHandler(cmInAppManager, PushIntentHandler(), cmInAppManager, cmInAppManager))
 
     @Before
     fun setUp() {
@@ -71,12 +72,12 @@ class CMInAppManagerTest {
         val activity: Activity = mockk()
         mockkStatic(RulesManager::class)
         every { RulesManager.getInstance() } returns mockk(relaxed = true)
-        every { RulesManager.getInstance().checkValidity(any(), any(), any()) } returns Unit
+        every { RulesManager.getInstance().checkValidity(any(), any(), any(), any(), any()) } returns Unit
         every { activity.application } returns mockk(relaxed = true)
 
-        cmInAppManager.onActivityStartedInternal(activity)
+        cmActivityLifecycleHandler.onActivityStartedInternal(activity)
 
-        verify { RulesManager.getInstance().checkValidity(any(), any(), any()) }
+        verify { RulesManager.getInstance().checkValidity(any(), any(), any(), any(), any()) }
     }
 
 }

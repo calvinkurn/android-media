@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:padding="@dimen/dp_8">
 
 
@@ -33,7 +33,7 @@
             android:layout_marginStart="@dimen/tp_margin_regular"
             android:layout_marginLeft="@dimen/tp_margin_regular"
             android:text="@string/tp_label_membership"
-            android:textColor="@color/black_54"
+            android:textColor="@color/Unify_N700_44"
             android:textSize="@dimen/tp_text_size_xsmall"
             app:layout_constraintStart_toEndOf="@+id/img_egg_bottom"
             app:layout_constraintTop_toTopOf="parent" />
@@ -47,7 +47,7 @@
             android:maxLines="1"
             android:paddingEnd="@dimen/tp_padding_regular"
             android:paddingRight="@dimen/tp_padding_regular"
-            android:textColor="@color/black_70"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/tp_text_size_small"
             app:layout_constraintLeft_toLeftOf="@+id/text_membership_label_bottom"
             app:layout_constraintTop_toBottomOf="@+id/text_membership_label_bottom" />
@@ -79,7 +79,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tp_label_see_point_saya"
-                android:textColor="@color/black_54"
+                android:textColor="@color/Unify_N700_44"
                 android:textSize="@dimen/tp_text_size_xsmall" />
 
             <TextView
@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-medium"
                 android:text=""
-                android:textColor="@color/black_70"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="@dimen/tp_text_size_small" />
 
         </LinearLayout>

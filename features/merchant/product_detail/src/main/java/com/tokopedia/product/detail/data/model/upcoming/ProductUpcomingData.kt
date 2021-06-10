@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.model.upcoming
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.product.detail.common.data.model.constant.ProductUpcomingTypeDef
 
 /**
  * Created by Yehezkiel on 21/07/20
@@ -42,4 +43,6 @@ data class ProductUpcomingData(
         @SerializedName("upcomingType")
         @Expose
         val upcomingType: String? = ""
-)
+) {
+        fun isUpcomingNplType(): Boolean = upcomingType == ProductUpcomingTypeDef.UPCOMING_NPL
+}

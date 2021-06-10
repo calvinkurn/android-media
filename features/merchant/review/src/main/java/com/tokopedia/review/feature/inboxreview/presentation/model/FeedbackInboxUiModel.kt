@@ -23,7 +23,8 @@ data class FeedbackInboxUiModel(
         var isAutoReply: Boolean = false,
         var sellerUser: String = "",
         var isMoreReply: Boolean = false,
-        var isReplied: Boolean = false
+        var isReplied: Boolean = false,
+        var isKejarUlasan: Boolean = false
 ): BaseInboxReview {
 
     data class Attachment(

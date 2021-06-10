@@ -28,7 +28,7 @@
         android:id="@+id/appCompatImageView"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:translationX="8dp"
+        android:translationX="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline"
@@ -51,6 +51,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
+        android:layout_marginEnd="@dimen/gami_ovo_points_end_margin"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_22"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -58,7 +59,7 @@
         app:layout_constraintStart_toStartOf="@id/guideline"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyWeight="bold"
-        tools:text="5 OVO Points" />
+        tools:text="50000000000000000 OVO Points" />
 
     <View
         android:layout_width="0dp"

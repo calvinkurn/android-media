@@ -10,4 +10,17 @@
     <color category="global-color" name="kyc_centralized_8a000000">#8a000000</color>
     <color category="global-color" name="kyc_centralized_A6ffffff">#A6ffffff</color>
     <color category="global-color" name="kyc_centralized_D8F4F3">#D8F4F3</color>
+
+    <color name="kyc_dms_subtitle">#ffffff</color>
+    <color name="kyc_dms_toolbar_text_color">#ffffff</color>
+    <color name="kyc_dms_toolbar_icon_color">#ffffff</color>
+    <color name="kyc_dms_refresh_icon_color">#ffffff</color>
+    <color name="kyc_dms_refresh_icon_color_black">#000</color>
+    <color name="kyc_dms_refresh_icon_color_even_odd">#D8D8D8</color>
+    <color name="kyc_dms_shutter_background">#70FFFFFF</color>
+    <color name="kyc_dms_shutter_color">#ffffff</color>
+    <color name="kyc_dms_shutter_stroke_color">#000000</color>
+    <color name="kyc_dms_recapture_button_color">#ffffff</color>
+    <color name="kyc_dms_border_camera">#ffffff</color>
+    <color name="kyc_dms_border_button">#ADFFFFFF</color>
 </resources>

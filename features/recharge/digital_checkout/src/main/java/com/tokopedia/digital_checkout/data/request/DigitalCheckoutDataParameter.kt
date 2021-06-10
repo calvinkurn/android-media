@@ -1,6 +1,7 @@
 package com.tokopedia.digital_checkout.data.request
 
 import android.os.Parcelable
+import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -20,5 +21,6 @@ data class DigitalCheckoutDataParameter(
         var isNeedOtp: Boolean = false,
 
         var isSubscriptionChecked: Boolean = false,
-        var isFintechProductChecked: Boolean = false
+        var fintechProducts: HashMap<String, FintechProduct> = hashMapOf(),
+        var userInputPriceValue: Long? = null
 ) : Parcelable

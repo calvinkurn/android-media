@@ -31,7 +31,8 @@ class InstrumentTestProductDetailActivity : AppCompatActivity(), InstrumentTestT
                 productName,
                 productImageUrl,
                 false,
-                333311
+                333311,
+                ""
         )
         val bundleData = Bundle()
         bundleData.putParcelable(AddToCartDoneBottomSheet.KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)

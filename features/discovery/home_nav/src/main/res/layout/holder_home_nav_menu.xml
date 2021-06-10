@@ -54,7 +54,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:notificationType="counter_type"
         tools:visibility="visible"/>
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.unifycomponents.NotificationUnify
         android:id="@+id/menu_notification_typography"
         android:visibility="visible"
         android:gravity="center_vertical"

@@ -3,9 +3,9 @@ package com.tokopedia.talk.feature.reply.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.feature.reply.data.model.createcomment.TalkCreateNewCommentResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.delete.comment.TalkDeleteCommentResponseWrapper
@@ -21,8 +21,8 @@ import com.tokopedia.talk.feature.reply.domain.usecase.*
 import com.tokopedia.talk.feature.sellersettings.template.data.ChatTemplatesAll
 import com.tokopedia.talk.feature.sellersettings.template.domain.usecase.GetAllTemplatesUseCase
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -45,9 +45,12 @@ class TalkReplyViewModel @Inject constructor(
         const val MUTATION_SUCCESS = 1
     }
 
-    val userId: String = userSession.userId
-    val shopAvatar: String = userSession.shopAvatar
-    val profilePicture: String = userSession.profilePicture
+    val userId: String
+        get() = userSession.userId
+    val shopAvatar: String
+        get() = userSession.shopAvatar
+    val profilePicture: String
+        get() = userSession.profilePicture
     var isMyShop: Boolean = false
 
     private val _followUnfollowResult = MutableLiveData<Result<TalkFollowUnfollowTalkResponseWrapper>>()

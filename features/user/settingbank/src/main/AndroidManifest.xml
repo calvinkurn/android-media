@@ -10,8 +10,8 @@
             android:name=".view.activity.SettingBankActivity"
             android:label="@string/title_setting_bank"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
+            android:theme="@style/Theme.WhiteUnify">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -28,12 +28,12 @@
             android:name=".view.activity.AddBankActivity"
             android:label="@string/sbank_title_add_bank_account"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.WhiteUnify"/>
 
         <activity
             android:name=".view.activity.ChooseBankActivity"
             android:theme="@style/Theme.AppCompat.Translucent">
-            <intent-filter android:autoVerify="true">
+            <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -51,7 +51,7 @@
             android:name=".view.activity.AccountDocumentActivity"
             android:label="@string/sbank_confirm_bank_account"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.WhiteUnify"/>
 
     </application>
 </manifest>

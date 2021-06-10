@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -28,6 +27,7 @@ import com.tokopedia.review.feature.reputationhistory.view.model.EmptySeparatorM
 import com.tokopedia.review.feature.reputationhistory.view.model.ReputationReviewModel;
 import com.tokopedia.review.feature.reputationhistory.view.model.SetDateHeaderModel;
 import com.tokopedia.review.R;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * @author vishal.gupta on 20/02/2017.
- *         modify by normansyahputra 16-03-2017
+ * modify by normansyahputra 16-03-2017
  */
 public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
     public static final int SET_DATE_MODEL_POSITION = 0;
@@ -239,21 +239,21 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView date;
+        Typography date;
 
-        TextView description;
+        Typography description;
 
-        TextView penaltyScore;
+        Typography penaltyScore;
 
-        TextView tvInvoice;
+        Typography tvInvoice;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            date = (TextView) itemView.findViewById(R.id.tv_date);
-            description = (TextView) itemView.findViewById(R.id.tv_note);
-            penaltyScore = (TextView) itemView.findViewById(R.id.tv_score);
-            tvInvoice = (TextView) itemView.findViewById(R.id.tv_invoice);
+            date = (Typography) itemView.findViewById(R.id.tv_date);
+            description = (Typography) itemView.findViewById(R.id.tv_note);
+            penaltyScore = (Typography) itemView.findViewById(R.id.tv_score);
+            tvInvoice = (Typography) itemView.findViewById(R.id.tv_invoice);
 
         }
     }
@@ -319,8 +319,8 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         DateUtilHelper dateUtilHelper;
         Fragment fragment;
         private LinearLayout containerClick;
-        private TextView reputationInfo;
-        private TextView descReputationInfo;
+        private Typography reputationInfo;
+        private Typography descReputationInfo;
         private ImageView imageEmptyReputation;
 
         public EmptyListViewHolder(View itemView) {
@@ -328,8 +328,8 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
             dateUtilHelper = new DateUtilHelper(itemView.getContext());
             containerClick = (LinearLayout) itemView.findViewById(R.id.reputation_container_change_date);
-            reputationInfo = (TextView) itemView.findViewById(R.id.good_job_reputation_retry);
-            descReputationInfo = (TextView) itemView.findViewById(R.id.description_reputation_retry);
+            reputationInfo = (Typography) itemView.findViewById(R.id.good_job_reputation_retry);
+            descReputationInfo = (Typography) itemView.findViewById(R.id.description_reputation_retry);
             imageEmptyReputation = (ImageView) itemView.findViewById(R.id.img_reputation_retry);
         }
 
@@ -345,7 +345,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
             dateUtilHelper.setsDate(emptyListModel.getSetDateHeaderModel().getsDate());
             dateUtilHelper.seteDate(emptyListModel.getSetDateHeaderModel().geteDate());
-            if(emptyListModel.isEmptyShop()){
+            if (emptyListModel.isEmptyShop()) {
                 imageEmptyReputation.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_penalti_reputasi_zero));
                 reputationInfo.setText(context.getString(R.string.reputation_history_label_congrats_no_penalty));
                 descReputationInfo.setText(context.getString(R.string.reputation_history_label_improve_selling_get_badge));
@@ -361,5 +361,4 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
             });
         }
     }
-
 }

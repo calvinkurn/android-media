@@ -74,7 +74,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecomme
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
@@ -113,9 +113,9 @@ import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -130,9 +130,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.topads.sdk.domain.model.Data
-import com.tokopedia.topads.sdk.domain.model.Product
-import com.tokopedia.topads.sdk.domain.model.Shop
+import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
 import com.tokopedia.track.TrackApp
@@ -144,11 +142,18 @@ import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * @author by nisie on 5/15/17.
  */
 
+const val CLICK_FOLLOW_TOPADS = "click - follow - topads"
+const val IMPRESSION_CARD_TOPADS = "impression - card - topads"
+const val IMPRESSION_PRODUCT_TOPADS = "impression - product - topads"
+const val CLICK_CEK_SEKARANG = "click - cek sekarang - topads"
+const val CLICK_SHOP_TOPADS = "click - shop - topads"
+const val CLICK_PRODUCT_TOPADS = "click - product - topads"
 class FeedPlusFragment : BaseDaggerFragment(),
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
@@ -219,7 +224,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private val userIdInt: Int
         get() {
-           return userSession.userId.toIntOrZero()
+            return userSession.userId.toIntOrZero()
         }
 
     companion object {
@@ -295,7 +300,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (activity != null) GraphqlClient.init(activity!!)
+        if (activity != null) GraphqlClient.init(requireActivity())
         performanceMonitoring = PerformanceMonitoring.start(FEED_TRACE)
         super.onCreate(savedInstanceState)
         activity?.run {
@@ -322,7 +327,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 view?.hideLoadingTransparent()
                 when (it) {
                     is Success -> onSuccessSubmitInterestPickData(it.data)
-                    is Fail  -> onErrorSubmitInterestPickData(it.throwable)
+                    is Fail -> onErrorSubmitInterestPickData(it.throwable)
                 }
             })
 
@@ -385,7 +390,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             })
 
             likeKolResp.observe(lifecycleOwner, Observer {
-                when (it)  {
+                when (it) {
                     is Success -> {
                         val data = it.data
                         if (data.isSuccess) {
@@ -445,7 +450,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             })
 
             atcResp.observe(lifecycleOwner, Observer {
-                when(it) {
+                when (it) {
                     is Success -> {
                         val data = it.data
                         when {
@@ -472,7 +477,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             })
 
             toggleFavoriteShopResp.observe(lifecycleOwner, Observer {
-                when(it) {
+                when (it) {
                     is Success -> {
                         val data = it.data
                         if (data.isSuccess) {
@@ -531,7 +536,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 if (intent != null && intent.action != null && intent.action == BROADCAST_FEED) {
                     val isHaveNewFeed = intent.getBooleanExtra(PARAM_BROADCAST_NEW_FEED, false)
                     if (isHaveNewFeed) {
-                        newFeed.show()
+                        newFeed.visible()
                         triggerNewFeedNotification()
                     }
                 }
@@ -606,10 +611,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                         position = layoutManager?.findLastVisibleItemPosition() ?: 0
                                     }
                                     layoutManager?.findFirstCompletelyVisibleItemPosition() != -1 -> {
-                                        position = layoutManager?.findFirstCompletelyVisibleItemPosition() ?: 0
+                                        position = layoutManager?.findFirstCompletelyVisibleItemPosition()
+                                                ?: 0
                                     }
                                     layoutManager?.findLastCompletelyVisibleItemPosition() != -1 -> {
-                                        position = layoutManager?.findLastCompletelyVisibleItemPosition() ?: 0
+                                        position = layoutManager?.findLastCompletelyVisibleItemPosition()
+                                                ?: 0
                                     }
                                 }
 
@@ -637,7 +644,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun itemIsFullScreen(): Boolean {
-        return layoutManager?.findLastVisibleItemPosition()  == layoutManager?.findFirstVisibleItemPosition()
+        return layoutManager?.findLastVisibleItemPosition() == layoutManager?.findFirstVisibleItemPosition()
     }
 
     override fun onRefresh() {
@@ -683,7 +690,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 val serverErrorMsg = data.getStringExtra(COMMENT_ARGS_SERVER_ERROR_MSG)
                 if (!TextUtils.isEmpty(serverErrorMsg)) {
                     view?.let {
-                        Toaster.make(it, serverErrorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,getString(R.string.cta_refresh_feed), View.OnClickListener { onRefresh() })
+                        Toaster.make(it, serverErrorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.cta_refresh_feed), View.OnClickListener { onRefresh() })
                     }
                 } else {
                     onSuccessAddDeleteKolComment(
@@ -825,20 +832,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun registerNewFeedReceiver() {
-        if (activity != null && activity!!.applicationContext != null) {
+        if (activity != null && requireActivity().applicationContext != null) {
             val intentFilter = IntentFilter()
             intentFilter.addAction(BROADCAST_FEED)
 
             LocalBroadcastManager
-                    .getInstance(activity!!.applicationContext)
+                    .getInstance(requireActivity().applicationContext)
                     .registerReceiver(newFeedReceiver, intentFilter)
         }
     }
 
     private fun unRegisterNewFeedReceiver() {
-        if (activity != null && activity!!.applicationContext != null) {
+        if (activity != null && requireActivity().applicationContext != null) {
             LocalBroadcastManager
-                    .getInstance(activity!!.applicationContext)
+                    .getInstance(requireActivity().applicationContext)
                     .unregisterReceiver(newFeedReceiver)
         }
     }
@@ -850,7 +857,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     feedViewModel.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS)
                     isLoadedOnce = !isLoadedOnce
                 }
-
                 if (afterPost) {
                     showAfterPostToaster()
                     afterPost = false
@@ -1020,18 +1026,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun onSuccessReportContent() {
         view?.let {
-            Toaster.make(it, getString(R.string.feed_content_reported), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.label_close)) }
+            Toaster.make(it, getString(R.string.feed_content_reported), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.label_close))
+        }
     }
 
     private fun onErrorReportContent(errorMsg: String) {
         view?.let {
-            Toaster.make(it, errorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.label_close)) }
+            Toaster.make(it, errorMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.label_close))
+        }
     }
 
     override fun onGoToLogin() {
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-            activity!!.startActivityForResult(intent, REQUEST_LOGIN)
+            requireActivity().startActivityForResult(intent, REQUEST_LOGIN)
         }
     }
 
@@ -1073,7 +1081,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             )
         }
         if (postType == FollowCta.AUTHOR_USER || postType == FollowCta.AUTHOR_SHOP)
-        feedAnalytics.eventClickFeedProfileRecommendation(authorId, postType)
+            feedAnalytics.eventClickFeedProfileRecommendation(authorId, postType)
     }
 
     override fun onRecommendationActionClick(positionInFeed: Int, adapterPosition: Int,
@@ -1104,8 +1112,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun visitShopPageWithAnalytics(positionInFeed: Int, shop: Shop) {
         goToShopPage(shop.id)
-        if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
-            val (_, dataList, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
+        if (adapter.getlist()[positionInFeed] is TopadsShopUiModel) {
+            val (_, dataList, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopUiModel
             for ((templateType, _, _, _, authorName, _, authorId, cardPosition, adId) in trackingList) {
                 if (TextUtils.equals(authorName, shop.name)) {
                     analytics.eventTopadsRecommendationClick(
@@ -1132,8 +1140,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun trackShopClickImpression(positionInFeed: Int, adapterPosition: Int, shop: Shop) {
-        if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
-            val (_, dataList, _, _) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
+        if (adapter.getlist()[positionInFeed] is TopadsShopUiModel) {
+            val (_, dataList, _, _) = adapter.getlist()[positionInFeed] as TopadsShopUiModel
             if (adapterPosition != RecyclerView.NO_POSITION) {
                 feedViewModel.doTopAdsTracker(dataList[adapterPosition].shopClickUrl, shop.id, shop.name, dataList[adapterPosition].shop.imageShop.xsEcs, true)
             }
@@ -1147,12 +1155,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data) {
         feedViewModel.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
 
-        if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
-            val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
+        if (adapter.getlist()[positionInFeed] is TopadsShopUiModel) {
+            val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopUiModel
 
             for (tracking in trackingList) {
                 if (TextUtils.equals(tracking.authorName, data.shop.name)) {
-                    if(data.isFavorit) {
+                    if (data.isFavorit) {
                         trackRecommendationFollowClick(tracking, FeedAnalytics.Element.UNFOLLOW)
                     } else {
                         trackShopClickImpression(positionInFeed, adapterPosition, data.shop)
@@ -1523,7 +1531,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessSubmitInterestPickData(data : SubmitInterestResponseViewModel) {
+    private fun onSuccessSubmitInterestPickData(data: SubmitInterestResponseViewModel) {
         context?.let {
             when (data.source) {
                 FeedViewModel.PARAM_SOURCE_SEE_ALL_CLICK -> {
@@ -1538,7 +1546,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onErrorSubmitInterestPickData(throwable: Throwable) {
-        view?.let{
+        view?.let {
             Toaster.make(it,
                     ErrorHandler.getErrorMessage(activity, throwable),
                     Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
@@ -1620,7 +1628,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         hideAdapterLoading()
     }
 
-    private fun onSuccessFavoriteUnfavoriteShop(model : FeedPromotedShopViewModel) {
+    private fun onSuccessFavoriteUnfavoriteShop(model: FeedPromotedShopViewModel) {
         showSnackbar(model.resultString)
         if (hasFeed())
             updateFavorite()
@@ -1706,10 +1714,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onErrorDeletePost(data : DeletePostViewModel) {
+    private fun onErrorDeletePost(data: DeletePostViewModel) {
         view?.let {
             Toaster.make(it, data.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
-                    feedViewModel.doDeletePost(data.id, data.rowNumber)
+                feedViewModel.doDeletePost(data.id, data.rowNumber)
             })
         }
     }
@@ -1723,7 +1731,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessToggleFavoriteShop(rowNumber: Int, adapterPosition: Int) {
-        if(rowNumber < adapter.getlist().size) {
+        if (rowNumber < adapter.getlist().size) {
             if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
                 val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
                 header.followCta.isFollow = !header.followCta.isFollow
@@ -1736,8 +1744,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 adapter.notifyItemChanged(rowNumber, adapterPosition)
             }
 
-            if (adapter.getlist()[rowNumber] is TopadsShopViewModel) {
-                val (_, dataList) = adapter.getlist()[rowNumber] as TopadsShopViewModel
+            if (adapter.getlist()[rowNumber] is TopadsShopUiModel) {
+                val (_, dataList) = adapter.getlist()[rowNumber] as TopadsShopUiModel
                 dataList[adapterPosition].isFavorit = !dataList[adapterPosition].isFavorit
                 adapter.notifyItemChanged(rowNumber, adapterPosition)
             }
@@ -1851,7 +1859,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun isEnableInterestPick(): Boolean{
+    private fun isEnableInterestPick(): Boolean {
         val remoteConfig = FirebaseRemoteConfigImpl(requireContext())
         return remoteConfig.getBoolean(REMOTE_CONFIG_ENABLE_INTEREST_PICK, true)
     }
@@ -1899,7 +1907,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun goToProductDetail(productId: String) {
         if (activity != null) {
-            activity!!.startActivity(getProductIntent(productId))
+            requireActivity().startActivity(getProductIntent(productId))
         }
     }
 
@@ -1915,7 +1923,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun goToShopPage(shopId: String) {
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.SHOP, shopId)
-            activity!!.startActivity(intent)
+            requireActivity().startActivity(intent)
         }
     }
 
@@ -1962,7 +1970,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         trackingList,
                         userId
                 )
-            } else if (visitable is TopadsShopViewModel) {
+            } else if (visitable is TopadsShopUiModel) {
                 val (_, _, _, trackingList, _) = visitable
                 analytics.eventTopadsRecommendationImpression(
                         trackingList,
@@ -2090,7 +2098,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onTopAdsViewImpression(bannerId: String, imageUrl: String) {
         analytics.eventTopadsRecommendationImpression(
-                listOf(TrackingRecommendationModel(authorId = bannerId.toIntOrZero() )),
+                listOf(TrackingRecommendationModel(authorId = bannerId.toIntOrZero())),
                 userIdInt
         )
         feedViewModel.doTopAdsTracker(imageUrl, "", "", "", false)
@@ -2100,8 +2108,56 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedViewModel.updatePlayWidgetTotalView(channelId, totalView)
     }
 
-    override fun onFollowClick(positionInFeed: Int, shopId: String) {
+    override fun onFollowClick(positionInFeed: Int, shopId: String, adId: String) {
+        var eventLabel = "$adId - $shopId"
+
+        var eventAction = CLICK_FOLLOW_TOPADS
+        analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
         feedViewModel.doToggleFavoriteShop(positionInFeed, 0, shopId)
+    }
+
+    override fun onTopAdsHeadlineImpression(position: Int, cpmModel: CpmModel) {
+        var eventLabel = "${cpmModel.data[0].id} - ${cpmModel.data[0].cpm.cpmShop.id}"
+        var eventAction = IMPRESSION_CARD_TOPADS
+
+        analytics.sendFeedTopAdsHeadlineAdsImpression(eventAction, eventLabel, cpmModel.data[0].id, position, userSession.userId)
+    }
+
+    override fun onTopAdsProductItemListsner(position: Int, product: Product, cpmData: CpmData) {
+
+        var eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
+        var eventAction = IMPRESSION_PRODUCT_TOPADS
+        var productList: MutableList<Product> = mutableListOf()
+        productList.clear()
+        productList.add(product)
+        analytics.sendFeedTopAdsHeadlineProductImpression(eventAction, eventLabel, productList, position, userSession.userId)
+    }
+
+    override fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData) {
+        RouteManager.route(context, applink)
+
+        var eventAction = ""
+        var eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
+
+        if(applink?.contains("shop") == true && position == 0){
+            eventAction = CLICK_CEK_SEKARANG
+            analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
+        } else if(applink?.contains("shop") == true && position == 1){
+            eventAction = CLICK_SHOP_TOPADS
+            analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
+        } else {
+            var productId = applink?.substring(applink.lastIndexOf("/") + 1)
+            eventAction = CLICK_PRODUCT_TOPADS
+            var clickedProducts : MutableList<Product> = mutableListOf()
+            for((index, productItem) in cpmData.cpm.cpmShop.products.withIndex()) {
+                if(productId.equals(productItem.id)) {
+                    clickedProducts.clear()
+                    clickedProducts.add(productItem)
+                    analytics.sendFeedTopAdsHeadlineProductClick(eventAction, eventLabel, clickedProducts, index+1, userSession.userId)
+                }
+            }
+
+        }
     }
 
     override fun urlCreated(linkerShareData: LinkerShareResult?) {
@@ -2109,7 +2165,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             override fun onShareItemClicked(packageName: String) {
 
             }
-        }, "", shareData.imgUri, linkerShareData?.url?:"", shareData.description, shareData.name).also {
+        }, "", shareData.imgUri, linkerShareData?.url
+                ?: "", shareData.description, shareData.name).also {
             fragmentManager?.run {
                 it.show(this)
             }

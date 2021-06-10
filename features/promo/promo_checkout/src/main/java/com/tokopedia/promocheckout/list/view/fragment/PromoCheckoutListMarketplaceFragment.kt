@@ -111,9 +111,9 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
         populateExchangeCouponList()
 
         if (isCouponActive) {
-            getRecyclerView(view).visibility = View.VISIBLE
+            getRecyclerView(view)?.visibility = View.VISIBLE
         } else {
-            getRecyclerView(view).visibility = View.GONE
+            getRecyclerView(view)?.visibility = View.GONE
         }
     }
 

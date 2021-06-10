@@ -5,10 +5,6 @@ object HomeConstant {
 }
 
 object GqlQueryConstant {
-    const val GQL_GET_SHOP_PAGE_HOME_LAYOUT = "gql_get_shop_page_home_layout"
-    const val GQL_GET_SHOP_NPL_CAMPAIGN_TNC = "gql_get_shop_npl_campaign_tnc"
-    const val GQL_GET_CAMPAIGN_NOTIFY_ME = "gql_get_campaign_notify_me"
-    const val GQL_CHECK_CAMPAIGN_NOTIFY_ME = "gql_check_campaign_notify_me"
     const val GQL_ATC_MUTATION = "atcMutation"
     const val GQL_ATC_OCC_MUTATION = "atcOccMutation"
 }

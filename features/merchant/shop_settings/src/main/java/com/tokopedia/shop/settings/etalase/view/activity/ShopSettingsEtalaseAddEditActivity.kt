@@ -1,38 +1,29 @@
 package com.tokopedia.shop.settings.etalase.view.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
-import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddEditFragment
-import com.tokopedia.unifyprinciples.Typography
 
 class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSettingsComponent> {
-    private var isEdit: Boolean = false
-    private var etalase: ShopEtalaseUiModel = ShopEtalaseUiModel()
-
-    private val saveTextView: Typography? by lazy {
-        toolbar?.findViewById<Typography>(R.id.tvSave)
-    }
 
     companion object {
         private const val PARAM_IS_EDIT = "IS_EDIT"
         private const val PARAM_SHOP_ETALASE = "SHOP_ETALASE"
-
-        @JvmStatic
-        fun createIntent(context: Context, isEdit: Boolean, etalase: ShopEtalaseUiModel = ShopEtalaseUiModel()) =
-                Intent(context, ShopSettingsEtalaseAddEditActivity::class.java)
-                        .putExtra(PARAM_SHOP_ETALASE, etalase)
-                        .putExtra(PARAM_IS_EDIT, isEdit)
     }
+
+    private var isEdit: Boolean = false
+    private var etalase: ShopEtalaseUiModel = ShopEtalaseUiModel()
+    private var header: HeaderUnify? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         etalase = intent.getParcelableExtra(PARAM_SHOP_ETALASE) ?: ShopEtalaseUiModel()
@@ -40,43 +31,38 @@ class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<Sho
 
         super.onCreate(savedInstanceState)
 
-        saveTextView?.run {
-            setOnClickListener { (fragment as? ShopSettingsEtalaseAddEditFragment)?.saveAddEditEtalase() }
-            visibility = View.GONE
-        }
+        setupToolbar()
 
         supportActionBar?.setTitle(if (!isEdit) R.string.shop_settings_add_etalase else R.string.shop_settings_edit_etalase)
-        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
     }
 
     override fun inflateFragment() {
-        val newFragment = newFragment ?: return
+        val newFragment = newFragment
         supportFragmentManager.beginTransaction()
                 .replace(R.id.parent_view, newFragment, tagFragment)
                 .commit()
     }
 
-    override fun setupLayout(savedInstanceState: Bundle?) {
-        setContentView(layoutRes)
-        toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
-        if (supportActionBar != null) {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            supportActionBar!!.setDisplayShowTitleEnabled(true)
-            supportActionBar!!.title = this.title
-        }
-    }
-
     override fun getNewFragment() = ShopSettingsEtalaseAddEditFragment.createInstance(isEdit, etalase)
 
-    override fun getLayoutRes() = R.layout.activity_shop_setting_address_add_new
+    override fun getLayoutRes() = R.layout.activity_shop_settings_add_new
 
     override fun getComponent() = DaggerShopSettingsComponent.builder().baseAppComponent(
             (application as BaseMainApplication).getBaseAppComponent()).build()
 
-    fun showSaveButton() {
-        saveTextView?.apply {
-            visibility =  View.VISIBLE
+    private fun setupToolbar() {
+        header = findViewById<HeaderUnify>(R.id.header)?.apply {
+            isShowShadow = true
+            setSupportActionBar(this)
+            actionTextView?.apply {
+                setOnClickListener { (fragment as? ShopSettingsEtalaseAddEditFragment)?.saveAddEditEtalase() }
+                gone()
+            }
         }
+    }
+
+    fun showSaveButton() {
+        header?.actionTextView?.show()
     }
 }

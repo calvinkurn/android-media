@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--seller review-->
+    <string name="sir_send">Kirim</string>
+    <string name="sir_send_feedback">Beri Masukan</string>
+    <string name="sir_default_title">Waktunya kasih bintang, nih</string>
+    <string name="sir_default_message">Seberapa puas sih kamu dengan aplikasi Tokopedia?</string>
+    <string name="sir_feedback_title">Bantu kami menggapai bintang</string>
+    <string name="sir_feedback_message">Yuk, berikan masukan agar Tokopedia bisa lebih \n memenuhi kebutuhanmu.</string>
+    <string name="sir_feedback_placeholder">Tulis masukanmu disini</string>
+    <string name="sir_thank_you_title">Yay, terima kasih untuk \nbintangnya!</string>
+    <string name="sir_thank_you_message">Senang bisa memenuhi kebutuhanmu. \nSering-sering berkunjung, ya!</string>
+    <string name="sir_rate_1_star">Sangat Kurang</string>
+    <string name="sir_rate_2_star">Kurang</string>
+    <string name="sir_rate_3_star">Cukup</string>
+    <string name="sir_rate_4_star">Puas</string>
+    <string name="sir_rate_5_star">Sangat Puas</string>
+    <string name="sir_toaster_error">Oops, ada kesalahan. Coba ulangi lagi, ya</string>
+    <string name="sir_toaster_error_no_connection">Yah, koneksi internet kamu terputus.</string>
+    <string name="sir_ok">OK</string>
+</resources>

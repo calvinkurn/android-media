@@ -49,7 +49,8 @@
         android:id="@+id/rv_list_showcase"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/dp_2"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_0"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header_layout" />

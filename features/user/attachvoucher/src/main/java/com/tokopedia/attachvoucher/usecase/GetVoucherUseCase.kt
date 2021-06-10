@@ -4,7 +4,7 @@ import androidx.collection.ArrayMap
 import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.data.voucherv2.GetMerchantPromotionGetMVListResponse
 import com.tokopedia.attachvoucher.mapper.VoucherMapper
-import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.*
@@ -13,7 +13,7 @@ import kotlin.coroutines.CoroutineContext
 
 class GetVoucherUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<GetMerchantPromotionGetMVListResponse>,
-        private val dispatchers: AttachVoucherCoroutineContextProvider,
+        private val dispatchers: CoroutineDispatchers,
         private val mapper: VoucherMapper
 ) : CoroutineScope {
 
@@ -23,7 +23,7 @@ class GetVoucherUseCase @Inject constructor(
     private var getVouchersJob: Job? = null
     private val paramFilter = "Filter"
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     fun getVouchers(
             page: Int,
@@ -31,7 +31,7 @@ class GetVoucherUseCase @Inject constructor(
             onSuccess: (List<VoucherUiModel>) -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        getVouchersJob = launchCatchError(dispatchers.IO,
+        getVouchersJob = launchCatchError(dispatchers.io,
                 {
                     startLoading()
                     val params = generateParams(page, filterVoucherType)
@@ -42,13 +42,13 @@ class GetVoucherUseCase @Inject constructor(
                     }.executeOnBackground()
                     hasNext = response.merchantPromotionGetMVList.data.paging.hasNext
                     val vouchers = mapper.map(response)
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onSuccess(vouchers)
                         stopLoading()
                     }
                 },
                 { exception ->
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onError(exception)
                         stopLoading()
                     }

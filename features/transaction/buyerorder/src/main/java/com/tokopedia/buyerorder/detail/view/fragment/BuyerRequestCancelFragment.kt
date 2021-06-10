@@ -382,7 +382,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun observingCancelReasons() {
-        buyerCancellationViewModel.cancelReasonResult.observe(this, Observer {
+        buyerCancellationViewModel.cancelReasonResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     empty_state_cancellation?.gone()
@@ -588,14 +588,18 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
     
     private fun observingRequestCancel() {
-        buyerCancellationViewModel.requestCancelResult.observe(this, Observer {
+        buyerCancellationViewModel.requestCancelResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     buyerRequestCancelResponse = it.data.buyerRequestCancel
                     if (buyerRequestCancelResponse.success == 1 && buyerRequestCancelResponse.message.isNotEmpty()) {
                         backToDetailPage(1, buyerRequestCancelResponse.message.first(), "", "")
-                    } else if (buyerRequestCancelResponse.success == 0 && buyerRequestCancelResponse.message.isNotEmpty()) {
-                        showToaster(buyerRequestCancelResponse.message.first(), Toaster.TYPE_ERROR)
+                    } else if (buyerRequestCancelResponse.success == 0) {
+                        if (buyerRequestCancelResponse.popup.title.isNotEmpty() && buyerRequestCancelResponse.popup.body.isNotEmpty()) {
+                            showPopup(buyerRequestCancelResponse.popup)
+                        } else if (buyerRequestCancelResponse.message.isNotEmpty()) {
+                            showToaster(buyerRequestCancelResponse.message.first(), Toaster.TYPE_ERROR)
+                        }
                     }
                 }
                 is Fail -> {
@@ -611,7 +615,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     }
 
     private fun observingInstantCancel() {
-        buyerCancellationViewModel.buyerInstantCancelResult.observe(this, Observer {
+        buyerCancellationViewModel.buyerInstantCancelResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     instantCancelResponse = it.data.buyerInstantCancel
@@ -703,6 +707,20 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         view?.let { v ->
             toaster.build(v, msg, Toaster.LENGTH_SHORT, type, BuyerConsts.ACTION_OK).show()
         }
+    }
+
+    private fun showPopup(dataPopup: BuyerRequestCancelData.Data.BuyerRequestCancel.Popup) {
+        val dialog = context?.let { DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION) }
+        dialog?.setTitle(dataPopup.title)
+        dialog?.setDescription(dataPopup.body)
+        dialog?.setImageDrawable(R.drawable.ic_terkirim)
+        dialog?.setPrimaryCTAText(getString(R.string.mengerti_button))
+        dialog?.setPrimaryCTAClickListener {
+                dialog.dismiss()
+                activity?.setResult(MarketPlaceDetailFragment.CANCEL_ORDER_DISABLE)
+                activity?.finish()
+        }
+        dialog?.show()
     }
 
     private fun renderTicker(tickerInfo: TickerInfo) {

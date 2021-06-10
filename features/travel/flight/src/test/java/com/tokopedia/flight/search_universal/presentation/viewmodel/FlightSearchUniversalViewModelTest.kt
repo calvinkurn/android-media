@@ -1,7 +1,7 @@
 package com.tokopedia.flight.search_universal.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.shouldBe
@@ -22,7 +22,7 @@ class FlightSearchUniversalViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = FlightSearchUniversalViewModel(TravelTestDispatcherProvider())
+        viewModel = FlightSearchUniversalViewModel(CoroutineTestDispatchersProvider)
     }
 
     @Test

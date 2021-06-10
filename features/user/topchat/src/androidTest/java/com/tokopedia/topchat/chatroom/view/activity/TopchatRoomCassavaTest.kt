@@ -16,13 +16,10 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
-import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.core.AllOf
 import org.junit.Before
 import org.junit.Test
@@ -32,11 +29,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4ClassRunner::class)
 class TopchatRoomCassavaTest : TopchatRoomTest() {
 
-    private var firstPageChatBroadcastAsBuyer: GetExistingChatPojo = AndroidFileUtil.parse(
-            "success_get_chat_broadcast.json",
-            GetExistingChatPojo::class.java
-    )
-
     private val cassavaDirTopchat = "tracker/user/topchat"
     private val cassavaProduct = "$cassavaDirTopchat/product_card_p0.json"
     private val cassavaBroadcastProduct = "$cassavaDirTopchat/product_card_from_broadcast_p0.json"
@@ -44,7 +36,6 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
 
     private val gtmLogDbSource = GtmLogDBSource(context)
 
-    @ExperimentalCoroutinesApi
     @Before
     override fun before() {
         super.before()
@@ -60,9 +51,9 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
+        inflateTestFragment()
 
         // When
-        inflateTestFragment()
         performClickOnProductCard(R.id.recycler_view)
         performClickAtcButton(R.id.recycler_view)
         performClickBuyButton(R.id.recycler_view)
@@ -84,9 +75,9 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
+        inflateTestFragment()
 
         // When
-        inflateTestFragment()
         performClickOnProductCard(R.id.rv_product_carousel)
         performClickAtcButton(R.id.rv_product_carousel)
         performClickBuyButton(R.id.rv_product_carousel)
@@ -110,9 +101,9 @@ class TopchatRoomCassavaTest : TopchatRoomTest() {
         intending(anyIntent()).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
+        inflateTestFragment()
 
         // When
-        inflateTestFragment()
         performClickOnProductCard(R.id.recycler_view)
         performClickAtcButton(R.id.recycler_view)
         performClickBuyButton(R.id.recycler_view)

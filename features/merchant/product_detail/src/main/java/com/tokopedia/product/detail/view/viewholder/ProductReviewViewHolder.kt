@@ -24,7 +24,6 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
     companion object {
         const val MAX_LINES_REVIEW_DESCRIPTION = 3
-        const val IS_NEW_VIEW_HOLDER = true
         val LAYOUT = R.layout.item_dynamic_review
     }
 
@@ -99,7 +98,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
             if (imageReviews.isNotEmpty()) {
                 image_review_list.apply {
                     adapter = ImageReviewAdapter(imageReviews.toMutableList(), showSeeAll, listener::onImageReviewClick, listener::onSeeAllLastItemImageReview,
-                            componentTrackDataModel, IS_NEW_VIEW_HOLDER)
+                            componentTrackDataModel)
                     show()
                     layoutManager = GridLayoutManager(context, 5)
                 }

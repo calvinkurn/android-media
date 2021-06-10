@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
@@ -91,7 +93,7 @@ class HomeProductFragment : BaseDaggerFragment() {
         }
         clearCache(shopPageNestedWebView)
         if (shopProductPromoUiModel.isLogin) {
-            shopPageNestedWebView.loadAuthUrl(shopProductPromoUiModel.url, userSession)
+            shopPageNestedWebView.loadAuthUrl(shopProductPromoUiModel.url.orEmpty(), userSession)
         } else {
             shopPageNestedWebView.loadUrl(shopProductPromoUiModel.url)
         }
@@ -122,7 +124,6 @@ class HomeProductFragment : BaseDaggerFragment() {
 
     private fun getOfficialWebViewUrl(): String {
         var officialWebViewUrl = arguments?.getString(SHOP_TOP_CONTENT_URL, "") ?: ""
-        officialWebViewUrl = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) officialWebViewUrl else ""
         officialWebViewUrl = if (TextApiUtils.isTextEmpty(officialWebViewUrl)) "" else officialWebViewUrl
         return officialWebViewUrl
     }
@@ -142,16 +143,12 @@ class HomeProductFragment : BaseDaggerFragment() {
     }
 
     private fun optimizeWebView() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            shopPageNestedWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
-        } else {
-            shopPageNestedWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-        }
+        shopPageNestedWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
     }
 
     fun promoClicked(url: String?) {
         activity?.let {
-            val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url, shopId,
+            val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url.orEmpty(), shopId,
                     userSession.isLoggedIn,
                     userSession.deviceId,
                     userSession.userId)
@@ -200,7 +197,8 @@ class HomeProductFragment : BaseDaggerFragment() {
         override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {
             super.onReceivedError(view, errorCode, description, failingUrl)
             finishLoading()
-            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", failingUrl, errorCode, description)
+            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", mapOf("type" to failingUrl,
+                    "error_code" to errorCode.toString(), "desc" to description))
             stopPerformanceMonitoring()
         }
 

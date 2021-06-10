@@ -77,7 +77,6 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
         }
     }
 
-    override fun initInjector() {}
     override fun trackOnBackPressed() {
         FileUtil.deleteFile(stepperModel?.ktpFile)
         analytics?.eventClickBackKtpPage()
@@ -91,4 +90,7 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
             return fragment
         }
     }
+
+    override fun initInjector() {}
+    override fun encryptImage() {}
 }

@@ -79,7 +79,7 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
     }
 
     protected fun onListLastScroll(view: View) {
-        super.getRecyclerView(view).endLess({
+        super.getRecyclerView(view)?.endLess({
             if (it < 0) { // going up
                 notifyBottomActionView()
             } else if (it > 0) { // going down
@@ -106,7 +106,7 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
     override fun showNotificationDetail(bottomSheet: BottomSheetType, element: NotificationItemViewBean) {
         when (bottomSheet) {
             is BottomSheetType.LongerContent -> showLongerContent(element)
-            is BottomSheetType.ProductCheckout -> showProductCheckout(element)
+//            is BottomSheetType.ProductCheckout -> showProductCheckout(element) (Disabled)
             is BottomSheetType.StockHandler -> showStockHandlerDialog(element)
             else -> {}
         }
@@ -224,6 +224,8 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
                 .notificationComponent
                 .inject(this)
     }
+
+    override fun onItemMultipleStockHandlerClick(notification: NotificationItemViewBean) {}
 
     companion object {
         private const val TAG_PRODUCT_STOCK = "Product Stock Handler"

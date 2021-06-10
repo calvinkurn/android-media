@@ -10,11 +10,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.CategoryNavigationListener
 import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.util.ChannelWidgetUtil
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
 import kotlinx.android.synthetic.main.home_component_category_navigation.view.*
+import kotlinx.android.synthetic.main.home_component_category_navigation.view.home_component_divider_footer
+import kotlinx.android.synthetic.main.home_component_category_navigation.view.home_component_divider_header
 import kotlinx.android.synthetic.main.home_component_category_navigation_item.view.*
 
 /**
@@ -39,12 +43,23 @@ class CategoryNavigationViewHolder (view: View, private val listener: CategoryNa
             adapter.submitList(channelGrids)
             itemView.category_recyclerview.adapter = adapter
         }
+        setChannelDivider(element)
+    }
+
+    private fun setChannelDivider(element: CategoryNavigationDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
     inner class CategoryNavigationItemViewHolder (view: View): RecyclerView.ViewHolder(view) {
         fun bind(grid: ChannelGrid?){
             grid?.run {
-                itemView.category_icon.loadImage(imageUrl, R.drawable.placeholder_grey)
+                itemView.category_icon.loadImage(imageUrl) {
+                    setPlaceHolder(R.drawable.placeholder_grey)
+                }
                 itemView.category_title.text = name
                 categoryNavigationDataModel?.channelModel?.let { channelModel ->
                     itemView.addOnImpressionListener(grid){

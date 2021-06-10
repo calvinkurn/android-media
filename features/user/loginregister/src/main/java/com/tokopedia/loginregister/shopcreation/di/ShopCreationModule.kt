@@ -12,9 +12,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 2019-12-09.
@@ -23,16 +20,6 @@ import javax.inject.Named
 
 @Module
 class ShopCreationModule {
-
-    @ShopCreationScope
-    @Provides
-    @Named(ShopCreationQueryConstant.DISPATCHERS_MAIN)
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @ShopCreationScope
-    @Provides
-    @Named(ShopCreationQueryConstant.DISPATCHERS_IO)
-    fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)

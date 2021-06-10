@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0">
+    android:id="@+id/hotelBookingView">
 
-    <ProgressBar
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/hotel_booking_loading_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        android:layout_centerInParent="true"
+        app:loader_type="circular"/>
 
     <ScrollView
         android:id="@+id/hotel_booking_container"
@@ -153,7 +154,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_lvl1"
-                    android:text="@string/hotel_booking_pay_at_hotel_label"
+                    tools:text="@string/hotel_booking_pay_at_hotel_label"
                     android:textColor="@color/Unify_N700_68"
                     android:visibility="gone"
                     app:drawableLeftCompat="@drawable/ic_hotel_16"
@@ -355,14 +356,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone"
-                tools:visibility="visible">
+                android:visibility="visible">
 
-                <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+                <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
                     android:id="@+id/booking_pay_now_promo_ticker"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/spacing_lvl4" />
+                    android:layout_height="wrap_content"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -541,7 +540,8 @@
                     android:layout_height="@dimen/layout_lvl6"
                     android:text="@string/hotel_booking_button"
                     app:unifyButtonSize="large"
-                    app:unifyButtonType="transaction" />
+                    app:unifyButtonType="main"
+                    app:unifyButtonVariant="filled"/>
 
             </LinearLayout>
 

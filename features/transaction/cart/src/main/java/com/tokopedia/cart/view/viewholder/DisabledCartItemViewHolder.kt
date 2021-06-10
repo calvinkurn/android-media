@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
+import com.tokopedia.cart.databinding.HolderItemCartErrorBinding
 import com.tokopedia.cart.domain.model.cartlist.ActionData
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_CHECKOUTBROWSER
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_DELETE
@@ -14,15 +15,14 @@ import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISH
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_WISHLISTED
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.DisabledCartItemHolderData
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import kotlinx.android.synthetic.main.holder_item_cart_error.view.*
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 
-class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListener?) : RecyclerView.ViewHolder(itemView) {
+class DisabledCartItemViewHolder(private val binding: HolderItemCartErrorBinding, val actionListener: ActionListener?) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         val LAYOUT = R.layout.holder_item_cart_error
@@ -38,54 +38,58 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
     }
 
     private fun renderProductInfo(data: DisabledCartItemHolderData) {
-        itemView.tv_product_name.text = data.productName
-        itemView.text_product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.productPrice, false).removeDecimalSuffix()
-        itemView.iu_image_product.loadImage(data.productImage)
-        if (data.data?.originData?.variant?.isNotBlank() == true) {
-            itemView.text_product_variant.text = data.data?.originData?.variant
-            itemView.text_product_variant.show()
-        } else {
-            itemView.text_product_variant.gone()
-        }
-        renderSlashPrice(data)
+        with(binding) {
+            tvProductName.text = data.productName
+            textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.productPrice, false).removeDecimalSuffix()
+            iuImageProduct.loadImage(data.productImage)
+            if (data.data?.originData?.variant?.isNotBlank() == true) {
+                textProductVariant.text = data.data?.originData?.variant
+                textProductVariant.show()
+            } else {
+                textProductVariant.gone()
+            }
+            renderSlashPrice(data)
 
-        data.data?.let { cartItemData ->
-            itemView.tv_product_name.setOnClickListener { actionListener?.onDisabledCartItemProductClicked(cartItemData) }
-            itemView.iu_image_product.setOnClickListener { actionListener?.onDisabledCartItemProductClicked(cartItemData) }
+            data.data?.let { cartItemData ->
+                tvProductName.setOnClickListener { actionListener?.onDisabledCartItemProductClicked(cartItemData) }
+                iuImageProduct.setOnClickListener { actionListener?.onDisabledCartItemProductClicked(cartItemData) }
+            }
         }
     }
 
     private fun renderSlashPrice(data: DisabledCartItemHolderData) {
-        if (data.data?.originData?.priceOriginal != 0L) {
-            var hasSlashPrice = false
-            if (data.data?.originData?.slashPriceLabel?.isNotBlank() == true) {
-                itemView.text_slash_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.data?.originData?.priceOriginal
-                        ?: 0, false).removeDecimalSuffix()
-                itemView.label_slash_price_percentage.text = data.data?.originData?.slashPriceLabel
-                hasSlashPrice = true
-            }
+        with(binding) {
+            if (data.data?.originData?.priceOriginal != 0L) {
+                var hasSlashPrice = false
+                if (data.data?.originData?.slashPriceLabel?.isNotBlank() == true) {
+                    textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.data?.originData?.priceOriginal
+                            ?: 0, false).removeDecimalSuffix()
+                    labelSlashPricePercentage.text = data.data?.originData?.slashPriceLabel
+                    hasSlashPrice = true
+                }
 
-            if (hasSlashPrice) {
-                itemView.text_slash_price.paintFlags = itemView.text_slash_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                itemView.text_slash_price.show()
-                itemView.label_slash_price_percentage.show()
-                itemView.text_product_price.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), 0, 0, 0)
+                if (hasSlashPrice) {
+                    textSlashPrice.paintFlags = textSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    textSlashPrice.show()
+                    labelSlashPricePercentage.show()
+                    textProductPrice.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), 0, 0, 0)
+                } else {
+                    textSlashPrice.gone()
+                    labelSlashPricePercentage.gone()
+                    textProductPrice.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
+                }
             } else {
-                itemView.text_slash_price.gone()
-                itemView.label_slash_price_percentage.gone()
-                itemView.text_product_price.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
+                textSlashPrice.gone()
+                labelSlashPricePercentage.gone()
+                textProductPrice.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
             }
-        } else {
-            itemView.text_slash_price.gone()
-            itemView.label_slash_price_percentage.gone()
-            itemView.text_product_price.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
         }
     }
 
     private fun renderDefaultActionState() {
-        itemView.text_move_to_wishlist.gone()
-        itemView.btn_delete_cart.invisible()
-        itemView.tv_product_unavailable_action.gone()
+        binding.textMoveToWishlist.gone()
+        binding.btnDeleteCart.invisible()
+        binding.tvProductUnavailableAction.gone()
     }
 
     private fun renderProductAction(data: DisabledCartItemHolderData) {
@@ -117,7 +121,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
     }
 
     private fun renderActionDelete(data: DisabledCartItemHolderData) {
-        itemView.btn_delete_cart?.apply {
+        binding.btnDeleteCart.apply {
             setOnClickListener {
                 data.data?.let {
                     actionListener?.onDeleteDisabledItem(data)
@@ -128,7 +132,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
     }
 
     private fun renderFollowShop(actionData: ActionData, data: DisabledCartItemHolderData) {
-        itemView.tv_product_unavailable_action?.apply {
+        binding.tvProductUnavailableAction.apply {
             text = actionData.message
             setOnClickListener {
                 data.data?.originData?.shopId?.let {
@@ -137,50 +141,50 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
                     }
                 }
             }
-            setTextColor(ContextCompat.getColor(context, R.color.GeneralLightGreenText))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             show()
         }
     }
 
     private fun renderActionSimilarProduct(actionData: ActionData, data: DisabledCartItemHolderData) {
-        itemView.tv_product_unavailable_action?.apply {
+        binding.tvProductUnavailableAction.apply {
             text = actionData.message
             setOnClickListener {
                 if (data.selectedUnavailableActionLink.isNotBlank()) {
                     actionListener?.onSimilarProductUrlClicked(data.selectedUnavailableActionLink)
                 }
             }
-            setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             actionListener?.onShowActionSeeOtherProduct(data.productId, data.errorType)
             show()
         }
     }
 
     private fun renderActionCheckoutInBrowser(actionData: ActionData, data: DisabledCartItemHolderData) {
-        itemView.tv_product_unavailable_action?.apply {
+        binding.tvProductUnavailableAction.apply {
             text = actionData.message
             setOnClickListener {
                 if (data.selectedUnavailableActionLink.isNotBlank()) {
                     actionListener?.onTobaccoLiteUrlClicked(data.selectedUnavailableActionLink, data, actionData)
                 }
             }
-            setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             actionListener?.onShowTickerTobacco()
             show()
         }
     }
 
     private fun renderActionWishlist(actionData: ActionData, data: DisabledCartItemHolderData) {
-        itemView.text_move_to_wishlist?.apply {
+        binding.textMoveToWishlist.apply {
             if (data.isWishlisted && actionData.id == ACTION_WISHLISTED) {
                 text = actionData.message
-                setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_44))
+                setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
                 setOnClickListener { }
             } else if (!data.isWishlisted && actionData.id == ACTION_WISHLIST) {
                 text = actionData.message
-                setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68))
+                setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 setOnClickListener {
-                    itemView.iu_image_product?.let {
+                    binding.iuImageProduct.let {
                         actionListener?.onAddDisabledItemToWishlist(data, it)
                     }
                 }
@@ -191,7 +195,7 @@ class DisabledCartItemViewHolder(itemView: View, val actionListener: ActionListe
 
     private fun renderDivider(data: DisabledCartItemHolderData) {
         showDivider = data.showDivider
-        itemView.group_divider.visibility = if (data.showDivider) {
+        binding.groupDivider.visibility = if (data.showDivider) {
             View.VISIBLE
         } else {
             View.GONE

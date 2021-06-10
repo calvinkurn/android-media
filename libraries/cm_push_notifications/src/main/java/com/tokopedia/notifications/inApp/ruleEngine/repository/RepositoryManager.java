@@ -71,6 +71,11 @@ public class RepositoryManager implements StorageProvider.StorageProviderListene
         IrisAnalyticsEvents.INSTANCE.sendInAppEvent(application.getApplicationContext(), IrisAnalyticsEvents.INAPP_CANCELLED, cmInApp);
     }
 
+    public void onInappExpired(CMInApp cmInApp) {
+        IrisAnalyticsEvents.INSTANCE.sendInAppEvent(application.getApplicationContext(), IrisAnalyticsEvents.INAPP_EXPIRED, cmInApp);
+
+    }
+
     @Override
     public void onInappFreqUpdated() {
         if (cacheHandler == null)
@@ -103,9 +108,9 @@ public class RepositoryManager implements StorageProvider.StorageProviderListene
             } else if (nextInappDisplayTime > currentTimeMillis && !isMaxReached) {
                 return true;
             } else {
-                cacheHandler.saveLongValue(CMConstant.NEXT_INAPP_DISPLAY_TIME, nextInappDisplayTime + HOURS_24_IN_MILLIS);
+                cacheHandler.saveLongValue(CMConstant.NEXT_INAPP_DISPLAY_TIME, currentTimeMillis + HOURS_24_IN_MILLIS);
                 cacheHandler.saveLongValue(CMConstant.INAPP_DISPLAY_COUNTER, 0);
-                return false;
+                return true;
             }
         }
     }

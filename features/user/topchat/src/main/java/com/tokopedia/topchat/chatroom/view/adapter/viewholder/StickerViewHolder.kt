@@ -16,6 +16,8 @@ import com.bumptech.glide.request.target.Target
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.view.custom.StickerImageView
+import com.tokopedia.topchat.common.util.ViewUtil
+
 
 class StickerViewHolder(
         itemView: View,
@@ -37,7 +39,9 @@ class StickerViewHolder(
 
     private fun initLoader() {
         itemView.context?.let {
-            loader = AnimatedVectorDrawableCompat.create(it, com.tokopedia.unifycomponents.R.drawable.unify_loader_shimmer)
+            loader = AnimatedVectorDrawableCompat.create(
+                    it, com.tokopedia.unifycomponents.R.drawable.unify_loader_shimmer
+            )
             loader?.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
                 override fun onAnimationEnd(drawable: Drawable?) {
                     stickerImage?.handler?.post {
@@ -45,8 +49,9 @@ class StickerViewHolder(
                     }
                 }
             })
-            loader?.start()
-
+            if (ViewUtil.areSystemAnimationsEnabled(itemView.context)) {
+                loader?.start()
+            }
         }
     }
 

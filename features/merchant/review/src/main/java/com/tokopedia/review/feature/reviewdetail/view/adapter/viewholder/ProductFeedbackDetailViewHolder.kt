@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.PaddingItemDecoratingReview
 import com.tokopedia.review.common.util.getReviewStar
@@ -49,6 +50,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
         setupVariant(element.variantName ?: "")
         setupFeedbackReview(element.reviewText ?: "", element.feedbackID.toString())
         setImageAttachment(element)
+        showLabelKejarUlasan(element.isKejarUlasan)
     }
 
     private fun setupVariant(variantName: String) {
@@ -73,7 +75,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
             } else {
                 tvFeedbackReview?.apply {
                     setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-                    text = feedbackText.toReviewDescriptionFormatted(FEEDBACK_MAX_CHAR)
+                    text = feedbackText.toReviewDescriptionFormatted(FEEDBACK_MAX_CHAR, itemView.context)
                     setOnClickListener {
                         productFeedbackDetailListener.onFeedbackMoreReplyClicked(feedbackId)
                         maxLines = Integer.MAX_VALUE
@@ -96,7 +98,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
 
                 tvReplyComment?.text = element.replyText.orEmpty()
                 tvReplyComment?.let {
-                    it.text = element.replyText.orEmpty().toReviewDescriptionFormatted(REPLY_MAX_CHAR)
+                    it.text = element.replyText.orEmpty().toReviewDescriptionFormatted(REPLY_MAX_CHAR, itemView.context)
                     it.setOnClickListener { _ ->
                         it.maxLines = Integer.MAX_VALUE
                         it.text = MethodChecker.fromHtml(element.replyText)
@@ -157,5 +159,9 @@ class ProductFeedbackDetailViewHolder(private val view: View,
             tvReplyDate?.show()
             tvReplyComment?.show()
         }
+    }
+
+    private fun showLabelKejarUlasan(isKejarUlasan: Boolean) {
+        itemView.kejarUlasanLabel?.showWithCondition(isKejarUlasan)
     }
 }
