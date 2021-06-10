@@ -55,6 +55,7 @@
 /features/merchant/power_merchant_subscribe/            @tokopedia/android-minionstuart-dev
 /features/merchant/product_detail/                      @tokopedia/android-minionstuart-dev
 /features/merchant/product_detail_common/               @tokopedia/android-minionstuart-dev
+/features/merchant/atc_variant/                         @tokopedia/android-minionstuart-dev
 /features/merchant/product_manage_common/               @tokopedia/android-minionstuart-dev
 /features/merchant/product_manage_list/                 @tokopedia/android-minionstuart-dev
 /features/merchant/product_share/                       @tokopedia/android-minionstuart-dev

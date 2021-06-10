@@ -2,17 +2,21 @@ package com.tokopedia.tokomart.search.presentation.view
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.tokomart.search.di.SearchComponent
+import com.tokopedia.tokomart.search.presentation.listener.SuggestionListener
+import com.tokopedia.tokomart.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokomart.search.presentation.typefactory.SearchTypeFactoryImpl
 import com.tokopedia.tokomart.search.presentation.viewmodel.SearchViewModel
 import com.tokopedia.tokomart.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 import javax.inject.Inject
 
-class SearchFragment: BaseSearchCategoryFragment() {
+class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
 
     companion object {
 
@@ -65,11 +69,17 @@ class SearchFragment: BaseSearchCategoryFragment() {
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
+            suggestionListener = this,
     )
 
     override fun getViewModel() = searchViewModel
 
-    override fun onBannerClick(applink: String) {
-        TODO("Not yet implemented")
+    override fun onSuggestionClicked(suggestionDataView: SuggestionDataView) {
+        val context = context ?: return
+
+        val applink = ApplinkConstInternalTokoMart.SEARCH + "?" +
+                suggestionDataView.query
+
+        RouteManager.route(context, applink)
     }
 }

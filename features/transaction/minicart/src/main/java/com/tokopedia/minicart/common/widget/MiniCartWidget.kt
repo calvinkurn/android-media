@@ -18,14 +18,15 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.minicart.R
-import com.tokopedia.minicart.cartlist.GlobalErrorBottomSheet
-import com.tokopedia.minicart.cartlist.GlobalErrorBottomSheetActionListener
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheetListener
+import com.tokopedia.minicart.cartlist.subpage.GlobalErrorBottomSheet
+import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.updatecart.Data
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
-import com.tokopedia.minicart.common.widget.viewmodel.MiniCartWidgetViewModel
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
@@ -48,11 +49,15 @@ class MiniCartWidget @JvmOverloads constructor(
     @Inject
     lateinit var globalErrorBottomSheet: GlobalErrorBottomSheet
 
+    @Inject
+    lateinit var analytics: MiniCartAnalytics
+
     private var view: View? = null
     private var totalAmount: TotalAmount? = null
     private var chatIcon: ImageUnify? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
     private var progressDialog: AlertDialog? = null
+    private var miniCartChevronClickListener: OnClickListener? = null
 
     private var viewModel: MiniCartWidgetViewModel? = null
 
@@ -64,14 +69,17 @@ class MiniCartWidget @JvmOverloads constructor(
     /*
     * Function to initialize the widget
     * */
-    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true) {
+    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true, pageName: String = MiniCartAnalytics.TOKONOW_HOME_PAGE) {
         val application = fragment.activity?.application
         initializeInjector(application)
         initializeView(fragment)
         initializeListener(listener)
         initializeViewModel(fragment)
+        viewModel?.initializeCurrentPage(pageName)
         if (autoInitializeData) {
             updateData(shopIds)
+        } else {
+            viewModel?.initializeShopIds(shopIds)
         }
     }
 
@@ -132,6 +140,7 @@ class MiniCartWidget @JvmOverloads constructor(
         if (data is Data) {
             if (data.outOfService.id.isNotBlank() && data.outOfService.id != "0") {
                 // Prioritize to show out of service data
+                analytics.eventClickBuyThenGetBottomSheetError(data.outOfService.description)
                 globalErrorBottomSheet.show(fragmentManager, context, GlobalError.SERVER_ERROR, data.outOfService, object : GlobalErrorBottomSheetActionListener {
                     override fun onGoToHome() {
                         RouteManager.route(context, ApplinkConst.HOME)
@@ -144,6 +153,7 @@ class MiniCartWidget @JvmOverloads constructor(
                 })
             } else {
                 // Show toaster error if have no out of service data
+                analytics.eventClickBuyThenGetToasterError(data.error)
                 var ctaText = "Oke"
                 if (data.toasterAction.showCta) {
                     ctaText = data.toasterAction.text
@@ -183,7 +193,6 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun onSuccessUpdateCartForCheckout(context: Context) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
-        intent.putExtra("EXTRA_IS_ONE_CLICK_SHIPMENT", true)
         context.startActivity(intent)
     }
 
@@ -212,17 +221,28 @@ class MiniCartWidget @JvmOverloads constructor(
         totalAmount = view?.findViewById(R.id.mini_cart_total_amount)
         totalAmount?.let {
             it.enableAmountChevron(true)
-            it.amountChevronView.setOnClickListener {
+            miniCartChevronClickListener = OnClickListener {
+                analytics.eventClickChevronToShowMiniCartBottomSheet()
                 showMiniCartListBottomSheet(fragment)
             }
+            it.amountChevronView.setOnClickListener(miniCartChevronClickListener)
             it.amountCtaView.setOnClickListener {
+                sendEventClickBuy()
                 showProgressLoading()
                 viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
             }
+            it.setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
+            it.setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(0, false))
+            it.setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), 0))
         }
-        setTotalAmountLoading(true)
-        setTotalAmountChatIcon()
+        validateTotalAmountView()
         initializeProgressDialog(fragment.context)
+    }
+
+    private fun sendEventClickBuy() {
+        val pageName = viewModel?.currentPage?.value ?: ""
+        val products = viewModel?.miniCartSimplifiedData?.value?.miniCartItems ?: emptyList()
+        analytics.eventClickBuy(pageName, products)
     }
 
     private fun initializeProgressDialog(context: Context?) {
@@ -273,6 +293,7 @@ class MiniCartWidget @JvmOverloads constructor(
     * This will trigger view model to fetch latest data from backend and update the UI
     * */
     fun updateData(shopIds: List<String>) {
+        setTotalAmountLoading(true)
         viewModel?.getLatestWidgetState(shopIds)
     }
 
@@ -280,8 +301,8 @@ class MiniCartWidget @JvmOverloads constructor(
     * Function to trigger update mini cart data
     * This will trigger widget to update the UI with provided data
     * */
-    fun updateData(miniCartWidgetData: MiniCartWidgetData) {
-        renderWidget(miniCartWidgetData)
+    fun updateData(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        viewModel?.updateMiniCartSimplifiedData(miniCartSimplifiedData)
     }
 
     private fun initializeInjector(baseAppComponent: Application?) {
@@ -295,7 +316,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun renderWidget(miniCartWidgetData: MiniCartWidgetData) {
         totalAmount?.apply {
-            setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
+            setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetData.totalProductPrice, false))
             setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetData.totalProductCount))
         }
@@ -312,14 +333,15 @@ class MiniCartWidget @JvmOverloads constructor(
                 totalAmount?.isTotalAmountLoading = false
             }
         }
-        setTotalAmountChatIcon()
+        validateTotalAmountView()
     }
 
-    private fun setTotalAmountChatIcon() {
+    private fun validateTotalAmountView() {
         totalAmount?.context?.let { context ->
             val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_G500))
             totalAmount?.setAdditionalButton(chatIcon)
             totalAmount?.totalAmountAdditionalButton?.setOnClickListener {
+                analytics.eventClickChatOnMiniCart()
                 val shopId = viewModel?.currentShopIds?.value?.firstOrNull() ?: "0"
                 val intent = RouteManager.getIntent(
                         context, ApplinkConst.TOPCHAT_ROOM_ASKSELLER, shopId
@@ -327,11 +349,14 @@ class MiniCartWidget @JvmOverloads constructor(
                 context.startActivity(intent)
             }
             this.chatIcon?.setImageDrawable(chatIcon)
+            totalAmount?.enableAmountChevron(true)
+            totalAmount?.amountChevronView?.setOnClickListener(miniCartChevronClickListener)
         }
     }
 
     override fun onMiniCartListBottomSheetDismissed() {
         viewModel?.getLatestMiniCartData()?.let {
+            updateData(it)
             miniCartWidgetListener?.onCartItemsUpdated(it)
         }
     }

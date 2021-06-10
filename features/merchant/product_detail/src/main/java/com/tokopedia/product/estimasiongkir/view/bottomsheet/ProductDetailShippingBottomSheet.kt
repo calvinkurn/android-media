@@ -169,9 +169,15 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
 
     override fun openUspBottomSheet(freeOngkirUrl: String, uspTokoCabangImgUrl: String) {
         context?.let {
-            ProductDetailShippingTracking.onPelajariTokoCabangClicked(sharedViewModel.rateEstimateRequest.value?.userId
+            val ratesEstimateRequest = sharedViewModel.rateEstimateRequest.value
+            ProductDetailShippingTracking.onPelajariTokoCabangClicked(ratesEstimateRequest?.userId
                     ?: "")
-            ProductDetailBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl, uspTokoCabangImgUrl).show(childFragmentManager, TAG_USP_BOTTOM_SHEET)
+            val bottomSheet = if (ratesEstimateRequest?.isTokoNow == true) {
+                ProductDetailBottomSheetBuilder.getUspTokoNowBottomSheet(it)
+            } else {
+                ProductDetailBottomSheetBuilder.getUspBottomSheet(it, freeOngkirUrl, uspTokoCabangImgUrl)
+            }
+            bottomSheet.show(childFragmentManager, TAG_USP_BOTTOM_SHEET)
         }
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -27,6 +28,8 @@ class ProductSingleVariantViewHolder(val view: View,
     private val txtVariantIdentifier = view.findViewById<Typography>(R.id.txt_variant_identifier_title)
     private val txtVariantIdentifierStatic = view.findViewById<Typography>(R.id.txt_choose_variant_label)
     private val variantLocalLoad = view.findViewById<LocalLoad>(R.id.variant_local_load)
+    private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
+
 
     companion object {
         val LAYOUT = R.layout.item_single_variant_view_holder
@@ -34,6 +37,12 @@ class ProductSingleVariantViewHolder(val view: View,
 
     init {
         containerAdapter = AtcVariantOptionAdapter(this)
+    }
+
+    fun scrollToPosition(position: Int) {
+        if (position != -1) {
+            rvSingleVariant.scrollToPosition(position)
+        }
     }
 
     override fun bind(element: ProductSingleVariantDataModel) {
@@ -44,6 +53,7 @@ class ProductSingleVariantViewHolder(val view: View,
                 txtVariantIdentifier.text = pdpListener.getVariantString()
                 rvSingleVariant.adapter = containerAdapter
                 rvSingleVariant.itemAnimator = null
+                rvSingleVariant.layoutManager = layoutManager
                 containerAdapter?.setData(it.variantOptions)
                 hideError()
             }
@@ -51,7 +61,6 @@ class ProductSingleVariantViewHolder(val view: View,
     }
 
     override fun onSelectionChanged(view: View, position: Int) {
-        super.onSelectionChanged(view, position)
     }
 
     private fun showError(element: ProductSingleVariantDataModel) = with(view) {

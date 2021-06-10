@@ -11,15 +11,6 @@ class TokoMartHomeAdapter(
     differ: TokoMartHomeListDiffer
 ) : BaseTokoMartListAdapter<Visitable<*>, TokoMartHomeAdapterTypeFactory>(typeFactory, differ) {
 
-    fun updateHomeChooseAddressWidget(isRefresh: Boolean) {
-        val items = data.toMutableList()
-        val index = items.find { it is HomeChooseAddressWidgetUiModel }?.let { items.indexOf(it) }
-        index?.let {
-            items[it] = (items[it] as HomeChooseAddressWidgetUiModel).copy(isRefresh = isRefresh)
-            submitList(items)
-        }
-    }
-
     fun removeHomeChooseAddressWidget() {
         val items = data.toMutableList()
         val widget = items.find { it is HomeChooseAddressWidgetUiModel }

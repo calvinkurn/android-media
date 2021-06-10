@@ -3053,7 +3053,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     userAddress.getLatitude(),
                     userAddress.getLongitude(),
                     String.format("%s %s", userAddress.getAddressName(), userAddress.getReceiverName()),
-                    userAddress.getPostalCode()
+                    userAddress.getPostalCode(),
+                    "", ""
             );
         }
     }
@@ -3069,7 +3070,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     saveAddressDataModel.getLatitude(),
                     saveAddressDataModel.getLongitude(),
                     String.format("%s %s", saveAddressDataModel.getAddressName(), saveAddressDataModel.getReceiverName()),
-                    saveAddressDataModel.getPostalCode()
+                    saveAddressDataModel.getPostalCode(),
+                            "", ""
             );
         }
     }

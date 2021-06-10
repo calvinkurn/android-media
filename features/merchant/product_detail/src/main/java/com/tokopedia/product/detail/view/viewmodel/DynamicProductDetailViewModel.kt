@@ -284,16 +284,16 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private fun updateMiniCartData(productId: String, cartId: String, quantity: Int, notes: String) {
         if (getDynamicProductInfoP1?.basic?.isTokoNow == false) return
 
-        val miniCartData = _p2Data.value?.miniCart
-        if (miniCartData.isNullOrEmpty()) {
-            _p2Data.value?.miniCart = mapOf(productId to MiniCartItem(
+        val miniCartData = _p2Data.value?.miniCart?.get(productId)
+        if (miniCartData == null) {
+            _p2Data.value?.miniCart?.set(productId, MiniCartItem(
                     cartId = cartId,
                     productId = productId,
                     quantity = quantity,
                     notes = notes
             ))
         } else {
-            _p2Data.value?.miniCart?.get(productId)?.quantity = quantity
+            miniCartData.quantity = quantity
         }
     }
 
@@ -308,7 +308,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 emit(Throwable(result.error.firstOrNull() ?: "").asFail())
             } else {
                 updateMiniCartData(copyOfMiniCartItem.productId, copyOfMiniCartItem.cartId, copyOfMiniCartItem.quantity, copyOfMiniCartItem.notes)
-                emit("sukses".asSuccess())
+                emit((result.data.message).asSuccess())
             }
         }
     }
@@ -519,55 +519,56 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     private suspend fun getAddToCartUseCase(requestParams: RequestParams) {
-        withContext(dispatcher.io) {
-            val result = addToCartUseCase.get().createObservable(requestParams).toBlocking().single()
-            if (result.isStatusError()) {
-                val errorMessage = result.getAtcErrorMessage() ?: ""
-                if (errorMessage.isNotBlank()) {
-                    ProductDetailLogger.logMessage(errorMessage, ATC_ERROR_TYPE, getDynamicProductInfoP1?.basic?.productID
-                            ?: "", deviceId)
-                }
-                _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
-            } else {
-                val isTokoNow = getDynamicProductInfoP1?.basic?.isTokoNow ?: false
-                if (isTokoNow) {
-                    updateMiniCartData(result.data.productId.toString(), result.data.cartId, result.data.quantity, result.data.notes)
-                }
+        val result = withContext(dispatcher.io) {
+            addToCartUseCase.get().createObservable(requestParams).toBlocking().single()
+        }
 
-                _addToCartLiveData.postValue(result.asSuccess())
+        if (result.isStatusError()) {
+            val errorMessage = result.getAtcErrorMessage() ?: ""
+            if (errorMessage.isNotBlank()) {
+                ProductDetailLogger.logMessage(errorMessage, ATC_ERROR_TYPE, getDynamicProductInfoP1?.basic?.productID
+                        ?: "", deviceId)
             }
+            _addToCartLiveData.value = MessageErrorException(errorMessage).asFail()
+        } else {
+            val isTokoNow = getDynamicProductInfoP1?.basic?.isTokoNow ?: false
+            if (isTokoNow) {
+                updateMiniCartData(result.data.productId.toString(), result.data.cartId, result.data.quantity, result.data.notes)
+            }
+
+            _addToCartLiveData.value = result.asSuccess()
         }
     }
 
     private suspend fun getAddToCartOcsUseCase(requestParams: RequestParams) {
-        withContext(dispatcher.io) {
-            val result = addToCartOcsUseCase.get().createObservable(requestParams).toBlocking().single()
-            if (result.isDataError()) {
-                val errorMessage = result.errorMessage.firstOrNull() ?: ""
-                if (errorMessage.isNotBlank()) {
-                    ProductDetailLogger.logMessage(errorMessage, ATC_ERROR_TYPE, getDynamicProductInfoP1?.basic?.productID
-                            ?: "", deviceId)
-                }
-                _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
-            } else {
-                _addToCartLiveData.postValue(result.asSuccess())
+        val result = withContext(dispatcher.io) {
+            addToCartOcsUseCase.get().createObservable(requestParams).toBlocking().single()
+        }
+        if (result.isDataError()) {
+            val errorMessage = result.errorMessage.firstOrNull() ?: ""
+            if (errorMessage.isNotBlank()) {
+                ProductDetailLogger.logMessage(errorMessage, ATC_ERROR_TYPE, getDynamicProductInfoP1?.basic?.productID
+                        ?: "", deviceId)
             }
+            _addToCartLiveData.value = MessageErrorException(errorMessage).asFail()
+        } else {
+            _addToCartLiveData.value = result.asSuccess()
         }
     }
 
     private suspend fun getAddToCartOccUseCase(requestParams: RequestParams) {
-        withContext(dispatcher.io) {
-            val result = addToCartOccUseCase.get().createObservable(requestParams).toBlocking().single()
-            if (result.isStatusError()) {
-                val errorMessage = result.getAtcErrorMessage() ?: ""
-                if (errorMessage.isNotBlank()) {
-                    ProductDetailLogger.logMessage(errorMessage, ATC_ERROR_TYPE, getDynamicProductInfoP1?.basic?.productID
-                            ?: "", deviceId)
-                }
-                _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
-            } else {
-                _addToCartLiveData.postValue(result.asSuccess())
+        val result = withContext(dispatcher.io) {
+            addToCartOccUseCase.get().createObservable(requestParams).toBlocking().single()
+        }
+        if (result.isStatusError()) {
+            val errorMessage = result.getAtcErrorMessage() ?: ""
+            if (errorMessage.isNotBlank()) {
+                ProductDetailLogger.logMessage(errorMessage, ATC_ERROR_TYPE, getDynamicProductInfoP1?.basic?.productID
+                        ?: "", deviceId)
             }
+            _addToCartLiveData.value = MessageErrorException(errorMessage).asFail()
+        } else {
+            _addToCartLiveData.value = result.asSuccess()
         }
     }
 
@@ -643,6 +644,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } else if (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) {
                 it
             } else if (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
+                it
+            } else if (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
                 it
             } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
                 it
@@ -838,7 +841,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 val data = result.miniCartItems.associateBy({ it.productId }) {
                     it
                 }
-                _p2Data.value?.miniCart = data
+                _p2Data.value?.miniCart = data.toMutableMap()
                 _miniCartData.postValue(true)
             }
         }) {

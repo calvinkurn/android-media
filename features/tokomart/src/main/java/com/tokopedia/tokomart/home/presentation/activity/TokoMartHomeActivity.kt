@@ -12,6 +12,7 @@ class TokoMartHomeActivity: BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tokomart_home)
         setStatusBarColor()
+        setBackgroundColor()
         attachFragment()
     }
 
@@ -26,5 +27,9 @@ class TokoMartHomeActivity: BaseActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
         }
+    }
+
+    private fun setBackgroundColor() {
+        window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 }

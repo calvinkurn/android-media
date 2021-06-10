@@ -1,9 +1,7 @@
 package com.tokopedia.autocomplete.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.autocomplete.complete
-import com.tokopedia.autocomplete.initialstate.InitialStateData
-import com.tokopedia.autocomplete.jsonToObject
+import com.tokopedia.autocomplete.*
 import com.tokopedia.autocomplete.shouldBe
 import com.tokopedia.autocomplete.shouldBeInstanceOf
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionItem
@@ -17,6 +15,7 @@ import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetDataView
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.usecase.RequestParams
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -36,11 +35,26 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
     @Test
     fun `Test suggestion presenter has set parameter`() {
+        val warehouseId = "2216"
+        val dummyChooseAddressData = LocalCacheModel(
+                address_id = "123",
+                city_id = "45",
+                district_id = "123",
+                lat = "10.2131",
+                long = "12.01324",
+                postal_code = "12345",
+                warehouse_id = warehouseId
+        )
+        `Given chosen address data`(dummyChooseAddressData)
         `Given getSuggestionUseCase will be successful`(suggestionCommonResponse.jsonToObject())
 
         `when presenter get suggestion data (search)`()
 
-        `Then verify search parameter has warehouseId`(SearchApiConst.HARDCODED_WAREHOUSE_ID_PLEASE_DELETE)
+        `Then verify search parameter has warehouseId`(warehouseId)
+    }
+
+    private fun `Given chosen address data`(chooseAddressModel: LocalCacheModel?) {
+        every { suggestionView.chooseAddressData } returns chooseAddressModel
     }
 
     private fun `Given getSuggestionUseCase will be successful`(suggestionUniverse: SuggestionUniverse) {
@@ -175,11 +189,11 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     }
 
     @Test
-    fun `test fail to get initial state data`() {
+    fun `test fail to get suggestion data`() {
         `given suggestion API will return error`()
         `when presenter get suggestion data (search)`()
         `then verify suggestion API is called`()
-        `then verify initial state view do nothing behavior`()
+        `then verify view interaction for load data failed with exception`()
     }
 
     private fun `given suggestion API will return error`() {
@@ -189,7 +203,10 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         }
     }
 
-    private fun `then verify initial state view do nothing behavior`() {
+    private fun `then verify view interaction for load data failed with exception`() {
+        verify {
+            suggestionView.chooseAddressData
+        }
         confirmVerified(suggestionView)
     }
 
@@ -281,5 +298,21 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList.size shouldBe suggestionUniverse.data.items.size
 
         assertVisitableListData(visitableList, suggestionUniverse)
+    }
+
+    @Test
+    fun `Test suggestion presenter has set parameter and no warehouseId`() {
+        `Given chosen address data`(LocalCacheModel())
+        `Given getSuggestionUseCase will be successful`(suggestionCommonResponse.jsonToObject())
+
+        `when presenter get suggestion data (search)`()
+
+        `Then verify search parameter has no warehouseId`()
+    }
+
+    private fun `Then verify search parameter has no warehouseId`() {
+        val requestParams = requestParamsSlot.captured
+
+        requestParams.parameters.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
     }
 }

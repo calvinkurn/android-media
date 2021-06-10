@@ -14,6 +14,12 @@ data class VariantCategory(
         val isLeaf: Boolean = false,
         val variantOptions: List<VariantOptionWithAttribute> = emptyList()
 ) {
+    fun getPositionOfSelected(): Int {
+        return variantOptions.indexOfFirst {
+            it.currentState == VariantConstant.STATE_SELECTED
+        }
+    }
+
     fun getSelectedOption(): VariantOptionWithAttribute? {
         return variantOptions.find { it.currentState == VariantConstant.STATE_SELECTED }
     }

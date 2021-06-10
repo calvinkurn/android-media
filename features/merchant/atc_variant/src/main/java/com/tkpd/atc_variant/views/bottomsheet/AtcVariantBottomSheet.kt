@@ -32,6 +32,7 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.observeOnce
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.*
@@ -171,15 +172,18 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         observeWishlist()
     }
 
-    private fun showToasterSuccess(message: String) {
-        viewContent?.rootView?.showToasterSuccess(message, R.dimen.space_toaster_offsite_atc_variant)
+    private fun showToasterSuccess(message: String, ctaText:String = "") {
+        viewContent?.rootView?.showToasterSuccess(message, R.dimen.space_toaster_offsite_atc_variant, ctaText = ctaText, ctaListener = {
+        })
     }
 
     private fun observeUpdateCart() {
         viewModel.updateCartLiveData.observe(viewLifecycleOwner, {
             loadingProgressDialog?.dismiss()
-            if (it is Success) {
-                showToasterSuccess("Sukses update")
+
+            when (it) {
+                is Success -> showToasterSuccess(it.data, getString(R.string.atc_variant_oke_label))
+                is Fail -> showToasterError(getErrorMessage(it.throwable))
             }
         })
     }
@@ -222,8 +226,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     private fun showToasterError(message: String, ctaBtn: String = "") {
-        viewContent?.rootView.showToasterError(message, ctaText = ctaBtn) {
-
+        viewContent?.rootView.showToasterError(message, ctaText = ctaBtn, heightOffset = R.dimen.space_toaster_offsite_atc_variant) {
         }
     }
 
@@ -247,30 +250,40 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     private fun getErrorMessage(throwable: Throwable): String {
-        return context?.let {
-            ErrorHandler.getErrorMessage(it, throwable)
+        return if (throwable is ResponseErrorException) {
+            throwable.message
+                    ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
+        } else if (throwable is AkamaiErrorException && throwable.message != null) {
+            throwable.message
+                    ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
+        } else {
+            context?.let {
+                ErrorHandler.getErrorMessage(it, throwable)
+            }
+                    ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
         }
-                ?: getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_error_default)
     }
 
     private fun onSuccessTransaction(result: AddToCartDataModel) {
         val cartId = result.data.cartId
-        //todo change
-        onSuccessAtc(result.errorMessage.firstOrNull())
-//        when (buttonActionType) {
-//            ProductDetailCommonConstant.OCS_BUTTON -> {
-//                onSuccessOcs(result)
-//            }
-//            ProductDetailCommonConstant.OCC_BUTTON -> {
-//                ProductCartHelper.goToOneClickCheckout(getAtcActivity())
-//            }
-//            ProductDetailCommonConstant.BUY_BUTTON -> {
-//                ProductCartHelper.goToCartCheckout(getAtcActivity(), cartId)
-//            }
-//            ProductDetailCommonConstant.ATC_BUTTON -> {
-//                onSuccessAtc(result.errorMessage.firstOrNull())
-//            }
-//        }
+        if (sharedViewModel.aggregatorParams.value?.isTokoNow == true) {
+            onSuccessAtcTokoNow(result.errorMessage.firstOrNull())
+            return
+        }
+        when (buttonActionType) {
+            ProductDetailCommonConstant.OCS_BUTTON -> {
+                onSuccessOcs(result)
+            }
+            ProductDetailCommonConstant.OCC_BUTTON -> {
+                ProductCartHelper.goToOneClickCheckout(getAtcActivity())
+            }
+            ProductDetailCommonConstant.BUY_BUTTON -> {
+                ProductCartHelper.goToCartCheckout(getAtcActivity(), cartId)
+            }
+            ProductDetailCommonConstant.ATC_BUTTON -> {
+                onSuccessAtc(result.errorMessage.firstOrNull())
+            }
+        }
     }
 
     private fun onSuccessOcs(result: AddToCartDataModel) {
@@ -290,6 +303,15 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     private fun getAtcActivity(): Activity {
         return context as AtcVariantActivity
+    }
+
+    private fun onSuccessAtcTokoNow(successMessage: String?) {
+        context?.let {
+            val message = if (successMessage == null || successMessage.isEmpty()) it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default) else
+                successMessage
+            viewModel.updateActivityResult(atcSuccessMessage = message)
+            showToasterSuccess(message, getString(R.string.atc_variant_oke_label))
+        }
     }
 
     private fun onSuccessAtc(successMessage: String?) {
@@ -327,6 +349,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
+        adapter.removeTextWatcherQuantityViewHolder(rvVariantBottomSheet)
         viewModel.onVariantClicked(sharedViewModel.aggregatorParams.value?.isTokoNow ?: false,
                 variantOptions.variantCategoryKey, variantOptions.variantId, variantOptions.imageOriginal, variantOptions.level)
     }

@@ -25,5 +25,6 @@
     <string name="tokomart_category_aisle_header">Lihat kategori lainnya</string>
 
     <string name="tokomart_add_to_cart_success">Sukses menambah ke keranjang</string>
+    <string name="city_name_empty_state_no_address">Jakarta Barat</string>
 
 </resources>

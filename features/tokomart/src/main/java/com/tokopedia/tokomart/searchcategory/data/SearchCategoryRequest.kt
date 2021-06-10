@@ -47,6 +47,11 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
           totalDataText
         }
         data {
+          suggestion {
+            suggestion
+            query
+            text
+          }
           products {
             id
             imageUrl300

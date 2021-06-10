@@ -1,6 +1,7 @@
 package com.tokopedia.minicart.cartlist
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.common.data.response.minicartlist.*
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SHOWLESS
@@ -46,7 +47,7 @@ class MiniCartListViewHolderMapper @Inject constructor() {
 
     private fun mapVisitables(miniCartData: MiniCartData): MutableList<Visitable<*>> {
         var miniCartTickerErrorUiModel: MiniCartTickerErrorUiModel? = null
-        var miniCartTickerWarningUiModel: MiniCartTickerWarningUiModel? = null
+        val miniCartTickerWarningUiModel: MiniCartTickerWarningUiModel? = null
         var miniCartShopUiModel: MiniCartShopUiModel? = null
         val miniCartAvailableSectionUiModels: MutableList<MiniCartProductUiModel> = mutableListOf()
         val miniCartUnavailableSectionUiModels: MutableList<Visitable<*>> = mutableListOf()
@@ -68,6 +69,8 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                     weightTotal += cartDetail.product.productWeight * cartDetail.product.productQuantity
                     val miniCartProductUiModel = mapProductUiModel(
                             cartDetail = cartDetail,
+                            shop = availableGroup.shop,
+                            shipmentInformation = availableGroup.shipmentInformation,
                             action = availableSection.action,
                             notesLength = miniCartData.data.maxCharNote)
                     miniCartProductUiModels.add(miniCartProductUiModel)
@@ -98,9 +101,12 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                 unavailableGroup.cartDetails.forEach { cartDetail ->
                     val miniCartProductUiModel = mapProductUiModel(
                             cartDetail = cartDetail,
+                            shop = unavailableGroup.shop,
+                            shipmentInformation = unavailableGroup.shipmentInformation,
                             action = unavailableSection.action,
                             isDisabled = true,
-                            unavailableActionId = unavailableSection.selectedUnavailableActionId)
+                            unavailableActionId = unavailableSection.selectedUnavailableActionId,
+                            unavailableReason = unavailableSection.title)
                     miniCartProductUiModels.add(miniCartProductUiModel)
                 }
                 miniCartUnavailableSectionUiModels.addAll(miniCartProductUiModels)
@@ -160,9 +166,12 @@ class MiniCartListViewHolderMapper @Inject constructor() {
     }
 
     private fun mapProductUiModel(cartDetail: CartDetail,
+                                  shop: Shop,
+                                  shipmentInformation: ShipmentInformation,
                                   action: List<Action>,
                                   isDisabled: Boolean = false,
                                   unavailableActionId: String = "",
+                                  unavailableReason: String = "",
                                   notesLength: Int = 0): MiniCartProductUiModel {
         return MiniCartProductUiModel().apply {
             cartId = cartDetail.cartId
@@ -186,6 +195,19 @@ class MiniCartListViewHolderMapper @Inject constructor() {
             wholesalePriceGroup = cartDetail.product.wholesalePrice.asReversed()
             isProductDisabled = isDisabled
             maxNotesLength = notesLength
+            campaignId = cartDetail.product.campaignId
+            attribution = cartDetail.product.productTrackerData.attribution
+            warehouseId = cartDetail.product.warehouseId
+            categoryId = cartDetail.product.categoryId
+            category = cartDetail.product.category
+            shopId = shop.shopId
+            shopName = shop.shopName
+            shopType = shop.shopTypeInfo.titleFmt
+            freeShippingType =
+                    if (shipmentInformation.freeShippingExtra.eligible) "bebas ongkir extra"
+                    else if (shipmentInformation.freeShipping.eligible) "bebas ongkir"
+                    else ""
+            errorType = unavailableReason
             if (isDisabled) {
                 selectedUnavailableActionId = unavailableActionId
                 selectedUnavailableActionLink = cartDetail.selectedUnavailableActionLink
@@ -258,6 +280,21 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                     productParentId = visitable.parentId
                     quantity = visitable.productQty
                     notes = visitable.productNotes
+                    campaignId = visitable.campaignId
+                    attribution = visitable.attribution
+                    productWeight = visitable.productWeight
+                    productSlashPriceLabel = visitable.productSlashPriceLabel
+                    warehouseId = visitable.warehouseId
+                    shopId = visitable.shopId
+                    shopName = visitable.shopName
+                    shopType = visitable.shopType
+                    categoryId = visitable.categoryId
+                    freeShippingType = visitable.freeShippingType
+                    category = visitable.category
+                    productName = visitable.productName
+                    productVariantName = visitable.productVariantName
+                    productPrice = visitable.productPrice
+                    productQty = visitable.productQty
                 }
                 miniCartItems.add(miniCartItem)
             }

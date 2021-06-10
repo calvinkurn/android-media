@@ -36,4 +36,9 @@ class CategoryUpdateCartTest: CategoryTestFixtures(), Callback {
     fun `onViewUpdateCartItems should update quantity in product list`() {
         updateCartTestHelper.`onViewUpdateCartItems should update quantity in product list`()
     }
+
+    @Test
+    fun `onViewReloadPage should have product with quantity from mini cart`() {
+        updateCartTestHelper.`onViewReloadPage should have product with quantity from mini cart`()
+    }
 }

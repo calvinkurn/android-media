@@ -92,7 +92,6 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
 
         val params = requestParams.getSearchProductParams()
         params[SearchApiConst.START] shouldBe expectedStart
-        params[SearchApiConst.USER_WAREHOUSE_ID] shouldBe warehouseId
 
         verifyRequestContainsAdditionalParams(params, additionalParams)
 
