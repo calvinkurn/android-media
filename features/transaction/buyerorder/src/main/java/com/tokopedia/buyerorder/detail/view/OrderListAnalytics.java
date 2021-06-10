@@ -467,7 +467,8 @@ public class OrderListAnalytics {
                                 PRICE, 0,
                                 LIST, contentItemTab.getTitle(),
                                 POSITION, position + 1,
-                                CATEGORY, contentItemTab.getTrackingData().getCategoryName()
+                                CATEGORY, contentItemTab.getTrackingData().getCategoryName(),
+                                VARIANT, contentItemTab.getTrackingData().getItemType()
                                 )
                         )
                 )
