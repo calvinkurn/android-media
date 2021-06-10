@@ -58,7 +58,7 @@ class GetP2DataAndMiniCartUseCase @Inject constructor(private val dispatcher: Co
             it
         }
 
-        p2Data.miniCart = miniCartData
+        p2Data.miniCart = miniCartData?.toMutableMap()
         return p2Data
     }
 
