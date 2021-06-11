@@ -43,6 +43,4 @@ class NotifcenterOnlyAbTest : InboxNotifcenterTest() {
         )
     }
 
-    // TODO: what happened to the onboarding if `showBottomNav` is false
-
 }
