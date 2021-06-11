@@ -159,7 +159,7 @@ class OfficialHomeFragment :
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
-            if (isChooseAddressUpdated()) {
+            if (isChooseAddressUpdated() && isLoadedOnce) {
                 reloadData()
             } else {
                 loadData()
