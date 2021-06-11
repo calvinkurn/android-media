@@ -9,6 +9,7 @@ import com.tokopedia.inbox.fake.domain.usecase.notifcenter.FakeNotifcenterFilter
 import com.tokopedia.inbox.fake.domain.usecase.notifcenter.recom.FakeGetRecommendationUseCase
 import com.tokopedia.inbox.fake.domain.usecase.notifcenter.topads.FakeTopAdsRepository
 import com.tokopedia.inbox.test.R
+import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.topads.sdk.domain.model.TopAdsmageViewResponse
 import javax.inject.Inject
@@ -46,6 +47,9 @@ class InboxNotifcenterFakeDependency {
         )
         topAdsRepository.response = AndroidFileUtil.parseRaw(
             R.raw.notifcenter_tdn, TopAdsmageViewResponse::class.java
+        )
+        notifcenterFilterUseCase.response = AndroidFileUtil.parseRaw(
+            R.raw.notifcenter_filter_v2, NotifcenterFilterResponse::class.java
         )
     }
 
