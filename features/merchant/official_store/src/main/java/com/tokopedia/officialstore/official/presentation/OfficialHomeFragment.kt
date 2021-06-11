@@ -816,6 +816,14 @@ class OfficialHomeFragment :
         }
     }
 
+    override fun getOSCategory(): Category? {
+        return category
+    }
+
+    override fun isLogin(): Boolean {
+        return userSession.isLoggedIn
+    }
+
     override fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String) {
         tracking?.seeAllBannerFlashSaleClickedComponent(
                 viewModel.currentSlugDC,
@@ -836,15 +844,6 @@ class OfficialHomeFragment :
                 viewModel.getUserId()
         )
         RouteManager.route(context, applink)
-    }
-
-    private fun removeLoading() {
-        val osPltCallback = getOfficialStorePageLoadTimeCallback()
-        if (osPltCallback != null) {
-            osPltCallback.stopNetworkRequestPerformanceMonitoring()
-            osPltCallback.startRenderPerformanceMonitoring()
-        }
-        setPerformanceListenerForRecyclerView()
     }
 
     override fun onShopImpression(categoryName: String, position: Int, shopData: Shop) {
@@ -886,6 +885,15 @@ class OfficialHomeFragment :
 
         val dynamicChannelConstant = (FirebasePerformanceMonitoringConstant.DYNAMIC_CHANNEL).replace(SLUG_CONST, CATEGORY_CONST)
         dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
+    }
+
+    private fun removeLoading() {
+        val osPltCallback = getOfficialStorePageLoadTimeCallback()
+        if (osPltCallback != null) {
+            osPltCallback.stopNetworkRequestPerformanceMonitoring()
+            osPltCallback.startRenderPerformanceMonitoring()
+        }
+        setPerformanceListenerForRecyclerView()
     }
 
     private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
