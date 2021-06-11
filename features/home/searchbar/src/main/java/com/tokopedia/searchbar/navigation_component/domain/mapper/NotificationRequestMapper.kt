@@ -1,5 +1,7 @@
 package com.tokopedia.searchbar.navigation_component.domain.mapper
 
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.searchbar.navigation_component.data.notification.NotifcenterUnread
 import com.tokopedia.searchbar.navigation_component.data.notification.NotificationResponse
@@ -20,7 +22,11 @@ object NotificationRequestMapper {
         val totalNewInbox = notification.inboxCounter.all.totalInt
         val totalCart = notification.totalCart
         val totalInbox = buildTotalInbox(notification)
-        val totalNotif = buildTotalNotif(notificationResponse)
+        val totalNotif = if (useNewNotificationOnNewInbox()) {
+            notificationResponse.notifications.inboxCounter.all.notifcenterInt
+        } else {
+            buildTotalNotif(notificationResponse)
+        }
 
         val totalSellerOrderCount = buildTotalOrderCount(hasShop, notificationResponse)
         val totalReviewCount = notification.inbox.review
@@ -36,6 +42,19 @@ object NotificationRequestMapper {
                 totalNotif = totalNotif,
                 totalGlobalNavNotif = totalGlobalNavBadge
         )
+    }
+
+    private fun useNewNotificationOnNewInbox(): Boolean {
+        try {
+            return RemoteConfigInstance.getInstance().abTestPlatform
+                .getString(
+                    AbTestPlatform.KEY_NEW_NOTFICENTER,
+                    AbTestPlatform.VARIANT_OLD_NOTFICENTER
+                ) == AbTestPlatform.VARIANT_NEW_NOTFICENTER
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return false
     }
 
     private fun buildTotalOrderCount(hasShop: Boolean, data: NotificationResponse): Int {
