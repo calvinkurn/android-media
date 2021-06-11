@@ -445,7 +445,8 @@ class DigitalCartViewModelTest {
 
         // then
         assert(digitalCartViewModel.cancelVoucherData.value is Fail)
-        assert((digitalCartViewModel.cancelVoucherData.value as Fail).throwable.message == errorMessage)
+        assert((digitalCartViewModel.cancelVoucherData.value as Fail).throwable.message?.isEmpty()
+                ?: false)
     }
 
     @Test
