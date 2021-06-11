@@ -1,14 +1,15 @@
 package com.tokopedia.cart.view.viewholder
 
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cart.R
 import com.tokopedia.cart.databinding.ItemCartTopAdsHeadlineBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartTopAdsHeadlineData
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -44,12 +45,12 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
     private fun fetchTopadsHeadlineAds(topAdsHeadlineView: TopAdsHeadlineView, userSession: UserSessionInterface) {
         topAdsHeadlineView.setHasAddToCartButton(true)
         topAdsHeadlineView.setShowCta(false)
-        topAdsHeadlineView.setAddToCartClickListener(object : TopAdsAddToCartClickListener{
+        topAdsHeadlineView.setAddToCartClickListener(object : TopAdsAddToCartClickListener {
             override fun onAdToCartClicked(bannerShopProductViewModel: BannerShopProductViewModel) {
                 listener?.onButtonAddToCartClicked(bannerShopProductViewModel)
             }
         })
-        topAdsHeadlineView.getHeadlineAds(getHeadlineAdsParam(userSession), this::onSuccessResponse, this::hideHeadlineView)
+        topAdsHeadlineView.getHeadlineAds(getHeadlineAdsParam(userSession), this::onSuccessResponse, this::hideHeadlineViewOnError)
     }
 
     private fun getHeadlineAdsParam(userSession: UserSessionInterface): String {
@@ -73,7 +74,20 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
         }
     }
 
-    private fun hideHeadlineView() {
+    private fun hideHeadlineViewOnFirstLoad() {
+        binding.cartTopadsHeadlineView.apply {
+            hideShimmerView()
+            hide()
+        }
+    }
+
+    private fun hideHeadlineViewOnError() {
+        itemView.gone()
+        val params = itemView.layoutParams
+        params.height = 0
+        params.width = 0
+        itemView.layoutParams = params
+
         binding.cartTopadsHeadlineView.apply {
             hideShimmerView()
             hide()
@@ -82,7 +96,7 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
 
     private fun bindTopAdsHeadlineView(data: CartTopAdsHeadlineData) {
         binding.cartTopadsHeadlineView.apply {
-            hideHeadlineView()
+            hideHeadlineViewOnFirstLoad()
             if (data.cpmModel != null) {
                 showHeadlineView(data.cpmModel)
             } else {
@@ -92,6 +106,12 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
     }
 
     private fun showHeadlineView(cpmModel: CpmModel?) {
+        itemView.show()
+        val params = itemView.layoutParams
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT
+        itemView.layoutParams = params
+
         binding.cartTopadsHeadlineView.apply {
             cpmModel?.let {
                 hideShimmerView()
