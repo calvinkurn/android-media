@@ -84,9 +84,7 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 open class DynamicProductDetailViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
                                                              private val getPdpLayoutUseCase: Lazy<GetPdpLayoutUseCase>,
@@ -210,6 +208,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
     var isNewShipment: Boolean = false
     var affiliateUniqueId: String = ""
+    var uuidString: String = ""
     private var userLocationCache: LocalCacheModel = LocalCacheModel()
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
@@ -375,12 +374,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "",
-                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel) {
+                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel, affiliateUniqueString: String = "", uuid : String = "") {
         launchCatchError(dispatcher.io, block = {
             alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
             forceRefresh = refreshPage
             userLocationCache = userLocationLocal
+            affiliateUniqueId = affiliateUniqueString
+            uuidString = uuid
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
                     ?: "", productParams.productName ?: "", productParams.warehouseId
                     ?: "", layoutId).also {
@@ -908,7 +909,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     private fun getAffiliateUIID(): AffiliateUIIDRequest? {
-        return if(affiliateUniqueId.isNotBlank()) AffiliateUIIDRequest(UUID.randomUUID().toString(), affiliateUniqueId, TrackApp.getInstance().gtm.irisSessionId) else null
+        return if(affiliateUniqueId.isNotBlank()) AffiliateUIIDRequest(uuidString, affiliateUniqueId, TrackApp.getInstance().gtm.irisSessionId) else null
     }
 
     private fun generatePdpSessionWithDeviceId(): String {

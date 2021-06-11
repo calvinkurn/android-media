@@ -1499,7 +1499,7 @@ object DynamicProductDetailTracking {
                     dimension83 = dimension83,
                     dimension81 = productInfo?.shopTypeString ?: "",
                     dimension98 = dimension98,
-                    dimension106 = affiliateUniqueId,
+                    dimension113 = affiliateUniqueId,
                     index = 1
             ))
         }
