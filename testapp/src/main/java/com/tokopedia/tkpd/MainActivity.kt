@@ -13,11 +13,13 @@ import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
+//import com.tokopedia.loginregister.external_register.ovo.OvoAddPhoneActivity
 import com.tokopedia.tkpd.helper.logout
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.navigation.presentation.activity.MainParentActivity
 import kotlinx.android.synthetic.main.main_testapp.*
 
 class MainActivity : AppCompatActivity() {
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main_testapp)
 
         userSession = UserSession(this)
+        userSession.setFirstTimeUserOnboarding(false)
 
         if (userSession.deviceId.isNullOrEmpty()) {
             userSession.deviceId = DataSource.MOCK_DEVICE_ID
@@ -104,5 +107,7 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
+
+        startActivity(Intent(this, MainParentActivity::class.java))
     }
 }

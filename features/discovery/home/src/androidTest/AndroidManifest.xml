@@ -20,7 +20,14 @@
 
         <activity
             android:name=".environment.InstrumentationHomeRevampTestActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <intent-filter>
+                <action
+                    android:name="com.tokopedia.home.target.check" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
     </application>
 </manifest>

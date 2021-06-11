@@ -28,6 +28,19 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="com.tokopedia.navigation.presentation.activity.MainParentActivity"
+            android:exported="true"
+            android:label="Tokopedia"
+            android:launchMode="singleTask"
+            android:theme="@style/TokopediaTransparentStatus"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.navigation.presentation.activity.MainParentActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_goe_api_key_ma"

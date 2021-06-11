@@ -439,6 +439,10 @@ public class MyApplication extends BaseMainApplication
         }
     }
 
+    public boolean checkAppSignature() {
+        return true;
+    }
+
     public void initFileDirConfig(){
         GlobalConfig.INTERNAL_CACHE_DIR = this.getCacheDir().getAbsolutePath();
         GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
