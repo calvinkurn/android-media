@@ -137,6 +137,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private val navigator: BuyerOrderDetailNavigator by lazy {
         BuyerOrderDetailNavigator(requireActivity())
     }
+
+    // show this chat icon only if there's no `Tanya Penjual` button on the sticky button
     private val chatIcon: IconUnify by lazy {
         createChatIcon(requireContext())
     }
@@ -261,21 +263,11 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         }
     }
 
-    private fun getCartId(): String {
-        return activity?.intent?.extras?.getString(BuyerOrderDetailConst.PARAM_CART_STRING, "") ?: ""
-    }
-
     override fun onPopUpActionButtonClicked(button: ActionButtonsUiModel.ActionButton.PopUp.PopUpButton) {
         when (button.key) {
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER -> onDoReceiveConfirmationActionButtonClicked()
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> onComplaintActionButtonClicked(button.uri)
         }
-    }
-
-    private fun onSecondaryActionButtonClicked() {
-        val secondaryActionButtons = viewModel.getSecondaryActionButtons()
-        secondaryActionButtonBottomSheet.setSecondaryActionButtons(secondaryActionButtons)
-        secondaryActionButtonBottomSheet.show(childFragmentManager)
     }
 
     override fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel) {
@@ -287,6 +279,16 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     override fun onClickShipmentInfoTnC() {
         BuyerOrderDetailTracker.eventClickSeeShipmentInfoTNC(viewModel.getOrderStatusId(), viewModel.getOrderId())
+    }
+
+    private fun getCartId(): String {
+        return activity?.intent?.extras?.getString(BuyerOrderDetailConst.PARAM_CART_STRING, "") ?: ""
+    }
+
+    private fun onSecondaryActionButtonClicked() {
+        val secondaryActionButtons = viewModel.getSecondaryActionButtons()
+        secondaryActionButtonBottomSheet.setSecondaryActionButtons(secondaryActionButtons)
+        secondaryActionButtonBottomSheet.show(childFragmentManager)
     }
 
     private fun restoreFragmentState(savedInstanceState: Bundle) {
