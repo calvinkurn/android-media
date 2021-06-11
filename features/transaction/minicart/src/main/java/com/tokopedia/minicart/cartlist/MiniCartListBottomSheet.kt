@@ -84,7 +84,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             globalEventObserver = null
         }
         bottomSheetUiModelObserver?.let {
-            viewModel?.miniCartListListBottomSheetUiModel?.removeObserver(it)
+            viewModel?.miniCartListBottomSheetUiModel?.removeObserver(it)
             bottomSheetUiModelObserver = null
         }
         bottomSheet?.dismiss()
@@ -154,7 +154,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         totalAmount?.let {
             miniCartChevronClickListener = View.OnClickListener {
                 analytics.eventClickChevronToShowSummaryTransaction()
-                viewModel?.miniCartListListBottomSheetUiModel?.value?.miniCartSummaryTransactionUiModel?.let {
+                viewModel?.miniCartListBottomSheetUiModel?.value?.miniCartSummaryTransactionUiModel?.let {
                     summaryTransactionBottomSheet.show(it, fragmentManager, context)
                 }
             }
@@ -172,7 +172,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     private fun sendEventClickBuy() {
         val pageName = viewModel?.currentPage?.value ?: ""
-        val products = viewModel?.miniCartListListBottomSheetUiModel?.value?.getMiniCartProductUiModelList()
+        val products = viewModel?.miniCartListBottomSheetUiModel?.value?.getMiniCartProductUiModelList()
                 ?: emptyList()
         analytics.eventClickBuy(pageName, products)
     }
@@ -324,7 +324,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     private fun observeMiniCartListUiModel(viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
         bottomSheetUiModelObserver?.let {
-            viewModel.miniCartListListBottomSheetUiModel.observe(lifecycleOwner, it)
+            viewModel.miniCartListBottomSheetUiModel.observe(lifecycleOwner, it)
         }
     }
 
