@@ -9,20 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager;
-import androidx.core.widget.NestedScrollView;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -35,12 +21,24 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -299,7 +297,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
         tvSalesPrice.setText(Utils.convertToCurrencyString(detailsViewModel.getSalesPrice()));
 
-        tvExpiryDate.setText(String.format(getString(com.tokopedia.digital_deals.R.string.valid_through), Utils.convertEpochToString(detailsViewModel.getSaleEndDate())));
+        tvExpiryDate.setText(String.format(getString(com.tokopedia.digital_deals.R.string.valid_through), Utils.convertEpochToString(detailsViewModel.getMaxEndDate())));
 
 
         if (detailsViewModel.getOutlets() != null && detailsViewModel.getOutlets().size() > 0) {
@@ -361,9 +359,12 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         baseMainContent.setVisibility(View.VISIBLE);
 
         Date currentTime = Calendar.getInstance().getTime();
-        if ((currentTime.getTime())/1000> detailsViewModel.getSaleEndDate())
-        {
-            buyDealNow.setText(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.deals_disable_buy_now));
+        if (detailsViewModel.getSaleStartDate() > (currentTime.getTime())/1000) {
+            buyDealNow.setText(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.digital_deals_product_not_started));
+            buyDealNow.setClickable(false);
+            buyDealNow.setBackgroundColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N75));
+        } else if (detailsViewModel.getSaleEndDate() < (currentTime.getTime())/1000) {
+            buyDealNow.setText(getContext().getResources().getString(com.tokopedia.digital_deals.R.string.digital_deals_product_ended));
             buyDealNow.setClickable(false);
             buyDealNow.setBackgroundColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N75));
         } else {
