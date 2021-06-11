@@ -26,6 +26,7 @@ import com.tokopedia.tokomart.categorylist.domain.mapper.CategoryListMapper
 import com.tokopedia.tokomart.categorylist.presentation.activity.TokoMartCategoryListActivity.Companion.PARAM_WAREHOUSE_ID
 import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListItemUiModel
 import com.tokopedia.tokomart.categorylist.presentation.view.TokoNowCategoryList
+import com.tokopedia.tokomart.categorylist.presentation.viewholder.CategoryListItemViewHolder
 import com.tokopedia.tokomart.categorylist.presentation.viewholder.CategoryListItemViewHolder.CategoryListListener
 import com.tokopedia.tokomart.categorylist.presentation.viewmodel.TokoMartCategoryListViewModel
 import com.tokopedia.tokomart.categorylist.presentation.viewmodel.TokoMartCategoryListViewModel.Companion.ERROR_MAINTENANCE
@@ -88,12 +89,12 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify(), CategoryListListener
         activity?.finish()
     }
 
-    override fun onClickCategory(categoryLevelOne: String, categoryLevelTwo: String) {
+    override fun onClickCategory(categoryLevelOne:String, categoryLevelTwo: String) {
         analytics.onClickLevelTwoCategory(categoryLevelOne, categoryLevelTwo)
         dismiss()
     }
 
-    override fun onClickAllCategory(categoryLevelOne: String) {
+    override fun onClickAllCategory(categoryLevelOne:String) {
         analytics.onClickLihatSemuaCategory(categoryLevelOne)
     }
 
@@ -167,7 +168,11 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify(), CategoryListListener
     }
 
     private fun createCategoryList(category: CategoryListItemUiModel): TokoNowCategoryList {
-        return TokoNowCategoryList(requireContext(), this, category.name).apply {
+        return TokoNowCategoryList(requireContext(), this, object: CategoryListItemViewHolder.GetCategoryLevelOneListener{
+            override fun getCategoryLevelOneListener(): String {
+                return category.name
+            }
+        }).apply {
             val paddingLeft = context?.resources
                 ?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
             setPadding(paddingLeft, 0, 0, 0)

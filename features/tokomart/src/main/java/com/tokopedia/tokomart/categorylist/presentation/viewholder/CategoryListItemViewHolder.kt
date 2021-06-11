@@ -15,8 +15,8 @@ import kotlinx.android.synthetic.main.item_tokomart_category_list.view.*
 class CategoryListItemViewHolder(
     itemView: View,
     private val listener: CategoryListListener,
-    private val parentLvlTitle: String
-): AbstractViewHolder<CategoryListChildUiModel>(itemView) {
+    private val getCategoryLevelOneListener: GetCategoryLevelOneListener
+    ): AbstractViewHolder<CategoryListChildUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -41,16 +41,20 @@ class CategoryListItemViewHolder(
             setOnClickListener {
                 RouteManager.route(context, category.appLink)
                 if(category.type == CategoryType.ALL_CATEGORY_TEXT){
-                    listener.onClickAllCategory(parentLvlTitle)
+                    listener.onClickAllCategory(getCategoryLevelOneListener.getCategoryLevelOneListener())
                 } else {
-                    listener.onClickCategory(parentLvlTitle, category.name)
+                    listener.onClickCategory(getCategoryLevelOneListener.getCategoryLevelOneListener(), category.name)
                 }
             }
         }
     }
 
     interface CategoryListListener {
-        fun onClickCategory(categoryLevelOne:String, categoryLevelTwo:String)
-        fun onClickAllCategory(categoryLevelOne:String)
+        fun onClickCategory(categoryLevelOne: String,categoryLevelTwo:String)
+        fun onClickAllCategory(categoryLevelOne: String)
+    }
+
+    interface GetCategoryLevelOneListener {
+        fun getCategoryLevelOneListener(): String
     }
 }

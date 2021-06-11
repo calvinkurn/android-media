@@ -9,6 +9,7 @@ import com.tokopedia.tokomart.categorylist.presentation.adapter.TokoMartCategory
 import com.tokopedia.tokomart.categorylist.presentation.adapter.decoration.TokoNowCategoryListDecoration
 import com.tokopedia.tokomart.categorylist.presentation.adapter.differ.TokoMartCategoryListDiffer
 import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListChildUiModel
+import com.tokopedia.tokomart.categorylist.presentation.viewholder.CategoryListItemViewHolder
 import com.tokopedia.tokomart.categorylist.presentation.viewholder.CategoryListItemViewHolder.CategoryListListener
 
 class TokoNowCategoryList : RecyclerView {
@@ -18,9 +19,10 @@ class TokoNowCategoryList : RecyclerView {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-    constructor(context: Context, listener: CategoryListListener, parentLvlName: String) : super(context) {
+    constructor(context: Context, listener: CategoryListListener, getCategoryLevelOneListener:
+    CategoryListItemViewHolder.GetCategoryLevelOneListener) : super(context) {
         categoryAdapter = TokoMartCategoryListAdapter(
-            TokoMartCategoryListAdapterTypeFactory(listener, parentLvlName),
+            TokoMartCategoryListAdapterTypeFactory(listener, getCategoryLevelOneListener),
             TokoMartCategoryListDiffer()
         )
     }

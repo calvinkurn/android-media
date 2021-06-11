@@ -10,14 +10,15 @@ import com.tokopedia.tokomart.categorylist.presentation.viewholder.CategoryListI
 
 class TokoMartCategoryListAdapterTypeFactory(
     private val categoryListListener: CategoryListListener,
-    private val parentLvl: String
-) : BaseAdapterTypeFactory(), TokoMartCategoryListTypeFactory {
+    private val getCategoryLevelOneListener: CategoryListItemViewHolder.GetCategoryLevelOneListener
+    ) : BaseAdapterTypeFactory(), TokoMartCategoryListTypeFactory {
 
     override fun type(uiModel: CategoryListChildUiModel): Int = CategoryListItemViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            CategoryListItemViewHolder.LAYOUT -> CategoryListItemViewHolder(parent, categoryListListener, parentLvl)
+            CategoryListItemViewHolder.LAYOUT -> CategoryListItemViewHolder(parent, categoryListListener,
+                    getCategoryLevelOneListener)
             else -> super.createViewHolder(parent, type)
         }
     }
