@@ -27,19 +27,22 @@
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/globalErrorBuyerOrderDetail"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail" />
 
     <com.tokopedia.empty_state.EmptyStateUnify
         android:id="@+id/emptyStateBuyerOrderDetail"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarBuyerOrderDetail" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshBuyerOrderDetail"
@@ -63,9 +66,9 @@
         android:id="@+id/containerActionButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/buyer_order_detail_window_color"
         app:cardCornerRadius="@dimen/layout_lvl0"
         app:cardElevation="@dimen/spacing_lvl3"
-        app:cardBackgroundColor="@color/buyer_order_detail_window_color"
         app:layout_constraintTop_toBottomOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
