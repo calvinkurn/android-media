@@ -60,7 +60,7 @@ public class LoginPhoneNumberAnalytics {
         static final String PHONE = "phone";
         static final String TOKOCASH = "Tokocash";
         static final String LOGIN_SUCCESS = "login success";
-        static final String REGISTER_SUCCESS = "register success";
+        static final String REGISTER_SUCCESS = "success";
     }
 
     public void sendScreen(Activity activity, String screenName) {

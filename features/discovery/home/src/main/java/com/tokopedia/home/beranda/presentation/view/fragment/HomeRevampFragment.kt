@@ -360,7 +360,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun isChooseAddressRollenceActive(): Boolean {
-        return ChooseAddressUtils.isRollOutUser(requireContext())
+        return if (context == null) {
+            true
+        } else {
+            ChooseAddressUtils.isRollOutUser(context)
+        }
     }
 
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
@@ -718,6 +722,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             coachMarkIsShowing = true
             val coachMarkItem = ArrayList<CoachMark2Item>()
             coachmark = CoachMark2(it)
+            coachMarkItem.buildHomeCoachmark()
             coachmark?.let {
                 it.setStepListener(object : CoachMark2.OnStepListener {
                     override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
@@ -1696,9 +1701,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             REQUEST_CODE_REVIEW -> {
                 adapter?.notifyDataSetChanged()
                 if (resultCode == Activity.RESULT_OK) {
-                    if (shouldShowToaster()) {
-                        showToasterReviewSuccess()
-                    }
+                    showToasterReviewSuccess()
                     getHomeViewModel().onRemoveSuggestedReview()
                 }
             }
@@ -2672,11 +2675,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun showToasterReviewSuccess() {
         view?.let { build(it, getString(R.string.review_create_success_toaster, getHomeViewModel().getUserName()), Snackbar.LENGTH_LONG, TYPE_NORMAL, getString(R.string.review_oke)).show() }
-    }
-
-    private fun shouldShowToaster(): Boolean {
-        val abTestValue = getAbTestPlatform().getString(ConstantKey.RemoteConfigKey.AB_TEST_REVIEW_KEY, "")
-        return abTestValue == ConstantKey.ABtestValue.VALUE_NEW_REVIEW_FLOW
     }
 
     private fun shouldShowTransition(): Boolean {

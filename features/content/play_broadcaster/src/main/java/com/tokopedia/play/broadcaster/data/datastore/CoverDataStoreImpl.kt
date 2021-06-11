@@ -43,29 +43,9 @@ class CoverDataStoreImpl @Inject constructor(
         )
     }
 
-    override fun updateCoverTitle(title: String) {
-        val currentCover = getSelectedCover() ?: PlayCoverUiModel.empty()
-        _selectedCoverLiveData.value = currentCover.copy(
-                title = title,
-                state = SetupDataState.Draft
-        )
-    }
-
     override suspend fun uploadSelectedCover(channelId: String): NetworkResult<Unit> {
         return try {
             updateCover(channelId)
-            getSelectedCover()?.let {
-                setFullCover(it.copy(state = SetupDataState.Uploaded))
-            }
-            NetworkResult.Success(Unit)
-        } catch (e: Throwable) {
-            NetworkResult.Fail(e)
-        }
-    }
-
-    override suspend fun uploadCoverTitle(channelId: String): NetworkResult<Unit> {
-        return try {
-            syncCoverTitle(channelId)
             getSelectedCover()?.let {
                 setFullCover(it.copy(state = SetupDataState.Uploaded))
             }
@@ -79,34 +59,15 @@ class CoverDataStoreImpl @Inject constructor(
         val currentCover = getSelectedCover()
         val coverUrl = when (val croppedCover = currentCover?.croppedCover) {
             is CoverSetupState.Cropped -> croppedCover.coverImage.toString()
-            else -> throw IllegalStateException("Cover url must not be null")
+            else -> throw IllegalStateException("Something went wrong: Cover url not found")
         }
-
-        val coverTitle = currentCover.title
 
         updateChannelUseCase.apply {
             setQueryParams(
                     PlayBroadcastUpdateChannelUseCase.createUpdateFullCoverRequest(
                             channelId = channelId,
                             authorId = userSession.shopId,
-                            coverTitle = coverTitle,
                             coverUrl = coverUrl
-                    )
-            )
-        }
-        return@withContext updateChannelUseCase.executeOnBackground()
-    }
-
-    private suspend fun syncCoverTitle(channelId: String) = withContext(dispatcher.io) {
-        val currentCover = getSelectedCover()
-        val coverTitle = currentCover?.title ?: throw IllegalStateException("Cover title cannot be null")
-
-        updateChannelUseCase.apply {
-            setQueryParams(
-                    PlayBroadcastUpdateChannelUseCase.createUpdateCoverTitleRequest(
-                            channelId = channelId,
-                            authorId = userSession.shopId,
-                            coverTitle = coverTitle
                     )
             )
         }
