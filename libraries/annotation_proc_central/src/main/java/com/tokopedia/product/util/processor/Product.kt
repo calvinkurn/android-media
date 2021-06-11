@@ -34,6 +34,7 @@ object ProductTrackingConstant {
         const val KEY_DIMENSION_55 = "dimension55"
         const val KEY_DIMENSION_38 = "dimension38"
         const val KEY_DIMENSION_98 = "dimension98"
+        const val KEY_DIMENSION_106 = "dimension106"
     }
 
 
@@ -84,6 +85,8 @@ data class Product(
         val dimension81: String,
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_98)
         val dimension98: String,
+        @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_106)
+        val dimension106: String,
         @CustomChecker(ProductListImpressionProductChecker::class, Level.ERROR, functionName = ["isIndexNotZero"])
         @DefaultValueLong(1)
         @Key(Param.INDEX)

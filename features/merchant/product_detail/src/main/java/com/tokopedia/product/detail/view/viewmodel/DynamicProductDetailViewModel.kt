@@ -31,6 +31,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
+import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
@@ -61,6 +62,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -82,7 +84,9 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 open class DynamicProductDetailViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
                                                              private val getPdpLayoutUseCase: Lazy<GetPdpLayoutUseCase>,
@@ -205,6 +209,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var shippingMinimumPrice: Int = getDynamicProductInfoP1?.basic?.getDefaultOngkirInt() ?: 30000
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
     var isNewShipment: Boolean = false
+    var affiliateUniqueId: String = ""
     private var userLocationCache: LocalCacheModel = LocalCacheModel()
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
@@ -895,10 +900,15 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                             productId,
                             pdpSession,
                             generatePdpSessionWithDeviceId(),
-                            generateUserLocationRequest(userLocationCache)
+                            generateUserLocationRequest(userLocationCache),
+                            getAffiliateUIID()
                     ), forceRefresh
             )
         }
+    }
+
+    private fun getAffiliateUIID(): AffiliateUIIDRequest? {
+        return if(affiliateUniqueId.isNotBlank()) AffiliateUIIDRequest(UUID.randomUUID().toString(), affiliateUniqueId, TrackApp.getInstance().gtm.irisSessionId) else null
     }
 
     private fun generatePdpSessionWithDeviceId(): String {

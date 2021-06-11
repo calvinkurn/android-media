@@ -201,7 +201,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         isAffiliate: Boolean = false,
                         trackerAttribution: String? = null,
                         trackerListName: String? = null,
-                        affiliateString: String? = null,
+                        affiliateUniqueId: String? = null,
                         deeplinkUrl: String? = null,
                         layoutId: String? = null) = DynamicProductDetailFragment().also {
             it.arguments = Bundle().apply {
@@ -211,7 +211,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 shopDomain?.let { domain -> putString(ProductDetailConstant.ARG_SHOP_DOMAIN, domain) }
                 trackerAttribution?.let { attribution -> putString(ProductDetailConstant.ARG_TRACKER_ATTRIBUTION, attribution) }
                 trackerListName?.let { listName -> putString(ProductDetailConstant.ARG_TRACKER_LIST_NAME, listName) }
-                affiliateString?.let { affiliateString -> putString(ProductDetailConstant.ARG_AFFILIATE_STRING, affiliateString) }
+                affiliateUniqueId?.let { affiliateUniqueId -> putString(ProductDetailConstant.ARG_AFFILIATE_UNIQUE_ID, affiliateUniqueId) }
                 deeplinkUrl?.let { deeplinkUrl -> putString(ProductDetailConstant.ARG_DEEPLINK_URL, deeplinkUrl) }
                 layoutId?.let { layoutId -> putString(ProductDetailConstant.ARG_LAYOUT_ID, layoutId) }
                 putBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, isFromDeeplink)
@@ -249,7 +249,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var productKey: String? = null
     private var shopDomain: String? = null
     private var isAffiliate = false
-    private var affiliateString: String? = null
+    private var affiliateUniqueId: String? = null
     private var deeplinkUrl: String = ""
     private var isFromDeeplink: Boolean = false
     private var layoutId: String = ""
@@ -380,6 +380,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             trackerAttributionPdp = it.getString(ProductDetailConstant.ARG_TRACKER_ATTRIBUTION)
             trackerListNamePdp = it.getString(ProductDetailConstant.ARG_TRACKER_LIST_NAME)
             affiliateString = it.getString(ProductDetailConstant.ARG_AFFILIATE_STRING)
+            affiliateUniqueId = it.getString(ProductDetailConstant.ARG_AFFILIATE_UNIQUE_ID)
             isAffiliate = it.getBoolean(ProductDetailConstant.ARG_FROM_AFFILIATE, false)
             deeplinkUrl = it.getString(ProductDetailConstant.ARG_DEEPLINK_URL, "")
             isFromDeeplink = it.getBoolean(ProductDetailConstant.ARG_FROM_DEEPLINK, false)
@@ -1706,8 +1707,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productInfo.basic.productID)
             }
 
-            if (affiliateString.hasValue()) {
-                viewModel.hitAffiliateTracker(affiliateString ?: "", viewModel.deviceId)
+            if (affiliateUniqueId.hasValue()) {
+                viewModel.affiliateUniqueId = affiliateUniqueId ?: ""
             }
 
             setupProductVideoCoordinator()
@@ -2446,7 +2447,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 multiOrigin = viewModel.getMultiOriginByProductId().isFulfillment,
                 deeplinkUrl = deeplinkUrl,
                 isStockAvailable = viewModel.getDynamicProductInfoP1?.getFinalStock() ?: "0",
-                boType = boType
+                boType = boType,
+                affiliateUniqueId = affiliateUniqueId ?: ""
         )
     }
 

@@ -44,7 +44,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         private const val IS_FROM_EXPLORE_AFFILIATE = "is_from_explore_affiliate"
         private const val PARAM_TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val PARAM_TRACKER_LIST_NAME = "tracker_list_name"
-        private const val PARAM_AFFILIATE_STRING = "aff"
+        private const val PARAM_AFFILIATE_UNIQUE_ID = "aff_unique_id"
         private const val PARAM_LAYOUT_ID = "layoutID"
         const val PRODUCT_PERFORMANCE_MONITORING_VARIANT_KEY = "isVariant"
         private const val PRODUCT_PERFORMANCE_MONITORING_VARIANT_VALUE = "variant"
@@ -80,7 +80,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     private var warehouseId: String? = null
     private var trackerAttribution: String? = null
     private var trackerListName: String? = null
-    private var affiliateString: String? = null
+    private var affiliateUniqueId: String? = null
     private var deeplinkUrl: String? = null
     private var layoutId: String? = null
     private var userSessionInterface: UserSessionInterface? = null
@@ -214,7 +214,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
     override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
             productKey, isFromDeeplink,
             isFromAffiliate ?: false, trackerAttribution,
-            trackerListName, affiliateString, deeplinkUrl, layoutId)
+            trackerListName, affiliateUniqueId, deeplinkUrl, layoutId)
 
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
@@ -246,7 +246,7 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
             }
             trackerAttribution = uri.getQueryParameter(PARAM_TRACKER_ATTRIBUTION)
             trackerListName = uri.getQueryParameter(PARAM_TRACKER_LIST_NAME)
-            affiliateString = uri.getQueryParameter(PARAM_AFFILIATE_STRING)
+            affiliateUniqueId = uri.getQueryParameter(PARAM_AFFILIATE_UNIQUE_ID)
             isFromAffiliate = !uri.getQueryParameter(IS_FROM_EXPLORE_AFFILIATE).isNullOrEmpty()
         }
         bundle?.let {
@@ -268,8 +268,8 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
             if (trackerListName.isNullOrBlank()) {
                 trackerListName = it.getString(PARAM_TRACKER_LIST_NAME)
             }
-            if (affiliateString.isNullOrBlank()) {
-                affiliateString = it.getString(PARAM_AFFILIATE_STRING)
+            if (affiliateUniqueId.isNullOrBlank()) {
+                affiliateUniqueId = it.getString(PARAM_AFFILIATE_UNIQUE_ID)
             }
         }
 

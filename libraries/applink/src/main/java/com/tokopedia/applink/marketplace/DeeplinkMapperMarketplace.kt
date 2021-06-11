@@ -36,6 +36,8 @@ object DeeplinkMapperMarketplace {
     fun getTokopediaInternalProduct(uri:Uri, idList: List<String>?):String {
         return if (uri.pathSegments[0] == ADD_PATH) {
             ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
+        } else if (uri.queryParameterNames.contains("aff_unique_id")){
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE_UUID, idList?.getOrNull(0), uri.getQueryParameter("aff_unique_id"))
         } else {
             UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, idList?.getOrNull(0))
         }
