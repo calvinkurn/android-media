@@ -63,6 +63,8 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
 
+    implementation rootProject.ext.playServicesDependencies.analytics
+
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation project(rootProject.ext.libraries.unitTest)
