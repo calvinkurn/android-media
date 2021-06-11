@@ -79,6 +79,10 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     fun dismiss() {
+        bottomSheet?.dismiss()
+    }
+
+    private fun resetObserver() {
         globalEventObserver?.let {
             viewModel?.globalEvent?.removeObserver(it)
             globalEventObserver = null
@@ -87,7 +91,6 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             viewModel?.miniCartListBottomSheetUiModel?.removeObserver(it)
             bottomSheetUiModelObserver = null
         }
-        bottomSheet?.dismiss()
     }
 
     private fun initializeBottomSheet(view: View, fragmentManager: FragmentManager) {
@@ -109,6 +112,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             setOnDismissListener {
                 isShow = false
                 cancelAllDebounceJob()
+                resetObserver()
                 bottomSheetListener?.onMiniCartListBottomSheetDismissed()
             }
             setChild(view)
@@ -284,7 +288,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             bottomSheet?.context.let {
                 hideProgressLoading()
                 bottomSheetListener?.onBottomSheetSuccessUpdateCartForCheckout()
-                dismiss()
+                bottomSheet?.dismiss()
             }
         }
     }
