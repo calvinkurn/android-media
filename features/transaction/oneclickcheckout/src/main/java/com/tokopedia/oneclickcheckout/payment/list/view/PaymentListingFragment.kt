@@ -115,7 +115,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
         paymentAmount = arguments?.getDouble(ARG_PAYMENT_AMOUNT) ?: 0.0
         addressId = arguments?.getString(ARG_ADDRESS_ID) ?: ""
         profileCode = arguments?.getString(ARG_PROFILE_CODE) ?: PROFILE_CODE
-        bid = arguments?.getString()
+        bid = arguments?.getString(ARG_PAYMENT_BID) ?: ""
         val parent: Context = activity ?: return
         SplitCompat.installActivity(parent)
     }
@@ -154,7 +154,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
             }
         }
 
-        viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount)
+        viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount, bid)
     }
 
     private fun loadWebView(param: String) {
@@ -168,7 +168,8 @@ class PaymentListingFragment : BaseDaggerFragment() {
                 profileCode,
                 paymentListingUrl,
                 addressId,
-                "android-${GlobalConfig.VERSION_NAME}")
+                "android-${GlobalConfig.VERSION_NAME}",
+                bid)
     }
 
     private fun handleError(throwable: Throwable?) {
@@ -202,7 +203,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
     private fun showGlobalError(type: Int) {
         globalError?.setType(type)
         globalError?.setActionClickListener {
-            viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount)
+            viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount, bid)
         }
         globalError?.visible()
         webView?.gone()
