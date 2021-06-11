@@ -427,7 +427,11 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun renderFullPageError(throwable: Throwable) {
-        emoneyGlobalError.showUnifyError(throwable, { loadData() })
+        emoneyGlobalError.showUnifyError(throwable, { loadData() }, {
+            emoneyGlobalError.hide()
+            renderErrorMessage(throwable)
+            emoneyPdpShimmeringLayout.hide()
+        })
         emoneyGlobalError.findViewById<GlobalError>(com.tokopedia.globalerror.R.id.globalerror_view)?.apply {
             gravity = Gravity.CENTER
         }
