@@ -21,20 +21,11 @@ data class UserShopInfoResponse(
             @Expose
             @SerializedName("info")
             val info: Info = Info(),
-            @Expose
-            @SerializedName("stats")
-            val stats: Stats = Stats()
     ) {
         data class Info(
                 @Expose
                 @SerializedName("date_shop_created")
                 val dateShopCreated: String = ""
-        )
-
-        data class Stats(
-                @Expose
-                @SerializedName("shop_total_transaction")
-                val shopTotalTransaction: String = ""
         )
     }
 
@@ -46,7 +37,10 @@ data class UserShopInfoResponse(
         data class Result(
                 @Expose
                 @SerializedName("goldOS")
-                val goldOS: GoldOS = GoldOS()
+                val goldOS: GoldOS = GoldOS(),
+                @Expose
+                @SerializedName("statsByDate")
+                val statsByDate: List<StatsByDate> = listOf()
         ) {
             data class GoldOS(
                     @Expose
@@ -67,6 +61,17 @@ data class UserShopInfoResponse(
                     @Expose
                     @SerializedName("title")
                     val title: String = ""
+            )
+            data class StatsByDate(
+                    @Expose
+                    @SerializedName("identifier")
+                    val identifier: String = "",
+                    @Expose
+                    @SerializedName("startTime")
+                    val startTime: String = "",
+                    @Expose
+                    @SerializedName("value")
+                    val value: Int = 0
             )
         }
     }

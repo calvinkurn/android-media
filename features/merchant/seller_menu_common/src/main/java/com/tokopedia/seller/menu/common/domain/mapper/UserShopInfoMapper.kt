@@ -2,7 +2,9 @@ package com.tokopedia.seller.menu.common.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.constant.*
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.domain.entity.UserShopInfoResponse
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
@@ -18,12 +20,13 @@ class UserShopInfoMapper @Inject constructor() {
         val targetDateText = "2021-06-14"
         val isBeforeOnDate = isBeforeOnDate(userShopInfoResponse.userShopInfo.info.dateShopCreated, targetDateText)
         val goldOsResult = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.goldOS
+        val txStatsValue = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.statsByDate?.find { it.identifier == Constant.TRX_RM_INACTIVE_SUCCESS }?.value.orZero()
         return UserShopInfoWrapper(
                 shopType = getShopType(userShopInfoResponse),
                 userShopInfoUiModel = UserShopInfoWrapper.UserShopInfoUiModel(
                         isBeforeOnDate = isBeforeOnDate,
                         onDate = targetDateText,
-                        totalTransaction = userShopInfoResponse.userShopInfo.stats.shopTotalTransaction.toIntOrZero(),
+                        totalTransaction = txStatsValue,
                         badge = goldOsResult?.badge ?: "",
                         shopTierName = goldOsResult?.shopTierWording ?: "",
                         shopTier = goldOsResult?.shopTier ?: -1,
