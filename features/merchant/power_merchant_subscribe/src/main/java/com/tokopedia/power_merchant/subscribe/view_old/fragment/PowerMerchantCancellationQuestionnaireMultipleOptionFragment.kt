@@ -78,11 +78,6 @@ class PowerMerchantCancellationQuestionnaireMultipleOptionFragment
 
     private fun initLayout(view: View) {
         with(view) {
-            button_next.text = if (parentActivity.isFinalPage()) {
-                getString(R.string.label_send_answer)
-            } else {
-                getString(com.tokopedia.abstraction.R.string.label_next)
-            }
             button_next.setOnClickListener {
                 stepperModel?.let {
                     parentActivity.goToNextPage(it)
@@ -91,7 +86,7 @@ class PowerMerchantCancellationQuestionnaireMultipleOptionFragment
             button_back.setOnClickListener {
                 parentActivity.goToPreviousPage()
             }
-            tv_question.text = modelMultipleOptionQuestionnaire?.question
+
             recycler_view_option.layoutManager = LinearLayoutManager(context)
             recycler_view_option.adapter = multipleOptionAdapter
         }

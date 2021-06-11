@@ -85,7 +85,7 @@ class PowerMerchantRegistrationView : ConstraintLayout {
 
     private fun showVerificationCheckList(kycVerified: Boolean) {
         val checkListIcon = if (kycVerified) {
-            R.drawable.ic_pm_steps_active
+            R.drawable.ic_pm_checked
         } else {
             R.drawable.ic_pm_steps_not_active
         }
@@ -94,7 +94,7 @@ class PowerMerchantRegistrationView : ConstraintLayout {
 
     private fun showShopScoreCheckList(shopScoreEligible: Boolean) {
         val checkListIcon = if (shopScoreEligible) {
-            R.drawable.ic_pm_steps_active
+            R.drawable.ic_pm_checked
         } else {
             R.drawable.ic_pm_steps_not_active
         }

@@ -23,6 +23,6 @@ object DeepLinkMapperPenalty {
 
     fun isEnableNewPenalty(context: Context): Boolean{
         val remoteConfig = FirebaseRemoteConfigImpl(context)
-        return (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PENALTY))
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PENALTY, true)
     }
 }

@@ -37,7 +37,10 @@ data class GroupEditInput(
             var status: String? = null,
 
             @field:SerializedName("scheduleStart")
-            var scheduleStart: String? = ""
+            var scheduleStart: String? = "",
+
+            @field:SerializedName("strategies")
+            var strategies: ArrayList<String>? = arrayListOf()
     ) {
         data class AdOperationsItem(
 

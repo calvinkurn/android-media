@@ -17,4 +17,6 @@ open class Group(
         var groupName: String = "",
         @SerializedName("priceDaily")
         var priceDaily: Double = 0.0,
+        @SerializedName("strategies")
+        var strategies: List<String>? = listOf()
 )

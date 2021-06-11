@@ -81,7 +81,7 @@ class RechargeUploadImageViewModelTest {
         //then
         val actualData = rechargeUploadImageViewModel.errorActionOcr.value
         assertNotNull(actualData)
-        assertEquals(errorThrowable.message, actualData)
+        assertEquals(errorThrowable.message, actualData?.message)
     }
 
     @Test
@@ -113,6 +113,6 @@ class RechargeUploadImageViewModelTest {
         // then the result should be success
         val actualData = rechargeUploadImageViewModel.errorActionOcr.value
         assertNotNull(actualData)
-        assertEquals(errorMessage, actualData)
+        assertEquals(errorMessage, actualData?.message)
     }
 }

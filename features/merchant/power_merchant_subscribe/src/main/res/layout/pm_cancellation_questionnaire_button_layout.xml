@@ -6,7 +6,7 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_next"
         style="@style/Button.Submit.Green.Full"
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         android:text="@string/label_next"
         app:buttonCompatSize="big" />
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_back"
         style="@style/Button.Submit.White.Border.Full"
         android:layout_width="match_parent"

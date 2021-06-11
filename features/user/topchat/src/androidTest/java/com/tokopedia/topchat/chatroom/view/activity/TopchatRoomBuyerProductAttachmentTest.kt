@@ -516,6 +516,7 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         // Then
         assertSrwContentIsVisible()
         assertSrwExpanded()
+        assertKeyboardIsNotVisible()
     }
 
     @Test
