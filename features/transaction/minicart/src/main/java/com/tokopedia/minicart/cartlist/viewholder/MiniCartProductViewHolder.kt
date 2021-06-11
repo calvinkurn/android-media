@@ -354,7 +354,7 @@ class MiniCartProductViewHolder(private val view: View,
             val constraintSet = ConstraintSet()
             constraintSet.clone(constraintLayout)
             constraintSet.connect(R.id.button_delete_cart, ConstraintSet.END, R.id.text_product_unavailable_action, ConstraintSet.START, 0)
-            if (element.productInformation.isNotEmpty()) {
+            if (layoutProductInfo?.isVisible == true) {
                 constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.layout_product_info, ConstraintSet.BOTTOM, marginTop)
             } else {
                 constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.image_product, ConstraintSet.BOTTOM, marginTop)
@@ -365,7 +365,7 @@ class MiniCartProductViewHolder(private val view: View,
             val constraintSet = ConstraintSet()
             constraintSet.clone(constraintLayout)
             constraintSet.connect(R.id.button_delete_cart, ConstraintSet.END, R.id.qty_editor_product, ConstraintSet.START, 0)
-            if (element.productInformation.isNotEmpty()) {
+            if (layoutProductInfo?.isVisible == true) {
                 constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.layout_product_info, ConstraintSet.BOTTOM, marginTop)
             } else {
                 constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.image_product, ConstraintSet.BOTTOM, marginTop)
