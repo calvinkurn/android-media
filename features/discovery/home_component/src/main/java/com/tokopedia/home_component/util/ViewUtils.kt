@@ -4,10 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.*
 import android.graphics.drawable.shapes.RoundRectShape
 import android.util.TypedValue
 import android.view.Gravity
@@ -17,70 +14,53 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.home_component.R
+import com.tokopedia.home_component.model.ChannelConfig
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.DividerUnify
 
 /**
  * Created by Lukas on 2019-08-20
  */
-object ViewUtils {
-    fun generateBackgroundWithShadow(view: View, @ColorRes backgroundColor: Int,
-                                     @DimenRes cornerRadius: Int,
-                                     @ColorRes shadowColor: Int,
-                                     @DimenRes elevation: Int,
-                                     shadowGravity: Int): Drawable {
-        val cornerRadiusValue = view.context.resources.getDimension(cornerRadius)
-        val elevationValue = view.context.resources.getDimension(elevation).toInt()
-        val shadowColorValue = ContextCompat.getColor(view.context, shadowColor)
-        val backgroundColorValue = ContextCompat.getColor(view.context, backgroundColor)
-
-        val outerRadius = floatArrayOf(cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue)
-
-        val backgroundPaint = Paint()
-        backgroundPaint.style = Paint.Style.FILL
-        backgroundPaint.setShadowLayer(cornerRadiusValue, 0f, 0f, 0)
-
-        val shapeDrawablePadding = Rect()
-        shapeDrawablePadding.left = elevationValue
-        shapeDrawablePadding.right = elevationValue
-
-        val DY: Int
-        when (shadowGravity) {
-            Gravity.CENTER -> {
-                shapeDrawablePadding.top = elevationValue
-                shapeDrawablePadding.bottom = elevationValue
-                DY = 0
+object ChannelWidgetUtil {
+    fun validateHomeComponentDivider(
+        channelModel: ChannelModel?,
+        dividerTop: DividerUnify?,
+        dividerBottom: DividerUnify?
+    ) {
+//        dividerBottom?.let {
+//            it.background =
+//                ColorDrawable(
+//                    ContextCompat.getColor(it.context, R.color.Blue_B500)
+//                )
+//        }
+//
+//        dividerTop?.let {
+//            it.background =
+//                ColorDrawable(
+//                    ContextCompat.getColor(it.context, R.color.Unify_G500_96)
+//                )
+//        }
+        when(channelModel?.channelConfig?.dividerType) {
+            ChannelConfig.DIVIDER_NO_DIVIDER -> {
+                dividerTop?.gone()
+                dividerBottom?.gone()
             }
-            Gravity.TOP -> {
-                shapeDrawablePadding.top = elevationValue * 2
-                shapeDrawablePadding.bottom = elevationValue
-                DY = -1 * elevationValue / 3
+            ChannelConfig.DIVIDER_TOP -> {
+                dividerTop?.visible()
+                dividerBottom?.gone()
             }
-            Gravity.BOTTOM -> {
-                shapeDrawablePadding.top = elevationValue
-                shapeDrawablePadding.bottom = elevationValue * 2
-                DY = elevationValue / 3
+            ChannelConfig.DIVIDER_BOTTOM -> {
+                dividerTop?.gone()
+                dividerBottom?.visible()
             }
-            else -> {
-                shapeDrawablePadding.top = elevationValue
-                shapeDrawablePadding.bottom = elevationValue * 2
-                DY = elevationValue / 3
+            ChannelConfig.DIVIDER_TOP_AND_BOTTOM -> {
+                dividerTop?.visible()
+                dividerBottom?.visible()
             }
         }
-
-        val shapeDrawable = ShapeDrawable()
-        shapeDrawable.setPadding(shapeDrawablePadding)
-
-        shapeDrawable.paint.color = backgroundColorValue
-        shapeDrawable.paint.setShadowLayer(cornerRadiusValue / 3, 0f, DY.toFloat(), shadowColorValue)
-
-        view.setLayerType(LAYER_TYPE_SOFTWARE, shapeDrawable.paint)
-
-        shapeDrawable.shape = RoundRectShape(outerRadius, null, null)
-
-        val drawable = LayerDrawable(arrayOf<Drawable>(shapeDrawable))
-        drawable.setLayerInset(0, elevationValue, elevationValue * 2, elevationValue, elevationValue * 2)
-
-        return drawable
-
     }
 }
 

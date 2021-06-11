@@ -10,8 +10,8 @@ import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
-import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductIncentiveOvo
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
+import com.tokopedia.review.feature.createreputation.domain.usecase.GetReviewTemplatesUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevEditReviewUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevSubmitReviewUseCase
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
@@ -19,7 +19,9 @@ import com.tokopedia.review.feature.createreputation.model.DefaultImageReviewUiM
 import com.tokopedia.review.feature.createreputation.model.ImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.presentation.mapper.CreateReviewImageMapper
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
+import com.tokopedia.review.feature.ovoincentive.usecase.GetProductIncentiveOvo
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.cancel
@@ -36,7 +38,8 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                                                 private val submitReviewUseCase: ProductrevSubmitReviewUseCase,
                                                 private val uploaderUseCase: UploaderUseCase,
                                                 private val editReviewUseCase: ProductrevEditReviewUseCase,
-                                                private val userSessionInterface: UserSessionInterface
+                                                private val userSessionInterface: UserSessionInterface,
+                                                private val getReviewTemplatesUseCase: GetReviewTemplatesUseCase
 ) : BaseViewModel(coroutineDispatcherProvider.io) {
 
     companion object {
@@ -66,13 +69,26 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     val editReviewResult: LiveData<ReviewViewState<Boolean>>
         get() = _editReviewResult
 
-    fun submitReview(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
-                     reviewText: String, isAnonymous: Boolean, utmSource: String) {
-        _submitReviewResult.postValue(LoadingView())
-        if (imageData.isEmpty()) {
-            sendReviewWithoutImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, utmSource)
-        } else {
-            sendReviewWithImage(reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, getSelectedImagesUrl(), utmSource)
+    private val _reviewTemplates = MutableLiveData<Result<List<String>>>()
+    val reviewTemplates: LiveData<Result<List<String>>>
+        get() = _reviewTemplates
+
+    private val _submitButtonState = MutableLiveData<Boolean>(false)
+    val submitButtonState: LiveData<Boolean>
+        get() = _submitButtonState
+
+    private val _progressBarState = MutableLiveData<CreateReviewProgressBarState>(CreateReviewProgressBarState())
+    val progressBarState: LiveData<CreateReviewProgressBarState>
+        get() = _progressBarState
+
+    fun submitReview(rating: Int, reviewText: String, reputationScore: Int, isAnonymous: Boolean, utmSource: String) {
+        (reputationDataForm.value as? CoroutineSuccess)?.data?.productrevGetForm?.let {
+            _submitReviewResult.postValue(LoadingView())
+            if (imageData.isEmpty()) {
+                sendReviewWithoutImage(it.reputationID, it.productData.productID, it.shopData.shopID, reputationScore, rating, reviewText, isAnonymous, utmSource)
+            } else {
+                sendReviewWithImage(it.reputationID, it.productData.productID, it.shopData.shopID, reputationScore, rating, reviewText, isAnonymous, getSelectedImagesUrl(), utmSource)
+            }
         }
     }
 
@@ -105,7 +121,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         originalImages = imagesFedIntoPicker.filter { !it.contains(LOCAL_IMAGE_SOURCE) }.toMutableList()
         val imagesToDisplay = originalImages.toMutableList()
         imagePickerResult.forEachIndexed { index, s ->
-            if(s.contains(LOCAL_IMAGE_SOURCE) && index > originalImages.lastIndex) {
+            if (s.contains(LOCAL_IMAGE_SOURCE) && index > originalImages.lastIndex) {
                 imagesToDisplay.add(s)
             }
         }
@@ -153,7 +169,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     }
 
     fun isImageNotEmpty(): Boolean {
-        return imageData.isNotEmpty()
+        return imageData.filterIsInstance<ImageReviewUiModel>().isNotEmpty()
     }
 
     fun clearImageData() {
@@ -187,7 +203,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
             val data = withContext(coroutineDispatcherProvider.io) {
                 getProductIncentiveOvo.getIncentiveOvo(productId, reputationId)
             }
-            if (data == null) {
+            if (data?.productrevIncentiveOvo == null) {
                 _incentiveOvo.postValue(null)
             } else {
                 _incentiveOvo.postValue(CoroutineSuccess(data))
@@ -198,12 +214,52 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
+    fun getReviewTemplates(productId: Long) {
+        launchCatchError(block = {
+            val data = withContext(coroutineDispatcherProvider.io) {
+                getReviewTemplatesUseCase.setParams(productId.toString(), 1)
+                getReviewTemplatesUseCase.executeOnBackground()
+            }
+            _reviewTemplates.postValue(CoroutineSuccess(data.productrevGetPersonalizedReviewTemplate.templates))
+        }) {
+            _reviewTemplates.postValue(CoroutineFail(it))
+        }
+    }
+
+    fun updateButtonState(isEnabled: Boolean) {
+        _submitButtonState.value = isEnabled
+    }
+
+    fun updateProgressBarFromRating(isGoodRating: Boolean) {
+        _progressBarState.value = _progressBarState.value?.copy(isGoodRating = isGoodRating)
+    }
+
+    fun updateProgressBarFromPhotos() {
+        _progressBarState.value = _progressBarState.value?.copy(isPhotosFilled = isImageNotEmpty())
+    }
+
+    fun updateProgressBarFromTextArea(isNotEmpty: Boolean) {
+        _progressBarState.value = _progressBarState.value?.copy(isTextAreaFilled = isNotEmpty)
+    }
+
     fun getUserName(): String {
         return userSessionInterface.name
     }
 
+    fun getUserId(): String {
+        return userSessionInterface.userId
+    }
+
     fun isUserEligible(): Boolean {
         return (incentiveOvo.value as? com.tokopedia.usecase.coroutines.Success)?.data?.productrevIncentiveOvo != null
+    }
+
+    fun isTemplateAvailable(): Boolean {
+        return ((reviewTemplates.value as? com.tokopedia.usecase.coroutines.Success)?.data?.isNotEmpty() ?: false) && !isUserEligible()
+    }
+
+    fun getImageCount(): Int {
+        return imageData.count { it is ImageReviewUiModel }
     }
 
     private fun sendReviewWithoutImage(reputationId: Long, productId: Long, shopId: Long, reputationScore: Int, rating: Int,
@@ -232,7 +288,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
                 repeat(listOfImages.size) {
-                    when(val uploadImageResult = uploadImage(listOfImages[it])) {
+                    when (val uploadImageResult = uploadImage(listOfImages[it])) {
                         is UploadResult.Success -> {
                             uploadIdList.add(uploadImageResult.uploadId)
                         }
