@@ -29,7 +29,7 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
     fun needToRefreshData(other: BaseWidgetUiModel<T>): Boolean
 
     fun shouldShowEmptyStateIfEmpty(): Boolean =
-            isShowEmpty && emptyState.title.isNotBlank() && emptyState.description.isNotBlank()
+            emptyState.title.isNotBlank() && emptyState.description.isNotBlank()
                     && emptyState.ctaText.isNotBlank() && emptyState.appLink.isNotBlank()
 
     fun isEmpty(): Boolean =

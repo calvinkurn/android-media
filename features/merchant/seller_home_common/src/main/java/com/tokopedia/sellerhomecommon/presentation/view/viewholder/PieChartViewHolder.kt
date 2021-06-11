@@ -89,14 +89,18 @@ class PieChartViewHolder(
         emptyState?.gone()
 
         if (element.isEmpty()) {
-            if (element.shouldShowEmptyStateIfEmpty()) {
-                showEmptyState(element)
+            if (element.isShowEmpty) {
+                if (element.shouldShowEmptyStateIfEmpty()) {
+                    showEmptyState(element)
+                } else {
+                    setupPieChart(element)
+                }
             } else {
                 if (listener.getIsShouldRemoveWidget()) {
                     listener.removeWidget(adapterPosition, element)
                 } else {
                     listener.onRemoveWidget(adapterPosition)
-                    toggleWidgetHeight(false)
+                    itemView.toggleWidgetHeight(false)
                 }
             }
         } else {

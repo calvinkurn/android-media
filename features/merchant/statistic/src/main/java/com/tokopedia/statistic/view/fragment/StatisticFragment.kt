@@ -952,7 +952,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
                 var shouldRemoveSection = false
                 adapter.data?.drop(removedPosition + 1)?.forEach { widget ->
                     when {
-                        widget.shouldShowEmptyStateIfEmpty() || !widget.isEmpty() -> {
+                        widget.isShowEmpty || !widget.isEmpty() -> {
                             // If we found that the next widget should be shown, then we should not remove the section
                             return@forEach
                         }

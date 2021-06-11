@@ -110,8 +110,12 @@ class BarChartViewHolder(
             showBarChart(element)
 
             if (element.isEmpty()) {
-                if (element.shouldShowEmptyStateIfEmpty()) {
-                    setupEmptyState(element)
+                if (element.isShowEmpty) {
+                    if (element.shouldShowEmptyStateIfEmpty()) {
+                        setupEmptyState(element)
+                    } else {
+                        animateHideEmptyState()
+                    }
                 } else {
                     if (listener.getIsShouldRemoveWidget()) {
                         listener.removeWidget(adapterPosition, element)
@@ -253,7 +257,7 @@ class BarChartViewHolder(
     }
 
     private fun showEmpty(element: BarChartWidgetUiModel): Boolean {
-        return element.isEmpty() && element.shouldShowEmptyStateIfEmpty()
+        return element.isEmpty() && element.shouldShowEmptyStateIfEmpty() && element.isShowEmpty
     }
 
     private fun setupEmptyState(element: BarChartWidgetUiModel) {
