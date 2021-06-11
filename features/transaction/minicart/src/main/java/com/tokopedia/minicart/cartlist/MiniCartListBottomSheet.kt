@@ -238,6 +238,10 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     private fun initializeBottomSheetUiModelObserver() {
         bottomSheetUiModelObserver = Observer<MiniCartListUiModel> {
+            if (it.miniCartWidgetUiModel.totalProductCount == 0) {
+                bottomSheet?.dismiss()
+            }
+
             if (it.isFirstLoad) {
                 analytics.eventLoadMiniCartBottomSheetSuccess(it.getMiniCartProductUiModelList())
                 val overweightData = it.getMiniCartTickerWarningUiModel()
