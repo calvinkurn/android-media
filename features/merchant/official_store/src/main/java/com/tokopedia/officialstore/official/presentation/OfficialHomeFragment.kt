@@ -31,6 +31,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
@@ -114,6 +115,7 @@ class OfficialHomeFragment :
     private var isLoadedOnce: Boolean = false
     private var isScrolling = false
     private var remoteConfig: RemoteConfig? = null
+    private var localChooseAddress: LocalCacheModel? = LocalCacheModel()
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
@@ -157,7 +159,11 @@ class OfficialHomeFragment :
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
-            loadData()
+            if (isChooseAddressUpdated()) {
+                reloadData()
+            } else {
+                loadData()
+            }
         }
     }
 
@@ -189,6 +195,7 @@ class OfficialHomeFragment :
         observeFeaturedShop()
         observeDynamicChannel()
         observeProductRecommendation()
+        initLocalChooseAddressData()
         resetData()
         loadData()
         setListener()
@@ -907,5 +914,16 @@ class OfficialHomeFragment :
                 viewModel.isLoggedIn(),
                 category?.title.toString()
         )
+    }
+
+    private fun initLocalChooseAddressData() {
+        localChooseAddress = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+    }
+
+    private fun isChooseAddressUpdated(): Boolean {
+        localChooseAddress?.let {
+            return ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
+        }
+        return false
     }
 }
