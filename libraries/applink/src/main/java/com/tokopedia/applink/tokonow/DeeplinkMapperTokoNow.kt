@@ -29,7 +29,7 @@ object DeeplinkMapperTokopediaNow {
 
         val content = deeplinkWithoutQuery.split("/")
         val categoryIdL1 = "$PARAM_CATEGORY_ID_L1=${content.getOrElse(INDEX_CATEGORY_ID_L1) {""}}"
-        val categoryIdL2 = "&" + "$PARAM_CATEGORY_ID_L2=${content.getOrElse(INDEX_CATEGORY_ID_L2) {""}}"
+        val categoryIdL2 = "&$PARAM_CATEGORY_ID_L2=${content.getOrElse(INDEX_CATEGORY_ID_L2) {""}}"
 
         return "${ApplinkConstInternalTokopediaNow.CATEGORY}?$categoryIdL1$categoryIdL2$queryString"
     }
