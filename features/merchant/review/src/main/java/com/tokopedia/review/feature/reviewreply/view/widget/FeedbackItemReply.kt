@@ -51,7 +51,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
 
     fun setData(data: FeedbackUiModel, productReplyUiModel: ProductReplyUiModel) {
         ivRatingFeedback.setImageResource(getReviewStar(data.rating.orZero()))
-        tvFeedbackUser?.text = MethodChecker.fromHtml(context.getString(R.string.label_name_reviewer_builder, data.reviewerName.orEmpty()))
+        tvFeedbackUser?.text = MethodChecker.fromHtml(String.format(context.getString(R.string.label_name_reviewer_builder), data.reviewerName.orEmpty()))
         tvFeedbackDate?.text = data.reviewTime.orEmpty() toRelativeDate  (DATE_REVIEW_FORMAT)
         setupFeedbackReview(data.reviewText.orEmpty())
         setImageAttachment(data, productReplyUiModel)
