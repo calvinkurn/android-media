@@ -92,7 +92,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun editReview(feedbackId: Long, reputationId: String, productId: String, shopId: String, reputationScore: Int, rating: Int,
+    fun editReview(feedbackId: String, reputationId: String, productId: String, shopId: String, reputationScore: Int, rating: Int,
                    reviewText: String, isAnonymous: Boolean) {
         _submitReviewResult.postValue(LoadingView())
         if (imageData.isEmpty()) {
@@ -102,7 +102,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    fun getReviewDetails(feedbackId: Long) {
+    fun getReviewDetails(feedbackId: String) {
         _reviewDetails.value = LoadingView()
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
@@ -313,11 +313,11 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    private fun editReviewWithoutImage(feedbackId: Long, reputationId: String, productId: String, shopId: String, reputationScore: Int, rating: Int,
+    private fun editReviewWithoutImage(feedbackId: String, reputationId: String, productId: String, shopId: String, reputationScore: Int, rating: Int,
                                        reviewText: String, isAnonymous: Boolean) {
         launchCatchError(block = {
             val response = withContext(coroutineDispatcherProvider.io) {
-                editReviewUseCase.setParams(feedbackId.toString(), reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous)
+                editReviewUseCase.setParams(feedbackId, reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous)
                 editReviewUseCase.executeOnBackground()
             }
             if (response.productrevSuccessIndicator != null) {
@@ -332,7 +332,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
         }
     }
 
-    private fun editReviewWithImage(feedbackId: Long, reputationId: String, productId: String, shopId: String, reputationScore: Int, rating: Int,
+    private fun editReviewWithImage(feedbackId: String, reputationId: String, productId: String, shopId: String, reputationScore: Int, rating: Int,
                                     reviewText: String, isAnonymous: Boolean, listOfImages: List<String>) {
         val uploadIdList: ArrayList<String> = ArrayList()
         launchCatchError(block = {
@@ -350,7 +350,7 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
                         }
                     }
                 }
-                editReviewUseCase.setParams(feedbackId.toString(), reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, originalImages, uploadIdList)
+                editReviewUseCase.setParams(feedbackId, reputationId, productId, shopId, reputationScore, rating, reviewText, isAnonymous, originalImages, uploadIdList)
                 editReviewUseCase.executeOnBackground()
             }
             if (response.productrevSuccessIndicator != null) {

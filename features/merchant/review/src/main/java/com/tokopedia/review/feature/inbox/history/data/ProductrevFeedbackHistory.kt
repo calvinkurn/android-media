@@ -5,9 +5,6 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.review.feature.inbox.common.data.common.ProductrevTimestamp
 
 data class ProductrevFeedbackHistory(
-        @SerializedName("reputationID")
-        @Expose
-        val reputationId: Long = 0,
         @SerializedName("product")
         @Expose
         val product: ProductrevFeedbackHistoryProduct = ProductrevFeedbackHistoryProduct(),

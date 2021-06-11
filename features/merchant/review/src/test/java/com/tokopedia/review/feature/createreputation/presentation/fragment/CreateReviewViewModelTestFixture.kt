@@ -55,7 +55,7 @@ abstract class CreateReviewViewModelTestFixture {
             ProductrevReviewAttachment("ImageUrl4", "ImageUrl4"),
             ProductrevReviewAttachment("ImageUrl5", "ImageUrl5")
     )
-    protected val feedbackID = ArgumentMatchers.anyLong()
+    protected val feedbackID = ArgumentMatchers.anyString()
     protected val reputationId = ArgumentMatchers.anyString()
     protected val productId = ArgumentMatchers.anyString()
     protected val shopId = ArgumentMatchers.anyString()

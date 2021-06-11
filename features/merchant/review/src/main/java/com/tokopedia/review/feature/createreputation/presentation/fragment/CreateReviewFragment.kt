@@ -103,13 +103,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
         const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
 
-        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Long, utmSource: String) = CreateReviewFragment().also {
+        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: String, utmSource: String) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
                 putString(REPUTATION_ID, reviewId)
                 putInt(REVIEW_CLICK_AT, reviewClickAt)
                 putBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, isEditMode)
-                putLong(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
+                putString(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
                 putString(ReviewConstants.PARAM_UTM_SOURCE, utmSource)
             }
         }
@@ -131,7 +131,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var productId: String = ""
     private var shopId: String = ""
     private var isEditMode: Boolean = false
-    private var feedbackId: Long = 0
+    private var feedbackId: String = ""
     private var utmSource: String = ""
     private var shouldShowThankYouBottomSheet = false
 
@@ -205,7 +205,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             reviewClickAt = it.getInt(REVIEW_CLICK_AT, 0)
             reputationId = it.getString(REPUTATION_ID, "")
             isEditMode = it.getBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, false)
-            feedbackId = it.getLong(ReviewConstants.PARAM_FEEDBACK_ID, 0)
+            feedbackId = it.getString(ReviewConstants.PARAM_FEEDBACK_ID, "")
             utmSource = it.getString(ReviewConstants.PARAM_UTM_SOURCE, "")
         }
 
@@ -929,7 +929,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun initAnonymousText() {
         createReviewAnonymousText.setOnClickListener {
             if (createReviewAnonymousCheckbox.isChecked) {
-                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId, isEditMode, feedbackId.toString())
+                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId, isEditMode, feedbackId)
             }
         }
     }
@@ -1031,6 +1031,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun getFeedbackId(): String {
-        return (createReviewViewModel.submitReviewResult.value as? com.tokopedia.review.common.data.Success)?.data ?: ""
+        return (createReviewViewModel.submitReviewResult.value as? Success)?.data ?: ""
     }
 }

@@ -6,11 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.common.data.ProductrevReviewAttachment
-import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.common.presentation.util.ReviewAttachedImagesClickListener
+import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
 import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistoryItemListener
 import kotlinx.android.synthetic.main.item_review_history.view.*
@@ -55,7 +54,7 @@ class ReviewHistoryViewHolder(view: View,
         }
     }
 
-    private fun showAttachedImages(attachedImages: List<ProductrevReviewAttachment>, productName: String, productId: Long, feedbackId: Long) {
+    private fun showAttachedImages(attachedImages: List<ProductrevReviewAttachment>, productName: String, productId: String, feedbackId: String) {
         if(attachedImages.isEmpty()) {
             itemView.reviewHistoryAttachedImages.hide()
             return

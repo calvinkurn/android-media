@@ -13,8 +13,8 @@ class ReviewAttachedProductViewHolder(view: View) : RecyclerView.ViewHolder(view
 
     fun bind(attachedImageUrl: String, reviewAttachedImagesClickListener: ReviewAttachedImagesClickListener,
              attachedImages: List<String>, productName: String, reviewHistoryItemListener: ReviewHistoryItemListener? = null,
-             productId: Long? = null,
-             feedbackId: Long? = null) {
+             productId: String? = null,
+             feedbackId: String? = null) {
         if(attachedImageUrl.isEmpty()) {
             itemView.apply {
                 reviewHistoryAttachedImageBlankSpace.show()
