@@ -1,5 +1,7 @@
 package com.tokopedia.autocomplete.analytics;
 
+import android.os.Bundle;
+
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel;
 import com.tokopedia.iris.Iris;
@@ -263,7 +265,7 @@ public class AutocompleteTracking {
         iris.saveEvent(map);
     }
 
-    public static void eventClickDynamicSection(String userId, String label, String type) {
+    public static void eventClickDynamicSection(String userId, String label, String type, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
                         EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
@@ -272,7 +274,8 @@ public class AutocompleteTracking {
                         EVENT_LABEL, label,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
                         CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
-                        USER_ID, userId
+                        USER_ID, userId,
+                        PAGE_SOURCE, pageSource
                 )
         );
     }
@@ -330,5 +333,28 @@ public class AutocompleteTracking {
                 USER_ID, userId
         );
         iris.saveEvent(map);
+    }
+
+    public static void eventClickProductLine(Object productDataLayer, String userId, String label, String pageSource) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.PRODUCT_CLICK,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_PRODUCT_LINE,
+                        EVENT_LABEL, label,
+                        ECOMMERCE, DataLayer.mapOf(
+                                CLICK, DataLayer.mapOf(
+                                        ACTION_FIELD, DataLayer.mapOf(LIST, AutocompleteEventTracking.Other.PRODUCT_LINE_ACTION_FIELD),
+                                        PRODUCTS, DataLayer.listOf(
+                                                productDataLayer
+                                        )
+                                )
+                        ),
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        USER_ID, userId,
+                        PAGE_SOURCE, pageSource
+                )
+        );
     }
 }

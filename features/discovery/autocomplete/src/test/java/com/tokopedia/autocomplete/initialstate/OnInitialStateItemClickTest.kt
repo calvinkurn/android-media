@@ -3,6 +3,7 @@ package com.tokopedia.autocomplete.initialstate
 import com.tokopedia.autocomplete.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchDataView
+import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductListDataView
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchSeeMoreDataView
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewDataView
@@ -138,14 +139,13 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
         val data = findDataView<DynamicInitialStateSearchDataView>()
         val item = data.list.findByType()
-        val position = data.list.indexOf(item)
 
-        `When recent dynamic section item is clicked`(item, position)
+        `When recent dynamic section item is clicked`(item)
         `Then verify view interaction is correct for dynamic section`(item)
     }
 
-    private fun `When recent dynamic section item is clicked`(item: BaseItemInitialStateSearch, position: Int) {
-        initialStatePresenter.onDynamicSectionItemClicked(item, position)
+    private fun `When recent dynamic section item is clicked`(item: BaseItemInitialStateSearch) {
+        initialStatePresenter.onDynamicSectionItemClicked(item)
     }
 
     private fun `Then verify view interaction is correct for dynamic section`(item: BaseItemInitialStateSearch) {
@@ -156,7 +156,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
         val expectedLabel = "value: ${item.title} - title: ${item.header} - po: 1"
 
         verifyOrder {
-            trackEventClickDynamicSectionItem(any(), expectedLabel, item.featureId)
+            trackEventClickDynamicSectionItem(any(), expectedLabel, item.featureId, item.dimension90)
             route(item.applink, initialStatePresenter.getSearchParameter())
             finish()
         }
@@ -213,6 +213,35 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
         verifyOrder {
             trackEventClickRecentView(item, expectedLabel)
+            route(item.applink, initialStatePresenter.getSearchParameter())
+            finish()
+        }
+    }
+
+    @Test
+    fun `Test click Product Line`() {
+        `Given view already get initial state`(initialStateWithSeeMoreRecentSearch)
+
+        val item = findDataView<InitialStateProductListDataView>().list[0]
+
+        `When click product line`(item)
+        `Then verify view interaction is correct for product line`(item)
+    }
+
+    private fun `When click product line`(item: BaseItemInitialStateSearch) {
+        initialStatePresenter.onProductLineClicked(item)
+    }
+
+    private fun `Then verify view interaction is correct for product line`(item: BaseItemInitialStateSearch) {
+        initialStateView.onClickProductLine(item)
+    }
+
+    private fun InitialStateContract.View.onClickProductLine(item: BaseItemInitialStateSearch) {
+        val expectedLabel = "po: ${item.position} - applink: ${item.applink}"
+        val userId = "0"
+
+        verifyOrder {
+            trackEventClickProductLine(item, userId, expectedLabel)
             route(item.applink, initialStatePresenter.getSearchParameter())
             finish()
         }

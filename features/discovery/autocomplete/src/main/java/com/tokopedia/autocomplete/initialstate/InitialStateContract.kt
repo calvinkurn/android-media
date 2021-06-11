@@ -35,7 +35,7 @@ interface InitialStateContract {
 
         fun onDynamicSectionImpressed(model: DynamicInitialStateItemTrackingModel)
 
-        fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String)
+        fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String, pageSource: String)
 
         fun refreshViewWithPosition(position: Int)
 
@@ -44,6 +44,8 @@ interface InitialStateContract {
         fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String)
 
         fun trackEventClickRecentView(item: BaseItemInitialStateSearch, label: String)
+
+        fun trackEventClickProductLine(item: BaseItemInitialStateSearch, userId: String, label: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -63,10 +65,12 @@ interface InitialStateContract {
 
         fun recentSearchSeeMoreClicked()
 
-        fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
+        fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch)
 
         fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView)
 
         fun onRecentViewClicked(item: BaseItemInitialStateSearch)
+
+        fun onProductLineClicked(item: BaseItemInitialStateSearch)
     }
 }

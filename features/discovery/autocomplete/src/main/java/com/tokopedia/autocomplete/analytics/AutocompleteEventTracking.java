@@ -12,6 +12,7 @@ public interface AutocompleteEventTracking {
         String PROMO_VIEW_IRIS = "promoViewIris";
         String VIEW_TOP_NAV_IRIS = "viewTopNavIris";
         String PRODUCT_CLICK = "productClick";
+        String SELECT_CONTENT = "select_content";
     }
 
     interface Category {
@@ -48,6 +49,7 @@ public interface AutocompleteEventTracking {
         String IMPRESSION_SEE_MORE_RECENT_SEARCH = "impression see more - recent search";
         String CLICK_CURATED_CAMPAIGN = "click - curated campaign";
         String IMPRESSION_CURATED_CAMPAIGN = "impression - curated campaign";
+        String CLICK_PRODUCT_LINE = "click - product initial state campaign";
     }
 
     interface Label {
@@ -63,6 +65,7 @@ public interface AutocompleteEventTracking {
     interface Other {
         String NONE_OTHER = "none / other";
         String RECENT_VIEW_ACTION_FIELD = "/search - recentview - product";
+        String PRODUCT_LINE_ACTION_FIELD = "/search - product initial state campaign";
     }
 
 }

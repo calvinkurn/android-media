@@ -1,6 +1,7 @@
 package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.autocomplete.analytics.AutocompleteEventTracking
 
 data class BaseItemInitialStateSearch(
         val template: String = "",
@@ -36,5 +37,16 @@ data class BaseItemInitialStateSearch(
             "variant", "none / other",
             "position", position,
             "dimension90", dimension90
+    )
+
+    fun getProductLineAsObjectDataLayer(): Any = DataLayer.mapOf(
+            "name", title,
+            "id", productId,
+            "price", subtitle.replace("[^0-9]".toRegex(), ""),
+            "brand", "none / other",
+            "category", "none / other",
+            "variant", "none / other",
+            "position", position,
+            "list", AutocompleteEventTracking.Other.PRODUCT_LINE_ACTION_FIELD
     )
 }

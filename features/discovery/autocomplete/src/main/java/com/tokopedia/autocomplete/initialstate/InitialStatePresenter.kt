@@ -176,7 +176,7 @@ class InitialStatePresenter @Inject constructor(
                 InitialStateData.INITIAL_STATE_POPULAR_SEARCH -> {
                     onPopularSearchImpressed(initialStateData)
                     data.addAll(
-                            initialStateData.convertPopularSearchToVisitableList().insertTitleWithRefresh(
+                            initialStateData.convertPopularSearchToVisitableList(getDimension90()).insertTitleWithRefresh(
                                     initialStateData.featureId,
                                     initialStateData.header,
                                     initialStateData.labelAction
@@ -185,13 +185,13 @@ class InitialStatePresenter @Inject constructor(
                 }
                 InitialStateData.INITIAL_STATE_LIST_PRODUCT_LINE -> {
                     data.addAll(
-                            initialStateData.convertToListInitialStateProductListDataView().insertProductListTitle(initialStateData.header)
+                            initialStateData.convertToListInitialStateProductListDataView(getDimension90()).insertProductListTitle(initialStateData.header)
                     )
                 }
                 else -> {
                     onDynamicSectionImpressed(initialStateData)
                     data.addAll(
-                            initialStateData.convertDynamicInitialStateSearchToVisitableList().insertDynamicTitle(
+                            initialStateData.convertDynamicInitialStateSearchToVisitableList(getDimension90()).insertDynamicTitle(
                                     initialStateData.featureId,
                                     initialStateData.header,
                                     initialStateData.labelAction
@@ -246,6 +246,7 @@ class InitialStatePresenter @Inject constructor(
         onImpressSeeMoreRecentSearch()
     }
 
+    //dimension90 = pageSource
     private fun getDimension90(): String {
         val navSource = searchParameter.getValueString(SearchApiConst.NAVSOURCE)
         val pageId = searchParameter.getValueString(SearchApiConst.SRP_PAGE_ID)
@@ -530,9 +531,9 @@ class InitialStatePresenter @Inject constructor(
         }
     }
 
-    override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
-        val label = "value: ${item.title} - title: ${item.header} - po: ${adapterPosition + 1}"
-        view?.trackEventClickDynamicSectionItem(getUserId(), label, item.featureId)
+    override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch) {
+        val label = "value: ${item.title} - title: ${item.header} - po: ${item.position}"
+        view?.trackEventClickDynamicSectionItem(getUserId(), label, item.featureId, item.dimension90)
 
         view?.route(item.applink, searchParameter)
         view?.finish()
@@ -547,14 +548,18 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun onRecentViewClicked(item: BaseItemInitialStateSearch) {
-        val label = getRecentViewEventLabel(item)
+        val label = "po: ${item.position} - applink: ${item.applink}"
         view?.trackEventClickRecentView(item, label)
 
         view?.route(item.applink, searchParameter)
         view?.finish()
     }
 
-    private fun getRecentViewEventLabel(item: BaseItemInitialStateSearch): String {
-        return "po: ${item.position} - applink: ${item.applink}"
+    override fun onProductLineClicked(item: BaseItemInitialStateSearch) {
+        val label = "po: ${item.position} - applink: ${item.applink}"
+        view?.trackEventClickProductLine(item, getUserId(), label)
+
+        view?.route(item.applink, searchParameter)
+        view?.finish()
     }
 }

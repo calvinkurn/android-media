@@ -81,7 +81,8 @@
       "businessUnit": "search",
       "currentSite": "tokopediamarketplace",
       "userId": ".+",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "pageSource": ".*"
     },
     {
       "event": "clickTopNav",
@@ -92,6 +93,30 @@
       "currentSite": "tokopediamarketplace",
       "userId": ".+",
       "sessionIris": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - product initial state campaign",
+      "eventCategory": "top nav",
+      "eventLabel": "po: .+ - applink: .+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/search - product initial state campaign",
+      "items": [
+        {
+          "index": "\\d*.\\d*",
+          "item_brand": "none / other",
+          "item_category": "none / other",
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_variant": "none / other",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "dimension40": "/search - product initial state campaign"
+        }
+      ],
+      "pageSource": ".*",
+      "userId": ".+",
+      "sessionIris": ".+"
     }
   ]
 }

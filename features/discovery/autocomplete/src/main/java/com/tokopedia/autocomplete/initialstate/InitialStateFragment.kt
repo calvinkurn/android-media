@@ -136,9 +136,8 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         presenter.getInitialStateData()
     }
 
-    override fun onItemClicked(applink: String, webUrl: String) {
-        route(applink, presenter.getSearchParameter())
-        finish()
+    override fun onProductLineClicked(item: BaseItemInitialStateSearch) {
+        presenter.onProductLineClicked(item)
     }
 
     override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch) {
@@ -231,12 +230,12 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         AutocompleteTracking.eventClickSeeMoreRecentSearch(userId)
     }
 
-    override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
-        presenter.onDynamicSectionItemClicked(item, adapterPosition)
+    override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch) {
+        presenter.onDynamicSectionItemClicked(item)
     }
 
-    override fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String) {
-        AutocompleteTracking.eventClickDynamicSection(userId, label, type)
+    override fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String, pageSource: String) {
+        AutocompleteTracking.eventClickDynamicSection(userId, label, type, pageSource)
     }
 
     override fun refreshViewWithPosition(position: Int) {
@@ -270,5 +269,10 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     override fun trackEventClickRecentView(item: BaseItemInitialStateSearch, label: String) {
         val productDataLayer = item.getRecentViewAsObjectDataLayer()
         AutocompleteTracking.eventClickRecentView(productDataLayer, label)
+    }
+
+    override fun trackEventClickProductLine(item: BaseItemInitialStateSearch, userId: String, label: String) {
+        val productDataLayer = item.getProductLineAsObjectDataLayer()
+        AutocompleteTracking.eventClickProductLine(productDataLayer, userId, label, item.dimension90)
     }
 }
