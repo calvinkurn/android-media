@@ -11,6 +11,7 @@ import com.tokopedia.screenshot_observer.Screenshot
 import com.tokopedia.sellerfeedback.SellerFeedbackConstants.REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK
 import com.tokopedia.sellerfeedback.SellerFeedbackConstants.REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
 import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragment
+import java.lang.ref.WeakReference
 
 
 class SellerFeedbackScreenshot(private val context: Context) : Screenshot(context.contentResolver) {
@@ -23,7 +24,7 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     private var lastTimeUpdate = 0L
 
     private var remoteConfig: FirebaseRemoteConfigImpl? = null
-    private var currentActivity: Activity? = null
+    private var currentActivity: WeakReference<Activity>? = null
 
     override var listener = object : BottomSheetListener {
         override fun onFeedbackClicked(uri: Uri?, className: String, isFromScreenshot: Boolean) {
@@ -34,7 +35,7 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     override fun onScreenShotTaken(uri: Uri) {
         lastTimeCall = System.currentTimeMillis()
         if (lastTimeCall - lastTimeUpdate > THRESHOLD_TIME) {
-            val enableSellerFeedbackScreenshot = getEnableSellerGlobalFeedbackRemoteConfig(currentActivity)
+            val enableSellerFeedbackScreenshot = getEnableSellerGlobalFeedbackRemoteConfig(currentActivity?.get())
             if (enableSellerFeedbackScreenshot) {
                 SellerFeedbackTracking.Impression.eventViewHomepage()
                 super.onScreenShotTaken(uri)
@@ -44,7 +45,7 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     }
 
     override fun onActivityResumed(activity: Activity) {
-        currentActivity = activity
+        currentActivity = WeakReference(activity)
         super.onActivityResumed(activity)
     }
 
