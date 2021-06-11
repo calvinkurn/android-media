@@ -42,6 +42,10 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
           is_corner
           state
           state_detail
+          tokonow {
+            shop_id
+            warehouse_id
+          }
         }
         group_shop {
           errors

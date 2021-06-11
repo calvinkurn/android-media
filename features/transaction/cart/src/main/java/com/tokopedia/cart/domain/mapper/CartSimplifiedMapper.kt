@@ -99,7 +99,9 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                 buyerStoreCode = data.buyerStoreCode,
                 type = data.type,
                 state = data.state,
-                stateDetail = data.stateDetail
+                stateDetail = data.stateDetail,
+                shopId = data.tokoNow.shopId,
+                warehouseId = data.tokoNow.warehouseId
         )
     }
 
