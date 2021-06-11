@@ -15,7 +15,7 @@
 
         <fulfillment
             fulfillmentMode="actions.fulfillment.DEEPLINK"
-            urlTemplate="sellerapp://{?featureName}">
+            urlTemplate="sellerapp://shop/{featureName}">
             <parameter-mapping
                 intentParameter="feature"
                 urlParameter="featureName" />
@@ -28,7 +28,7 @@
     </action>
 
     <entity-set entitySetId="FeatureEntitySet">
-        <entity name="Home" identifier="home" />
+        <entity name="Create new showcase" identifier="showcase-create" />
     </entity-set>
 
 
