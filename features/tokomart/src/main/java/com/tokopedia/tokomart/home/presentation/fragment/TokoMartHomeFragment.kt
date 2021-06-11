@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -24,6 +24,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -49,6 +50,7 @@ import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY
 import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
 import com.tokopedia.tokomart.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokomart.common.view.TokoNowView
+import com.tokopedia.tokomart.home.constant.HomeLayoutState
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokomart.home.di.component.DaggerTokoMartHomeComponent
@@ -78,6 +80,7 @@ class TokoMartHomeFragment: Fragment(),
     companion object {
         private const val AUTO_TRANSITION_VARIANT = "auto_transition"
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
+        const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
 
         fun newInstance() = TokoMartHomeFragment()
@@ -108,6 +111,7 @@ class TokoMartHomeFragment: Fragment(),
     private var swipeLayout: SwipeRefreshLayout? = null
     private var sharedPrefs: SharedPreferences? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
+    private var hasTickerBeenRemoved: Boolean = false
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
@@ -139,7 +143,7 @@ class TokoMartHomeFragment: Fragment(),
         observeLiveData()
         updateCurrentPageLocalCacheModelData()
 
-        getChooseAddress()
+        loadLayout()
     }
 
     override fun getFragmentPage(): Fragment = this
@@ -158,9 +162,16 @@ class TokoMartHomeFragment: Fragment(),
         checkIfChooseAddressWidgetDataUpdated()
     }
 
-    override fun onTickerDismiss() = adapter.removeTickerWidget()
+    override fun onTickerDismiss() {
+        hasTickerBeenRemoved = true
+        adapter.removeTickerWidget()
+    }
 
-    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {}
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        if (!miniCartSimplifiedData.isShowMiniCartWidget) {
+            miniCartWidget?.hide()
+        }
+    }
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
         context?.let {
@@ -197,7 +208,7 @@ class TokoMartHomeFragment: Fragment(),
         context?.let {
             when {
                 shopId == 0L -> {
-                    viewModel.getChosenAddress(SOURCE)
+                    viewModel.getChooseAddress(SOURCE)
                 }
                 warehouseId == 0L -> {
                     showEmptyState(EMPTY_STATE_NO_ADDRESS)
@@ -219,16 +230,18 @@ class TokoMartHomeFragment: Fragment(),
         getMiniCart()
     }
 
-    private fun hideHeaderBackground() {
-        if (ivHeaderBackground?.isVisible == true) {
-            ivHeaderBackground?.hide()
-        }
+    private fun loadHeaderBackground() {
+        ivHeaderBackground?.show()
+        ivHeaderBackground?.loadImage(R.drawable.tokomart_ic_header_background_shimmering)
     }
 
     private fun showHeaderBackground() {
-        if (ivHeaderBackground?.isVisible == false) {
-            ivHeaderBackground?.show()
-        }
+        ivHeaderBackground?.show()
+        ivHeaderBackground?.loadImage(R.drawable.tokomart_ic_header_background)
+    }
+
+    private fun hideHeaderBackground() {
+        ivHeaderBackground?.hide()
     }
 
     private fun setupSwipeRefreshLayout() {
@@ -243,8 +256,7 @@ class TokoMartHomeFragment: Fragment(),
 
     private fun onRefreshLayout() {
         rvLayoutManager?.setScrollEnabled(true)
-        adapter.clearAllElements()
-        getChooseAddress()
+        loadLayout()
     }
 
     private fun setupNavToolbar() {
@@ -416,10 +428,10 @@ class TokoMartHomeFragment: Fragment(),
 
     private fun loadHomeLayout(data: HomeLayoutListUiModel) {
         data.run {
-            needToShowHeaderBackground(isHeaderBackgroundShowed)
+            needToShowHeaderBackground(state)
             adapter.submitList(result)
             when {
-                isChooseAddressWidgetDisplayed -> {
+                isLoadState -> {
                     checkIfChooseAddressWidgetDataUpdated()
                     checkStateNotInServiceArea(
                             shopId = localCacheModel?.shop_id.toLongOrZero(),
@@ -437,24 +449,30 @@ class TokoMartHomeFragment: Fragment(),
         }
     }
 
-    private fun needToShowHeaderBackground(isShowed: Boolean) {
-        if (isShowed) {
-            showHeaderBackground()
-        } else {
-            hideHeaderBackground()
+    private fun needToShowHeaderBackground(state: Int) {
+        when (state) {
+            HomeLayoutState.SHOW -> {
+                showHeaderBackground()
+            }
+            HomeLayoutState.HIDE -> {
+                hideHeaderBackground()
+            }
+            HomeLayoutState.LOADING -> {
+                loadHeaderBackground()
+            }
         }
     }
 
     private fun getHomeLayout() {
-        viewModel.getHomeLayout()
+        viewModel.getHomeLayout(hasTickerBeenRemoved)
     }
 
     private fun getMiniCart()  {
         viewModel.getMiniCart(listOf(localCacheModel?.shop_id.orEmpty()))
     }
 
-    private fun getChooseAddress() {
-        viewModel.getChooseAddress()
+    private fun loadLayout() {
+        viewModel.getLoadingState()
     }
 
     //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder
@@ -550,7 +568,7 @@ class TokoMartHomeFragment: Fragment(),
                     "&" + getParamTokonowSRP()
 
     private fun getParamTokonowSRP() =
-            "${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokoMart.SEARCH}"
+            "${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokopediaNow.SEARCH}"
 
     private fun shouldShowTransition(): Boolean {
         val abTestValue = getAbTestPlatform().getString(AB_TEST_AUTO_TRANSITION_KEY, "")

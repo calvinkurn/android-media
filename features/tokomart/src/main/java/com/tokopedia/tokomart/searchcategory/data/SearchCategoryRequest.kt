@@ -63,6 +63,8 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
             childs
             parentId
             stock
+            ratingAverage
+            minOrder
             shop {
               id
             }

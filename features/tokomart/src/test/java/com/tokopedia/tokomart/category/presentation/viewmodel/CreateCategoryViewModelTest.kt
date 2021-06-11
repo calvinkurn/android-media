@@ -2,9 +2,8 @@ package com.tokopedia.tokomart.category.presentation.viewmodel
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HARDCODED_SHOP_ID_PLEASE_DELETE
 import com.tokopedia.tokomart.searchcategory.CreateSearchCategoryViewModelTestHelper
-import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokomart.util.SearchCategoryDummyUtils.dummyChooseAddressData
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -28,11 +27,13 @@ class CreateCategoryViewModelTest:
 
     @Test
     fun `test create category view model`() {
+        `Given choose address data`()
         `Given category view model`()
 
         `Then assert query param has default sort`()
         `Then assert category id`()
         `Then assert shop id from choose address`()
+        `Then assert warehouse id from choose address`()
     }
 
     private fun `Then assert query param has default sort`() {
@@ -50,7 +51,11 @@ class CreateCategoryViewModelTest:
     }
 
     private fun `Then assert shop id from choose address`() {
-        assertThat(categoryViewModel.shopId, shouldBe(HARDCODED_SHOP_ID_PLEASE_DELETE))
+        assertThat(categoryViewModel.shopId, shouldBe(dummyChooseAddressData.shop_id))
+    }
+
+    private fun `Then assert warehouse id from choose address`() {
+        assertThat(categoryViewModel.warehouseId, shouldBe(dummyChooseAddressData.warehouse_id))
     }
 
     @Test

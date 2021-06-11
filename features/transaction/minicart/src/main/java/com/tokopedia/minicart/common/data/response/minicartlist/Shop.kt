@@ -10,5 +10,7 @@ data class Shop(
         @SerializedName("shop_id")
         val shopId: String = "",
         @SerializedName("shop_type_info")
-        val shopTypeInfo: ShopTypeInfo = ShopTypeInfo()
+        val shopTypeInfo: ShopTypeInfo = ShopTypeInfo(),
+        @SerializedName("shop_name")
+        val shopName: String = ""
 )

@@ -3,7 +3,8 @@ package com.tokopedia.tokomart.search.presentation.view
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -69,6 +70,7 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
+            emptyProductListener = this,
             suggestionListener = this,
     )
 
@@ -77,9 +79,18 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     override fun onSuggestionClicked(suggestionDataView: SuggestionDataView) {
         val context = context ?: return
 
-        val applink = ApplinkConstInternalTokoMart.SEARCH + "?" +
+        val applink = ApplinkConstInternalTokopediaNow.SEARCH + "?" +
                 suggestionDataView.query
 
         RouteManager.route(context, applink)
+    }
+
+    override fun onGoToGlobalSearch() {
+        super.onGoToGlobalSearch()
+
+        val queryParams = "${SearchApiConst.Q}=${searchViewModel.query}"
+        val applinkToSearchResult = "${ApplinkConstInternalDiscovery.SEARCH_RESULT}?$queryParams"
+
+        RouteManager.route(context, applinkToSearchResult)
     }
 }

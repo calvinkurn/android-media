@@ -7,16 +7,21 @@
       }
     },
     "cartRedirection": {
+      "alternate_copy": [
+        {
+          "cart_type": "remind_me",
+          "color": "secondary_grays",
+          "text": "Cek wishlist kamu ya"
+        },
+        {
+          "cart_type": "update_cart",
+          "color": "primary_green",
+          "text": "Simpan Perubahan"
+        }
+      ],
       "data": [
         {
           "available_buttons": [
-            {
-              "cart_type": "normal",
-              "color": "secondary_green",
-              "onboarding_message": "",
-              "show_recommendation": false,
-              "text": "Beli"
-            },
             {
               "cart_type": "normal",
               "color": "primary_green",
@@ -32,13 +37,6 @@
         },
         {
           "available_buttons": [
-            {
-              "cart_type": "normal",
-              "color": "secondary_green",
-              "onboarding_message": "",
-              "show_recommendation": false,
-              "text": "Beli"
-            },
             {
               "cart_type": "normal",
               "color": "primary_green",
@@ -78,13 +76,6 @@
           "available_buttons": [
             {
               "cart_type": "normal",
-              "color": "secondary_green",
-              "onboarding_message": "",
-              "show_recommendation": false,
-              "text": "Beli"
-            },
-            {
-              "cart_type": "normal",
               "color": "primary_green",
               "onboarding_message": "",
               "show_recommendation": true,
@@ -114,13 +105,6 @@
           "available_buttons": [
             {
               "cart_type": "normal",
-              "color": "secondary_green",
-              "onboarding_message": "",
-              "show_recommendation": false,
-              "text": "Beli"
-            },
-            {
-              "cart_type": "normal",
               "color": "primary_green",
               "onboarding_message": "",
               "show_recommendation": true,
@@ -134,13 +118,6 @@
         },
         {
           "available_buttons": [
-            {
-              "cart_type": "normal",
-              "color": "secondary_green",
-              "onboarding_message": "",
-              "show_recommendation": false,
-              "text": "Beli"
-            },
             {
               "cart_type": "normal",
               "color": "primary_green",
@@ -165,13 +142,6 @@
           "available_buttons": [
             {
               "cart_type": "normal",
-              "color": "secondary_green",
-              "onboarding_message": "",
-              "show_recommendation": false,
-              "text": "Beli"
-            },
-            {
-              "cart_type": "normal",
               "color": "primary_green",
               "onboarding_message": "",
               "show_recommendation": true,
@@ -185,13 +155,6 @@
         },
         {
           "available_buttons": [
-            {
-              "cart_type": "normal",
-              "color": "secondary_green",
-              "onboarding_message": "",
-              "show_recommendation": false,
-              "text": "Beli"
-            },
             {
               "cart_type": "normal",
               "color": "primary_green",
@@ -230,13 +193,6 @@
           "available_buttons": [
             {
               "cart_type": "normal",
-              "color": "secondary_green",
-              "onboarding_message": "",
-              "show_recommendation": false,
-              "text": "Beli"
-            },
-            {
-              "cart_type": "normal",
               "color": "primary_green",
               "onboarding_message": "",
               "show_recommendation": true,
@@ -259,13 +215,6 @@
           "available_buttons": [
             {
               "cart_type": "normal",
-              "color": "secondary_green",
-              "onboarding_message": "",
-              "show_recommendation": false,
-              "text": "Beli"
-            },
-            {
-              "cart_type": "normal",
               "color": "primary_green",
               "onboarding_message": "",
               "show_recommendation": true,
@@ -286,13 +235,6 @@
         },
         {
           "available_buttons": [
-            {
-              "cart_type": "normal",
-              "color": "secondary_green",
-              "onboarding_message": "",
-              "show_recommendation": false,
-              "text": "Beli"
-            },
             {
               "cart_type": "normal",
               "color": "primary_green",
@@ -324,13 +266,6 @@
           "available_buttons": [
             {
               "cart_type": "normal",
-              "color": "secondary_green",
-              "onboarding_message": "",
-              "show_recommendation": false,
-              "text": "Beli"
-            },
-            {
-              "cart_type": "normal",
               "color": "primary_green",
               "onboarding_message": "",
               "show_recommendation": true,
@@ -346,13 +281,6 @@
           "available_buttons": [
             {
               "cart_type": "normal",
-              "color": "secondary_green",
-              "onboarding_message": "",
-              "show_recommendation": false,
-              "text": "Beli"
-            },
-            {
-              "cart_type": "normal",
               "color": "primary_green",
               "onboarding_message": "",
               "show_recommendation": true,
@@ -366,13 +294,6 @@
         },
         {
           "available_buttons": [
-            {
-              "cart_type": "normal",
-              "color": "secondary_green",
-              "onboarding_message": "",
-              "show_recommendation": false,
-              "text": "Beli"
-            },
             {
               "cart_type": "normal",
               "color": "primary_green",
@@ -1610,7 +1531,7 @@
           "stock": {
             "isBuyable": true,
             "maximumOrder": "0",
-            "minimumOrder": "1",
+            "minimumOrder": "2",
             "stock": "10",
             "stockWording": "Stok tinggal &lt;20, beli segera!",
             "stockWordingHTML": "Stok Mau Habis"

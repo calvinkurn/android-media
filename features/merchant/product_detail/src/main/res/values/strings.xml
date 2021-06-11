@@ -3,6 +3,7 @@
     <string name="app_name">product_detail</string>
 
     <string name="product_detail_courier">Pengiriman</string>
+    <string name="pdp_see_label">Lihat</string>
     <string name="label_product_info">Informasi Produk</string>
     <string name="merchant_product_detail_label_product_detail">Detail Produk</string>
     <string name="merchant_product_detail_shipping">Detail Pengiriman</string>

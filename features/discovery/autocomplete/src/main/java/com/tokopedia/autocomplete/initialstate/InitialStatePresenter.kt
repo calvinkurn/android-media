@@ -284,12 +284,15 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun refreshPopularSearch(featureId: String) {
+        val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
+
         refreshInitialStateUseCase.unsubscribe()
         refreshInitialStateUseCase.execute(
                 RefreshInitialStateUseCase.getParams(
                         searchParameter,
                         userSession.deviceId,
-                        userSession.userId
+                        userSession.userId,
+                        warehouseId
                 ),
                 getPopularSearchSubscriber(featureId)
         )
@@ -330,12 +333,15 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun refreshDynamicSection(featureId: String) {
+        val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
+
         refreshInitialStateUseCase.unsubscribe()
         refreshInitialStateUseCase.execute(
                 RefreshInitialStateUseCase.getParams(
                         searchParameter,
                         userSession.deviceId,
-                        userSession.userId
+                        userSession.userId,
+                        warehouseId
                 ),
                 getRefreshDynamicSectionSubscriber(featureId)
         )

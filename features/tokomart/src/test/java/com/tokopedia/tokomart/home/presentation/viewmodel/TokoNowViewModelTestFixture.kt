@@ -1,11 +1,12 @@
 package com.tokopedia.tokomart.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.home_component.visitable.BannerDataModel
+import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
+import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
+import com.tokopedia.tokomart.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokomart.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokomart.home.domain.model.KeywordSearchData
@@ -28,8 +29,8 @@ import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
-import org.mockito.ArgumentMatchers.*
-import java.util.*
+import org.mockito.ArgumentMatchers.anyBoolean
+import org.mockito.ArgumentMatchers.anyString
 
 abstract class TokoMartHomeViewModelTestFixture {
 
@@ -45,6 +46,8 @@ abstract class TokoMartHomeViewModelTestFixture {
     lateinit var getTickerUseCase: GetTickerUseCase
     @RelaxedMockK
     lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
+    @RelaxedMockK
+    lateinit var getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -61,12 +64,23 @@ abstract class TokoMartHomeViewModelTestFixture {
                 getKeywordSearchUseCase,
                 getTickerUseCase,
                 getMiniCartUseCase,
+                getChooseAddressWarehouseLocUseCase,
                 CoroutineTestDispatchersProvider
         )
     }
 
     protected fun verifyGetHomeLayoutResponseSuccess(expectedResponse: HomeLayoutListUiModel) {
         val actualResponse = viewModel.homeLayoutList.getOrAwaitValue()
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    protected fun verifyMiniCartResponseSuccess(expectedResponse: MiniCartSimplifiedData) {
+        val actualResponse = viewModel.miniCart.getOrAwaitValue()
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    protected fun verfifyGetChooseAddressSuccess(expectedResponse: GetStateChosenAddressResponse) {
+        val actualResponse = viewModel.chooseAddress.getOrAwaitValue()
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
     }
 
@@ -80,11 +94,6 @@ abstract class TokoMartHomeViewModelTestFixture {
         Assert.assertTrue(actualResponse is Fail)
     }
 
-    protected fun verifyMiniCartResponseSuccess(expectedResponse: MiniCartSimplifiedData) {
-        val actualResponse = viewModel.miniCart.getOrAwaitValue()
-        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
-    }
-
     protected fun verifyMiniCartFail() {
         val actualResponse = viewModel.miniCart.getOrAwaitValue()
         Assert.assertTrue(actualResponse is Fail)
@@ -95,12 +104,21 @@ abstract class TokoMartHomeViewModelTestFixture {
         Assert.assertTrue(actualResponse is Fail)
     }
 
+    protected fun verifyGetChooseAddressFail() {
+        val actualResponse = viewModel.chooseAddress.getOrAwaitValue()
+        Assert.assertTrue(actualResponse is Fail)
+    }
+
     protected fun verifyGetHomeLayoutUseCaseCalled() {
         coVerify { getHomeLayoutListUseCase.execute() }
     }
 
     protected fun verifyGetTickerUseCaseCalled() {
         coVerify { getTickerUseCase.execute(any()) }
+    }
+
+    protected fun verifyGetChooseAddress() {
+        coVerify { getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any()) }
     }
 
     protected fun verifyGetKeywordSearchUseCaseCalled() {
@@ -123,12 +141,28 @@ abstract class TokoMartHomeViewModelTestFixture {
         coEvery { getKeywordSearchUseCase.execute(anyBoolean(), anyString(), anyString()) } returns keywordSearchResponse
     }
 
+    protected fun onGetChooseAddress_thenReturn(getStateChosenAddressResponse: GetStateChosenAddressQglResponse) {
+        coEvery {
+            getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any())
+        } answers {
+            firstArg<(GetStateChosenAddressResponse)-> Unit>().invoke(getStateChosenAddressResponse.response)
+        }
+    }
+
     protected fun onGetTicker_thenReturn(errorThrowable: Throwable) {
         coEvery { getTickerUseCase.execute(any()) } throws errorThrowable
     }
 
     protected fun onGetHomeLayout_thenReturn(errorThrowable: Throwable) {
         coEvery { getHomeLayoutListUseCase.execute() } throws errorThrowable
+    }
+
+    protected fun onGetChooseAddress_thenReturn(errorThrowable: Throwable) {
+        coEvery {
+            getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any())
+        } answers {
+            secondArg<(Throwable)-> Unit>().invoke(errorThrowable)
+        }
     }
 
     protected fun onGetMiniCart_thenReturn(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -147,8 +181,8 @@ abstract class TokoMartHomeViewModelTestFixture {
         }
     }
 
-    protected fun onGetDataFromTokoMart_thenReturn(listCategoryResponse: List<CategoryResponse>){
-        coEvery { getCategoryListUseCase.execute("1", 1) } returns listCategoryResponse
+    protected fun onGetDataFromTokoMart_thenReturn(categoryListResponse: CategoryListResponse){
+        coEvery { getCategoryListUseCase.execute("1", 1) } returns categoryListResponse
     }
 
     protected fun onGetDataFromTokoMart_thenReturn(errorThrowable: Throwable){

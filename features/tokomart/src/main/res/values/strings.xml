@@ -7,6 +7,9 @@
     <string name="tokomart_common_empty_state_button_return">Belanja di Tokopedia</string>
 
     <string name="tokomart_category_list_bottom_sheet_title">Semua kategori di TokoNOW!</string>
+    <string name="tokomart_category_list_bottom_sheet_error_not_found_title">Oops, halaman ini gagal dimuat</string>
+    <string name="tokomart_category_list_bottom_sheet_error_not_found_desc">Klik tombol di bawah ini untuk refresh halaman ini, ya!</string>
+    <string name="tokomart_category_list_bottom_sheet_error_go_to_homepage">Ke Homepage</string>
     <string name="tokomart_see_all">Lihat Semua</string>
     <string name="tokomart_all_category_text_format">Semua Produk %1$s</string>
 
@@ -19,7 +22,13 @@
     <string name="tokomart_all_category">Semua Kategori</string>
     <string name="tokomart_search_category_product_count_template">%s Produk</string>
     <string name="tokomart_category_aisle_header">Lihat kategori lainnya</string>
+    <string name="tokomart_content_desc_image_empty_product">Image Empty Product</string>
+    <string name="tokomart_empty_product_title">Yaah, barang itu nggak ada di Tokopedia NOW!</string>
+    <string name="tokomart_empty_product_description">Coba cari barang yang lain, atau cek rekomendasi di bawah.</string>
+    <string name="tokomart_global_search_button">Cari di Tokopedia</string>
+    <string name="tokomart_change_keyword_button">Ganti Kata Kunci</string>
 
     <string name="tokomart_add_to_cart_success">Sukses menambah ke keranjang</string>
+    <string name="city_name_empty_state_no_address">Jakarta Barat</string>
 
 </resources>

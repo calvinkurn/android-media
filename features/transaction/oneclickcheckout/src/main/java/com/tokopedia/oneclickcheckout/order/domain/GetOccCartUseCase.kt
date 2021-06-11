@@ -261,6 +261,10 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           state
           state_detail
           status
+          tokonow {
+            shop_id
+            warehouse_id
+          }
         }
         payment {
           enable

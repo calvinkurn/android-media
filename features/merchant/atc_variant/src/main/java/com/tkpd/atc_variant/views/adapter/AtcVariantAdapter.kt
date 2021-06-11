@@ -2,6 +2,7 @@ package com.tkpd.atc_variant.views.adapter
 
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
+import com.tkpd.atc_variant.data.uidata.VariantHeaderDataModel
 import com.tkpd.atc_variant.data.uidata.VariantQuantityDataModel
 import com.tkpd.atc_variant.views.viewholder.AtcVariantQuantityViewHolder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -22,5 +23,11 @@ class AtcVariantAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>,
         if (quantityViewHolderPosition != -1) {
             (rv?.findViewHolderForAdapterPosition(quantityViewHolderPosition) as? AtcVariantQuantityViewHolder)?.removeTextChangedListener()
         }
+    }
+
+    fun getHeaderDataModel(): VariantHeaderDataModel? {
+        return (currentList.firstOrNull {
+            it is VariantHeaderDataModel
+        } as? VariantHeaderDataModel)
     }
 }

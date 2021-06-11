@@ -34,6 +34,7 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         `Then assert has next page value`(false)
         `Then assert auto complete applink from API`(categoryModel)
         `Then assert is refresh page flag`()
+        `Then assert header background is shown`()
     }
 
     private fun `Then assert first page visitables`(
@@ -78,6 +79,10 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         assertThat(categoryViewModel.isRefreshPageLiveData.value, shouldBe(true))
     }
 
+    private fun `Then assert header background is shown`() {
+        assertThat(categoryViewModel.isHeaderBackgroundVisibleLiveData.value, shouldBe(true))
+    }
+
     @Test
     fun `test first page has next page`() {
         val categoryModel = "category/first-page-16-products.json".jsonToObject<CategoryModel>()
@@ -93,5 +98,6 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         `Then assert has next page value`(true)
         `Then assert auto complete applink from API`(categoryModel)
         `Then assert is refresh page flag`()
+        `Then assert header background is shown`()
     }
 }

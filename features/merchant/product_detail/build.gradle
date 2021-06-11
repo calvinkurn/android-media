@@ -66,7 +66,6 @@ dependencies {
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.productShare)
     implementation project(rootProject.ext.features.productDetailCommon)
-    implementation project(rootProject.ext.features.atcVariant)
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.topAdsSdk)

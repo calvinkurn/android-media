@@ -40,6 +40,7 @@ object AtcVariantHelper {
                         warehouseId: String,
                         pdpSession: String,
                         isTokoNow: Boolean,
+                        isFreeOngkir:Boolean,
                         isShopOwner: Boolean,
                         productVariant: ProductVariant,
                         warehouseResponse: Map<String, WarehouseInfo>,
@@ -48,12 +49,22 @@ object AtcVariantHelper {
                         startActivitResult: (Intent, Int) -> Unit) {
 
         val cacheManager = SaveInstanceCacheManager(context, true)
+
+        val categoryName = productInfoP1.basic.category.detail.map {
+            it.name
+        }.joinToString("/", postfix = "/ ${productInfoP1.basic.category.id}")
+
+        val categoryId = productInfoP1.basic.category.detail.map {
+            it.id
+        }.joinToString("/")
+
         val parcelData = ProductVariantBottomSheetParams(
                 productId = productInfoP1.basic.productID,
                 pageSource = PDP_PAGE_SOURCE,
                 whId = warehouseId,
                 pdpSession = pdpSession,
                 isTokoNow = isTokoNow,
+                isFreeOngkir = isFreeOngkir,
                 isShopOwner = isShopOwner,
                 variantAggregator = ProductVariantAggregatorUiData(
                         variantData = productVariant,
@@ -61,13 +72,12 @@ object AtcVariantHelper {
                         nearestWarehouse = warehouseResponse
                 ),
                 miniCartData = miniCart,
-                categoryName = productInfoP1.basic.category.name,
-                categoryId = productInfoP1.basic.category.id,
+                categoryName = categoryName,
+                categoryId = categoryId,
                 isTradein = productInfoP1.data.isTradeIn,
                 minimumShippingPrice = productInfoP1.basic.getDefaultOngkirInt(),
                 shopId = productInfoP1.basic.shopID,
                 shopName = productInfoP1.basic.shopName
-
         )
         cacheManager.put(PDP_PARCEL_KEY_RESPONSE, parcelData)
 

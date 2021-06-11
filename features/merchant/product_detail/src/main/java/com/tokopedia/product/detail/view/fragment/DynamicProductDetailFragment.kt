@@ -9,6 +9,7 @@ import android.content.Intent
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
 import android.util.SparseIntArray
@@ -126,6 +127,7 @@ import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActio
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.listener.PartialButtonActionListener
 import com.tokopedia.product.detail.view.util.*
+import com.tokopedia.product.detail.view.viewholder.ProductSingleVariantViewHolder
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.widget.*
@@ -469,6 +471,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     pdpUiUpdater?.updateVariantSelected(mapOfSelectedVariantOption)
                     val variantLevelOne = listOfVariantSelected?.firstOrNull()
                     updateVariantDataToExistingProductData(if (variantLevelOne != null) listOf(variantLevelOne) else listOf())
+                    scrollVariantToSelectedPosition()
                 }
             }
         }
@@ -571,6 +574,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    private fun scrollVariantToSelectedPosition() {
+        val vh = getViewHolderByPosition(getComponentPositionBeforeUpdate(pdpUiUpdater?.productSingleVariant)) as? ProductSingleVariantViewHolder
+        Handler().postDelayed({
+            vh?.scrollToPosition(pdpUiUpdater?.productSingleVariant?.variantLevelOne?.getPositionOfSelected() ?: -1)
+        }, 200)
     }
 
     private fun trackVideoState() {
@@ -1409,7 +1419,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun updateButtonState() {
         viewModel.getDynamicProductInfoP1?.let {
             val miniCartItem = if (it.basic.isTokoNow) viewModel.getMiniCartItem() else null
-            val alternateText = if (it.data.variant.isVariant && viewModel.isParentExistInMiniCart(it.parentProductId)) "Perbarui Keranjang" else ""
+            val alternateText = viewModel.p2Data.value?.alternateCopy?.firstOrNull {
+                it.cartType == ProductDetailCommonConstant.KEY_CART_TYPE_UPDATE_CART
+            }?.text ?: ""
+
+            val alternateButtonVariant = if (it.data.variant.isVariant && viewModel.isParentExistInMiniCart(it.parentProductId)) alternateText else ""
             actionButtonView.renderData(
                     isWarehouseProduct = !it.isProductActive(),
                     hasShopAuthority = viewModel.hasShopAuthority(),
@@ -1417,7 +1431,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     hasTopAdsActive = hasTopAds(),
                     isVariant = it.data.variant.isVariant,
                     cartTypeData = viewModel.getCartTypeByProductId(),
-                    alternateButtonVariant = alternateText,
+                    alternateButtonVariant = alternateButtonVariant,
                     miniCartItem = miniCartItem)
         }
         showOrHideButton()
@@ -1661,13 +1675,18 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+    private fun onSuccessAtcTokoNow(result: AddToCartDataModel) {
+        view?.showToasterSuccess(result.data.message.firstOrNull()
+                ?: "", ctaText = getString(R.string.pdp_see_label), ctaListener = {
+            gotoCart()
+        })
+        updateButtonState()
+    }
 
     private fun onSuccessAtc(result: AddToCartDataModel) {
         val cartId = result.data.cartId
-        //todo change
         if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
-            view?.showToasterSuccess(result.data.message.firstOrNull() ?: "")
-            updateButtonState()
+            onSuccessAtcTokoNow(result)
             return
         }
 
@@ -2011,16 +2030,23 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+    override fun onVariantEmptyAndSelectedClicked() {
+        goToAtcVariant()
+    }
+
     private fun goToAtcVariant() {
 
         context?.let {
             if (viewModel.getDynamicProductInfoP1 != null) {
+                val boData = viewModel.getBebasOngkirDataByProductId()
+
                 AtcVariantHelper.pdpToAtcVariant(
                         context = it,
                         productInfoP1 = viewModel.getDynamicProductInfoP1!!,
                         warehouseId = warehouseId ?: "",
                         pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
                         isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow ?: false,
+                        isFreeOngkir = boData.imageURL.isNotEmpty(),
                         isShopOwner = viewModel.isShopOwner(),
                         productVariant = viewModel.variantData ?: ProductVariant(),
                         warehouseResponse = viewModel.p2Data.value?.nearestWarehouseInfo ?: mapOf(),
@@ -2031,14 +2057,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 }
             }
         }
-//            AtcVariantHelper.goToAtcVariant(
-//                    context = it,
-//                    productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
-//                    pageSource = "wishlist",
-//                    shopId = viewModel.getDynamicProductInfoP1!!.basic.shopID,
-//                    isTokoNow = true
-//            ) { data, code ->
-//                startActivityForResult(data, code)
+//                AtcVariantHelper.goToAtcVariant(
+//                        context = it,
+//                        productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
+//                        pageSource = "tokonow",
+//                        shopId = viewModel.getDynamicProductInfoP1!!.basic.shopID,
+//                        isTokoNow = true
+//                ) { data, code ->
+//                    startActivityForResult(data, code)
+//                }
 //            }
 //        }
     }
@@ -2690,7 +2717,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun setNavToolbarSearchHint(hint: String) {
         val isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
         val applink = ApplinkConstInternalDiscovery.AUTOCOMPLETE +
-                if (isTokoNow) "?${SearchApiConst.NAVSOURCE}=tokonow&${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokoMart.SEARCH}"
+                if (isTokoNow) "?${SearchApiConst.NAVSOURCE}=tokonow&${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokopediaNow.SEARCH}"
                 else ""
         navToolbar?.setupSearchbar(listOf(HintData(hint)), applink = applink)
     }

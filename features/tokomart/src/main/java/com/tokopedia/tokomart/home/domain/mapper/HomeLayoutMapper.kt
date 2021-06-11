@@ -3,8 +3,13 @@ package com.tokopedia.tokomart.home.domain.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
-import com.tokopedia.tokomart.home.constant.HomeLayoutType
+import com.tokopedia.tokomart.home.constant.HomeLayoutType.Companion.BANNER_CAROUSEL
+import com.tokopedia.tokomart.home.constant.HomeLayoutType.Companion.CATEGORY
+import com.tokopedia.tokomart.home.constant.HomeLayoutType.Companion.LEGO_3_IMAGE
+import com.tokopedia.tokomart.home.constant.HomeLayoutType.Companion.LEGO_6_IMAGE
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
+import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
+import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokomart.home.domain.mapper.HomeCategoryMapper.mapToCategoryLayout
@@ -18,16 +23,28 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 
 object HomeLayoutMapper {
 
-    private val SUPPORTED_LAYOUT_TYPES = listOf(
-        HomeLayoutType.CATEGORY,
-        HomeLayoutType.LEGO_3_IMAGE,
-        HomeLayoutType.LEGO_6_IMAGE,
-        HomeLayoutType.BANNER_CAROUSEL
+    /**
+     * List of layout IDs that doesn't need to call GQL query from Toko Now Home
+     * to fetch the data. For example: Choose Address Widget. The GQL call for
+     * Choose Address Widget data is done internally, so Toko Now Home doesn't
+     * need to call query to fetch data for it.
+     */
+    private val STATIC_LAYOUT_ID = listOf(
+            CHOOSE_ADDRESS_WIDGET_ID,
+            TICKER_WIDGET_ID,
+            EMPTY_STATE_NO_ADDRESS,
+            EMPTY_STATE_FAILED_TO_FETCH_DATA
     )
 
-    fun addChooseAddressIntoList(): List<Visitable<*>> {
+    private val SUPPORTED_LAYOUT_TYPES = listOf(
+        CATEGORY,
+        LEGO_3_IMAGE,
+        LEGO_6_IMAGE,
+        BANNER_CAROUSEL
+    )
+
+    fun addLoadingIntoList(): List<Visitable<*>> {
         val layoutList = mutableListOf<Visitable<*>>()
-        layoutList.add(HomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID))
         layoutList.add(HomeLoadingStateUiModel(id = LOADING_STATE))
         return layoutList
     }
@@ -74,12 +91,23 @@ object HomeLayoutMapper {
         }
     }
 
+    fun Visitable<*>.isNotStaticLayout(): Boolean {
+        return this.getVisitableId() !in STATIC_LAYOUT_ID
+    }
+
+    private fun Visitable<*>.getVisitableId(): String? {
+        return when(this) {
+            is TokoMartHomeLayoutUiModel -> visitableId
+            is HomeComponentVisitable -> visitableId()
+            else -> null
+        }
+    }
+
     private fun mapToHomeUiModel(response: HomeLayoutResponse): Visitable<*>? {
         return when (response.layout) {
-            HomeLayoutType.CATEGORY -> mapToCategoryLayout(response)
-            HomeLayoutType.LEGO_3_IMAGE,
-            HomeLayoutType.LEGO_6_IMAGE -> mapLegoBannerDataModel(response)
-            HomeLayoutType.BANNER_CAROUSEL -> mapSliderBannerModel(response)
+            CATEGORY -> mapToCategoryLayout(response)
+            LEGO_3_IMAGE, LEGO_6_IMAGE -> mapLegoBannerDataModel(response)
+            BANNER_CAROUSEL -> mapSliderBannerModel(response)
             else -> null
         }
     }
