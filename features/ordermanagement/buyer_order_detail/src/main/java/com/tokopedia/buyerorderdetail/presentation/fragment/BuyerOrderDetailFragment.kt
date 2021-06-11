@@ -331,7 +331,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         viewModel.buyerOrderDetailResult.value?.let {
             if (it is Success) {
                 navigator.goToCreateResolution(this, complaintUrl)
-                trackClickActionButtonFromReceiveConfirmation(BuyerOrderDetailTrackerConstant.BUTTON_NAME_COMPLAINT_ORDER)
+                trackClickActionButtonFromReceiveConfirmation(BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER_CONFIRMATION_REQUEST_COMPLAINT)
             }
         }
         bottomSheetReceiveConfirmation?.finishLoading()
@@ -355,7 +355,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun onDoReceiveConfirmationActionButtonClicked() {
         viewModel.finishOrder()
-        trackClickActionButtonFromReceiveConfirmation(BuyerOrderDetailTrackerConstant.BUTTON_NAME_CONFIRM_FINISH_ORDER)
+        trackClickActionButtonFromReceiveConfirmation(BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER_CONFIRMATION_CONFIRM_FINISH_ORDER)
     }
 
     private fun onHelpActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
@@ -654,9 +654,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private fun showCommonToaster(message: String, actionText: String = "", onActionClicked: () -> Unit = {}) {
         if (message.isNotBlank()) {
             view?.let { view ->
-                Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, actionText, View.OnClickListener {
+                Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, actionText) {
                     onActionClicked()
-                }).show()
+                }.show()
             }
         }
     }
@@ -664,9 +664,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private fun showErrorToaster(message: String, actionText: String = "", onActionClicked: () -> Unit = {}) {
         if (message.isNotBlank()) {
             view?.let { view ->
-                Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, actionText, View.OnClickListener {
+                Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, actionText) {
                     onActionClicked()
-                }).show()
+                }.show()
             }
         }
     }

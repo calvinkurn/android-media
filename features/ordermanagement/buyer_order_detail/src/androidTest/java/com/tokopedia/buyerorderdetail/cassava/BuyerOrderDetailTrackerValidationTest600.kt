@@ -10,6 +10,8 @@ class BuyerOrderDetailTrackerValidationTest600 : BuyerOrderDetailTrackerValidati
         setupMock {
             mockOrderDetail(BuyerOrderDetailMock.BuyerOrderDetailMockResponse.MOCK_RESPONSE_600)
         } actionTest {
+            launchBuyerOrderDetailActivity(activityRule)
+            blockAllIntent()
             testClickToolbarChatIcon()
             testClickSeeDetail()
             testClickSeeInvoice(activityRule.activity)
@@ -32,7 +34,7 @@ class BuyerOrderDetailTrackerValidationTest600 : BuyerOrderDetailTrackerValidati
                     BuyerOrderDetailTrackerValidationConstant.clickProductQueryPath,
                     BuyerOrderDetailTrackerValidationConstant.clickCopyAWBQueryPath,
                     BuyerOrderDetailTrackerValidationConstant.clickPrimaryActionButtonFinishOrderQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickRequestComplaintOnFinishOrderConfirmationBottomSheet,
+                    BuyerOrderDetailTrackerValidationConstant.clickFinishOrderOnFinishOrderConfirmationBottomSheet,
                     BuyerOrderDetailTrackerValidationConstant.clickRequestComplaintOnFinishOrderConfirmationBottomSheet,
                     BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonRequestComplaintQueryPath,
                     BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonTrackQueryPath)

@@ -66,6 +66,7 @@ object BuyerOrderDetailTrackerConstant {
     const val BUTTON_NAME_COMPLAINT_ORDER = "ajukan complain"
     const val BUTTON_NAME_VIEW_COMPLAINT_ORDER = "lihat complain"
     const val BUTTON_NAME_FINISH_ORDER = "selesaikan pesanan"
-    const val BUTTON_NAME_CONFIRM_FINISH_ORDER = "selesai"
+    const val BUTTON_NAME_FINISH_ORDER_CONFIRMATION_CONFIRM_FINISH_ORDER = "selesai"
+    const val BUTTON_NAME_FINISH_ORDER_CONFIRMATION_REQUEST_COMPLAINT = "ajukan komplain"
     const val BUTTON_NAME_REVIEW_ORDER = "beri ulasan"
 }

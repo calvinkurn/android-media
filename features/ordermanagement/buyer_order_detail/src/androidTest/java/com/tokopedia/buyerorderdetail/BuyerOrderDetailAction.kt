@@ -320,6 +320,7 @@ class BuyerOrderDetailAction {
     fun testClickSecondaryActionButtonRequestComplaint(activity: AppCompatActivity) {
         clickSecondaryActionButton(activity, BuyerOrderDetailTrackerValidationConstant.ACTION_BUTTON_REQUEST_COMPLAINT_TEXT)
     }
+
     fun testClickSecondaryActionButtonTrack(activity: AppCompatActivity) {
         clickSecondaryActionButton(activity, BuyerOrderDetailTrackerValidationConstant.ACTION_BUTTON_TRACK_TEXT)
     }

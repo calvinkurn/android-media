@@ -85,7 +85,6 @@ dependencies {
     androidTestImplementation (rootProject.ext.testDependencies.espressoIdlingResource)
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.miscDependencies.rxJava
-    androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
 
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {

@@ -40,8 +40,8 @@ class ReceiveConfirmationBottomSheet(
     private fun createChildView(context: Context): View {
         return View.inflate(context, R.layout.bottomsheet_finish_order, null).apply {
             getDescriptionView().setupDescription()
-            getPrimaryButtonView().setupButton(actionButton.popUp.actionButton.firstOrNull())
-            getSecondaryButtonView().setupButton(actionButton.popUp.actionButton.lastOrNull())
+            getPrimaryButtonView().setupButton(actionButton.popUp.actionButton.getPrimaryActionButton())
+            getSecondaryButtonView().setupButton(actionButton.popUp.actionButton.getSecondaryActionButton())
         }
     }
 
@@ -57,8 +57,16 @@ class ReceiveConfirmationBottomSheet(
         }
     }
 
+    private fun List<ActionButtonsUiModel.ActionButton.PopUp.PopUpButton>.getPrimaryActionButton(): ActionButtonsUiModel.ActionButton.PopUp.PopUpButton? {
+        return find { it.type == BuyerOrderDetailConst.BUTTON_TYPE_PRIMARY }
+    }
+
+    private fun List<ActionButtonsUiModel.ActionButton.PopUp.PopUpButton>.getSecondaryActionButton(): ActionButtonsUiModel.ActionButton.PopUp.PopUpButton? {
+        return find { it.type == BuyerOrderDetailConst.BUTTON_TYPE_SECONDARY }
+    }
+
     private fun onPrimaryButtonClicked() {
-        actionButton.popUp.actionButton.firstOrNull()?.let {
+        actionButton.popUp.actionButton.getPrimaryActionButton()?.let {
             if (it.key == BuyerOrderDetailConst.ACTION_BUTTON_KEY_BACK || it.key.isBlank()) {
                 dismiss()
             } else {
@@ -69,7 +77,7 @@ class ReceiveConfirmationBottomSheet(
     }
 
     private fun onSecondaryButtonClicked() {
-        actionButton.popUp.actionButton.lastOrNull()?.let {
+        actionButton.popUp.actionButton.getSecondaryActionButton()?.let {
             if (it.key == BuyerOrderDetailConst.ACTION_BUTTON_KEY_BACK || it.key.isBlank()) {
                 dismiss()
             } else {
@@ -96,8 +104,8 @@ class ReceiveConfirmationBottomSheet(
             v.isLoading = true
         }
         when (v?.id) {
-            R.id.btnFinishOrderPrimary -> onPrimaryButtonClicked()
             R.id.btnFinishOrderSecondary -> onSecondaryButtonClicked()
+            R.id.btnFinishOrderPrimary -> onPrimaryButtonClicked()
         }
     }
 
@@ -106,11 +114,11 @@ class ReceiveConfirmationBottomSheet(
         childView.getDescriptionView().setupDescription()
         childView.getPrimaryButtonView().apply {
             isLoading = false
-            setupButton(actionButton.popUp.actionButton.firstOrNull())
+            setupButton(actionButton.popUp.actionButton.getPrimaryActionButton())
         }
         childView.getSecondaryButtonView().apply {
             isLoading = false
-            setupButton(actionButton.popUp.actionButton.lastOrNull())
+            setupButton(actionButton.popUp.actionButton.getSecondaryActionButton())
         }
         enableDismiss()
     }

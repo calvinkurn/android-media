@@ -51,7 +51,7 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl5"
         android:background="@drawable/bg_rounder_corner_stroke"
-        app:layout_constraintBottom_toTopOf="@id/btnFinishOrderPrimary"
+        app:layout_constraintBottom_toTopOf="@id/btnFinishOrderSecondary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/frameProductIcon"
         app:layout_constraintVertical_bias="1" />
@@ -72,32 +72,32 @@
         android:layout_marginBottom="@dimen/spacing_lvl5"
         android:text="@string/bottomsheet_finish_order_cashback_description"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintBottom_toTopOf="@id/btnFinishOrderPrimary"
+        app:layout_constraintBottom_toTopOf="@id/btnFinishOrderSecondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/frameCashbackIcon"
         app:layout_constraintTop_toTopOf="@id/frameCashbackIcon"
         app:typographyType="body_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnFinishOrderPrimary"
+        android:id="@+id/btnFinishOrderSecondary"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:text="@string/label_complaint"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btnFinishOrderSecondary"
+        app:layout_constraintEnd_toStartOf="@id/btnFinishOrderPrimary"
         app:layout_constraintStart_toStartOf="parent"
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnFinishOrderSecondary"
+        android:id="@+id/btnFinishOrderPrimary"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:text="@string/label_finish"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btnFinishOrderPrimary" />
+        app:layout_constraintStart_toEndOf="@id/btnFinishOrderSecondary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
