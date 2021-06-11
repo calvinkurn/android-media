@@ -2,6 +2,7 @@ package com.tokopedia.tokomart.category.presentation.viewmodel
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.tokomart.searchcategory.CreateSearchCategoryViewModelTestHelper
 import com.tokopedia.tokomart.util.SearchCategoryDummyUtils.dummyChooseAddressData
 import org.junit.Assert.assertThat
@@ -31,12 +32,12 @@ class CreateCategoryViewModelTest:
         `Given category view model`()
 
         `Then assert query param has default sort`()
-        `Then assert category id`()
+        `Then assert category ids`()
+        `Then assert query param has exclude sc category L2`()
         `Then assert shop id from choose address`()
         `Then assert warehouse id from choose address`()
     }
 
-    // TODO: [Misael] test exclude_sc cat lv 2
     private fun `Then assert query param has default sort`() {
         assertThat(
                 categoryViewModel.queryParam[SearchApiConst.OB],
@@ -44,10 +45,22 @@ class CreateCategoryViewModelTest:
         )
     }
 
-    private fun `Then assert category id`() {
+    private fun `Then assert category ids`() {
         assertThat(
-                categoryViewModel.categoryId,
-                shouldBe(defaultCategoryId)
+                categoryViewModel.categoryIdL1,
+                shouldBe(defaultCategoryIdL1)
+        )
+        assertThat(
+                categoryViewModel.categoryIdL2,
+                shouldBe(defaultCategoryIdL2)
+        )
+    }
+
+    // TODO: [Misael] test exclude_sc cat lv 2
+    private fun `Then assert query param has exclude sc category L2`() {
+        assertThat(
+                categoryViewModel.queryParam["${OptionHelper.EXCLUDE_PREFIX}_sc"],
+                shouldBe(defaultCategoryIdL2)
         )
     }
 

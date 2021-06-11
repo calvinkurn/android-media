@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
@@ -13,7 +14,8 @@ import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokomart.category.utils.CATEGORY_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokomart.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CASE
-import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_ID
+import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_ID_L1
+import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_ID_L2
 import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.utils.ABTestPlatformWrapper
@@ -28,9 +30,10 @@ import javax.inject.Named
 
 class CategoryViewModel @Inject constructor (
         baseDispatcher: CoroutineDispatchers,
-        // TODO: [Misael] Check here
-        @param:Named(TOKONOW_CATEGORY_ID)
-        val categoryId: Int,
+        @param:Named(TOKONOW_CATEGORY_ID_L1)
+        val categoryIdL1: String,
+        @param:Named(TOKONOW_CATEGORY_ID_L2)
+        val categoryIdL2: String,
         @Named(TOKONOW_CATEGORY_QUERY_PARAM_MAP)
         queryParamMap: Map<String, String>,
         @param:Named(CATEGORY_FIRST_PAGE_USE_CASE)
@@ -58,6 +61,10 @@ class CategoryViewModel @Inject constructor (
 
     private var navigation: TokonowCategoryDetail.Navigation? = null
 
+    init {
+        queryParamMutable["${OptionHelper.EXCLUDE_PREFIX}_sc"] = categoryIdL2
+    }
+
     override fun onViewCreated() {
         getCategoryFirstPageUseCase.cancelJobs()
         getCategoryFirstPageUseCase.execute(
@@ -70,7 +77,7 @@ class CategoryViewModel @Inject constructor (
     override fun createRequestParams(): RequestParams {
         val requestParams = super.createRequestParams()
 
-        requestParams.putString(CATEGORY_ID, categoryId.toString())
+        requestParams.putString(CATEGORY_ID, categoryIdL1)
         requestParams.putString(WAREHOUSE_ID, chooseAddressData?.warehouse_id ?: "")
 
         return requestParams
@@ -78,17 +85,15 @@ class CategoryViewModel @Inject constructor (
 
     override fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
         super.appendMandatoryParams(tokonowQueryParam)
-        // TODO: [Misael] Check here
 
         tokonowQueryParam[SearchApiConst.NAVSOURCE] = TOKONOW_DIRECTORY
         tokonowQueryParam[SearchApiConst.SOURCE] = TOKONOW_DIRECTORY
-        tokonowQueryParam[SearchApiConst.SRP_PAGE_ID] = categoryId
+        tokonowQueryParam[SearchApiConst.SRP_PAGE_ID] = categoryIdL1
     }
 
     private fun onGetCategoryFirstPageSuccess(categoryModel: CategoryModel) {
         navigation = categoryModel.categoryDetail.data.navigation
 
-        // TODO: [Misael] Check categoryModel.categoryFilter n .quickFilter
         val headerDataView = HeaderDataView(
                 title = categoryModel.categoryDetail.data.name,
                 hasSeeAllCategoryButton = true,

@@ -477,7 +477,7 @@ public interface ApplinkConst {
         String HOME = "tokopedia://tokonow";
         String TOKONOW_PRODUCTION_SHOP_ID = "11530573";
         String SEARCH = "tokopedia://tokonow/search";
-        String CATEGORY = "tokopedia://tokonow/category/{category_id}";
+        String CATEGORY = "tokopedia://tokonow/category";
     }
 
     interface Query {

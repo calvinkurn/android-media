@@ -1812,10 +1812,29 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check tokonow category appLink then should return tokopedia internal tokonow category in customerapp`() {
-        val categoryId = "123"
-        val expectedDeepLink = "${ApplinkConstInternalTokoMart.INTERNAL_TOKOMART}/category/$categoryId/"
-        val appLink = UriUtil.buildUri(ApplinkConst.TokoNow.CATEGORY, categoryId)
+    fun `check tokonow 1 lv category appLink then should return tokopedia internal tokonow category in customerapp`() {
+        val categoryIdL1 = "123"
+        val categoryIdL2 = "456"
+        val expectedDeepLink = "${ApplinkConstInternalTokoMart.CATEGORY}?category_id_l1=${categoryIdL1}&category_id_l2=${categoryIdL2}"
+        val appLink = "${ApplinkConst.TokoNow.CATEGORY}/$categoryIdL1/$categoryIdL2"
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tokonow 2 lv category appLink then should return tokopedia internal tokonow category in customerapp`() {
+        val categoryIdL1 = "123"
+        val expectedDeepLink = "${ApplinkConstInternalTokoMart.CATEGORY}?category_id_l1=${categoryIdL1}&category_id_l2="
+        val appLink = "${ApplinkConst.TokoNow.CATEGORY}/$categoryIdL1"
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check tokonow category appLink with query param then should return tokopedia internal tokonow category in customerapp`() {
+        val categoryIdL1 = "123"
+        val categoryIdL2 = "456"
+        val queryParam = "official=true"
+        val expectedDeepLink = "${ApplinkConstInternalTokoMart.CATEGORY}?category_id_l1=${categoryIdL1}&category_id_l2=${categoryIdL2}&$queryParam"
+        val appLink = "${ApplinkConst.TokoNow.CATEGORY}/$categoryIdL1/$categoryIdL2?$queryParam"
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 }

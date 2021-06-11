@@ -291,7 +291,6 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun createSortFilterItem(filter: Filter): SortFilterItem {
         val option = filter.options.getOrNull(0) ?: Option()
-        // TODO: [Misael] check getFilterState
         val isSelected = filterController.getFilterViewState(option)
         val chipType = getSortFilterItemType(isSelected)
 
@@ -753,7 +752,6 @@ abstract class BaseSearchCategoryViewModel(
             val quickFilterDataValue: DataValue = DataValue(),
             val bannerChannel: Channels = Channels(),
     ) {
-        // TODO: [Misael] Check here
         val categoryFilterDataValue = DataValue(
                 filter = FilterHelper.copyFilterWithOptionAsExclude(categoryFilterDataValue.filter)
         )

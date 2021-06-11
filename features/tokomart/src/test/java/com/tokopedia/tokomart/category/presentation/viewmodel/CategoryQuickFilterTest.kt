@@ -28,7 +28,7 @@ class CategoryQuickFilterTest: CategoryTestFixtures() {
                 selectedFilterOption.key to selectedFilterOption.value,
         )
 
-        `Given category view model`(defaultCategoryId, queryParamWithFilter)
+        `Given category view model`(defaultCategoryIdL1, defaultCategoryIdL2, queryParamWithFilter)
         `Given get category first page use case will be successful`(categoryModel)
 
         `When view created`()
@@ -108,7 +108,7 @@ class CategoryQuickFilterTest: CategoryTestFixtures() {
                 previouslySelectedFilterOption.key to previouslySelectedFilterOption.value,
         )
 
-        `Given category view model`(defaultCategoryId, queryParamWithFilter)
+        `Given category view model`(defaultCategoryIdL1, defaultCategoryIdL2, queryParamWithFilter)
         `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
         `Given view already created`()
 
