@@ -86,7 +86,8 @@ object OfficialStoreDynamicChannelComponentMapper {
                                 )
                             },
                             backColor = it.backColor,
-                            productImageUrl = it.productImageUrl
+                            productImageUrl = it.productImageUrl,
+                            benefit = ChannelBenefit(it.benefit.type, it.benefit.value)
                     )
                 }
         )

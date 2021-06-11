@@ -97,6 +97,7 @@ class OfficialHomeFragment :
     @Inject
     lateinit var officialHomeMapper: OfficialHomeMapper
 
+    @Inject
     lateinit var userSession: UserSessionInterface
 
     private var tracking: OfficialStoreTracking? = null
