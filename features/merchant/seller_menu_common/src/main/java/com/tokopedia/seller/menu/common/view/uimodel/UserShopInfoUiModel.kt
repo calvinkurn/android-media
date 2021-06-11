@@ -7,7 +7,7 @@ data class UserShopInfoWrapper(val shopType: ShopType?,
     data class UserShopInfoUiModel(
             var isBeforeOnDate: Boolean = false,
             var onDate: String = "",
-            var totalTransaction: Int = 0,
+            var totalTransaction: Long = 0L,
             var badge: String = "",
             var shopTierName: String = "",
             var shopTier: Int = -1,

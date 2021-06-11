@@ -71,7 +71,7 @@ data class UserShopInfoResponse(
                     val startTime: String = "",
                     @Expose
                     @SerializedName("value")
-                    val value: Int = 0
+                    val value: Long = 0
             )
         }
     }
