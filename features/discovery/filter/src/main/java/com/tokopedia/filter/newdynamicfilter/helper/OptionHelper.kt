@@ -284,10 +284,8 @@ object OptionHelper {
     fun getKeyRemoveExclude(option: Option) = option.key.removePrefix(EXCLUDE_PREFIX)
 
     fun copyOptionAsExclude(option: Option): Option {
-        return Option(
-                name = option.name,
-                key = EXCLUDE_PREFIX + option.key,
-                value = option.value,
-        )
+        return option.clone().also {
+            it.key = EXCLUDE_PREFIX + it.key
+        }
     }
 }

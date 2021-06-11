@@ -1,6 +1,7 @@
 package com.tokopedia.tokomart.search.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.assertBannerDataView
 import com.tokopedia.tokomart.searchcategory.assertCategoryFilterDataView
@@ -32,9 +33,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert first page visitables`(visitableList, searchModel)
         `Then assert visitable list does not end with loading more model`(visitableList)
         `Then assert has next page value`(false)
-        `Then assert auto complete applink from API`(searchModel)
-        `Then assert is refresh page flag`()
-        `Then assert header background is shown`()
+        `Then assert get first page success interactions`(searchModel)
     }
 
     private fun `Then assert first page visitables`(
@@ -67,6 +66,13 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList)
     }
 
+    private fun `Then assert get first page success interactions`(searchModel: SearchModel) {
+        `Then assert auto complete applink from API`(searchModel)
+        `Then assert is refresh page flag`()
+        `Then assert header background is shown`()
+        `Then assert content is not loading`()
+    }
+
     private fun `Then assert auto complete applink from API`(searchModel: SearchModel) {
         val expectedApplink = searchModel.searchProduct.data.autocompleteApplink
 
@@ -79,6 +85,10 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
     private fun `Then assert header background is shown`() {
         assertThat(searchViewModel.isHeaderBackgroundVisibleLiveData.value, shouldBe(true))
+    }
+
+    private fun `Then assert content is not loading`() {
+        assertThat(searchViewModel.isContentLoadingLiveData.value, shouldBe(false))
     }
 
     @Test
@@ -94,8 +104,6 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert first page visitables`(visitableList, searchModel)
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)
-        `Then assert auto complete applink from API`(searchModel)
-        `Then assert is refresh page flag`()
-        `Then assert header background is shown`()
+        `Then assert get first page success interactions`(searchModel)
     }
 }

@@ -32,9 +32,7 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         `Then assert first page visitables`(visitableList, categoryModel)
         `Then assert visitable list footer`(visitableList, categoryModel.categoryDetail.data.navigation)
         `Then assert has next page value`(false)
-        `Then assert auto complete applink from API`(categoryModel)
-        `Then assert is refresh page flag`()
-        `Then assert header background is shown`()
+        `Then assert get first page success interactions`(categoryModel)
     }
 
     private fun `Then assert first page visitables`(
@@ -69,6 +67,13 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList)
     }
 
+    private fun `Then assert get first page success interactions`(categoryModel: CategoryModel) {
+        `Then assert auto complete applink from API`(categoryModel)
+        `Then assert is refresh page flag`()
+        `Then assert header background is shown`()
+        `Then assert content is not loading`()
+    }
+
     private fun `Then assert auto complete applink from API`(categoryModel: CategoryModel) {
         val expectedApplink = categoryModel.searchProduct.data.autocompleteApplink
 
@@ -81,6 +86,10 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
 
     private fun `Then assert header background is shown`() {
         assertThat(categoryViewModel.isHeaderBackgroundVisibleLiveData.value, shouldBe(true))
+    }
+
+    private fun `Then assert content is not loading`() {
+        assertThat(categoryViewModel.isContentLoadingLiveData.value, shouldBe(false))
     }
 
     @Test
@@ -96,8 +105,6 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         `Then assert first page visitables`(visitableList, categoryModel)
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)
-        `Then assert auto complete applink from API`(categoryModel)
-        `Then assert is refresh page flag`()
-        `Then assert header background is shown`()
+        `Then assert get first page success interactions`(categoryModel)
     }
 }

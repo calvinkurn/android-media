@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -60,6 +61,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
 
@@ -89,8 +91,11 @@ abstract class BaseSearchCategoryFragment:
     protected var recyclerView: RecyclerView? = null
     protected var miniCartWidget: MiniCartWidget? = null
     protected var stickyView: StickySingleHeaderView? = null
-    private var statusBarBackground: View? = null
-    private var headerBackground: AppCompatImageView? = null
+    protected var statusBarBackground: View? = null
+    protected var headerBackground: AppCompatImageView? = null
+    protected var contentGroup: Group? = null
+    protected var loaderUnify: LoaderUnify? = null
+
     private var movingPosition = 0
 
     protected abstract val toolbarPageName: String
@@ -140,6 +145,8 @@ abstract class BaseSearchCategoryFragment:
         stickyView = view.findViewById(R.id.tokonowSearchCategoryStickyView)
         statusBarBackground = view.findViewById(R.id.tokonowSearchCategoryStatusBarBackground)
         headerBackground = view.findViewById(R.id.tokonowSearchCategoryBackgroundImage)
+        contentGroup = view.findViewById(R.id.tokonowSearchCategoryContentGroup)
+        loaderUnify = view.findViewById(R.id.tokonowSearchCategoryLoader)
     }
 
     protected open fun configureNavToolbar() {
@@ -372,6 +379,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().cartEventMessageLiveData.observe(this::showAddToCartMessage)
         getViewModel().isHeaderBackgroundVisibleLiveData
                 .observe(this::updateHeaderBackgroundVisibility)
+        getViewModel().isContentLoadingLiveData.observe(this::updateContentVisibility)
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
@@ -567,8 +575,13 @@ abstract class BaseSearchCategoryFragment:
         }
     }
 
-    protected fun updateHeaderBackgroundVisibility(isVisible: Boolean) {
+    protected open fun updateHeaderBackgroundVisibility(isVisible: Boolean) {
         headerBackground?.showWithCondition(isVisible)
+    }
+
+    protected open fun updateContentVisibility(isLoadingVisible: Boolean) {
+        loaderUnify?.showWithCondition(isLoadingVisible)
+        contentGroup?.showWithCondition(!isLoadingVisible)
     }
 
     override fun onResume() {

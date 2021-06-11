@@ -123,23 +123,31 @@ abstract class BaseSearchCategoryViewModel(
 
     protected val updatedVisitableIndicesMutableLiveData =
             SingleLiveEvent<List<Int>>()
-    val updatedVisitableIndicesLiveData: SingleLiveEvent<List<Int>> =
+    val updatedVisitableIndicesLiveData: LiveData<List<Int>> =
             updatedVisitableIndicesMutableLiveData
 
     protected val isRefreshPageMutableLiveData = MutableLiveData(false)
     val isRefreshPageLiveData: LiveData<Boolean> = isRefreshPageMutableLiveData
 
     protected val cartEventMessageMutableLiveData = SingleLiveEvent<String>()
-    val cartEventMessageLiveData: SingleLiveEvent<String> = cartEventMessageMutableLiveData
+    val cartEventMessageLiveData: LiveData<String> = cartEventMessageMutableLiveData
 
     protected val isHeaderBackgroundVisibleMutableLiveData = MutableLiveData(true)
     val isHeaderBackgroundVisibleLiveData: LiveData<Boolean> = isHeaderBackgroundVisibleMutableLiveData
 
+    protected val isContentLoadingMutableLiveData = SingleLiveEvent<Boolean>()
+    val isContentLoadingLiveData: LiveData<Boolean> = isContentLoadingMutableLiveData
+
     init {
+        showLoading()
         updateQueryParamWithDefaultSort()
 
         hasGlobalMenu = isABTestNavigationRevamp()
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
+    }
+
+    private fun showLoading() {
+        isContentLoadingMutableLiveData.value = true
     }
 
     private fun updateQueryParamWithDefaultSort() {
@@ -360,6 +368,7 @@ abstract class BaseSearchCategoryViewModel(
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
         dynamicFilterModelMutableLiveData.value = null
 
+        showLoading()
         onViewCreated()
     }
 
@@ -446,6 +455,8 @@ abstract class BaseSearchCategoryViewModel(
 
         updateNextPageData()
         updateHeaderBackgroundVisibility(!isEmptyProductList)
+
+        showPageContent()
     }
 
     protected fun updateIsRefreshPage() {
@@ -470,6 +481,10 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun updateHeaderBackgroundVisibility(isVisible: Boolean) {
         isHeaderBackgroundVisibleMutableLiveData.value = isVisible
+    }
+
+    private fun showPageContent() {
+        isContentLoadingMutableLiveData.value = false
     }
 
     open fun onLoadMore() {
