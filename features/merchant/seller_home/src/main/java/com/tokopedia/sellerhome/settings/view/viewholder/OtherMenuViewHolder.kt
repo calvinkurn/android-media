@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.Constant
+import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
@@ -446,11 +447,7 @@ class OtherMenuViewHolder(private val itemView: View,
                     txStatsRM.text = MethodChecker.fromHtml(context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_passed))
                     txTotalStatsRM.hide()
                 } else {
-                    if (userShopInfo.isBeforeOnDate) {
-                        txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_on_date)
-                    } else {
-                        txStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_since_joining)
-                    }
+                    txStatsRM.setupStatsWordingRM(userShopInfo)
                     txTotalStatsRM.show()
                     txTotalStatsRM.text = context?.getString(com.tokopedia.seller.menu.common.R.string.total_transaction, totalTransaction.toString())
                 }
@@ -459,6 +456,18 @@ class OtherMenuViewHolder(private val itemView: View,
             }
         }
         return this
+    }
+
+    private fun Typography.setupStatsWordingRM(userShopInfo: UserShopInfoWrapper.UserShopInfoUiModel) {
+        text = if(userShopInfo.dateCreated.isBlank()) {
+            context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_on_date)
+        } else {
+            if (userShopInfo.isBeforeOnDate) {
+                context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_on_date)
+            } else {
+                context?.getString(com.tokopedia.seller.menu.common.R.string.transaction_since_joining)
+            }
+        }
     }
 
     private fun View.setPowerMerchantProStatus(shopStatusUiModel: ShopStatusUiModel, powerMerchantStatus: PowerMerchantProStatus): View {

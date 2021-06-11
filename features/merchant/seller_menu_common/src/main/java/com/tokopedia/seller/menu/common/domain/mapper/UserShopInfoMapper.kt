@@ -21,18 +21,20 @@ class UserShopInfoMapper @Inject constructor() {
         val isBeforeOnDate = isBeforeOnDate(userShopInfoResponse.userShopInfo.info.dateShopCreated, targetDateText)
         val goldOsResult = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.goldOS
         val txStatsValue = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.statsByDate?.find { it.identifier == Constant.TRANSACTION_RM_SUCCESS }?.value.orZero()
+        val dateCreated = userShopInfoResponse.userShopInfo.info.dateShopCreated
         return UserShopInfoWrapper(
                 shopType = getShopType(userShopInfoResponse),
                 userShopInfoUiModel = UserShopInfoWrapper.UserShopInfoUiModel(
                         isBeforeOnDate = isBeforeOnDate,
                         onDate = targetDateText,
+                        dateCreated = dateCreated,
                         totalTransaction = txStatsValue,
                         badge = goldOsResult?.badge ?: "",
                         shopTierName = goldOsResult?.shopTierWording ?: "",
                         shopTier = goldOsResult?.shopTier ?: -1,
                         pmProGradeName = goldOsResult?.shopGradeWording ?: "",
                         periodTypePmPro = userShopInfoResponse.goldGetPMSettingInfo.periodTypePmPro,
-                        isNewSeller = GoldMerchantUtil.isNewSeller(userShopInfoResponse.userShopInfo.info.dateShopCreated)
+                        isNewSeller = GoldMerchantUtil.isNewSeller(dateCreated)
                 )
         )
     }
