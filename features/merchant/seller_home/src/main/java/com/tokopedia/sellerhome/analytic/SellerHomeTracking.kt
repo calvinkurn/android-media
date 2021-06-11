@@ -37,8 +37,7 @@ object SellerHomeTracking {
     }
 
     fun sendImpressionLineGraphEvent(model: LineGraphWidgetUiModel) {
-        val isEmpty = model.data?.list?.all { it.yVal == 0f } == true
-        val emptyStatus = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val emptyStatus = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
         val dataKey = model.dataKey
         val cardValue = model.data?.header.orEmpty()
 
@@ -62,15 +61,14 @@ object SellerHomeTracking {
     }
 
     fun sendClickEmptyCtaLineGraphEvent(model: LineGraphWidgetUiModel) {
-        val isEmpty = model.data?.list?.all { it.yVal == 0f } == true
-        val emptyStatus = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val emptyStatus = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
         val dataKey = model.dataKey
         val cardValue = model.data?.header.orEmpty()
 
         val map = TrackingHelper.createMap(
                 TrackingConstant.CLICK_HOMEPAGE,
                 "${TrackingConstant.SELLER_APP} - ${TrackingConstant.HOME}",
-                "${TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH} - $dataKey",
+                "${TrackingConstant.CLICK_WIDGET_LINE_GRAPH} - $dataKey",
                 "$emptyStatus - $cardValue"
         )
         map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
@@ -120,14 +118,13 @@ object SellerHomeTracking {
     }
 
     fun sendImpressionPostEvent(model: PostListWidgetUiModel, userId: String) {
-        val isEmpty = model.data?.items.isNullOrEmpty()
         val filterType = model.postFilter.find { it.isSelected }?.value.orEmpty()
 
         val map = TrackingHelper.createMap(
                 TrackingConstant.VIEW_SELLER_HOMEPAGE_IRIS,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 arrayOf(TrackingConstant.IMPRESSION_WIDGET_POST, model.dataKey).joinToString(" - "),
-                "${if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY}${" - $filterType".takeIf { filterType.isNotBlank() } ?: ""}"
+                "${if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY}${" - $filterType".takeIf { filterType.isNotBlank() } ?: ""}"
         )
         map[TrackingConstant.USER_ID] = userId
         map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
@@ -137,14 +134,13 @@ object SellerHomeTracking {
     }
 
     fun sendClickPostSeeMoreEvent(model: PostListWidgetUiModel, userId: String) {
-        val isEmpty = model.data?.items.isNullOrEmpty()
         val filterType = model.postFilter.find { it.isSelected }?.value.orEmpty()
 
         val map = TrackingHelper.createMap(
                 TrackingConstant.CLICK_HOMEPAGE,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 arrayOf(TrackingConstant.CLICK_WIDGET_POST, model.dataKey, TrackingConstant.SEE_MORE).joinToString(" - "),
-                "${if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY}${" - $filterType".takeIf { filterType.isNotBlank() } ?: ""}"
+                "${if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY}${" - $filterType".takeIf { filterType.isNotBlank() } ?: ""}"
         )
         map[TrackingConstant.USER_ID] = userId
         map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
@@ -164,12 +160,11 @@ object SellerHomeTracking {
     }
 
     fun sendPostListFilterClick(model: PostListWidgetUiModel, userId: String) {
-        val isEmpty = model.data?.items.isNullOrEmpty()
         val map = TrackingHelper.createMap(
                 TrackingConstant.CLICK_SELLER_WIDGET,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 arrayOf(TrackingConstant.CLICK_WIDGET_POST, model.dataKey, TrackingConstant.FILTER).joinToString(" - "),
-                label = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+                label = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
         )
         map[TrackingConstant.USER_ID] = userId
 
@@ -177,13 +172,11 @@ object SellerHomeTracking {
     }
 
     fun sendPostEmptyStateCtaClick(model: PostListWidgetUiModel, userId: String) {
-        val isEmpty = model.data?.items.isNullOrEmpty()
-
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.CLICK_HOMEPAGE,
                 category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 action = "${arrayOf(TrackingConstant.CLICK_WIDGET_POST, model.dataKey).joinToString(" - ")} ${TrackingConstant.EMPTY_STATE}",
-                label = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+                label = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
         )
         eventMap[TrackingConstant.USER_ID] = userId
         eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
@@ -267,13 +260,11 @@ object SellerHomeTracking {
     }
 
     fun sendTableEmptyStateCtaClick(model: TableWidgetUiModel, userId: String) {
-        val isEmpty = model.data?.dataSet.isNullOrEmpty()
-
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.CLICK_HOMEPAGE,
                 category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 action = "${arrayOf(TrackingConstant.CLICK_WIDGET_SIMPLE_TABLE, model.dataKey).joinToString(" - ")} ${TrackingConstant.EMPTY_STATE}",
-                label = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+                label = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
         )
         eventMap[TrackingConstant.USER_ID] = userId
         eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
@@ -283,12 +274,11 @@ object SellerHomeTracking {
     }
 
     fun sendTableFilterClick(model: TableWidgetUiModel, userId: String) {
-        val isEmpty = model.data?.dataSet.isNullOrEmpty()
         val map = TrackingHelper.createMap(
                 TrackingConstant.CLICK_SELLER_WIDGET,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 arrayOf(TrackingConstant.CLICK_WIDGET_SIMPLE_TABLE, model.dataKey, TrackingConstant.FILTER).joinToString(" - "),
-                label = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+                label = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
         )
         map[TrackingConstant.USER_ID] = userId
 
@@ -297,8 +287,7 @@ object SellerHomeTracking {
 
     fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel, position: Int) {
         val value = model.data?.data?.summary?.value?.toString().orEmpty()
-        val isEmpty = model.data?.data?.item.isNullOrEmpty()
-        val state = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.PROMO_VIEW,
@@ -315,8 +304,7 @@ object SellerHomeTracking {
 
     fun sendPieChartEmptyStateCtaClickEvent(model: PieChartWidgetUiModel) {
         val value = model.data?.data?.summary?.value?.toString().orEmpty()
-        val isEmpty = model.data?.data?.item.isNullOrEmpty()
-        val state = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.CLICK_HOMEPAGE,
@@ -331,9 +319,8 @@ object SellerHomeTracking {
     }
 
     fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel, position: Int) {
-        val isEmpty = model.data?.chartData?.metrics.isNullOrEmpty()
         val value = model.data?.chartData?.summary?.value?.toString().orEmpty()
-        val state = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.PROMO_VIEW,
@@ -349,9 +336,8 @@ object SellerHomeTracking {
     }
 
     fun sendBarChartEmptyStateCtaClickEvent(model: BarChartWidgetUiModel) {
-        val isEmpty = model.data?.chartData?.metrics.isNullOrEmpty()
         val value = model.data?.chartData?.summary?.value?.toString().orEmpty()
-        val state = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.CLICK_HOMEPAGE,

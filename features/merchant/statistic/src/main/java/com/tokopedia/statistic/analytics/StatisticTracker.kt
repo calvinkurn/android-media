@@ -65,11 +65,13 @@ object StatisticTracker {
     }
 
     fun sendImpressionLineGraphEvent(model: LineGraphWidgetUiModel, position: Int) {
+        val emptyStatus = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val cardValue = model.data?.header.orEmpty()
         val eventMap = TrackingHelper.createMap(
                 TrackingConstant.PROMO_VIEW,
                 TrackingConstant.SHOP_INSIGHT,
                 arrayOf(TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH, model.dataKey).joinToString(" - "),
-                model.data?.header.orEmpty()
+                "$emptyStatus - $cardValue"
         )
 
         val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_TREND_LINE, position))
@@ -86,7 +88,7 @@ object StatisticTracker {
         val map = TrackingHelper.createMap(
                 TrackingConstant.CLICK_HOMEPAGE,
                 TrackingConstant.SELLER_APP_STATISTIC,
-                "${TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH} - $dataKey",
+                "${TrackingConstant.CLICK_WIDGET_LINE_GRAPH} - $dataKey",
                 "$emptyStatus - $cardValue"
         )
         map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
