@@ -13,8 +13,9 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokomart.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.addChooseAddressIntoList
+import com.tokopedia.tokomart.home.constant.HomeLayoutState
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
+import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.isNotStaticLayout
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapGlobalHomeLayoutData
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
@@ -22,17 +23,17 @@ import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutL
 import com.tokopedia.tokomart.home.domain.mapper.TickerMapper.mapTickerData
 import com.tokopedia.tokomart.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokomart.home.domain.model.Ticker
-import com.tokopedia.tokomart.home.domain.usecase.GetHomeLayoutListUseCase
 import com.tokopedia.tokomart.home.domain.usecase.GetHomeLayoutDataUseCase
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
-import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
+import com.tokopedia.tokomart.home.domain.usecase.GetHomeLayoutListUseCase
 import com.tokopedia.tokomart.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokomart.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokomart.home.presentation.fragment.TokoMartHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.TokoMartHomeLayoutUiModel
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class TokoMartHomeViewModel @Inject constructor(
@@ -62,12 +63,12 @@ class TokoMartHomeViewModel @Inject constructor(
 
     private var layoutList = listOf<Visitable<*>>()
 
-    fun getChooseAddressWidget() {
-        layoutList = addChooseAddressIntoList()
+    fun getLoadingState() {
+        layoutList = addLoadingIntoList()
         val data = HomeLayoutListUiModel(
                 result = layoutList,
-                isChooseAddressWidgetDisplayed = true,
-                isHeaderBackgroundShowed = false
+                isLoadState = true,
+                state = HomeLayoutState.LOADING
         )
         _homeLayoutList.value = Success(data)
     }
@@ -76,7 +77,7 @@ class TokoMartHomeViewModel @Inject constructor(
         layoutList = addEmptyStateIntoList(id)
         val data = HomeLayoutListUiModel(
                 result = layoutList,
-                isHeaderBackgroundShowed = false
+                state = HomeLayoutState.HIDE
         )
         _homeLayoutList.value = Success(data)
     }
@@ -115,7 +116,7 @@ class TokoMartHomeViewModel @Inject constructor(
                 val data = HomeLayoutListUiModel(
                         result = layoutList,
                         isInitialLoad = true,
-                        isHeaderBackgroundShowed = true
+                        state = HomeLayoutState.SHOW
                 )
                 _homeLayoutList.postValue(Success(data))
             }
@@ -131,7 +132,7 @@ class TokoMartHomeViewModel @Inject constructor(
                     getHomeComponentData(it, warehouseId)
                     val data = HomeLayoutListUiModel(
                             result = layoutList,
-                            isHeaderBackgroundShowed = true
+                            state = HomeLayoutState.SHOW
                     )
                     _homeLayoutList.postValue(Success(data))
                 }) {
@@ -190,7 +191,7 @@ class TokoMartHomeViewModel @Inject constructor(
         when (item) {
             is HomeCategoryGridUiModel -> {
                 val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH)
-                layoutList = layoutList.mapHomeCategoryGridData(item, response)
+                layoutList = layoutList.mapHomeCategoryGridData(item, response.data)
             }
         }
     }

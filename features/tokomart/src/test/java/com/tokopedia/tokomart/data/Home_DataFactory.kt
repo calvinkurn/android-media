@@ -9,7 +9,9 @@ import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
+import com.tokopedia.tokomart.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
+import com.tokopedia.tokomart.home.constant.HomeLayoutState
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokomart.home.domain.model.*
 import com.tokopedia.tokomart.home.presentation.uimodel.*
@@ -28,14 +30,13 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
     )
 }
 
-fun createChooseAddressWidget(): HomeLayoutListUiModel {
+fun createLoadingState(): HomeLayoutListUiModel {
     val mutableList = mutableListOf<Visitable<*>>()
-    mutableList.add(HomeChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID))
     mutableList.add(HomeLoadingStateUiModel(id = HomeStaticLayoutId.LOADING_STATE))
     return HomeLayoutListUiModel(
             result = mutableList,
-            isChooseAddressWidgetDisplayed = true,
-            isHeaderBackgroundShowed = false
+            isLoadState = true,
+            state = HomeLayoutState.LOADING
     )
 }
 
@@ -45,7 +46,7 @@ fun createEmptyState(id: String): HomeLayoutListUiModel {
     mutableList.add(HomeEmptyStateUiModel(id = id))
     return HomeLayoutListUiModel(
             mutableList,
-            isHeaderBackgroundShowed = false
+            state = HomeLayoutState.HIDE
     )
 }
 
@@ -107,8 +108,10 @@ fun createMiniCartSimplifier(): MiniCartSimplifiedData {
     )
 }
 
-fun createCategoryListData(): List<CategoryResponse> {
-    return listOf(
+fun createCategoryListData(): CategoryListResponse {
+    return CategoryListResponse(
+            header = com.tokopedia.abstraction.common.data.model.response.Header(),
+            data = listOf(
             CategoryResponse(
                     id = "1",
                     name = "Category 1",
@@ -118,7 +121,7 @@ fun createCategoryListData(): List<CategoryResponse> {
                     parentId = "2",
                     childList = listOf()
             )
-    )
+    ))
 }
 
 fun createHomeLayoutListWithCategory(): HomeLayoutListUiModel {
@@ -135,7 +138,7 @@ fun createHomeLayoutListWithCategory(): HomeLayoutListUiModel {
                             trackingAttributionModel = TrackingAttributionModel(galaxyAttribution = "", persona = "", brandId = "", categoryPersona = "", categoryId = "", persoType = "", campaignCode = "", homeAttribution = "", campaignId = "", promoName = ""),
                             channelGrids = listOf(), name = "", layout = "banner_carousel_v2"))),
             isInitialLoad = false,
-            isHeaderBackgroundShowed = true
+            state = HomeLayoutState.SHOW
     )
 }
 

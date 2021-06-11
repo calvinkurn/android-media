@@ -7,7 +7,7 @@ import com.tokopedia.applink.ApplinkConst.ADD_PATH
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.salam.DeeplinkMapperSalam
 import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
@@ -46,7 +46,7 @@ object DeeplinkMapperMarketplace {
         return if (isSpecialShop(shopId) && uri.pathSegments.size == 1) {
             DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop(deeplink, ctx)
         } else if(isTokoNowShopId(shopId)){
-            ApplinkConstInternalTokoMart.HOME
+            ApplinkConstInternalTokopediaNow.HOME
         } else {
             internalAppLink
         }
@@ -57,7 +57,7 @@ object DeeplinkMapperMarketplace {
     }
 
     private fun isTokoNowShopId(shopId: String): Boolean {
-        return shopId == ApplinkConst.TokoNow.TOKONOW_PRODUCTION_SHOP_ID
+        return shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID
     }
 
 }

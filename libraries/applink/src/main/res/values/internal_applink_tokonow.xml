@@ -4,15 +4,14 @@
         If the link is Ended with {id}, must end with "/"
         Otherwise, do not put "/"
     -->
-    <string name="title_tokonow" translatable="false">TokoNow</string>
+    <string name="title_tokopedia_now" translatable="false">Now</string>
 
     <!--host-->
-    <string name="host_tokonow" translatable="false">tokonow</string>
+    <string name="host_tokopedia_now" translatable="false">now</string>
 
     <!--path-->
-    <string name="path_tokonow_home" translatable="false">/home</string>
-    <string name="path_tokonow_category_list" translatable="false">/category-list</string>
-    <string name="path_tokomart_search" translatable="false">/search</string>
-<!--    <string name="path_tokomart_category" translatable="false">/category/.*\\/.*\\/</string>-->
-    <string name="path_tokomart_category" translatable="false">/category</string>
+    <string name="path_tokopedia_now_home" translatable="false">/home</string>
+    <string name="path_tokopedia_now_category_list" translatable="false">/category-list</string>
+    <string name="path_tokopedia_now_search" translatable="false">/search</string>
+    <string name="path_tokopedia_now_category" translatable="false">/category</string>
 </resources>

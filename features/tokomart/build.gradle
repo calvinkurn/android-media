@@ -39,6 +39,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.utils)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -61,6 +62,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
 
     implementation rootProject.ext.networkDependencies.glide
+
+    implementation rootProject.ext.playServicesDependencies.analytics
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting

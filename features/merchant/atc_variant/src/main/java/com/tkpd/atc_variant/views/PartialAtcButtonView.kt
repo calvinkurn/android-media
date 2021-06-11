@@ -30,13 +30,13 @@ class PartialAtcButtonView private constructor(val view: View,
         fun build(_view: View, _buttonListener: PartialAtcButtonListener) = PartialAtcButtonView(_view, _buttonListener)
     }
 
-    fun renderButtonView(isProductBuyable: Boolean, isShopOwner: Boolean, cartTypeData: CartTypeData? = null, alternateText: String) {
+    fun renderButtonView(isProductBuyable: Boolean, isShopOwner: Boolean, cartTypeData: CartTypeData? = null) {
         this.isShopOwner = isShopOwner
         val onSuccessGetCartType = cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
-        renderButton(onSuccessGetCartType, isShopOwner, isProductBuyable, cartTypeData, alternateText)
+        renderButton(onSuccessGetCartType, isShopOwner, isProductBuyable, cartTypeData)
     }
 
-    private fun renderButton(isCartRedirectionNotEmpty: Boolean, isShopOwner: Boolean, isProductBuyable: Boolean, cartRedirectionData: CartTypeData? = null, alternateText: String) {
+    private fun renderButton(isCartRedirectionNotEmpty: Boolean, isShopOwner: Boolean, isProductBuyable: Boolean, cartRedirectionData: CartTypeData? = null) {
         val shouldRenderCartRedirection = !GlobalConfig.isSellerApp() && isCartRedirectionNotEmpty
         val shouldRenderFallbackButton = !GlobalConfig.isSellerApp() && !isCartRedirectionNotEmpty
 
@@ -46,7 +46,7 @@ class PartialAtcButtonView private constructor(val view: View,
         }
 
         if (shouldRenderCartRedirection) {
-            renderCartRedirectionButton(cartRedirectionData, alternateText)
+            renderCartRedirectionButton(cartRedirectionData)
         } else if (shouldRenderFallbackButton) {
             if (isProductBuyable) {
                 renderFallbackCheckoutButton()
@@ -57,14 +57,13 @@ class PartialAtcButtonView private constructor(val view: View,
         visibility = true
     }
 
-    private fun renderCartRedirectionButton(cartRedirectionData: CartTypeData?, alternateText: String) {
+    private fun renderCartRedirectionButton(cartRedirectionData: CartTypeData?) {
         val availableButton = cartRedirectionData?.availableButtons ?: listOf()
 
         btnBuy.run {
             showWithCondition(availableButton.firstOrNull() != null)
             generateTheme(availableButton.getOrNull(0)?.color ?: "")
-            val textFirstButton = if (alternateText.isNotEmpty() && availableButton.getOrNull(0)?.isCartTypeDisabledOrRemindMe() == false) alternateText else availableButton.getOrNull(0)?.text
-                    ?: ""
+            val textFirstButton = availableButton.getOrNull(0)?.text ?: ""
             text = textFirstButton
             setOnClickListener {
                 buttonListener.buttonCartTypeClick(availableButton.getOrNull(0)?.cartType

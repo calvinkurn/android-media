@@ -31,7 +31,6 @@ import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_EXP_TOP_NAV
@@ -45,6 +44,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.BannerDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.CategoryFilterItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
+import com.tokopedia.tokomart.searchcategory.presentation.model.EmptyProductDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.NonVariantATCDataView
@@ -77,6 +77,7 @@ abstract class BaseSearchCategoryViewModel(
 ): BaseViewModel(baseDispatcher.io) {
 
     protected val filterController = FilterController()
+    protected val chooseAddressDataView = ChooseAddressDataView()
     protected val loadingMoreModel = LoadingMoreModel()
     protected val visitableList = mutableListOf<Visitable<*>>()
     protected val queryParamMutable = queryParamMap.toMutableMap()
@@ -130,6 +131,9 @@ abstract class BaseSearchCategoryViewModel(
 
     protected val cartEventMessageMutableLiveData = SingleLiveEvent<String>()
     val cartEventMessageLiveData: SingleLiveEvent<String> = cartEventMessageMutableLiveData
+
+    protected val isHeaderBackgroundVisibleMutableLiveData = MutableLiveData(true)
+    val isHeaderBackgroundVisibleLiveData: LiveData<Boolean> = isHeaderBackgroundVisibleMutableLiveData
 
     init {
         updateQueryParamWithDefaultSort()
@@ -216,25 +220,40 @@ abstract class BaseSearchCategoryViewModel(
         totalFetchedData += contentDataView.aceSearchProductData.productList.size
         autoCompleteApplink = contentDataView.aceSearchProductData.autocompleteApplink
 
+        val isEmptyProductList = contentDataView.aceSearchProductData.productList.isEmpty()
+
+        initFilterController(headerDataView)
+        createVisitableListFirstPage(headerDataView, contentDataView, isEmptyProductList)
+        updateViewForFirstPage(isEmptyProductList)
+    }
+
+    private fun initFilterController(headerDataView: HeaderDataView) {
         val filterList =
                 headerDataView.quickFilterDataValue.filter +
-                headerDataView.categoryFilterDataValue.filter
+                        headerDataView.categoryFilterDataValue.filter
 
         filterController.initFilterController(queryParamMutable, filterList)
-
-        createVisitableListFirstPage(headerDataView, contentDataView)
-        updateIsRefreshPage()
-        clearVisitableListLiveData()
-        updateVisitableListLiveData()
-        updateNextPageData()
     }
 
     private fun createVisitableListFirstPage(
             headerDataView: HeaderDataView,
             contentDataView: ContentDataView,
+            isEmptyProductList: Boolean,
     ) {
         visitableList.clear()
 
+        if (isEmptyProductList)
+            createVisitableListWithEmptyProduct()
+        else
+            createVisitableListWithProduct(headerDataView, contentDataView)
+    }
+
+    private fun createVisitableListWithEmptyProduct() {
+        visitableList.add(chooseAddressDataView)
+        visitableList.add(EmptyProductDataView())
+    }
+
+    private fun createVisitableListWithProduct(headerDataView: HeaderDataView, contentDataView: ContentDataView) {
         visitableList.addAll(createHeaderVisitableList(headerDataView))
         visitableList.addAll(createContentVisitableList(contentDataView))
         visitableList.addFooter()
@@ -243,7 +262,7 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun createHeaderVisitableList(headerDataView: HeaderDataView): List<Visitable<*>> {
         val headerList = mutableListOf<Visitable<*>>()
 
-        headerList.add(ChooseAddressDataView())
+        headerList.add(chooseAddressDataView)
         headerList.add(createBannerDataView(headerDataView))
         headerList.add(TitleDataView(headerDataView.title, headerDataView.hasSeeAllCategoryButton))
 
@@ -370,6 +389,7 @@ abstract class BaseSearchCategoryViewModel(
                 shop = ProductItemDataView.Shop(
                         id = product.shop.id,
                 ),
+                ratingAverage = product.ratingAverage,
                 variantATC = createVariantATCDataView(product),
                 nonVariantATC = createNonVariantATCDataView(product),
                 labelGroupDataViewList = product.labelGroupList.map { labelGroup ->
@@ -418,6 +438,20 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun createFooterVisitableList() = listOf<Visitable<*>>()
 
+    private fun updateViewForFirstPage(isEmptyProductList: Boolean) {
+        updateIsRefreshPage()
+
+        clearVisitableListLiveData()
+        updateVisitableListLiveData()
+
+        updateNextPageData()
+        updateHeaderBackgroundVisibility(!isEmptyProductList)
+    }
+
+    protected fun updateIsRefreshPage() {
+        isRefreshPageMutableLiveData.value = true
+    }
+
     protected fun clearVisitableListLiveData() {
         visitableListMutableLiveData.value = listOf()
     }
@@ -426,16 +460,16 @@ abstract class BaseSearchCategoryViewModel(
         visitableListMutableLiveData.value = visitableList
     }
 
-    protected fun updateIsRefreshPage() {
-        isRefreshPageMutableLiveData.value = true
-    }
-
     protected open fun updateNextPageData() {
         val hasNextPage = totalData > totalFetchedData
 
         hasNextPageMutableLiveData.value = hasNextPage
 
         if (hasNextPage) nextPage++
+    }
+
+    private fun updateHeaderBackgroundVisibility(isVisible: Boolean) {
+        isHeaderBackgroundVisibleMutableLiveData.value = isVisible
     }
 
     open fun onLoadMore() {

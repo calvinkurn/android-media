@@ -1,7 +1,8 @@
 package com.tokopedia.tokomart.categorylist.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
+import com.tokopedia.tokomart.categorylist.domain.mapper.CategoryListMapper
+import com.tokopedia.tokomart.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokomart.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListItemUiModel
 import com.tokopedia.tokomart.util.getOrAwaitValue
@@ -37,7 +38,7 @@ abstract class TokoMartCategoryListViewModelTestFixture {
 
     protected fun verifyGetCategoryListResponseSuccess(expectedResponse: List<CategoryListItemUiModel>) {
         val actualResponse = viewModel.categoryList.getOrAwaitValue()
-        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+        Assert.assertEquals(expectedResponse, CategoryListMapper.mapToUiModel((actualResponse as Success).data.data))
     }
 
     protected fun verifyGetCategoryListResponseFail() {
@@ -49,8 +50,8 @@ abstract class TokoMartCategoryListViewModelTestFixture {
         coVerify { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) }
     }
 
-    protected fun onGetCategoryList_thenReturn(layoutResponse: List<CategoryResponse>) {
-        coEvery { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) } returns layoutResponse
+    protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
+        coEvery { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) } returns categoryListResponse
     }
 
     protected fun onGetCategoryList_thenReturn(errorThrowable: Throwable) {

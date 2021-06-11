@@ -18,8 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/tokomart_header_background_content_description"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/tokomart_ic_header_background" />
+            android:scaleType="fitXY" />
 
         <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
             android:id="@+id/swipe_refresh_layout"

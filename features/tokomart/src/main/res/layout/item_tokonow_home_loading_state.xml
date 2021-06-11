@@ -1,13 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/empty_state_no_address"
-        android:layout_centerInParent="true"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50" />
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_width="@dimen/tokonow_shimmering_line_width"
+        android:layout_height="@dimen/layout_lvl1"
+        app:loader_corner_radius="@dimen/tokonow_shimmering_radius_line"
+        app:loader_type="line" />
 
-</RelativeLayout>
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_margin="@dimen/layout_lvl2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tokonow_shimmering_banner_rect_height"
+        app:loader_corner_radius="@dimen/layout_lvl1"
+        app:loader_type="rect"/>
+
+    <RelativeLayout
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/tokonow_shimmering_margin_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/tokonow_shimmering_line_width"
+            android:layout_height="@dimen/layout_lvl1"
+            app:loader_corner_radius="@dimen/tokonow_shimmering_radius_line"
+            app:loader_type="line"/>
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/layout_lvl7"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_alignParentEnd="true"
+            app:loader_corner_radius="@dimen/tokonow_shimmering_radius_line"
+            app:loader_type="line"/>
+
+    </RelativeLayout>
+
+    <include
+        layout="@layout/partial_tokonow_home_category_linearlayout_shimmering"/>
+
+    <include
+        layout="@layout/partial_tokonow_home_category_linearlayout_shimmering"/>
+
+    <include
+        layout="@layout/partial_tokonow_home_category_linearlayout_shimmering"/>
+
+    <include
+        layout="@layout/partial_tokonow_home_category_linearlayout_shimmering"/>
+
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_width="@dimen/tokonow_shimmering_line_width"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        app:loader_corner_radius="@dimen/tokonow_shimmering_radius_line"
+        app:loader_type="line" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_margin="@dimen/layout_lvl2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tokonow_shimmering_lego_rect_height"
+        app:loader_corner_radius="@dimen/layout_lvl1"
+        app:loader_type="rect"/>
+
+</LinearLayout>

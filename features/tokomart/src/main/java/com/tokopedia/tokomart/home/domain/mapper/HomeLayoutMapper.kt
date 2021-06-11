@@ -43,9 +43,8 @@ object HomeLayoutMapper {
         BANNER_CAROUSEL
     )
 
-    fun addChooseAddressIntoList(): List<Visitable<*>> {
+    fun addLoadingIntoList(): List<Visitable<*>> {
         val layoutList = mutableListOf<Visitable<*>>()
-        layoutList.add(HomeChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID))
         layoutList.add(HomeLoadingStateUiModel(id = LOADING_STATE))
         return layoutList
     }

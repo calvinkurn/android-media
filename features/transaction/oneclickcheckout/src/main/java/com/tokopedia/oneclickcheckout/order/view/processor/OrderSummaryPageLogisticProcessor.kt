@@ -4,6 +4,10 @@ import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
+import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.EstimatedTimeArrival
@@ -28,6 +32,8 @@ import javax.inject.Inject
 
 class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUseCase: GetRatesUseCase,
                                                             private val ratesResponseStateConverter: RatesResponseStateConverter,
+                                                            private val chooseAddressRepository: Lazy<ChooseAddressRepository>,
+                                                            private val chooseAddressMapper: Lazy<ChooseAddressMapper>,
                                                             private val editAddressUseCase: Lazy<EditAddressUseCase>,
                                                             private val orderSummaryAnalytics: OrderSummaryAnalytics,
                                                             private val executorDispatchers: CoroutineDispatchers) {
@@ -580,6 +586,20 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     logisticPromoTickerMessage = "Tersedia ${logisticPromoViewModel.title}")
         }
         return orderShipment
+    }
+
+    suspend fun setChosenAddress(address: RecipientAddressModel): ChosenAddressModel? {
+        OccIdlingResource.increment()
+        val result = withContext(executorDispatchers.io) {
+            try {
+                val stateChosenAddressFromAddress = chooseAddressRepository.get().setStateChosenAddressFromAddress(address)
+                chooseAddressMapper.get().mapSetStateChosenAddress(stateChosenAddressFromAddress.response)
+            } catch (t: Throwable) {
+                null
+            }
+        }
+        OccIdlingResource.decrement()
+        return result
     }
 }
 

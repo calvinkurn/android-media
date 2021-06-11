@@ -1419,7 +1419,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun updateButtonState() {
         viewModel.getDynamicProductInfoP1?.let {
             val miniCartItem = if (it.basic.isTokoNow) viewModel.getMiniCartItem() else null
-            val alternateText = if (it.data.variant.isVariant && viewModel.isParentExistInMiniCart(it.parentProductId)) "Perbarui Keranjang" else ""
+            val alternateText = viewModel.p2Data.value?.alternateCopy?.firstOrNull {
+                it.cartType == ProductDetailCommonConstant.KEY_CART_TYPE_UPDATE_CART
+            }?.text ?: ""
+
+            val alternateButtonVariant = if (it.data.variant.isVariant && viewModel.isParentExistInMiniCart(it.parentProductId)) alternateText else ""
             actionButtonView.renderData(
                     isWarehouseProduct = !it.isProductActive(),
                     hasShopAuthority = viewModel.hasShopAuthority(),
@@ -1427,7 +1431,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     hasTopAdsActive = hasTopAds(),
                     isVariant = it.data.variant.isVariant,
                     cartTypeData = viewModel.getCartTypeByProductId(),
-                    alternateButtonVariant = alternateText,
+                    alternateButtonVariant = alternateButtonVariant,
                     miniCartItem = miniCartItem)
         }
         showOrHideButton()
@@ -2034,12 +2038,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
         context?.let {
             if (viewModel.getDynamicProductInfoP1 != null) {
+                val boData = viewModel.getBebasOngkirDataByProductId()
+
                 AtcVariantHelper.pdpToAtcVariant(
                         context = it,
                         productInfoP1 = viewModel.getDynamicProductInfoP1!!,
                         warehouseId = warehouseId ?: "",
                         pdpSession = viewModel.getDynamicProductInfoP1?.pdpSession ?: "",
                         isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow ?: false,
+                        isFreeOngkir = boData.imageURL.isNotEmpty(),
                         isShopOwner = viewModel.isShopOwner(),
                         productVariant = viewModel.variantData ?: ProductVariant(),
                         warehouseResponse = viewModel.p2Data.value?.nearestWarehouseInfo ?: mapOf(),
@@ -2050,14 +2057,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 }
             }
         }
-//            AtcVariantHelper.goToAtcVariant(
-//                    context = it,
-//                    productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
-//                    pageSource = "wishlist",
-//                    shopId = viewModel.getDynamicProductInfoP1!!.basic.shopID,
-//                    isTokoNow = true
-//            ) { data, code ->
-//                startActivityForResult(data, code)
+//                AtcVariantHelper.goToAtcVariant(
+//                        context = it,
+//                        productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
+//                        pageSource = "tokonow",
+//                        shopId = viewModel.getDynamicProductInfoP1!!.basic.shopID,
+//                        isTokoNow = true
+//                ) { data, code ->
+//                    startActivityForResult(data, code)
+//                }
 //            }
 //        }
     }
@@ -2709,7 +2717,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun setNavToolbarSearchHint(hint: String) {
         val isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
         val applink = ApplinkConstInternalDiscovery.AUTOCOMPLETE +
-                if (isTokoNow) "?${SearchApiConst.NAVSOURCE}=tokonow&${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokoMart.SEARCH}"
+                if (isTokoNow) "?${SearchApiConst.NAVSOURCE}=tokonow&${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokopediaNow.SEARCH}"
                 else ""
         navToolbar?.setupSearchbar(listOf(HintData(hint)), applink = applink)
     }

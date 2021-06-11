@@ -398,6 +398,8 @@ class ShipmentMapper @Inject constructor() {
             isCorner = groupAddress.userAddress.isCorner
             state = groupAddress.userAddress.state
             stateDetail = groupAddress.userAddress.stateDetail
+            shopId = groupAddress.userAddress.tokoNow.shopId
+            warehouseId = groupAddress.userAddress.tokoNow.warehouseId
         }
     }
 
@@ -706,6 +708,8 @@ class ShipmentMapper @Inject constructor() {
             provinceName = defaultAddress.provinceName
             receiverName = defaultAddress.receiverName
             status = defaultAddress.status
+            shopId = defaultAddress.tokoNow.shopId
+            warehouseId = defaultAddress.tokoNow.warehouseId
         }
     }
 

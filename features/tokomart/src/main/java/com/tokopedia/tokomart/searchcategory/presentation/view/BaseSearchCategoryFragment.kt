@@ -20,7 +20,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery.common.utils.UrlParamUtils
@@ -53,6 +53,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.itemdecoration.Product
 import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.EmptyProductListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
@@ -72,7 +73,8 @@ abstract class BaseSearchCategoryFragment:
         SortFilterBottomSheet.Callback,
         CategoryChooserBottomSheet.Callback,
         MiniCartWidgetListener,
-        ProductItemListener {
+        ProductItemListener,
+        EmptyProductListener {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
@@ -223,9 +225,7 @@ abstract class BaseSearchCategoryFragment:
     protected open fun getNavToolbarHint() =
             listOf(HintData("", ""))
 
-    protected open fun onSearchBarClick(hint: String) {
-        val context = context ?: return
-
+    protected open fun onSearchBarClick(hint: String = "") {
         val autoCompleteApplink = getAutoCompleteApplink()
         val params = getModifiedAutoCompleteQueryParam(autoCompleteApplink)
         val finalApplink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" +
@@ -252,7 +252,7 @@ abstract class BaseSearchCategoryFragment:
         val urlParser = URLParser(autoCompleteApplink)
 
         val params = urlParser.paramKeyValueMap
-        params[SearchApiConst.BASE_SRP_APPLINK] = ApplinkConstInternalTokoMart.SEARCH
+        params[SearchApiConst.BASE_SRP_APPLINK] = ApplinkConstInternalTokopediaNow.SEARCH
 
         return params
     }
@@ -370,6 +370,8 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().isRefreshPageLiveData.observe(this::scrollToTop)
         getViewModel().updatedVisitableIndicesLiveData.observe(this::notifyAdapterItemChange)
         getViewModel().cartEventMessageLiveData.observe(this::showAddToCartMessage)
+        getViewModel().isHeaderBackgroundVisibleLiveData
+                .observe(this::updateHeaderBackgroundVisibility)
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
@@ -396,7 +398,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onLocalizingAddressSelected() {
-
+        getViewModel().onLocalizingAddressSelected()
     }
 
     override fun getFragment() = this
@@ -404,7 +406,7 @@ abstract class BaseSearchCategoryFragment:
     override fun onSeeAllCategoryClicked() {
         RouteManager.route(
                 context,
-                ApplinkConstInternalTokoMart.CATEGORY_LIST,
+                ApplinkConstInternalTokopediaNow.CATEGORY_LIST,
                 getViewModel().warehouseId,
         )
     }
@@ -526,8 +528,6 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onProductClick(productItemDataView: ProductItemDataView) {
-        val context = context ?: return
-
         RouteManager.route(
                 context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
@@ -567,9 +567,21 @@ abstract class BaseSearchCategoryFragment:
         }
     }
 
+    protected fun updateHeaderBackgroundVisibility(isVisible: Boolean) {
+        headerBackground?.showWithCondition(isVisible)
+    }
+
     override fun onResume() {
         super.onResume()
 
         getViewModel().onViewResumed()
+    }
+
+    override fun onChangeKeywordButtonClick() {
+        onSearchBarClick()
+    }
+
+    override fun onGoToGlobalSearch() {
+
     }
 }
