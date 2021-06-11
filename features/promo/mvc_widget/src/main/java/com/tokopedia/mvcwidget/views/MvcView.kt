@@ -3,22 +3,21 @@ package com.tokopedia.mvcwidget.views
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.os.Handler
 import android.text.Html
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
-import com.tokopedia.mvcwidget.*
+import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.R
+import com.tokopedia.mvcwidget.Tracker
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.htmltags.HtmlUtil
 import kotlinx.coroutines.Runnable
-import kotlinx.coroutines.delay
 
 
 /*
@@ -35,7 +34,6 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
     var isMainContainerSetFitsSystemWindows = false
     @MvcSource
     var source: Int = MvcSource.SHOP
-    var iconListRunnable: Runnable? = null
 
     init {
         View.inflate(context, R.layout.mvc_entry_view, this)
@@ -79,11 +77,6 @@ class MvcView @JvmOverloads constructor(context: Context, attrs: AttributeSet? =
                 .dontAnimate()
                 .into(imageCoupon)
         }
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        handler.removeCallbacksAndMessages(iconListRunnable)
     }
 
 }

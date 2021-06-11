@@ -272,10 +272,18 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
                     cta.visibility = View.GONE
                 } else {
                     cta.text = context.resources.getString(R.string.mvc_mulai_belanja)
-                }
-                cta.setOnClickListener {
-                    RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT,shopId)
-                    Tracker.clickDaftarJadiMember(shopId, UserSession(context).userId, mvcSource)
+                    cta.setOnClickListener {
+                        RouteManager.route(
+                            context,
+                            ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT,
+                            shopId
+                        )
+                        Tracker.clickDaftarJadiMember(
+                            shopId,
+                            UserSession(context).userId,
+                            mvcSource
+                        )
+                    }
                 }
             }
         }

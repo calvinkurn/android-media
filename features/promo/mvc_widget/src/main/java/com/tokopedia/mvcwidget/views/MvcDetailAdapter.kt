@@ -8,7 +8,6 @@ import com.tokopedia.mvcwidget.*
 import com.tokopedia.mvcwidget.views.viewholders.CouponListItemVH
 import com.tokopedia.mvcwidget.views.viewholders.FollowViewHolder
 import com.tokopedia.mvcwidget.views.viewholders.TickerViewHolder
-import com.tokopedia.user.session.UserSession
 
 class MvcDetailAdapter(val data: ArrayList<MvcListItem>, val contract: MvcDetailViewContract) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

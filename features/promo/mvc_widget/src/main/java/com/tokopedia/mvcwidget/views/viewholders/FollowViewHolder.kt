@@ -12,7 +12,7 @@ import com.tokopedia.user.session.UserSession
 
 class FollowViewHolder (itemView: View,val mvcDetailViewContract: MvcDetailViewContract): RecyclerView.ViewHolder(itemView) {
 
-    val mvcFollowContainer: MvcFollowViewContainer = itemView.findViewById(R.id.mvc_follow_view_container)
+    private val mvcFollowContainer: MvcFollowViewContainer = itemView.findViewById(R.id.mvc_follow_view_container)
 
     fun setData(followWidget: FollowWidget, widgetImpression: WidgetImpression, shopId:String, @MvcSource mvcSource:Int){
         mvcFollowContainer.setData(followWidget,widgetImpression, shopId, mvcSource)

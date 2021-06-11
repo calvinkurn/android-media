@@ -42,5 +42,4 @@ class CatalogMVCListUseCase @Inject constructor(var gqlWrapper: GqlUseCaseWrappe
 object TokopointsCatalogMVCParams {
     const val SHOP_ID = "shopID"
     const val LIMIT = "limit"
-    const val APIVERSION = "apiVersion"
 }
