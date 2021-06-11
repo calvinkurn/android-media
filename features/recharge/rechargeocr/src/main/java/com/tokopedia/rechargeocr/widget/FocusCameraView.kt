@@ -8,6 +8,7 @@ import android.graphics.Path
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 
 /**
  * @author by jessica on 10/06/21
@@ -71,7 +72,7 @@ class FocusCameraView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         canvas.drawPath(mPath, mSemiBlackPaint)
         canvas.clipPath(mPath)
-        canvas.drawColor(Color.parseColor("#a642b549"))
+        canvas.drawColor(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400_68))
     }
 
     companion object {
