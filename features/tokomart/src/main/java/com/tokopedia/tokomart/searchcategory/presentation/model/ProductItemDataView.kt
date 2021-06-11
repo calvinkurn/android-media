@@ -13,6 +13,7 @@ data class ProductItemDataView(
         val originalPrice: String = "",
         val parentId: String = "",
         val shop: Shop = Shop(),
+        val ratingAverage: String = "",
         val variantATC: VariantATCDataView? = null,
         val nonVariantATC: NonVariantATCDataView? = null,
         val labelGroupDataViewList: List<LabelGroupDataView> = listOf(),

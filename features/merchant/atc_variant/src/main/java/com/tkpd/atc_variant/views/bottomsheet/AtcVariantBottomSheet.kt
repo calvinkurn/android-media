@@ -79,6 +79,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     private var listener: AtcVariantBottomSheetListener? = null
     private var rvVariantBottomSheet: RecyclerView? = null
     private var buttonActionType = 0
+    private var buttonText = ""
 
     fun show(fragmentManager: FragmentManager,
              tag: String,
@@ -103,9 +104,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 viewModel.updateActivityResult(requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
             }
             ATC_LOGIN_REQUEST_CODE -> {
+                loadingProgressDialog?.dismiss()
                 if (resultCode == Activity.RESULT_OK) {
                     viewModel.updateActivityResult(requestCode = ATC_LOGIN_REQUEST_CODE, shouldRefreshPreviousPage = true)
-                    loadingProgressDialog?.dismiss()
                     dismiss()
                 }
             }
@@ -172,8 +173,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         observeWishlist()
     }
 
-    private fun showToasterSuccess(message: String, ctaText:String = "") {
+    private fun showToasterSuccess(message: String, ctaText: String = "", ctaListener: () -> Unit = {}) {
         viewContent?.rootView?.showToasterSuccess(message, R.dimen.space_toaster_offsite_atc_variant, ctaText = ctaText, ctaListener = {
+            ctaListener.invoke()
         })
     }
 
@@ -266,6 +268,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     private fun onSuccessTransaction(result: AddToCartDataModel) {
         val cartId = result.data.cartId
+
+        trackSuccessAtc(cartId)
+
         if (sharedViewModel.aggregatorParams.value?.isTokoNow == true) {
             onSuccessAtcTokoNow(result.errorMessage.firstOrNull())
             return
@@ -284,6 +289,23 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 onSuccessAtc(result.errorMessage.firstOrNull())
             }
         }
+    }
+
+    private fun trackSuccessAtc(cartId: String) {
+        val aggregatorParams = sharedViewModel.aggregatorParams.value
+        val productId = adapter.getHeaderDataModel()?.headerData?.productId ?: ""
+
+        ProductTrackingCommon.eventEcommerceAddToCart(
+                userId = userSessionInterface.userId, cartId = cartId,
+                buttonAction = buttonActionType, buttonText = buttonText,
+                productId = productId, shopId = aggregatorParams?.shopId ?: "",
+                productName = adapter.getHeaderDataModel()?.headerData?.productName ?: "",
+                productPrice = adapter.getHeaderDataModel()?.headerData?.getFinalPrice() ?: "",
+                quantity = viewModel.getSelectedQuantity(productId), variantName = viewModel.titleVariantName.value ?: "",
+                isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment ?: false, shopType = aggregatorParams?.shopTypeString ?: "",
+                shopName = aggregatorParams?.shopName ?: "", categoryName = aggregatorParams?.categoryName ?: "",
+                categoryId = aggregatorParams?.categoryId ?: "", isFreeOngkir = aggregatorParams?.isFreeOngkir ?: false,
+                trackerAttribution = aggregatorParams?.trackerAttribution ?: "")
     }
 
     private fun onSuccessOcs(result: AddToCartDataModel) {
@@ -310,7 +332,21 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             val message = if (successMessage == null || successMessage.isEmpty()) it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default) else
                 successMessage
             viewModel.updateActivityResult(atcSuccessMessage = message)
-            showToasterSuccess(message, getString(R.string.atc_variant_oke_label))
+            showToasterSuccess(message, getString(R.string.atc_variant_lihat_label)) {
+                ProductTrackingCommon.onSeeCartVariantBottomSheetClicked(message, adapter.getHeaderDataModel()?.headerData?.productId ?: "")
+                doActionOrLogin({
+                    startActivity(RouteManager.getIntent(it, ApplinkConst.CART))
+                })
+            }
+        }
+    }
+
+    private fun doActionOrLogin(actionLogin: () -> Unit, actionNonLogin: (() -> Unit)? = null) {
+        if (userSessionInterface.isLoggedIn) {
+            actionLogin.invoke()
+        } else {
+            actionNonLogin?.invoke()
+            checkLogin()
         }
     }
 
@@ -355,18 +391,22 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     override fun onVariantGuideLineClicked(url: String) {
+        ProductTrackingCommon.onVariantGuidelineClicked(adapter.getHeaderDataModel()?.headerData?.productId ?: "")
         goToImagePreview(arrayListOf(url))
     }
 
     override fun addToCartClick(buttonText: String) {
+        this.buttonText = buttonText
         doAtc(ProductDetailCommonConstant.ATC_BUTTON)
     }
 
     override fun buyNowClick(buttonText: String) {
+        this.buttonText = buttonText
         doAtc(ProductDetailCommonConstant.BUY_BUTTON)
     }
 
     override fun buttonCartTypeClick(cartType: String, buttonText: String, isAtcButton: Boolean) {
+        this.buttonText = buttonText
         val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
         doAtc(atcKey)
     }
@@ -378,6 +418,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     override fun onVariantImageClicked(url: String) {
+        ProductTrackingCommon.onVariantImageBottomSheetClicked(adapter.getHeaderDataModel()?.headerData?.productId ?: "")
         goToImagePreview(arrayListOf(url))
     }
 
@@ -393,16 +434,16 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             if (checkLogin()) return@let
 
             if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON) {
-                val btnTextAfterAction = "Cek Wishlist Kamu"
+                ProductTrackingCommon.onRemindMeClicked(adapter.getHeaderDataModel()?.headerData?.productId ?: "")
                 //The possibilities this method being fire is when the user first open the bottom sheet with product not buyable
                 //Use product id from params because we dont have selected id yet here
                 viewModel.addWishlist(sharedViewModel.aggregatorParams.value?.productId
-                        ?: "", userSessionInterface.userId,
-                        btnTextAfterAction)
+                        ?: "", userSessionInterface.userId)
                 return@let
             }
 
             if (buttonActionType == ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON) {
+                ProductTrackingCommon.onWishlistCheckClicked(adapter.getHeaderDataModel()?.headerData?.productId ?: "")
                 goToWishlist()
                 return@let
             }
@@ -470,6 +511,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             getString(com.tokopedia.product.detail.common.R.string.add_to_cart_error_variant_builder, viewModel.getVariantData()?.getVariantsIdentifier()
                     ?: "")
         }
+
+        ProductTrackingCommon.onVariantPartiallySelected(variantErrorMessage, adapter.getHeaderDataModel()?.headerData?.productId ?: "")
         showToasterError(variantErrorMessage, getString(R.string.atc_variant_oke_label))
     }
 
@@ -478,8 +521,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         baseAtcBtn?.renderButtonView(
                 data.isProductSelectedBuyable,
                 data.isShopOwner,
-                data.cartTypeData,
-                data.alternateText
+                data.cartTypeData
         )
     }
 }

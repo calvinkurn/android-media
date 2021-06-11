@@ -100,6 +100,11 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                 cartRedirection {
                   status
                   error_message
+                  alternate_copy {
+                     text
+                     cart_type
+                     color
+                  }
                   data {
                     product_id
                     config_name
@@ -137,12 +142,14 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
 
     fun createRequestParams(productId: String,
                             source: String,
+                            isTokoNow:Boolean,
                             warehouseId: String? = null,
                             pdpSession: String? = null): Map<String, Any?> = mapOf(
             ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId,
             ProductDetailCommonConstant.PARAM_PDP_SESSION to pdpSession,
             ProductDetailCommonConstant.PARAM_WAREHOUSE_ID to warehouseId,
             ProductDetailCommonConstant.PARAM_TEASER_SOURCE to source,
+            ProductDetailCommonConstant.PARAM_TOKO_NOW to isTokoNow,
             ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
     )
 
@@ -175,9 +182,10 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
 
     private fun mapToUiData(data: ProductVariantAggregator): ProductVariantAggregatorUiData {
         return ProductVariantAggregatorUiData(
-                data.variantData,
-                data.cardRedirection.data.associateBy({ it.productId }, { it }),
-                data.nearestWarehouse.associateBy({ it.productId }, { it.warehouseInfo })
+                variantData = data.variantData,
+                cardRedirection = data.cardRedirection.data.associateBy({ it.productId }, { it }),
+                nearestWarehouse = data.nearestWarehouse.associateBy({ it.productId }, { it.warehouseInfo }),
+                alternateCopy = data.cardRedirection.alternateCopy
         )
     }
 }

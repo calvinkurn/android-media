@@ -63,15 +63,12 @@ abstract class BaseAtcVariantViewModelTest {
     }
 
     //region assert helper
-    fun assertButton(expectedAlternateCopy: String = "",
-                     expectedIsBuyable: Boolean = true,
+    fun assertButton(expectedIsBuyable: Boolean = true,
                      expectedCartType: String? = "normal",
                      expectedCartColor: String? = "primary_green",
                      expectedCartText: String? = "+ Keranjang") {
         val data = (viewModel.buttonData.value as Success).data
 
-        //Todo alternate copy
-        Assert.assertEquals(data.alternateText, expectedAlternateCopy)
         Assert.assertEquals(data.isProductSelectedBuyable, expectedIsBuyable)
 
         val cartType = data.cartTypeData?.availableButtons?.last()
@@ -82,13 +79,13 @@ abstract class BaseAtcVariantViewModelTest {
 
     fun decideFailValueHitGqlAggregator() {
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), false)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), false)
         } throws Throwable()
 
         viewModel.decideInitialValue(ProductVariantBottomSheetParams())
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), false)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), false)
         }
 
         Assert.assertTrue(viewModel.initialData.value is Fail)
@@ -100,13 +97,13 @@ abstract class BaseAtcVariantViewModelTest {
         val aggregatorParams = AtcVariantJsonHelper.generateParamsVariant(productId, isTokoNow)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), isTokoNow)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), isTokoNow)
         } returns mockData
 
         viewModel.decideInitialValue(aggregatorParams)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), isTokoNow)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), isTokoNow)
         }
     }
 

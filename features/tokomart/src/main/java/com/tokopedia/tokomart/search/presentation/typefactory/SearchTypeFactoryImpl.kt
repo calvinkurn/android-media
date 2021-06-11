@@ -9,6 +9,7 @@ import com.tokopedia.tokomart.search.presentation.viewholder.SuggestionViewHolde
 import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
+import com.tokopedia.tokomart.searchcategory.presentation.listener.EmptyProductListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
@@ -22,6 +23,7 @@ class SearchTypeFactoryImpl(
         quickFilterListener: QuickFilterListener,
         categoryFilterListener: CategoryFilterListener,
         productItemListener: ProductItemListener,
+        emptyProductListener: EmptyProductListener,
         private val suggestionListener: SuggestionListener,
 ): BaseSearchCategoryTypeFactoryImpl(
         chooseAddressListener,
@@ -30,6 +32,7 @@ class SearchTypeFactoryImpl(
         quickFilterListener,
         categoryFilterListener,
         productItemListener,
+        emptyProductListener,
 ), SearchTypeFactory {
 
     override fun type(suggestionDataView: SuggestionDataView): Int {

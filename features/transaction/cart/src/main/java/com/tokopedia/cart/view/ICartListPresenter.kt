@@ -25,7 +25,7 @@ interface ICartListPresenter {
 
     fun detachView()
 
-    fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean)
+    fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean, getCartState: Int = GET_CART_STATE_DEFAULT)
 
     fun processDeleteCartItem(allCartItemData: List<CartItemData>,
                               removedCartItems: List<CartItemData>,
@@ -37,7 +37,7 @@ interface ICartListPresenter {
 
     fun processUpdateCartData(fireAndForget: Boolean)
 
-    fun processToUpdateAndReloadCartData(cartId: String)
+    fun processToUpdateAndReloadCartData(cartId: String, getCartState: Int = GET_CART_STATE_DEFAULT)
 
     fun processUpdateCartCounter()
 
@@ -120,4 +120,9 @@ interface ICartListPresenter {
     fun followShop(shopId: String)
 
     fun doClearAllPromo()
+
+    companion object {
+        const val GET_CART_STATE_DEFAULT = 0
+        const val GET_CART_STATE_AFTER_CHOOSE_ADDRESS = 1
+    }
 }
