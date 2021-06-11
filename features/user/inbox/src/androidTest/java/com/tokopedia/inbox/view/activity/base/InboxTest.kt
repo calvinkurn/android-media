@@ -52,6 +52,7 @@ abstract class InboxTest {
         setupDaggerBaseComponent()
         setupInboxDaggerComponent()
         inboxComponent!!.inject(this)
+        inboxDep.init()
     }
 
     @After

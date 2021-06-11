@@ -2,8 +2,7 @@ package com.tokopedia.inbox.view.activity.notifcenter.buyer
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
 import org.hamcrest.CoreMatchers.not
@@ -23,7 +22,25 @@ class NotifcenterOnlyAbTest : InboxNotifcenterTest() {
         onView(withId(R.id.inbox_bottom_nav)).check(matches(not(isDisplayed())))
     }
 
-    // TODO: should use specific page total notification counter if `showBottomNav` is false
+    @Test
+    fun should_use_specific_page_total_notification_counter_if_showBottomNav_is_false() {
+        // Given
+        val expectedTotalSellerNotifCounter = 10
+        inboxDep.apply {
+            inboxNotificationUseCase.response = defaultNotifCounter
+        }
+        startInboxActivity {
+            setShowBottomNav(it, false)
+        }
+
+        // Then
+        onView(withId(R.id.unread_header_counter)).check(
+            matches(
+                withText(expectedTotalSellerNotifCounter.toString())
+            )
+        )
+    }
+
     // TODO: what happened to the onboarding if `showBottomNav` is false
 
 }
