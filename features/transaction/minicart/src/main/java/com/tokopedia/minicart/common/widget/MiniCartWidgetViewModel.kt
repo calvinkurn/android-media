@@ -199,7 +199,9 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         _miniCartListBottomSheetUiModel.value = miniCartListListBottomSheetUiModel.value
     }
 
-    private fun setWholesalePrice(miniCartProductList: MutableList<MiniCartProductUiModel>, productParentQtyMap: MutableMap<String, Int>, visitables: MutableList<Visitable<*>>) {
+    private fun setWholesalePrice(miniCartProductList: MutableList<MiniCartProductUiModel>,
+                                  productParentQtyMap: MutableMap<String, Int>,
+                                  visitables: MutableList<Visitable<*>>) {
         val updatedProductForWholesalePriceItems = mutableListOf<MiniCartProductUiModel>()
         val updatedProductForWholesalePriceItemsProductId = mutableListOf<String>()
         miniCartProductList.forEach { visitable ->
@@ -213,6 +215,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                 if (qty >= wholesalePrice.qtyMin) {
                     if (updatedProduct.productWholeSalePrice != wholesalePrice.prdPrc) {
                         updatedProduct.productWholeSalePrice = wholesalePrice.prdPrc
+                        visitable.productWholeSalePrice = wholesalePrice.prdPrc
                         isUpdatedWholeSalePrice = true
                     }
                     isEligibleForWholesalePrice = true
@@ -223,6 +226,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
             // Reset wholesale price not eligible and previously has wholesale price
             if (!isEligibleForWholesalePrice && visitable.productWholeSalePrice > 0L) {
                 updatedProduct.productWholeSalePrice = 0
+                visitable.productWholeSalePrice = 0
                 isUpdatedWholeSalePrice = true
             }
 
