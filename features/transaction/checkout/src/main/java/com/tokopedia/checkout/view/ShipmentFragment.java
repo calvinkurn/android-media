@@ -3033,6 +3033,36 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onViewTickerProductError(String shopId, String errorMessage) {
+        checkoutAnalyticsCourierSelection.eventViewTickerProductLevelErrorInCheckoutPage(shopId, errorMessage);
+    }
+
+    @Override
+    public void onViewTickerOrderError(String shopId, String errorMessage) {
+        checkoutAnalyticsCourierSelection.eventViewTickerOrderLevelErrorInCheckoutPage(shopId, errorMessage);
+    }
+
+    @Override
+    public void onViewTickerPaymentError(String errorMessage) {
+        checkoutAnalyticsCourierSelection.eventViewTickerPaymentLevelErrorInCheckoutPage(errorMessage);
+    }
+
+    @Override
+    public void onClickLihatOnTickerOrderError(String shopId, String errorMessage) {
+        checkoutAnalyticsCourierSelection.eventClickLihatOnTickerErrorOrderLevelErrorInCheckoutPage(shopId, errorMessage);
+    }
+
+    @Override
+    public void onClickRefreshErrorLoadCourier() {
+        checkoutAnalyticsCourierSelection.eventClickRefreshWhenErrorLoadCourier();
+    }
+
+    @Override
+    public void onViewErrorInCourierSection(String errorMessage) {
+        checkoutAnalyticsCourierSelection.eventViewErrorInCourierSection(errorMessage);
+    }
+
+    @Override
     public void prepareReloadRates(int lastSelectedCourierOrder, boolean skipMvc) {
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(lastSelectedCourierOrder);
         if (shipmentCartItemModel != null) {
