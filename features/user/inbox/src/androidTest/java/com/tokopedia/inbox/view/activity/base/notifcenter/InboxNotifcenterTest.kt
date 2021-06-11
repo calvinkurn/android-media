@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.view.activity.base.notifcenter
 
+import android.content.Intent
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.inbox.fake.InboxNotifcenterFakeDependency
@@ -29,6 +30,14 @@ open class InboxNotifcenterTest : InboxTest() {
         notifcenterComponent = DaggerFakeNotificationComponent.builder()
             .fakeBaseAppComponent(baseComponent)
             .build()
+    }
+
+    protected fun setShowBottomNav(intent: Intent, isShow: Boolean) {
+        val uri = intent.data?.buildUpon()
+        uri?.appendQueryParameter(
+            ApplinkConst.Inbox.PARAM_SHOW_BOTTOM_NAV, isShow.toString()
+        )
+        intent.data = uri?.build()
     }
 
 }
