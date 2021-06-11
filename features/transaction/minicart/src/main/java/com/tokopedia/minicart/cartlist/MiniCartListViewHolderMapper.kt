@@ -263,13 +263,18 @@ class MiniCartListViewHolderMapper @Inject constructor() {
         } else {
             return MiniCartSimplifiedData().apply {
                 miniCartWidgetData = miniCartListUiModel.miniCartWidgetUiModel
-                miniCartItems = mapMiniCartItems(miniCartListUiModel.visitables)
+                val miniCartItemsMapResult = mapMiniCartItems(miniCartListUiModel.visitables)
+                miniCartItems = miniCartItemsMapResult.first
                 isShowMiniCartWidget = miniCartItems.isNotEmpty()
+                containsOnlyUnavailableItems = miniCartItemsMapResult.second
+                unavailableItemsCount = miniCartItemsMapResult.third
             }
         }
     }
 
-    private fun mapMiniCartItems(visitables: List<Visitable<*>>): List<MiniCartItem> {
+    private fun mapMiniCartItems(visitables: List<Visitable<*>>): Triple<List<MiniCartItem>, Boolean, Int> {
+        var hasAvailableItem = false
+        var unavailableItemCount = 0
         val miniCartItems = mutableListOf<MiniCartItem>()
         visitables.forEach { visitable ->
             if (visitable is MiniCartProductUiModel) {
@@ -297,9 +302,19 @@ class MiniCartListViewHolderMapper @Inject constructor() {
                     productQty = visitable.productQty
                 }
                 miniCartItems.add(miniCartItem)
+
+                if (miniCartItem.isError) {
+                    unavailableItemCount++
+                }
+
+                if (!hasAvailableItem && !miniCartItem.isError) {
+                    hasAvailableItem = true
+                }
             }
         }
 
-        return miniCartItems
+        val isShowMiniCartWidget = miniCartItems.isNotEmpty()
+        val containsOnlyUnavailableItems = isShowMiniCartWidget && !hasAvailableItem
+        return Triple(miniCartItems, containsOnlyUnavailableItems, unavailableItemCount)
     }
 }

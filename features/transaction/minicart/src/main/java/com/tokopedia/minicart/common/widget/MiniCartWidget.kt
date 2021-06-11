@@ -17,6 +17,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheetListener
@@ -31,6 +33,7 @@ import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -55,6 +58,8 @@ class MiniCartWidget @JvmOverloads constructor(
     private var view: View? = null
     private var totalAmount: TotalAmount? = null
     private var chatIcon: ImageUnify? = null
+    private var labelUnavailable: Typography? = null
+    private var imageChevronUnavailable: ImageUnify? = null
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
     private var progressDialog: AlertDialog? = null
     private var miniCartChevronClickListener: OnClickListener? = null
@@ -63,7 +68,10 @@ class MiniCartWidget @JvmOverloads constructor(
 
     init {
         view = inflate(context, R.layout.widget_mini_cart, this)
+        totalAmount = view?.findViewById(R.id.mini_cart_total_amount)
         chatIcon = view?.findViewById(R.id.chat_icon)
+        labelUnavailable = view?.findViewById(R.id.label_unavailable)
+        imageChevronUnavailable = view?.findViewById(R.id.image_chevron_unavailable)
     }
 
     /*
@@ -214,12 +222,11 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun observeMiniCartWidgetUiModel(fragment: Fragment) {
         viewModel?.miniCartSimplifiedData?.observe(fragment.viewLifecycleOwner, {
-            renderWidget(it.miniCartWidgetData)
+            renderWidget(it)
         })
     }
 
     private fun initializeView(fragment: Fragment) {
-        totalAmount = view?.findViewById(R.id.mini_cart_total_amount)
         totalAmount?.let {
             it.enableAmountChevron(true)
             miniCartChevronClickListener = OnClickListener {
@@ -232,10 +239,8 @@ class MiniCartWidget @JvmOverloads constructor(
                 showProgressLoading()
                 viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
             }
-            it.setLabelTitle(context.getString(R.string.mini_cart_widget_label_total_price))
-            it.setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(0, false))
-            it.setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), 0))
         }
+        imageChevronUnavailable?.setOnClickListener(miniCartChevronClickListener)
         validateTotalAmountView()
         initializeProgressDialog(fragment.context)
     }
@@ -315,11 +320,28 @@ class MiniCartWidget @JvmOverloads constructor(
         }
     }
 
-    private fun renderWidget(miniCartWidgetData: MiniCartWidgetData) {
-        totalAmount?.apply {
-            setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
-            setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetData.totalProductPrice, false))
-            setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartWidgetData.totalProductCount))
+    private fun renderWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        if (miniCartSimplifiedData.containsOnlyUnavailableItems) {
+            totalAmount?.apply {
+                setLabelTitle("")
+                setAmount("")
+                setCtaText(context.getString(R.string.mini_cart_widget_label_buy_empty))
+                amountCtaView.isEnabled = false
+            }
+            labelUnavailable?.apply {
+                text = context.getString(R.string.mini_cart_widget_label_unavailable, miniCartSimplifiedData.unavailableItemsCount)
+                show()
+            }
+            imageChevronUnavailable?.show()
+        } else {
+            totalAmount?.apply {
+                setLabelTitle(context.getString(R.string.mini_cart_widget_label_see_cart))
+                setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false))
+                setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartSimplifiedData.miniCartWidgetData.totalProductCount))
+                amountCtaView.isEnabled = true
+            }
+            labelUnavailable?.gone()
+            imageChevronUnavailable?.gone()
         }
         setTotalAmountLoading(false)
     }
@@ -339,7 +361,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun validateTotalAmountView() {
         totalAmount?.context?.let { context ->
-            val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_G500))
+            val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_GN500))
             totalAmount?.setAdditionalButton(chatIcon)
             totalAmount?.totalAmountAdditionalButton?.setOnClickListener {
                 analytics.eventClickChatOnMiniCart()

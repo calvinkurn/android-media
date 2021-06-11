@@ -16,4 +16,5 @@
     <string name="mini_cart_label_wholesale_price">Harga Grosir</string>
     <string name="mini_cart_message_ticker_error">Yaah, ada %d barang tidak bisa diproses.</string>
     <string name="mini_cart_title_unavailable_header">Tidak bisa diproses (%d)</string>
+    <string name="mini_cart_widget_label_unavailable">%d barang tidak dapat diproses</string>
 </resources>

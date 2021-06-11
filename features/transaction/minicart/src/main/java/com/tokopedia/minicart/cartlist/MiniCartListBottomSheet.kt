@@ -362,7 +362,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     private fun validateTotalAmountView() {
         totalAmount?.context?.let { context ->
-            val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_G500))
+            val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_GN500))
             totalAmount?.setAdditionalButton(chatIcon)
             totalAmount?.totalAmountAdditionalButton?.setOnClickListener {
                 analytics.eventClickChatOnMiniCart()

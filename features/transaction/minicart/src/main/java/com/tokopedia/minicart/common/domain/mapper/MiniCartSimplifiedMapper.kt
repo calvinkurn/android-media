@@ -14,6 +14,8 @@ class MiniCartSimplifiedMapper @Inject constructor() {
             miniCartWidgetData = mapMiniCartWidgetData(miniCartData.data)
             miniCartItems = mapMiniCartListData(miniCartData)
             isShowMiniCartWidget = miniCartItems.isNotEmpty()
+            containsOnlyUnavailableItems = miniCartData.data.availableSection.availableGroup.isEmpty() && miniCartData.data.unavailableSection.isNotEmpty()
+            unavailableItemsCount = miniCartData.data.totalProductError
         }
     }
 
