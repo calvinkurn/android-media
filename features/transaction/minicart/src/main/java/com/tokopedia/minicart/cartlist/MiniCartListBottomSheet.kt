@@ -121,6 +121,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     private fun initializeCartData(viewModel: MiniCartWidgetViewModel) {
+        adapter?.clearAllElements()
         showLoading()
         viewModel.getCartList(true)
     }
@@ -253,9 +254,11 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                 bottomSheet?.setTitle(it.title)
                 if (rvMiniCartList?.isComputingLayout == true) {
                     rvMiniCartList?.post {
+//                        adapter?.clearAllElements()
                         adapter?.updateList(it.visitables)
                     }
                 } else {
+//                    adapter?.clearAllElements()
                     adapter?.updateList(it.visitables)
                 }
                 updateTotalAmount(it.miniCartWidgetUiModel)
