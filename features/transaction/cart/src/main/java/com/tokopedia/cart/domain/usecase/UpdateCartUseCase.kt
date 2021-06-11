@@ -26,17 +26,22 @@ class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlU
         val PARAM_UPDATE_CART_REQUEST = "PARAM_UPDATE_CART_REQUEST"
         val PARAM_CARTS = "carts"
 
+        const val PARAM_KEY_SOURCE = "SOURCE"
+        const val PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES = "update_qty_notes"
+
         private const val PARAM_KEY_LANG = "lang"
         private const val PARAM_VALUE_ID = "id"
     }
 
     override fun createObservable(requestParams: RequestParams?): Observable<UpdateCartData> {
         val paramUpdateList = requestParams?.getObject(PARAM_UPDATE_CART_REQUEST) as ArrayList<UpdateCartRequest>
+        val source = requestParams?.getString(PARAM_KEY_SOURCE, PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES)
 
         val variables = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_CARTS to paramUpdateList,
-                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                PARAM_KEY_SOURCE to source
         )
 
         val mutation = getUpdateCartMutation()

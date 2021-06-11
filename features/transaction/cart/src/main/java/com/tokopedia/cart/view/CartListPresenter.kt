@@ -205,6 +205,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                     updateCartUseCase?.createObservable(requestParams)?.subscribe({/* no-op */ }, {/* no-op */})
                     return@let
                 } else {
+                    requestParams.putString(UpdateCartUseCase.PARAM_KEY_SOURCE, "")
                     compositeSubscription.add(
                             updateCartUseCase?.createObservable(requestParams)
                                     ?.subscribe(UpdateCartSubscriber(view, this))

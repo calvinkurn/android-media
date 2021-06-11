@@ -21,7 +21,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
     private var params: Map<String, Any?>? = null
     private var isFromMiniCartWidget: Boolean = false
 
-    fun setParams(miniCartItemList: List<MiniCartItem>, isFromMiniCartWidget: Boolean = false) {
+    fun setParams(miniCartItemList: List<MiniCartItem>, isFromMiniCartWidget: Boolean = false, isForCheckout: Boolean = false) {
         val updateCartRequestList = mutableListOf<UpdateCartRequest>()
 
         miniCartItemList.forEach {
@@ -34,11 +34,11 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
             )
         }
 
-        mapParams(updateCartRequestList)
+        mapParams(updateCartRequestList, isForCheckout)
         this.isFromMiniCartWidget = isFromMiniCartWidget
     }
 
-    fun setParamsFromUiModels(miniCartItemList: List<MiniCartProductUiModel>) {
+    fun setParamsFromUiModels(miniCartItemList: List<MiniCartProductUiModel>, isForCheckout: Boolean = false) {
         val updateCartRequestList = mutableListOf<UpdateCartRequest>()
 
         miniCartItemList.forEach {
@@ -51,15 +51,16 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
             )
         }
 
-        mapParams(updateCartRequestList)
+        mapParams(updateCartRequestList, isForCheckout)
         isFromMiniCartWidget = true
     }
 
-    private fun mapParams(updateCartRequestList: MutableList<UpdateCartRequest>) {
+    private fun mapParams(updateCartRequestList: MutableList<UpdateCartRequest>, isForCheckout: Boolean) {
         params = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_CARTS to updateCartRequestList,
-                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
+                KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                PARAM_KEY_SOURCE to if (isForCheckout) null else PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES
         )
     }
 
@@ -88,6 +89,9 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
 
     companion object {
         val PARAM_CARTS = "carts"
+
+        private const val PARAM_KEY_SOURCE = "SOURCE"
+        const val PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES = "update_qty_notes"
 
         private const val PARAM_KEY_LANG = "lang"
         private const val PARAM_VALUE_ID = "id"
