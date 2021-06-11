@@ -234,8 +234,8 @@ class OfficialHomeContainerFragment
             currentTabPos = tabLayout?.getPositionBasedOnCategoryId(it.categoryId) ?: -1
         }
         if (currentTabPos != -1) {
-            val currentFragment = tabAdapter.getCurrentFragment(currentTabPos) as OfficialHomeFragment
-            currentFragment.forceLoadData()
+            val currentFragment = tabAdapter.getCurrentFragment(currentTabPos) as? OfficialHomeFragment
+            currentFragment?.forceLoadData()
         }
     }
 
