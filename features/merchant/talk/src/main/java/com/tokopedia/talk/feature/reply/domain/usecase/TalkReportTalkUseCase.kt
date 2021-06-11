@@ -41,9 +41,9 @@ class TalkReportTalkUseCase @Inject constructor(graphqlRepository: GraphqlReposi
         setTypeClass(TalkReportTalkResponseWrapper::class.java)
     }
 
-    fun setParams(talkId: Int, reason: String = "", reportType: Int = OTHER_REPORT_TYPE) {
+    fun setParams(talkId: Long, reason: String = "", reportType: Int = OTHER_REPORT_TYPE) {
         val requestParams = RequestParams()
-        requestParams.putInt(PARAM_TALK_ID, talkId)
+        requestParams.putLong(PARAM_TALK_ID, talkId)
         if(reason.isNotBlank()) {
             requestParams.putString(PARAM_REASON, reason)
         }

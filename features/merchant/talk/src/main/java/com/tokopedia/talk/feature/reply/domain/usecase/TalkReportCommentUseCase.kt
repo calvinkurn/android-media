@@ -41,11 +41,11 @@ class TalkReportCommentUseCase @Inject constructor(graphqlRepository: GraphqlRep
         setTypeClass(TalkReportCommentResponseWrapper::class.java)
     }
 
-    fun setParams(commentId: Int, reason: String = "", reportType: Int = OTHER_REPORT_TYPE) {
+    fun setParams(commentId: Long, reason: String = "", reportType: Int = OTHER_REPORT_TYPE) {
         val requestParams = RequestParams()
-        requestParams.putInt(PARAM_COMMENT_ID, commentId)
+        requestParams.putLong(PARAM_COMMENT_ID, commentId)
         if(reason.isNotBlank()) {
-            requestParams.putString(TalkReportTalkUseCase.PARAM_REASON, reason)
+            requestParams.putString(PARAM_REASON, reason)
         }
         requestParams.putInt(PARAM_REPORT_TYPE, reportType)
         setRequestParams(requestParams.parameters)

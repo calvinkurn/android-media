@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.feature.reply.data.model.report.TalkReportCommentResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.report.TalkReportTalkResponseWrapper
@@ -37,7 +37,7 @@ class ReportTalkViewModel @Inject constructor(
 
     fun reportTalk(questionId: String, reason: String, reportType: Int) {
         launchCatchError(block = {
-            talkReportTalkUseCase.setParams(questionId.toIntOrZero(), if(reportType == INDEX_OF_OTHER_REPORT) reason else "", reportType + 1)
+            talkReportTalkUseCase.setParams(questionId.toLongOrZero(), if(reportType == INDEX_OF_OTHER_REPORT) reason else "", reportType + 1)
             val response = talkReportTalkUseCase.executeOnBackground()
             if (response.talkReportTalk.data.isSuccess == MUTATION_SUCCESS) {
                 _reportTalkResult.postValue(Success(response))
@@ -51,7 +51,7 @@ class ReportTalkViewModel @Inject constructor(
 
     fun reportComment(commentId: String, reason: String, reportType: Int) {
         launchCatchError(block = {
-            talkReportCommentUseCase.setParams(commentId.toIntOrZero(), if(reportType == INDEX_OF_OTHER_REPORT) reason else "", reportType + 1)
+            talkReportCommentUseCase.setParams(commentId.toLongOrZero(), if(reportType == INDEX_OF_OTHER_REPORT) reason else "", reportType + 1)
             val response = talkReportCommentUseCase.executeOnBackground()
             if (response.talkReportComment.data.isSuccess == MUTATION_SUCCESS) {
                 _reportCommentResult.postValue(Success(response))
