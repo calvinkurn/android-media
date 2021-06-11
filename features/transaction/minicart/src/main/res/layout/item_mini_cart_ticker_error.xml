@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_16"
         android:text="Lihat"
-        android:textColor="@color/unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="@+id/ticker_error"
         app:layout_constraintEnd_toEndOf="@+id/ticker_error"
         app:layout_constraintTop_toTopOf="@+id/ticker_error"
