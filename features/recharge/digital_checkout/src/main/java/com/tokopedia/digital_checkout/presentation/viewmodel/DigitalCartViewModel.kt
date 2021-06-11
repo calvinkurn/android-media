@@ -9,8 +9,10 @@ import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_ADMIN_FEE
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_KODE_PROMO
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.STRING_SUBTOTAL_TAGIHAN
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.SUMMARY_ADMIN_FEE_POSITION
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.SUMMARY_PROMO_CODE_POSITION
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst.SummaryInfo.SUMMARY_TOTAL_PAYMENT_POSITION
 import com.tokopedia.digital_checkout.data.PaymentSummary
@@ -34,6 +36,7 @@ import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseDataNullException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
@@ -73,9 +76,9 @@ class DigitalCartViewModel @Inject constructor(
     val isNeedOtp: LiveData<String>
         get() = _isNeedOtp
 
-    private val _isSuccessCancelVoucherCart = MutableLiveData<Result<Boolean>>()
-    val isSuccessCancelVoucherCart: LiveData<Result<Boolean>>
-        get() = _isSuccessCancelVoucherCart
+    private val _cancelVoucherData = MutableLiveData<Result<CancelVoucherData>>()
+    val cancelVoucherData: LiveData<Result<CancelVoucherData>>
+        get() = _cancelVoucherData
 
     private val _totalPrice = MutableLiveData<Double>()
     val totalPrice: LiveData<Double>
@@ -173,9 +176,12 @@ class DigitalCartViewModel @Inject constructor(
         } else {
 
             val pricePlain = mappedCartData.attributes.pricePlain
-            _totalPrice.postValue(pricePlain)
+            _totalPrice.postValue(pricePlain + mappedCartData.attributes.adminFee)
             paymentSummary.summaries.clear()
             paymentSummary.addToSummary(SUMMARY_TOTAL_PAYMENT_POSITION, Payment(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain)))
+            if (mappedCartData.attributes.adminFee > 0) {
+                paymentSummary.addToSummary(SUMMARY_ADMIN_FEE_POSITION, Payment(STRING_ADMIN_FEE, getStringIdrFormat(mappedCartData.attributes.adminFee.toDouble())))
+            }
             _payment.postValue(paymentSummary)
 
             requestCheckoutParam.transactionAmount = pricePlain
@@ -191,15 +197,15 @@ class DigitalCartViewModel @Inject constructor(
         }
     }
 
-    fun cancelVoucherCart(defaultErrorMsg: String) {
-        cancelVoucherUseCase.execute(onSuccessCancelVoucher(defaultErrorMsg), onErrorCancelVoucher(defaultErrorMsg))
+    fun cancelVoucherCart(promoCode: String, defaultErrorMsg: String) {
+        cancelVoucherUseCase.execute(promoCode, onSuccessCancelVoucher(defaultErrorMsg), onErrorCancelVoucher())
     }
 
     private fun onSuccessCancelVoucher(defaultErrorMsg: String): (CancelVoucherData.Response) -> Unit {
         return {
             if (it.response.success) {
                 setPromoData(PromoData(state = TickerCheckoutView.State.EMPTY, description = ""))
-                _isSuccessCancelVoucherCart.postValue(Success(true))
+                _cancelVoucherData.postValue(Success(it.response))
             } else {
                 _isSuccessCancelVoucherCart.postValue(Fail(MessageErrorException(defaultErrorMsg)))
             }
@@ -208,11 +214,7 @@ class DigitalCartViewModel @Inject constructor(
 
     private fun onErrorCancelVoucher(defaultErrorMsg: String): (Throwable) -> Unit {
         return {
-            if (it.message.isNullOrEmpty()) {
-                _isSuccessCancelVoucherCart.postValue(Fail(MessageErrorException(defaultErrorMsg)))
-            } else {
-                _isSuccessCancelVoucherCart.postValue(Fail(it))
-            }
+            _cancelVoucherData.postValue(Fail(it))
         }
     }
 
@@ -258,7 +260,7 @@ class DigitalCartViewModel @Inject constructor(
             requestCheckoutParam.fintechProducts.forEach { fintech ->
                 totalPrice += fintech.value.fintechAmount
             }
-            _totalPrice.postValue(totalPrice)
+            _totalPrice.postValue(totalPrice + attributes.adminFee)
         }
     }
 

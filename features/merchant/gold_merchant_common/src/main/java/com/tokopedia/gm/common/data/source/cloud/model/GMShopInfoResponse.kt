@@ -20,8 +20,6 @@ data class GoldGetPMShopInfoDataModel(
         val isKyc: Boolean? = false,
         @SerializedName("kyc_status_id")
         val kycStatusId: String? = "0",
-        @SerializedName("shop_score_sum")
-        val shopScore: Int? = 0,
         @SerializedName("shop_score_threshold")
         val shopScoreThreshold: Int? = 0,
         @SerializedName("shop_score_pm_pro_threshold")

@@ -1,28 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/content_container"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/channel_title"
-    android:descendantFocusability="blocksDescendants"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingBottom="@dimen/dp_8">
-
-    <com.tokopedia.home_component.customview.DynamicChannelHeaderView
-        android:id="@+id/home_component_header_view"
+    android:layout_height="wrap_content">
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/home_component_divider_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleList"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:background="@color/Unify_Static_Black"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_component_header_view" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@+id/channel_title"
+        android:descendantFocusability="blocksDescendants"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <com.tokopedia.home_component.customview.DynamicChannelHeaderView
+            android:id="@+id/home_component_header_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycleList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/home_component_header_view" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/home_component_divider_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:background="@color/Unify_B500"/>
+</LinearLayout>

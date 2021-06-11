@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/layout_lvl1"
-        android:background="@drawable/shc_post_list_view_background"
+        android:background="@drawable/shc_filter_view_background"
         android:drawablePadding="@dimen/shc_dimen_10dp"
         android:paddingStart="@dimen/layout_lvl2"
         android:paddingTop="@dimen/shc_dimen_6dp"

@@ -5,6 +5,8 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
+ * For product insight search table tracker: https://mynakama.tokopedia.com/datatracker/product/requestdetail/1392
+ *
  * Created By @ilhamsuaib on 22/07/20
  */
 
@@ -206,7 +208,7 @@ object StatisticTracker {
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.PROMO_VIEW,
                 category = TrackingConstant.SHOP_INSIGHT,
-                action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_TABLE, model.dataKey).joinToString(" - "),
+                action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_SIMPLE_TABLE, model.dataKey).joinToString(" - "),
                 label = "$state - $slideNumber"
         )
 
@@ -214,6 +216,48 @@ object StatisticTracker {
         eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
 
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
+    }
+
+    fun sendTableSlideEvent(categoryPage: String, currentPage: Int, totalPage: Int) {
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.CLICK_PRODUCT_INSIGHT,
+                category = categoryPage,
+                action = TrackingConstant.SLIDE_TABLE_WIDGET,
+                label = arrayOf(currentPage, totalPage).joinToString(" - ")
+        ).apply {
+            this[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+            this[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIASELLER
+        }
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendTableFilterImpressionEvent(categoryPage: String) {
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.VIEW_PRODUCT_INSIGHT_IRIS,
+                category = categoryPage,
+                action = TrackingConstant.IMPRESSION_WIDGET_TABLE_FILTER,
+                label = ""
+        ).apply {
+            this[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+            this[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIASELLER
+        }
+
+        TrackingHelper.sendGeneralEvent(eventMap)
+    }
+
+    fun sendTableFilterClickEvent(categoryPage: String, filterOption: String) {
+        val eventMap = TrackingHelper.createMap(
+                event = TrackingConstant.CLICK_PRODUCT_INSIGHT,
+                category = categoryPage,
+                action = TrackingConstant.CLICK_TABLE_WIDGET_FILTER,
+                label = filterOption
+        ).apply {
+            this[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+            this[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIASELLER
+        }
+
+        TrackingHelper.sendGeneralEvent(eventMap)
     }
 
     fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel, position: Int) {
