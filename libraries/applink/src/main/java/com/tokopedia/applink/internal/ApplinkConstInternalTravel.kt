@@ -19,11 +19,11 @@ object ApplinkConstInternalTravel {
 
     const val DASHBOARD_HOTEL = "$INTERNAL_HOTEL/dashboard"
 
-    const val HOTEL_OLD_SRP = "$INTERNAL_HOTEL/result/oldsrp"
+    const val HOTEL_OLD_SRP = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_HOTEL/result/oldsrp"
 
-    const val HOTEL_MAP_SRP = "$INTERNAL_HOTEL/result/map"
+    const val HOTEL_MAP_SRP = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_HOTEL/result/map"
 
-    const val HOTEL_DETAIL = "$INTERNAL_HOTEL/detail"
+    const val HOTEL_DETAIL = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_HOTEL/detail"
 
     const val HOTEL_PROMO_LIST = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://promoNative?menuID=4&categoryID=742"
 
