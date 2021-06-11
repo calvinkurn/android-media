@@ -85,7 +85,6 @@
     <string name="digital_title_fav_number">Nomor Favorit</string>
     <string name="digital_title_prepaid_page">Prabayar</string>
     <string name="digital_title_postpaid_page">Pascabayar</string>
-    <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
     <string name="cc_title_toolbar">Bayar Kartu Kredit</string>
     <string name="recharge_slice_host">recharge_slice</string>
     <string name="recharge_slice_main_path">/main</string>

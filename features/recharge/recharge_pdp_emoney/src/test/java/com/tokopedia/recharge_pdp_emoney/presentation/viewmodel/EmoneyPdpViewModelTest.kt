@@ -18,7 +18,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -46,8 +45,7 @@ class EmoneyPdpViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        emoneyPdpViewModel = EmoneyPdpViewModel(Dispatchers.Unconfined,
-                userSession,
+        emoneyPdpViewModel = EmoneyPdpViewModel(userSession,
                 rechargeCatalogPrefixUseCase,
                 rechargeCatalogProductInputUseCase)
     }

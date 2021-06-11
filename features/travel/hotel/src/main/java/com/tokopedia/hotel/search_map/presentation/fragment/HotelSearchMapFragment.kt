@@ -67,6 +67,7 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.setHeadingText
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -342,6 +343,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     override fun onMapReady(map: GoogleMap) {
+        //for SS-testing purpose
+        mapHotelSearchMap.contentDescription = "MAP READY"
         this.googleMap = map
         setGoogleMap()
     }
@@ -831,26 +834,30 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     private fun addMyLocation(latLong: LatLng) {
-        googleMap.addMarker(MarkerOptions().position(latLong)
-                .icon(bitmapDescriptorFromVector(requireContext(), getPin(MY_LOCATION_PIN)))
-                .anchor(ANCHOR_MARKER_X, ANCHOR_MARKER_Y)
-                .draggable(false))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLong))
+        if(::googleMap.isInitialized) {
+            googleMap.addMarker(MarkerOptions().position(latLong)
+                    .icon(bitmapDescriptorFromVector(requireContext(), getPin(MY_LOCATION_PIN)))
+                    .anchor(ANCHOR_MARKER_X, ANCHOR_MARKER_Y)
+                    .draggable(false))
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLong))
 
-        removeAllMarker()
+            removeAllMarker()
+        }
     }
 
     private fun addMarker(latitude: Double, longitude: Double, price: String) {
         val latLng = LatLng(latitude, longitude)
 
-        context?.run {
-            val marker = googleMap.addMarker(MarkerOptions().position(latLng).icon(createCustomMarker(this, HOTEL_PRICE_INACTIVE_PIN, price))
-                    .title(price)
-                    .anchor(ANCHOR_MARKER_X, ANCHOR_MARKER_Y)
-                    .draggable(false))
-            marker.tag = markerCounter
-            allMarker.add(marker)
-            markerCounter++
+        if(::googleMap.isInitialized) {
+            context?.run {
+                val marker = googleMap.addMarker(MarkerOptions().position(latLng).icon(createCustomMarker(this, HOTEL_PRICE_INACTIVE_PIN, price))
+                        .title(price)
+                        .anchor(ANCHOR_MARKER_X, ANCHOR_MARKER_Y)
+                        .draggable(false))
+                marker.tag = markerCounter
+                allMarker.add(marker)
+                markerCounter++
+            }
         }
     }
 
@@ -1320,6 +1327,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun setupFindWithMapButton() {
         context?.let {
+            btnHotelSearchWithMap.color = FloatingButtonUnify.COLOR_GREEN
             val wrapper = LinearLayout(it)
             wrapper.gravity = Gravity.CENTER
 
@@ -1331,7 +1339,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             val textView = Typography(it)
             textView.apply {
                 setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
-                setTextColor(ContextCompat.getColor(context, R.color.hotel_dms_active_price_marker_color))
+                setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 text = getString(R.string.hotel_search_map_search_with_map)
             }
             wrapper.addView(textView)

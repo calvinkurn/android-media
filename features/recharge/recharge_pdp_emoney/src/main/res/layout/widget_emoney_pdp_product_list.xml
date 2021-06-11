@@ -15,6 +15,7 @@
         app:typographyType="heading_4"
         tools:text="Pilih Nominal"
         android:layout_marginStart="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -22,22 +22,6 @@
         android:background="@color/Unify_N75" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/menu_langganan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/spacing_lvl4"
-        android:text="@string/recharge_pdp_emoney_menu_langganan"
-        android:textColor="@color/Unify_N700_96"
-        app:typographyType="heading_5"
-        android:layout_marginTop="@dimen/spacing_lvl4" />
-
-    <View
-        android:id="@+id/v_second_separator"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/separator_size"
-        android:background="@color/Unify_N75" />
-
-    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/menu_help"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -13,8 +13,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
@@ -24,14 +24,20 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.EmoneyPdpProductViewHolder
+import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment.Companion.EMONEY_PDP_COACH_MARK_HAS_SHOWN
+import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment.Companion.EMONEY_PDP_PREFERENCES_NAME
 import com.tokopedia.recharge_pdp_emoney.utils.EmoneyPdpResponseConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.not
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 /**
  * @author by jessica on 16/04/21
@@ -41,8 +47,11 @@ class EmoneyPdpActivityLoginTest {
     var mActivityRule = ActivityTestRule(EmoneyPdpActivity::class.java,
             false, false)
 
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
+
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
+    private lateinit var localCacheHandler: LocalCacheHandler
 
     @Before
     fun stubAllIntent() {
@@ -63,8 +72,7 @@ class EmoneyPdpActivityLoginTest {
         clickOnFavNumberOnInputView()
         clickProductAndSeeProductDetail()
 
-        Assert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_DIGITAL_EMONEY_LOGIN),
-                hasAllSuccess())
+        MatcherAssert.assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_DIGITAL_EMONEY_LOGIN), hasAllSuccess())
     }
 
     private fun setUpLaunchActivity() {
@@ -74,6 +82,13 @@ class EmoneyPdpActivityLoginTest {
                 Uri.parse("tokopedia://digital/form?category_id=34&menu_id=267&template=electronicmoney")
         )
         mActivityRule.launchActivity(intent)
+
+        localCacheHandler = LocalCacheHandler(context, EMONEY_PDP_PREFERENCES_NAME)
+        localCacheHandler.apply {
+            putBoolean(EMONEY_PDP_COACH_MARK_HAS_SHOWN, true)
+            applyEditor()
+        }
+
         Thread.sleep(2000)
     }
 
@@ -202,7 +217,7 @@ class EmoneyPdpActivityLoginTest {
 
     private fun clickProductAndSeeProductDetail() {
         Espresso.onView(withId(R.id.emoneyBuyWidget)).check(matches(not(isDisplayed())))
-        Espresso.onView(withId(R.id.emoneyProductWidgetTitle)).check(matches(withText("Pilih Nominal")))
+        Espresso.onView(withId(R.id.emoneyProductWidgetTitle)).check(matches(withText("Mau top-up berapa?")))
         Espresso.onView(AllOf.allOf(withId(R.id.emoneyProductTitle), withText("Rp 10.000"))).check(matches(isDisplayed()))
         Espresso.onView(AllOf.allOf(withId(R.id.emoneyProductPrice), withText("Rp10.000"))).check(matches(isDisplayed()))
         Espresso.onView(withId(R.id.emoneyProductListRecyclerView)).check(matches(isDisplayed())).perform(

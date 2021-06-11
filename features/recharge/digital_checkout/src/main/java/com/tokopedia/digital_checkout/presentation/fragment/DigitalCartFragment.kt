@@ -180,8 +180,15 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             closeViewWithMessageAlert(it ?: ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
         })
 
-        viewModel.isSuccessCancelVoucherCart.observe(viewLifecycleOwner, Observer {
-            if (it is Fail) onFailedCancelVoucher(it.throwable)
+        viewModel.cancelVoucherData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.defaultEmptyPromoMessage.isNotEmpty()) {
+                        checkoutBottomViewWidget.promoButtonTitle = it.data.defaultEmptyPromoMessage
+                    }
+                }
+                is Fail -> onFailedCancelVoucher(it.throwable)
+            }
         })
 
         viewModel.totalPrice.observe(viewLifecycleOwner, Observer {
@@ -361,7 +368,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun onFailedCancelVoucher(throwable: Throwable) {
-        var message: String = ErrorNetMessage.MESSAGE_ERROR_DEFAULT
+        checkoutBottomViewWidget.promoButtonState = ButtonPromoCheckoutView.State.ACTIVE
+        var message: String = getString(R.string.digital_checkout_error_remove_coupon_message)
         if (!throwable.message.isNullOrEmpty()) {
             message = ErrorHandler.getErrorMessage(activity, throwable)
         }
@@ -566,7 +574,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun onResetPromoDiscount() {
         digitalAnalytics.eventClickCancelApplyCoupon(getCategoryName(), getPromoData().promoCode)
-        viewModel.cancelVoucherCart()
+        viewModel.cancelVoucherCart(getPromoData().promoCode)
     }
 
     private fun navigateToPromoListPage() {
@@ -597,7 +605,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     companion object {
         private const val ARG_PASS_DATA = "ARG_PASS_DATA"
         private const val ARG_SUBSCRIPTION_PARAMS = "ARG_SUBSCRIPTION_PARAMS"
-        private const val TRANSACTION_TYPE_PROTECTION = "purchase-protection"
 
         private const val EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA"
         private const val EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER = "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER"

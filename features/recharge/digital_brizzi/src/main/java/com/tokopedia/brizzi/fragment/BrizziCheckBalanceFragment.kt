@@ -104,11 +104,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
     private fun isSupportBrizzi(): Boolean {
         var abiName = ""
         val abis = mutableListOf<String>()
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            abiName = Build.CPU_ABI
-        } else {
-            abis.addAll(Build.SUPPORTED_ABIS)
-        }
+        abis.addAll(Build.SUPPORTED_ABIS)
         return abiName == ARCHITECTURE_ARM64 || abiName == ARCHITECTURE_ARM32 ||
                 abis.contains(ARCHITECTURE_ARM64) || abis.contains(ARCHITECTURE_ARM32)
     }
@@ -137,7 +133,7 @@ class BrizziCheckBalanceFragment : NfcCheckBalanceFragment() {
     }
 
     private fun executeBrizzi(needRefreshToken: Boolean, intent: Intent) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && isSupportBrizzi()) {
+        if (isSupportBrizzi()) {
             getBalanceBrizzi(needRefreshToken, intent)
 
             brizziBalanceViewModel.emoneyInquiry.observe(this, Observer {

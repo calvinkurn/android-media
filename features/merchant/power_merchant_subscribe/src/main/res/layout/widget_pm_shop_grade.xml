@@ -76,6 +76,7 @@
             android:layout_margin="@dimen/layout_lvl2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:unify_image_placeholder="@android:color/transparent"
             tools:src="@tools:sample/avatars" />
 
         <com.tokopedia.unifycomponents.ImageUnify

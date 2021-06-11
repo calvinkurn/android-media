@@ -2,7 +2,7 @@ package com.tokopedia.recharge_pdp_emoney.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import androidx.lifecycle.ViewModel
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
@@ -16,17 +16,15 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 /**
  * @author by jessica on 01/04/21
  */
-class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
-                                             private val userSession: UserSessionInterface,
+class EmoneyPdpViewModel @Inject constructor(private val userSession: UserSessionInterface,
                                              private val rechargeCatalogPrefixSelectUseCase: RechargeCatalogPrefixSelectUseCase,
                                              private val rechargeCatalogProductInputUseCase: RechargeCatalogProductInputUseCase)
-    : BaseViewModel(dispatcher) {
+    : ViewModel() {
 
     private val _inputViewError = MutableLiveData<String>()
     val inputViewError: LiveData<String>
@@ -77,10 +75,8 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                     inputNumber.startsWith(it.value)
                 }
                 _selectedOperator.value = operatorSelected
-            } else {
-                if (catalogPrefixSelect.value is Fail) {
-                    _catalogPrefixSelect.value = catalogPrefixSelect.value as Fail
-                }
+            } else if (catalogPrefixSelect.value is Fail) {
+                _catalogPrefixSelect.value = catalogPrefixSelect.value as Fail
             }
         } catch (e: Throwable) {
             _inputViewError.value = errorNotFoundString
@@ -116,13 +112,15 @@ class EmoneyPdpViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     fun generateCheckoutPassData(copiedPromoCode: String, clientNumber: String,
                                  selectedProductId: String? = null,
                                  selectedOperatorId: String? = null): DigitalCheckoutPassData {
-        val checkoutPassData = DigitalCheckoutPassData()
-        checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
-        checkoutPassData.voucherCodeCopied = copiedPromoCode
-        checkoutPassData.clientNumber = clientNumber
-        checkoutPassData.productId = selectedProductId ?: selectedProduct.value?.id
-        checkoutPassData.operatorId = selectedOperatorId ?: selectedOperator.value?.key
-        checkoutPassData.isFromPDP = true
+        val checkoutPassData = DigitalCheckoutPassData().apply {
+            idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
+            voucherCodeCopied = copiedPromoCode
+            this.clientNumber = clientNumber
+            productId = selectedProductId ?: selectedProduct.value?.id
+            operatorId = selectedOperatorId ?: selectedOperator.value?.key
+            isFromPDP = true
+        }
+
         digitalCheckoutPassData = checkoutPassData
         return digitalCheckoutPassData
     }

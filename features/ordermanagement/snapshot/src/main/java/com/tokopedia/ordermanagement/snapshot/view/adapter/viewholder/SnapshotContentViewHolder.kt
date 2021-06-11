@@ -198,7 +198,7 @@ class SnapshotContentViewHolder(itemView: View, private val actionListener: Snap
             dividerKondisi.visible()
         }
 
-        val berat = dataObject.productTotalWeightFormatted
+        val berat = dataObject.productWeightFormatted
         if (berat.isNotEmpty()) {
             beratLabel.visible()
             beratValue.visible()
