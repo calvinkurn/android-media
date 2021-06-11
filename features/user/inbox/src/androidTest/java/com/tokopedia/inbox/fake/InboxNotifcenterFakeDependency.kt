@@ -10,6 +10,7 @@ import com.tokopedia.inbox.fake.domain.usecase.notifcenter.recom.FakeGetRecommen
 import com.tokopedia.inbox.fake.domain.usecase.notifcenter.topads.FakeTopAdsRepository
 import com.tokopedia.inbox.test.R
 import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
+import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
 import com.tokopedia.notifcenter.data.entity.orderlist.NotifOrderListResponse
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.topads.sdk.domain.model.TopAdsmageViewResponse
@@ -43,6 +44,9 @@ class InboxNotifcenterFakeDependency {
     }
 
     private fun initResponse() {
+        notifcenterDetailUseCase.response = AndroidFileUtil.parseRaw(
+            R.raw.notifcenter_detail_v3, NotifcenterDetailResponse::class.java
+        )
         getRecommendationUseCase.response = AndroidFileUtil.parseRaw(
             R.raw.notifcenter_recom, RecommendationEntity::class.java
         )
