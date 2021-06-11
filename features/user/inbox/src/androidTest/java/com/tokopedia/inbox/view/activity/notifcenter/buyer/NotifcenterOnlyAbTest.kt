@@ -4,6 +4,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.inbox.R
+import com.tokopedia.inbox.common.viewmatcher.withTotalItem
 import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
@@ -18,6 +19,7 @@ class NotifcenterOnlyAbTest : InboxNotifcenterTest() {
         }
 
         // Then
+        onView(withId(R.id.rv_icon_list)).check(matches(withTotalItem(1)))
         onView(withId(R.id.bottom_nav_top_shadow)).check(matches(not(isDisplayed())))
         onView(withId(R.id.inbox_bottom_nav)).check(matches(not(isDisplayed())))
     }
