@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.screenshot_observer.Screenshot
 import com.tokopedia.sellerfeedback.SellerFeedbackConstants.REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK
@@ -62,7 +63,7 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     }
 
     private fun openFeedbackForm(uri: Uri) {
-        val intent = RouteManager.getIntent(context, ApplinkConst.SellerApp.SELLER_FEEDBACK)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_FEEDBACK)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.putExtra(SellerFeedbackFragment.EXTRA_URI_IMAGE, uri)
         context.startActivity(intent)
