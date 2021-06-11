@@ -21,7 +21,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery.common.utils.UrlParamUtils
@@ -259,7 +259,7 @@ abstract class BaseSearchCategoryFragment:
         val urlParser = URLParser(autoCompleteApplink)
 
         val params = urlParser.paramKeyValueMap
-        params[SearchApiConst.BASE_SRP_APPLINK] = ApplinkConstInternalTokoMart.SEARCH
+        params[SearchApiConst.BASE_SRP_APPLINK] = ApplinkConstInternalTokopediaNow.SEARCH
 
         return params
     }
@@ -414,7 +414,7 @@ abstract class BaseSearchCategoryFragment:
     override fun onSeeAllCategoryClicked() {
         RouteManager.route(
                 context,
-                ApplinkConstInternalTokoMart.CATEGORY_LIST,
+                ApplinkConstInternalTokopediaNow.CATEGORY_LIST,
                 getViewModel().warehouseId,
         )
     }
