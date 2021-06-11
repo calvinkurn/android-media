@@ -5,9 +5,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.withdraw.auto_withdrawal.domain.model.*
 import com.tokopedia.withdraw.auto_withdrawal.domain.usecase.*
-import com.tokopedia.withdraw.saldowithdrawal.presentation.viewmodel.util.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
