@@ -81,8 +81,24 @@ class WidgetNotificationViewHolder constructor(
         bindWidgetBox(element)
         bindHistoryBox(element)
         bindMessage(element)
+        bindIconMarkSeenAnchor(element)
         bindPaddingBottom(element)
         bindContainerUnify(element)
+    }
+
+    private fun bindIconMarkSeenAnchor(element: NotificationUiModel) {
+        val viewAnchor = if (widgetBox?.isVisible == true) {
+            widgetBox
+        } else {
+            message
+        }
+        viewAnchor ?: return
+        val lp = parentIndicatorMark?.layoutParams as? ConstraintLayout.LayoutParams
+        lp?.let {
+            lp.topToTop = viewAnchor.id
+            lp.bottomToBottom = viewAnchor.id
+        }
+        parentIndicatorMark?.layoutParams = lp
     }
 
     private fun bindContainerUnify(element: NotificationUiModel) {
@@ -230,7 +246,9 @@ class WidgetNotificationViewHolder constructor(
     }
 
     private fun bindMessage(element: NotificationUiModel) {
-        message?.shouldShowWithAction(element.widget.message.isNotEmpty()) {
+        message?.shouldShowWithAction(
+            element.widget.message.isNotEmpty() || element.shortDescHtml.isNotEmpty()
+        ) {
             bindMessageMargin(element)
             val widgetMessage = if (element.noWidgetWithTrackHistory()) {
                 element.shortDescHtml
