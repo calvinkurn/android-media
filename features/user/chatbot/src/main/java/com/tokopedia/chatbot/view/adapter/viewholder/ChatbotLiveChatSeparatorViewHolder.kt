@@ -16,16 +16,11 @@ class ChatbotLiveChatSeparatorViewHolder(itemView: View) : AbstractViewHolder<Ch
     private val liveChatSeprator: TextView = itemView.findViewById(R.id.chatbot_livechat_seprator)
 
     companion object {
-        var showBottomSheet = true
         @LayoutRes
         val LAYOUT = R.layout.chatbot_live_chat_seprator_layout
     }
 
     override fun bind(element: ChatSepratorViewModel) {
         liveChatSeprator.text = String.format("%s. %s", element.sepratorMessage, ChatBotTimeConverter.getHourTime(element.dividerTiemstamp))
-        if(showBottomSheet) {
-            showBottomSheet = false
-            RouteManager.route(itemView.context, ApplinkConst.TELEPHONY_MASKING)
-        }
     }
 }
