@@ -17,7 +17,8 @@ object Const {
 
     const val WHITE_LIST_KEY_STATISTIC_PRODUCTS = "statistic-products"
 
-    const val SHOW_PRODUCT_INSIGHT_COACHMARK_KEY = "show_product_insight_coachmark"
+    const val SHOW_PRODUCT_INSIGHT_COACH_MARK_KEY = "show_product_insight_coachmark"
+    const val HAS_SHOWN_OPERATIONAL_INSIGHT_COACH_MARK_KEY = "has_shown_operational_insight_coac_hmark"
 
     object PageSource {
         const val SHOP_INSIGHT = "shop-insight"

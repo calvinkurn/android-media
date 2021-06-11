@@ -36,4 +36,6 @@
     <string name="stc_learn_more">Pelajari Selengkapnya</string>
     <string name="stc_product_coachmark_title">Pantau statistik produkmu dulu, yuk!</string>
     <string name="stc_product_coachmark_desc">Cek dan lihat perkembangan Performa produk tokomu di sini, ya.</string>
+    <string name="stc_operational_coachmark_title">Pantau statistik produkmu dulu, yuk!</string>
+    <string name="stc_operational_coachmark_desc">Cek dan lihat perkembangan Performa produk tokomu di sini, ya.</string>
 </resources>
