@@ -9,6 +9,8 @@ import com.tokopedia.sellerfeedback.presentation.uimodel.ImageFeedbackUiModel
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import io.mockk.coEvery
 import io.mockk.coVerify
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import java.io.File
@@ -96,7 +98,10 @@ class SellerFeedbackViewModelTest : SellerFeedbackViewModelTestFixture() {
 
         viewModel.setImages(images)
         viewModel.submitFeedback(sellerFeedback)
-        viewModel.getSubmitResult().verifyValueEquals(SubmitResult.UploadFail(errorMessage))
+
+        val submitResult = viewModel.getSubmitResult().value
+        assertTrue(submitResult is SubmitResult.UploadFail)
+        assertEquals(errorMessage, (submitResult as SubmitResult.UploadFail).cause.message)
 
         coVerify { uploaderUseCase(uploadParam1) }
     }
@@ -131,7 +136,10 @@ class SellerFeedbackViewModelTest : SellerFeedbackViewModelTestFixture() {
 
         viewModel.setImages(images)
         viewModel.submitFeedback(sellerFeedback)
-        viewModel.getSubmitResult().verifyValueEquals(SubmitResult.SubmitFail(errorMessage))
+
+        val submitResult = viewModel.getSubmitResult().value
+        assertTrue(submitResult is SubmitResult.SubmitFail)
+        assertEquals(errorMessage, (submitResult as SubmitResult.SubmitFail).cause.message)
 
         coVerify { uploaderUseCase(uploadParam1) }
         coVerify { submitGlobalFeedbackUseCase.executeOnBackground() }
@@ -156,11 +164,12 @@ class SellerFeedbackViewModelTest : SellerFeedbackViewModelTestFixture() {
 
         coEvery { uploaderUseCase(uploadParam1) } returns UploadResult.Success(anyString())
 
-        coEvery { submitGlobalFeedbackUseCase.executeOnBackground() } throws Throwable()
+        val throwable = Throwable()
+        coEvery { submitGlobalFeedbackUseCase.executeOnBackground() } throws throwable
 
         viewModel.setImages(images)
         viewModel.submitFeedback(sellerFeedback)
-        viewModel.getSubmitResult().verifyValueEquals(SubmitResult.NetworkFail)
+        viewModel.getSubmitResult().verifyValueEquals(SubmitResult.NetworkFail(throwable))
 
         coVerify { uploaderUseCase(uploadParam1) }
         coVerify { submitGlobalFeedbackUseCase.executeOnBackground() }
