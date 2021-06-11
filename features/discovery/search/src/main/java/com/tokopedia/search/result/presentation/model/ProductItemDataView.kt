@@ -89,21 +89,6 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
         )
     }
 
-    fun getProductAdsAsObjectDataLayer(): Any {
-        return DataLayer.mapOf(
-                "name", productName,
-                "id", productID,
-                "price", price.replace("[^0-9]".toRegex(), ""),
-                "brand", "none / other",
-                "category", if (categoryBreadcrumb?.isEmpty() == true) "none / other" else categoryBreadcrumb,
-                "variant", "none / other",
-                "list", "/searchproduct - topads productlist",
-                "position", position.toString(),
-                "dimension83", getFreeOngkirDataLayer(),
-                "dimension90", dimension90,
-        )
-    }
-
     private fun getFreeOngkirDataLayer(): String {
         val isFreeOngkirActive = isFreeOngkirActive
         val hasLabelGroupFulfillment = hasLabelGroupFulfillment
