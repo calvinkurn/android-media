@@ -49,7 +49,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             thanks_dg_rec_category_name.hide()
         } else {
             thanks_dg_rec_category_name.show()
-            thanks_dg_rec_category_name.text = categoryName.capitalize()
+            thanks_dg_rec_category_name.text = categoryName.trim().capitalize()
         }
     }
 
@@ -58,7 +58,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             thanks_dg_rec_product_name.hide()
         } else {
             thanks_dg_rec_product_name.show()
-            thanks_dg_rec_product_name.text = element.subtitle
+            thanks_dg_rec_product_name.text = element.subtitle.trim()
         }
     }
 
@@ -72,7 +72,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             thanks_dg_rec_product_name.maxLines = 3
         } else {
             thanks_dg_rec_client_number.show()
-            thanks_dg_rec_client_number.text = element.label1
+            thanks_dg_rec_client_number.text = element.label1.trim()
         }
     }
 
