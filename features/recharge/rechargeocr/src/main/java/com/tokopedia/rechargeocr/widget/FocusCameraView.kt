@@ -5,7 +5,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
-import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -31,45 +30,28 @@ class FocusCameraView @JvmOverloads constructor(context: Context, attrs: Attribu
         mSemiBlackPaint.strokeWidth = CONST_STROKE_WIDTH.toFloat()
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         mPath.reset()
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mPath.addRect(left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
-                    (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
-                    right - (right - left) / RIGHT_DIMEN_DIVIDER.toFloat(),
-                    (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
-                    Path.Direction.CW)
-        } else {
-            mPath.addRoundRect(
-                    left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
-                    (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
-                    right - (right - left) / RIGHT_DIMEN_DIVIDER.toFloat(),
-                    (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
-                    CONST_RADIUS.toFloat(),
-                    CONST_RADIUS.toFloat(),
-                    Path.Direction.CW
-            )
-        }
+        mPath.addRoundRect(
+                left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
+                (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
+                right - (right - left) / RIGHT_DIMEN_DIVIDER.toFloat(),
+                (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
+                CONST_RADIUS.toFloat(),
+                CONST_RADIUS.toFloat(),
+                Path.Direction.CW
+        )
         mPath.fillType = Path.FillType.INVERSE_EVEN_ODD
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            canvas!!.drawRect(left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
-                    (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
-                    right - (right - left) / RIGHT_DIMEN_DIVIDER.toFloat(),
-                    (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
-                    mTransparentPaint)
-        } else {
-            canvas!!.drawRoundRect(left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
-                    (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
-                    right - (right - left) / RIGHT_DIMEN_DIVIDER.toFloat(),
-                    (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
-                    CONST_RADIUS.toFloat(),
-                    CONST_RADIUS.toFloat(),
-                    mTransparentPaint)
-        }
-
+        canvas.drawRoundRect(left + (right - left) / LEFT_DIMEN_DIVIDER.toFloat(),
+                (top + (bottom - top) / TOP_DIMEN_DIVIDER).toFloat(),
+                right - (right - left) / RIGHT_DIMEN_DIVIDER.toFloat(),
+                (bottom - (bottom - top) / BOTTOM_DIMEN_DIVIDER).toFloat(),
+                CONST_RADIUS.toFloat(),
+                CONST_RADIUS.toFloat(),
+                mTransparentPaint)
         canvas.drawPath(mPath, mSemiBlackPaint)
         canvas.clipPath(mPath)
         canvas.drawColor(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400_68))
