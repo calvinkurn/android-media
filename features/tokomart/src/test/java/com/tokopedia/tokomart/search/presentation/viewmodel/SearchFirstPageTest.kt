@@ -1,6 +1,7 @@
 package com.tokopedia.tokomart.search.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.tokomart.category.domain.model.CategoryModel
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.assertBannerDataView
@@ -105,5 +106,18 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)
         `Then assert get first page success interactions`(searchModel)
+    }
+
+    @Test
+    fun `test first page should get warehouse id if shop id is empty`() {
+        val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
+
+        `Given choose address data`(ChooseAddressConstant.emptyAddress)
+        `Given search view model`()
+        `Given get search first page use case will be successful`(searchModel)
+
+        `When view created`()
+
+        
     }
 }

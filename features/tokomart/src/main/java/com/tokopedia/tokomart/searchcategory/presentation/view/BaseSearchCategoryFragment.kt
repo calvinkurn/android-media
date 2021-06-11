@@ -8,6 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.constraintlayout.widget.ConstraintSet.BOTTOM
+import androidx.constraintlayout.widget.ConstraintSet.END
+import androidx.constraintlayout.widget.ConstraintSet.PARENT_ID
+import androidx.constraintlayout.widget.ConstraintSet.START
+import androidx.constraintlayout.widget.ConstraintSet.TOP
 import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -47,6 +54,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokomart.searchcategory.presentation.customview.StickySingleHeaderView
@@ -87,6 +95,7 @@ abstract class BaseSearchCategoryFragment:
     protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
     protected var categoryChooserBottomSheet: CategoryChooserBottomSheet? = null
 
+    protected var container: ConstraintLayout? = null
     protected var navToolbar: NavToolbar? = null
     protected var recyclerView: RecyclerView? = null
     protected var miniCartWidget: MiniCartWidget? = null
@@ -131,7 +140,6 @@ abstract class BaseSearchCategoryFragment:
         configureNavToolbar()
         configureStickyView()
         configureStatusBar()
-        configureMiniCart()
         configureRecyclerView()
         observeViewModel()
 
@@ -147,6 +155,7 @@ abstract class BaseSearchCategoryFragment:
         headerBackground = view.findViewById(R.id.tokonowSearchCategoryBackgroundImage)
         contentGroup = view.findViewById(R.id.tokonowSearchCategoryContentGroup)
         loaderUnify = view.findViewById(R.id.tokonowSearchCategoryLoader)
+        container = view.findViewById(R.id.tokonowSearchCategoryContainer)
     }
 
     protected open fun configureNavToolbar() {
@@ -293,17 +302,6 @@ abstract class BaseSearchCategoryFragment:
         statusBarBackground?.background = drawable
     }
 
-    protected open fun configureMiniCart() {
-        val shopIds = listOf(getViewModel().shopId)
-
-        miniCartWidget?.initialize(
-                shopIds = shopIds,
-                fragment = this,
-                listener = this,
-                autoInitializeData = false,
-        )
-    }
-
     protected open fun configureRecyclerView() {
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, VERTICAL)
         staggeredGridLayoutManager.gapStrategy = GAP_HANDLING_NONE
@@ -372,6 +370,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().dynamicFilterModelLiveData.observe(this::onDynamicFilterModelChanged)
         getViewModel().productCountAfterFilterLiveData.observe(this::setFilterProductCount)
         getViewModel().isL3FilterPageOpenLiveData.observe(this::configureL3BottomSheet)
+        getViewModel().shopIdLiveData.observe(this::onShopIdUpdated)
         getViewModel().miniCartWidgetLiveData.observe(this::updateMiniCartWidget)
         getViewModel().isShowMiniCartLiveData.observe(this::updateMiniCartWidgetVisibility)
         getViewModel().isRefreshPageLiveData.observe(this::scrollToTop)
@@ -380,6 +379,18 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().isHeaderBackgroundVisibleLiveData
                 .observe(this::updateHeaderBackgroundVisibility)
         getViewModel().isContentLoadingLiveData.observe(this::updateContentVisibility)
+        getViewModel().isOutOfServiceLiveData.observe(this::updateOutOfServiceVisibility)
+    }
+
+    protected open fun onShopIdUpdated(shopId: String) {
+        if (shopId.isEmpty()) return
+
+        miniCartWidget?.initialize(
+                shopIds = listOf(shopId),
+                fragment = this,
+                listener = this,
+                autoInitializeData = false,
+        )
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
@@ -582,6 +593,44 @@ abstract class BaseSearchCategoryFragment:
     protected open fun updateContentVisibility(isLoadingVisible: Boolean) {
         loaderUnify?.showWithCondition(isLoadingVisible)
         contentGroup?.showWithCondition(!isLoadingVisible)
+    }
+
+    protected var noAddressEmptyStateView: NoAddressEmptyStateView? = null
+
+    protected open fun updateOutOfServiceVisibility(isOutOfService: Boolean) {
+        if (isOutOfService)
+            initializeOutOfServiceView()
+
+        noAddressEmptyStateView?.showWithCondition(isOutOfService)
+        contentGroup?.showWithCondition(!isOutOfService)
+    }
+
+    protected open fun initializeOutOfServiceView() {
+        val context = context ?: return
+        val container = container ?: return
+        val navToolbar = navToolbar ?: return
+
+        noAddressEmptyStateView = NoAddressEmptyStateView(context).also {
+            it.id = View.generateViewId()
+
+            container.addView(it)
+            configureOutOfServiceConstraint(container, it, navToolbar)
+        }
+    }
+
+    private fun configureOutOfServiceConstraint(
+            container: ConstraintLayout,
+            outOfServiceView: NoAddressEmptyStateView,
+            navToolbar: NavToolbar
+    ) {
+        val constraintSet = ConstraintSet()
+
+        constraintSet.clone(container)
+        constraintSet.connect(outOfServiceView.id, START, PARENT_ID, START)
+        constraintSet.connect(outOfServiceView.id, END, PARENT_ID, END)
+        constraintSet.connect(outOfServiceView.id, TOP, navToolbar.id, BOTTOM)
+
+        constraintSet.applyTo(container)
     }
 
     override fun onResume() {

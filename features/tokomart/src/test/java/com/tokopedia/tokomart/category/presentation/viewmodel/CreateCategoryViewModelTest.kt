@@ -32,8 +32,6 @@ class CreateCategoryViewModelTest:
 
         `Then assert query param has default sort`()
         `Then assert category id`()
-        `Then assert shop id from choose address`()
-        `Then assert warehouse id from choose address`()
         `Then assert content is loading`()
     }
 
@@ -49,14 +47,6 @@ class CreateCategoryViewModelTest:
                 categoryViewModel.categoryId,
                 shouldBe(defaultCategoryId)
         )
-    }
-
-    private fun `Then assert shop id from choose address`() {
-        assertThat(categoryViewModel.shopId, shouldBe(dummyChooseAddressData.shop_id))
-    }
-
-    private fun `Then assert warehouse id from choose address`() {
-        assertThat(categoryViewModel.warehouseId, shouldBe(dummyChooseAddressData.warehouse_id))
     }
 
     private fun `Then assert content is loading`() {

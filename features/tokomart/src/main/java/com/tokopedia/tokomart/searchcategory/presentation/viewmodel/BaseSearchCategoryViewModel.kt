@@ -11,6 +11,7 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_SOURCE_SEARCH
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_ADDRESS_ID
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_CITY_ID
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_DISTRICT_ID
@@ -29,6 +30,8 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
@@ -72,6 +75,7 @@ abstract class BaseSearchCategoryViewModel(
         protected val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         protected val addToCartUseCase: AddToCartUseCase,
         protected val updateCartUseCase: UpdateCartUseCase,
+        protected val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
         protected val chooseAddressWrapper: ChooseAddressWrapper,
         protected val abTestPlatformWrapper: ABTestPlatformWrapper,
 ): BaseViewModel(baseDispatcher.io) {
@@ -90,10 +94,8 @@ abstract class BaseSearchCategoryViewModel(
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
-    val shopId: String
-        get() = chooseAddressData?.shop_id ?: ""
-    val warehouseId: String
-        get() = chooseAddressData?.warehouse_id ?: ""
+    var warehouseId = ""
+        private set
     var autoCompleteApplink = ""
         private set
 
@@ -135,8 +137,14 @@ abstract class BaseSearchCategoryViewModel(
     protected val isHeaderBackgroundVisibleMutableLiveData = MutableLiveData(true)
     val isHeaderBackgroundVisibleLiveData: LiveData<Boolean> = isHeaderBackgroundVisibleMutableLiveData
 
-    protected val isContentLoadingMutableLiveData = SingleLiveEvent<Boolean>()
+    protected val isContentLoadingMutableLiveData = MutableLiveData(true)
     val isContentLoadingLiveData: LiveData<Boolean> = isContentLoadingMutableLiveData
+
+    protected val shopIdMutableLiveData = MutableLiveData("")
+    val shopIdLiveData: LiveData<String> = shopIdMutableLiveData
+
+    protected val isOutOfServiceMutableLiveData = MutableLiveData(false)
+    val isOutOfServiceLiveData: LiveData<Boolean> = isOutOfServiceMutableLiveData
 
     init {
         showLoading()
@@ -162,7 +170,53 @@ abstract class BaseSearchCategoryViewModel(
                     .getABTestRemoteConfig()
                     ?.getString(NAVIGATION_EXP_TOP_NAV, NAVIGATION_VARIANT_OLD)
 
-    abstract fun onViewCreated()
+    open fun onViewCreated() {
+        val shopId = chooseAddressData?.shop_id ?: ""
+        val warehouseId = chooseAddressData?.warehouse_id ?: ""
+
+        if (shopId.isValidId())
+            processLoadDataWithShopId(shopId, warehouseId)
+        else
+            getShopIdBeforeLoadData()
+    }
+
+    protected open fun processLoadDataWithShopId(shopId: String, warehouseId: String) {
+        this.shopIdMutableLiveData.value = shopId
+        this.warehouseId = warehouseId
+
+        if (warehouseId.isValidId())
+            loadFirstPage()
+        else
+            showOutOfCoverage()
+    }
+
+    private fun getShopIdBeforeLoadData() {
+        getShopAndWarehouseUseCase.getStateChosenAddress(
+                ::onGetShopAndWarehouseSuccess,
+                ::onGetShopAndWarehouseFailed,
+                DEFAULT_VALUE_SOURCE_SEARCH
+        )
+    }
+
+    private fun onGetShopAndWarehouseSuccess(state: GetStateChosenAddressResponse) {
+        val tokonowData = state.tokonow
+        val shopId = tokonowData.shopId.toString()
+        val warehouseId = tokonowData.warehouseId.toString()
+
+        processLoadDataWithShopId(shopId, warehouseId)
+
+        refreshMiniCart()
+    }
+
+    private fun showOutOfCoverage() {
+        isOutOfServiceMutableLiveData.value = true
+    }
+
+    protected open fun onGetShopAndWarehouseFailed(throwable: Throwable) {
+
+    }
+
+    protected abstract fun loadFirstPage()
 
     protected open fun createRequestParams(): RequestParams {
         val tokonowQueryParam = createTokonowQueryParams()
@@ -619,13 +673,10 @@ abstract class BaseSearchCategoryViewModel(
             onViewReloadPage()
     }
 
-    private fun getIsChooseAddressUpdated(): Boolean {
-        return chooseAddressData?.let {
-            chooseAddressWrapper.isChooseAddressUpdated(it)
-        } ?: false
-    }
+    protected open fun refreshMiniCart() {
+        val shopId = shopIdLiveData.value ?: ""
+        if (!shopId.isValidId()) return
 
-    private fun refreshMiniCart() {
         getMiniCartListSimplifiedUseCase.cancelJobs()
         getMiniCartListSimplifiedUseCase.setParams(listOf(shopId))
         getMiniCartListSimplifiedUseCase.execute(
@@ -633,6 +684,8 @@ abstract class BaseSearchCategoryViewModel(
                 ::onGetMiniCartDataFailed,
         )
     }
+
+    private fun String.isValidId() = this.isNotEmpty() && this != "0"
 
     private fun onGetMiniCartDataSuccess(miniCartSimplifiedData: MiniCartSimplifiedData) {
         updateMiniCartWidgetData(miniCartSimplifiedData)
@@ -726,6 +779,12 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun onGetMiniCartDataFailed(throwable: Throwable) {
 
+    }
+
+    private fun getIsChooseAddressUpdated(): Boolean {
+        return chooseAddressData?.let {
+            chooseAddressWrapper.isChooseAddressUpdated(it)
+        } ?: false
     }
 
     open fun onViewATCProductNonVariant(productItem: ProductItemDataView, quantity: Int) {
