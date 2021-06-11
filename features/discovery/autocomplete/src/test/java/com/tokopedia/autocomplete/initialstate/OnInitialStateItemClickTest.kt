@@ -28,10 +28,9 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
         val data = findDataView<RecentSearchDataView>()
         val item = data.list.findByType(TYPE_KEYWORD)
-        val position = data.list.indexOf(item)
 
-        `when recent search item clicked` (item, position)
-        `then verify view interaction is correct`(item, position)
+        `when recent search item clicked` (item)
+        `then verify view interaction is correct`(item)
     }
 
     private fun `given initial state use case capture request params`(list: List<InitialStateData>) {
@@ -41,27 +40,27 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
         }
     }
 
-    private fun `when recent search item clicked`(item: BaseItemInitialStateSearch, position: Int) {
-        initialStatePresenter.onRecentSearchItemClicked(item, position)
+    private fun `when recent search item clicked`(item: BaseItemInitialStateSearch) {
+        initialStatePresenter.onRecentSearchItemClicked(item)
     }
 
-    private fun `then verify view interaction is correct`(item: BaseItemInitialStateSearch, position: Int) {
+    private fun `then verify view interaction is correct`(item: BaseItemInitialStateSearch) {
+        initialStateView.onClickRecentSearch(item)
+    }
+
+    private fun InitialStateContract.View.onClickRecentSearch(item: BaseItemInitialStateSearch) {
         verifyOrder {
-            initialStateView.onClickRecentSearch(item, position)
+            trackEventClickRecentSearch(getItemEventLabelForTracking(item), item.dimension90)
+            route(item.applink, initialStatePresenter.getSearchParameter())
+            finish()
         }
     }
 
-    private fun InitialStateContract.View.onClickRecentSearch(item: BaseItemInitialStateSearch, position: Int) {
-        trackEventClickRecentSearch(getItemEventLabelForTracking(item, position))
-        route(item.applink, initialStatePresenter.getSearchParameter())
-        finish()
-    }
-
-    private fun getItemEventLabelForTracking(item: BaseItemInitialStateSearch, adapterPosition: Int): String {
+    private fun getItemEventLabelForTracking(item: BaseItemInitialStateSearch): String {
         return String.format(
                 "value: %s - po: %s - applink: %s",
                 item.title,
-                (adapterPosition + 1).toString(),
+                item.position,
                 item.applink
         )
     }
@@ -72,9 +71,8 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
         val data = findDataView<RecentSearchDataView>()
         val item = data.list.findByType(TYPE_SHOP)
-        val position = data.list.indexOf(item)
 
-        `when recent search item clicked` (item, position)
+        `when recent search item clicked` (item)
         `then verify view interaction is correct for recent shop`(item)
     }
 
@@ -84,7 +82,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
     private fun InitialStateContract.View.onClickRecentShop(item: BaseItemInitialStateSearch) {
         verifyOrder {
-            trackEventClickRecentShop(getRecentShopLabelForTracking(item), any())
+            trackEventClickRecentShop(getRecentShopLabelForTracking(item), any(), item.dimension90)
             route(item.applink, initialStatePresenter.getSearchParameter())
             finish()
         }

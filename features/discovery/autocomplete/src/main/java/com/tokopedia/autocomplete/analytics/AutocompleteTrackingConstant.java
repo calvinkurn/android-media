@@ -16,6 +16,7 @@ public class AutocompleteTrackingConstant {
     static String ACTION_FIELD = "actionField";
     static String LIST = "list";
     static String PRODUCTS = "products";
+    static String PAGE_SOURCE = "pageSource";
 
     static String USER_ID = "userId";
     static final String SCREEN_NAME = "screenName";

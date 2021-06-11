@@ -73,7 +73,7 @@ class RecentSearchDoubleLineItemViewHolder(itemView: View, private val clickList
 
     private fun bindListener(item: BaseItemInitialStateSearch) {
         itemView.actionShortcutButton?.setOnClickListener { _ -> clickListener.onDeleteRecentSearchItem(item) }
-        itemView.autocompleteDoubleLineItem?.setOnClickListener { _ -> clickListener.onRecentSearchItemClicked(item, adapterPosition) }
+        itemView.autocompleteDoubleLineItem?.setOnClickListener { _ -> clickListener.onRecentSearchItemClicked(item) }
     }
 
     private fun <T : View> T?.showWithAction(shouldShow: Boolean, action: (T) -> Unit) {

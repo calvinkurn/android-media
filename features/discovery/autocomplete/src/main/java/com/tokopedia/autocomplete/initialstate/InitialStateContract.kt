@@ -23,9 +23,9 @@ interface InitialStateContract {
 
         fun finish()
 
-        fun trackEventClickRecentSearch(label: String)
+        fun trackEventClickRecentSearch(label: String, pageSource: String)
 
-        fun trackEventClickRecentShop(label: String, userId: String)
+        fun trackEventClickRecentShop(label: String, userId: String, pageSource: String)
 
         fun trackEventClickSeeMoreRecentSearch(userId: String)
 
@@ -59,7 +59,7 @@ interface InitialStateContract {
 
         fun getQueryKey(): String
 
-        fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
+        fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch)
 
         fun recentSearchSeeMoreClicked()
 

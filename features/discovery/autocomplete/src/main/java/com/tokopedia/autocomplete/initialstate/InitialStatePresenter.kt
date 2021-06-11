@@ -228,7 +228,7 @@ class InitialStatePresenter @Inject constructor(
     private fun addRecentSearchDataWithoutSeeMoreButton(listVisitable: MutableList<Visitable<*>>, listInitialStateItem: List<InitialStateItem>) {
         onRecentSearchImpressed(getDataLayerForPromo(listInitialStateItem))
 
-        listVisitable.add(listInitialStateItem.convertToRecentSearchDataView())
+        listVisitable.add(listInitialStateItem.convertToRecentSearchDataView(getDimension90()))
         recentSearchPosition = listVisitable.lastIndex
     }
 
@@ -238,7 +238,7 @@ class InitialStatePresenter @Inject constructor(
         val recentSearchToBeShown = listInitialStateItem.take(RECENT_SEARCH_SEE_MORE_LIMIT)
         onRecentSearchImpressed(getDataLayerForPromo(recentSearchToBeShown))
 
-        listVisitable.add(recentSearchToBeShown.convertToRecentSearchDataView())
+        listVisitable.add(recentSearchToBeShown.convertToRecentSearchDataView(getDimension90()))
         recentSearchPosition = listVisitable.lastIndex
 
         listVisitable.add(createRecentSearchSeeMoreButton())
@@ -419,7 +419,7 @@ class InitialStatePresenter @Inject constructor(
         val deleted = recentSearchList.find { item -> item.title == keyword }
         recentSearchList.remove(deleted)
 
-        val recentSearchDataView = recentSearchList.convertToRecentSearchDataView()
+        val recentSearchDataView = recentSearchList.convertToRecentSearchDataView(getDimension90())
         if (recentSearchDataView.list.size <= RECENT_SEARCH_SEE_MORE_LIMIT) {
             recentSearchDataVisitable.list = recentSearchDataView.list
             removeSeeMoreRecentSearch()
@@ -477,17 +477,17 @@ class InitialStatePresenter @Inject constructor(
         }
     }
 
-    override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
-        trackEventItemClicked(item, adapterPosition)
+    override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch) {
+        trackEventItemClicked(item)
 
         view?.route(item.applink, searchParameter)
         view?.finish()
     }
 
-    private fun trackEventItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
+    private fun trackEventItemClicked(item: BaseItemInitialStateSearch) {
         when(item.type) {
-            TYPE_SHOP -> view?.trackEventClickRecentShop(getRecentShopLabelForTracking(item), getUserId())
-            else -> view?.trackEventClickRecentSearch(getItemEventLabelForTracking(item, adapterPosition))
+            TYPE_SHOP -> view?.trackEventClickRecentShop(getRecentShopLabelForTracking(item), getUserId(), item.dimension90)
+            else -> view?.trackEventClickRecentSearch(getItemEventLabelForTracking(item), item.dimension90)
         }
     }
 
@@ -495,8 +495,8 @@ class InitialStatePresenter @Inject constructor(
         return getShopIdFromApplink(item.applink) + " - keyword: " + item.title
     }
 
-    private fun getItemEventLabelForTracking(item: BaseItemInitialStateSearch, adapterPosition: Int): String {
-        return "value: ${item.title} - po: ${adapterPosition +1} - applink: ${item.applink}"
+    private fun getItemEventLabelForTracking(item: BaseItemInitialStateSearch): String {
+        return "value: ${item.title} - po: ${item.position} - applink: ${item.applink}"
     }
 
     override fun detachView() {
@@ -517,7 +517,7 @@ class InitialStatePresenter @Inject constructor(
             val recentSearchToImpress = getDataLayerForPromo(recentSearchList)
             onRecentSearchImpressed(recentSearchToImpress.takeLast(recentSearchList.size - RECENT_SEARCH_SEE_MORE_LIMIT))
 
-            val recentSearchDataView = recentSearchList.convertToRecentSearchDataView()
+            val recentSearchDataView = recentSearchList.convertToRecentSearchDataView(getDimension90())
 
             val recentSearchDataVisitable: RecentSearchDataView = listVisitable.find { it is RecentSearchDataView } as RecentSearchDataView
             recentSearchDataVisitable.list = recentSearchDataView.list

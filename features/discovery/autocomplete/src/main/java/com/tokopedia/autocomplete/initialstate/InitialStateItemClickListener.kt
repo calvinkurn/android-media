@@ -11,7 +11,7 @@ interface InitialStateItemClickListener {
 
     fun onItemClicked(applink: String, webUrl: String)
 
-    fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
+    fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch)
 
     fun onRecentSearchSeeMoreClicked()
 

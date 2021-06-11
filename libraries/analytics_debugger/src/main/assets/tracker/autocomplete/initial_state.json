@@ -28,7 +28,10 @@
       "eventCategory": "top nav",
       "eventAction": "click - recent search",
       "eventLabel": "value: .* - po: .* - applink: .*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "pageSource": ".*"
     },
     {
       "event": "select_content",
@@ -67,7 +70,8 @@
       "currentSite": "tokopediamarketplace",
       "userId": ".+",
       "businessUnit": "search",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "pageSource": ".*"
     },
     {
       "event": "clickTopNav",

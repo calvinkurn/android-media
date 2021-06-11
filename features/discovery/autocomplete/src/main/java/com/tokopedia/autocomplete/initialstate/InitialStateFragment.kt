@@ -141,8 +141,8 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         finish()
     }
 
-    override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
-        presenter.onRecentSearchItemClicked(item, adapterPosition)
+    override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch) {
+        presenter.onRecentSearchItemClicked(item)
     }
 
     override fun onRecentSearchSeeMoreClicked() {
@@ -219,12 +219,12 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         AutocompleteTracking.impressedSeeMoreRecentSearch(iris, userId)
     }
 
-    override fun trackEventClickRecentSearch(label: String) {
-        AutocompleteTracking.eventClickRecentSearch(label)
+    override fun trackEventClickRecentSearch(label: String, pageSource: String) {
+        AutocompleteTracking.eventClickRecentSearch(label, pageSource)
     }
 
-    override fun trackEventClickRecentShop(label: String, userId: String) {
-        AutocompleteTracking.eventClickRecentShop(label, userId)
+    override fun trackEventClickRecentShop(label: String, userId: String, pageSource: String) {
+        AutocompleteTracking.eventClickRecentShop(label, userId, pageSource)
     }
 
     override fun trackEventClickSeeMoreRecentSearch(userId: String) {

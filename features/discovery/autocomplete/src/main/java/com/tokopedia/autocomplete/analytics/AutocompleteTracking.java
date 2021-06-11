@@ -23,6 +23,7 @@ import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.EVENT_CATEGORY;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.EVENT_LABEL;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.LIST;
+import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PAGE_SOURCE;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCTS;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.SCREEN_NAME;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.USER_ID;
@@ -47,12 +48,17 @@ public class AutocompleteTracking {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventTracking);
     }
 
-    public static void eventClickRecentSearch(String label) {
+    public static void eventClickRecentSearch(String label, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AutocompleteEventTracking.Event.CLICK_SEARCH,
-                AutocompleteEventTracking.Category.TOP_NAV,
-                AutocompleteEventTracking.Action.CLICK_RECENT_SEARCH,
-                label
+            DataLayer.mapOf(
+                    EVENT, AutocompleteEventTracking.Event.CLICK_SEARCH,
+                    EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
+                    EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_RECENT_SEARCH,
+                    EVENT_LABEL, label,
+                    CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                    BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                    PAGE_SOURCE, pageSource
+            )
         );
     }
 
@@ -140,7 +146,7 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickRecentShop(String label, String userId) {
+    public static void eventClickRecentShop(String label, String userId, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
             DataLayer.mapOf(
                     EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
@@ -150,7 +156,8 @@ public class AutocompleteTracking {
                     SCREEN_NAME, "/",
                     CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
                     USER_ID, userId,
-                    BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH
+                    BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                    PAGE_SOURCE, pageSource
             )
         );
     }
