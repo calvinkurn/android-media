@@ -3,14 +3,14 @@ package com.tokopedia.minicart.common.domain.data
 data class MiniCartSimplifiedData(
         var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
         var miniCartItems: List<MiniCartItem> = emptyList(),
-        var isShowMiniCartWidget: Boolean = false,
-        var containsOnlyUnavailableItems: Boolean = false,
-        var unavailableItemsCount: Int = 0
+        var isShowMiniCartWidget: Boolean = false
 )
 
 data class MiniCartWidgetData(
         var totalProductCount: Int = 0,
-        var totalProductPrice: Long = 0
+        var totalProductPrice: Long = 0,
+        var containsOnlyUnavailableItems: Boolean = false,
+        var unavailableItemsCount: Int = 0
 )
 
 data class MiniCartItem(

@@ -262,12 +262,12 @@ class MiniCartListViewHolderMapper @Inject constructor() {
             return MiniCartSimplifiedData()
         } else {
             return MiniCartSimplifiedData().apply {
-                miniCartWidgetData = miniCartListUiModel.miniCartWidgetUiModel
                 val miniCartItemsMapResult = mapMiniCartItems(miniCartListUiModel.visitables)
                 miniCartItems = miniCartItemsMapResult.first
                 isShowMiniCartWidget = miniCartItems.isNotEmpty()
-                containsOnlyUnavailableItems = miniCartItemsMapResult.second
-                unavailableItemsCount = miniCartItemsMapResult.third
+                miniCartWidgetData = miniCartListUiModel.miniCartWidgetUiModel
+                miniCartWidgetData.containsOnlyUnavailableItems = miniCartItemsMapResult.second
+                miniCartWidgetData.unavailableItemsCount = miniCartItemsMapResult.third
             }
         }
     }

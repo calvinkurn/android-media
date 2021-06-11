@@ -321,7 +321,7 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun renderWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        if (miniCartSimplifiedData.containsOnlyUnavailableItems) {
+        if (miniCartSimplifiedData.miniCartWidgetData.containsOnlyUnavailableItems) {
             totalAmount?.apply {
                 setLabelTitle("")
                 setAmount("")
@@ -329,7 +329,7 @@ class MiniCartWidget @JvmOverloads constructor(
                 amountCtaView.isEnabled = false
             }
             labelUnavailable?.apply {
-                text = context.getString(R.string.mini_cart_widget_label_unavailable, miniCartSimplifiedData.unavailableItemsCount)
+                text = context.getString(R.string.mini_cart_widget_label_unavailable, miniCartSimplifiedData.miniCartWidgetData.unavailableItemsCount)
                 show()
             }
             imageChevronUnavailable?.show()
