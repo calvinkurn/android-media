@@ -35,7 +35,7 @@ class DigitalRecommendationAnalytics @Inject constructor(
                     KEY_USER_ID to userSession.get().userId,
                     KEY_PAYMENT_ID to paymentId,
                     KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_RECHARGE,
-                    KEY_EVENT_LABEL to recommendationItem.trackingData.itemType,
+                    KEY_EVENT_LABEL to recommendationItem.trackingData.itemType + " - " + recommendationItem.trackingData.categoryName + " - " + (position + 1),
                     KEY_E_COMMERCE to getProductViewECommerceData(recommendationItem, position))
             putEETracking(data as HashMap<String, Any>)
         }
@@ -57,7 +57,7 @@ class DigitalRecommendationAnalytics @Inject constructor(
                                 KEY_USER_ID to userSession.get().userId,
                                 KEY_PAYMENT_ID to paymentId,
                                 KEY_BUSINESS_UNIT to KEY_BUSINESS_UNIT_VALUE_RECHARGE,
-                                KEY_EVENT_LABEL to recommendationItem.trackingData.itemType,
+                                KEY_EVENT_LABEL to recommendationItem.trackingData.itemType + " - " + recommendationItem.trackingData.categoryName + " - " + (position + 1),
                                 KEY_E_COMMERCE to getProductClickECommerceData(recommendationItem, position))
                         analyticTracker.sendEnhanceEcommerceEvent(data)
                     }

@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.thankyou_native.recommendation.data.ProductRecommendationData
 import com.tokopedia.thankyou_native.recommendation.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.recommendation.domain.TYPGetRecommendationUseCase
+import com.tokopedia.thankyou_native.recommendationdigital.model.RechargeRecommendationDigiPersoItem
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,7 +22,7 @@ class MarketPlaceRecommendationViewModel @Inject constructor(
         private val recommendationUseCase: dagger.Lazy<TYPGetRecommendationUseCase>,
         val userSession: dagger.Lazy<UserSessionInterface>) : BaseViewModel(mainDispatcher.get()) {
 
-    val recommendationMutableData = MutableLiveData<Result<ProductRecommendationData>>()
+    val recommendationMutableData = MutableLiveData<Result<RechargeRecommendationDigiPersoItem>>()
 
     fun loadRecommendationData() {
         launchCatchError(block = {

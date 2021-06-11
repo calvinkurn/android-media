@@ -69,6 +69,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     private fun renderClientNumber(element: RecommendationItem) {
         if (element.label1.isNullOrEmpty()) {
             thanks_dg_rec_client_number.hide()
+            thanks_dg_rec_product_name.maxLines = 3
         } else {
             thanks_dg_rec_client_number.show()
             thanks_dg_rec_client_number.text = element.label1

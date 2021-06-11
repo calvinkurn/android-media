@@ -94,6 +94,7 @@ class RechargeWidgetAdapter(private val recommendationItems: List<Recommendation
         fun renderClientNumber(element: RecommendationItem) {
             if (element.label1.isNullOrEmpty()) {
                 clientNumber.hide()
+                productName.maxLines = 3
             } else {
                 clientNumber.show()
                 clientNumber.text = element.label1
