@@ -115,7 +115,7 @@ class OfficialHomeFragment :
     private var isLoadedOnce: Boolean = false
     private var isScrolling = false
     private var remoteConfig: RemoteConfig? = null
-    private var localChooseAddress: LocalCacheModel? = LocalCacheModel()
+    private var localChooseAddress: LocalCacheModel? = null
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
@@ -921,9 +921,14 @@ class OfficialHomeFragment :
     }
 
     private fun isChooseAddressUpdated(): Boolean {
-        localChooseAddress?.let {
-            return ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
+        try {
+            localChooseAddress?.let {
+                return ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
         return false
+
     }
 }
