@@ -112,8 +112,21 @@ public class TopAdsGtmTracker {
         }
     }
 
-    public void addSearchResultProductViewImpressions(Product item, int position, Object dataLayer) {
-        this.dataLayerList.add(dataLayer);
+    public void addSearchResultProductViewImpressions(Product item, int position, String dimension90) {
+        this.dataLayerList.add(
+                DataLayer.mapOf(
+                            "name", item.getName(),
+                    "id", item.getId(),
+                    "price", item.getPriceFormat().replaceAll("[^0-9]", ""),
+                    "brand", "none/other",
+                    "variant", "none/other",
+                    "category", getCategoryBreadcrumb(item),
+                    "list", "/searchproduct - topads productlist",
+                    "position", position,
+                    "dimension83", setFreeOngkirDataLayer(item),
+                    "dimension90", dimension90
+            )
+        );
 
         //GTMv5
         Bundle product = new Bundle();
@@ -279,7 +292,7 @@ public class TopAdsGtmTracker {
         tracker.sendEnhanceEcommerceEvent(map);
     }
 
-    public static void eventSearchResultProductClick(Context context, String keyword, String userId, Object productDataLayer) {
+    public static void eventSearchResultProductClick(Context context, String keyword, Product item, int position, String userId, String dimension90) {
         Analytics tracker = getTracker();
         if (tracker != null) {
             Map<String, Object> map = DataLayer.mapOf(
@@ -292,7 +305,19 @@ public class TopAdsGtmTracker {
                     "currentSite", "tokopediamarketplace",
                     "ecommerce", DataLayer.mapOf(
                             "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/searchproduct - topads productlist"),
-                                    "products", DataLayer.listOf(productDataLayer)))
+                                    "products", DataLayer.listOf(DataLayer.mapOf(
+                                            "name", item.getName(),
+                                            "id", item.getId(),
+                                            "price", item.getPriceFormat().replaceAll("[^0-9]", ""),
+                                            "brand", "none/other",
+                                            "category", getCategoryBreadcrumb(item),
+                                            "variant", "none/other",
+                                            "position", position,
+                                            "dimension83", setFreeOngkirDataLayer(item),
+                                            "dimension90", dimension90)
+                                    )
+                            )
+                    )
             );
             IrisSession irisSession = new IrisSession(context);
             if(!TextUtils.isEmpty(irisSession.getSessionId()))

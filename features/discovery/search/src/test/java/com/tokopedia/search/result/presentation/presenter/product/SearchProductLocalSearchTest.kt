@@ -40,7 +40,9 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         SearchApiConst.SRP_PAGE_TITLE to searchProductPageTitle,
         SearchApiConst.SRP_PAGE_ID to "1234"
     )
-    private val expectedDimension90 = "${searchParameter[SearchApiConst.SRP_PAGE_TITLE]}.${searchParameter[SearchApiConst.NAVSOURCE]}.local_search.${searchParameter[SearchApiConst.SRP_PAGE_ID]}"
+    private val expectedDimension90 =
+            "${searchParameter[SearchApiConst.SRP_PAGE_TITLE]}.${searchParameter[SearchApiConst.NAVSOURCE]}." +
+                    "local_search.${searchParameter[SearchApiConst.SRP_PAGE_ID]}"
 
 
     @Test

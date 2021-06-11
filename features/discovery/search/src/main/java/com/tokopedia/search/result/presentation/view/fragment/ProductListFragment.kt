@@ -751,8 +751,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun sendTopAdsGTMTrackingProductImpression(item: ProductItemDataView) {
         val product: Product = createTopAdsProductForTracking(item)
-        val dataLayer = item.getProductAdsAsObjectDataLayer()
-        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, item.position, dataLayer)
+        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, item.position, item.dimension90)
     }
 
     private fun createTopAdsProductForTracking(item: ProductItemDataView): Product {
@@ -815,13 +814,14 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun sendTopAdsGTMTrackingProductClick(item: ProductItemDataView) {
         val product = createTopAdsProductForTracking(item)
-        val dataLayer = item.getProductAdsAsObjectDataLayer()
 
         TopAdsGtmTracker.eventSearchResultProductClick(
                 context,
                 queryKey,
+                product,
+                item.position,
                 getUserId(),
-                dataLayer,
+                item.dimension90,
         )
     }
 
