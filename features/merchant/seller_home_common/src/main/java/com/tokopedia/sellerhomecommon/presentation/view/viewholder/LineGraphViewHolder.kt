@@ -153,7 +153,7 @@ class LineGraphViewHolder(
             }
             if (element.isEmpty()) {
                 if (element.shouldShowEmptyStateIfEmpty()) {
-                    setupEmptyState(element.emptyState)
+                    setupEmptyState(element)
                 } else {
                     if (listener.getIsShouldRemoveWidget()) {
                         listener.removeWidget(adapterPosition, element)
@@ -172,12 +172,13 @@ class LineGraphViewHolder(
         return element.isEmpty() && element.shouldShowEmptyStateIfEmpty()
     }
 
-    private fun setupEmptyState(emptyState: WidgetEmptyStateUiModel) {
-        with(emptyState) {
+    private fun setupEmptyState(element: LineGraphWidgetUiModel) {
+        with(element.emptyState) {
             itemView.tvLineGraphEmptyStateTitle.text = title
             itemView.tvLineGraphEmptyStateDescription.text = description
             itemView.tvShcMultiLineEmptyStateCta.text = ctaText
             itemView.tvShcMultiLineEmptyStateCta.setOnClickListener {
+                listener.sendLineChartEmptyStateCtaClickEvent(element)
                 RouteManager.route(itemView.context, appLink)
             }
             animateShowEmptyState()

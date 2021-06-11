@@ -79,8 +79,7 @@ object StatisticTracker {
     }
 
     fun sendEmptyStateCtaClickLineGraphEvent(model: LineGraphWidgetUiModel) {
-        val isEmpty = model.data?.list?.all { it.yVal == 0f } == true
-        val emptyStatus = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val emptyStatus = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
         val dataKey = model.dataKey
         val cardValue = model.data?.header.orEmpty()
 
@@ -280,8 +279,7 @@ object StatisticTracker {
 
     fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel, position: Int) {
         val value = model.data?.data?.summary?.value?.toString().orEmpty()
-        val isEmpty = model.data?.data?.item.isNullOrEmpty()
-        val state = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.PROMO_VIEW,
@@ -298,8 +296,7 @@ object StatisticTracker {
 
     fun sendPieChartEmptyStateCtaClickEvent(model: PieChartWidgetUiModel) {
         val value = model.data?.data?.summary?.value?.toString().orEmpty()
-        val isEmpty = model.data?.data?.item.isNullOrEmpty()
-        val state = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.CLICK_HOMEPAGE,
@@ -314,9 +311,8 @@ object StatisticTracker {
     }
 
     fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel, position: Int) {
-        val isEmpty = model.data?.chartData?.metrics.isNullOrEmpty()
         val value = model.data?.chartData?.summary?.value?.toString().orEmpty()
-        val state = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.PROMO_VIEW,
@@ -332,9 +328,8 @@ object StatisticTracker {
     }
 
     fun sendBarChartEmptyStateCtaClickEvent(model: BarChartWidgetUiModel) {
-        val isEmpty = model.data?.chartData?.metrics.isNullOrEmpty()
         val value = model.data?.chartData?.summary?.value?.toString().orEmpty()
-        val state = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+        val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.CLICK_HOMEPAGE,
