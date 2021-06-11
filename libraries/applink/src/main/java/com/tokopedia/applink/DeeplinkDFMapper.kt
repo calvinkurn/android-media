@@ -378,6 +378,9 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(ApplinkConstInternalPayment.INTERNAL_HOW_TO_PAY) }, DF_BASE, R.string.payment_title_activity_howtopay))
             add(DFP({ it.startsWith(INSTANT_DEBIT_BCA_ENTRY_PATTERN) || it.startsWith(EDIT_BCA_ONE_KLICK_ENTRY_PATTERN) }, DF_BASE, R.string.payment_instant_debit_bca_title))
 
+            add(DFP({ it.startsWith(ApplinkConstInternalGlobal.WITHDRAW) }, DF_BASE, R.string.payment_title_withdraw))
+            add(DFP({ it.startsWith(ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING) }, DF_BASE, R.string.payment_title_auto_withdraw))
+
             // Promo
             add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS) }, DF_PROMO_TOKOPOINTS, R.string.title_tokopoints, { DFWebviewFallbackUrl.PROMO_TOKOPOINTS }))
 
@@ -517,6 +520,9 @@ object DeeplinkDFMapper : CoroutineScope {
         mutableListOf<DFP>().apply {
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_BASE_SELLER_APP, R.string.shop_settings_title))
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DF_BASE_SELLER_APP, R.string.payment_settings_title))
+            add(DFP({ it.startsWith(ApplinkConstInternalGlobal.WITHDRAW) }, DF_BASE, R.string.payment_title_withdraw))
+            add(DFP({ it.startsWith(ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING) }, DF_BASE, R.string.payment_title_auto_withdraw))
+
             add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DF_BASE_SELLER_APP, R.string.title_applink_product_manage))
             add(DFP({ it.startsWithPattern(USER_IDENTIFICATION_FORM) }, DF_BASE_SELLER_APP, R.string.user_identification_common_title))
             add(DFP({
