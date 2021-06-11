@@ -62,7 +62,7 @@ class CategoryViewModel @Inject constructor (
     private var navigation: TokonowCategoryDetail.Navigation? = null
 
     init {
-        queryParamMutable["${OptionHelper.EXCLUDE_PREFIX}_sc"] = categoryIdL2
+        if (categoryIdL2.isNotEmpty()) queryParamMutable["${OptionHelper.EXCLUDE_PREFIX}_sc"] = categoryIdL2
     }
 
     override fun onViewCreated() {
