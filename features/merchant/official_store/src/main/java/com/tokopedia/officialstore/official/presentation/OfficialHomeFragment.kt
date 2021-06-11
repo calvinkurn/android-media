@@ -143,7 +143,7 @@ class OfficialHomeFragment :
     }
 
     fun forceLoadData() {
-        reloadData()
+        reloadDataForDifferentAddressSaved()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -160,7 +160,7 @@ class OfficialHomeFragment :
         super.setUserVisibleHint(isVisibleToUser)
         if (isVisibleToUser) {
             if (isChooseAddressUpdated() && isLoadedOnce) {
-                reloadData()
+                reloadDataForDifferentAddressSaved()
             } else {
                 loadData()
             }
@@ -694,7 +694,8 @@ class OfficialHomeFragment :
         }
     }
 
-    private fun reloadData() {
+    private fun reloadDataForDifferentAddressSaved() {
+        localChooseAddress = ChooseAddressUtils.getLocalizingAddressData(requireContext())
         officialHomeMapper.resetState(adapter)
         viewModel.loadFirstData(category, getLocation())
     }
