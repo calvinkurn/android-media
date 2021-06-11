@@ -91,12 +91,8 @@ class CarouselViewHolder(
             tvCarouselBannerTitle.visible()
         }
         if (element.isEmpty()) {
-            if (element.isShowEmpty) {
-                if (element.shouldShowEmptyStateIfEmpty()) {
-                    setupEmptyState(element)
-                } else {
-                    setupCarousel(element)
-                }
+            if (element.isShowEmpty && element.shouldShowEmptyStateIfEmpty()) {
+                setupEmptyState(element)
             } else {
                 if (listener.getIsShouldRemoveWidget()) {
                     listener.removeWidget(adapterPosition, element)
