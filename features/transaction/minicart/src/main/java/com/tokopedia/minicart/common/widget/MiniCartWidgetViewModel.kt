@@ -172,24 +172,26 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         var totalValue = 0L
         var totalDiscount = 0L
         var totalWeight = 0
-        miniCartProductList.forEach { visitable ->
-            val price = if (visitable.productWholeSalePrice > 0) visitable.productWholeSalePrice else visitable.productPrice
-            totalQty += visitable.productQty
-            totalPrice += visitable.productQty * price
-            val originalPrice = if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice else visitable.productPrice
-            totalValue += visitable.productQty * originalPrice
-            totalWeight += visitable.productQty * visitable.productWeight
-            val discountValue = if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice - visitable.productPrice else 0
-            totalDiscount += visitable.productQty * discountValue
-            miniCartListListBottomSheetUiModel.value?.let {
-                it.miniCartWidgetUiModel.totalProductPrice = totalPrice
-                it.miniCartWidgetUiModel.totalProductCount = totalQty
-                it.miniCartSummaryTransactionUiModel.qty = totalQty
-                it.miniCartSummaryTransactionUiModel.totalValue = totalValue
-                it.miniCartSummaryTransactionUiModel.discountValue = totalDiscount
-                it.miniCartSummaryTransactionUiModel.paymentTotal = totalPrice
-                it.isFirstLoad = false
-                it.needToCalculateAfterLoad = false
+        visitables.forEach { visitable ->
+            if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
+                val price = if (visitable.productWholeSalePrice > 0) visitable.productWholeSalePrice else visitable.productPrice
+                totalQty += visitable.productQty
+                totalPrice += visitable.productQty * price
+                val originalPrice = if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice else visitable.productPrice
+                totalValue += visitable.productQty * originalPrice
+                totalWeight += visitable.productQty * visitable.productWeight
+                val discountValue = if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice - visitable.productPrice else 0
+                totalDiscount += visitable.productQty * discountValue
+                miniCartListListBottomSheetUiModel.value?.let {
+                    it.miniCartWidgetUiModel.totalProductPrice = totalPrice
+                    it.miniCartWidgetUiModel.totalProductCount = totalQty
+                    it.miniCartSummaryTransactionUiModel.qty = totalQty
+                    it.miniCartSummaryTransactionUiModel.totalValue = totalValue
+                    it.miniCartSummaryTransactionUiModel.discountValue = totalDiscount
+                    it.miniCartSummaryTransactionUiModel.paymentTotal = totalPrice
+                    it.isFirstLoad = false
+                    it.needToCalculateAfterLoad = false
+                }
             }
         }
 
@@ -215,7 +217,6 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                 if (qty >= wholesalePrice.qtyMin) {
                     if (updatedProduct.productWholeSalePrice != wholesalePrice.prdPrc) {
                         updatedProduct.productWholeSalePrice = wholesalePrice.prdPrc
-                        visitable.productWholeSalePrice = wholesalePrice.prdPrc
                         isUpdatedWholeSalePrice = true
                     }
                     isEligibleForWholesalePrice = true
@@ -226,7 +227,6 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
             // Reset wholesale price not eligible and previously has wholesale price
             if (!isEligibleForWholesalePrice && visitable.productWholeSalePrice > 0L) {
                 updatedProduct.productWholeSalePrice = 0
-                visitable.productWholeSalePrice = 0
                 isUpdatedWholeSalePrice = true
             }
 
