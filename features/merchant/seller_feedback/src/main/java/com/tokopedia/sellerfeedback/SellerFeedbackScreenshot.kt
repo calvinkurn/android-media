@@ -29,6 +29,7 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
 
     override var listener = object : BottomSheetListener {
         override fun onFeedbackClicked(uri: Uri?, className: String, isFromScreenshot: Boolean) {
+            SellerFeedbackTracking.Click.eventClickFeedbackButton()
             uri?.let { openFeedbackForm(it) }
         }
     }
