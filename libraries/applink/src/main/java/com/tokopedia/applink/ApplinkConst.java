@@ -193,7 +193,7 @@ public interface ApplinkConst {
     String MODAL_TOKO_ORDER = "tokopedia://modaltoko/order";
     String HOTEL_ORDER = "tokopedia://hotel/order";
     String HOTEL_HOST = "hotel";
-    String HOTEL = "tokopedia://hotel";
+    String HOTEL = "tokopedia://hotel/dashboard";
     String HOTEL_SRP = "tokopedia://hotel/result";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
     String TRAVEL_SUBHOMEPAGE_HOME = "tokopedia://travelentertainment/home";
