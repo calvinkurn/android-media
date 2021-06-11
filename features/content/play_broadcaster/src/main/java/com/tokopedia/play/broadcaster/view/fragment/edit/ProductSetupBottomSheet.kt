@@ -11,7 +11,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -23,17 +23,17 @@ import com.tokopedia.play.broadcaster.data.type.OverwriteMode
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.play.broadcaster.util.model.BreadcrumbsModel
+import com.tokopedia.play.broadcaster.util.pageflow.FragmentPageNavigator
 import com.tokopedia.play.broadcaster.view.contract.PlayBottomSheetCoordinator
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
-import com.tokopedia.play.broadcaster.view.fragment.PlayEtalaseDetailFragment
-import com.tokopedia.play.broadcaster.view.fragment.PlayEtalasePickerFragment
+import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.PlayEtalaseDetailFragment
+import com.tokopedia.play.broadcaster.view.fragment.setup.etalase.PlayEtalasePickerFragment
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseSetupFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
+import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.util.extension.cleanBackstack
-import com.tokopedia.play_common.util.extension.compatTransitionName
 import java.util.*
 import javax.inject.Inject
 
@@ -67,7 +67,13 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
     private val currentFragment: Fragment?
         get() = childFragmentManager.findFragmentById(R.id.fl_fragment)
 
-    private val fragmentBreadcrumbs = Stack<BreadcrumbsModel>()
+    private val pageNavigator: FragmentPageNavigator by lifecycleBound(
+            creator = {
+                FragmentPageNavigator(
+                        fragmentManager = childFragmentManager
+                )
+            }
+    )
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
@@ -75,9 +81,8 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
                 val currentFragment = childFragmentManager.findFragmentById(R.id.fl_fragment)
                 if (currentFragment is PlayBaseSetupFragment && currentFragment.onInterceptBackPressed()) return
 
-                if (!fragmentBreadcrumbs.empty()) {
-                    val lastFragmentBreadcrumbs = fragmentBreadcrumbs.pop()
-                    childFragmentManager.popBackStack(lastFragmentBreadcrumbs.fragmentClass.name, 0)
+                if (childFragmentManager.backStackEntryCount > 1) {
+                    childFragmentManager.popBackStack()
                 } else {
                     cancel()
                     mListener?.onSetupCanceled()
@@ -94,8 +99,8 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
         super.onCreate(savedInstanceState)
         cleanBackstack()
         setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheet_Setup_Pinned)
-        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
-        dataStoreViewModel = ViewModelProviders.of(this, viewModelFactory).get(DataStoreViewModel::class.java)
+        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        dataStoreViewModel = ViewModelProvider(this, viewModelFactory).get(DataStoreViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -115,8 +120,7 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
     }
 
     override fun <T : Fragment> navigateToFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit) {
-        addBreadcrumb()
-        openFragment(fragmentClass, extras, sharedElements, onFragment)
+        openFragment(fragmentClass, extras, sharedElements)
     }
 
     override fun onEtalaseClicked(id: String, sharedElements: List<View>) {
@@ -182,38 +186,17 @@ class ProductSetupBottomSheet : BottomSheetDialogFragment(),
         )
     }
 
-    private fun<T: Fragment> openFragment(fragmentClass: Class<out T>, extras: Bundle, sharedElements: List<View>, onFragment: (T) -> Unit): Fragment {
-        val fragmentTransaction = childFragmentManager.beginTransaction()
-        val destFragment = getFragmentByClassName(fragmentClass)
-        destFragment.arguments = extras
-        onFragment(destFragment as T)
-        fragmentTransaction
-                .apply {
-                    sharedElements.forEach {
-                        val transitionName = it.compatTransitionName
-                        if (transitionName != null) addSharedElement(it, transitionName)
-                    }
-
-                    if (sharedElements.isNotEmpty()) setReorderingAllowed(true)
-                }
-                .replace(flFragment.id, destFragment, fragmentClass.name)
-                .addToBackStack(fragmentClass.name)
-                .commit()
-
-        return destFragment
-    }
-
-    private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {
-        return childFragmentManager.fragmentFactory.instantiate(requireContext().classLoader, fragmentClass.name)
-    }
-
-    private fun addBreadcrumb() {
-        currentFragment?.let { fragment ->
-            fragmentBreadcrumbs.add(
-                    BreadcrumbsModel(fragment.javaClass, fragment.arguments
-                            ?: Bundle.EMPTY)
-            )
-        }
+    private fun<T: Fragment> openFragment(
+            fragmentClass: Class<out T>,
+            extras: Bundle,
+            sharedElements: List<View>,
+    ) {
+        pageNavigator.navigate(
+                flFragment.id,
+                fragmentClass,
+                extras,
+                sharedElements
+        )
     }
 
     private fun setupDialog(dialog: Dialog) {
