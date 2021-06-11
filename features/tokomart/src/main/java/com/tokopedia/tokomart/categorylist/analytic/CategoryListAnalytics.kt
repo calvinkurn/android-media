@@ -91,6 +91,7 @@ class CategoryListAnalytics{
     private fun MutableMap<String, Any>.addCategoryJumperGeneralClick(): MutableMap<String, Any>? {
         this[TrackAppUtils.EVENT] = EVENT_CLICK_VALUE
         this[TrackAppUtils.EVENT_CATEGORY] = EVENT_CATEGORY_VALUE
+        //Todo still harcoded need value data currentsite and businessunit from team data
         this[CURRENTSITE] = CURRENTSITE_VALUE
         this[BUSINESSUNIT] = BUSINESSUNIT_VALUE
         return this
