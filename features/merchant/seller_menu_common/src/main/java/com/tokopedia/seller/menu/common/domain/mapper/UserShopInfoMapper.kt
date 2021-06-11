@@ -20,7 +20,7 @@ class UserShopInfoMapper @Inject constructor() {
         val targetDateText = "2021-06-14"
         val isBeforeOnDate = isBeforeOnDate(userShopInfoResponse.userShopInfo.info.dateShopCreated, targetDateText)
         val goldOsResult = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.goldOS
-        val txStatsValue = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.statsByDate?.find { it.identifier == Constant.TRX_RM_INACTIVE_SUCCESS }?.value.orZero()
+        val txStatsValue = userShopInfoResponse.shopInfoByID.result.firstOrNull()?.statsByDate?.find { it.identifier == Constant.TRANSACTION_RM_SUCCESS }?.value.orZero()
         return UserShopInfoWrapper(
                 shopType = getShopType(userShopInfoResponse),
                 userShopInfoUiModel = UserShopInfoWrapper.UserShopInfoUiModel(
