@@ -21,6 +21,7 @@ class CategoryListAnalytics{
     object EVENT{
         const val EVENT_CLICK_VALUE = "clickTokoNow"
         const val EVENT_CATEGORY_VALUE = "tokonow semua category jumper"
+        //Todo still need value data currentsite and businessunit from team data
         const val CURRENTSITE_VALUE = "currentSite"
         const val BUSINESSUNIT_VALUE = "businessUnit"
     }
