@@ -379,7 +379,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             shopDomain = it.getString(ProductDetailConstant.ARG_SHOP_DOMAIN)
             trackerAttributionPdp = it.getString(ProductDetailConstant.ARG_TRACKER_ATTRIBUTION)
             trackerListNamePdp = it.getString(ProductDetailConstant.ARG_TRACKER_LIST_NAME)
-            affiliateString = it.getString(ProductDetailConstant.ARG_AFFILIATE_STRING)
             affiliateUniqueId = it.getString(ProductDetailConstant.ARG_AFFILIATE_UNIQUE_ID)
             isAffiliate = it.getBoolean(ProductDetailConstant.ARG_FROM_AFFILIATE, false)
             deeplinkUrl = it.getString(ProductDetailConstant.ARG_DEEPLINK_URL, "")
