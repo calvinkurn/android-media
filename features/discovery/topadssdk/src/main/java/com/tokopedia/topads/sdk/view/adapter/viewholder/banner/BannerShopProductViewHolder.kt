@@ -26,7 +26,7 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
     }
 
     override fun bind(element: BannerShopProductViewModel?) {
-        element?.let { model -> // 69282367
+        element?.let { model ->
             val productCardViewModel = model.product
             productCardGridView.run {
                 applyCarousel()

@@ -29,6 +29,11 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
     companion object {
         val LAYOUT = R.layout.item_cart_top_ads_headline
         const val VALUE_SRC_CART = "cart"
+        const val PARAM_ST = "st"
+        const val VALUE_CPM = "cpm"
+        const val VALUE_PRODUCT = "product"
+        const val VALUE_ITEM = "10"
+        const val VALUE_TEMPLATE_ID = "2%2C3%2C4"
     }
 
     fun bind(data: CartTopAdsHeadlineData) {
@@ -49,14 +54,14 @@ class CartTopAdsHeadlineViewHolder(private val binding: ItemCartTopAdsHeadlineBi
 
     private fun getHeadlineAdsParam(userSession: UserSessionInterface): String {
         return UrlParamHelper.generateUrlParamString(mutableMapOf(
-                PARAM_DEVICE to "android",
-                PARAM_EP to "cpm",
+                PARAM_DEVICE to VALUE_DEVICE,
+                PARAM_EP to VALUE_CPM,
                 PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
-                PARAM_ITEM to "10",
+                PARAM_ITEM to VALUE_ITEM,
                 PARAM_SRC to VALUE_SRC_CART,
-                "st" to "product",
+                PARAM_ST to VALUE_PRODUCT,
                 PARAM_PAGE to 1,
-                PARAM_TEMPLATE_ID to "2%2C3%2C4",
+                PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
                 PARAM_USER_ID to userSession.userId
         ))
     }
