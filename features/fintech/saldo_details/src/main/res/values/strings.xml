@@ -96,4 +96,8 @@
     <string name="saldo_dana_tertahan">Dana Tertahan</string>
     <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
     <string name="saldo_info_ticker">Saldo tertahan milikmu sedang dalam pemeriksaan pihak Tokopedia.</string>
+    <string name="merchant_credit_mcl_logo_text">MCl Logo</string>
+    <string name="saldo_prioritas_title">Saldo Prioritas</string>
+    <string name="saldo_kyc_description_text">Status: Menunggu Verifikasi Aplikasi</string>
+    <string name="saldo_transaction_empty_list">No Result</string>
 </resources>

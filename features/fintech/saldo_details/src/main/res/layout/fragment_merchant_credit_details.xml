@@ -20,7 +20,7 @@
                 android:layout_height="@dimen/unify_space_24"
                 android:layout_alignParentStart="true"
                 app:srcCompat="@drawable/ic_refund_disbursement"
-                android:contentDescription="MCl Logo" />
+                android:contentDescription="@string/merchant_credit_mcl_logo_text" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/mcl_title"

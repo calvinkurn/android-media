@@ -15,7 +15,7 @@
         android:layout_marginBottom="@dimen/sd_dp_15"
         android:gravity="center_horizontal"
         app:srcCompat="@drawable/ic_saldo_empty_list"
-        android:contentDescription="No Result" />
+        android:contentDescription="@string/saldo_transaction_empty_list" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_view_empty_title_text"

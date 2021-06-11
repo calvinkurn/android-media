@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
-            android:text="Saldo Prioritas"
+            android:text="@string/saldo_prioritas_title"
             android:textColor="@color/Unify_N700_68"
             app:typographyType="heading_5" />
 
@@ -74,7 +74,6 @@
                     android:layout_width="@dimen/unify_space_16"
                     android:layout_height="@dimen/unify_space_16"
                     android:layout_centerVertical="true"
-                    android:contentDescription="Status Information Icon"
                     app:icon_color_light_enable="@color/Unify_N400"
                     app:icon_color_night_enable="@color/Unify_N400"
                     app:icon_name="INFORMATION" />
@@ -85,9 +84,10 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/sd_dp_9"
+                    android:layout_toStartOf="@id/sp_right_arrow"
                     android:layout_toEndOf="@+id/sp_status_info_icon"
                     android:lineSpacingExtra="3sp"
-                    android:text="Status: Menunggu Verifikasi Aplikasi"
+                    android:text="@string/saldo_kyc_description_text"
                     android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3" />
 
@@ -98,7 +98,6 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="end"
-                    android:contentDescription="Arrow Icon"
                     android:foregroundGravity="right"
                     app:icon_name="CHEVRON_RIGHT" />
 
@@ -112,7 +111,7 @@
                 android:layout_marginTop="@dimen/sd_dp_6"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="4sp"
-                android:text="Status: Menunggu Verifikasi Aplikasi"
+                android:text="@string/saldo_kyc_description_text"
                 android:textColor="@color/Unify_N700_32"
                 app:typographyType="small" />
 
