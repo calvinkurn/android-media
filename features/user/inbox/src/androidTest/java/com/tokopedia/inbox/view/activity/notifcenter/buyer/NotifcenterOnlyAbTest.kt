@@ -15,6 +15,7 @@ class NotifcenterOnlyAbTest : InboxNotifcenterTest() {
         startInboxActivity()
 
         // When
+        waitForIt(2500)
         // Then
     }
 
