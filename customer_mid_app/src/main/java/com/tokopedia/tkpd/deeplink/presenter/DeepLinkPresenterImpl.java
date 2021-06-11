@@ -378,17 +378,21 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 String[] hotelNames = linkSegment.get(3).split("-");
                 String hotelId = hotelNames[hotelNames.length - 1];
                 if (uri.getQuery() != null) {
-                    RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + hotelId + "?" + uri.getQuery());
+                    String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DETAIL);
+                    RouteManager.route(context, applink + "/" + hotelId + "?" + uri.getQuery());
                 } else {
-                    RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + hotelId);
+                    String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DETAIL);
+                    RouteManager.route(context, applink + "/" + hotelId);
                 }
                 context.finish();
             } else {
-                RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_HOTEL));
+                String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL);
+                RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, applink));
                 context.finish();
             }
         } else {
-            RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_HOTEL));
+            String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL);
+            RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, applink));
             context.finish();
         }
     }
