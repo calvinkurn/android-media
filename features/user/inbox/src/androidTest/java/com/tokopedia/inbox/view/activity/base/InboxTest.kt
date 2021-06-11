@@ -27,7 +27,6 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.filter.ChatFilterV
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import javax.inject.Inject
 
 abstract class InboxTest {
 
@@ -43,15 +42,14 @@ abstract class InboxTest {
         get() = InstrumentationRegistry
                 .getInstrumentation().context.applicationContext
 
-    @Inject
-    protected lateinit var inboxDep: InboxFakeDependency
+    protected var inboxDep = InboxFakeDependency()
 
     @Before
     open fun before() {
         setupGraphqlMockResponse(InboxModelConfig())
         setupDaggerBaseComponent()
         setupInboxDaggerComponent()
-        inboxComponent!!.inject(this)
+        inboxComponent!!.injectMembers(inboxDep)
         inboxDep.init()
     }
 

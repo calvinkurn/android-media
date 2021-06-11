@@ -8,11 +8,16 @@ import com.tokopedia.inbox.fake.domain.usecase.FakeInboxNotificationUseCase
 import com.tokopedia.inbox.test.R
 import javax.inject.Inject
 
-class InboxFakeDependency @Inject constructor(
-    val inboxNotificationUseCase: FakeInboxNotificationUseCase,
-    val userSession: FakeUserSession,
-    val inboxCacheManager: FakeInboxCacheManager,
-) {
+class InboxFakeDependency {
+
+    @Inject
+    lateinit var inboxNotificationUseCase: FakeInboxNotificationUseCase
+
+    @Inject
+    lateinit var userSession: FakeUserSession
+
+    @Inject
+    lateinit var inboxCacheManager: FakeInboxCacheManager
 
     val defaultNotifCounter: InboxNotificationResponse = AndroidFileUtil.parseRaw(
         R.raw.inbox_notif_counter, InboxNotificationResponse::class.java
