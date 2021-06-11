@@ -11,9 +11,12 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.talk.BuildConfig
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reporttalk.analytics.TalkAnalytics
@@ -184,8 +187,10 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
         sendButton.visibility = View.VISIBLE
     }
 
-    private fun onErrorReportTalk(errorMessage: String) {
-        NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
+    private fun onErrorReportTalk(throwable: Throwable) {
+        logToCrashlytics(throwable)
+        val message = ErrorHandler.getErrorMessage(context, throwable)
+        NetworkErrorHelper.createSnackbarWithAction(activity, message) {
             reportTalk(talkId, commentId, reason.text.toString(),
                     reportTalkAdapter.getSelectedOption())
         }.showRetrySnackbar()
@@ -231,16 +236,24 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClick
             hideLoadingFull()
             when(it) {
                 is Success -> onSuccessReportTalk()
-                is Fail -> onErrorReportTalk(it.throwable.message ?: "")
+                is Fail -> onErrorReportTalk(it.throwable)
             }
         })
         viewModel.reportTalkResult.observe(viewLifecycleOwner, Observer {
             hideLoadingFull()
             when(it) {
                 is Success -> onSuccessReportTalk()
-                is Fail -> onErrorReportTalk(it.throwable.message ?: "")
+                is Fail -> onErrorReportTalk(it.throwable)
             }
         })
+    }
+
+    private fun logToCrashlytics(throwable: Throwable) {
+        if (!BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(throwable)
+        } else {
+            throwable.printStackTrace()
+        }
     }
 
 }
