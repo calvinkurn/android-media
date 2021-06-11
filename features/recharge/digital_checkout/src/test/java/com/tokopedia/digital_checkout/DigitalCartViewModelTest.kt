@@ -426,7 +426,7 @@ class DigitalCartViewModelTest {
         }
 
         // when
-        digitalCartViewModel.cancelVoucherCart("")
+        digitalCartViewModel.cancelVoucherCart("", "")
 
         // then
         assert(digitalCartViewModel.cancelVoucherData.value is Success)
@@ -440,13 +440,14 @@ class DigitalCartViewModelTest {
         coEvery { digitalCancelVoucherUseCase.execute(any(), any(), any()) } coAnswers {
             secondArg<(CancelVoucherData.Response) -> Unit>().invoke(CancelVoucherData.Response(cancelVoucherData))
         }
+        val defaultErrorMsg = "default error message"
 
         // when
-        digitalCartViewModel.cancelVoucherCart("")
+        digitalCartViewModel.cancelVoucherCart("", defaultErrorMsg)
 
         // then
         assert(digitalCartViewModel.cancelVoucherData.value is Fail)
-        assert((digitalCartViewModel.cancelVoucherData.value as Fail).throwable.message?.isEmpty()
+        assert((digitalCartViewModel.cancelVoucherData.value as Fail).throwable.message?.equals(defaultErrorMsg)
                 ?: false)
     }
 
@@ -459,10 +460,11 @@ class DigitalCartViewModelTest {
         }
 
         // when
-        digitalCartViewModel.cancelVoucherCart("")
+        digitalCartViewModel.cancelVoucherCart("", "")
 
         // then
         assert(digitalCartViewModel.cancelVoucherData.value is Fail)
+        assert((digitalCartViewModel.cancelVoucherData.value as Fail).throwable.message == errorMessage)
     }
 
     @Test

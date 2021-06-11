@@ -36,7 +36,6 @@ import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.exception.ResponseDataNullException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
@@ -61,7 +60,7 @@ class DigitalCartViewModel @Inject constructor(
         private val digitalPatchOtpUseCase: DigitalPatchOtpUseCase,
         private val digitalCheckoutUseCase: DigitalCheckoutUseCase,
         private val userSession: UserSessionInterface,
-        private val dispatcher: CoroutineDispatcher,
+        private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
     private val _cartDigitalInfoData = MutableLiveData<CartDigitalInfoData>()
@@ -198,7 +197,7 @@ class DigitalCartViewModel @Inject constructor(
     }
 
     fun cancelVoucherCart(promoCode: String, defaultErrorMsg: String) {
-        cancelVoucherUseCase.execute(promoCode, onSuccessCancelVoucher(defaultErrorMsg), onErrorCancelVoucher())
+        cancelVoucherUseCase.execute(promoCode, onSuccessCancelVoucher(defaultErrorMsg), onErrorCancelVoucher(defaultErrorMsg))
     }
 
     private fun onSuccessCancelVoucher(defaultErrorMsg: String): (CancelVoucherData.Response) -> Unit {
@@ -207,7 +206,7 @@ class DigitalCartViewModel @Inject constructor(
                 setPromoData(PromoData(state = TickerCheckoutView.State.EMPTY, description = ""))
                 _cancelVoucherData.postValue(Success(it.response))
             } else {
-                _isSuccessCancelVoucherCart.postValue(Fail(MessageErrorException(defaultErrorMsg)))
+                _cancelVoucherData.postValue(Fail(MessageErrorException(defaultErrorMsg)))
             }
         }
     }

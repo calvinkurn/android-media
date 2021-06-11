@@ -85,7 +85,7 @@ class RechargeUploadImageViewModelTest {
         assert(rechargeUploadImageViewModel.resultDataOcr.value is Fail)
         val actualData = (rechargeUploadImageViewModel.resultDataOcr.value as Fail).throwable.message
         assertNotNull(actualData)
-        assertEquals(errorThrowable.message, actualData?.message)
+        assertEquals(errorThrowable.message, actualData)
     }
 
     @Test
@@ -118,6 +118,6 @@ class RechargeUploadImageViewModelTest {
         assert(rechargeUploadImageViewModel.resultDataOcr.value is Fail)
         val actualData = (rechargeUploadImageViewModel.resultDataOcr.value as Fail).throwable.message
         assertNotNull(actualData)
-        assertEquals(errorMessage, actualData?.message)
+        assertEquals(errorMessage, actualData)
     }
 }
