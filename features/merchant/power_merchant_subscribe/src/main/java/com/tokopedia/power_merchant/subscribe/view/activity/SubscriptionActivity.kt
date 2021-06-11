@@ -103,11 +103,6 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         observeShopModerationStatus()
     }
 
-    private fun initPerformanceMonitoring() {
-        performanceMonitoring = PMPerformanceMonitoring()
-        performanceMonitoring?.initPerformanceMonitoring()
-    }
-
     override fun getComponent(): PowerMerchantSubscribeComponent {
         val appComponent = (applicationContext as BaseMainApplication).baseAppComponent
         return DaggerPowerMerchantSubscribeComponent.builder()
@@ -417,6 +412,11 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     private fun logToCrashlytics(throwable: Throwable, message: String) {
         PowerMerchantErrorLogger.logToCrashlytic(message, throwable)
+    }
+
+    private fun initPerformanceMonitoring() {
+        performanceMonitoring = PMPerformanceMonitoring()
+        performanceMonitoring?.initPerformanceMonitoring()
     }
 
     private fun startNetworkPerformanceMonitoring() {

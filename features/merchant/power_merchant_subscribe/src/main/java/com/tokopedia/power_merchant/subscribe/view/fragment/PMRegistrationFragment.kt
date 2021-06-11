@@ -146,7 +146,7 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
 
     private fun showNewSellerPmProBottomSheet() {
         val pmShopScoreProThreshold = pmBasicInfo?.shopInfo?.shopScorePmProThreshold.orZero()
-        val title: String = getString(R.string.pm_new_seller_upgrade_pm_pro_bottom_sheet_title)
+        val title = getString(R.string.pm_new_seller_upgrade_pm_pro_bottom_sheet_title)
         val description = getString(R.string.pm_new_seller_upgrade_pm_pro_bottom_sheet_description, pmShopScoreProThreshold)
         val ctaText = getString(R.string.pm_content_slider_last_slide_button)
         val illustrationUrl = PMConstant.Images.PM_NEW_REQUIREMENT
@@ -159,7 +159,7 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
         val shopScoreThreshold = if (isPmPro) shopInfo.shopScorePmProThreshold else shopInfo.shopScoreThreshold
         val pmLabel = if (isPmPro) getString(R.string.pm_power_merchant_pro) else getString(R.string.pm_power_merchant)
 
-        val title: String = getString(R.string.pm_bottom_sheet_shop_score_title)
+        val title = getString(R.string.pm_bottom_sheet_shop_score_title)
         val description = getString(R.string.pm_bottom_sheet_shop_score_description, shopScoreThreshold, pmLabel)
         val ctaText = getString(R.string.pm_learn_shop_performance)
         val illustrationUrl = PMConstant.Images.PM_SHOP_SCORE_NOT_ELIGIBLE_BOTTOM_SHEET
@@ -174,7 +174,7 @@ class PMRegistrationFragment : PowerMerchantSubscriptionFragment() {
     }
 
     private fun showActiveProductTermBottomSheet() {
-        val title: String = getString(R.string.pm_bottom_sheet_active_product_title)
+        val title = getString(R.string.pm_bottom_sheet_active_product_title)
         val description: String = getString(R.string.pm_bottom_sheet_active_product_description)
         val ctaText: String = getString(R.string.pm_add_product)
         val illustrationUrl: String = PMConstant.Images.PM_ADD_PRODUCT_BOTTOM_SHEET

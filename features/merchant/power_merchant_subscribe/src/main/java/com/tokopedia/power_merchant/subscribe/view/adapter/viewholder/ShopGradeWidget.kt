@@ -119,7 +119,7 @@ class ShopGradeWidget(
         imgPmShopGrade.loadImageWithoutPlaceholder(element.gradeBadgeImgUrl)
         val isPmStatusActive = element.pmStatus == PMStatusConst.ACTIVE
         if (isPmStatusActive) {
-            tvPmShopGradeStatus.setTextColor(context.getResColor(R.color.Unify_Static_White))
+            tvPmShopGradeStatus.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
             tvPmShopGradeStatus.setBackgroundResource(R.drawable.bg_pm_status_label_active)
         } else {
             tvPmShopGradeStatus.setTextColor(context.getResColor(R.color.pm_static_r600_dms))
