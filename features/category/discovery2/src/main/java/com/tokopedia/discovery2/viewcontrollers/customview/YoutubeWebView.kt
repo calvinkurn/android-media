@@ -54,8 +54,9 @@ class YoutubeWebView @JvmOverloads constructor(context: Context, attrs: Attribut
                         dispatchTouchEvent(tempEvent)
                         v.performClick()
                         return@setOnTouchListener true
+                    }else if(event.actionMasked == MotionEvent.ACTION_CANCEL) {
+                        userDownEvent = false
                     }
-                    userDownEvent = false
                 }
             }
             return@setOnTouchListener false
