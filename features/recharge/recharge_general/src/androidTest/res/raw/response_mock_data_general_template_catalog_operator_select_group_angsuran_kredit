@@ -1,0 +1,147 @@
+[
+  {
+    "data": {
+      "rechargeCatalogOperatorSelectGroup": {
+        "text": "Penyedia Layanan",
+        "style": "select_dropdown",
+        "operatorGroup": [
+          {
+            "name": "",
+            "operators": [
+              {
+                "type": "",
+                "id": 2754,
+                "attributes": {
+                  "name": "Bank DBS",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/3/22/47231715/47231715_7952c2dc-e36e-4dab-bfe1-c9687c13a901.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 2715,
+                "attributes": {
+                  "name": "Toyota Astra Financial Services (TAF)",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2021/2/24/31997636/31997636_da78895c-9f78-4853-8cef-360fb40a7d6a.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 93,
+                "attributes": {
+                  "name": "WOM Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/multifinance-wom.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 166,
+                "attributes": {
+                  "name": "AEON Credit Service Indonesia",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/aeon.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 111,
+                "attributes": {
+                  "name": "Al Ijarah Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/logo-alijarah.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 123,
+                "attributes": {
+                  "name": "Artha Prima Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/logo-arthaprima-finance.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 168,
+                "attributes": {
+                  "name": "Astra Credit Companies",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/acc.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 526,
+                "attributes": {
+                  "name": "BFI Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/bfi.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 89,
+                "attributes": {
+                  "name": "Bima Multi Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/multifinance-bima.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 1327,
+                "attributes": {
+                  "name": "BPR Kredit Mandiri",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/10/21/37591046/37591046_982e8449-1f30-4df0-bd19-e714cd1415b0.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 661,
+                "attributes": {
+                  "name": "BTN",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/btn.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 91,
+                "attributes": {
+                  "name": "Bussan Auto Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/baf.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 1324,
+                "attributes": {
+                  "name": " Buana Finance",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/attachment/2019/10/21/37591046/37591046_e1df1ef8-c55e-437d-a52b-8dca68b9481b.png",
+                  "description": ""
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

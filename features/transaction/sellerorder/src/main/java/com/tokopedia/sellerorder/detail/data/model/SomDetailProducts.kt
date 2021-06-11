@@ -5,5 +5,6 @@ package com.tokopedia.sellerorder.detail.data.model
  */
 data class SomDetailProducts (
         val listProducts: List<SomDetailOrder.Data.GetSomDetail.Products> = listOf(),
-        val isTopAds: Boolean = false
+        val isTopAds: Boolean = false,
+        val isBroadcastChat: Boolean = false
 )

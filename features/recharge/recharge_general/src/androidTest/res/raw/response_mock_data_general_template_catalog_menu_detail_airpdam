@@ -1,0 +1,110 @@
+[
+  {
+    "data": {
+      "rechargeCatalogMenuDetail": {
+        "catalog": {
+          "id": 120,
+          "name": "air-pdam",
+          "label": "Air PDAM",
+          "icon": ""
+        },
+        "recommendations": [],
+        "promos": [
+          {
+            "id": 2300,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/4/7/22885574/22885574_de60a0e2-37db-4082-b66c-c0b7843efe86.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-2/",
+            "status": 1,
+            "title": "Top Up, Tagihan, Travel, Entertainment cashback hingga Rp400rb.",
+            "subtitle": "Kode Promo: {DGTOPED}",
+            "promo_code": "DGTOPED"
+          },
+          {
+            "id": 2252,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/3/4/34631992/34631992_ecb8b9a8-2345-489e-b8d4-4a4a8143f40a.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-7/",
+            "status": 1,
+            "title": "[COBABAYAR] Bayar Tagihan, Cashback hingga Rp100.000. ",
+            "subtitle": "Kode Promo: {COBABAYAR}",
+            "promo_code": "COBABAYAR"
+          },
+          {
+            "id": 2093,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/9/30/42484317/42484317_a2884af5-2dc9-4759-9aa5-527113543c99.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-pln-3/",
+            "status": 1,
+            "title": "[BAYARINYUK] Bayarin tagihan mama, papa, saudara, siapa pun, cashback hingga Rp50.000! Klik di sini.",
+            "subtitle": "Kode Promo: {BAYARINYUK}",
+            "promo_code": "BAYARINYUK"
+          },
+          {
+            "id": 1573,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/31/42484317/42484317_fa7e8881-26ca-411d-8371-86dd0aee2b1c.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-cashback-17/",
+            "status": 1,
+            "title": "[Tagihan] Bayar Tagihan, Cashback terus-terusan. Klik di Sini.",
+            "subtitle": "kode promo : {BAYARTERUS}",
+            "promo_code": "BAYARTERUS"
+          },
+          {
+            "id": 2739,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2020/12/8/34631992/34631992_c28f7d1c-3e77-41ae-b384-5a9fcf7b21a9.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-diskon-5/",
+            "status": 1,
+            "title": "[INDOTAGIHAN] Bayar tagihan, diskon 80%. Khusus pembayaran Indodana.",
+            "subtitle": "Kode Promo: {INDOTAGIHAN}",
+            "promo_code": "INDOTAGIHAN"
+          },
+          {
+            "id": 2973,
+            "filename": "",
+            "filename_webp": "",
+            "img_url": "tokopedia://recharge/home?platform_id=31",
+            "status": 1,
+            "title": "Diskon 10% hingga Rp50rb dengan Debit Online OCBC NISP (min. Rp100rb)",
+            "subtitle": "Kode promo: {OCBCDBTAGIHAN}",
+            "promo_code": "OCBCDBTAGIHAN"
+          },
+          {
+            "id": 2835,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/2/11/66931192/66931192_864e5831-2b17-463d-9eee-e69001446da0.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-bca/",
+            "status": 1,
+            "title": "Khusus hari Minggu, diskon Rp50rb Top Up, Tagihan, Travel, Entertainment dengan Kartu Kredit BCA.",
+            "subtitle": "Kode promo: {BCADIGI}",
+            "promo_code": "BCADIGI"
+          },
+          {
+            "id": 2810,
+            "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/15/66931192/66931192_39d3a19b-f32f-4f6a-96c8-50cb5890b74c.jpg",
+            "filename_webp": "",
+            "img_url": "https://www.tokopedia.com/promo/digital-commonwealth",
+            "status": 1,
+            "title": "[COMMON50] Top Up, Tagihan, Travel, Entertainment, diskon Rp50.000 dengan debit Commonwealth.",
+            "subtitle": "Kode promo: {COMMON50}",
+            "promo_code": "COMMON50"
+          }
+        ],
+        "tickers": [
+          {
+            "ID": 137,
+            "Name": "Proteksi Tagihan",
+            "Content": "Air mati? Pakai Proteksi Tagihan, bisa klaim hingga 500rb.",
+            "Type": "info",
+            "Environment": "all",
+            "ActionText": "",
+            "ActionLink": ""
+          }
+        ],
+        "banners": [],
+        "express_checkout": false
+      }
+    }
+  }
+]

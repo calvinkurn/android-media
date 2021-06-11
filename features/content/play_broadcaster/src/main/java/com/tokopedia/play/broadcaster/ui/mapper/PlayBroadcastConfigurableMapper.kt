@@ -87,9 +87,9 @@ class PlayBroadcastConfigurableMapper(
         else mockMapper.mapChannelSchedule(timestamp)
     }
 
-    override fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String, coverTitle: String): PlayCoverUiModel {
-        return if (!isMock) uiMapper.mapCover(setupCover, coverUrl, coverTitle)
-        else mockMapper.mapCover(setupCover, coverUrl, coverTitle)
+    override fun mapCover(setupCover: PlayCoverUiModel?, coverUrl: String): PlayCoverUiModel {
+        return if (!isMock) uiMapper.mapCover(setupCover, coverUrl)
+        else mockMapper.mapCover(setupCover, coverUrl)
     }
 
     override fun mapShareInfo(channel: GetChannelResponse.Channel): ShareUiModel {
