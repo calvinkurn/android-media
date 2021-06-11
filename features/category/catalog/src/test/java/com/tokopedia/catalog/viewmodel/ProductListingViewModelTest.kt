@@ -7,6 +7,8 @@ import com.tokopedia.catalog.CatalogTestUtils
 import com.tokopedia.catalog.model.datamodel.CatalogDetailDataModel
 import com.tokopedia.catalog.model.raw.CatalogProductItem
 import com.tokopedia.catalog.model.raw.CatalogResponseData
+import com.tokopedia.catalog.model.raw.CatalogSearchProductResponse
+import com.tokopedia.catalog.model.raw.ProductListResponse
 import com.tokopedia.catalog.repository.catalogdetail.CatalogDetailRepository
 import com.tokopedia.catalog.usecase.detail.CatalogDetailUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogCategoryProductUseCase
@@ -17,16 +19,17 @@ import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.coEvery
-import io.mockk.mockk
-import io.mockk.spyk
+import io.mockk.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import rx.Observable
+import rx.Subscriber
 import java.lang.reflect.Type
 
 class ProductListingViewModelTest {
@@ -36,7 +39,8 @@ class ProductListingViewModelTest {
 
     private var quickFilterUseCase = mockk<CatalogQuickFilterUseCase>()
     private var dynamicFilterUseCase = mockk<CatalogDynamicFilterUseCase>()
-    private var getProductListUseCase = mockk<CatalogGetProductListUseCase>()
+    private var categoryProductUseCase = mockk<CatalogCategoryProductUseCase>(relaxed = true)
+    private var getProductListUseCase = mockk<CatalogGetProductListUseCase>(relaxed = true)
 
     private lateinit var viewModel : CatalogDetailProductListingViewModel
     private var catalogDetailObserver = mockk<Observer<Result<List<CatalogProductItem>>>>(relaxed = true)
@@ -49,8 +53,39 @@ class ProductListingViewModelTest {
 
     @Test
     fun `Get Catalog Product Response Success`() {
-        val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_product_dummy_response.json"))
+        val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_product_listing_response.json"))
+        val data = mockGqlResponse.getData(CatalogSearchProductResponse::class.java) as CatalogSearchProductResponse
+        val productListResponse = ProductListResponse(data.searchProduct)
 
+        every { getProductListUseCase.execute(any(), any()) }.answers {
+            (secondArg() as Subscriber<ProductListResponse>).onNext(productListResponse)
+            (secondArg() as Subscriber<ProductListResponse>).onCompleted()
+        }
+        viewModel.fetchProductListing(RequestParams())
+
+        if(viewModel.mProductList.value is Success) {
+            assert(true)
+        }else {
+            assert(false)
+        }
+    }
+
+    @Test
+    fun `Get Catalog Product Response Fail`() {
+        val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_empty_dummy_response.json"))
+        val data = mockGqlResponse.getData(CatalogSearchProductResponse::class.java) as CatalogSearchProductResponse
+        val productListResponse = ProductListResponse(data.searchProduct)
+
+        every { getProductListUseCase.execute(any(), any()) }.answers {
+            (secondArg() as Subscriber<ProductListResponse>).onError(Throwable("No Data"))
+        }
+        viewModel.fetchProductListing(RequestParams())
+
+        if(viewModel.mProductList.value is Fail) {
+            assert(true)
+        }else {
+            assert(false)
+        }
     }
 
     private fun createMockGraphqlResponse(response : JsonObject): GraphqlResponse {
@@ -58,7 +93,7 @@ class ProductListingViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         val jsonObject: JsonObject = response
         val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-        val objectType = CatalogResponseData::class.java
+        val objectType = CatalogSearchProductResponse::class.java
         val obj: Any = CommonUtils.fromJson(data, objectType)
         result[objectType] = obj
         return GraphqlResponse(result, errors, false)

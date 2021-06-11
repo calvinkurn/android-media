@@ -1,4 +1,4 @@
-package com.tokopedia.catalog.viewholder
+package com.tokopedia.catalog.viewholder.components
 
 import android.view.View
 import androidx.core.content.ContextCompat
