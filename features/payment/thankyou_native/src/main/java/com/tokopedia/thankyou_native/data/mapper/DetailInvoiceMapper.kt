@@ -68,7 +68,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
     private fun getPreviousVAOrderAmount(totalFee: Long): FeeDetail? {
          if (thanksPageData.combinedAmount > 0) {
-            val previousAmount = thanksPageData.combinedAmount - thanksPageData.orderAmount - totalFee
+            val previousAmount = thanksPageData.combinedAmount - thanksPageData.amount
             if(previousAmount>0){
                 val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(previousAmount,
                     false)
