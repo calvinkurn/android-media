@@ -182,7 +182,7 @@ class ForgotPasswordFragment : BaseDaggerFragment() {
             override fun onClick(view: View) { }
             override fun updateDrawState(ds: TextPaint) {
                 ds.isUnderlineText = true
-                ds.color = context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Green_G500) }  ?: 0
+                ds.color = context?.let { ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500) }  ?: 0
             }
         }, sourceString.indexOf("Daftar"), sourceString.length, 0)
         return spannable
