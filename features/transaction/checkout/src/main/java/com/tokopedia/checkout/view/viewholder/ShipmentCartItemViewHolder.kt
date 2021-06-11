@@ -46,7 +46,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
 
     fun bindViewHolder(cartItem: CartItemModel, listener: ShipmentItemListener?) {
         shipmentItemListener = listener
-        if (cartItem.isError && !cartItem.isShopError) {
+        if (cartItem.isError) {
             showShipmentWarning(cartItem)
         } else {
             hideShipmentWarning()
@@ -157,7 +157,10 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         } else {
             tickerError.gone()
         }
-        disableItemView()
+
+        if (!cartItemModel.isShopError) {
+            disableItemView()
+        }
     }
 
     private fun hideShipmentWarning() {

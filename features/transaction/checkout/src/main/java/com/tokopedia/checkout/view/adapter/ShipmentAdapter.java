@@ -321,7 +321,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     }
                 }
             }
-            if (cartItemCounter > 0 && cartItemCounter == shipmentCartItemModelList.size()) {
+            if (cartItemCounter > 0 && cartItemCounter <= shipmentCartItemModelList.size()) {
                 double priceTotal = shipmentCostModel.getTotalPrice() <= 0 ? 0 : shipmentCostModel.getTotalPrice();
                 String priceTotalFormatted = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat((long) priceTotal, false));
                 shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted);
@@ -738,6 +738,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null && shipmentAdapterActionListener.isTradeInByDropOff())) {
                         cartItemCounter++;
                     }
+                } else if (shipmentCartItemModel.isError()) {
+                    cartItemCounter++;
                 }
             }
             if (cartItemCounter == shipmentCartItemModelList.size()) {

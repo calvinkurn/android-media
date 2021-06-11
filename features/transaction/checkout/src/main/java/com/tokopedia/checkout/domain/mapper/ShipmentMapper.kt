@@ -165,9 +165,9 @@ class ShipmentMapper @Inject constructor() {
                 if (it.tradeInInfo.isValidTradeIn) {
                     productPrice = it.tradeInInfo.newDevicePrice.toLong()
                 }
-                isError = !it.errors.isNullOrEmpty()
-                errorMessage = if (it.errors.isNotEmpty()) it.errors[0] else ""
-                errorMessageDescription = if (it.errors.size >= 2) it.errors[1] else ""
+                isError = !it.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
+                errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (it.errors.isNotEmpty()) it.errors[0] else ""
+                errorMessageDescription = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (it.errors.size >= 2) it.errors[1] else ""
                 if (isError) {
                     productErrorCount++
                     if (firstErrorIndex == -1) {
@@ -723,25 +723,31 @@ class ShipmentMapper @Inject constructor() {
             for (groupShop in groupAddress.groupShop) {
                 if (groupShop.isError) {
                     hasError = true
-                    break
                 }
                 var totalProductError = 0
                 var defaultErrorMessage = ""
+                var allProductsHaveSameError = true
                 for ((isError, errorMessage) in groupShop.products) {
                     if (isError || !isNullOrEmpty(errorMessage)) {
                         hasError = true
                         totalProductError++
                         if (isNullOrEmpty(defaultErrorMessage)) {
                             defaultErrorMessage = errorMessage
+                        } else if (allProductsHaveSameError && defaultErrorMessage != errorMessage) {
+                            allProductsHaveSameError = false
                         }
                     }
                 }
                 if (totalProductError == groupShop.products.size) {
-                    groupShop.isError = true
-                    groupShop.errorMessage = defaultErrorMessage
+                    if (!groupShop.isError) {
+                        groupShop.isError = true
+                        groupShop.errorMessage = defaultErrorMessage
+                    }
                     for (product in groupShop.products) {
-                        product.isError = false
-                        product.errorMessage = ""
+                        if (allProductsHaveSameError) {
+                            product.isError = false
+                            product.errorMessage = ""
+                        }
                     }
                 }
             }

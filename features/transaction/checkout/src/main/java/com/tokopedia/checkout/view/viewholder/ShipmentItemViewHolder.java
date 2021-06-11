@@ -602,7 +602,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     @SuppressLint("StringFormatInvalid")
     private void renderFirstCartItem(CartItemModel cartItemModel) {
-        if (cartItemModel.isError() && !cartItemModel.isShopError()) {
+        if (cartItemModel.isError()) {
             showShipmentWarning(cartItemModel);
         } else {
             hideShipmentWarning();
@@ -1824,7 +1824,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             tickerProductError.setVisibility(View.GONE);
         }
-        disableItemView();
+
+        if (!cartItemModel.isShopError()) {
+            disableItemView();
+        }
     }
 
     private void hideShipmentWarning() {
