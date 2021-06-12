@@ -646,6 +646,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             showErrorToaster()
             globalErrorStc.gone()
         }
+        swipeRefreshStc.isRefreshing = false
         StatisticLogger.logToCrashlytics(throwable, StatisticLogger.ERROR_LAYOUT)
     }
 
@@ -708,7 +709,6 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             progressBarStc.visible()
         } else {
             progressBarStc.gone()
-            swipeRefreshStc.isRefreshing = false
         }
     }
 
