@@ -45,17 +45,9 @@ class HomeCategoryGridViewHolder(
 
     override fun bind(data: HomeCategoryGridUiModel) {
         when(data.state) {
-            HomeLayoutState.SHOW -> {
-                showCategoryGrid(data)
-            }
-            HomeLayoutState.LOADING -> {
-                llCategory?.hide()
-                rvCategory?.hide()
-                categoryShimmering?.show()
-            }
-            HomeLayoutState.HIDE -> {
-                showLocalLoad()
-            }
+            HomeLayoutState.SHOW -> showCategoryGrid(data)
+            HomeLayoutState.LOADING -> showLoadingState()
+            HomeLayoutState.HIDE -> showLocalLoad()
         }
     }
 
@@ -67,6 +59,12 @@ class HomeCategoryGridViewHolder(
             rvCategory = findViewById(R.id.rv_category)
             categoryShimmering = findViewById(R.id.category_shimmering)
         }
+    }
+
+    private fun showLoadingState() {
+        llCategory?.hide()
+        rvCategory?.hide()
+        categoryShimmering?.show()
     }
 
     private fun showCategoryGrid(data: HomeCategoryGridUiModel) {
