@@ -427,6 +427,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun renderFullPageError(throwable: Throwable) {
+        emoneyGlobalError.show()
         emoneyGlobalError.showUnifyError(throwable, { loadData() }, {
             emoneyGlobalError.hide()
             renderErrorMessage(throwable)
@@ -435,7 +436,6 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
         emoneyGlobalError.findViewById<GlobalError>(com.tokopedia.globalerror.R.id.globalerror_view)?.apply {
             gravity = Gravity.CENTER
         }
-        emoneyGlobalError.show()
     }
 
     override fun onClickCheckBalance() {
