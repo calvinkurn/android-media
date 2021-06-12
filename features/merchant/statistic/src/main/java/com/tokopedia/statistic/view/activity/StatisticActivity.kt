@@ -129,7 +129,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
             listOf(
                     StatisticPageHelper.getShopStatistic(this, userSession),
                     StatisticPageHelper.getProductStatistic(this, userSession),
-                    StatisticPageHelper.getOperationalStatistic(this),
+                    StatisticPageHelper.getOperationalStatistic(this, userSession),
                     StatisticPageHelper.getBuyerStatistic(this, userSession)
             )
         } else {
@@ -137,7 +137,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
             listOf(
                     StatisticPageHelper.getShopStatistic(this, userSession),
                     StatisticPageHelper.getProductStatistic(this, userSession),
-                    StatisticPageHelper.getOperationalStatistic(this)
+                    StatisticPageHelper.getOperationalStatistic(this, userSession)
             )
         }
     }
@@ -165,11 +165,10 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         tabStatistic.tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
-        tabStatistic.customTabMode = TabLayout.MODE_SCROLLABLE
         tabStatistic.tabLayout.setOnTabSelectedListener {
             val tabIndex = tabStatistic.tabLayout.selectedTabPosition
             val title = viewPagerAdapter?.titles?.getOrNull(tabIndex).orEmpty()
-            dismissCoachMarkOnTabSelected(title)
+            dismissCoachMarkOnTabSelected()
             StatisticTracker.sendPageTabClickEvent(userSession.userId, title)
         }
     }
@@ -320,19 +319,9 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         return null
     }
 
-    private fun dismissCoachMarkOnTabSelected(title: String) {
+    private fun dismissCoachMarkOnTabSelected() {
         if (coachMark.isDismissed) return
-
-        when {
-            getIsProductInsightTab(title) -> {
-                coachMark.dismissCoachMark()
-                setCoachMarkHasShown(Const.SHOW_PRODUCT_INSIGHT_COACH_MARK_KEY)
-            }
-            getIsOperationalInsightTab(title) -> {
-                coachMark.dismissCoachMark()
-                setCoachMarkHasShown(Const.HAS_SHOWN_OPERATIONAL_INSIGHT_COACH_MARK_KEY)
-            }
-        }
+        coachMark.dismissCoachMark()
     }
 
     private fun saveCoachMarkHasShownByTitle(title: String) {

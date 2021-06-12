@@ -85,7 +85,7 @@ object StatisticPageHelper {
         )
     }
 
-    fun getOperationalStatistic(context: Context): StatisticPageUiModel {
+    fun getOperationalStatistic(context: Context, userSession: UserSessionInterface): StatisticPageUiModel {
         val title = context.getString(R.string.stc_operational)
         return StatisticPageUiModel(
                 pageTitle = title,
@@ -103,7 +103,7 @@ object StatisticPageHelper {
                                 iconUnify = IconUnify.HELP
                         )
                 ),
-                dateFilters = getOperationalDateFilters(context)
+                dateFilters = getOperationalDateFilters(context, userSession)
         )
     }
 
@@ -162,15 +162,19 @@ object StatisticPageHelper {
         }
     }
 
-    private fun getOperationalDateFilters(context: Context): List<DateFilterItem> {
-        return listOf(
-                getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true),
-                getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_30, Const.DAY_1, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
-                DateFilterItem.Divider,
-                getDateFilterPerWeek(context, true, Const.DAYS_91),
-                getFilterPerMonth(context, false, Const.DAYS_91),
-                DateFilterItem.ApplyButton
-        )
+    private fun getOperationalDateFilters(context: Context, userSession: UserSessionInterface): List<DateFilterItem> {
+        return if (getRegularMerchantStatus(userSession)) {
+            listOf(getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true))
+        } else {
+            listOf(
+                    getDateFilterItemClick(context, Const.DAYS_7, Const.DAYS_7, Const.DAY_1, DateFilterItem.TYPE_LAST_7_DAYS, true),
+                    getDateFilterItemClick(context, Const.DAYS_30, Const.DAYS_30, Const.DAY_1, DateFilterItem.TYPE_LAST_30_DAYS, showBottomBorder = false),
+                    DateFilterItem.Divider,
+                    getDateFilterPerWeek(context, true, Const.DAYS_91),
+                    getFilterPerMonth(context, false, Const.DAYS_91),
+                    DateFilterItem.ApplyButton
+            )
+        }
     }
 
     private fun getDateRangeItemToday(context: Context, isSelected: Boolean): DateFilterItem {
