@@ -59,7 +59,9 @@ import com.tokopedia.tokomart.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapter
 import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeFactory
 import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
+import com.tokopedia.tokomart.home.presentation.viewholder.HomeCategoryGridViewHolder
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokomart.home.presentation.viewmodel.TokoMartHomeViewModel
@@ -73,6 +75,7 @@ class TokoMartHomeFragment: Fragment(),
         TokoNowView,
         HomeChooseAddressWidgetViewHolder.HomeChooseAddressWidgetListener,
         HomeTickerViewHolder.HomeTickerListener,
+        HomeCategoryGridViewHolder.HomeCategoryGridListener,
         MiniCartWidgetListener,
         BannerComponentListener
 {
@@ -98,6 +101,7 @@ class TokoMartHomeFragment: Fragment(),
                 tokoNowListener = this,
                 homeTickerListener = this,
                 homeChooseAddressWidgetListener = this,
+                homeCategoryGridlistener = this,
                 bannerComponentListener = this
             ),
             differ = TokoMartHomeListDiffer()
@@ -162,7 +166,7 @@ class TokoMartHomeFragment: Fragment(),
         checkIfChooseAddressWidgetDataUpdated()
     }
 
-    override fun onTickerDismiss() {
+    override fun onTickerDismissed() {
         hasTickerBeenRemoved = true
         adapter.removeTickerWidget()
     }
@@ -179,9 +183,16 @@ class TokoMartHomeFragment: Fragment(),
         }
     }
 
-    override fun onRemoveChooseAddressWidget() {
+    override fun onChooseAddressWidgetRemoved() {
         if(rvHome?.isComputingLayout == false) {
             adapter.removeHomeChooseAddressWidget()
+        }
+    }
+
+    override fun onCategoryRetried() {
+        val item = adapter.getItem(HomeCategoryGridUiModel::class.java)
+        if (item is HomeCategoryGridUiModel) {
+            viewModel.getCategoryGrid(item, localCacheModel?.warehouse_id.orEmpty())
         }
     }
 
