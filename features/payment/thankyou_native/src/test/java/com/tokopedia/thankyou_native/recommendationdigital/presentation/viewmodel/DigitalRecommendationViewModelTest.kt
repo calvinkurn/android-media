@@ -95,6 +95,6 @@ class DigitalRecommendationViewModelTest {
         assert(actualData.value is Fail)
 
         val result = actualData.value as? Fail
-        assertEquals(result?.throwable.message, mockResponse.message)
+        assertEquals(result?.throwable?.message, mockResponse.message)
     }
 }
