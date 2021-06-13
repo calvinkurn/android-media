@@ -198,12 +198,6 @@ open class LoginBase: LoginRegisterBase() {
         viewInteraction.perform(ViewActions.typeText(value))
     }
 
-    fun clickSocmedButton() {
-        onView(withId(R.id.socmed_btn))
-                .check(matches(ViewMatchers.isDisplayed()))
-                .perform(ViewActions.click())
-    }
-
     fun shouldBeEnabled(id: Int) {
         onView(withId(id)).check(matches(isEnabled()))
     }

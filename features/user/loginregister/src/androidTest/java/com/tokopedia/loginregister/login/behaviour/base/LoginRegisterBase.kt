@@ -69,4 +69,16 @@ open class LoginRegisterBase {
         viewInteraction.perform(ViewActions.clearText())
     }
 
+    fun clickTopLogin() {
+        val viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.actionTextID))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        viewInteraction.perform(ViewActions.click())
+    }
+
+    fun clickSocmedButton() {
+        Espresso.onView(ViewMatchers.withId(R.id.socmed_btn))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .perform(ViewActions.click())
+    }
+
 }
