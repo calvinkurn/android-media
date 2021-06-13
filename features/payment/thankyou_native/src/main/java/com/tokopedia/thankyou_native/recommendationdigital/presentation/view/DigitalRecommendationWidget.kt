@@ -4,14 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationItem
-import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationsItem
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.thank_digital_recommendation_item.view.*
 

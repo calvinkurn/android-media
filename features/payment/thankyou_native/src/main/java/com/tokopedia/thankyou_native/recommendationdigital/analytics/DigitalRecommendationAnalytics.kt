@@ -4,7 +4,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.thankyou_native.recommendationdigital.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.recommendationdigital.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationItem
-import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationsItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue

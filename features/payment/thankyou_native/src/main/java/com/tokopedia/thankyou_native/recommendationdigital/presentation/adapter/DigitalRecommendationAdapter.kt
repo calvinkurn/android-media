@@ -3,7 +3,6 @@ package com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationItem
-import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationsItem
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.listener.DigitalRecommendationViewListener
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendationWidget
 
