@@ -405,6 +405,14 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                     }
                 }
 
+                REQUEST_CODE_CART_DIGITAL -> {
+                    if (data?.hasExtra(DigitalExtraParam.EXTRA_MESSAGE) == true) {
+                        val message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)
+                        if (!message.isNullOrEmpty()) renderErrorMessage(MessageErrorException(message))
+                    }
+                }
+
+
                 REQUEST_CODE_LOGIN -> {
                     proceedAddToCart(emoneyPdpViewModel.digitalCheckoutPassData)
                 }
