@@ -89,14 +89,18 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
 
     override fun loadRecommendation(thanksPageData: ThanksPageData,
                                     fragment: BaseDaggerFragment,
-                                    trackingQueue: TrackingQueue?
+                                    trackingQueue: TrackingQueue?,
+                                    pgCategoryIds: List<Int>
     ) {
         this.thanksPageData =  thanksPageData
         this.paymentId = thanksPageData.paymentID.toString()
         this.fragment = fragment
         this.trackingQueue = trackingQueue
         startViewModelObserver()
-        viewModel.getDigitalRecommendationData(userSession.get().phoneNumber)
+        viewModel.getDigitalRecommendationData(
+                userSession.get().phoneNumber,
+                pgCategoryIds
+        )
     }
 
     private fun startViewModelObserver() {

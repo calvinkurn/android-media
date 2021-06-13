@@ -16,10 +16,12 @@ class DigitalRecommendationUseCase  @Inject constructor(
 
     fun getDigitalRecommendationData(onSuccess: (RechargeRecommendationDigiPersoItem) -> Unit,
                                      onError: (Throwable) -> Unit,
-                                     clientNumber: String) {
+                                     clientNumber: String,
+                                     pgCategoryIds: List<Int>
+    ) {
         try {
             this.setTypeClass(RecommendationDigiPersoResponse::class.java)
-            this.setRequestParams(getRequestParams(clientNumber))
+            this.setRequestParams(getRequestParams(clientNumber, pgCategoryIds))
             this.setGraphqlQuery(query)
             this.execute(
                     { result ->
@@ -33,13 +35,13 @@ class DigitalRecommendationUseCase  @Inject constructor(
         }
     }
 
-    private fun getRequestParams(clientNumber: String): Map<String, Any> {
+    private fun getRequestParams(clientNumber: String, pgCategoryIds: List<Int>): Map<String, Any> {
         return mapOf(
                 PARAM_INPUT to mapOf(
                         PARAM_CHANNEL_NAME to DG_THANK_YOU_PAGE_RECOMMENDATION,
                         PARAM_CLIENT_NUMBERS to listOf(clientNumber),
                         PARAM_DG_CATEGORY_IDS to listOf<Int>(),
-                        PARAM_PG_CATEGORY_IDS to listOf<Int>()
+                        PARAM_PG_CATEGORY_IDS to pgCategoryIds
                 )
         )
     }

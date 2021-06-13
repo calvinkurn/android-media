@@ -7,7 +7,8 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 interface IDigitalRecommendationView {
     fun loadRecommendation(thanksPageData: ThanksPageData,
                            fragment: BaseDaggerFragment,
-                           trackingQueue: TrackingQueue?
+                           trackingQueue: TrackingQueue?,
+                           pgCategoryIds: List<Int>
     )
 
 }

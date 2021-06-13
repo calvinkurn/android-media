@@ -62,12 +62,12 @@ class DigitalRecommendationViewModelTest {
         )
 
         every { digitalRecommendationUseCase.cancelJobs() } returns Unit
-        every { digitalRecommendationUseCase.getDigitalRecommendationData(any(), any(), any()) } answers {
+        every { digitalRecommendationUseCase.getDigitalRecommendationData(any(), any(), any(), any()) } answers {
             firstArg<(RechargeRecommendationDigiPersoItem) -> Unit>().invoke(mockResponse)
         }
 
         // when
-        digitalRecommendationViewModel.getDigitalRecommendationData("")
+        digitalRecommendationViewModel.getDigitalRecommendationData("", listOf())
 
         // then
         val actualData = digitalRecommendationViewModel.digitalRecommendationLiveData
@@ -83,18 +83,18 @@ class DigitalRecommendationViewModelTest {
         val mockResponse = MessageErrorException("Recommendation Error Dummy")
 
         every { digitalRecommendationUseCase.cancelJobs() } returns Unit
-        every { digitalRecommendationUseCase.getDigitalRecommendationData(any(), any(), any()) } answers {
+        every { digitalRecommendationUseCase.getDigitalRecommendationData(any(), any(), any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(mockResponse)
         }
 
         // when
-        digitalRecommendationViewModel.getDigitalRecommendationData("")
+        digitalRecommendationViewModel.getDigitalRecommendationData("", listOf())
 
         // then
         val actualData = digitalRecommendationViewModel.digitalRecommendationLiveData
         assert(actualData.value is Fail)
 
         val result = actualData.value as? Fail
-        assertEquals(result?.throwable, mockResponse.message)
+        assertEquals(result?.throwable.message, mockResponse.message)
     }
 }

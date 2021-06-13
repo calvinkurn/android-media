@@ -19,12 +19,13 @@ class DigitalRecommendationViewModel @Inject constructor(
     private val _digitalRecommendationLiveData = MutableLiveData<Result<RechargeRecommendationDigiPersoItem>>()
     val digitalRecommendationLiveData: LiveData<Result<RechargeRecommendationDigiPersoItem>> = _digitalRecommendationLiveData
 
-    fun getDigitalRecommendationData(clientNumber: String) {
+    fun getDigitalRecommendationData(clientNumber: String, pgCategoryIds: List<Int>) {
         digitalRecommendationUseCase.cancelJobs()
         digitalRecommendationUseCase.getDigitalRecommendationData(
                 ::onDigitalRecomDataSuccess,
                 ::onDigitalRecomError,
-                clientNumber
+                clientNumber,
+                pgCategoryIds
         )
     }
 
