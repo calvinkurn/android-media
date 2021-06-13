@@ -453,12 +453,11 @@ public class OrderListAnalytics {
     }
 
     public static void eventWidgetListView(@NotNull com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationItem contentItemTab, int position) {
-        // TODO: [Misael] ini kekny perlu ditambahin data trackingnya: item_category
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
                 EVENT_CATEGORY, "my purchase list - " + contentItemTab.getTitle(),
                 EVENT_ACTION, IMPRESSION_ON_WIDGET_RECOMMENDATION,
-                EVENT_LABEL, contentItemTab.getTrackingData().getItemType(),
+                EVENT_LABEL, contentItemTab.getTrackingData().getItemType() + " - " + contentItemTab.getTrackingData().getCategoryName() + " - " + (1 + position),
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
@@ -482,7 +481,7 @@ public class OrderListAnalytics {
                 EVENT, PRODUCT_CLICK,
                 EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL,
                 EVENT_ACTION, CLICK_ON_WIDGET_RECOMMENDATION,
-                EVENT_LABEL, item.getTrackingData().getItemType(),
+                EVENT_LABEL, item.getTrackingData().getItemType() + " - " + item.getTrackingData().getCategoryName() + " - " + (1 + position),
                 ECOMMERCE, DataLayer.mapOf(
                         CLICK, DataLayer.mapOf(
                                 ACTION_FIELD, DataLayer.mapOf(
