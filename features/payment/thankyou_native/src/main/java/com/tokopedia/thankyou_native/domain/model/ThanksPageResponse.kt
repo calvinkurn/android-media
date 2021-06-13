@@ -285,7 +285,9 @@ data class PurchaseItem(
         @SerializedName("bebas_ongkir_dimension")
         val bebasOngkirDimension: String,
         @SerializedName("is_bbi")
-        val isBBIProduct: Boolean
+        val isBBIProduct: Boolean,
+        @SerializedName("category_id")
+        val categoryId: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
@@ -304,7 +306,9 @@ data class PurchaseItem(
             parcel.readString() ?: "",
             parcel.readDouble(),
             parcel.readString() ?: "",
-            parcel.readByte() == 1.toByte())
+            parcel.readByte() == 1.toByte(),
+            parcel.readString() ?: ""
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(productId)
