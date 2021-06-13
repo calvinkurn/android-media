@@ -7,14 +7,18 @@ import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 import com.tokopedia.applink.penalty.DeepLinkMapperPenalty
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import io.mockk.clearStaticMockk
 import io.mockk.every
+import io.mockk.mockkStatic
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -24,7 +28,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     override fun setup() {
         super.setup()
+        mockkStatic(RemoteConfigInstance::class)
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
+    }
+
+    override fun finish() {
+        super.finish()
+        clearStaticMockk(RemoteConfigInstance::class)
     }
 
     @Test
@@ -1119,7 +1129,17 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check notification appLink then should return tokopedia internal notification in customerapp`() {
+        // Given
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/notification"
+
+        // When
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AbTestPlatform.KEY_NEW_NOTFICENTER, AbTestPlatform.VARIANT_OLD_NOTFICENTER
+            )
+        } returns AbTestPlatform.VARIANT_OLD_NOTFICENTER
+
+        // Then
         assertEqualsDeepLinkMapper(ApplinkConst.NOTIFICATION, expectedDeepLink)
     }
 
@@ -1806,16 +1826,16 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check tokonow search appLink then should return tokopedia internal tokonow search in customerapp`() {
         val queryParams = "?q=keju"
-        val expectedDeepLink = ApplinkConstInternalTokoMart.SEARCH + queryParams
-        val actualDeeplink = ApplinkConst.TokoNow.SEARCH + queryParams
+        val expectedDeepLink = ApplinkConstInternalTokopediaNow.SEARCH + queryParams
+        val actualDeeplink = ApplinkConst.TokopediaNow.SEARCH + queryParams
         assertEqualsDeepLinkMapper(actualDeeplink, expectedDeepLink)
     }
 
     @Test
     fun `check tokonow category appLink then should return tokopedia internal tokonow category in customerapp`() {
         val categoryId = "123"
-        val expectedDeepLink = "${ApplinkConstInternalTokoMart.INTERNAL_TOKOMART}/category/$categoryId/"
-        val appLink = UriUtil.buildUri(ApplinkConst.TokoNow.CATEGORY, categoryId)
+        val expectedDeepLink = "${ApplinkConstInternalTokopediaNow.INTERNAL_TOKOPEDIA_NOW}/category/$categoryId/"
+        val appLink = UriUtil.buildUri(ApplinkConst.TokopediaNow.CATEGORY, categoryId)
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 }

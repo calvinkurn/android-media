@@ -473,11 +473,11 @@ public interface ApplinkConst {
         String SHOP_SETTINGS_SELLER_APP = "sellerapp://shop/{shop_id}/settings";
     }
 
-    interface TokoNow {
-        String HOME = "tokopedia://tokonow";
-        String TOKONOW_PRODUCTION_SHOP_ID = "11530573";
-        String SEARCH = "tokopedia://tokonow/search";
-        String CATEGORY = "tokopedia://tokonow/category/{category_id}";
+    interface TokopediaNow {
+        String HOME = "tokopedia://now";
+        String TOKOPEDIA_NOW_PRODUCTION_SHOP_ID = "11530573";
+        String SEARCH = "tokopedia://now/search";
+        String CATEGORY = "tokopedia://now/category/{category_id}";
     }
 
     interface Query {
@@ -635,6 +635,7 @@ public interface ApplinkConst {
         String VALUE_ROLE_SELLER = "seller";
 
         String PARAM_SOURCE = "source";
+        String PARAM_SHOW_BOTTOM_NAV = "show_bottom_nav";
     }
 
     interface GeneralInfo {

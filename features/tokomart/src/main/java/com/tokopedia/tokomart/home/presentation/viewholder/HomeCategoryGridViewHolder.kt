@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalTokoMart
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -71,7 +71,7 @@ class HomeCategoryGridViewHolder(
         tvTitle?.text = data.title
         tvSeeAll?.setOnClickListener {
             val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(itemView.context)
-            RouteManager.route(itemView.context, ApplinkConstInternalTokoMart.CATEGORY_LIST, localCacheModel?.warehouse_id)
+            RouteManager.route(itemView.context, ApplinkConstInternalTokopediaNow.CATEGORY_LIST, localCacheModel?.warehouse_id)
         }
 
         rvCategory?.apply {
