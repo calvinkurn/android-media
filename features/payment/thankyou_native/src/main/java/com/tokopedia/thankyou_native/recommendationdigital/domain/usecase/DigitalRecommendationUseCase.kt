@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.thankyou_native.GQL_DIGITAL_RECOMMENDATION
 import com.tokopedia.thankyou_native.recommendationdigital.model.RechargeRecommendationDigiPersoItem
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationDigiPersoResponse
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -14,10 +15,11 @@ class DigitalRecommendationUseCase  @Inject constructor(
 
 
     fun getDigitalRecommendationData(onSuccess: (RechargeRecommendationDigiPersoItem) -> Unit,
-                                     onError: (Throwable) -> Unit, categoryId: String) {
+                                     onError: (Throwable) -> Unit,
+                                     clientNumber: String) {
         try {
             this.setTypeClass(RecommendationDigiPersoResponse::class.java)
-            this.setRequestParams(getRequestParams())
+            this.setRequestParams(getRequestParams(clientNumber))
             this.setGraphqlQuery(query)
             this.execute(
                     { result ->
@@ -31,11 +33,11 @@ class DigitalRecommendationUseCase  @Inject constructor(
         }
     }
 
-    private fun getRequestParams(): Map<String, Any> {
+    private fun getRequestParams(clientNumber: String): Map<String, Any> {
         return mapOf(
                 PARAM_INPUT to mapOf(
                         PARAM_CHANNEL_NAME to DG_THANK_YOU_PAGE_RECOMMENDATION,
-                        PARAM_CLIENT_NUMBERS to listOf<String>(),
+                        PARAM_CLIENT_NUMBERS to listOf(clientNumber),
                         PARAM_DG_CATEGORY_IDS to listOf<Int>(),
                         PARAM_PG_CATEGORY_IDS to listOf<Int>()
                 )

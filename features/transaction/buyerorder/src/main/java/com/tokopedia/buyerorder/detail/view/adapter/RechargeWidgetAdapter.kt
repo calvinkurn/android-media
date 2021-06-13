@@ -74,7 +74,7 @@ class RechargeWidgetAdapter(private val recommendationItems: List<Recommendation
                 categoryName.hide()
             } else {
                 categoryName.show()
-                categoryName.text = MethodChecker.fromHtml(category)
+                categoryName.text = category.trim().capitalize()
             }
         }
 
@@ -83,7 +83,7 @@ class RechargeWidgetAdapter(private val recommendationItems: List<Recommendation
                 productName.hide()
             } else {
                 productName.show()
-                productName.text = MethodChecker.fromHtml(element.subtitle)
+                productName.text = element.subtitle.trim()
             }
         }
 
@@ -97,7 +97,7 @@ class RechargeWidgetAdapter(private val recommendationItems: List<Recommendation
                 productName.maxLines = 3
             } else {
                 clientNumber.show()
-                clientNumber.text = element.label1
+                clientNumber.text = element.label1.trim()
             }
         }
     }

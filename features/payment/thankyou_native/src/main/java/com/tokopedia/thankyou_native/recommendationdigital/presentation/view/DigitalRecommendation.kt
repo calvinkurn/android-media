@@ -19,16 +19,15 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
 import com.tokopedia.thankyou_native.recommendationdigital.analytics.DigitalRecommendationAnalytics
 import com.tokopedia.thankyou_native.recommendationdigital.di.component.DaggerDigitalRecommendationComponent
-import com.tokopedia.thankyou_native.recommendationdigital.model.DigitalRecommendationList
 import com.tokopedia.thankyou_native.recommendationdigital.model.RechargeRecommendationDigiPersoItem
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationItem
-import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationsItem
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.DigitalRecommendationAdapter
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.listener.DigitalRecommendationViewListener
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.viewmodel.DigitalRecommendationViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.thank_pdp_recommendation.view.*
 import javax.inject.Inject
 
@@ -45,6 +44,9 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    @Inject
+    lateinit var userSession: dagger.Lazy<UserSessionInterface>
 
     var isObserverAttached = false
 
@@ -86,13 +88,15 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
     }
 
     override fun loadRecommendation(thanksPageData: ThanksPageData,
-                                    fragment: BaseDaggerFragment, trackingQueue: TrackingQueue?) {
+                                    fragment: BaseDaggerFragment,
+                                    trackingQueue: TrackingQueue?
+    ) {
         this.thanksPageData =  thanksPageData
         this.paymentId = thanksPageData.paymentID.toString()
         this.fragment = fragment
         this.trackingQueue = trackingQueue
         startViewModelObserver()
-        viewModel.getDigitalRecommendationData("")
+        viewModel.getDigitalRecommendationData(userSession.get().phoneNumber)
     }
 
     private fun startViewModelObserver() {

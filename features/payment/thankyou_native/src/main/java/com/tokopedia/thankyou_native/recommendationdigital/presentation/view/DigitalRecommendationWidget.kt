@@ -19,8 +19,8 @@ import kotlinx.android.synthetic.main.thank_digital_recommendation_item.view.*
 class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    val TYPE_PRODUCT_RECOMMENDATION = "product"
-    val TYPE_CATEGORY = "category"
+    private val TYPE_PRODUCT_RECOMMENDATION = "product"
+    private val TYPE_CATEGORY = "category"
 
     var data: RecommendationItem? = null
         set(value) {

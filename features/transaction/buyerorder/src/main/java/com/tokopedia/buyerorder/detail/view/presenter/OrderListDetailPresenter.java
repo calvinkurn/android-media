@@ -171,6 +171,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             ArrayList<Integer> pgCategoryIds = new ArrayList<>();
             ArrayList<String> clientNumbers = new ArrayList<>();
 
+            clientNumbers.add(userSessionInterface.getPhoneNumber());
+
             input.put(PARAM_CHANNEL_NAME, DIGI_PERSO_CHANNEL_NAME);
             input.put(PARAM_CLIENT_NUMBERS, clientNumbers);
             input.put(PARAM_DG_CATEGORY_IDS, dgCategoryIds);
