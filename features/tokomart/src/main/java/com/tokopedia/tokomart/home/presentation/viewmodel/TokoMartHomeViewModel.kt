@@ -207,7 +207,6 @@ class TokoMartHomeViewModel @Inject constructor(
                     }
                 },
                 onError = {
-                    _homeLayoutList.postValue(Fail(it))
                     null
                 })
     }
@@ -225,17 +224,12 @@ class TokoMartHomeViewModel @Inject constructor(
     private suspend fun getGlobalHomeComponentAsync(item: HomeComponentVisitable): Deferred<List<Visitable<*>>?> {
         return asyncCatchError(
                 block = {
-                    getDataForGlobalHomeComponent(item)
+                    val channelId = item.visitableId()
+                    val response = getHomeLayoutDataUseCase.execute(channelId)
+                    layoutList.mapGlobalHomeLayoutData(item, response)
                 },
                 onError = {
-                    _homeLayoutList.postValue(Fail(it))
                     null
                 })
-    }
-
-    private suspend fun getDataForGlobalHomeComponent(item: HomeComponentVisitable): List<Visitable<*>> {
-        val channelId = item.visitableId()
-        val response = getHomeLayoutDataUseCase.execute(channelId)
-        return layoutList.mapGlobalHomeLayoutData(item, response)
     }
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.tokomart.home.presentation.viewmodel
 
+import com.tokopedia.home_component.model.*
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.tokomart.data.*
 import com.tokopedia.tokomart.home.constant.HomeLayoutState
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
@@ -20,9 +22,6 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(hasTickerBeenRemoved = false)
 
-        verifyGetTickerUseCaseCalled()
-        verifyGetHomeLayoutUseCaseCalled()
-
         val expectedResponse = HomeLayoutListUiModel(
                 result = mapHomeLayoutList(
                         createHomeLayoutList(),
@@ -32,27 +31,32 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
                 state = HomeLayoutState.SHOW
         )
         verifyGetHomeLayoutResponseSuccess(expectedResponse)
+        verifyGetTickerUseCaseCalled()
+        verifyGetHomeLayoutUseCaseCalled()
     }
 
     @Test
-    fun `when getting homeLayout`() {
-        onGetTicker_thenReturn(createTicker())
-        onGetHomeLayout_thenReturn(createHomeLayoutList())
+    fun `when getting homeLayoutData should run and give the success result`() {
+        onGetHomeLayout_thenReturn(createHomeLayoutListForBannerOnly())
+        onGetHomeLayoutData_thenReturn(createHomeLayoutData())
 
-        viewModel.getHomeLayout(hasTickerBeenRemoved = false)
+        viewModel.getHomeLayout(hasTickerBeenRemoved = true)
 
-        verifyGetTickerUseCaseCalled()
-        verifyGetHomeLayoutUseCaseCalled()
+        viewModel.getLayoutData("1")
 
-        val expectedResponse = HomeLayoutListUiModel(
-                result = mapHomeLayoutList(
-                        createHomeLayoutList(),
-                        mapTickerData(createTicker().ticker.tickerList)
-                ),
-                isInitialLoad = true,
-                state = HomeLayoutState.SHOW
+        val expectedResponse = BannerDataModel(
+                channelModel= ChannelModel(
+                        id="2222",
+                        groupId="",
+                        style= ChannelStyle.ChannelHome,
+                        channelHeader= ChannelHeader(name="Banner Tokonow"),
+                        channelConfig=ChannelConfig(layout="banner_carousel_v2") ,
+                        layout="banner_carousel_v2")
         )
-        verifyGetHomeLayoutResponseSuccess(expectedResponse)
+
+        verifyGetBannerResponseSuccess(expectedResponse)
+        verifyGetHomeLayoutUseCaseCalled()
+        verifyGetHomeLayoutDataUseCaseCalled()
     }
 
     @Test
@@ -146,36 +150,85 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
     }
 
     @Test
-    fun `when getting layout home should run and give success result`(){
-        onGetDataFromTokoMart_thenReturn(createCategoryListData())
-        onGetHomeLayoutData_thenReturn(createHomeLayoutListwithBanner())
-        onGetTicker_thenReturn(createTicker())
-        onGetHomeLayout_thenReturn(createHomeLayoutListwithHome())
+    fun `when getting data category grid should run and give the success result`() {
+        //set mock data
+        onGetHomeLayout_thenReturn(createHomeLayoutList())
+        onGetCategoryList_thenReturn(createCategoryGridListFirstFetch())
 
-        viewModel.getHomeLayout(hasTickerBeenRemoved = false)
+        //fetch homeLayout
+        viewModel.getHomeLayout(true)
 
+        //fetch widget one by one
         viewModel.getLayoutData("1")
 
-        verifyGetTickerUseCaseCalled()
+        //set second mock data to replace first mock data category list
+        onGetCategoryList_thenReturn(createCategoryGridListSecondFetch())
+
+        //prepare model that need to be changed
+        val model = HomeCategoryGridUiModel(
+                id="11111",
+                title="Category Tokonow",
+                categoryList = emptyList(),
+                state=HomeLayoutState.SHOW
+        )
+
+        viewModel.getCategoryGrid(model, "1")
+
+        //prepare model for expectedResult
+        val expectedResponse = HomeCategoryGridUiModel(
+                id="11111",
+                title="Category Tokonow",
+                categoryList = listOf(HomeCategoryItemUiModel(
+                        id="1",
+                        title="Category 1",
+                        imageUrl="tokopedia://",
+                        appLink="tokoepdia://"
+                )),
+                state=HomeLayoutState.SHOW
+        )
+
+        // verify use case called and response
+        verifyGetCategoryListResponseSuccess(expectedResponse)
+        verifyGetCategoryListUseCaseCalled()
         verifyGetHomeLayoutUseCaseCalled()
-        verifyGetDataFromTokoMartCalled()
-        verifyGetHomeLayoutResponseSuccess(createHomeLayoutListWithCategory())
     }
 
     @Test
-    fun `when getting layout home should run throw exception`(){
-        onGetDataFromTokoMart_thenReturn(Exception())
-        onGetHomeLayoutData_thenReturn(Exception())
-        onGetTicker_thenReturn(createTicker())
-        onGetHomeLayout_thenReturn(createHomeLayoutListwithHome())
+    fun `when getting data category grid should run, throw exception and give the success result`() {
+        //set mock data
+        onGetHomeLayout_thenReturn(createHomeLayoutList())
+        onGetCategoryList_thenReturn(createCategoryGridListFirstFetch())
 
-        viewModel.getHomeLayout(hasTickerBeenRemoved = false)
+        //fetch homeLayout
+        viewModel.getHomeLayout(true)
 
+        //fetch widget one by one
         viewModel.getLayoutData("1")
 
-        verifyGetTickerUseCaseCalled()
+        //set second mock data to replace first mock data category list
+        onGetCategoryList_thenReturn(Exception())
+
+        //prepare model that need to be changed
+        val model = HomeCategoryGridUiModel(
+                id="11111",
+                title="Category Tokonow",
+                categoryList = emptyList(),
+                state=HomeLayoutState.SHOW
+        )
+
+        viewModel.getCategoryGrid(model, "1")
+
+        //prepare model for expectedResult
+        val expectedResponse = HomeCategoryGridUiModel(
+                id="11111",
+                title="Category Tokonow",
+                categoryList = null,
+                state=HomeLayoutState.HIDE
+        )
+
+        // verify use case called and response
+        verifyGetCategoryListResponseSuccess(expectedResponse)
+        verifyGetCategoryListUseCaseCalled()
         verifyGetHomeLayoutUseCaseCalled()
-        verifyGetDataFromTokoMartCalled()
-        verifyDataLayoutFail()
     }
 }
