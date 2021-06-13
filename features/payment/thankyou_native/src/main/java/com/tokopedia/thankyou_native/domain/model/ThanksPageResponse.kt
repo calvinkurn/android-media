@@ -14,7 +14,7 @@ data class ThanksPageResponse(
 @Parcelize
 data class ThanksPageData(
         @SerializedName("payment_id")
-        val paymentID: Long,
+        val paymentID: String,
         @SerializedName("profile_code")
         val profileCode: String,
         @SerializedName("payment_status")
@@ -259,7 +259,7 @@ data class PurchaseItem(
         @SerializedName("product_brand")
         val productBrand: String,
         @SerializedName("price")
-        val price: Float,
+        val price: Double,
         @SerializedName("price_str")
         val priceStr: String,
         @SerializedName("quantity")
@@ -293,7 +293,7 @@ data class PurchaseItem(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readFloat(),
+            parcel.readDouble(),
             parcel.readString() ?: "",
             parcel.readInt(),
             parcel.readFloat(),
@@ -314,7 +314,7 @@ data class PurchaseItem(
         parcel.writeString(productId)
         parcel.writeString(productName)
         parcel.writeString(productBrand)
-        parcel.writeFloat(price)
+        parcel.writeDouble(price)
         parcel.writeString(priceStr)
         parcel.writeInt(quantity)
         parcel.writeFloat(weight)
