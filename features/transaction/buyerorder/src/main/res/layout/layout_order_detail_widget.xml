@@ -12,12 +12,11 @@
         android:background="@drawable/bg_card_recharge_widget"
         android:orientation="vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/categoryName"
             android:layout_width="@dimen/dp_50"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
             android:gravity="right"
             android:textSize="@dimen/sp_10"
@@ -41,7 +40,7 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -56,7 +55,7 @@
                 tools:visibility="visible"
                 />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/clientNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -80,7 +79,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
         />
 
 </FrameLayout>

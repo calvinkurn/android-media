@@ -15,6 +15,7 @@ import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import java.util.*
 
 class RechargeWidgetAdapter(private val recommendationItems: List<RecommendationItem>) : RecyclerView.Adapter<RechargeWidgetAdapter.RechargeWidgetViewHolder>() {
 
@@ -74,7 +75,7 @@ class RechargeWidgetAdapter(private val recommendationItems: List<Recommendation
                 categoryName.hide()
             } else {
                 categoryName.show()
-                categoryName.text = category.trim().capitalize()
+                categoryName.text = category.trim().capitalize(Locale.getDefault())
             }
         }
 

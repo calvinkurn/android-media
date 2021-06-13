@@ -54,7 +54,7 @@ data class RecommendationItem(
         val backgroundColor: String?,
 
         @field:SerializedName("id")
-        val id: Int = 0,
+        val id: String = "",
 
         @field:SerializedName("label1")
         val label1: String?,

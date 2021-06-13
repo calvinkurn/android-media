@@ -10,6 +10,7 @@ import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationItem
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.thank_digital_recommendation_item.view.*
+import java.util.*
 
 
 class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
@@ -45,7 +46,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
             thanks_dg_rec_category_name.hide()
         } else {
             thanks_dg_rec_category_name.show()
-            thanks_dg_rec_category_name.text = categoryName.trim().capitalize()
+            thanks_dg_rec_category_name.text = categoryName.trim().capitalize(Locale.getDefault())
         }
     }
 
