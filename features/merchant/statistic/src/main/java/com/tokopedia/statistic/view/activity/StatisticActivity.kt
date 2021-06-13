@@ -165,7 +165,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         tabStatistic.tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
-        tabStatistic.customTabMode = TabLayout.MODE_SCROLLABLE
+        tabStatistic.customTabMode = TabLayout.MODE_AUTO
         tabStatistic.tabLayout.setOnTabSelectedListener {
             val tabIndex = tabStatistic.tabLayout.selectedTabPosition
             val title = viewPagerAdapter?.titles?.getOrNull(tabIndex).orEmpty()
