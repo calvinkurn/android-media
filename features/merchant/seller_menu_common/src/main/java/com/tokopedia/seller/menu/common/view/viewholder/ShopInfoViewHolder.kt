@@ -22,6 +22,7 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
 import com.tokopedia.seller.menu.common.constant.Constant
+import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
@@ -323,11 +324,7 @@ class ShopInfoViewHolder(
                     txStatsRM.text = MethodChecker.fromHtml(getString(R.string.transaction_passed))
                     txTotalStatsRM.hide()
                 } else {
-                    if (userShopInfo.isBeforeOnDate) {
-                        txStatsRM.text = context?.getString(R.string.transaction_on_date)
-                    } else {
-                        txStatsRM.text = context?.getString(R.string.transaction_since_joining)
-                    }
+                    txStatsRM.setupStatsWordingRM(userShopInfo)
                     txTotalStatsRM.show()
                     txTotalStatsRM.text = getString(R.string.total_transaction, totalTransaction.toString())
                 }
@@ -336,6 +333,18 @@ class ShopInfoViewHolder(
             }
         }
         return this
+    }
+
+    private fun Typography.setupStatsWordingRM(userShopInfo: UserShopInfoWrapper.UserShopInfoUiModel) {
+        text = if(userShopInfo.dateCreated.isBlank()) {
+            context?.getString(R.string.transaction_on_date)
+        } else {
+            if (userShopInfo.isBeforeOnDate) {
+                context?.getString(R.string.transaction_on_date)
+            } else {
+                context?.getString(R.string.transaction_since_joining)
+            }
+        }
     }
 
     private fun View.hideTransactionSection() {
@@ -356,10 +365,11 @@ class ShopInfoViewHolder(
         val powerMerchantStatusTextView: Typography = findViewById(R.id.powerMerchantStatusText)
         val powerMerchantText: Typography = findViewById(R.id.powerMerchantText)
         val periodType = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.periodTypePmPro
+        val isNewSeller = statusUiModel.userShopInfoWrapper.userShopInfoUiModel?.isNewSeller
         when (powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
                 if (periodType == Constant.D_DAY_PERIOD_TYPE_PM_PRO) {
-                    upgradePMTextView.show()
+                    upgradePMTextView.showWithCondition(isNewSeller == false)
                 } else if (periodType == Constant.COMMUNICATION_PERIOD_PM_PRO) {
                     upgradePMTextView.hide()
                 }

@@ -42,10 +42,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.topads_create_fragment_summary.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -81,7 +78,8 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private var validation1 = true
     private var validation2 = true
     var minBudget: Int = 0
-
+    private val job = SupervisorJob()
+    val coroutineScope = CoroutineScope(Dispatchers.Main + job)
 
     companion object {
         private const val MORE_INFO = " Info Selengkapnya"
@@ -127,13 +125,17 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(SummaryViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.topads_create_fragment_summary, container, false)
     }
 
     private fun onSuccess(data: DepositAmount) {
         isEnoughDeposit = data.amount > 0
-        if(isEnoughDeposit) {
+        if (isEnoughDeposit) {
             val sheet = TopAdsSuccessSheet()
             sheet.overlayClickDismiss = false
             sheet.show(childFragmentManager)
@@ -145,10 +147,12 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     }
 
     private fun errorResponse(throwable: Throwable) {
-        SnackbarManager.make(activity,
-                throwable.message,
-                Snackbar.LENGTH_LONG)
-                .show()
+        SnackbarManager.make(
+            activity,
+            throwable.message,
+            Snackbar.LENGTH_LONG
+        )
+            .show()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -171,11 +175,18 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 daily_budget.visibility = View.VISIBLE
                 var budget = 0
                 try {
-                    budget = Integer.parseInt(daily_budget.textFieldInput.text.toString().removeCommaRawString())
+                    budget = Integer.parseInt(
+                        daily_budget.textFieldInput.text.toString().removeCommaRawString()
+                    )
                 } catch (e: NumberFormatException) {
                 }
                 if (budget < suggestion && daily_budget.isVisible) {
-                    daily_budget.setMessage(String.format(getString(R.string.topads_common_minimum_daily_budget), minBudget))
+                    daily_budget.setMessage(
+                        String.format(
+                            getString(R.string.topads_common_minimum_daily_budget),
+                            minBudget
+                        )
+                    )
                     daily_budget.setError(true)
                     validation2 = false
                     actionEnable()
@@ -221,10 +232,8 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         daily_budget.textFieldInput.setText(dailyBudget.toString())
         groupInput?.textFieldInput?.imeOptions = EditorInfo.IME_ACTION_DONE
         groupInput?.textFieldInput?.setOnEditorActionListener { v, actionId, event ->
-            //   val imm: InputMethodManager = v.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 Utils.dismissKeyboard(context, view)
-                //     imm.hideSoftInputFromWindow(v.windowToken, 0)
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
@@ -249,16 +258,17 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val coroutineScope = CoroutineScope(Dispatchers.Main)
                 stepperModel?.groupName = s.toString()
                 s?.let {
                     coroutineScope.launch {
                         delay(DEBOUNCE_CONST)
-                        val text = s.toString().trim()
-                        if (text.isNotEmpty()) {
-                            viewModel.validateGroup(text, ::onSuccessGroupName)
-                        } else {
-                            onErrorGroupName(getString(R.string.topads_create_group_name_empty_error))
+                        if (activity != null && isAdded) {
+                            val text = s.toString().trim()
+                            if (text.isNotEmpty()) {
+                                viewModel.validateGroup(text, ::onSuccessGroupName)
+                            } else {
+                                onErrorGroupName(getString(R.string.topads_create_group_name_empty_error))
+                            }
                         }
 
                     }
@@ -269,7 +279,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
     private fun sendAnalyticEvent() {
         adsItemsList.forEachIndexed { index, _ ->
-            selectedProductIds.add(adsItemsList[index].productID.toString())
+            selectedProductIds.add(adsItemsList[index].productID)
         }
 
         keywordsList.forEachIndexed { index, _ ->
@@ -280,12 +290,23 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             selectedkeywordTags.add(keywordsList[index].keywordTag)
         }
 
-        val eventLabel = PRODUCT_INFO.format(selectedProductIds.joinToString(","), selectedkeywordTags.joinToString("::"), selectedkeywordIds.joinToString(","))
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_IKLANKAN_BUTTON, eventLabel)
+        val eventLabel = PRODUCT_INFO.format(
+            selectedProductIds.joinToString(","),
+            selectedkeywordTags.joinToString("::"),
+            selectedkeywordIds.joinToString(",")
+        )
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(
+            CLICK_IKLANKAN_BUTTON,
+            eventLabel
+        )
     }
 
     private fun setCardData() {
-        bidRange?.text = String.format(resources.getString(R.string.bid_range), stepperModel?.minBid.toString(), stepperModel?.maxBid.toString())
+        bidRange?.text = String.format(
+            resources.getString(R.string.bid_range),
+            stepperModel?.minBid.toString(),
+            stepperModel?.maxBid.toString()
+        )
         productCount?.text = stepperModel?.selectedProductIds?.count().toString()
         keywordCount?.text = stepperModel?.selectedKeywordStage?.count().toString()
 
@@ -313,7 +334,14 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         val startIndex = 0
         val endIndex = spannableText.length
         context?.let {
-            spannableText.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableText.setSpan(
+                ForegroundColorSpan(
+                    ContextCompat.getColor(
+                        it,
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                    )
+                ), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
@@ -324,40 +352,61 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
                 context?.let {
-                    ds.color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Green_G500)
+                    ds.color =
+                        ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Green_G500)
 
                 }
             }
         }
-        spannableText.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableText.setSpan(
+            clickableSpan,
+            startIndex,
+            endIndex,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
         info_text?.movementMethod = LinkMovementMethod.getInstance()
         info_text?.append(spannableText)
     }
 
     private fun isMinValidation(input: Int): Boolean {
         return (input < (stepperModel?.finalBidPerClick
-                ?: 0) * MULTIPLIER && stepperModel?.autoBidState?.isEmpty() == true) ||
+            ?: 0) * MULTIPLIER && stepperModel?.autoBidState?.isEmpty() == true) ||
                 (input < minBudget && stepperModel?.autoBidState?.isEmpty() != true) && daily_budget.isVisible
     }
 
-    private fun watcher(): NumberTextWatcher? {
+    private fun watcher(): NumberTextWatcher {
         return object : NumberTextWatcher(daily_budget.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val input = number.toInt()
                 if (isMinValidation(input)) {
                     daily_budget.setError(true)
-                    daily_budget.setMessage(String.format(getString(com.tokopedia.topads.common.R.string.angarran_harrian_min_bid_error), Utils.convertToCurrency(minBudget.toLong())))
+                    daily_budget.setMessage(
+                        String.format(
+                            getString(com.tokopedia.topads.common.R.string.angarran_harrian_min_bid_error),
+                            Utils.convertToCurrency(minBudget.toLong())
+                        )
+                    )
                     validation2 = false
                     actionEnable()
                 } else if (input % DAILYBUDGET_FACTOR != 0) {
                     daily_budget.setError(true)
-                    daily_budget.setMessage(String.format(getString(R.string.topads_common_error_multiple_50), DAILYBUDGET_FACTOR))
+                    daily_budget.setMessage(
+                        String.format(
+                            getString(R.string.topads_common_error_multiple_50),
+                            DAILYBUDGET_FACTOR
+                        )
+                    )
                     validation2 = false
                     actionEnable()
                 } else if (input > MAXIMUM_LIMIT.toDouble() && daily_budget.isVisible) {
                     daily_budget.setError(true)
-                    daily_budget.setMessage(String.format(getString(com.tokopedia.topads.common.R.string.angarran_harrian_max_bid_error), Utils.convertToCurrency(MAXIMUM_LIMIT.toLong())))
+                    daily_budget.setMessage(
+                        String.format(
+                            getString(com.tokopedia.topads.common.R.string.angarran_harrian_max_bid_error),
+                            Utils.convertToCurrency(MAXIMUM_LIMIT.toLong())
+                        )
+                    )
                     validation2 = false
                     actionEnable()
                 } else {
@@ -389,7 +438,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         }
         input.shopID = userSession.shopId
         input.group.groupName = stepperModel?.groupName ?: ""
-        if(stepperModel?.autoBidState?.isEmpty() == true) {
+        if (stepperModel?.autoBidState?.isEmpty() == true) {
             input.group.priceBid = stepperModel?.finalBidPerClick?.toDouble() ?: 0.0
         } else {
             input.group.priceBid = stepperModel?.minBid?.toDouble() ?: 0.0
@@ -412,7 +461,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             input.group.ads = adsItemsList
         }
 
-        if(stepperModel?.autoBidState?.isNotEmpty() == true) {
+        if (stepperModel?.autoBidState?.isNotEmpty() == true) {
             strategies.clear()
             strategies.add(stepperModel?.autoBidState!!)
         }
@@ -442,7 +491,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         key.keywordTag = stepperModel?.selectedKeywordStage?.get(index)?.keyword ?: ""
         if (stepperModel?.selectedKeywordStage?.get(index)?.bidSuggest?.toDouble() ?: 0.0 != 0.0)
             key.priceBid = stepperModel?.selectedKeywordStage?.get(index)?.bidSuggest?.toDouble()
-                    ?: 0.0
+                ?: 0.0
         else
             key.priceBid = stepperModel?.minSuggestBidKeyword?.toDouble() ?: 0.0
         keywordsList.add(key)
@@ -481,10 +530,12 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private fun onErrorActivation(throwable: Throwable) {
         val message = Utils.getErrorMessage(context, throwable.message ?: "")
         view?.let {
-            Toaster.build(it, message,
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)).show()
+            Toaster.build(
+                it, message,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)
+            ).show()
         }
         loading?.visibility = View.GONE
         btn_submit?.isEnabled = true
@@ -493,5 +544,10 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setCardData()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
     }
 }
