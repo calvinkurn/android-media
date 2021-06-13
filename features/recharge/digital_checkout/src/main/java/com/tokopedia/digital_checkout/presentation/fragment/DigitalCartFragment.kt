@@ -177,7 +177,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         })
 
         viewModel.errorThrowable.observe(viewLifecycleOwner, Observer {
-            closeViewWithMessageAlert(ErrorHandler.getErrorMessage(requireContext(), it))
+            closeViewWithMessageAlert(ErrorHandler.getErrorMessage(requireContext(), it.throwable))
         })
 
         viewModel.cancelVoucherData.observe(viewLifecycleOwner, Observer {

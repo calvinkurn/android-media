@@ -178,7 +178,7 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.getCart(categoryId, userNotLoginMessage)
 
         //then
-        assert(digitalCartViewModel.errorThrowable.value!!.message == userNotLoginMessage)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable.message == userNotLoginMessage)
     }
 
     @Test
@@ -307,7 +307,7 @@ class DigitalCartViewModelTest {
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorThrowable.value is UnknownHostException)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is UnknownHostException)
     }
 
     @Test
@@ -324,7 +324,7 @@ class DigitalCartViewModelTest {
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorThrowable.value is SocketTimeoutException)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is SocketTimeoutException)
     }
 
     @Test
@@ -341,7 +341,7 @@ class DigitalCartViewModelTest {
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorThrowable.value is ConnectException)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is ConnectException)
     }
 
     @Test
@@ -359,7 +359,7 @@ class DigitalCartViewModelTest {
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorThrowable.value is ResponseErrorException)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is ResponseErrorException)
     }
 
     @Test
@@ -377,7 +377,7 @@ class DigitalCartViewModelTest {
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorThrowable.value is ResponseDataNullException)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is ResponseDataNullException)
     }
 
     @Test
@@ -395,8 +395,8 @@ class DigitalCartViewModelTest {
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorThrowable.value is HttpErrorException)
-        assert((digitalCartViewModel.errorThrowable.value as HttpErrorException).errorCode == 504)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is HttpErrorException)
+        assert((digitalCartViewModel.errorThrowable.value!!.throwable as HttpErrorException).errorCode == 504)
     }
 
     @Test
@@ -414,7 +414,7 @@ class DigitalCartViewModelTest {
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorThrowable.value!!.message == errorMessage)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable.message == errorMessage)
     }
 
     @Test
@@ -504,7 +504,7 @@ class DigitalCartViewModelTest {
 
         // then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorThrowable.value is IOException)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is IOException)
     }
 
     @Test
@@ -555,7 +555,7 @@ class DigitalCartViewModelTest {
         val paymentPassDataValue = digitalCartViewModel.paymentPassData.value
         assert(paymentPassDataValue == null)
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorThrowable.value is IOException)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is IOException)
     }
 
     @Test

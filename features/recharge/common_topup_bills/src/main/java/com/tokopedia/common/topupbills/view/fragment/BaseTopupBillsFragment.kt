@@ -240,7 +240,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 REQUEST_CODE_CART_DIGITAL -> {
                     data?.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { message ->
                         view?.let {
-                            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+                            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                         }
                     }
                 }

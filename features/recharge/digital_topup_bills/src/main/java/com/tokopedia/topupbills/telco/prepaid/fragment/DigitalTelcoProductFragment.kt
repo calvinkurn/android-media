@@ -112,10 +112,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 if (telcoFilterData.isFilterSelected()) titleFilterResult.show() else titleFilterResult.hide()
                 when (it) {
                     is Success -> onSuccessProductList()
-                    is Fail -> {
-                        if (it.throwable.message.isNullOrEmpty()) onErrorProductList()
-                        else onErrorProductList(it.throwable)
-                    }
+                    is Fail -> onErrorProductList(it.throwable)
                 }
             })
 
@@ -295,17 +292,17 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun onErrorProductList() {
+    private fun onErrorProductList(error: Throwable? = null) {
         titleEmptyState.text = getString(R.string.title_telco_product_empty_state, titleProduct)
         descEmptyState.text = getString(R.string.desc_telco_product_empty_state, titleProduct)
         emptyStateProductView.show()
         telcoTelcoProductView.hide()
-    }
-
-    private fun onErrorProductList(throwable: Throwable) {
-        Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), throwable),
-                Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-        telcoTelcoProductView.hide()
+        error?.let {
+            if (!it.message.isNullOrEmpty()) {
+                Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), error),
+                        Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            }
+        }
     }
 
     private fun showShimmering() {

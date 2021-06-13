@@ -67,8 +67,8 @@ class DigitalCartViewModel @Inject constructor(
     val cartDigitalInfoData: LiveData<CartDigitalInfoData>
         get() = _cartDigitalInfoData
 
-    private val _errorThrowable = MutableLiveData<Throwable>()
-    val errorThrowable: LiveData<Throwable>
+    private val _errorThrowable = MutableLiveData<Fail>()
+    val errorThrowable: LiveData<Fail>
         get() = _errorThrowable
 
     private val _isNeedOtp = MutableLiveData<String>()
@@ -110,7 +110,7 @@ class DigitalCartViewModel @Inject constructor(
     fun getCart(categoryId: String,
                 errorNotLoginMessage: String = "") {
         if (!userSession.isLoggedIn) {
-            _errorThrowable.postValue(MessageErrorException(errorNotLoginMessage))
+            _errorThrowable.postValue(Fail(MessageErrorException(errorNotLoginMessage)))
         } else {
             _showContentCheckout.postValue(false)
             _showLoading.postValue(true)
@@ -146,8 +146,8 @@ class DigitalCartViewModel @Inject constructor(
         }) {
             _showLoading.postValue(false)
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
-                _errorThrowable.postValue(MessageErrorException(it.message))
-            } else _errorThrowable.postValue(it)
+                _errorThrowable.postValue(Fail(MessageErrorException(it.message)))
+            } else _errorThrowable.postValue(Fail(it))
         }
     }
 
@@ -161,7 +161,7 @@ class DigitalCartViewModel @Inject constructor(
     private fun onErrorGetCart(): (Throwable) -> Unit {
         return {
             _showLoading.postValue(false)
-            _errorThrowable.postValue(it)
+            _errorThrowable.postValue(Fail(it))
         }
     }
 
@@ -197,7 +197,8 @@ class DigitalCartViewModel @Inject constructor(
     }
 
     fun cancelVoucherCart(promoCode: String, defaultErrorMsg: String) {
-        cancelVoucherUseCase.execute(promoCode, onSuccessCancelVoucher(defaultErrorMsg), onErrorCancelVoucher(defaultErrorMsg))
+        cancelVoucherUseCase.execute(promoCode, onSuccessCancelVoucher(defaultErrorMsg),
+                onErrorCancelVoucher(defaultErrorMsg))
     }
 
     private fun onSuccessCancelVoucher(defaultErrorMsg: String): (CancelVoucherData.Response) -> Unit {
@@ -213,7 +214,11 @@ class DigitalCartViewModel @Inject constructor(
 
     private fun onErrorCancelVoucher(defaultErrorMsg: String): (Throwable) -> Unit {
         return {
-            _cancelVoucherData.postValue(Fail(it))
+            if (it.message.isNullOrEmpty()) {
+                _cancelVoucherData.postValue(Fail(MessageErrorException(defaultErrorMsg)))
+            } else {
+                _cancelVoucherData.postValue(Fail(it))
+            }
         }
     }
 
@@ -325,8 +330,8 @@ class DigitalCartViewModel @Inject constructor(
                 }) {
                     _showLoading.postValue(false)
                     if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
-                        _errorThrowable.postValue(MessageErrorException(it.message))
-                    } else _errorThrowable.postValue(it)
+                        _errorThrowable.postValue(Fail(MessageErrorException(it.message)))
+                    } else _errorThrowable.postValue(Fail(it))
                 }
             }
         }
