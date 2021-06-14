@@ -126,6 +126,36 @@
       "eventAction": "click on tooltip icon",
       "sessionIris": ".*",
       "eventLabel": ""
+    },
+    {
+      "businessUnit": "top up and tagihan",
+      "eventCategory": "digital - smart bill management",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "clickSmartBill",
+      "userId": "{{.*}}",
+      "eventAction": "click collapse button pdp",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "businessUnit": "top up and tagihan",
+      "eventCategory": "digital - smart bill management",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "clickSmartBill",
+      "userId": "{{.*}}",
+      "eventAction": "click expand button pdp",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
+    },
+    {
+      "businessUnit": "top up and tagihan",
+      "eventCategory": "digital - smart bill management",
+      "currentSite": "tokopediaDigitalRecharge",
+      "event": "clickSmartBill",
+      "userId": "{{.*}}",
+      "eventAction": "click reload button pdp",
+      "sessionIris": "{{.*}}",
+      "eventLabel": "{{.*}}"
     }
   ]
 }

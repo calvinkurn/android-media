@@ -24,5 +24,8 @@ data class ProductRevIncentiveOvoResponse(
         var ctaText: String = "",
         @SerializedName("amount")
         @Expose
-        val amount: Int = 0
+        val amount: Int = 0,
+        @SerializedName("bottom_sheet")
+        @Expose
+        val bottomSheetText: String = ""
 )

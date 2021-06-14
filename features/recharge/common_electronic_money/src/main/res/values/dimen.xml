@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="nfc_common_dp_local_1">1dp</dimen>
+    <dimen name="nfc_common_dp_local_168">168dp</dimen>
+    <dimen name="nfc_common_dp_local_180">180dp</dimen>
+    <dimen name="nfc_common_dp_local_230">230dp</dimen>
+    <dimen name="nfc_common_dp_local_260">260dp</dimen>
+    <dimen name="nfc_common_dp_local_360">360dp</dimen>
+</resources>

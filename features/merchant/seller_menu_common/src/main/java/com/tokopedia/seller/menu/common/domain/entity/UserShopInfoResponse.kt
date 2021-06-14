@@ -12,15 +12,15 @@ data class UserShopInfoResponse(
         val userShopInfo: UserShopInfo = UserShopInfo(),
         @Expose
         @SerializedName("goldGetPMSettingInfo")
-        val goldGetPMSettingInfo: GoldGetPMSettingInfo = GoldGetPMSettingInfo()
+        val goldGetPMSettingInfo: GoldGetPMSettingInfo = GoldGetPMSettingInfo(),
+        @Expose
+        @SerializedName("goldGetPMOSStatus")
+        val goldGetPMOSStatus: GoldGetPMOSStatus = GoldGetPMOSStatus()
 ) {
     data class UserShopInfo(
             @Expose
             @SerializedName("info")
             val info: Info = Info(),
-            @Expose
-            @SerializedName("owner")
-            val owner: Owner = Owner(),
             @Expose
             @SerializedName("stats")
             val stats: Stats = Stats()
@@ -35,12 +35,6 @@ data class UserShopInfoResponse(
                 @Expose
                 @SerializedName("shop_total_transaction")
                 val shopTotalTransaction: String = ""
-        )
-
-        data class Owner(
-                @Expose
-                @SerializedName("pm_status")
-                val pmStatus: String = ""
         )
     }
 
@@ -82,4 +76,37 @@ data class UserShopInfoResponse(
             @SerializedName("period_type_pm_pro")
             val periodTypePmPro: String = ""
     )
+
+    data class GoldGetPMOSStatus(
+            @Expose
+            @SerializedName("data")
+            val `data`: Data = Data()
+    ) {
+        data class Data(
+                @Expose
+                @SerializedName("official_store")
+                val officialStore: OfficialStore = OfficialStore(),
+                @Expose
+                @SerializedName("power_merchant")
+                val powerMerchant: PowerMerchant = PowerMerchant()
+        ) {
+            data class PowerMerchant(
+                    @Expose
+                    @SerializedName("pm_tier")
+                    val pmTier: Int = 0,
+                    @Expose
+                    @SerializedName("status")
+                    val status: String = ""
+            )
+
+            data class OfficialStore(
+                    @Expose
+                    @SerializedName("error")
+                    val error: String = "",
+                    @Expose
+                    @SerializedName("status")
+                    val status: String = ""
+            )
+        }
+    }
 }
