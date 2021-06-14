@@ -186,12 +186,14 @@ class ProductListPresenter @Inject constructor(
     private var isEnableChooseAddress = false
     private var chooseAddressData: LocalCacheModel? = null
     private var bannerDataView: BannerDataView? = null
+    private var shouldShowPMProPopUp = false
 
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
 
         hasFullThreeDotsOptions = getHasFullThreeDotsOptions()
         isABTestNavigationRevamp = isABTestNavigationRevamp()
+        shouldShowPMProPopUp = shouldShowPMProPopUp()
         isEnableChooseAddress = view.isChooseAddressWidgetEnabled
         if (isEnableChooseAddress) chooseAddressData = view.chooseAddressData
     }
@@ -210,6 +212,16 @@ class ProductListPresenter @Inject constructor(
         return try {
             (view.abTestRemoteConfig?.getString(SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_THREE_DOTS_SEARCH)
                     == SearchConstant.ABTestRemoteConfigKey.AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun shouldShowPMProPopUp(): Boolean {
+        return try {
+            (view.abTestRemoteConfig?.getString(AbTestPlatform.POWER_MERCHANT_PRO_POP_UP)
+                    == AbTestPlatform.POWER_MERCHANT_PRO_POP_UP)
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -593,7 +605,7 @@ class ProductListPresenter @Inject constructor(
 
         view.removeLoading()
         view.hideRefreshLayout()
-        view.showNetworkError(startFrom)
+        view.showNetworkError(startFrom, error)
         view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), error)
     }
 
@@ -661,7 +673,7 @@ class ProductListPresenter @Inject constructor(
 
         decrementStart()
         view.removeLoading()
-        view.showNetworkError(0)
+        view.showNetworkError(0, throwable)
         view.hideRefreshLayout()
         view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), throwable)
     }
@@ -966,6 +978,8 @@ class ProductListPresenter @Inject constructor(
 
         if (!productDataView.isQuerySafe) view.showAdultRestriction()
 
+        if (shouldShowSearchPMProPopUp()) view.showPowerMerchantProPopUp()
+
         if (isABTestNavigationRevamp && !isEnableChooseAddress)
             list.add(SearchProductCountDataView(list.size, searchProduct.header.totalDataText))
 
@@ -1035,6 +1049,11 @@ class ProductListPresenter @Inject constructor(
         if (productDataView.totalData > getSearchRows().toIntOrZero())
             view.addLoading()
         view.stopTracePerformanceMonitoring()
+    }
+
+    private fun shouldShowSearchPMProPopUp(): Boolean {
+        return if (shouldShowPMProPopUp) searchCoachMarkLocalCache.shouldShowSearchPMProPopUp()
+        else shouldShowPMProPopUp
     }
 
     private fun getFirstProductPositionWithBOELabel(list: List<Visitable<*>>): Int {

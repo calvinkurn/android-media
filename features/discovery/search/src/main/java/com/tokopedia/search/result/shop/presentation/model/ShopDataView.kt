@@ -70,7 +70,8 @@ internal data class ShopDataView(
             val reputationScore: Int = 0,
             val isOfficial: Boolean = false,
             val gaKey: String = "",
-            val isRecommendation: Boolean = false
+            val isRecommendation: Boolean = false,
+            val isPMPro: Boolean = false,
     ) : Parcelable, Visitable<ShopListTypeFactory> {
 
         var position: Int = 0
@@ -324,6 +325,7 @@ internal data class ShopDataView(
             parcel.writeByte(if (isOfficial) 1 else 0)
             parcel.writeString(gaKey)
             parcel.writeInt(position)
+            parcel.writeByte(if (isPMPro) 1 else 0)
         }
 
         override fun describeContents(): Int {

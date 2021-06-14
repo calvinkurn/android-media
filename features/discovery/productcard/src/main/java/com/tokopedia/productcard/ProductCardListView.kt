@@ -144,6 +144,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     override fun getNotifyMeButton(): UnifyButton? = buttonNotify
 
+    override fun getShopBadgeView(): View? = imageShopBadge
+
     /**
      * Special cases for specific pages
      * */

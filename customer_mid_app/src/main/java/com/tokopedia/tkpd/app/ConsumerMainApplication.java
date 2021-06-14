@@ -73,7 +73,6 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
-import com.tokopedia.tkpd.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.tkpd.utils.NewRelicConstants;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
@@ -230,9 +229,13 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
             }
             return signatureValid;
-        } catch (PackageManager.NameNotFoundException e) {
+        } catch (Exception e) {
             Map<String, String> messageMap = new HashMap<>();
-            messageMap.put("type", "PackageManager.NameNotFoundException");
+            if (e instanceof PackageManager.NameNotFoundException) {
+                messageMap.put("type", "PackageManager.NameNotFoundException");
+            } else {
+                messageMap.put("type", e.getClass().getName());
+            }
             ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
             return false;
         }
@@ -315,7 +318,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }));
 
         registerActivityLifecycleCallbacks(new BetaSignActivityLifecycleCallbacks());
-        registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new NFCSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
         if (GlobalConfig.isAllowDebuggingTools()) {

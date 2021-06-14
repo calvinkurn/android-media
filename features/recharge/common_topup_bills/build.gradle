@@ -16,6 +16,16 @@ buildscript {
     }
 }
 
+android {
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+}
+
 dependencies {
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.commonPayment)
@@ -31,6 +41,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.header
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.network

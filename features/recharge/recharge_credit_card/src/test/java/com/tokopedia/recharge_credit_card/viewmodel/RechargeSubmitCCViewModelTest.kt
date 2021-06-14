@@ -1,6 +1,8 @@
 package com.tokopedia.recharge_credit_card.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -49,16 +51,20 @@ class RechargeSubmitCCViewModelTest {
         //given
         val signature = "abcdefg"
         val rechargeCCSignature = RechargeCCSignature(signature, "")
-        val ccRedirectUrl = CCRedirectUrlResponse(data = CCRedirectUrl("", "www.tokopedia.com"))
         val mapParam = hashMapOf<String, String>()
 
         val result = HashMap<Type, Any>()
         result[RechargeCCSignatureReponse::class.java] = RechargeCCSignatureReponse(rechargeCCSignature)
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
+        val ccRedirectUrl = CCRedirectUrlResponse(data = CCRedirectUrl("", "www.tokopedia.com"))
+        val token = object : TypeToken<CCRedirectUrlResponse>() {}.type
+        val response = RestResponse(ccRedirectUrl, 200, false)
+        val submitCcResponse = mapOf<Type, RestResponse>(token to response)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-        coEvery { rechargeSubmitCcUseCase.setMapParam(mapParam)} returns mockk()
-        coEvery { RechargeSubmitCCViewModel.convertCCResponse(rechargeSubmitCcUseCase.executeOnBackground())} returns ccRedirectUrl
+        coEvery { rechargeSubmitCcUseCase.setMapParam(mapParam) } returns mockk()
+        coEvery { rechargeSubmitCcUseCase.executeOnBackground() } returns submitCcResponse
 
         //when
         rechargeSubmitViewModel.postCreditCard("", "26", mapParam)
@@ -75,16 +81,19 @@ class RechargeSubmitCCViewModelTest {
         //given
         val signature = "abcdefg"
         val rechargeCCSignature = RechargeCCSignature(signature, "")
-        val ccRedirectUrl = CCRedirectUrlResponse(data = CCRedirectUrl("Error dari API", ""))
         val mapParam = hashMapOf<String, String>()
-
         val result = HashMap<Type, Any>()
         result[RechargeCCSignatureReponse::class.java] = RechargeCCSignatureReponse(rechargeCCSignature)
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
+        val ccRedirectUrl = CCRedirectUrlResponse(data = CCRedirectUrl("Error dari API", ""))
+        val token = object : TypeToken<CCRedirectUrlResponse>() {}.type
+        val response = RestResponse(ccRedirectUrl, 200, false)
+        val submitCcResponse = mapOf<Type, RestResponse>(token to response)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
-        coEvery { rechargeSubmitCcUseCase.setMapParam(mapParam)} returns mockk()
-        coEvery { RechargeSubmitCCViewModel.convertCCResponse(rechargeSubmitCcUseCase.executeOnBackground())} returns ccRedirectUrl
+        coEvery { rechargeSubmitCcUseCase.setMapParam(mapParam) } returns mockk()
+        coEvery { rechargeSubmitCcUseCase.executeOnBackground() } returns submitCcResponse
 
         //when
         rechargeSubmitViewModel.postCreditCard("", "26", mapParam)
@@ -92,7 +101,7 @@ class RechargeSubmitCCViewModelTest {
         //then
         val actualData = rechargeSubmitViewModel.errorSubmitCreditCard
         assertNotNull(actualData)
-        assertEquals(ccRedirectUrl.data.messageError, actualData.value)
+        assertEquals(ccRedirectUrl.data.messageError, actualData.value?.message)
     }
 
     @Test
@@ -116,7 +125,7 @@ class RechargeSubmitCCViewModelTest {
         //then
         val actualData = rechargeSubmitViewModel.errorSubmitCreditCard
         assertNotNull(actualData)
-        assertEquals("error", actualData.value)
+        assertEquals("error", actualData.value?.message)
     }
 
     @Test
@@ -140,7 +149,7 @@ class RechargeSubmitCCViewModelTest {
         //then
         val actualData = rechargeSubmitViewModel.errorSubmitCreditCard
         assertNotNull(actualData)
-        assertEquals(RechargeSubmitCCViewModel.ERROR_DEFAULT, actualData.value)
+        assertEquals("error server", actualData.value?.message)
     }
 
     //========================================= POST CREDIT CARD, FAILED GET SIGNATURE =====================================
@@ -164,7 +173,7 @@ class RechargeSubmitCCViewModelTest {
         //then
         val actualData = rechargeSubmitViewModel.errorSignature
         assertNotNull(actualData)
-        assertEquals(rechargeCCSignature.messageError, actualData.value)
+        assertEquals(rechargeCCSignature.messageError, actualData.value?.message)
     }
 
     @Test
@@ -185,7 +194,7 @@ class RechargeSubmitCCViewModelTest {
         //then
         val actualData = rechargeSubmitViewModel.errorSignature
         assertNotNull(actualData)
-        assertEquals(errorGql.message, actualData.value)
+        assertEquals(errorGql.message, actualData.value?.message)
     }
 
     //========================================= CREATE MAP PARAM =====================================

@@ -76,6 +76,9 @@ enum class ComponentNames(val componentName: String) {
     //Play Widget View
     DiscoPlayWidgetView("play_widget"),
 
+    CarouselErrorLoad("carousel_error_load"),
+    ProductListErrorLoad("product_list_error_load"),
+
     //Category Best Seller
     CategoryBestSeller("product-card-horizontal-scroll"),
 

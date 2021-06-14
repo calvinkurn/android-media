@@ -80,6 +80,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private var showOldToolbar: Boolean = false
     private var feedToolbar: Toolbar? = null
+    private var authorList: List<Author>? = null
 
     companion object {
         const val TOOLBAR_GRADIENT = 1
@@ -387,11 +388,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             goToExplore()
         }
         if (userSession.isLoggedIn) {
-            viewModel.getWhitelist()
+            viewModel.getWhitelist(authorList?.isEmpty()?:false)
         }
     }
 
     private fun renderFab(whitelistDomain: WhitelistDomain) {
+        authorList = whitelistDomain.authors
         if (userSession.isLoggedIn && whitelistDomain.authors.isNotEmpty()) {
             showFeedFab(whitelistDomain)
         }
@@ -402,7 +404,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG,
                     Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 if (userSession.isLoggedIn) {
-                    viewModel.getWhitelist()
+                    viewModel.getWhitelist(authorList?.isEmpty()?:false)
                 }
             })
         }

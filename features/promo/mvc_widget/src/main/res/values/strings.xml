@@ -9,5 +9,8 @@
     <string name="mvc_tentang_toko_member">Tentang TokoMember</string>
     <string name="mvc_title_prefix">Kupon bisa dipilih lewat keranjang jika ada barang dari toko</string>
     <string name="mvc_cek_toko">Cek Toko</string>
+    <string name="mvc_text_collapse">Lihat Selengkapnya</string>
+    <string name="mvc_text_expand">Sembunyikan</string>
+    <string name="mvc_mulai_belanja">Mulai Belanja</string>
 
 </resources>

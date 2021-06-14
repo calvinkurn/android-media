@@ -12,7 +12,7 @@ import javax.inject.Inject
  * ade.hadian@tokopedia.com
  */
 
-class StatusPinUseCase @Inject constructor(
+open class StatusPinUseCase @Inject constructor(
         private val rawQueries: Map<String, String>,
         graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<StatusPinPojo>(graphqlRepository) {

@@ -17,4 +17,12 @@
     <dimen name="som_list_order_item_padding_top">6dp</dimen>
     <dimen name="som_list_order_item_padding_right_left_bottom">12dp</dimen>
     <dimen name="btn_show_order_height">40dp</dimen>
+    <dimen name="som_list_split_screen_divider_width">8dp</dimen>
+    <dimen name="som_list_indicator_margin_top">5.5dp</dimen>
+    <dimen name="som_list_indicator_margin_bottom">1dp</dimen>
+
+    <!-- som detail -->
+    <dimen name="som_detail_welcome_illustration_width">199.14dp</dimen>
+    <dimen name="som_detail_welcome_illustration_height">152.25dp</dimen>
+    <dimen name="som_detail_welcome_illustration_horizontal_margin">50dp</dimen>
 </resources>
