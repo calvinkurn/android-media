@@ -164,6 +164,7 @@ class TokoMartHomeFragment: Fragment(),
     override fun onResume() {
         super.onResume()
         checkIfChooseAddressWidgetDataUpdated()
+        getMiniCart()
     }
 
     override fun onTickerDismissed() {
