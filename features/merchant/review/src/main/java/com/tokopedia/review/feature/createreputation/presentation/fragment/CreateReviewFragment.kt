@@ -350,7 +350,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
         rv_img_review?.adapter = imageAdapter
 
-        createReviewSubmitButton.apply {
+        createReviewSubmitButton?.apply {
             if (isEditMode) {
                 text = getString(R.string.review_create_submit_edit)
             }
@@ -428,7 +428,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun onReviewScoreClicked(score: Int): Boolean {
         CreateReviewTracking.eventClickSmiley(getOrderId(), productId.toString())
-        createReviewScore.onScoreSelected(score)
+        createReviewScore?.onScoreSelected(score)
         return true
     }
 
@@ -509,8 +509,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 showToasterError(getString(R.string.review_edit_blank_error))
                 return
             }
-            createReviewViewModel.editReview(feedbackId, reputationId, productId, shopId.toLongOrZero(),
-                    createReviewScore.getScore(), animatedReviewPicker.getReviewClickAt(), reviewMessage, createReviewAnonymousCheckbox?.isChecked == true)
+            createReviewViewModel.editReview(feedbackId, 
+                    reputationId, 
+                    productId, 
+                    shopId.toLongOrZero(),
+                    createReviewScore?.getScore().orZero(), 
+                    animatedReviewPicker.getReviewClickAt(), 
+                    reviewMessage, 
+                    createReviewAnonymousCheckbox?.isChecked == true)
         } else {
             if (!isReviewComplete() && isUserEligible()) {
                 showReviewIncompleteDialog()
@@ -527,7 +533,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun submitNewReview() {
         val reviewMessage = createReviewExpandableTextArea?.getText().orEmpty()
-        createReviewViewModel.submitReview(animatedReviewPicker.getReviewClickAt(), reviewMessage, createReviewScore.getScore(), createReviewAnonymousCheckbox?.isChecked == true, utmSource)
+        createReviewViewModel.submitReview(animatedReviewPicker.getReviewClickAt(),
+                reviewMessage, 
+                createReviewScore?.getScore().orZero(), 
+                createReviewAnonymousCheckbox?.isChecked == true,
+                utmSource)
     }
 
     private fun isReviewComplete(): Boolean {
@@ -588,17 +598,17 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun setReputation(reputation: Reputation, shopName: String) {
         with(reputation) {
             if (locked || filled || score != 0) {
-                createReviewScore.hide()
-                createReviewScoreDivider.hide()
+                createReviewScore?.hide()
+                createReviewScoreDivider?.hide()
                 return
             } else {
-                createReviewScore.apply {
+                createReviewScore?.apply {
                     setEditableScore(score)
                     setShopName(shopName)
                     setReviewScoreClickListener(this@CreateReviewFragment)
                     show()
                 }
-                createReviewScoreDivider.show()
+                createReviewScoreDivider?.show()
             }
         }
     }
@@ -692,8 +702,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 finishIfRoot()
             }
         } else {
-            NetworkErrorHelper.showEmptyState(context, review_root) {
-                getReviewDetailData()
+            review_root?.let {
+                NetworkErrorHelper.showEmptyState(context, it) {
+                    getReviewDetailData()
+                }
             }
         }
     }
@@ -835,14 +847,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun showLoading() {
-        createReviewSubmitButton.apply {
+        createReviewSubmitButton?.apply {
             isLoading = true
             setOnClickListener(null)
         }
     }
 
     private fun stopLoading() {
-        createReviewSubmitButton.apply {
+        createReviewSubmitButton?.apply {
             isLoading = false
             setOnClickListener {
                 submitReview()
@@ -868,8 +880,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 finishIfRoot()
             }
         } else {
-            NetworkErrorHelper.showEmptyState(context, review_root) {
-                getReviewData()
+            review_root?.let {
+                NetworkErrorHelper.showEmptyState(context, it) {
+                    getReviewData()
+                }
             }
         }
 
@@ -908,9 +922,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun clearFocusAndHideSoftInput(view: View?) {
-        createReviewEditText.clearFocus()
-        val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
+        createReviewEditText?.clearFocus()
+        val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     private fun initCreateReviewTextArea() {
@@ -929,7 +943,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun initAnonymousText() {
-        createReviewAnonymousText.setOnClickListener {
+        createReviewAnonymousText?.setOnClickListener {
             if (createReviewAnonymousCheckbox?.isChecked == true) {
                 CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), isEditMode, feedbackId.toString())
             }
@@ -937,11 +951,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun setProductDetail(productName: String, productVariant: String, productImageUrl: String) {
-        createReviewProductImage.loadImage(productImageUrl)
-        createReviewProductName.apply {
+        createReviewProductImage?.loadImage(productImageUrl)
+        createReviewProductName?.apply {
             text = productName
             if (productVariant.isNotEmpty()) {
-                createReviewProductVariant.apply {
+                createReviewProductVariant?.apply {
                     text = resources.getString(R.string.review_pending_variant, productVariant)
                     show()
                 }
@@ -950,8 +964,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun hideScoreWidgetAndDivider() {
-        createReviewScoreDivider.hide()
-        createReviewScore.hide()
+        createReviewScoreDivider?.hide()
+        createReviewScore?.hide()
     }
 
     private fun logToCrashlytics(throwable: Throwable) {
@@ -963,14 +977,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun hideIncentiveText() {
-        incentiveHelperText.hide()
+        incentiveHelperText?.hide()
     }
 
     private fun setHelperText(textLength: Int) {
         if (!createReviewViewModel.isUserEligible()) {
             return
         }
-        with(incentiveHelperText) {
+        incentiveHelperText?.apply {
             incentiveHelper = when {
                 textLength >= REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
                     context?.getString(R.string.review_create_text_area_eligible) ?: ""
