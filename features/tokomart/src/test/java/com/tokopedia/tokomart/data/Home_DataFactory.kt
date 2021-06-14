@@ -1,8 +1,6 @@
 package com.tokopedia.tokomart.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.home_component.model.*
-import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
@@ -15,7 +13,6 @@ import com.tokopedia.tokomart.home.constant.HomeLayoutState
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokomart.home.domain.model.*
 import com.tokopedia.tokomart.home.presentation.uimodel.*
-import com.tokopedia.unifycomponents.ticker.TickerData
 
 fun createHomeLayoutList(): List<HomeLayoutResponse> {
     return listOf(
@@ -26,6 +23,46 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
                             name = "Lego Banner",
                             serverTimeUnix = 0
                     ),
+            ),
+            HomeLayoutResponse(
+                    id = "11111",
+                    layout = "category_tokonow",
+                    header = Header(
+                            name = "Category Tokonow",
+                            serverTimeUnix = 0
+                    )
+            ),
+            HomeLayoutResponse(
+                    id = "2222",
+                    layout = "banner_carousel_v2",
+                    header = Header(
+                            name = "Banner Tokonow",
+                            serverTimeUnix = 0
+                    )
+            )
+    )
+}
+
+fun createHomeLayoutListForBannerOnly(): List<HomeLayoutResponse> {
+    return listOf(
+            HomeLayoutResponse(
+                    id = "2222",
+                    layout = "banner_carousel_v2",
+                    header = Header(
+                            name = "Banner Tokonow",
+                            serverTimeUnix = 0
+                    )
+            )
+    )
+}
+
+fun createHomeLayoutData(): HomeLayoutResponse {
+    return HomeLayoutResponse(
+            id = "2222",
+            layout = "banner_carousel_v2",
+            header = Header(
+                    name = "Banner Tokonow",
+                    serverTimeUnix = 0
             )
     )
 }
@@ -108,69 +145,34 @@ fun createMiniCartSimplifier(): MiniCartSimplifiedData {
     )
 }
 
-fun createCategoryListData(): CategoryListResponse {
+fun createCategoryGridListFirstFetch(): CategoryListResponse {
     return CategoryListResponse(
             header = com.tokopedia.abstraction.common.data.model.response.Header(),
             data = listOf(
             CategoryResponse(
-                    id = "1",
-                    name = "Category 1",
+                    id = "3",
+                    name = "Category 3",
                     url = "tokopedia://",
                     appLinks = "tokoepdia://",
                     imageUrl = "tokopedia://",
-                    parentId = "2",
+                    parentId = "5",
                     childList = listOf()
             )
     ))
 }
 
-fun createHomeLayoutListWithCategory(): HomeLayoutListUiModel {
-    return HomeLayoutListUiModel(
-            result = listOf<Visitable<*>>(
-                    HomeChooseAddressWidgetUiModel(id = "0", isRefresh = false, isMyShop = false),
-                    HomeTickerUiModel(id = "1", tickers = listOf(TickerData(description = "Tokonow is one of the best feature", type = 0))),
-                    HomeCategoryGridUiModel(id = "34923", title = "Category Tokonow", categoryList = listOf(HomeCategoryItemUiModel(id = "1", title = "Category 1", imageUrl = "tokopedia://", appLink = "tokoepdia://"))),
-                    BannerDataModel(channelModel = ChannelModel(id = "34922", groupId = "", type = "", style = ChannelStyle.ChannelHome, verticalPosition = 0, contextualInfo = 0, widgetParam = "", pageName = "",
-                            channelHeader = ChannelHeader(id = "", name = "Banner Tokonow", subtitle = "", expiredTime = "", serverTimeUnix = 0, applink = "", url = "", backColor = "", backImage = "", textColor = ""),
-                            channelBanner = ChannelBanner(id = "", title = "", description = "", backColor = "", url = "", applink = "", textColor = "", imageUrl = "", attribution = "",
-                                    cta = ChannelCtaData(type = "", mode = "", text = "", couponCode = ""), gradientColor = arrayListOf("")),
-                            channelConfig = ChannelConfig(layout = "banner_carousel_v2", showPromoBadge = false, hasCloseButton = false, serverTimeOffset = 0, createdTimeMillis = "", isAutoRefreshAfterExpired = false, enableTimeDiffMoreThan24h = false, dividerType = 0),
-                            trackingAttributionModel = TrackingAttributionModel(galaxyAttribution = "", persona = "", brandId = "", categoryPersona = "", categoryId = "", persoType = "", campaignCode = "", homeAttribution = "", campaignId = "", promoName = ""),
-                            channelGrids = listOf(), name = "", layout = "banner_carousel_v2"))),
-            isInitialLoad = false,
-            state = HomeLayoutState.SHOW
-    )
-}
-
-fun createHomeLayoutListwithHome(): List<HomeLayoutResponse> {
-    return listOf(
-            HomeLayoutResponse(
-                    id = "34923",
-                    layout = "category_tokonow",
-                    header = Header(
-                            name = "Category Tokonow",
-                            serverTimeUnix = 0
+fun createCategoryGridListSecondFetch(): CategoryListResponse {
+    return CategoryListResponse(
+            header = com.tokopedia.abstraction.common.data.model.response.Header(),
+            data = listOf(
+                    CategoryResponse(
+                            id = "1",
+                            name = "Category 1",
+                            url = "tokopedia://",
+                            appLinks = "tokoepdia://",
+                            imageUrl = "tokopedia://",
+                            parentId = "2",
+                            childList = listOf()
                     )
-            ),
-            HomeLayoutResponse(
-                    id = "",
-                    layout = "banner_carousel_v2",
-                    header = Header(
-                            name = "Banner Tokonow",
-                            serverTimeUnix = 0
-                    )
-            )
-    )
+            ))
 }
-
-fun createHomeLayoutListwithBanner(): HomeLayoutResponse {
-    return HomeLayoutResponse(
-            id = "34922",
-            layout = "banner_carousel_v2",
-            header = Header(
-                    name = "Banner Tokonow",
-                    serverTimeUnix = 0
-            )
-    )
-}
-

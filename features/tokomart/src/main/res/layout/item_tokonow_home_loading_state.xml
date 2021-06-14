@@ -43,17 +43,7 @@
     </RelativeLayout>
 
     <include
-        layout="@layout/partial_tokonow_home_category_linearlayout_shimmering"/>
-
-    <include
-        layout="@layout/partial_tokonow_home_category_linearlayout_shimmering"/>
-
-    <include
-        layout="@layout/partial_tokonow_home_category_linearlayout_shimmering"/>
-
-    <include
-        layout="@layout/partial_tokonow_home_category_linearlayout_shimmering"/>
-
+        layout="@layout/partial_tokonow_home_category_multiple_linearlayout_shimmering"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_marginStart="@dimen/layout_lvl2"

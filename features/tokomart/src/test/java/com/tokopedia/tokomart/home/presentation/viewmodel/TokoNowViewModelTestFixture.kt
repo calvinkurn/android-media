@@ -1,6 +1,7 @@
 package com.tokopedia.tokomart.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -16,6 +17,7 @@ import com.tokopedia.tokomart.home.domain.usecase.GetHomeLayoutDataUseCase
 import com.tokopedia.tokomart.home.domain.usecase.GetHomeLayoutListUseCase
 import com.tokopedia.tokomart.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokomart.home.domain.usecase.GetTickerUseCase
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokomart.util.getOrAwaitValue
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -89,6 +91,18 @@ abstract class TokoMartHomeViewModelTestFixture {
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
+    protected fun verifyGetCategoryListResponseSuccess(expectedResponse: HomeCategoryGridUiModel) {
+        val homeLayoutList = viewModel.homeLayoutList.getOrAwaitValue()
+        val actualResponse = (homeLayoutList as Success).data.result.find { it is HomeCategoryGridUiModel }
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
+    protected fun verifyGetBannerResponseSuccess(expectedResponse: BannerDataModel) {
+        val homeLayoutList = viewModel.homeLayoutList.getOrAwaitValue()
+        val actualResponse = (homeLayoutList as Success).data.result.find { it is BannerDataModel }
+        Assert.assertEquals(expectedResponse, actualResponse)
+    }
+
     protected fun verifyGetHomeLayoutResponseFail() {
         val actualResponse = viewModel.homeLayoutList.getOrAwaitValue()
         Assert.assertTrue(actualResponse is Fail)
@@ -99,11 +113,6 @@ abstract class TokoMartHomeViewModelTestFixture {
         Assert.assertTrue(actualResponse is Fail)
     }
 
-    protected fun verifyDataLayoutFail() {
-        val actualResponse = viewModel.homeLayoutList.getOrAwaitValue()
-        Assert.assertTrue(actualResponse is Fail)
-    }
-
     protected fun verifyGetChooseAddressFail() {
         val actualResponse = viewModel.chooseAddress.getOrAwaitValue()
         Assert.assertTrue(actualResponse is Fail)
@@ -111,6 +120,10 @@ abstract class TokoMartHomeViewModelTestFixture {
 
     protected fun verifyGetHomeLayoutUseCaseCalled() {
         coVerify { getHomeLayoutListUseCase.execute() }
+    }
+
+    protected fun verifyGetHomeLayoutDataUseCaseCalled() {
+        coVerify { getHomeLayoutDataUseCase.execute(any()) }
     }
 
     protected fun verifyGetTickerUseCaseCalled() {
@@ -125,7 +138,7 @@ abstract class TokoMartHomeViewModelTestFixture {
         coVerify { getKeywordSearchUseCase.execute(anyBoolean(), anyString(), anyString()) }
     }
 
-    protected fun verifyGetDataFromTokoMartCalled(){
+    protected fun verifyGetCategoryListUseCaseCalled(){
         coVerify { getCategoryListUseCase.execute("1", 1) }
     }
 
@@ -135,6 +148,10 @@ abstract class TokoMartHomeViewModelTestFixture {
 
     protected fun onGetHomeLayout_thenReturn(layoutResponse: List<HomeLayoutResponse>) {
         coEvery { getHomeLayoutListUseCase.execute() } returns layoutResponse
+    }
+
+    protected fun onGetHomeLayoutData_thenReturn(layoutResponse: HomeLayoutResponse) {
+        coEvery { getHomeLayoutDataUseCase.execute(any()) } returns layoutResponse
     }
 
     protected fun onGetKeywordSearch_thenReturn(keywordSearchResponse: KeywordSearchData) {
@@ -155,6 +172,14 @@ abstract class TokoMartHomeViewModelTestFixture {
 
     protected fun onGetHomeLayout_thenReturn(errorThrowable: Throwable) {
         coEvery { getHomeLayoutListUseCase.execute() } throws errorThrowable
+    }
+
+    protected fun onGetCategoryList_thenReturn(errorThrowable: Throwable) {
+        coEvery { getCategoryListUseCase.execute("1", 1) } throws errorThrowable
+    }
+
+    protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
+        coEvery { getCategoryListUseCase.execute("1", 1) } returns categoryListResponse
     }
 
     protected fun onGetChooseAddress_thenReturn(errorThrowable: Throwable) {
@@ -179,21 +204,5 @@ abstract class TokoMartHomeViewModelTestFixture {
         } answers {
             secondArg<(Throwable) -> Unit>().invoke(errorThrowable)
         }
-    }
-
-    protected fun onGetDataFromTokoMart_thenReturn(categoryListResponse: CategoryListResponse){
-        coEvery { getCategoryListUseCase.execute("1", 1) } returns categoryListResponse
-    }
-
-    protected fun onGetDataFromTokoMart_thenReturn(errorThrowable: Throwable){
-        coEvery { getCategoryListUseCase.execute("1", 1) } throws  errorThrowable
-    }
-
-    protected fun onGetHomeLayoutData_thenReturn(homeLayoutResponse: HomeLayoutResponse){
-        coEvery { getHomeLayoutDataUseCase.execute( any()) } returns homeLayoutResponse
-    }
-
-    protected fun onGetHomeLayoutData_thenReturn(errorThrowable: Throwable){
-        coEvery { getHomeLayoutDataUseCase.execute(any()) } throws  errorThrowable
     }
 }

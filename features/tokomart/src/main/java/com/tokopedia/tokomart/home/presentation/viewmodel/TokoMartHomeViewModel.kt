@@ -12,6 +12,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokomart.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokomart.home.constant.HomeLayoutState
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
@@ -21,6 +22,7 @@ import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapGlobalHomeL
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokomart.home.domain.mapper.TickerMapper.mapTickerData
+import com.tokopedia.tokomart.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokomart.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokomart.home.domain.model.Ticker
 import com.tokopedia.tokomart.home.domain.usecase.GetHomeLayoutDataUseCase
@@ -30,10 +32,10 @@ import com.tokopedia.tokomart.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokomart.home.presentation.fragment.TokoMartHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
-import com.tokopedia.tokomart.home.presentation.uimodel.TokoMartHomeLayoutUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.Deferred
 import javax.inject.Inject
 
 class TokoMartHomeViewModel @Inject constructor(
@@ -44,7 +46,7 @@ class TokoMartHomeViewModel @Inject constructor(
     private val getTickerUseCase: GetTickerUseCase,
     private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
-    private val dispatchers: CoroutineDispatchers,
+    dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.io) {
 
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
@@ -84,34 +86,10 @@ class TokoMartHomeViewModel @Inject constructor(
 
     fun getHomeLayout(hasTickerBeenRemoved: Boolean) {
         launchCatchError(block = {
-            val getTickerAsync = asyncCatchError(
-                    context = dispatchers.io,
-                    block = {
-                        if (!hasTickerBeenRemoved) {
-                            getTicker()
-                        } else {
-                            null
-                        }
-                    },
-                    onError = {
-                        _homeLayoutList.postValue(Fail(it))
-                        null
-                    })
-
-            val getResponseAsync = asyncCatchError(
-                    context = dispatchers.io,
-                    block = {
-                        getHomeLayoutListUseCase.execute()
-                    },
-                    onError = {
-                        _homeLayoutList.postValue(Fail(it))
-                        null
-                    })
-
-            getResponseAsync.await()?.let { homeLayoutResponse ->
+            getHomeLayoutAsync().await()?.let { homeLayoutResponse ->
                 layoutList = mapHomeLayoutList(
                         homeLayoutResponse,
-                        mapTickerData(getTickerAsync.await().orEmpty())
+                        mapTickerData(getTickerAsync(hasTickerBeenRemoved).await().orEmpty())
                 )
                 val data = HomeLayoutListUiModel(
                         result = layoutList,
@@ -127,20 +105,29 @@ class TokoMartHomeViewModel @Inject constructor(
 
     fun getLayoutData(warehouseId: String) {
         launchCatchError(block = {
-            val getDataForEachLayout = layoutList.filter { it.isNotStaticLayout() }.map {
-                asyncCatchError(block = {
-                    getHomeComponentData(it, warehouseId)
-                    val data = HomeLayoutListUiModel(
-                            result = layoutList,
-                            state = HomeLayoutState.SHOW
-                    )
-                    _homeLayoutList.postValue(Success(data))
-                }) {
-                    _homeLayoutList.postValue(Fail(it))
+            layoutList.filter { it.isNotStaticLayout() }.map { item ->
+                when(item) {
+                    is HomeComponentVisitable -> {
+                        getGlobalHomeComponentAsync(item)
+                                .await()
+                                ?.also {
+                                    layoutList = it
+                                }
+                    }
+                    is HomeCategoryGridUiModel -> {
+                        getCategoryGridAsync(item, warehouseId)
+                                .await()
+                                ?.also {
+                                    layoutList = it
+                                }
+                    }
                 }
+                val data = HomeLayoutListUiModel(
+                        result = layoutList,
+                        state = HomeLayoutState.SHOW
+                )
+                _homeLayoutList.postValue(Success(data))
             }
-
-            getDataForEachLayout.forEach { it.await() }
         }) {
             _homeLayoutList.postValue(Fail(it))
         }
@@ -174,31 +161,75 @@ class TokoMartHomeViewModel @Inject constructor(
         }, source)
     }
 
-    private suspend fun getTicker(): List<Ticker> {
-        return getTickerUseCase.execute()
-                .ticker
-                .tickerList
-    }
-
-    private suspend fun getHomeComponentData(item: Visitable<*>, warehouseId: String) {
-        when (item) {
-            is TokoMartHomeLayoutUiModel -> getDataForTokoMartHomeComponent(item, warehouseId)
-            is HomeComponentVisitable -> getDataForGlobalHomeComponent(item)
+    fun getCategoryGrid(item: HomeCategoryGridUiModel, warehouseId: String) {
+        launchCatchError(block = {
+            layoutList = layoutList.mapHomeCategoryGridData(item, getCategoryList(warehouseId))
+            val data = HomeLayoutListUiModel(
+                    result = layoutList,
+                    state = HomeLayoutState.SHOW
+            )
+            _homeLayoutList.postValue(Success(data))
+        }) {
+            layoutList = layoutList.mapHomeCategoryGridData(item, null)
+            val data = HomeLayoutListUiModel(
+                    result = layoutList,
+                    state = HomeLayoutState.SHOW
+            )
+            _homeLayoutList.postValue(Success(data))
         }
     }
 
-    private suspend fun getDataForTokoMartHomeComponent(item: TokoMartHomeLayoutUiModel, warehouseId: String) {
-        when (item) {
-            is HomeCategoryGridUiModel -> {
-                val response = getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH)
-                layoutList = layoutList.mapHomeCategoryGridData(item, response.data)
-            }
-        }
+    private suspend fun getCategoryList(warehouseId: String): List<CategoryResponse> {
+        return getCategoryListUseCase.execute(warehouseId, CATEGORY_LEVEL_DEPTH)
+                .data
     }
 
-    private suspend fun getDataForGlobalHomeComponent(item: HomeComponentVisitable) {
-        val channelId = item.visitableId()
-        val response = getHomeLayoutDataUseCase.execute(channelId)
-        layoutList = layoutList.mapGlobalHomeLayoutData(item, response)
+    private suspend fun getHomeLayoutAsync(): Deferred<List<HomeLayoutResponse>?> {
+        return asyncCatchError(
+                block = {
+                    getHomeLayoutListUseCase.execute()
+                },
+                onError = {
+                    _homeLayoutList.postValue(Fail(it))
+                    null
+                })
+    }
+
+    private suspend fun getTickerAsync(hasTickerBeenRemoved: Boolean): Deferred<List<Ticker>?> {
+        return asyncCatchError(
+                block = {
+                    if (!hasTickerBeenRemoved) {
+                        getTickerUseCase.execute()
+                                .ticker
+                                .tickerList
+                    } else {
+                        null
+                    }
+                },
+                onError = {
+                    null
+                })
+    }
+
+    private suspend fun getCategoryGridAsync(item: HomeCategoryGridUiModel, warehouseId: String): Deferred<List<Visitable<*>>?> {
+        return asyncCatchError(
+                block = {
+                    layoutList.mapHomeCategoryGridData(item, getCategoryList(warehouseId))
+                },
+                onError = {
+                    layoutList.mapHomeCategoryGridData(item, null)
+                })
+    }
+
+    private suspend fun getGlobalHomeComponentAsync(item: HomeComponentVisitable): Deferred<List<Visitable<*>>?> {
+        return asyncCatchError(
+                block = {
+                    val channelId = item.visitableId()
+                    val response = getHomeLayoutDataUseCase.execute(channelId)
+                    layoutList.mapGlobalHomeLayoutData(item, response)
+                },
+                onError = {
+                    null
+                })
     }
 }
