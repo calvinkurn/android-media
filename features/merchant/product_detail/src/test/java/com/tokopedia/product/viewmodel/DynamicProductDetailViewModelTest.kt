@@ -923,7 +923,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             getP2DataAndMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any())
-        } returns ProductInfoP2UiData(miniCart = if(!hitMiniCart) null else generateMiniCartMock(dataP1.layoutData.basic.productID))
+        } returns ProductInfoP2UiData(miniCart = if (!hitMiniCart) mutableMapOf() else generateMiniCartMock(dataP1.layoutData.basic.productID).toMutableMap())
 
         coEvery {
             getProductInfoP2OtherUseCase.executeOnBackground(any(), any())
@@ -1051,7 +1051,6 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.VARIANT_OPTIONS } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.BY_ME } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
     }
 

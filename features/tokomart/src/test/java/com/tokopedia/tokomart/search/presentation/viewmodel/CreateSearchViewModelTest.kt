@@ -32,8 +32,7 @@ class CreateSearchViewModelTest:
 
         `Then assert keyword from parameter`()
         `Then assert query param has default sort`()
-        `Then assert shop id from choose address`()
-        `Then assert warehouse id from choose address`()
+        `Then assert content is loading`()
     }
 
     private fun `Then assert keyword from parameter`() {
@@ -47,12 +46,8 @@ class CreateSearchViewModelTest:
         )
     }
 
-    private fun `Then assert shop id from choose address`() {
-        assertThat(searchViewModel.shopId, shouldBe(dummyChooseAddressData.shop_id))
-    }
-
-    private fun `Then assert warehouse id from choose address`() {
-        assertThat(searchViewModel.warehouseId, shouldBe(dummyChooseAddressData.warehouse_id))
+    private fun `Then assert content is loading`() {
+        assertThat(searchViewModel.isContentLoadingLiveData.value, shouldBe(true))
     }
 
     @Test

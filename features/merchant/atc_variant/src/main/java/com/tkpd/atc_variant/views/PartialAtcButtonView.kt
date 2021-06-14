@@ -61,9 +61,11 @@ class PartialAtcButtonView private constructor(val view: View,
         val availableButton = cartRedirectionData?.availableButtons ?: listOf()
 
         btnBuy.run {
-            showWithCondition(availableButton.firstOrNull() != null)
-            generateTheme(availableButton.getOrNull(0)?.color ?: "")
-            val textFirstButton = availableButton.getOrNull(0)?.text ?: ""
+            val firstButton = availableButton.firstOrNull()
+            showWithCondition(firstButton != null)
+            generateTheme(firstButton?.color ?: "")
+            val fallbackTextIfEmpty = if (firstButton?.cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST) "Cek Wishlist" else "+Keranjang"
+            val textFirstButton = availableButton.getOrNull(0)?.text ?: fallbackTextIfEmpty
             text = textFirstButton
             setOnClickListener {
                 buttonListener.buttonCartTypeClick(availableButton.getOrNull(0)?.cartType
@@ -74,9 +76,11 @@ class PartialAtcButtonView private constructor(val view: View,
         }
 
         btnAtc.run {
-            showWithCondition(availableButton.getOrNull(1) != null)
-            generateTheme(availableButton.getOrNull(1)?.color ?: "")
-            text = availableButton.getOrNull(1)?.text ?: ""
+            val secondButton = availableButton.getOrNull(1)
+            showWithCondition(secondButton != null)
+            generateTheme(secondButton?.color ?: "")
+            val fallbackTextIfEmpty = if (secondButton?.cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST) "Cek Wishlist" else "+Keranjang"
+            text = availableButton.getOrNull(1)?.text ?: fallbackTextIfEmpty
             setOnClickListener {
                 buttonListener.buttonCartTypeClick(availableButton.getOrNull(1)?.cartType
                         ?: "", text.toString(), availableButton.getOrNull(1)?.showRecommendation

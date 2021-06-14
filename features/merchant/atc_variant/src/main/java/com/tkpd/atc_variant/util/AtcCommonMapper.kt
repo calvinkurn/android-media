@@ -126,23 +126,49 @@ object AtcCommonMapper {
                                  isShopOwner: Boolean = false,
                                  shouldUseAlternateTokoNow: Boolean = false,
                                  alternateCopy: List<AlternateCopy>?): PartialButtonDataModel {
-        val alternateText = alternateCopy?.firstOrNull {
-            it.cartType == ProductDetailCommonConstant.KEY_CART_TYPE_UPDATE_CART
-        }
-        val cartType = cartTypeData?.get(selectedChild?.productId ?: "")
 
-        val latestData: CartTypeData? = if (shouldUseAlternateTokoNow && cartType?.availableButtons?.firstOrNull()?.isCartTypeDisabledOrRemindMe() == false) {
-            cartType.copy(
-                    availableButtons = listOf(cartType.availableButtons.firstOrNull()?.copy(
-                            color = alternateText?.color ?: "",
-                            text = alternateText?.text ?: "")
-                            ?: AvailableButton()))
+        val cartType = cartTypeData?.get(selectedChild?.productId ?: "")
+        val data = if (shouldUseAlternateTokoNow) {
+            generateAvailableButtonMiniCartVariant(alternateCopy, cartType)
         } else {
-            cartTypeData?.get(selectedChild?.productId ?: "")
+            cartType
         }
 
         return PartialButtonDataModel(selectedChild?.isBuyable
-                ?: false, isShopOwner, latestData)
+                ?: false, isShopOwner, data)
+    }
+
+    private fun generateAvailableButtonMiniCartVariant(alternateCopy: List<AlternateCopy>?, cartTypeData: CartTypeData?): CartTypeData? {
+        val alternateText = alternateCopy?.firstOrNull {
+            it.cartType == ProductDetailCommonConstant.KEY_CART_TYPE_UPDATE_CART
+        }
+
+        return if (cartTypeData != null && cartTypeData.availableButtons.firstOrNull()?.isCartTypeDisabledOrRemindMe() == false) {
+
+            val firstAvailable = cartTypeData.availableButtons.firstOrNull()
+            val color = if (alternateText?.color?.isEmpty() == true) firstAvailable?.color else alternateText?.color
+            val text = if (alternateText?.text?.isEmpty() == true) ProductDetailCommonConstant.TEXT_SAVE_ATC else alternateText?.text
+
+            cartTypeData.copy(
+                    availableButtons = listOf(cartTypeData.availableButtons.firstOrNull()?.copy(
+                            color = color ?: ProductDetailCommonConstant.KEY_BUTTON_PRIMARY_GREEN,
+                            text = text ?: ProductDetailCommonConstant.TEXT_SAVE_ATC)
+                            ?: AvailableButton()))
+        } else {
+            cartTypeData
+        }
+    }
+
+    fun generateAvailableButtonIngatkanSaya(alternateCopy: List<AlternateCopy>?, cartTypeData: CartTypeData?): List<AvailableButton>? {
+        val remindMeAlternateCopy = alternateCopy?.firstOrNull {
+            it.cartType == ProductDetailCommonConstant.KEY_REMIND_ME
+        }
+
+        return listOf(cartTypeData?.availableButtons?.firstOrNull()?.copy(
+                cartType = ProductDetailCommonConstant.KEY_CHECK_WISHLIST,
+                color = remindMeAlternateCopy?.color ?: ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN,
+                text = remindMeAlternateCopy?.text ?: ProductDetailCommonConstant.TEXT_REMIND_ME
+        ) ?: return null)
     }
 
     fun mapToVisitable(selectedChild: VariantChild?,
@@ -235,7 +261,6 @@ object AtcCommonMapper {
     }
 
     fun updateActivityResultData(recentData: ProductVariantResult?,
-                                 listVariant: List<VariantCategory>? = null,
                                  selectedProductId: String? = null,
                                  parentProductId: String? = null,
                                  mapOfSelectedVariantOption: MutableMap<String, String>? = null,
@@ -244,7 +269,6 @@ object AtcCommonMapper {
                                  requestCode: Int? = null): ProductVariantResult {
         val result = recentData?.copy() ?: ProductVariantResult()
 
-        if (listVariant != null) result.listOfVariantSelected = listVariant
         if (selectedProductId != null) result.selectedProductId = selectedProductId
         if (mapOfSelectedVariantOption != null) result.mapOfSelectedVariantOption = mapOfSelectedVariantOption
         if (atcMessage != null) result.atcMessage = atcMessage

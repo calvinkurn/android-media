@@ -18,12 +18,14 @@ class ChooseAddressViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokomart_search_category_choose_address
+
+        private const val SOURCE = "search page"
     }
 
     private var chooseAddressWidget: ChooseAddressWidget? = null
 
     init {
-        chooseAddressWidget = itemView.findViewById<ChooseAddressWidget?>(R.id.tokomartSearchCategoryChooseAddress)
+        chooseAddressWidget = itemView.findViewById(R.id.tokomartSearchCategoryChooseAddress)
         chooseAddressWidget?.bindChooseAddress(object: ChooseAddressWidget.ChooseAddressWidgetListener {
             override fun onLocalizingAddressUpdatedFromWidget() {
                 chooseAddressListener.onLocalizingAddressSelected()
@@ -41,9 +43,9 @@ class ChooseAddressViewHolder(
 
             override fun getLocalizingAddressHostFragment() = chooseAddressListener.getFragment()
 
-            override fun getLocalizingAddressHostSourceData() = ""
+            override fun getLocalizingAddressHostSourceData() = SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
 
-            override fun getLocalizingAddressHostSourceTrackingData() = ""
+            override fun getLocalizingAddressHostSourceTrackingData() = SOURCE
 
             override fun onLocalizingAddressLoginSuccess() { }
         })

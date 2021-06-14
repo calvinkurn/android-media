@@ -87,7 +87,7 @@ object HomeLayoutMapper {
         response: List<CategoryResponse>?
     ): List<Visitable<*>> {
         return updateItemById(item.visitableId) {
-            if (response != null) {
+            if (!response.isNullOrEmpty()) {
                 val categoryList = mapToCategoryList(response)
                 item.copy(categoryList = categoryList, state = HomeLayoutState.SHOW)
             } else {
