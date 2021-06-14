@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
@@ -287,7 +288,7 @@ class ProductManageViewModel @Inject constructor(
             }
             _refreshList.value = isRefresh
 
-            val isFirstPage = filterOptions?.filterIsInstance<FilterOption.FilterByPage>()?.firstOrNull()?.page == 1
+            val isFirstPage = filterOptions?.filterIsInstance<FilterOption.FilterByPage>()?.firstOrNull()?.page == ProductManageCommonConstant.FIRST_PAGE
             showProductList(productList)
             if (isFirstPage) {
                 showStockTicker()

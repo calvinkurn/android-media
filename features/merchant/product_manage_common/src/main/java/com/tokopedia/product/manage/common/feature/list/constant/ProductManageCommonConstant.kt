@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.common.feature.list.constant
 
 object ProductManageCommonConstant {
     const val REQUEST_CODE_CAMPAIGN_STOCK = 4646
+    const val FIRST_PAGE = 1
 
     const val EXTRA_PRODUCT_ID = "extra_product_id"
     const val EXTRA_PRODUCT_NAME = "extra_product_name"
