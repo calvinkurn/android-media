@@ -81,7 +81,7 @@ class ChangePasswordFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            parent_container?.setBackgroundColor(ContextCompat.getColor(it, R.color.Unify_N0))
+            parent_container?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
         initObserver()
         setupViewListener()
