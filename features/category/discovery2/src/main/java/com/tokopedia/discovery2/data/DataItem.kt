@@ -56,6 +56,9 @@ data class DataItem(
         @SerializedName("code")
         val code: String? = "",
 
+        @SerializedName("dep_id")
+        val depID:String? = "",
+
         @SerializedName("mobile_url")
         val mobileUrl: String? = "",
 

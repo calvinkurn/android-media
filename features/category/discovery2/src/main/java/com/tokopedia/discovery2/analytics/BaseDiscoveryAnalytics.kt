@@ -30,6 +30,8 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackPlayWidgetOverLayClick(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
     open fun trackPlayWidgetOverLayImpression(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, destinationURL: String) {}
     open fun trackPlayWidgetReminderClick(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, channelId: String, isRemindMe: Boolean){}
+    open fun trackTDNBannerImpression(componentsItem: ComponentsItem,userID: String?){}
+    open fun trackTDNBannerClick(componentsItem: ComponentsItem,userID: String?){}
     open fun trackCategoryNavigationClick(categoryItem: DataItem?, position: Int) {}
     open fun trackClickVideo(videoUrl: String, videoName: String, videoPlayedTime: String) {}
     open fun trackBackClick() {}
