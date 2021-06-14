@@ -13,6 +13,12 @@
         android:layout_height="wrap_content"
         app:text_field_label="Label Alamat"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_label_alamat_chips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_kota_kecamatan"
         style="@style/HintTextInputLayout"

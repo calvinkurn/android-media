@@ -83,7 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_16"
-            android:text="Pilih Lokasi"
+            android:text="@string/btn_choose_location"
             android:textStyle="bold"
             app:unifyButtonType="main"
             app:unifyButtonVariant="filled" />
@@ -93,7 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_8"
-            android:text="Tidak Ketemu?"
+            android:text="@string/btn_not_found_location"
             android:textStyle="bold"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost" />

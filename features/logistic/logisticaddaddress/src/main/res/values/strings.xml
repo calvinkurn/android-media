@@ -178,6 +178,8 @@
 
     <!--PinpointNew Page-->
     <string name="title_pinpoint_new">Tentukan Pinpoint Lokasi</string>
+    <string name="btn_choose_location">Pilih Lokasi &amp; Lanjut Isi Alamat</string>
+    <string name="btn_not_found_location">Tidak Ketemu? Isi Alamat Manual</string>
 
     <!--Address Form-->
     <string name="title_address_form">Detail Alamat</string>

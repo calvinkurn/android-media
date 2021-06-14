@@ -3,32 +3,48 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressfor
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.db.District
 import com.tokopedia.logisticCommon.data.response.DistrictItem
+import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticaddaddress.databinding.FragmentAddressFormBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
+import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressFragment
+import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.LabelAlamatChipsAdapter
+import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
+import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
 import javax.inject.Inject
 
-class AddressFormFragment : BaseDaggerFragment() {
+class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.ActionListener {
 
     private var saveDataModel: SaveAddressDataModel? = null
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
+    private var labelAlamatList: Array<String> = emptyArray()
+    private var staticDimen8dp: Int? = 0
+    private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
+    private lateinit var labelAlamatChipsLayoutManager: ChipsLayoutManager
 
     private var binding by autoCleared<FragmentAddressFormBinding>()
 
@@ -103,6 +119,14 @@ class AddressFormFragment : BaseDaggerFragment() {
 
     @SuppressLint("SetTextI18n")
     private fun prepareLayout(data: DistrictItem) {
+        labelAlamatChipsAdapter = LabelAlamatChipsAdapter(this)
+        labelAlamatChipsLayoutManager = ChipsLayoutManager.newBuilder(view?.context)
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
+        staticDimen8dp = context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+        setOnTouchLabelAddress(ANA_POSITIVE)
+        setupRvLabelAlamatChips()
         binding.run {
             cardAddress.addressDistrict.text = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
 
@@ -116,6 +140,65 @@ class AddressFormFragment : BaseDaggerFragment() {
         binding.btnSaveAddress.setOnClickListener {
             doSaveAddress()
         }
+    }
+
+    private fun setupRvLabelAlamatChips() {
+        binding.formAddress.rvLabelAlamatChips.apply {
+            staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
+            layoutManager = labelAlamatChipsLayoutManager
+            adapter = labelAlamatChipsAdapter
+        }
+    }
+
+    private fun setOnTouchLabelAddress(type: String) {
+        binding.formAddress.etLabel.textFieldInput.apply {
+            setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    eventShowListLabelAlamat(type)
+                } else {
+                    binding.formAddress.rvLabelAlamatChips.visibility = View.GONE
+                }
+            }
+            setOnClickListener {
+                eventShowListLabelAlamat(type)
+            }
+            addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
+                                               after: Int) {
+                }
+
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int,
+                                           count: Int) {
+                }
+
+                override fun afterTextChanged(s: Editable) {
+                    val filterList = labelAlamatList.filter {
+                        it.contains("$s", true)
+                    }
+                    labelAlamatChipsAdapter.submitList(filterList)
+                }
+            })
+            setOnTouchListener { view, event ->
+                view.parent.requestDisallowInterceptTouchEvent(true)
+                if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                    view.parent.requestDisallowInterceptTouchEvent(false)
+                }
+                return@setOnTouchListener false
+            }
+        }
+    }
+
+    private fun eventShowListLabelAlamat(type: String) {
+        showLabelAlamatList()
+    }
+
+    private fun showLabelAlamatList() {
+        val res: Resources = resources
+        labelAlamatList = res.getStringArray(R.array.labelAlamatList)
+
+        binding.formAddress.rvLabelAlamatChips.visibility = View.VISIBLE
+        ViewCompat.setLayoutDirection(binding.formAddress.rvLabelAlamatChips, ViewCompat.LAYOUT_DIRECTION_LTR)
+        labelAlamatChipsAdapter.submitList(labelAlamatList.toList())
     }
 
     private fun doSaveAddress() {
@@ -150,6 +233,14 @@ class AddressFormFragment : BaseDaggerFragment() {
                     putParcelable(EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(EXTRA_SAVE_DATA_UI_MODEL))
                 }
             }
+        }
+    }
+
+    override fun onLabelAlamatChipClicked(labelAlamat: String) {
+        binding.formAddress.rvLabelAlamatChips.visibility = View.GONE
+        binding.formAddress.etLabel.textFieldInput.run {
+            setText(labelAlamat)
+            setSelection(binding.formAddress.etLabel.textFieldInput.text.length)
         }
     }
 

@@ -364,7 +364,7 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
     }
 
     private fun goToPickLocation(requestCode: Int) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
         intent.putExtra(EXTRA_IS_FULL_FLOW, true)
         intent.putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
         intent.putExtra(KERO_TOKEN, viewModel.token)
