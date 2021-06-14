@@ -18,6 +18,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.hasQuestion
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
+import com.tokopedia.topchat.stub.chatroom.view.presenter.TopChatRoomPresenterStub
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
@@ -473,13 +474,14 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // When
         clickSrwPreviewItemAt(0)
-        websocket.simulateResponseMatchRequestStartTime(wsMineResponseText)
-        websocket.simulateResponseMatchRequestStartTime(wsMineResponseText)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
         assertSrwBubbleExpanded(0)
     }
+
+    // TODO: add functionality to adjust timestram ws response
     // TODO: SRW bubble should removed when user request sent invoice
     // TODO: SRW bubble should removed when user receive invoice event from ws.
     // TODO: SRW preview should removed when user re-attach preview with invoice

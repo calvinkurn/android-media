@@ -122,8 +122,6 @@ abstract class TopchatRoomTest {
         "ChatRoom-Keyboard"
     )
 
-    protected open val exMessageId = "66961"
-
     protected var firstPageChatAsBuyer = GetExistingChatPojo()
     protected var firstPageChatAsSeller = GetExistingChatPojo()
     protected var chatAttachmentResponse = ChatAttachmentResponse()
@@ -219,7 +217,7 @@ abstract class TopchatRoomTest {
         intentModifier: (Intent) -> Unit = {}
     ) {
         val intent = Intent().apply {
-            putExtra(ApplinkConst.Chat.MESSAGE_ID, exMessageId)
+            putExtra(ApplinkConst.Chat.MESSAGE_ID, MSG_ID)
             sourcePage?.let {
                 putExtra(ApplinkConst.Chat.SOURCE_PAGE, it)
             }
@@ -598,6 +596,10 @@ abstract class TopchatRoomTest {
 
     protected fun waitForIt(timeMillis: Long) {
         Thread.sleep(timeMillis)
+    }
+
+    companion object {
+        const val MSG_ID = "66961"
     }
 }
 
