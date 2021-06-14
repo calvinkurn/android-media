@@ -3,6 +3,10 @@ package com.tokopedia.thankyou_native.recommendationdigital.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.thankyou_native.GQL_DIGITAL_RECOMMENDATION
+import com.tokopedia.thankyou_native.data.mapper.DigitalThankPage
+import com.tokopedia.thankyou_native.data.mapper.MARKET_PLACE
+import com.tokopedia.thankyou_native.data.mapper.MarketPlaceThankPage
+import com.tokopedia.thankyou_native.data.mapper.ThankPageType
 import com.tokopedia.thankyou_native.recommendationdigital.model.RechargeRecommendationDigiPersoItem
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationDigiPersoResponse
 import com.tokopedia.user.session.UserSessionInterface
@@ -17,11 +21,12 @@ class DigitalRecommendationUseCase  @Inject constructor(
     fun getDigitalRecommendationData(onSuccess: (RechargeRecommendationDigiPersoItem) -> Unit,
                                      onError: (Throwable) -> Unit,
                                      clientNumber: String,
-                                     pgCategoryIds: List<Int>
+                                     pgCategoryIds: List<Int>,
+                                     pageType: ThankPageType
     ) {
         try {
             this.setTypeClass(RecommendationDigiPersoResponse::class.java)
-            this.setRequestParams(getRequestParams(clientNumber, pgCategoryIds))
+            this.setRequestParams(getRequestParams(clientNumber, pgCategoryIds, pageType))
             this.setGraphqlQuery(query)
             this.execute(
                     { result ->
@@ -35,10 +40,16 @@ class DigitalRecommendationUseCase  @Inject constructor(
         }
     }
 
-    private fun getRequestParams(clientNumber: String, pgCategoryIds: List<Int>): Map<String, Any> {
+    private fun getRequestParams(clientNumber: String,
+                                 pgCategoryIds: List<Int>,
+                                 pageType: ThankPageType): Map<String, Any> {
+        val channelName = when (pageType) {
+            MarketPlaceThankPage -> PG_THANK_YOU_PAGE_RECOMMENDATION
+            DigitalThankPage -> DG_THANK_YOU_PAGE_RECOMMENDATION
+        }
         return mapOf(
                 PARAM_INPUT to mapOf(
-                        PARAM_CHANNEL_NAME to DG_THANK_YOU_PAGE_RECOMMENDATION,
+                        PARAM_CHANNEL_NAME to channelName,
                         PARAM_CLIENT_NUMBERS to listOf(clientNumber),
                         PARAM_DG_CATEGORY_IDS to listOf<Int>(),
                         PARAM_PG_CATEGORY_IDS to pgCategoryIds
@@ -54,6 +65,7 @@ class DigitalRecommendationUseCase  @Inject constructor(
         const val PARAM_PG_CATEGORY_IDS = "pgCategoryIDs"
 
         const val DG_THANK_YOU_PAGE_RECOMMENDATION = "dg_thank_you_page_recommendation"
+        const val PG_THANK_YOU_PAGE_RECOMMENDATION = "pg_thank_you_page_recommendation"
     }
 
 

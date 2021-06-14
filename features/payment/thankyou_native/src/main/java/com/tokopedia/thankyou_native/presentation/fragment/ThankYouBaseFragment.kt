@@ -146,7 +146,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                     }
                 }
                 addMarketPlaceRecommendation()
-                addDigitalRecommendation(pgCategoryIds)
+                addDigitalRecommendation(pgCategoryIds, MarketPlaceThankPage)
             }
             is DigitalThankPage -> {
                 addDigitalRecommendation()
@@ -166,7 +166,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             iRecommendationView?.loadRecommendation(thanksPageData, this)
     }
 
-    private fun addDigitalRecommendation(pgCategoryIds: List<Int> = listOf()) {
+    private fun addDigitalRecommendation(pgCategoryIds: List<Int> = listOf(), pageType: ThankPageType) {
         val recomContainer = getRecommendationContainer()
         iDigitalRecommendationView = recomContainer?.let { container ->
             val view = getRecommendationView(digitalRecommendationLayout)
@@ -175,7 +175,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
         if (::thanksPageData.isInitialized)
             iDigitalRecommendationView?.loadRecommendation(thanksPageData,
-                    this, digitalRecomTrackingQueue, pgCategoryIds)
+                    this, digitalRecomTrackingQueue, pgCategoryIds, pageType)
     }
 
     private fun getRecommendationView(@LayoutRes layout: Int): View {

@@ -3,6 +3,7 @@ package com.tokopedia.thankyou_native.recommendationdigital.presentation.viewmod
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.thankyou_native.data.mapper.ThankPageType
 import com.tokopedia.thankyou_native.recommendationdigital.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.recommendationdigital.domain.usecase.DigitalRecommendationUseCase
 import com.tokopedia.thankyou_native.recommendationdigital.model.RechargeRecommendationDigiPersoItem
@@ -19,13 +20,14 @@ class DigitalRecommendationViewModel @Inject constructor(
     private val _digitalRecommendationLiveData = MutableLiveData<Result<RechargeRecommendationDigiPersoItem>>()
     val digitalRecommendationLiveData: LiveData<Result<RechargeRecommendationDigiPersoItem>> = _digitalRecommendationLiveData
 
-    fun getDigitalRecommendationData(clientNumber: String, pgCategoryIds: List<Int>) {
+    fun getDigitalRecommendationData(clientNumber: String, pgCategoryIds: List<Int>, pageType: ThankPageType) {
         digitalRecommendationUseCase.cancelJobs()
         digitalRecommendationUseCase.getDigitalRecommendationData(
                 ::onDigitalRecomDataSuccess,
                 ::onDigitalRecomError,
                 clientNumber,
-                pgCategoryIds
+                pgCategoryIds,
+                pageType
         )
     }
 
