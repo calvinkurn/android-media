@@ -8,11 +8,14 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.matchers.isExpanded
 import com.tokopedia.topchat.matchers.withRecyclerView
+import com.tokopedia.websocket.WebSocketResponse
 import org.hamcrest.CoreMatchers.not
 
 open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
 
     protected var chatSrwResponseMultipleQuestion = ChatSmartReplyQuestionResponse()
+    protected var wsMineResponseText: WebSocketResponse = WebSocketResponse()
+    protected var wsSellerResponseText: WebSocketResponse = WebSocketResponse()
 
     private val templateChats = listOf(
         "I am buyer", "Is this product ready?"
@@ -32,6 +35,14 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
         chatSrwResponseMultipleQuestion = AndroidFileUtil.parse(
             "buyer/success_get_srw_multiple_questions.json",
             ChatSmartReplyQuestionResponse::class.java
+        )
+        wsMineResponseText = AndroidFileUtil.parse(
+            "ws_response_text.json",
+            WebSocketResponse::class.java
+        )
+        wsSellerResponseText = AndroidFileUtil.parse(
+            "buyer/ws_opposite_with_label.json",
+            WebSocketResponse::class.java
         )
     }
 
