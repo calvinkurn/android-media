@@ -1,4 +1,4 @@
-package com.tokopedia.power_merchant.subscribe.data.model
+package com.tokopedia.power_merchant.subscribe.domain.model
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.data.model.response.Header
