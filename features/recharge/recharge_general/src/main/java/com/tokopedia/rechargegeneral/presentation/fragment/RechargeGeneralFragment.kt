@@ -39,6 +39,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -55,7 +56,6 @@ import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
 import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.OnInputListener
 import com.tokopedia.rechargegeneral.presentation.model.RechargeGeneralProductSelectData
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel
-import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel.Companion.NULL_PRODUCT_ERROR
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
 import com.tokopedia.rechargegeneral.util.RechargeGeneralGqlQuery
@@ -185,10 +185,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 }
                 is Fail -> {
                     hideLoading()
-                    var throwable = it.throwable
-                    if (throwable.message == NULL_PRODUCT_ERROR)
-                        throwable = MessageErrorException(getString(R.string.selection_null_product_error))
-                    showGetListError(throwable)
+                    showGetListError(it.throwable)
                 }
             }
         })
@@ -211,14 +208,17 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     val defaultOperatorId = getDefaultOperatorId()
                     if (previousOperatorId != defaultOperatorId) {
                         operatorId = defaultOperatorId
-                        val defaultOperatorName = getOperatorData(operatorId)?.attributes?.name ?: ""
+                        val defaultOperatorName = getOperatorData(operatorId)?.attributes?.name
+                                ?: ""
                         operator_select.setInputText(defaultOperatorName, false)
                         getProductList(menuId, operatorId)
                     } else {
                         hideLoading()
                     }
+
                     view?.let { v ->
-                        Toaster.build(v, getString(R.string.selection_null_product_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), it.throwable),
+                                Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
                 }
@@ -788,7 +788,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         viewModel.getOperatorCluster(
                 RechargeGeneralGqlQuery.catalogOperatorSelectGroup,
                 viewModel.createOperatorClusterParams(menuId),
-                recharge_general_swipe_refresh_layout.isRefreshing
+                recharge_general_swipe_refresh_layout.isRefreshing,
+                getString(R.string.selection_null_product_error)
         )
     }
 
@@ -796,7 +797,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         viewModel.getProductList(
                 com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery.rechargeCatalogDynamicProductInput,
                 viewModel.createProductListParams(menuId, operator),
-                recharge_general_swipe_refresh_layout.isRefreshing
+                recharge_general_swipe_refresh_layout.isRefreshing,
+                getString(R.string.selection_null_product_error)
         )
     }
 
@@ -914,7 +916,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun onEnquiryError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
@@ -933,14 +935,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun onCheckVoucherError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }

@@ -4,8 +4,10 @@ import android.accounts.NetworkErrorException
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
@@ -13,6 +15,8 @@ import com.tokopedia.product.manage.common.feature.list.data.model.ProductManage
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
+import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
+import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper
 import com.tokopedia.product.manage.common.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.common.feature.quickedit.stock.domain.EditStatusUseCase
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
@@ -23,8 +27,6 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Edi
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
-import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductManageAccessUseCase
-import com.tokopedia.product.manage.common.feature.list.view.mapper.ProductManageAccessMapper
 import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
@@ -42,18 +44,14 @@ import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeletePr
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
+import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
-import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
-import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoTopAdsUseCase
-import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
-import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
+import com.tokopedia.shop.common.domain.interactor.*
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -543,7 +541,7 @@ class ProductManageViewModel @Inject constructor(
 
     fun setFeaturedProduct(productId: String, status: Int) {
         launchCatchError( block = {
-            setFeaturedProductUseCase.setParams(productId.toInt(), status)
+            setFeaturedProductUseCase.setParams(productId.toLongOrZero(), status)
             withContext(dispatchers.io) {
                 setFeaturedProductUseCase.executeOnBackground()
             }
