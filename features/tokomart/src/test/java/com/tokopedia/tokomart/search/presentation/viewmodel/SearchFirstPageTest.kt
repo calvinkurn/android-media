@@ -69,7 +69,6 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
     private fun `Then assert get first page success interactions`(searchModel: SearchModel) {
         `Then assert auto complete applink from API`(searchModel)
-        `Then assert is refresh page flag`()
         `Then assert header background is shown`()
         `Then assert content is not loading`()
     }
@@ -78,10 +77,6 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         val expectedApplink = searchModel.searchProduct.data.autocompleteApplink
 
         assertThat(searchViewModel.autoCompleteApplink, shouldBe(expectedApplink))
-    }
-
-    private fun `Then assert is refresh page flag`() {
-        assertThat(searchViewModel.isRefreshPageLiveData.value, shouldBe(true))
     }
 
     private fun `Then assert header background is shown`() {
