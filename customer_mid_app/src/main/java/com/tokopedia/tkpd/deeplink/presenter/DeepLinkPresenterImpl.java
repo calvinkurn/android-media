@@ -379,10 +379,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 String hotelId = hotelNames[hotelNames.length - 1];
                 if (uri.getQuery() != null) {
                     String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DETAIL);
-                    RouteManager.route(context, applink + "/" + hotelId + "?" + uri.getQuery());
+                    RouteManager.route(context, applink + "?" + uri.getQuery());
                 } else {
                     String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DETAIL);
-                    RouteManager.route(context, applink + "/" + hotelId);
+                    RouteManager.route(context, applink);
                 }
                 context.finish();
             } else {

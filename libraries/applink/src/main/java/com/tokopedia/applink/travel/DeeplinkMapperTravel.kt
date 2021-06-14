@@ -1,11 +1,11 @@
 package com.tokopedia.applink.travel
 
 import android.content.Context
+import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder
-import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
@@ -26,8 +26,9 @@ object DeeplinkMapperTravel {
             deeplink.startsWith(ApplinkConst.HOTEL, true) -> {
                 ApplinkConstInternalTravel.DASHBOARD_HOTEL
             }
-            deeplink.startsWithPattern(ApplinkConst.HOTEL_DETAIL) -> {
-                ApplinkConstInternalTravel.HOTEL_DETAIL
+            deeplink.startsWith(ApplinkConst.HOTEL_DETAIL, true) -> {
+                val uri = Uri.parse(deeplink)
+                ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + uri.lastPathSegment
             }
             else -> deeplink
         }
