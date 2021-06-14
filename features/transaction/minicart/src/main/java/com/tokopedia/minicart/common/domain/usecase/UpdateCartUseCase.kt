@@ -21,7 +21,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
     private var params: Map<String, Any?>? = null
     private var isFromMiniCartWidget: Boolean = false
 
-    fun setParams(miniCartItemList: List<MiniCartItem>, isFromMiniCartWidget: Boolean = false, isForUpdateQtyOrNotes: Boolean = false) {
+    fun setParams(miniCartItemList: List<MiniCartItem>, isFromMiniCartWidget: Boolean = false, isForUpdateQtyOrNotes: Boolean = true) {
         val updateCartRequestList = mutableListOf<UpdateCartRequest>()
 
         miniCartItemList.forEach {
@@ -38,7 +38,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
         this.isFromMiniCartWidget = isFromMiniCartWidget
     }
 
-    fun setParamsFromUiModels(miniCartItemList: List<MiniCartProductUiModel>, isForUpdateQtyOrNotes: Boolean = false) {
+    fun setParamsFromUiModels(miniCartItemList: List<MiniCartProductUiModel>, isForUpdateQtyOrNotes: Boolean = true) {
         val updateCartRequestList = mutableListOf<UpdateCartRequest>()
 
         miniCartItemList.forEach {
