@@ -28,7 +28,8 @@ open class CategoryTestFixtures {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    protected val defaultCategoryId = 123
+    protected val defaultCategoryL1 = "123"
+    protected val defaultCategoryL2 = "456"
     protected val defaultQueryParamMap = mapOf<String, String>()
     protected val getCategoryFirstPageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
     protected val getCategoryLoadMorePageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
@@ -57,12 +58,14 @@ open class CategoryTestFixtures {
     }
 
     protected open fun `Given category view model`(
-            categoryId: Int = defaultCategoryId,
+            categoryIdL1: String = defaultCategoryL1,
+            categoryIdL2: String = defaultCategoryL2,
             queryParamMap: Map<String, String> = defaultQueryParamMap,
     ) {
         categoryViewModel = CategoryViewModel(
                 CoroutineTestDispatchersProvider,
-                categoryId,
+                categoryIdL1,
+                categoryIdL2,
                 queryParamMap,
                 getCategoryFirstPageUseCase,
                 getCategoryLoadMorePageUseCase,
@@ -83,7 +86,7 @@ open class CategoryTestFixtures {
             SearchApiConst.NAVSOURCE to TOKONOW_DIRECTORY,
             SearchApiConst.SOURCE to TOKONOW_DIRECTORY,
             SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE,
-            SearchApiConst.SRP_PAGE_ID to defaultCategoryId.toString(),
+            SearchApiConst.SRP_PAGE_ID to defaultCategoryL1,
             SearchApiConst.USER_WAREHOUSE_ID to chooseAddressData.warehouse_id,
             SearchApiConst.USER_CITY_ID to chooseAddressData.city_id,
             SearchApiConst.USER_ADDRESS_ID to chooseAddressData.address_id,

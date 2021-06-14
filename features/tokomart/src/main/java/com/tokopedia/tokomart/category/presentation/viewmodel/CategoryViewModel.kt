@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
@@ -14,7 +15,8 @@ import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokomart.category.utils.CATEGORY_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokomart.category.utils.CATEGORY_LOAD_MORE_PAGE_USE_CASE
-import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_ID
+import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_L1
+import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokomart.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.utils.ABTestPlatformWrapper
@@ -29,8 +31,10 @@ import javax.inject.Named
 
 class CategoryViewModel @Inject constructor (
         baseDispatcher: CoroutineDispatchers,
-        @param:Named(TOKONOW_CATEGORY_ID)
-        val categoryId: Int,
+        @param:Named(TOKONOW_CATEGORY_L1)
+        val categoryL1: String,
+        @param:Named(TOKONOW_CATEGORY_L2)
+        val categoryL2: String,
         @Named(TOKONOW_CATEGORY_QUERY_PARAM_MAP)
         queryParamMap: Map<String, String>,
         @param:Named(CATEGORY_FIRST_PAGE_USE_CASE)
@@ -60,6 +64,10 @@ class CategoryViewModel @Inject constructor (
 
     private var navigation: TokonowCategoryDetail.Navigation? = null
 
+    init {
+        if (categoryL2.isNotEmpty()) queryParamMutable["${OptionHelper.EXCLUDE_PREFIX}_${SearchApiConst.SC}"] = categoryL2
+    }
+
     override fun loadFirstPage() {
         getCategoryFirstPageUseCase.cancelJobs()
         getCategoryFirstPageUseCase.execute(
@@ -72,7 +80,7 @@ class CategoryViewModel @Inject constructor (
     override fun createRequestParams(): RequestParams {
         val requestParams = super.createRequestParams()
 
-        requestParams.putString(CATEGORY_ID, categoryId.toString())
+        requestParams.putString(CATEGORY_ID, categoryL1)
         requestParams.putString(WAREHOUSE_ID, chooseAddressData?.warehouse_id ?: "")
 
         return requestParams
@@ -83,7 +91,7 @@ class CategoryViewModel @Inject constructor (
 
         tokonowQueryParam[SearchApiConst.NAVSOURCE] = TOKONOW_DIRECTORY
         tokonowQueryParam[SearchApiConst.SOURCE] = TOKONOW_DIRECTORY
-        tokonowQueryParam[SearchApiConst.SRP_PAGE_ID] = categoryId
+        tokonowQueryParam[SearchApiConst.SRP_PAGE_ID] = categoryL1
     }
 
     private fun onGetCategoryFirstPageSuccess(categoryModel: CategoryModel) {

@@ -13,5 +13,5 @@
     <string name="path_tokopedia_now_home" translatable="false">/home</string>
     <string name="path_tokopedia_now_category_list" translatable="false">/category-list</string>
     <string name="path_tokopedia_now_search" translatable="false">/search</string>
-    <string name="path_tokopedia_now_category" translatable="false">/category/.*\\/</string>
+    <string name="path_tokopedia_now_category" translatable="false">/category</string>
 </resources>
