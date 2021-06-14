@@ -17,6 +17,7 @@ import com.tokopedia.home_component.util.*
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import kotlinx.android.synthetic.main.layout_product_highlight.view.*
 import kotlinx.android.synthetic.main.layout_product_highlight.view.home_component_divider_footer
@@ -133,7 +134,7 @@ class ProductHighlightComponentViewHolder(
     private fun setDealsProductFreeOngkir(isFreeOngkir: Boolean, imageFreeOngkirUrl: String) {
         if (isFreeOngkir) {
             itemView.imageFreeOngkirPromo?.visibility = View.VISIBLE
-            itemView.imageFreeOngkirPromo?.loadImage(imageFreeOngkirUrl)
+            itemView.imageFreeOngkirPromo?.loadIcon(imageFreeOngkirUrl)
         }
     }
 
