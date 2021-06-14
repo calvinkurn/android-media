@@ -8,6 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.constraintlayout.widget.ConstraintSet.BOTTOM
+import androidx.constraintlayout.widget.ConstraintSet.END
+import androidx.constraintlayout.widget.ConstraintSet.PARENT_ID
+import androidx.constraintlayout.widget.ConstraintSet.START
+import androidx.constraintlayout.widget.ConstraintSet.TOP
+import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +25,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -32,6 +41,8 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.ChooseAddressBottomSheetListener
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
@@ -46,6 +57,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokomart.searchcategory.presentation.customview.StickySingleHeaderView
@@ -60,6 +72,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
 
@@ -74,10 +87,13 @@ abstract class BaseSearchCategoryFragment:
         CategoryChooserBottomSheet.Callback,
         MiniCartWidgetListener,
         ProductItemListener,
-        EmptyProductListener {
+        EmptyProductListener,
+        ChooseAddressBottomSheetListener,
+        NoAddressEmptyStateView.ActionListener {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
+        protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
     }
 
     protected var searchCategoryAdapter: SearchCategoryAdapter? = null
@@ -85,12 +101,16 @@ abstract class BaseSearchCategoryFragment:
     protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
     protected var categoryChooserBottomSheet: CategoryChooserBottomSheet? = null
 
+    protected var container: ConstraintLayout? = null
     protected var navToolbar: NavToolbar? = null
     protected var recyclerView: RecyclerView? = null
     protected var miniCartWidget: MiniCartWidget? = null
     protected var stickyView: StickySingleHeaderView? = null
-    private var statusBarBackground: View? = null
-    private var headerBackground: AppCompatImageView? = null
+    protected var statusBarBackground: View? = null
+    protected var headerBackground: AppCompatImageView? = null
+    protected var contentGroup: Group? = null
+    protected var loaderUnify: LoaderUnify? = null
+
     private var movingPosition = 0
 
     protected abstract val toolbarPageName: String
@@ -126,7 +146,6 @@ abstract class BaseSearchCategoryFragment:
         configureNavToolbar()
         configureStickyView()
         configureStatusBar()
-        configureMiniCart()
         configureRecyclerView()
         observeViewModel()
 
@@ -140,6 +159,9 @@ abstract class BaseSearchCategoryFragment:
         stickyView = view.findViewById(R.id.tokonowSearchCategoryStickyView)
         statusBarBackground = view.findViewById(R.id.tokonowSearchCategoryStatusBarBackground)
         headerBackground = view.findViewById(R.id.tokonowSearchCategoryBackgroundImage)
+        contentGroup = view.findViewById(R.id.tokonowSearchCategoryContentGroup)
+        loaderUnify = view.findViewById(R.id.tokonowSearchCategoryLoader)
+        container = view.findViewById(R.id.tokonowSearchCategoryContainer)
     }
 
     protected open fun configureNavToolbar() {
@@ -286,17 +308,6 @@ abstract class BaseSearchCategoryFragment:
         statusBarBackground?.background = drawable
     }
 
-    protected open fun configureMiniCart() {
-        val shopIds = listOf(getViewModel().shopId)
-
-        miniCartWidget?.initialize(
-                shopIds = shopIds,
-                fragment = this,
-                listener = this,
-                autoInitializeData = false,
-        )
-    }
-
     protected open fun configureRecyclerView() {
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, VERTICAL)
         staggeredGridLayoutManager.gapStrategy = GAP_HANDLING_NONE
@@ -365,6 +376,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().dynamicFilterModelLiveData.observe(this::onDynamicFilterModelChanged)
         getViewModel().productCountAfterFilterLiveData.observe(this::setFilterProductCount)
         getViewModel().isL3FilterPageOpenLiveData.observe(this::configureL3BottomSheet)
+        getViewModel().shopIdLiveData.observe(this::onShopIdUpdated)
         getViewModel().miniCartWidgetLiveData.observe(this::updateMiniCartWidget)
         getViewModel().isShowMiniCartLiveData.observe(this::updateMiniCartWidgetVisibility)
         getViewModel().isRefreshPageLiveData.observe(this::scrollToTop)
@@ -372,6 +384,19 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().cartEventMessageLiveData.observe(this::showAddToCartMessage)
         getViewModel().isHeaderBackgroundVisibleLiveData
                 .observe(this::updateHeaderBackgroundVisibility)
+        getViewModel().isContentLoadingLiveData.observe(this::updateContentVisibility)
+        getViewModel().isOutOfServiceLiveData.observe(this::updateOutOfServiceVisibility)
+    }
+
+    protected open fun onShopIdUpdated(shopId: String) {
+        if (shopId.isEmpty()) return
+
+        miniCartWidget?.initialize(
+                shopIds = listOf(shopId),
+                fragment = this,
+                listener = this,
+                autoInitializeData = false,
+        )
     }
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
@@ -567,8 +592,54 @@ abstract class BaseSearchCategoryFragment:
         }
     }
 
-    protected fun updateHeaderBackgroundVisibility(isVisible: Boolean) {
+    protected open fun updateHeaderBackgroundVisibility(isVisible: Boolean) {
         headerBackground?.showWithCondition(isVisible)
+    }
+
+    protected open fun updateContentVisibility(isLoadingVisible: Boolean) {
+        loaderUnify?.showWithCondition(isLoadingVisible)
+        contentGroup?.showWithCondition(!isLoadingVisible)
+    }
+
+    protected var noAddressEmptyStateView: NoAddressEmptyStateView? = null
+
+    protected open fun updateOutOfServiceVisibility(isOutOfService: Boolean) {
+        if (isOutOfService)
+            initializeOutOfServiceView()
+
+        noAddressEmptyStateView?.showWithCondition(isOutOfService)
+        contentGroup?.showWithCondition(!isOutOfService)
+    }
+
+    protected open fun initializeOutOfServiceView() {
+        val context = context ?: return
+        val container = container ?: return
+        val navToolbar = navToolbar ?: return
+
+        if (noAddressEmptyStateView != null) return
+
+        noAddressEmptyStateView = NoAddressEmptyStateView(context).also {
+            it.id = View.generateViewId()
+            it.actionListener = this
+
+            container.addView(it)
+            configureOutOfServiceConstraint(container, it, navToolbar)
+        }
+    }
+
+    private fun configureOutOfServiceConstraint(
+            container: ConstraintLayout,
+            outOfServiceView: NoAddressEmptyStateView,
+            navToolbar: NavToolbar
+    ) {
+        val constraintSet = ConstraintSet()
+
+        constraintSet.clone(container)
+        constraintSet.connect(outOfServiceView.id, START, PARENT_ID, START)
+        constraintSet.connect(outOfServiceView.id, END, PARENT_ID, END)
+        constraintSet.connect(outOfServiceView.id, TOP, navToolbar.id, BOTTOM)
+
+        constraintSet.applyTo(container)
     }
 
     override fun onResume() {
@@ -580,6 +651,32 @@ abstract class BaseSearchCategoryFragment:
     override fun onChangeKeywordButtonClick() {
         onSearchBarClick()
     }
+
+    override fun onChangeAddressClicked() {
+        val parentFragmentManager = parentFragmentManager
+
+        ChooseAddressBottomSheet().also {
+            it.setListener(this)
+            it.show(parentFragmentManager, OUT_OF_COVERAGE_CHOOSE_ADDRESS)
+        }
+    }
+
+    override fun onReturnClick() {
+        RouteManager.route(context, ApplinkConst.HOME)
+    }
+
+    override fun getLocalizingAddressHostSourceBottomSheet() =
+            SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
+
+    override fun onAddressDataChanged() {
+        getViewModel().onLocalizingAddressSelected()
+    }
+
+    override fun onLocalizingAddressServerDown() { }
+
+    override fun onLocalizingAddressLoginSuccessBottomSheet() { }
+
+    override fun onDismissChooseAddressBottomSheet() { }
 
     override fun onGoToGlobalSearch() {
 

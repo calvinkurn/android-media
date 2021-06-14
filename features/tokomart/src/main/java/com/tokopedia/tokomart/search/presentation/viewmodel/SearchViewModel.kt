@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.tokomart.search.domain.model.SearchModel
@@ -39,6 +40,7 @@ class SearchViewModel @Inject constructor (
         getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         addToCartUseCase: AddToCartUseCase,
         updateCartUseCase: UpdateCartUseCase,
+        getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
 ): BaseSearchCategoryViewModel(
@@ -49,6 +51,7 @@ class SearchViewModel @Inject constructor (
         getMiniCartListSimplifiedUseCase,
         addToCartUseCase,
         updateCartUseCase,
+        getWarehouseUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
 ) {
@@ -57,7 +60,7 @@ class SearchViewModel @Inject constructor (
 
     private var suggestionModel: AceSearchProductModel.Suggestion? = null
 
-    override fun onViewCreated() {
+    override fun loadFirstPage() {
         getSearchFirstPageUseCase.cancelJobs()
         getSearchFirstPageUseCase.execute(
                 ::onGetSearchFirstPageSuccess,
