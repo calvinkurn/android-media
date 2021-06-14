@@ -8,16 +8,16 @@ public class InboxReputation {
 
     @SerializedName("inbox_id")
     @Expose
-    private int inboxId;
+    private long inboxId;
     @SerializedName("shop_id")
     @Expose
-    private int shopId;
+    private long shopId;
     @SerializedName("user_id")
     @Expose
-    private int userId;
+    private long userId;
     @SerializedName("reputation_id")
     @Expose
-    private int reputationId;
+    private long reputationId;
     @SerializedName("order_data")
     @Expose
     private OrderData orderData;
@@ -28,31 +28,31 @@ public class InboxReputation {
     @Expose
     private ReputationData reputationData;
 
-    public int getInboxId() {
+    public long getInboxId() {
         return inboxId;
     }
 
-    public void setInboxId(int inboxId) {
+    public void setInboxId(long inboxId) {
         this.inboxId = inboxId;
     }
 
-    public int getShopId() {
+    public long getShopId() {
         return shopId;
     }
 
-    public void setShopId(int shopId) {
+    public void setShopId(long shopId) {
         this.shopId = shopId;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
-    public int getReputationId() {
+    public long getReputationId() {
         return reputationId;
     }
 

@@ -3,7 +3,7 @@ package com.tokopedia.seller.menu.common.domain.entity
 import com.google.gson.annotations.SerializedName
 
 data class TopAdsAutoTopupDataModel (
-        @SerializedName("topAdsAutoTopup")
+        @SerializedName("topAdsAutoTopupV2")
         val topAdsAutoTopup: TopAdsAutoTopup? = TopAdsAutoTopup()
 )
 

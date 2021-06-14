@@ -1,6 +1,7 @@
 package com.tokopedia.home_account.view.helper
 
 import android.content.Context
+import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
@@ -31,19 +32,36 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
         ), isExpanded = true)
     }
 
-    fun generateApplicationSettingMenu(accountPref: AccountPreference, permissionChecker: PermissionChecker): SettingDataView {
-        return SettingDataView(context?.getString(R.string.menu_account_section_title_app_setting), mutableListOf(
-                CommonDataView(id = AccountConstants.SettingCode.SETTING_SHAKE_ID, title = context?.getString(R.string.menu_account_title_shake), body = context?.getString(R.string.menu_account_desc_shake),
-                        type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.SHAKE,
-                        isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_SHAKE, true)),
-                CommonDataView(id = AccountConstants.SettingCode.SETTING_GEOLOCATION_ID, title = context?.getString(R.string.menu_account_title_geolocation), body = context?.getString(R.string.menu_account_desc_geolocation),
-                        type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.LOCATION,
-                        isChecked = permissionChecker.hasLocationPermission()),
-                CommonDataView(id = AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID, title = context?.getString(R.string.menu_account_title_safe_mode), body = context?.getString(R.string.menu_account_desc_safe_mode), type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.PROTECTION,
-                        isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, false)),
+    fun generateApplicationSettingMenu(
+            accountPref: AccountPreference,
+            permissionChecker: PermissionChecker,
+            showDarkModeToggle: Boolean
+    ): SettingDataView {
+        val listSetting = mutableListOf(
+        CommonDataView(id = AccountConstants.SettingCode.SETTING_SHAKE_ID, title = context?.getString(R.string.menu_account_title_shake), body = context?.getString(R.string.menu_account_desc_shake),
+                type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.SHAKE,
+                isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_SHAKE, true)),
+        CommonDataView(id = AccountConstants.SettingCode.SETTING_GEOLOCATION_ID, title = context?.getString(R.string.menu_account_title_geolocation), body = context?.getString(R.string.menu_account_desc_geolocation),
+                type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.LOCATION,
+                isChecked = permissionChecker.hasLocationPermission()),
+        CommonDataView(id = AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID, title = context?.getString(R.string.menu_account_title_safe_mode), body = context?.getString(R.string.menu_account_desc_safe_mode), type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.PROTECTION,
+                isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, false)))
+
+        if(showDarkModeToggle && showDarkModeSetting()) {
+            listSetting.add(CommonDataView(id = AccountConstants.SettingCode.SETTING_DARK_MODE,
+                    title = context?.getString(R.string.menu_account_title_dark_mode),
+                    body = context?.getString(R.string.menu_account_desc_dark_mode),
+                    type = CommonViewHolder.TYPE_SWITCH,
+                    icon = IconUnify.MODE_SCREEN,
+                    isChecked = accountPref.isItemSelected(TkpdCache.Key.KEY_DARK_MODE, false),
+                    labelText = getLabelText(R.string.new_home_account_label_beta)))
+        }
+
+        listSetting.addAll(mutableListOf(
                 CommonDataView(id = AccountConstants.SettingCode.SETTING_QUALITY_SETTING, title = context?.getString(R.string.menu_account_title_quality_setting), body = context?.getString(R.string.menu_account_desc_quality_setting), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.IMAGE),
                 CommonDataView(id = AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE, title = context?.getString(R.string.menu_account_title_clear_cache), body = context?.getString(R.string.menu_account_desc_clear_cache), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.BROOM)
-        ), showArrowDown = true)
+        ))
+        return SettingDataView(context?.getString(R.string.menu_account_section_title_app_setting), listSetting, showArrowDown = true)
     }
 
     fun generateAboutTokopediaSettingMenu(): SettingDataView {
@@ -63,5 +81,19 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
                 CommonDataView(title = context.getString(R.string.menu_account_old_account), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SETTING, id = AccountConstants.SettingCode.SETTING_OLD_ACCOUNT))
 
         , showArrowDown = true)
+    }
+
+    //Request to hide Dark Mode regardless RemoteConfig
+    private fun showDarkModeSetting(): Boolean {
+        val showDarkModeSetting = false
+        return showDarkModeSetting
+    }
+
+    private fun getLabelText(id: Int): String {
+        return try {
+            context.getString(id)
+        } catch (ignored: Throwable) {
+            ""
+        }
     }
 }

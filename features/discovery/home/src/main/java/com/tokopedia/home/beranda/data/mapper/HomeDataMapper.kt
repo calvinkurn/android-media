@@ -3,12 +3,14 @@ package com.tokopedia.home.beranda.data.mapper
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory
+import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_MAP_TO_HOME_VIEWMODEL
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_MAP_TO_HOME_VIEWMODEL_REVAMP
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ShimmeringChannelDataModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 class HomeDataMapper(
@@ -17,7 +19,7 @@ class HomeDataMapper(
         private val trackingQueue: TrackingQueue,
         private val homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper
 ) {
-    fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean, showGeolocation: Boolean = true): HomeDataModel{
+    fun mapToHomeViewModel(homeData: HomeData?, isCache: Boolean): HomeDataModel{
         BenchmarkHelper.beginSystraceSection(TRACE_MAP_TO_HOME_VIEWMODEL)
         if (homeData == null) return HomeDataModel(isCache = isCache)
         val addLoadingMore = homeData.token.isNotEmpty()
@@ -28,7 +30,6 @@ class HomeDataMapper(
                 .addUserWalletVisitable()
                 .addDynamicIconVisitable()
 
-        if (showGeolocation) factory.addGeolocationVisitable()
 
         factory.addDynamicChannelVisitable(addLoadingMore, true)
                 .build()
@@ -64,6 +65,16 @@ class HomeDataMapper(
             mutableVisitableList.add(ShimmeringChannelDataModel("0"))
             mutableVisitableList.add(ShimmeringChannelDataModel("1"))
         }
-        return HomeDataModel(homeData.homeFlag, mutableVisitableList, isCache, firstPage, processingAtf, processingDynamicChannel)
+        val isChooseAddressActive = ChooseAddressUtils.isRollOutUser(context)
+
+        return HomeDataModel(
+                homeFlag = homeData.homeFlag,
+                list = mutableVisitableList,
+                isCache = isCache,
+                isFirstPage = firstPage,
+                isProcessingAtf = processingAtf,
+                isProcessingDynamicChannle = processingDynamicChannel,
+                homeChooseAddressData = HomeChooseAddressData(isActive = isChooseAddressActive)
+        )
     }
 }

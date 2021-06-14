@@ -30,5 +30,8 @@
         <activity
             android:name="com.tokopedia.catalog.ui.activity.CatalogGalleryActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".ui.activity.CatalogYoutubePlayerActivity"
+            android:screenOrientation="landscape"
+            />
     </application>
 </manifest>

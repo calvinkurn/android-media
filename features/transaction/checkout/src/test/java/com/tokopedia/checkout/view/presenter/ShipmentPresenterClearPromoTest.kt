@@ -273,4 +273,34 @@ class ShipmentPresenterClearPromoTest {
         }
     }
 
+    @Test
+    fun `WHEN clear non eligible promo success with ticker data THEN should render success and update ticker`() {
+        // Given
+        presenter.tickerAnnouncementHolderData = TickerAnnouncementHolderData("0", "message")
+
+        val notEligilePromoList = ArrayList<NotEligiblePromoHolderdata>().apply {
+            add(NotEligiblePromoHolderdata(promoCode = "code"))
+        }
+
+        every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
+                ClearPromoUiModel(
+                        successDataModel = SuccessDataUiModel(
+                                success = true,
+                                tickerMessage = "message"
+                        )
+                )
+        )
+
+        every { clearCacheAutoApplyStackUseCase.setParams(any(), any()) } just Runs
+
+        // When
+        presenter.cancelNotEligiblePromo(notEligilePromoList)
+
+        // Then
+        verifySequence {
+            view.updateTickerAnnouncementMessage()
+            view.removeIneligiblePromo(notEligilePromoList)
+        }
+    }
+
 }

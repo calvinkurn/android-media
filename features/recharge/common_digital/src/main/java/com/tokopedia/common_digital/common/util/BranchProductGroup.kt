@@ -21,7 +21,7 @@ object BranchProductGroup {
         return when (categoryId) {
             AIR_PDAM            -> "{29,399,453}"
             ANGSURAN_KREDIT     -> "{2076,2097,798}"
-            BPJS                -> "{798,279,280}"
+            BPJS                -> "{279,280,462}"
             DONASI              -> "{470,468,487}"
             FOOD_AND_VOUCHER    -> "{16050,16051,18685}"
             E_MONEY             -> "{2069,2070,2071,765}"

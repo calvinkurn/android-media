@@ -18,10 +18,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
-import com.tokopedia.home_component.util.GravitySnapHelper
-import com.tokopedia.home_component.util.ImageHandler
-import com.tokopedia.home_component.util.loadImage
-import com.tokopedia.home_component.util.setGradientBackground
+import com.tokopedia.home_component.util.*
 import com.tokopedia.home_component.viewholders.adapter.MixLeftAdapter
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -36,6 +33,8 @@ import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recharge_component.presentation.adapter.RechargeBUWidgetProductCardTypeFactoryImpl
 import kotlinx.android.synthetic.main.home_recharge_bu_widget_mix_left.view.*
+import kotlinx.android.synthetic.main.home_recharge_bu_widget_mix_left.view.home_component_divider_footer
+import kotlinx.android.synthetic.main.home_recharge_bu_widget_mix_left.view.home_component_divider_header
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -81,6 +80,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
             setupList(element)
             setSnapEffect()
             setHeaderComponent(element)
+            setChannelDivider(element)
 
             if (!isCacheData) {
                 itemView.addOnImpressionListener(element) {
@@ -113,6 +113,14 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
         listener.onRechargeBUWidgetClickBanner(dataModel)
+    }
+
+    private fun setChannelDivider(element: RechargeBUWidgetDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
     private fun initVar() {

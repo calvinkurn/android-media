@@ -138,7 +138,8 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
     private fun `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog: CapturingSlot<String>, searchParameter: Map<String, Any>) {
         val message = slotSearchParameterErrorLog.captured
 
-        message shouldBe UrlParamUtils.generateUrlParamString(searchParameter)
+        @Suppress("UNCHECKED_CAST")
+        message shouldBe UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any?>)
     }
 
     @Test

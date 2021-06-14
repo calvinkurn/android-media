@@ -38,7 +38,7 @@ internal class GetDynamicFilterGqlUseCase(
         )
     }
 
-    private fun createParametersForQuery(parameters: Map<String, Any>): Map<String, Any> {
+    private fun createParametersForQuery(parameters: Map<String?, Any?>): Map<String, Any> {
         val variables: MutableMap<String, Any> = HashMap()
         variables[GQL.KEY_PARAMS] = UrlParamUtils.generateUrlParamString(parameters)
         return variables

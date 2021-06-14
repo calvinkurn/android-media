@@ -80,4 +80,5 @@ dependencies {
     androidTestImplementation rootProject.ext.firebase.core
 
     implementation project(rootProject.ext.libraries.circularViewPager)
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
 }

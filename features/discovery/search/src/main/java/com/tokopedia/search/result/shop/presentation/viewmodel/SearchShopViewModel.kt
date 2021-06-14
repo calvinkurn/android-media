@@ -514,7 +514,7 @@ internal class SearchShopViewModel(
         e?.printStackTrace()
 
         hasNextPage = false
-        searchShopLiveData.postValue(Error("", searchShopMutableList))
+        searchShopLiveData.postValue(Error("", searchShopMutableList, e))
 
         if (searchShopMutableList.isEmpty()) {
             quickFilterIsVisible.value = false
@@ -790,7 +790,6 @@ internal class SearchShopViewModel(
     private fun createGetShopCountRequestParams(mapParameter: Map<String, Any>) =
         RequestParams.create().also {
             it.putAll(mapParameter)
-            it.putString(SearchApiConst.ROWS, "0")
         }
 
     fun getSearchParameter() = searchParameter.toMap()

@@ -25,19 +25,16 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.topchat.R
@@ -69,6 +66,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.data.TopchatItemMenu
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -253,7 +251,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         chatItemListViewModel.broadCastButtonUrl.observe(viewLifecycleOwner, Observer { applink ->
             if (applink.isNullOrEmpty()) return@Observer
             broadCastButton.setOnClickListener {
-                if(isSellerMigrationEnabled(context)) {
+                if (isSellerMigrationEnabled(context)) {
                     val screenName = SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT
                     val intent = context?.let { context ->
                         SellerMigrationActivity.createIntent(
@@ -319,7 +317,7 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
         })
 
         chatItemListViewModel.isChatAdminEligible.observe(viewLifecycleOwner) { result ->
-            when(result) {
+            when (result) {
                 is Success -> {
                     result.data.let { isEligible ->
                         if (isEligible) {
@@ -461,15 +459,15 @@ open class ChatListFragment constructor() : BaseListFragment<Visitable<*>, BaseA
     private fun showFilterDialog() {
         activity?.let {
             if (filterMenu.isAdded) return@let
-            val itemMenus = ArrayList<Menus.ItemMenus>()
+            val itemMenus = ArrayList<TopchatItemMenu>()
             val arrayFilterString = chatItemListViewModel.getFilterTittles(it, isTabSeller())
 
             for ((index, title) in arrayFilterString.withIndex()) {
-                if (index == filterChecked) itemMenus.add(Menus.ItemMenus(title, true))
-                else itemMenus.add(Menus.ItemMenus(title, false))
+                if (index == filterChecked) itemMenus.add(TopchatItemMenu(title, true))
+                else itemMenus.add(TopchatItemMenu(title, false))
             }
 
-            val title = getString(com.tokopedia.design.R.string.label_filter)
+            val title = getString(R.string.menu_chat_filter)
             filterMenu.apply {
                 setTitle(title)
                 setItemMenuList(itemMenus)

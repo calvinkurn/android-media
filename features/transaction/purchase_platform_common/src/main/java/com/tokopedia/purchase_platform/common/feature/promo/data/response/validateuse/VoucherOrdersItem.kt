@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse
 
 import com.google.gson.annotations.SerializedName
+import javax.annotation.Generated
 
 data class VoucherOrdersItem(
 

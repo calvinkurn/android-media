@@ -13,6 +13,7 @@ import com.tokopedia.autocomplete.initialstate.popularsearch.PopularSearchDataVi
 import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshInitialStateUseCase
 import com.tokopedia.autocomplete.initialstate.popularsearch.convertPopularSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.productline.InitialStateProductLineTitleDataView
+import com.tokopedia.autocomplete.initialstate.productline.convertToListInitialStateProductListDataView
 import com.tokopedia.autocomplete.initialstate.recentview.RecentViewTitleDataView
 import com.tokopedia.autocomplete.initialstate.recentsearch.*
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
@@ -181,15 +182,11 @@ class InitialStatePresenter @Inject constructor(
                             )
                     )
                 }
-                /*
-                    Backend not ready, will be implemented after the new field is already in production.
-                    Estimated release on 3.124
-                */
-//                InitialStateData.INITIAL_STATE_LIST_PRODUCT_LINE -> {
-//                    data.addAll(
-//                            initialStateData.convertToListInitialStateProductListDataView().insertProductListTitle(initialStateData.header)
-//                    )
-//                }
+                InitialStateData.INITIAL_STATE_LIST_PRODUCT_LINE -> {
+                    data.addAll(
+                            initialStateData.convertToListInitialStateProductListDataView().insertProductListTitle(initialStateData.header)
+                    )
+                }
                 else -> {
                     onDynamicSectionImpressed(initialStateData)
                     data.addAll(

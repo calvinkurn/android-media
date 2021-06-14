@@ -71,6 +71,7 @@ public class RatesDataConverter {
         shipmentCartData.setWeight(totalWeight);
         shipmentCartData.setPreOrderDuration(preOrderDuration);
         shipmentCartData.setFulfillment(shipmentCartItemModel.isFulfillment());
+        shipmentCartData.setShopTier(shipmentCartItemModel.getShopTypeInfoData().getShopTier());
 
         return shipmentCartData;
     }
@@ -87,7 +88,7 @@ public class RatesDataConverter {
         shipmentCartData.setDestinationLongitude(!UtilsKt.isNullOrEmpty(userAddress.getLongitude()) ?
                 userAddress.getLongitude() : null);
         shipmentCartData.setDestinationPostalCode(userAddress.getPostalCode());
-        shipmentCartData.setOriginDistrictId(String.valueOf(groupShop.getShop().getDistrictId()));
+        shipmentCartData.setOriginDistrictId(groupShop.getShop().getDistrictId());
         shipmentCartData.setOriginLatitude(!UtilsKt.isNullOrEmpty(groupShop.getShop().getLatitude()) ?
                 groupShop.getShop().getLatitude() : null);
         shipmentCartData.setOriginLongitude(!UtilsKt.isNullOrEmpty(groupShop.getShop().getLongitude()) ?

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SpinnerTextView">
+        <attr name="spinner_hint" format="string" />
+        <attr name="spinner_selection_index" format="integer" />
+        <attr name="spinner_entries" format="reference" />
+        <attr name="spinner_values" format="reference" />
+        <attr name="spinner_enabled" format="boolean" />
+        <attr name="spinner_text_size" format="dimension" />
+        <attr name="spinner_hint_text_color" format="color" />
+        <attr name="spinner_hint_appearence" format="integer" />
+    </declare-styleable>
+</resources>

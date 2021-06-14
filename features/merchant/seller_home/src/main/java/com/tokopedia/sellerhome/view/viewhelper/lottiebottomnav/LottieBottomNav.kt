@@ -64,6 +64,10 @@ class LottieBottomNav : LinearLayout {
         adjustBadgePosition()
     }
 
+    fun getMenuViewByIndex(index: Int): View? {
+        return containerList.getOrNull(index)
+    }
+
     fun setBadge(badgeValue: Int = 0, iconPosition: Int, visibility: Int = View.VISIBLE) {
         val badge: View? = navbarContainer?.getChildAt(iconPosition)
         val badgeText = badge?.findViewById<TextView>(R.id.notification_badge)

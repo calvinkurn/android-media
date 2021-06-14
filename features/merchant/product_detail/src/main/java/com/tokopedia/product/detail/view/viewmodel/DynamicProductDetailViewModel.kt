@@ -37,7 +37,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.data.model.ratesestimate.ErrorBottomSheet
 import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
 import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
-import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionData
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
@@ -431,8 +430,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private suspend fun getAddToCartUseCase(requestParams: RequestParams) {
         withContext(dispatcher.io) {
             val result = addToCartUseCase.get().createObservable(requestParams).toBlocking().single()
-            if (result.isDataError()) {
-                val errorMessage = result.errorMessage.firstOrNull() ?: ""
+            if (result.isStatusError()) {
+                val errorMessage = result.getAtcErrorMessage() ?: ""
                 if (errorMessage.isNotBlank()) {
                     ProductDetailLogger.logMessage(errorMessage, ATC_ERROR_TYPE, getDynamicProductInfoP1?.basic?.productID
                             ?: "", deviceId)
@@ -463,7 +462,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private suspend fun getAddToCartOccUseCase(requestParams: RequestParams) {
         withContext(dispatcher.io) {
             val result = addToCartOccUseCase.get().createObservable(requestParams).toBlocking().single()
-            if (result.isDataError()) {
+            if (result.isStatusError()) {
                 val errorMessage = result.getAtcErrorMessage() ?: ""
                 if (errorMessage.isNotBlank()) {
                     ProductDetailLogger.logMessage(errorMessage, ATC_ERROR_TYPE, getDynamicProductInfoP1?.basic?.productID

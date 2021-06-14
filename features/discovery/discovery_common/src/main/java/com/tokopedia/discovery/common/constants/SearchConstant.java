@@ -170,6 +170,7 @@ public interface SearchConstant {
         String LAYOUT_INSPIRATION_CAROUSEL_INFO = "info";
         String LAYOUT_INSPIRATION_CAROUSEL_GRID = "grid";
         String LAYOUT_INSPIRATION_CAROUSEL_CHIPS = "chips";
+        String LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT = "product_list";
         String LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER = "gridBanner";
     }
 
@@ -185,5 +186,9 @@ public interface SearchConstant {
         String TYPE_GUIDED = "guided";
         String TYPE_CURATED = "curated";
         String TYPE_RELATED = "related";
+    }
+
+    interface ImageUrl {
+        String POWER_MERCHANT_PRO_ILLUSTRATION_URL = "https://images.tokopedia.net/img/android/search/PM_Pro_Illustration.png";
     }
 }

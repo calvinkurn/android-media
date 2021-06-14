@@ -66,6 +66,7 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.changeConstraint
+import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -682,6 +683,8 @@ class PlayUserInteractionFragment @Inject constructor(
             view?.postDelayed({
                 view?.show()
             }, PlayVideoScalingManager.ANIMATION_DURATION)
+
+            if (map.isKeyboardShown) dismissToaster()
 
             gradientBackgroundViewOnStateChanged(bottomInsets = map)
             toolbarViewOnStateChanged(bottomInsets = map)
