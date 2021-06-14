@@ -84,10 +84,4 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         )).check(matches(not(isDisplayed())))
     }
 
-    protected fun WebSocketResponse.setLabel(label: String): WebSocketResponse {
-        jsonObject?.remove("label")
-        jsonObject?.addProperty("label", label)
-        return this
-    }
-
 }

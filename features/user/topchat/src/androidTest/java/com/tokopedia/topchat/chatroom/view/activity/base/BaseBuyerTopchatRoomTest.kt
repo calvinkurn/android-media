@@ -73,4 +73,9 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
             .check(matches(not(isExpanded())))
     }
 
+    protected fun WebSocketResponse.setLabel(label: String): WebSocketResponse {
+        jsonObject?.remove("label")
+        jsonObject?.addProperty("label", label)
+        return this
+    }
 }
