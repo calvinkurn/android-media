@@ -47,20 +47,19 @@ class CreateCategoryViewModelTest:
 
     private fun `Then assert category ids`() {
         assertThat(
-                categoryViewModel.categoryIdL1,
-                shouldBe(defaultCategoryIdL1)
+                categoryViewModel.categoryL1,
+                shouldBe(defaultCategoryL1)
         )
         assertThat(
-                categoryViewModel.categoryIdL2,
-                shouldBe(defaultCategoryIdL2)
+                categoryViewModel.categoryL2,
+                shouldBe(defaultCategoryL2)
         )
     }
 
-    // TODO: [Misael] test exclude_sc cat lv 2
     private fun `Then assert query param has exclude sc category L2`() {
         assertThat(
-                categoryViewModel.queryParam["${OptionHelper.EXCLUDE_PREFIX}_sc"],
-                shouldBe(defaultCategoryIdL2)
+                categoryViewModel.queryParam["${OptionHelper.EXCLUDE_PREFIX}_${SearchApiConst.SC}"],
+                shouldBe(defaultCategoryL2)
         )
     }
 

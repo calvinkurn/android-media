@@ -43,7 +43,7 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
                 actualRequestParamsMap,
         )
 
-        assertThat(useCaseRequestParams[CATEGORY_ID], shouldBe(defaultCategoryIdL1))
+        assertThat(useCaseRequestParams[CATEGORY_ID], shouldBe(defaultCategoryL1))
         assertThat(useCaseRequestParams[WAREHOUSE_ID], shouldBe(dummyChooseAddressData.warehouse_id))
     }
 

@@ -29,7 +29,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
                 selectedFilterOption.key to selectedFilterOption.value,
         )
 
-        `Given category view model`(defaultCategoryIdL1, defaultCategoryIdL2, queryParamWithFilter)
+        `Given category view model`(defaultCategoryL1, defaultCategoryL2, queryParamWithFilter)
         `Given get category first page use case will be successful`(categoryModel)
 
         `When view created`()
@@ -109,7 +109,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
                 previouslySelectedFilterOption.key to previouslySelectedFilterOption.value,
         )
 
-        `Given category view model`(defaultCategoryIdL1, defaultCategoryIdL2, queryParamWithFilter)
+        `Given category view model`(defaultCategoryL1, defaultCategoryL2, queryParamWithFilter)
         `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
         `Given view already created`()
 
@@ -142,7 +142,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
                 SearchApiConst.SC to "1324",
         )
 
-        `Given category view model`(defaultCategoryIdL1, defaultCategoryIdL2, queryParamWithCategoryFilter)
+        `Given category view model`(defaultCategoryL1, defaultCategoryL2, queryParamWithCategoryFilter)
         `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
         `Given view already created`()
 

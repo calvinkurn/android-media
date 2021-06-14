@@ -27,25 +27,25 @@ class CategoryActivity: BaseSearchCategoryActivity(), HasComponent<CategoryCompo
 
     override fun getComponent(): CategoryComponent {
         val uri = intent.data
-        val categoryIdL1 = uri.getCategoryIdL1()
-        val categoryIdL2 = uri.getCategoryIdL2()
+        val categoryL1 = uri.getCategoryL1()
+        val categoryL2 = uri.getCategoryL2()
         val queryParamMap = URLParser(uri.toString()).paramKeyValueMapDecoded
 
         return DaggerCategoryComponent.builder()
                 .baseAppComponent(getBaseAppComponent())
                 .categoryContextModule(CategoryContextModule(this))
-                .categoryParamModule(CategoryParamModule(categoryIdL1, categoryIdL2, queryParamMap))
+                .categoryParamModule(CategoryParamModule(categoryL1, categoryL2, queryParamMap))
                 .build()
     }
 
-    private fun Uri?.getCategoryIdL1(): String =
-            this?.getQueryParameter(PARAM_CATEGORY_ID_L1) ?: ""
+    private fun Uri?.getCategoryL1(): String =
+            this?.getQueryParameter(PARAM_CATEGORY_L1) ?: ""
 
-    private fun Uri?.getCategoryIdL2(): String =
-            this?.getQueryParameter(PARAM_CATEGORY_ID_L2) ?: ""
+    private fun Uri?.getCategoryL2(): String =
+            this?.getQueryParameter(PARAM_CATEGORY_L2) ?: ""
 
     companion object {
-        private const val PARAM_CATEGORY_ID_L1 = "category_id_l1"
-        private const val PARAM_CATEGORY_ID_L2 = "category_id_l2"
+        private const val PARAM_CATEGORY_L1 = "category_l1"
+        private const val PARAM_CATEGORY_L2 = "category_l2"
     }
 }
