@@ -150,7 +150,8 @@ class PieChartViewHolder(
     }
 
     private fun setupPieChart(element: PieChartWidgetUiModel) {
-        with(itemView) {val data = element.data?.data
+        with(itemView) {
+            val data = element.data?.data
             tvPieChartValue.text = data?.summary?.valueFmt.orEmpty()
             tvPieChartSubValue.text = data?.summary?.diffPercentageFmt.orEmpty().parseAsHtml()
 
