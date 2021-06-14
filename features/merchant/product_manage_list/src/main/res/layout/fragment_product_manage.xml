@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayout"
@@ -9,15 +9,20 @@
     <include
         android:id="@+id/stockTicker"
         layout="@layout/layout_stock_location_closable_ticker"
-        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/mainContainer"
+        app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/mainContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/btnMultiEdit"
-        android:layout_below="@id/stockTicker">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnMultiEdit">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
@@ -36,25 +41,25 @@
 
             <com.tokopedia.design.text.SearchInputView
                 android:id="@+id/searchBar"
-                android:clickable="true"
-                android:focusable="true"
-                android:textSize="@dimen/fontSize_lvl2"
-                android:textColorHint="@color/Unify_N200"
-                android:layout_marginLeft="@dimen/spacing_lvl2"
-                android:layout_marginRight="@dimen/spacing_lvl2"
-                android:layout_marginTop="@dimen/spacing_lvl3"
-                android:background="@drawable/bg_corner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_lvl2"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginRight="@dimen/spacing_lvl2"
+                android:background="@drawable/bg_corner"
+                android:clickable="true"
+                android:focusable="true"
+                android:textColorHint="@color/Unify_N200"
+                android:textSize="@dimen/fontSize_lvl2"
                 android:visibility="visible"
-                app:siv_search_icon="@drawable/unify_search_ic"
-                app:layout_scrollFlags="scroll|snap"/>
+                app:layout_scrollFlags="scroll|snap"
+                app:siv_search_icon="@drawable/unify_search_ic" />
 
             <include
                 android:id="@+id/shimmerSortFilter"
+                layout="@layout/shimmer_sort_filter_product_manage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                layout="@layout/shimmer_sort_filter_product_manage"
                 android:visibility="gone"
                 tools:visibility="visible" />
 
@@ -62,10 +67,10 @@
                 android:id="@+id/tabSortFilter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/product_manage_horizontal_spacing"
-                android:paddingRight="@dimen/product_manage_horizontal_spacing"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
+                android:paddingLeft="@dimen/product_manage_horizontal_spacing"
+                android:paddingRight="@dimen/product_manage_horizontal_spacing"
                 android:visibility="gone"
                 app:layout_scrollFlags="scroll|snap"
                 app:sort_filter_relationship="AND"
@@ -73,14 +78,14 @@
 
             <LinearLayout
                 android:id="@+id/multiSelectContainer"
-                android:paddingRight="@dimen/product_manage_container_spacing"
-                android:paddingEnd="@dimen/product_manage_container_spacing"
-                android:paddingLeft="@dimen/product_manage_container_spacing"
-                android:paddingStart="@dimen/product_manage_container_spacing"
-                android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/product_manage_container_spacing"
+                android:paddingLeft="@dimen/product_manage_container_spacing"
+                android:paddingEnd="@dimen/product_manage_container_spacing"
+                android:paddingRight="@dimen/product_manage_container_spacing"
                 android:visibility="gone"
                 app:layout_anchor="@id/app_bar_layout"
                 app:layout_scrollFlags="scroll">
@@ -106,15 +111,15 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/textMultipleSelect"
-                    android:contentDescription="@string/content_desc_textMultipleSelect"
-                    android:textColor="@color/Unify_G500"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:contentDescription="@string/content_desc_textMultipleSelect"
                     android:gravity="center_vertical"
-                    app:typographyType="heading_6"
-                    app:typographyWeight="bold"
+                    android:text="@string/product_manage_multiple_select"
+                    android:textColor="@color/Unify_G500"
                     android:visibility="gone"
-                    android:text="@string/product_manage_multiple_select" />
+                    app:typographyType="heading_6"
+                    app:typographyWeight="bold" />
             </LinearLayout>
 
             <com.tokopedia.unifycomponents.DividerUnify
@@ -127,39 +132,41 @@
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:visibility="gone"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:visibility="gone">
 
             <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:scrollbars="vertical" />
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/progressBar"
-            android:visibility="gone"
-            android:layout_gravity="center"
             android:layout_width="@dimen/layout_lvl4"
             android:layout_height="@dimen/layout_lvl4"
-            app:loader_type="circular"/>
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:loader_type="circular" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/btnMultiEdit"
-        android:contentDescription="@string/content_desc_btnMultiEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        app:cardBackgroundColor="@color/Unify_N0"
+        android:contentDescription="@string/content_desc_btnMultiEdit"
         android:visibility="gone"
+        app:cardBackgroundColor="@color/Unify_N0"
         app:cardElevation="@dimen/layout_lvl2"
         app:contentPaddingBottom="@dimen/spacing_lvl3"
         app:contentPaddingLeft="@dimen/spacing_lvl4"
         app:contentPaddingRight="@dimen/spacing_lvl4"
         app:contentPaddingTop="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible">
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -176,7 +183,11 @@
         android:background="@color/Unify_N0"
         android:gravity="center"
         android:visibility="gone"
-        app:globalerrors_type="SERVER_ERROR" />
+        app:globalerrors_type="SERVER_ERROR"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/stockTicker" />
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/noAccessPage"
@@ -185,10 +196,14 @@
         android:background="@color/Unify_N0"
         android:gravity="center"
         android:visibility="gone"
-        app:globalerrors_type="PAGE_NOT_FOUND"/>
+        app:globalerrors_type="PAGE_NOT_FOUND"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/stockTicker" />
 
     <FrameLayout
         android:id="@+id/interceptor"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

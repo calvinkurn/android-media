@@ -45,6 +45,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
@@ -286,8 +287,11 @@ class ProductManageViewModel @Inject constructor(
             }
             _refreshList.value = isRefresh
 
-            showStockTicker()
+            val isFirstPage = filterOptions?.filterIsInstance<FilterOption.FilterByPage>()?.firstOrNull()?.page == 1
             showProductList(productList)
+            if (isFirstPage) {
+                showStockTicker()
+            }
             hideProgressDialog()
         }, onError = {
             if(it is CancellationException) {
@@ -721,9 +725,8 @@ class ProductManageViewModel @Inject constructor(
 
     private fun showStockTicker() {
         val isTickerVisible = _showStockTicker.value == true
-        val isInitialLoad = _productListResult.value == null
         val isMultiLocationShop = userSessionInterface.isMultiLocationShop
-        val shouldShow = isInitialLoad && isMultiLocationShop || isTickerVisible
+        val shouldShow = isMultiLocationShop || isTickerVisible
         _showStockTicker.value = shouldShow
     }
 

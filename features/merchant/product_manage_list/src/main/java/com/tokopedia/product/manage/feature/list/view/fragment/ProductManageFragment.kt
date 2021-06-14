@@ -1,6 +1,8 @@
 package com.tokopedia.product.manage.feature.list.view.fragment
 
 import android.accounts.NetworkErrorException
+import android.animation.Animator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
@@ -12,6 +14,7 @@ import android.content.IntentFilter
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
@@ -22,6 +25,7 @@ import android.view.*
 import android.widget.Button
 import android.widget.TextView
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.DefaultItemAnimator
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -169,6 +173,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         ProductManageMoreMenuViewHolder.ProductManageMoreMenuListener,
         ProductManageListListener, ProductManageAddEditMenuBottomSheet.AddEditMenuClickListener {
 
+    private val defaultItemAnimator by lazy { DefaultItemAnimator() }
+
     @Inject
     lateinit var viewModel: ProductManageViewModel
 
@@ -225,9 +231,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     private var isProductActive = false
 
     private var tickerIsReady = false
-    private var wasChangingTab = false
     private var shouldScrollToTop = false
-
 
     private var progressDialog: ProgressDialog? = null
     private var optionsMenu: Menu? = null
@@ -287,6 +291,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         setupErrorPage()
         setupNoAccessPage()
         setupStockTicker()
+        setTickerStockVisibility()
         renderCheckedView()
 
         observeShopInfo()
@@ -389,9 +394,15 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         ProductManageTracking.eventInventory(tabName)
     }
 
-    private fun onClickFilterTab(filter: FilterTabUiModel) {
-        showLoadingProgress()
+    private fun setTickerStockVisibility() {
+        if (userSession.isMultiLocationShop) {
+            stockTicker?.visibility = View.INVISIBLE
+        } else {
+            stockTicker?.visibility = View.GONE
+        }
+    }
 
+    private fun onClickFilterTab(filter: FilterTabUiModel) {
         resetMultiSelect()
         disableMultiSelect()
         renderCheckedView()
@@ -400,13 +411,72 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         isLoadingInitialData = true
         shouldScrollToTop = true
         endlessRecyclerViewScrollListener.resetState()
-        getProductList(isRefreshFromSortFilter = true, withDelay = true)
+        getProductList(isRefreshFromSortFilter = true)
 
         val tabName = getString(filter.titleId, filter.count)
         ProductManageTracking.eventInventory(tabName)
     }
 
-    override fun editMultipleProductsEtalase() {
+    private fun animateProductTicker(isEnter: Boolean) {
+        Handler().postDelayed({
+            val shouldAnimateTicker = (isEnter && tickerIsReady && (stockTicker?.visibility == View.INVISIBLE || stockTicker?.visibility == View.GONE)) || !isEnter
+            if (adapter.data.isNotEmpty() && shouldAnimateTicker) {
+                val enterValue: Float
+                val exitValue: Float
+                if (isEnter) {
+                    enterValue = 0f
+                    exitValue = 1f
+                } else {
+                    enterValue = 1f
+                    exitValue = 0f
+                }
+                stockTicker?.run {
+                    val height = height.toFloat().orZero()
+                    translationY = enterValue * height
+                    show()
+
+                    val animator = ValueAnimator.ofFloat(enterValue, exitValue).apply {
+                        duration = TICKER_ENTER_LEAVE_ANIMATION_DURATION
+                        addUpdateListener { valueAnimator ->
+                            context?.let {
+                                val animValue = (valueAnimator.animatedValue as? Float).orZero()
+                                val translation = animValue * height
+                                translationY = translation
+                                alpha = animValue
+                                translateTickerConstrainedLayout(translation)
+                            }
+                        }
+                        addListener(object : Animator.AnimatorListener {
+                            override fun onAnimationStart(p0: Animator?) {}
+
+                            override fun onAnimationEnd(p0: Animator?) {
+                                tickerIsReady = false
+                                if (!isEnter) {
+                                    this@run.invisible()
+                                }
+                            }
+
+                            override fun onAnimationCancel(p0: Animator?) {}
+
+                            override fun onAnimationRepeat(p0: Animator?) {}
+                        })
+                    }
+
+                    animator.start()
+                }
+            }
+        }, TICKER_ENTER_LEAVE_ANIMATION_DELAY)
+    }
+
+    private fun translateTickerConstrainedLayout(translation: Float) {
+        mainContainer?.translationY = translation
+        errorPage?.translationY = translation
+        noAccessPage?.translationY = translation
+        val params = (swipeToRefresh?.layoutParams as? ViewGroup.MarginLayoutParams)
+        params?.bottomMargin = translation.toInt()
+        swipe_refresh_layout?.layoutParams = params
+    }
+     override fun editMultipleProductsEtalase() {
         goToEtalasePicker()
         ProductManageTracking.eventBulkSettingsMoveEtalase()
     }
@@ -759,7 +829,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             }
 
             override fun onDismiss() {
-                viewModel.hideStockTicker()
+                animateProductTicker(false)
             }
         })
     }
@@ -813,7 +883,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private fun setupProductList() {
         recycler_view.apply {
-            itemAnimator = null
+            itemAnimator = defaultItemAnimator
             clearItemDecoration()
             addItemDecoration(ProductListItemDecoration())
         }
@@ -870,6 +940,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         } else {
             if (isLoadingInitialData) {
                 productManageListAdapter.updateProduct(list)
+                tickerIsReady = true
+                hideStockTicker()
             } else {
                 removeEmptyStateWhenLazyLoad()
                 productManageListAdapter.updateProduct(productManageListAdapter.data.plus(list))
@@ -1320,7 +1392,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
         hideNoAccessPage()
         hideErrorPage()
-        hideStockTicker()
 
         getProductManageAccess()
     }
@@ -2177,7 +2248,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             }
         }
         observe(viewModel.showStockTicker) { shouldShow ->
-            stockTicker.showWithCondition(shouldShow)
+            animateProductTicker(shouldShow)
         }
         observe(viewModel.refreshList) { shouldRefresh ->
             if (shouldRefresh) {
@@ -2281,7 +2352,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             optionsMenu?.findItem(R.id.action_more_menu)?.isVisible = it
         }
     }
-    // endregion
+// endregion
 
     private fun renderStockLocationBottomSheet() {
         val multiLocationShop = userSession.isMultiLocationShop
@@ -2355,7 +2426,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     private fun initHeaderView() {
         tabSortFilter?.show()
         shimmerSortFilter?.hide()
-        if (recycler_view?.isVisible == false) recycler_view?.show()
     }
 
     private fun clearSelectedProduct() {
@@ -2393,6 +2463,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         private const val MIN_FEATURED_PRODUCT = 0
         private const val MAX_FEATURED_PRODUCT = 5
 
+        private const val TICKER_ENTER_LEAVE_ANIMATION_DURATION = 300L
+        private const val TICKER_ENTER_LEAVE_ANIMATION_DELAY = 10L
     }
 
 }
