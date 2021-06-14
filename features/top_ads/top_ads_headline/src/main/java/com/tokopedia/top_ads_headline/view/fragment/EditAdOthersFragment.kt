@@ -153,7 +153,7 @@ class EditAdOthersFragment : BaseDaggerFragment() {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, Utils.convertToCurrency(number.toLong()))
-                val minBid: String = stepperModel?.minBid ?: "0"
+                val minBid: Float = stepperModel?.minBid ?: 0.0f
                 var minBudget = (stepperModel?.currentBid ?: 0.0) * MULTIPLIER
                 if (minBid.toDouble() > stepperModel?.currentBid ?: 0.0) {
                     minBudget = minBid.toDouble() * MULTIPLIER

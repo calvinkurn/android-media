@@ -243,13 +243,13 @@ class HeadlineEditKeywordFragment : BaseDaggerFragment(), HeadlineEditAdKeywordV
                     keywordUiModels.add(HeadlineEditAdKeywordModel(result.tag, keywordSubType,
                             advertisingCost = Utils.convertToCurrency(result.priceBid.toLong()), priceBid = result.priceBid,
                             maximumBid = stepperModel?.maxBid
-                                    ?: "0", minimumBid = stepperModel?.minBid ?: "0"))
+                                    ?: 0.0f, minimumBid = stepperModel?.minBid ?: 0.0f))
                 } else if (keywordType == KEYWORD_NEGATIVE &&
                         (result.type == KEYWORD_TYPE_NEGATIVE_PHRASE || result.type == KEYWORD_TYPE_NEGATIVE_EXACT)) {
                     keywordUiModels.add(HeadlineEditAdKeywordModel(result.tag, keywordSubType,
                             advertisingCost = Utils.convertToCurrency(result.priceBid.toLong()), priceBid = result.priceBid, isNegativeKeyword = true,
                             maximumBid = stepperModel?.maxBid
-                                    ?: "0", minimumBid = stepperModel?.minBid ?: "0"))
+                                    ?: 0.0f, minimumBid = stepperModel?.minBid ?: 0.0f))
                 }
             }
         }

@@ -1,4 +1,4 @@
-package com.tokopedia.topads.common.view.adapter.keyword.viewholder
+    package com.tokopedia.topads.common.view.adapter.keyword.viewholder
 
 import android.view.View
 import com.tokopedia.adapterdelegate.BaseViewHolder
@@ -41,7 +41,7 @@ class HeadlineEditAdKeywordViewHolder(itemView: View, var onItemClick: OnHeadlin
         deleteKeyword.setOnClickListener {
             onItemClick?.onDeleteItemClick(keywordModel)
         }
-        if (keywordModel.minimumBid != "0" && keywordModel.maximumBid != "0") {
+        if (keywordModel.minimumBid != 0.0f && keywordModel.maximumBid != 0.0f) {
             setBidInfo(keywordModel)
         }
     }

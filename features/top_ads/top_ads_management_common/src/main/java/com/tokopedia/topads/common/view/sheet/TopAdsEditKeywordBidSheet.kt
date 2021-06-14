@@ -23,9 +23,9 @@ private const val EVENT_CLICK_BUDGET_CREATE = "biaya yang diinput"
 class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
 
     private var contentView: View? = null
-    private var minBid = "0"
-    private var maxBid = "0"
-    private var suggestedBid = "0"
+    private var minBid = 0.0f
+    private var maxBid = 0.0f
+    private var suggestedBid = 0.0f
     private var position = 0
     private var name = ""
     private var fromEdit = 99
@@ -46,10 +46,10 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
                 val result = number.toInt()
                 when {
                     result < minBid.toDouble() -> {
-                        setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true)
+                        setMessageErrorField(getString(R.string.min_bid_error_new), minBid.toString(), true)
                     }
                     result > maxBid.toDouble() -> {
-                        setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true)
+                        setMessageErrorField(getString(R.string.max_bid_error_new), maxBid.toString(), true)
                     }
 
                     result % 50 != 0 -> {
@@ -82,10 +82,10 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     }
 
     private fun getDatafromArguments() {
-        minBid = arguments?.getString(MIN_BID) ?: "0"
-        maxBid = arguments?.getString(MAX_BID) ?: "0"
+        minBid = arguments?.getFloat(MIN_BID) ?: 0.0f
+        maxBid = arguments?.getFloat(MAX_BID) ?: 0.0f
         position = arguments?.getInt(ITEM_POSITION) ?: 0
-        suggestedBid = arguments?.getString(SUGGESTION_BID) ?: "0"
+        suggestedBid = arguments?.getFloat(SUGGESTION_BID) ?: 0.0f
         name = arguments?.getString(KEYWORD_NAME) ?: ""
         fromEdit = arguments?.getInt(FROM_EDIT) ?: 99
         groupId = arguments?.getString(GROUP_ID) ?: "0"
@@ -106,10 +106,10 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
             onSaved?.invoke(budget.textFieldInput.text.toString().removeCommaRawString().toFloat(), position)
             dismiss()
         }
-        if(suggestedBid.toIntOrZero() < minBid.toIntOrZero()) {
-            budget.textFieldInput.setText(minBid)
+        if(suggestedBid < minBid) {
+            budget.textFieldInput.setText(minBid.toString())
         } else {
-            budget.textFieldInput.setText(suggestedBid)
+            budget.textFieldInput.setText(suggestedBid.toString())
         }
         setTitle(name)
     }

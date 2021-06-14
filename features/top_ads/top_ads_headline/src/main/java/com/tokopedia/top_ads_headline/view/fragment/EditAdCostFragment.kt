@@ -190,7 +190,7 @@ class EditAdCostFragment : BaseDaggerFragment() {
     fun onClickSubmit() {
         val fragments = (view_pager.adapter as KeywordEditPagerAdapter).list
         stepperModel?.keywordOperations?.clear()
-        stepperModel?.minBid = advertisingCost.textFieldInput.text.toString().removeCommaRawString()
+        stepperModel?.minBid = advertisingCost.textFieldInput.text.toString().removeCommaRawString().toFloat()
         for (fragment in fragments) {
             when (fragment) {
                 is HeadlineEditKeywordFragment -> {

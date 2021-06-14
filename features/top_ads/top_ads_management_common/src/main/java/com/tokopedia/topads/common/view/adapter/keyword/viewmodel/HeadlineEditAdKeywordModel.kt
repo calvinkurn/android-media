@@ -8,7 +8,7 @@ data class HeadlineEditAdKeywordModel(val keywordName: String,
                                       var advertisingCost: String,
                                       var priceBid: String = "0",
                                       val isNegativeKeyword: Boolean = false,
-                                      var maximumBid: String = "0", var minimumBid: String = "0") : KeywordUiModel {
+                                      var maximumBid: Float = 0.0f, var minimumBid: Float = 0.0f) : KeywordUiModel {
     override fun equals(other: Any?): Boolean {
         return other is HeadlineEditAdKeywordModel && other.keywordName == this.keywordName
     }
