@@ -79,7 +79,14 @@ internal class OnSuggestionLocalItemClickTest: SuggestionPresenterTestFixtures()
     }
 
     private fun `then verify view tracking click item product line is correct`(item: BaseSuggestionDataView) {
+        val expectedEventLabel =
+            "keyword: ${item.title} " +
+                    "- value: $keywordLocalGlobalTypedByUser " +
+                    "- applink: ${item.applink}"
+        val userId = "0"
+
         verify {
+            suggestionView.trackEventClickProductLine(item, expectedEventLabel, userId)
             suggestionView.onClickSuggestion(item.applink)
         }
     }

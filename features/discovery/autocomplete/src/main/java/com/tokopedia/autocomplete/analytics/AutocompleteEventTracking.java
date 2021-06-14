@@ -49,7 +49,8 @@ public interface AutocompleteEventTracking {
         String IMPRESSION_SEE_MORE_RECENT_SEARCH = "impression see more - recent search";
         String CLICK_CURATED_CAMPAIGN = "click - curated campaign";
         String IMPRESSION_CURATED_CAMPAIGN = "impression - curated campaign";
-        String CLICK_PRODUCT_LINE = "click - product initial state campaign";
+        String CLICK_INITIAL_STATE_PRODUCT_LINE = "click - product initial state campaign";
+        String CLICK_SUGGESTION_PRODUCT_LINE = "click - product autocomplete campaign";
     }
 
     interface Label {
@@ -65,7 +66,9 @@ public interface AutocompleteEventTracking {
     interface Other {
         String NONE_OTHER = "none / other";
         String RECENT_VIEW_ACTION_FIELD = "/search - recentview - product";
-        String PRODUCT_LINE_ACTION_FIELD = "/search - product initial state campaign";
+        String PRODUCT_LINE_INITIAL_STATE_ACTION_FIELD = "/search - product initial state campaign";
+        String PRODUCT_LINE_SUGGESTION_ACTION_FIELD = "/search - product autocomplete campaign";
+
     }
 
 }

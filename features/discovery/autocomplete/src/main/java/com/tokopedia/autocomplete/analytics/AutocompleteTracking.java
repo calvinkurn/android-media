@@ -353,16 +353,16 @@ public class AutocompleteTracking {
         iris.saveEvent(map);
     }
 
-    public static void eventClickProductLine(Object productDataLayer, String userId, String label, String pageSource) {
+    public static void eventClickInitialStateProductLine(Object productDataLayer, String userId, String label, String pageSource) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT, AutocompleteEventTracking.Event.PRODUCT_CLICK,
                         EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
-                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_PRODUCT_LINE,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_INITIAL_STATE_PRODUCT_LINE,
                         EVENT_LABEL, label,
                         ECOMMERCE, DataLayer.mapOf(
                                 CLICK, DataLayer.mapOf(
-                                        ACTION_FIELD, DataLayer.mapOf(LIST, AutocompleteEventTracking.Other.PRODUCT_LINE_ACTION_FIELD),
+                                        ACTION_FIELD, DataLayer.mapOf(LIST, AutocompleteEventTracking.Other.PRODUCT_LINE_INITIAL_STATE_ACTION_FIELD),
                                         PRODUCTS, DataLayer.listOf(
                                                 productDataLayer
                                         )
@@ -372,6 +372,28 @@ public class AutocompleteTracking {
                         CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
                         USER_ID, userId,
                         PAGE_SOURCE, pageSource
+                )
+        );
+    }
+
+    public static void eventClickSuggestionProductLine(Object productDataLayer, String label, String userId) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.PRODUCT_CLICK,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_SUGGESTION_PRODUCT_LINE,
+                        EVENT_LABEL, label,
+                        ECOMMERCE, DataLayer.mapOf(
+                                CLICK, DataLayer.mapOf(
+                                        ACTION_FIELD, DataLayer.mapOf(LIST, AutocompleteEventTracking.Other.PRODUCT_LINE_SUGGESTION_ACTION_FIELD),
+                                        PRODUCTS, DataLayer.listOf(
+                                                productDataLayer
+                                        )
+                                )
+                        ),
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        USER_ID, userId
                 )
         );
     }

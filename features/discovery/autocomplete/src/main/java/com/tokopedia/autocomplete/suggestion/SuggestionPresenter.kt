@@ -279,6 +279,9 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
             TYPE_GLOBAL -> {
                 view?.trackEventClickGlobalKeyword(getGlobalEventLabelForTracking(item), getUserId(), item.dimension90)
             }
+            TYPE_PRODUCT -> {
+                view?.trackEventClickProductLine(item, getGlobalEventLabelForTracking(item), getUserId())
+            }
         }
     }
 

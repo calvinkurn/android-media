@@ -47,6 +47,6 @@ data class BaseItemInitialStateSearch(
             "category", "none / other",
             "variant", "none / other",
             "position", position,
-            "list", AutocompleteEventTracking.Other.PRODUCT_LINE_ACTION_FIELD
+            "list", AutocompleteEventTracking.Other.PRODUCT_LINE_INITIAL_STATE_ACTION_FIELD
     )
 }

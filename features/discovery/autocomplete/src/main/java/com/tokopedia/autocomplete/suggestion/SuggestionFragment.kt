@@ -207,4 +207,9 @@ class SuggestionFragment :
     override fun trackEventClickGlobalKeyword(eventLabel: String, userId: String, dimension90: String) {
         AutocompleteTracking.eventClickGlobalKeyword(eventLabel, userId, dimension90)
     }
+
+    override fun trackEventClickProductLine(item: BaseSuggestionDataView, eventLabel: String, userId: String) {
+        val productDataLayer = item.getProductLineAsObjectDataLayer()
+        AutocompleteTracking.eventClickSuggestionProductLine(productDataLayer, eventLabel, userId)
+    }
 }

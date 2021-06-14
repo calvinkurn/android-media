@@ -273,6 +273,6 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
     override fun trackEventClickProductLine(item: BaseItemInitialStateSearch, userId: String, label: String) {
         val productDataLayer = item.getProductLineAsObjectDataLayer()
-        AutocompleteTracking.eventClickProductLine(productDataLayer, userId, label, item.dimension90)
+        AutocompleteTracking.eventClickInitialStateProductLine(productDataLayer, userId, label, item.dimension90)
     }
 }

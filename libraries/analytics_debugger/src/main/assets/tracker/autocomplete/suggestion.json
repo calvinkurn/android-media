@@ -85,6 +85,30 @@
       "businessUnit": "search",
       "sessionIris": ".*",
       "pageSource": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - product autocomplete campaign",
+      "eventCategory": "top nav",
+      "eventLabel": "keyword: .+ - value: .+ - applink: .+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/search - product autocomplete campaign",
+      "items": [
+        {
+          "index": "\\d*.\\d*",
+          "item_brand": "none / other",
+          "item_category": "none / other",
+          "item_id": ".+",
+          "item_name": ".+",
+          "item_variant": "none / other",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "dimension40": "/search - product autocomplete campaign",
+          "dimension90": ".*"
+        }
+      ],
+      "userId": ".+",
+      "sessionIris": ".+"
     }
   ]
 }
