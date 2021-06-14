@@ -34,8 +34,7 @@ class CreateCategoryViewModelTest:
         `Then assert query param has default sort`()
         `Then assert category ids`()
         `Then assert query param has exclude sc category L2`()
-        `Then assert shop id from choose address`()
-        `Then assert warehouse id from choose address`()
+        `Then assert content is loading`()
     }
 
     private fun `Then assert query param has default sort`() {
@@ -63,12 +62,8 @@ class CreateCategoryViewModelTest:
         )
     }
 
-    private fun `Then assert shop id from choose address`() {
-        assertThat(categoryViewModel.shopId, shouldBe(dummyChooseAddressData.shop_id))
-    }
-
-    private fun `Then assert warehouse id from choose address`() {
-        assertThat(categoryViewModel.warehouseId, shouldBe(dummyChooseAddressData.warehouse_id))
+    private fun `Then assert content is loading`() {
+        assertThat(categoryViewModel.isContentLoadingLiveData.value, shouldBe(true))
     }
 
     @Test

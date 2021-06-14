@@ -25,7 +25,8 @@ class SearchChooseAddressTest: SearchTestFixtures() {
 
     @Test
     fun `choose address params should not be sent if empty`() {
-        `Given choose address data`(ChooseAddressConstant.emptyAddress)
+        val chooseAddressEmptyWithShopId = LocalCacheModel(shop_id = "12345", warehouse_id = "12345")
+        `Given choose address data`(chooseAddressEmptyWithShopId)
         `Given search view model`()
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
 
@@ -43,7 +44,6 @@ class SearchChooseAddressTest: SearchTestFixtures() {
                 SearchApiConst.USER_LAT,
                 SearchApiConst.USER_LONG,
                 SearchApiConst.USER_POST_CODE,
-                SearchApiConst.USER_WAREHOUSE_ID,
         )
 
         shouldNotContainKeys.forEach {
@@ -102,7 +102,6 @@ class SearchChooseAddressTest: SearchTestFixtures() {
         `When view resumed`()
 
         `Then assert request params contains new address`(dummyChooseAddressData)
-        `Then assert mini cart API is updated`()
     }
 
     private fun `Given choose address is updated`() {
@@ -115,12 +114,6 @@ class SearchChooseAddressTest: SearchTestFixtures() {
         searchViewModel.onViewResumed()
     }
 
-    private fun `Then assert mini cart API is updated`() {
-        verify {
-            getMiniCartListSimplifiedUseCase.execute(any(), any())
-        }
-    }
-
     @Test
     fun `onResume should not reload page when choose address is not updated`() {
         `Given choose address data`()
@@ -130,7 +123,6 @@ class SearchChooseAddressTest: SearchTestFixtures() {
         `When view resumed`()
 
         `Then verify get first page API is only called once from view created`()
-        `Then assert mini cart API is updated`()
     }
 
     private fun `Given choose address is not updated`() {

@@ -29,6 +29,8 @@
     <string name="tokomart_change_keyword_button">Ganti Kata Kunci</string>
 
     <string name="tokomart_add_to_cart_success">Sukses menambah ke keranjang</string>
-    <string name="city_name_empty_state_no_address">Jakarta Barat</string>
+    <string name="tokomart_city_name_empty_state_no_address">Jakarta Barat</string>
+    <string name="tokomart_category_is_failed_to_display_title">Oops, bagian ini gagal ditampilkan</string>
+    <string name="tokomart_category_is_failed_to_display_description">Klik iklan di samping untuk coba lagi</string>
 
 </resources>

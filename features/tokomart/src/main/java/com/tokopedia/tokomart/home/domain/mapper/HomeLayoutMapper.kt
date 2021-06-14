@@ -3,6 +3,7 @@ package com.tokopedia.tokomart.home.domain.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.tokomart.categorylist.domain.model.CategoryResponse
+import com.tokopedia.tokomart.home.constant.HomeLayoutState
 import com.tokopedia.tokomart.home.constant.HomeLayoutType.Companion.BANNER_CAROUSEL
 import com.tokopedia.tokomart.home.constant.HomeLayoutType.Companion.CATEGORY
 import com.tokopedia.tokomart.home.constant.HomeLayoutType.Companion.LEGO_3_IMAGE
@@ -83,11 +84,15 @@ object HomeLayoutMapper {
 
     fun List<Visitable<*>>.mapHomeCategoryGridData(
         item: HomeCategoryGridUiModel,
-        response: List<CategoryResponse>
+        response: List<CategoryResponse>?
     ): List<Visitable<*>> {
         return updateItemById(item.visitableId) {
-            val categoryList = mapToCategoryList(response)
-            item.copy(categoryList = categoryList)
+            if (!response.isNullOrEmpty()) {
+                val categoryList = mapToCategoryList(response)
+                item.copy(categoryList = categoryList, state = HomeLayoutState.SHOW)
+            } else {
+                item.copy(categoryList = null, state = HomeLayoutState.HIDE)
+            }
         }
     }
 

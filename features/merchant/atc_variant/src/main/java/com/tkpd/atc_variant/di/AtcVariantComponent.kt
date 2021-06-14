@@ -40,12 +40,6 @@ class AtcVariantModule {
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
-    @Named("atcMutation")
-    fun provideAddToCartMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
-    }
-
-    @Provides
     @AtcVariantScope
     @Named("atcOcsMutation")
     fun provideAddToCartOcsMutation(@ApplicationContext context: Context): String {

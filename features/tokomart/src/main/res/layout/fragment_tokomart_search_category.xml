@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tokonowSearchCategoryContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
@@ -66,7 +67,6 @@
 
     </com.tokopedia.tokomart.searchcategory.presentation.customview.StickySingleHeaderView>
 
-
     <com.tokopedia.minicart.common.widget.MiniCartWidget
         android:id="@+id/tokonowSearchCategoryMiniCart"
         android:layout_width="match_parent"
@@ -76,5 +76,28 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/tokonowSearchCategoryLoader"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:loader_type="circular"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/tokonowSearchCategoryContentGroup"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_0"
+        app:constraint_referenced_ids=
+            "tokonowSearchCategoryBackgroundImage,
+            tokonowSearchCategoryStatusBarBackground,
+            tokonowSearchCategoryStickyView,
+            tokonowSearchCategoryMiniCart"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

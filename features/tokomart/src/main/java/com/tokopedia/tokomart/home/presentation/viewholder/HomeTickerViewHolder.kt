@@ -27,7 +27,7 @@ class HomeTickerViewHolder(
         val closeBtn = itemView.findViewById<AppCompatImageButton>(R.id.ticker_close_icon)
         val ticker = itemView.findViewById<Ticker>(R.id.ticker_announcement)
         closeBtn.setOnClickListener {
-            listener?.onTickerDismiss()
+            listener?.onTickerDismissed()
         }
         ticker.post {
             val adapter = TickerPagerAdapter(itemView.context, data.tickers)
@@ -47,6 +47,6 @@ class HomeTickerViewHolder(
     }
 
     interface HomeTickerListener {
-        fun onTickerDismiss()
+        fun onTickerDismissed()
     }
 }

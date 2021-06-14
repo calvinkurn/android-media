@@ -40,7 +40,7 @@ class HomeChooseAddressWidgetViewHolder(
                 }
 
                 override fun onLocalizingAddressServerDown() {
-                    homeChooseAddressWidgetListener?.onRemoveChooseAddressWidget()
+                    homeChooseAddressWidgetListener?.onChooseAddressWidgetRemoved()
                 }
 
                 override fun onLocalizingAddressLoginSuccess() {
@@ -95,6 +95,6 @@ class HomeChooseAddressWidgetViewHolder(
     }
 
     interface HomeChooseAddressWidgetListener {
-        fun onRemoveChooseAddressWidget()
+        fun onChooseAddressWidgetRemoved()
     }
 }

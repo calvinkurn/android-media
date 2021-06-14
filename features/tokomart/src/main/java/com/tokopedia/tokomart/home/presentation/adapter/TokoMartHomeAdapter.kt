@@ -13,7 +13,7 @@ class TokoMartHomeAdapter(
 
     fun removeHomeChooseAddressWidget() {
         val items = data.toMutableList()
-        val widget = items.find { it is HomeChooseAddressWidgetUiModel }
+        val widget = getItem(HomeChooseAddressWidgetUiModel::class.java)
         widget?.let {
             items.remove(it)
             submitList(items)
@@ -22,10 +22,14 @@ class TokoMartHomeAdapter(
 
     fun removeTickerWidget() {
         val items = data.toMutableList()
-        val widget = items.find { it is HomeTickerUiModel }
+        val widget = getItem(HomeTickerUiModel::class.java)
         widget?.let {
             items.remove(it)
             submitList(items)
         }
+    }
+
+    fun <T> getItem(itemClass: Class<T>): Visitable<*>? {
+        return data.find { it.javaClass == itemClass}
     }
 }
