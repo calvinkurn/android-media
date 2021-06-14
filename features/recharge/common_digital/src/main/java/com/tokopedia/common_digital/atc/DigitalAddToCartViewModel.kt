@@ -40,7 +40,7 @@ class DigitalAddToCartViewModel @Inject constructor(private val digitalAddToCart
                   digitalIdentifierParam: RequestBodyIdentifier,
                   digitalSubscriptionParams: DigitalSubscriptionParams) {
         if (!userSession.isLoggedIn) {
-            _addToCartResult.postValue(Fail(DigitalUserNotLoginException()))
+            _addToCartResult.postValue(Fail(MessageErrorException(MESSAGE_ERROR_NON_LOGIN)))
         } else {
             launchCatchError(block = {
                 val data = withContext(dispatcher) {
@@ -64,14 +64,15 @@ class DigitalAddToCartViewModel @Inject constructor(private val digitalAddToCart
                 } else _addToCartResult.postValue(Fail(Throwable(DigitalFailGetCartId())))
 
             }) {
-                if (it is ResponseErrorException) {
+                if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
                     _addToCartResult.postValue(Fail(MessageErrorException(it.message)))
-                } else _addToCartResult.postValue(Fail(it))
+                } else {
+                    _addToCartResult.postValue(Fail(it))
+                }
             }
         }
     }
 
-    class DigitalUserNotLoginException : Exception()
     class DigitalFailGetCartId : Exception()
 
     companion object {

@@ -22,7 +22,7 @@ class SetFeaturedProductUseCase @Inject constructor(
         setTypeClass(FeaturedProductResponseModel::class.java)
     }
 
-    fun setParams(productId: Int, status: Int) {
+    fun setParams(productId: Long, status: Int) {
         val params = HashMap<String, Any>()
         params[PARAM_PRODUCT_ID] = productId
         params[PARAM_STATUS] = status
