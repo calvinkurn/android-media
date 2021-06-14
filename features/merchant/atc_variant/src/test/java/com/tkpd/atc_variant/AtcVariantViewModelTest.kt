@@ -78,7 +78,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), true)
         } returns AggregatorMiniCartUiModel()
 
-        viewModel.decideInitialValue(aggregatorParams)
+        viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify(inverse = true) {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), true)
@@ -112,7 +112,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), false)
         } returns AggregatorMiniCartUiModel()
 
-        viewModel.decideInitialValue(aggregatorParams)
+        viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify(inverse = true) {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), false)
@@ -127,7 +127,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), true)
         } returns AggregatorMiniCartUiModel()
 
-        viewModel.decideInitialValue(aggregatorParams)
+        viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), true)
@@ -291,7 +291,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         Assert.assertTrue(updateResultData != null)
         Assert.assertTrue(updateResultData?.mapOfSelectedVariantOption?.values?.toList()?.containsAll(variantDataVisitable.mapOfSelectedVariant.values.toList())
                 ?: false)
-        Assert.assertEquals(updateResultData.selectedProductId, "2147818586")
+        Assert.assertEquals(updateResultData?.selectedProductId, "2147818586")
     }
 
     /**

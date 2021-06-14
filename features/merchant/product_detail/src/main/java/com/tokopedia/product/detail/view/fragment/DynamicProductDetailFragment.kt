@@ -1421,15 +1421,16 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val alternateText = viewModel.p2Data.value?.alternateCopy?.firstOrNull {
                 it.cartType == ProductDetailCommonConstant.KEY_CART_TYPE_UPDATE_CART
             }?.text ?: ProductDetailCommonConstant.TEXT_SAVE_ATC
+            val cartTypeData = viewModel.getCartTypeByProductId()
 
-            val alternateButtonVariant = if (it.data.variant.isVariant && viewModel.isParentExistInMiniCart(it.parentProductId)) alternateText else ""
+            val alternateButtonVariant = if (it.data.variant.isVariant && viewModel.isParentExistInMiniCart(it.parentProductId) && cartTypeData?.availableButtons?.firstOrNull()?.isCartTypeDisabledOrRemindMe() == false) alternateText else ""
             actionButtonView.renderData(
                     isWarehouseProduct = !it.isProductActive(),
                     hasShopAuthority = viewModel.hasShopAuthority(),
                     isShopOwner = viewModel.isShopOwner(),
                     hasTopAdsActive = hasTopAds(),
                     isVariant = it.data.variant.isVariant,
-                    cartTypeData = viewModel.getCartTypeByProductId(),
+                    cartTypeData = cartTypeData,
                     alternateButtonVariant = alternateButtonVariant,
                     miniCartItem = miniCartItem)
         }
