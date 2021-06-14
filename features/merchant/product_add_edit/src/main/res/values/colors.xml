@@ -6,4 +6,5 @@
     <color name="video_thumbnail_title">#F531353B</color>
     <color name="video_thumbnail_desc">#AD31353B</color>
     <color name="colorBlack">#494949</color>
+    <color name="color_alpha">#00ffffff</color>
 </resources>
