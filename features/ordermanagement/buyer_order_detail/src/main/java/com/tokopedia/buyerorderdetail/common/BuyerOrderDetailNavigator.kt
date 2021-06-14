@@ -92,7 +92,7 @@ class BuyerOrderDetailNavigator(
     fun goToProductSnapshotPage(orderId: String, orderDetailId: String) {
         val appLinkSnapShot = "${ApplinkConst.SNAPSHOT_ORDER}/$orderId/$orderDetailId"
         val intent = RouteManager.getIntent(activity, appLinkSnapShot)
-        intent.putExtra(ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM, true)
+        intent.putExtra(ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM, false)
         activity.startActivityForResult(intent, BuyerOrderDetailConst.REQUEST_CODE_IGNORED)
         applyTransition()
     }
