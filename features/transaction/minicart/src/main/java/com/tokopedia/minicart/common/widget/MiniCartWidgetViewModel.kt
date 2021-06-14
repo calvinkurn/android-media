@@ -461,7 +461,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
             miniCartSimplifiedData.value?.miniCartItems?.let {
                 miniCartItems.addAll(it)
             }
-            updateCartUseCase.setParams(miniCartItems, true, isForCheckout)
+            updateCartUseCase.setParams(miniCartItems, true)
         } else if (observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
             val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
             miniCartListBottomSheetUiModel.value?.visitables?.forEach {
@@ -469,7 +469,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                     miniCartProductUiModels.add(it)
                 }
             }
-            updateCartUseCase.setParamsFromUiModels(miniCartProductUiModels, isForCheckout)
+            updateCartUseCase.setParamsFromUiModels(miniCartProductUiModels)
         }
         updateCartUseCase.execute(
                 onSuccess = {

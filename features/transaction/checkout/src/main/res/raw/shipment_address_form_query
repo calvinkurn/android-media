@@ -49,6 +49,7 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
         }
         group_shop {
           errors
+          unblocking_errors
           shipping_id
           sp_id
           is_insurance
