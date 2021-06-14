@@ -528,6 +528,7 @@
     "filter": [
       {
         "title": "Semua Susu",
+        "subTitle": "Kategori Susu",
         "options": [
           {
             "name": "Susu segar",
@@ -560,6 +561,19 @@
             "key": "sc",
             "icon": "",
             "value": "1112",
+            "isNew": false,
+            "inputType": "checkbox",
+            "totalData": "",
+            "valMax": "",
+            "valMin": "",
+            "hexColor": "",
+            "child": []
+          },
+          {
+            "name": "Semua susu",
+            "key": "sc",
+            "icon": "",
+            "value": "1333",
             "isNew": false,
             "inputType": "checkbox",
             "totalData": "",

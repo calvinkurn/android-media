@@ -275,6 +275,7 @@ abstract class BaseSearchCategoryFragment:
 
         val params = urlParser.paramKeyValueMap
         params[SearchApiConst.BASE_SRP_APPLINK] = ApplinkConstInternalTokopediaNow.SEARCH
+        params[SearchApiConst.HINT] = resources.getString(R.string.tokomart_search_bar_hint)
 
         return params
     }
@@ -379,7 +380,6 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().shopIdLiveData.observe(this::onShopIdUpdated)
         getViewModel().miniCartWidgetLiveData.observe(this::updateMiniCartWidget)
         getViewModel().isShowMiniCartLiveData.observe(this::updateMiniCartWidgetVisibility)
-        getViewModel().isRefreshPageLiveData.observe(this::scrollToTop)
         getViewModel().updatedVisitableIndicesLiveData.observe(this::notifyAdapterItemChange)
         getViewModel().cartEventMessageLiveData.observe(this::showAddToCartMessage)
         getViewModel().isHeaderBackgroundVisibleLiveData
@@ -416,10 +416,6 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun onLoadMore() {
         getViewModel().onLoadMore()
-    }
-
-    protected open fun scrollToTop(isRefresh: Boolean) {
-        stickyView?.scrollToTop()
     }
 
     override fun onLocalizingAddressSelected() {
@@ -598,7 +594,7 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun updateContentVisibility(isLoadingVisible: Boolean) {
         loaderUnify?.showWithCondition(isLoadingVisible)
-        contentGroup?.showWithCondition(!isLoadingVisible)
+        recyclerView?.showWithCondition(!isLoadingVisible)
     }
 
     protected var noAddressEmptyStateView: NoAddressEmptyStateView? = null

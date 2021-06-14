@@ -53,7 +53,7 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         visitableList[1].assertBannerDataView()
         visitableList[2].assertTitleDataView(title = categoryTitle, hasSeeAllCategoryButton = true)
         visitableList[3].assertCategoryFilterDataView(categoryModel.categoryFilter)
-        visitableList[4].assertQuickFilterDataView(categoryModel.quickFilter)
+        visitableList[4].assertQuickFilterDataView(categoryModel.quickFilter, categoryModel.categoryFilter)
         visitableList[5].assertProductCountDataView(categoryModel.searchProduct.header.totalDataText)
     }
 
@@ -69,7 +69,6 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
 
     private fun `Then assert get first page success interactions`(categoryModel: CategoryModel) {
         `Then assert auto complete applink from API`(categoryModel)
-        `Then assert is refresh page flag`()
         `Then assert header background is shown`()
         `Then assert content is not loading`()
     }
@@ -78,10 +77,6 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         val expectedApplink = categoryModel.searchProduct.data.autocompleteApplink
 
         assertThat(categoryViewModel.autoCompleteApplink, shouldBe(expectedApplink))
-    }
-
-    private fun `Then assert is refresh page flag`() {
-        assertThat(categoryViewModel.isRefreshPageLiveData.value, shouldBe(true))
     }
 
     private fun `Then assert header background is shown`() {

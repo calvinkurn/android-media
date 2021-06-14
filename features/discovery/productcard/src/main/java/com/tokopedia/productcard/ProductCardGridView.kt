@@ -178,12 +178,17 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     private fun QuantityEditorUnify.configureQuantityEditor(productCardModel: ProductCardModel) {
         val nonVariant = productCardModel.nonVariant ?: return
 
+        clearValueChangeListener()
         configureQuantityEditorDebounce()
         configureQuantitySettings(nonVariant)
 
         setValueChangedListener { newValue, _, _ ->
             quantityEditorDebounce?.onQuantityChanged(newValue)
         }
+    }
+
+    private fun QuantityEditorUnify.clearValueChangeListener() {
+        setValueChangedListener { _, _, _ -> }
     }
 
     private fun configureQuantityEditorDebounce() {

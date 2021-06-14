@@ -564,7 +564,7 @@ class TokoMartHomeFragment: Fragment(),
                         RouteManager.route(context,
                                 getAutoCompleteApplinkPattern(),
                                 SOURCE,
-                                data.keyword.safeEncodeUtf8(),
+                                resources.getString(R.string.tokomart_search_bar_hint),
                                 isFirstInstall().toString())
                     },
                     searchbarImpressionCallback = {},

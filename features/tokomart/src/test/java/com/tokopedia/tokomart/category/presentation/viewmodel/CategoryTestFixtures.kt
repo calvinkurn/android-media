@@ -29,7 +29,7 @@ open class CategoryTestFixtures {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     protected val defaultCategoryL1 = "123"
-    protected val defaultCategoryL2 = "456"
+    protected val defaultCategoryL2 = "1333"
     protected val defaultQueryParamMap = mapOf<String, String>()
     protected val getCategoryFirstPageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
     protected val getCategoryLoadMorePageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)

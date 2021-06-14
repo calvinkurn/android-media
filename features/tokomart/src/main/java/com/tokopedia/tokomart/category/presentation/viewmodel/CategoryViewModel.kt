@@ -65,7 +65,10 @@ class CategoryViewModel @Inject constructor (
     private var navigation: TokonowCategoryDetail.Navigation? = null
 
     init {
-        if (categoryL2.isNotEmpty()) queryParamMutable["${OptionHelper.EXCLUDE_PREFIX}_${SearchApiConst.SC}"] = categoryL2
+        if (categoryL2.isNotEmpty()) {
+            val categoryFilterKeyWithExclude = "${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}"
+            queryParamMutable[categoryFilterKeyWithExclude] = categoryL2
+        }
     }
 
     override fun loadFirstPage() {

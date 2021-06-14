@@ -57,7 +57,7 @@ class CreateCategoryViewModelTest:
 
     private fun `Then assert query param has exclude sc category L2`() {
         assertThat(
-                categoryViewModel.queryParam["${OptionHelper.EXCLUDE_PREFIX}_${SearchApiConst.SC}"],
+                categoryViewModel.queryParam["${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}"],
                 shouldBe(defaultCategoryL2)
         )
     }
