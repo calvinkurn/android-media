@@ -1,0 +1,24 @@
+[
+  {
+    "data": {
+      "MerchantPromotionGetVoucherRecommendation": {
+        "header": {
+          "process_time": 40038625,
+          "message": [],
+          "reason": "",
+          "error_code": ""
+        },
+        "data": {
+          "ShopID": 10132885,
+          "VoucherType": 3,
+          "VoucherBenefitType": 1,
+          "VoucherDiscountAmt": 20000,
+          "VoucherDiscountAmtMax": 20000,
+          "VoucherMinimumAmt": 287500,
+          "VoucherQuota": 15,
+          "HaveRecommendation": true
+        }
+      }
+    }
+  }
+]

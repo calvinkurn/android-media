@@ -630,7 +630,6 @@ class RegisterAnalytics @Inject constructor() {
 
     private fun getLoginMethodMoengage(loginMethod: String?): String? {
         return when (loginMethod) {
-            UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> EMAIL_METHOD
             UserSessionInterface.LOGIN_METHOD_EMAIL -> EMAIL_METHOD
             UserSessionInterface.LOGIN_METHOD_FACEBOOK -> FACEBOOK_METHOD
             UserSessionInterface.LOGIN_METHOD_GOOGLE -> GOOGLE_METHOD

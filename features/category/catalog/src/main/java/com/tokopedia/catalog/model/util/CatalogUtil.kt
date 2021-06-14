@@ -2,7 +2,6 @@ package com.tokopedia.catalog.model.util
 
 import android.content.Context
 import android.content.Intent
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerShareData
@@ -51,24 +50,24 @@ object CatalogUtil {
     }
 
     private fun Map.Entry<String, Any>.isPriceFilterWithZeroValue(): Boolean {
-        return (key == SearchApiConst.PMIN && value.toString() == "0")
-                || (key == SearchApiConst.PMAX && value.toString() == "0")
+        return (key == CatalogSearchApiConst.PMIN && value.toString() == "0")
+                || (key == CatalogSearchApiConst.PMAX && value.toString() == "0")
     }
 
     internal val nonFilterParameterKeyList = setOf(
-            SearchApiConst.Q,
-            SearchApiConst.RF,
-            SearchApiConst.ACTIVE_TAB,
-            SearchApiConst.SOURCE,
-            SearchApiConst.LANDING_PAGE,
-            SearchApiConst.PREVIOUS_KEYWORD,
-            SearchApiConst.ORIGIN_FILTER,
-            SearchApiConst.SKIP_REWRITE,
-            SearchApiConst.NAVSOURCE,
-            SearchApiConst.SKIP_BROADMATCH,
-            SearchApiConst.HINT,
-            SearchApiConst.FIRST_INSTALL,
-            SearchApiConst.SEARCH_REF
+            CatalogSearchApiConst.Q,
+            CatalogSearchApiConst.RF,
+            CatalogSearchApiConst.ACTIVE_TAB,
+            CatalogSearchApiConst.SOURCE,
+            CatalogSearchApiConst.LANDING_PAGE,
+            CatalogSearchApiConst.PREVIOUS_KEYWORD,
+            CatalogSearchApiConst.ORIGIN_FILTER,
+            CatalogSearchApiConst.SKIP_REWRITE,
+            CatalogSearchApiConst.NAVSOURCE,
+            CatalogSearchApiConst.SKIP_BROADMATCH,
+            CatalogSearchApiConst.HINT,
+            CatalogSearchApiConst.FIRST_INSTALL,
+            CatalogSearchApiConst.SEARCH_REF
     )
 
     private fun Map<String, Any>.hasMinAndMaxPriceFilter(): Boolean {
@@ -76,8 +75,8 @@ object CatalogUtil {
         var hasMaxPriceFilter = false
 
         for(entry in this) {
-            if (entry.key == SearchApiConst.PMIN) hasMinPriceFilter = true
-            if (entry.key == SearchApiConst.PMAX) hasMaxPriceFilter = true
+            if (entry.key == CatalogSearchApiConst.PMIN) hasMinPriceFilter = true
+            if (entry.key == CatalogSearchApiConst.PMAX) hasMaxPriceFilter = true
 
             // Immediately return so it doesn't continue the loop
             if (hasMinPriceFilter && hasMaxPriceFilter) return true
@@ -87,9 +86,9 @@ object CatalogUtil {
     }
 
     fun Map<String, Any>.isSortHasDefaultValue(): Boolean {
-        val sortValue = this[SearchApiConst.OB]
+        val sortValue = this[CatalogSearchApiConst.OB]
 
-        return sortValue == SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+        return sortValue == CatalogSearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
     }
 
     fun linkerDataMapper(shareData: LinkerData): LinkerShareData {

@@ -568,7 +568,7 @@ class RegisterInitialViewModel @Inject constructor(
                 mutableActivateUserResponse.value = Success(it)
             } else if (it.message.isNotEmpty()) {
                 mutableActivateUserResponse.value =
-                        Fail(com.tokopedia.network.exception.MessageErrorException(it.message))
+                        Fail(MessageErrorException(it.message))
             } else mutableActivateUserResponse.value = Fail(RuntimeException())
         }
     }
