@@ -78,17 +78,13 @@ data class ProductMiniSocialProofStockDataModel(
             socialProofData = listOf(firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofSingleText))
             return
         }
-        val socialProofBuilder = mutableListOf(
-                stockData(ProductMiniSocialProofItemType.ProductMiniSocialProofTextDivider),
-                firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofText)
-        )
+
+        val socialProofBuilder = mutableListOf(firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofText))
+
+        appendStockAtFirst(socialProofBuilder)
         appendChipIfNotZero(ratingCount.toFloat(), RATING, socialProofBuilder, rating.toString())
         appendChipIfNotZero(buyerPhotosCount.toFloat(), BUYER_PHOTOS, socialProofBuilder)
         socialProofData = socialProofBuilder.take(4)
-    }
-
-    fun getSocialProofData(): List<ProductMiniSocialProofItemDataModel> {
-        return socialProofData
     }
 
     private fun appendChipIfNotZero(count: Float?, type: String, list: MutableList<ProductMiniSocialProofItemDataModel>, ratingTitle: String = ""): MutableList<ProductMiniSocialProofItemDataModel> {
@@ -104,7 +100,12 @@ data class ProductMiniSocialProofStockDataModel(
         return list
     }
 
-    private fun stockData(type: ProductMiniSocialProofItemType): ProductMiniSocialProofItemDataModel {
-        return ProductMiniSocialProofItemDataModel(STOCK, stock.productThousandFormatted(), type)
+    private fun appendStockAtFirst(builder: MutableList<ProductMiniSocialProofItemDataModel>) {
+        if (stock == 0) return
+        builder.add(0, ProductMiniSocialProofItemDataModel(
+                STOCK,
+                stock.productThousandFormatted(),
+                ProductMiniSocialProofItemType.ProductMiniSocialProofTextDivider
+        ))
     }
 }
