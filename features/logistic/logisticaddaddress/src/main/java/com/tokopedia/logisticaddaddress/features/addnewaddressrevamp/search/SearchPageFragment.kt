@@ -89,7 +89,19 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode == 1599 && resultCode == Activity.RESULT_OK) {
-            activity?.finish()
+            val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
+            finishActivity(newAddress)
+        } else if (requestCode == 1995) {
+            showInitialLoadMessage()
+        }
+    }
+
+    private fun finishActivity(data: SaveAddressDataModel?) {
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(LogisticConstant.EXTRA_ADDRESS_NEW, data)
+            })
+            finish()
         }
     }
 
@@ -113,6 +125,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     }
 
     private fun showInitialLoadMessage() {
+        binding.searchPageInput.searchBarPlaceholder = getString(R.string.txt_hint_search)
+        binding.searchPageInput.searchBarTextField.setText("")
         binding.tvMessageSearch.text = getString(R.string.txt_message_initial_load)
         binding.tvMessageSearch.setOnClickListener {
             Toast.makeText(context, "This feature is under development", Toast.LENGTH_SHORT).show()
@@ -121,10 +135,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     }
 
     private fun setSearchView() {
-        binding.searchPageInput.searchBarPlaceholder = getString(R.string.txt_hint_search)
         binding.searchPageInput.searchBarTextField.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                //no-op
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -132,6 +144,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.tvMessageSearch.text = "Tidak ketemu? Isi alamat secara manual"
                 if (TextUtils.isEmpty(binding.searchPageInput.searchBarTextField.text.toString())) {
                     hideListLocation()
                 } else {
@@ -273,6 +286,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         latitude?.let { bundle.putDouble(EXTRA_LATITUDE, it) }
         longitude?.let { bundle.putDouble(EXTRA_LONGITUDE, it) }
         startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, 1998)
+        activity?.finish()
     }
 
     companion object {

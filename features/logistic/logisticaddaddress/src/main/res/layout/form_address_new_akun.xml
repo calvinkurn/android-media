@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:text_field_label="Nama Penerima"
+        app:text_field_counter="50"
         app:text_field_message="Ini akan jadi nama akunmu, bisa diubah nanti. Info lebih lanjut"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify
@@ -21,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_32"
         app:text_field_label="Nomor Hp"
+        app:text_field_input_type="number"
         app:text_field_append_drawable_icon_2= "@drawable/iconunify_contact"/>
 
 </LinearLayout>

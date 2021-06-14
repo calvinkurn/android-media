@@ -8,10 +8,11 @@
     <ScrollView
         android:id="@+id/sv_add_address"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:isScrollContainer="false"
         android:background="@color/Unify_N0"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_layout_address"
         app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
@@ -45,28 +46,32 @@
 
     </ScrollView>
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/bottom_layout_address"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:orientation="vertical"
+        android:background="@color/Unify_N0">
+
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_save_address"
+            android:id="@+id/btn_choose_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_8"
+            app:unifyButtonVariant="filled"
+            app:unifyButtonType="main"
+            android:textStyle="bold"
             android:text="Simpan"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="bold" />
+            android:textAlignment="center"/>
 
-    </FrameLayout>
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

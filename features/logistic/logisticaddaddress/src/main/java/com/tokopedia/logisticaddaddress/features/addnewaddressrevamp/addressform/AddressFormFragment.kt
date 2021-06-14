@@ -134,13 +134,15 @@ class AddressFormFragment : BaseDaggerFragment() {
     private fun onSuccessAddAddress() {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(AddEditAddressFragment.EXTRA_ADDRESS_NEW, saveDataModel)
+                putExtra(EXTRA_ADDRESS_NEW, saveDataModel)
             })
             finish()
         }
     }
 
     companion object {
+
+        const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRES_NEW"
 
         fun newInstance(extra: Bundle): AddressFormFragment {
             return AddressFormFragment().apply {

@@ -10,7 +10,6 @@
         android:id="@+id/tv_info_courier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_16"
         android:layout_marginStart="51dp"
         android:layout_marginEnd="51dp"
         app:layout_constraintTop_toTopOf="parent"
