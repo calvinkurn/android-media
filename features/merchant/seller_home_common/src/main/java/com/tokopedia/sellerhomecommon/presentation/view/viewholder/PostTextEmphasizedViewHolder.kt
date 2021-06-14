@@ -3,6 +3,7 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
@@ -35,6 +36,7 @@ class PostTextEmphasizedViewHolder(view: View?) : AbstractViewHolder<PostItemUiM
                 setErrorDrawable(com.tokopedia.abstraction.R.drawable.error_drawable)
             }
             imgShcPostState.loadImage(element.stateMediaUrl)
+            lineShcItemPost.isVisible = element.shouldShowUnderLine
         }
     }
 }
