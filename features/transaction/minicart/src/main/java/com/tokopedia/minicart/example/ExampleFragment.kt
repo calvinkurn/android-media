@@ -15,6 +15,11 @@ import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 
 class ExampleFragment : Fragment(), MiniCartWidgetListener {
 
+    companion object {
+        const val SHOP_ID_STAGING = "480552"
+        const val SHOP_ID_PROD = "11515028"
+    }
+
     private var miniCartWidget: MiniCartWidget? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -23,7 +28,7 @@ class ExampleFragment : Fragment(), MiniCartWidgetListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val shopIds = listOf("480552")
+        val shopIds = listOf(SHOP_ID_PROD)
         miniCartWidget = view.findViewById<MiniCartWidget>(R.id.mini_cart_widget)
         miniCartWidget?.initialize(shopIds, this, this, true)
     }
