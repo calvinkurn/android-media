@@ -71,9 +71,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     private var catalogsValueEntity: CatalogsValueEntity? = null
     private var pointValueText: TextView? = null
     private var pointValue: Typography? = null
-    private var textUserPoint: Typography? = null
     private var code: String? = null
-    private var userPoints: String? = null
     private var menu:Menu?=null
     private var quotaContainer:LinearLayout ? =null
     private var timerContainer:ConstraintLayout?=null
@@ -150,7 +148,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     private fun initObserver() {
         addCatalogDetailObserver()
         addSendGiftDialogObserver()
-        addValidationDialogObserver()
         addLatestStatusObserver()
         addStartSaveCouponObserver()
         addRedeemCouponObserver()
@@ -165,7 +162,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             is Success -> redeemCoupon(it.data.cta, it.data.code, it.data.title, it.data.description, it.data.redeemMessage)
             is ValidationError<*, *> -> {
                 if (it.data is ValidateMessageDialog) {
-                    checkValidation(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
+                    showErrorDialog(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
                 }
             }
         }
@@ -173,12 +170,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
     private fun addLatestStatusObserver() = mViewModel.latestStatusLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         it?.let { refreshCatalog(it) }
-    })
-
-    private fun addValidationDialogObserver() = mViewModel.startValidateCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-        it?.let {
-            checkValidation(it.item, it.title, it.desc, it.messageCode)
-        }
     })
 
     private fun addSendGiftDialogObserver() = mViewModel.sendGiftPageLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -214,80 +205,8 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         }
     })
 
-    override fun onDestroy() {
-        if (mTimer != null) {
-            mTimer!!.cancel()
-            mTimer = null
-        }
-        if (mSubscriptionCatalogTimer != null && !mSubscriptionCatalogTimer!!.isUnsubscribed) {
-            mSubscriptionCatalogTimer!!.unsubscribe()
-        }
-        if (mSubscriptionCouponTimer != null && !mSubscriptionCouponTimer.isUnsubscribed) {
-            mSubscriptionCouponTimer.unsubscribe()
-        }
-        super.onDestroy()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
-    }
-
-    override fun getAppContext(): Context {
-        return requireContext()
-    }
-
-    override fun showLoader() {
-        mContainerMain?.displayedChild = CONTAINER_LOADER
-    }
-
-    override fun showError(hasInternet: Boolean) {
-        if (menu != null) {
-            setMenuVisibility(menu!!, false)
-        }
-        mContainerMain?.displayedChild = CONTAINER_ERROR
-        serverErrorView?.showErrorUi(hasInternet)
-    }
-
-    private fun showCouponError() {
-        if (menu != null) {
-            setMenuVisibility(menu!!, false)
-        }
-        container?.displayedChild = CONTAINER_COUPON_ERROR
-        btnError.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
-        }
-    }
-
-    override fun hideLoader() {
-        mContainerMain?.displayedChild = CONTAINER_DATA
-    }
-
-    override fun populateDetail(data: CatalogsValueEntity) {
-        catalogsValueEntity = data
-        setCatalogToUi(data)
-    }
-
-    override fun getActivityContext(): Context {
-        return requireActivity()
-    }
-
-    override fun getScreenName(): String {
-        return AnalyticsTrackerUtil.ScreenKeys.COUPON_CATALOG_SCREEN_NAME
-    }
-
-    override fun initInjector() {
-        getComponent(TokopointBundleComponent::class.java)
-                .inject(this)
-    }
-
-    override fun onClick(source: View) {
-        if (source.id == R.id.text_my_coupon) {
-            startActivity(getCallingIntent(activityContext))
-        }
-    }
-
     private fun initViews(view: View) {
+
         mContainerMain = view.findViewById(R.id.container)
         serverErrorView = view.findViewById(R.id.server_error_view)
         quotaContainer = view.findViewById(R.id.quota_container)
@@ -307,6 +226,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         imgBanner = view.findViewById(R.id.img_banner)
         labelPoint = view.findViewById(R.id.text_point_label)
         textDiscount = view.findViewById(R.id.text_point_discount)
+        pointValueText = view.findViewById(R.id.text_point_value_label)
 
     }
 
@@ -402,33 +322,19 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         decorateDialog(dialog)
     }
 
-    override fun checkValidation(item: CatalogsValueEntity, title: String?, message: String, resCode: Int) {
-        if (resCode == CommonConstant.CouponRedemptionCode.SUCCESS) {
-            mViewModel.startSaveCoupon(item)
-            AnalyticsTrackerUtil.sendEvent(context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
-                    title)
-        } else {
-            showErrorDialog(item, title, message, resCode)
-        }
-    }
-
     override fun onRealCodeReFresh(realCode: String) {
         if (view == null || mSubscriptionCouponTimer == null) {
             return
         }
-        val btnAction2: Typography = requireView().findViewById(R.id.button_action_2)
         if (realCode != null && !realCode.isEmpty()) {
-            btnAction2.setText(R.string.tp_label_use)
-            btnAction2.isEnabled = true
+            btnAction2?.setText(R.string.tp_label_use)
+            btnAction2?.isEnabled = true
             mSubscriptionCouponTimer.unsubscribe()
             return
         }
         if (mRefreshRepeatCount >= CommonConstant.MAX_COUPON_RE_FETCH_COUNT) {
-            btnAction2.setText(R.string.tp_label_refresh_repeat)
-            btnAction2.isEnabled = true
+            btnAction2?.setText(R.string.tp_label_refresh_repeat)
+            btnAction2?.isEnabled = true
             setButtonTextColor(btnAction2)
             mSubscriptionCouponTimer.unsubscribe()
         }
@@ -531,26 +437,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             disabledError?.text = data.disableErrorMessage
         }
 
-        if (data.minimumUsageLabel.isNullOrEmpty()) {
-            transactionContainer?.hide()
-        } else {
-            transactionContainer?.show()
-            minUsageLabel?.show()
-            minUsageLabel?.text = data.minimumUsageLabel
-        }
-
-        if (data.minimumUsage.isNullOrEmpty()) {
-            minUsageValue?.hide()
-        } else {
-            minUsageValue?.show()
-            minUsageValue?.text = data.minimumUsage
-        }
-        if ((!data.activePeriod.isNullOrEmpty() && data.activePeriod?.toLong()!! > 0) || !data.activePeriodDate.isNullOrEmpty()) {
-            timerContainer?.visibility = View.VISIBLE
-            showTimer(data)
-        } else {
-            timerContainer?.visibility = View.GONE
-        }
+        handleTimerTransactionVisibility(data)
         //disabling the coupons if not eligible for current membership
         if (data.isDisabled) {
             ImageUtil.dimImage(imgBanner)
@@ -603,7 +490,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         btnAction2?.setOnClickListener { v: View? ->
             //call validate api the show dialog
             if (mUserSession?.isLoggedIn == true) {
-                mViewModel.startValidateCoupon(data)
+                mViewModel.startSaveCoupon(data)
             } else {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
             }
@@ -613,12 +500,12 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                     AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
                     mCouponName)
         }
-        pointValueText = requireView().findViewById(R.id.text_point_value_label)
         if (!mUserSession!!.isLoggedIn) {
             pointValueText?.text = context?.resources?.getString(R.string.tp_masuk_tukar_point)
         }
         //start catalog status timer
-        mSubscriptionCatalogTimer = Observable.interval(CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong(), CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong(), TimeUnit.MILLISECONDS)
+        mSubscriptionCatalogTimer = Observable.interval(CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong(),
+            CommonConstant.DEFAULT_AUTO_REFRESH_S.toLong(), TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<Long?>() {
@@ -668,12 +555,36 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             val upperText = StringBuilder()
             for (i in data.indices) {
                 if (i == 1) { //exclusive case for handling font color of second index.
-                    upperText.append("<font color='${ColorUtil.getColorFromResToString(activityContext,com.tokopedia.unifyprinciples.R.color.Unify_RN500)}'>" + data[i] + "</font>")
+                    upperText.append("<font color='${ColorUtil.getColorFromResToString
+                        (activityContext,com.tokopedia.unifyprinciples.R.color.Unify_RN500)}'>" + data[i] + "</font>")
                 } else {
                     upperText.append(data[i]).append(" ")
                 }
             }
             quota?.text = MethodChecker.fromHtml(upperText.toString())
+        }
+    }
+
+    private fun handleTimerTransactionVisibility(data: CatalogsValueEntity){
+        if (data.minimumUsageLabel.isNullOrEmpty()) {
+            transactionContainer?.hide()
+        } else {
+            transactionContainer?.show()
+            minUsageLabel?.show()
+            minUsageLabel?.text = data.minimumUsageLabel
+        }
+
+        if (data.minimumUsage.isNullOrEmpty()) {
+            minUsageValue?.hide()
+        } else {
+            minUsageValue?.show()
+            minUsageValue?.text = data.minimumUsage
+        }
+        if ((!data.activePeriod.isNullOrEmpty() && data.activePeriod?.toLong()!! > 0) || !data.activePeriodDate.isNullOrEmpty()) {
+            timerContainer?.show()
+            showTimer(data)
+        } else {
+            timerContainer?.hide()
         }
     }
 
@@ -707,13 +618,86 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         super.onDestroyView()
     }
 
+    override fun onDestroy() {
+        if (mTimer != null) {
+            mTimer!!.cancel()
+            mTimer = null
+        }
+        if (mSubscriptionCatalogTimer != null && !mSubscriptionCatalogTimer!!.isUnsubscribed) {
+            mSubscriptionCatalogTimer!!.unsubscribe()
+        }
+        if (mSubscriptionCouponTimer != null && !mSubscriptionCouponTimer.isUnsubscribed) {
+            mSubscriptionCouponTimer.unsubscribe()
+        }
+        super.onDestroy()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
+    }
+
+    override fun getAppContext(): Context {
+        return requireContext()
+    }
+
+    override fun showLoader() {
+        mContainerMain?.displayedChild = CONTAINER_LOADER
+    }
+
+    override fun showError(hasInternet: Boolean) {
+        if (menu != null) {
+            setMenuVisibility(menu!!, false)
+        }
+        mContainerMain?.displayedChild = CONTAINER_ERROR
+        serverErrorView?.showErrorUi(hasInternet)
+    }
+
+    private fun showCouponError() {
+        if (menu != null) {
+            setMenuVisibility(menu!!, false)
+        }
+        container?.displayedChild = CONTAINER_COUPON_ERROR
+        btnError.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
+        }
+    }
+
+    override fun hideLoader() {
+        mContainerMain?.displayedChild = CONTAINER_DATA
+    }
+
+    override fun populateDetail(data: CatalogsValueEntity) {
+        catalogsValueEntity = data
+        setCatalogToUi(data)
+    }
+
+    override fun getActivityContext(): Context {
+        return requireActivity()
+    }
+
+    override fun getScreenName(): String {
+        return AnalyticsTrackerUtil.ScreenKeys.COUPON_CATALOG_SCREEN_NAME
+    }
+
+    override fun initInjector() {
+        getComponent(TokopointBundleComponent::class.java)
+                .inject(this)
+    }
+
+    override fun onClick(source: View) {
+        if (source.id == R.id.text_my_coupon) {
+            startActivity(getCallingIntent(activityContext))
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             pointValueText!!.text = resources.getString(R.string.points_saya)
             mViewModel.getCatalogDetail(code ?: "")
             val item = catalogsValueEntity
-            item?.let { if (it.isDisabled) mViewModel.startValidateCoupon(it) }
+            item?.let { if (it.isDisabled) mViewModel.startSaveCoupon(it) }
         }
     }
 
