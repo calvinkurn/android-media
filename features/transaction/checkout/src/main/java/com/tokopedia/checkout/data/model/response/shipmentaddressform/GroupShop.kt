@@ -8,6 +8,8 @@ import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoC
 data class GroupShop(
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
+        @SerializedName("unblocking_errors")
+        val unblockingErrors: List<String> = emptyList(),
         @SerializedName("shop")
         val shop: Shop = Shop(),
         @SerializedName("shop_shipments")

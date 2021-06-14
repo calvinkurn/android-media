@@ -472,8 +472,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderCustomError(ShipmentCartItemModel shipmentCartItemModel) {
-        if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getProductErrorCount() > 0 && shipmentCartItemModel.getFirstProductErrorIndex() > 0) {
-            final String errorMessage = itemView.getContext().getString(R.string.checkout_disabled_items_description, shipmentCartItemModel.getProductErrorCount());
+        if (!shipmentCartItemModel.isError() && shipmentCartItemModel.isHasUnblockingError()
+                && !shipmentCartItemModel.getUnblockingErrorMessage().isEmpty() && shipmentCartItemModel.getFirstProductErrorIndex() > 0) {
+            final String errorMessage = shipmentCartItemModel.getUnblockingErrorMessage();
             customTickerDescription.setText(errorMessage);
             customTickerAction.setOnClickListener(v -> {
                 mActionListener.onClickLihatOnTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), errorMessage);

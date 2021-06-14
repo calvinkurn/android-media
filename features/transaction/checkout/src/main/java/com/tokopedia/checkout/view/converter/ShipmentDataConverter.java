@@ -218,9 +218,10 @@ public class ShipmentDataConverter {
         if (shipmentCartItemModel.isError()) {
             shipmentCartItemModel.setAllItemError(true);
         }
+        shipmentCartItemModel.setHasUnblockingError(groupShop.getHasUnblockingError());
+        shipmentCartItemModel.setUnblockingErrorMessage(groupShop.getUnblockingErrorMessage());
         shipmentCartItemModel.setErrorTitle(groupShop.getErrorMessage());
         shipmentCartItemModel.setFirstProductErrorIndex(groupShop.getFirstProductErrorIndex());
-        shipmentCartItemModel.setProductErrorCount(groupShop.getProductErrorCount());
         if (orderIndex > 0) {
             shipmentCartItemModel.setOrderNumber(orderIndex);
         }
