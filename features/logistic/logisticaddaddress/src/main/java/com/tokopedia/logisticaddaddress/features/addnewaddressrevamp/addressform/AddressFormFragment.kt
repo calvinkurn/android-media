@@ -2,9 +2,12 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressfor
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.res.Resources
+import android.os.Build
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -27,15 +30,19 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticaddaddress.databinding.FragmentAddressFormBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
+import com.tokopedia.logisticaddaddress.domain.model.add_address.ContactData
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.LabelAlamatChipsAdapter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageViewModel
+import com.tokopedia.logisticaddaddress.utils.AddEditAddressUtil
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
 import javax.inject.Inject
 
@@ -48,6 +55,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private var staticDimen8dp: Int? = 0
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private lateinit var labelAlamatChipsLayoutManager: ChipsLayoutManager
+
+    private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
     private var binding by autoCleared<FragmentAddressFormBinding>()
 
@@ -79,12 +88,24 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             currentLat = saveDataModel?.latitude?.toDouble() ?: 0.0
             currentLong = saveDataModel?.longitude?.toDouble() ?: 0.0
         }
+        permissionCheckerHelper = PermissionCheckerHelper()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareData()
         initObserver()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
+            val contactURI = data?.data
+            var contact: ContactData? = null
+            if (contactURI != null) {
+                contact = context?.let { AddEditAddressUtil.convertContactUriToData(it.contentResolver, contactURI) }
+            }
+            binding.formAccount.etNomorHp.textFieldInput.setText(contact?.contactNumber)
+        }
     }
 
     private fun prepareData() {
@@ -138,15 +159,53 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
             formAccount.etNamaPenerima.textFieldInput.setText(userSession.name)
             formAccount.etNomorHp.textFieldInput.setText(userSession.phoneNumber)
-            formAccount.etNomorHp.setFirstIcon(com.tokopedia.iconunify.R.drawable.iconunify_contact)
+            formAccount.etNomorHp.setFirstIcon(R.drawable.ic_contact_black)
             formAccount.etNomorHp.getFirstIcon().setOnClickListener {
-                Toast.makeText(context, "muncul", Toast.LENGTH_SHORT).show()
+                onNavigateToContact()
             }
 
         }
 
         binding.btnSaveAddress.setOnClickListener {
             doSaveAddress()
+        }
+    }
+
+    private fun onNavigateToContact() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            permissionCheckerHelper?.checkPermissions(this,
+                    getPermissions(),
+                    object : PermissionCheckerHelper.PermissionCheckListener {
+                        override fun onPermissionDenied(permissionText: String) {
+                            //no-op
+                        }
+
+                        override fun onNeverAskAgain(permissionText: String) {
+                            //no-op
+                        }
+
+                        override fun onPermissionGranted() {
+                            openContactPicker()
+                        }
+                    }, this.getString(R.string.rationale_need_contact))
+        }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT
+        )
+    }
+
+    private fun openContactPicker() {
+        val contactPickerIntent = Intent(
+                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+        try {
+            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
+        } catch (e: ActivityNotFoundException) {
+            view?.let {
+                Toaster.build(it, getString(R.string.contact_not_found), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            }
         }
     }
 
@@ -234,6 +293,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     companion object {
 
         const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRES_NEW"
+        const val REQUEST_CODE_CONTACT_PICKER = 99
 
         fun newInstance(extra: Bundle): AddressFormFragment {
             return AddressFormFragment().apply {

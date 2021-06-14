@@ -20,7 +20,7 @@
         android:paddingRight="@dimen/dp_16"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <include
             android:id="@+id/loading_list_1"
@@ -107,7 +107,7 @@
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_invalid_loc"
