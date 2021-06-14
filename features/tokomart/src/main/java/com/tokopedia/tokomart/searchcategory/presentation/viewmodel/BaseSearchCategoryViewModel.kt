@@ -185,9 +185,15 @@ abstract class BaseSearchCategoryViewModel(
         this.warehouseId = warehouseId
 
         if (warehouseId.isValidId())
-            loadFirstPage()
+            processLoadDataInCoverage()
         else
             showOutOfCoverage()
+    }
+
+    protected open fun processLoadDataInCoverage() {
+        isOutOfServiceMutableLiveData.value = false
+
+        loadFirstPage()
     }
 
     private fun getShopIdBeforeLoadData() {

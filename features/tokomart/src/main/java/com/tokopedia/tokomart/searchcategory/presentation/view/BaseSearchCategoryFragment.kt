@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -40,6 +41,8 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.ChooseAddressBottomSheetListener
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
@@ -84,10 +87,13 @@ abstract class BaseSearchCategoryFragment:
         CategoryChooserBottomSheet.Callback,
         MiniCartWidgetListener,
         ProductItemListener,
-        EmptyProductListener {
+        EmptyProductListener,
+        ChooseAddressBottomSheetListener,
+        NoAddressEmptyStateView.ActionListener {
 
     companion object {
         protected const val DEFAULT_SPAN_COUNT = 2
+        protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
     }
 
     protected var searchCategoryAdapter: SearchCategoryAdapter? = null
@@ -610,8 +616,11 @@ abstract class BaseSearchCategoryFragment:
         val container = container ?: return
         val navToolbar = navToolbar ?: return
 
+        if (noAddressEmptyStateView != null) return
+
         noAddressEmptyStateView = NoAddressEmptyStateView(context).also {
             it.id = View.generateViewId()
+            it.actionListener = this
 
             container.addView(it)
             configureOutOfServiceConstraint(container, it, navToolbar)
@@ -642,6 +651,32 @@ abstract class BaseSearchCategoryFragment:
     override fun onChangeKeywordButtonClick() {
         onSearchBarClick()
     }
+
+    override fun onChangeAddressClicked() {
+        val parentFragmentManager = parentFragmentManager
+
+        ChooseAddressBottomSheet().also {
+            it.setListener(this)
+            it.show(parentFragmentManager, OUT_OF_COVERAGE_CHOOSE_ADDRESS)
+        }
+    }
+
+    override fun onReturnClick() {
+        RouteManager.route(context, ApplinkConst.HOME)
+    }
+
+    override fun getLocalizingAddressHostSourceBottomSheet() =
+            SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
+
+    override fun onAddressDataChanged() {
+        getViewModel().onLocalizingAddressSelected()
+    }
+
+    override fun onLocalizingAddressServerDown() { }
+
+    override fun onLocalizingAddressLoginSuccessBottomSheet() { }
+
+    override fun onDismissChooseAddressBottomSheet() { }
 
     override fun onGoToGlobalSearch() {
 
