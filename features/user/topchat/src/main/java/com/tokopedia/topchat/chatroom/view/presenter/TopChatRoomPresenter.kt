@@ -210,8 +210,9 @@ open class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
-        val pojo: ChatSocketPojo =
-            topChatRoomWebSocketMessageMapper.parseResponse(webSocketResponse)
+        val pojo: ChatSocketPojo = topChatRoomWebSocketMessageMapper.parseResponse(
+            webSocketResponse
+        )
         if (pojo.msgId.toString() != messageId) return
         when (webSocketResponse.code) {
             EVENT_TOPCHAT_TYPING -> {
