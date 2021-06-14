@@ -15,6 +15,7 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
 
     protected var chatSrwResponseMultipleQuestion = ChatSmartReplyQuestionResponse()
     protected var wsMineResponseText: WebSocketResponse = WebSocketResponse()
+    protected var wsInterlocutorResponseText: WebSocketResponse = WebSocketResponse()
     protected var wsSellerResponseText: WebSocketResponse = WebSocketResponse()
 
     private val templateChats = listOf(
@@ -42,6 +43,10 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
         )
         wsSellerResponseText = AndroidFileUtil.parse(
             "buyer/ws_opposite_with_label.json",
+            WebSocketResponse::class.java
+        )
+        wsInterlocutorResponseText = AndroidFileUtil.parse(
+            "seller/ws_interlocutor_response_text.json",
             WebSocketResponse::class.java
         )
     }

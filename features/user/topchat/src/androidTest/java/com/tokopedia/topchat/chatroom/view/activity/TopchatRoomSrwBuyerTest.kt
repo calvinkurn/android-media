@@ -425,7 +425,35 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwBubbleExpanded(0)
     }
 
-    // TODO: SRW bubble should always stays at the bottom when receive response msg from ws
+    @Test
+    fun srw_bubble_should_always_stays_at_the_bottom_when_receive_response_msg_from_ws() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+        intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
+            .respondWith(
+                Instrumentation.ActivityResult(
+                    Activity.RESULT_OK, getAttachProductData(1)
+                )
+            )
+
+        // When
+        clickSrwPreviewItemAt(0)
+        websocket.simulateResponse(wsMineResponseText)
+        websocket.simulateResponse(wsMineResponseText)
+        websocket.simulateResponse(wsInterlocutorResponseText)
+        websocket.simulateResponse(wsInterlocutorResponseText)
+
+        // Then
+        assertSrwBubbleContentIsVisibleAt(0)
+        assertSrwBubbleExpanded(0)
+    }
+
     // TODO: SRW bubble should always stays at the bottom when receive response different-day msg from ws
     // TODO: SRW bubble should removed when user request sent invoice
     // TODO: SRW bubble should removed when user receive invoice event from ws.
