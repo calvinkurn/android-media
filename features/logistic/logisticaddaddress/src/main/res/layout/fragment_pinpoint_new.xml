@@ -56,7 +56,7 @@
                 android:layout_marginStart="@dimen/unify_space_12"
                 app:centerText="true"
                 app:chipSize="medium"
-                app:chipText="Gunakan Lokasi Sat Ini"
+                app:chipText="Gunakan Lokasi Saat Ini"
                 app:chipType="normal" />
 
             <com.tokopedia.unifycomponents.ChipsUnify

@@ -39,7 +39,7 @@
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="visible">
+        android:visibility="gone">
 
     <LinearLayout
         android:id="@+id/tv_address_layout"
@@ -97,6 +97,53 @@
             android:textStyle="bold"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/invalid_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="visible">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_invalid_loc"
+            android:layout_width="@dimen/dp_160"
+            android:layout_height="@dimen/dp_130"
+            android:layout_gravity="center_horizontal"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_invalid_loc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginStart="@dimen/dp_50"
+            android:layout_marginEnd="@dimen/dp_50"
+            app:typographyType="heading_2"
+            android:layout_gravity="center_horizontal"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_invalid_loc_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:gravity="center"
+            app:typographyType="body_2" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_ana_negative"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:layout_weight="1"
+            android:text="Isi Alamat Manual"
+            android:textStyle="bold"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled"/>
 
     </LinearLayout>
 

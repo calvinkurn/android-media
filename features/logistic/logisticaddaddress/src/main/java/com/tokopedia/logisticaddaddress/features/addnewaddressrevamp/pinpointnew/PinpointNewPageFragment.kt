@@ -26,7 +26,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant.EXTRA_ADDRESS_NEW
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -211,12 +213,18 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                         val msg = it.data.messageError[0]
                         when {
                             msg.contains(FOREIGN_COUNTRY_MESSAGE) -> showOutOfReachBottomSheet()
-                            msg.contains(LOCATION_NOT_FOUND_MESSAGE) -> showLocationNotFoundCTA()
+                            msg.contains(LOCATION_NOT_FOUND_MESSAGE) -> showNotFoundLocation()
                         }
                     }
                 }
 
-                is Fail -> it.throwable.printStackTrace()
+                is Fail -> {
+                    val msg = it.throwable.message.toString()
+                    when {
+                        msg.contains(FOREIGN_COUNTRY_MESSAGE) -> showOutOfReachBottomSheet()
+                        else -> showNotFoundLocation()
+                    }
+                }
             }
         })
 
@@ -233,13 +241,23 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         binding?.bottomsheetLocation?.run {
             wholeLoadingContainer.visibility = View.VISIBLE
             districtLayout.visibility = View.GONE
+            invalidLayout.visibility = View.GONE
         }
     }
 
     private fun showDistrictBottomSheet() {
         binding?.bottomsheetLocation?.run {
-            wholeLoadingContainer.visibility = View.GONE
             districtLayout.visibility = View.VISIBLE
+            wholeLoadingContainer.visibility = View.GONE
+            invalidLayout.visibility = View.GONE
+        }
+    }
+
+    private fun showInvalidBottomSheet() {
+        binding?.bottomsheetLocation?.run {
+            invalidLayout.visibility = View.VISIBLE
+            wholeLoadingContainer.visibility = View.GONE
+            districtLayout.visibility = View.GONE
         }
     }
 
@@ -275,7 +293,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         viewModel.setAddress(savedModel)
         with(data.errMessage) {
             if (this != null && this.contains(GetDistrictUseCase.LOCATION_NOT_FOUND_MESSAGE)) {
-                showLocationNotFoundCTA()
+                showNotFoundLocation()
             } else updateGetDistrictBottomSheet(savedModel)
         }
     }
@@ -324,6 +342,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 //go-to ANA Negative
             }
 
+            chipsCurrentLoc.chipImageResource = context?.let { getIconUnifyDrawable(it, IconUnify.TARGET) }
             chipsCurrentLoc.setOnClickListener {
                 if (allPermissionsGranted()) {
                     hasRequestedLocation = true
@@ -334,7 +353,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 }
             }
 
-            chipsSearch.chip_image_icon.setImageResource(R.drawable.ic_search_black)
+            chipsSearch.chipImageResource = context?.let { getIconUnifyDrawable(it, IconUnify.SEARCH) }
             chipsSearch.setOnClickListener {
                 goToSearchPage()
             }
@@ -360,6 +379,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 if (data != null) {
+                    moveMap(getLatLng(data.latitude, data.longitude), ZOOM_LEVEL)
                     viewModel.getDistrictData(data.latitude, data.longitude)
                 } else {
                     fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
@@ -440,15 +460,35 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun showOutOfReachBottomSheet() {
-
+        showInvalidBottomSheet()
+        updateInvalidBottomSheetData(1)
     }
 
-    private fun showLocationNotFoundCTA() {
-
-    }
 
     private fun showNotFoundLocation() {
+        showInvalidBottomSheet()
+        updateInvalidBottomSheetData(2)
+    }
 
+    private fun updateInvalidBottomSheetData(type: Int) {
+        if (type == 1) {
+            binding?.bottomsheetLocation?.run {
+                imgInvalidLoc.setImageUrl(IMAGE_OUTSIDE_INDONESIA)
+                tvInvalidLoc.text = "Lokasi di luar jangkauan"
+                tvInvalidLocDetail.text = "Saat ini, Tokopedia belum melayani pengiriman ke luar Indonesia. Pilih ulang lokasimu, ya."
+            }
+        } else {
+            binding?.bottomsheetLocation?.run {
+                imgInvalidLoc.setImageUrl(LOCATION_NOT_FOUND)
+                tvInvalidLoc.text = "Yaah, alamatmu tidak terdeteksi"
+                tvInvalidLocDetail.text = "Tenang, kamu tetep bisa pilih lokasi ini dengan melengkapi alamat secara manual."
+            }
+        }
+
+        binding?.bottomsheetLocation?.btnAnaNegative?.setOnClickListener {
+            Toast.makeText(context, "This feature is under development", Toast.LENGTH_SHORT).show()
+            //go-to ANA Negative
+        }
     }
 
     private fun goToSearchPage() {
@@ -470,6 +510,9 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
         const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
         const val LOCATION_NOT_FOUND_MESSAGE = "Lokasi gagal ditemukan"
+
+        const val IMAGE_OUTSIDE_INDONESIA = "https://images.tokopedia.net/img/android/logistic/location_outside_indonesia.png"
+        const val LOCATION_NOT_FOUND = "https://images.tokopedia.net/img/android/logistic/location_not_found.png"
 
         fun newInstance(extra: Bundle): PinpointNewPageFragment {
             return PinpointNewPageFragment().apply {

@@ -11,11 +11,14 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.db.District
 import com.tokopedia.logisticCommon.data.response.DistrictItem
@@ -127,6 +130,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         staticDimen8dp = context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
         setOnTouchLabelAddress(ANA_POSITIVE)
         setupRvLabelAlamatChips()
+
         binding.run {
             cardAddress.addressDistrict.text = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
 
@@ -134,6 +138,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
             formAccount.etNamaPenerima.textFieldInput.setText(userSession.name)
             formAccount.etNomorHp.textFieldInput.setText(userSession.phoneNumber)
+            formAccount.etNomorHp.setFirstIcon(com.tokopedia.iconunify.R.drawable.iconunify_contact)
+            formAccount.etNomorHp.getFirstIcon().setOnClickListener {
+                Toast.makeText(context, "muncul", Toast.LENGTH_SHORT).show()
+            }
 
         }
 
