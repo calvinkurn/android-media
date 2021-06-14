@@ -9,44 +9,50 @@ import javax.inject.Inject
 class PmsAnalytics @Inject constructor(
     private val userSession: dagger.Lazy<UserSessionInterface>,
 ) {
-
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
+    private val userId = userSession.get().userId
 
     fun sendPmsAnalyticsEvent(event: PmsEvents) {
         when (event) {
-            is PmsEvents.ChevronTapClickEvent -> sendPmsEvent(ACTION_TAP_THREE_DOTS)
-            is PmsEvents.ShowTransactionDetailEvent -> sendPmsEvent(ACTION_CLICK_TRANSACTION_DETAIL)
-            is PmsEvents.InvokeEditBcaUserIdEvent -> sendPmsEvent(ACTION_CLICK_EDIT_KLIC_BCA)
-            is PmsEvents.ConfirmAccountDetailsEvent -> sendPmsEvent(ACTION_CLICK_CONFIRM_BANK_DETAIL)
-            is PmsEvents.UploadPaymentProofEvent -> sendPmsEvent(ACTION_CLICK_UPLOAD_PAYMENT_PROOF)
-            is PmsEvents.SelectImageEvent -> sendPmsEvent(ACTION_CLICK_SELECT_IMAGE)
-            is PmsEvents.SelectAnotherImageEvent -> sendPmsEvent(ACTION_CLICK_SELECT_ANOTHER_IMAGE)
-            is PmsEvents.ConfirmSelectedImageEvent -> sendPmsEvent(ACTION_CLICK_CONFIRM_IMAGE)
-            is PmsEvents.HowToPayRedirectionEvent -> sendPmsEvent(ACTION_CLICK_HTP_REDIRECTION)
-            is PmsEvents.WaitingCardClickEvent -> sendPmsEvent(
+            is PmsEvents.ChevronTapClickEvent -> prepareCommonMap(ACTION_TAP_THREE_DOTS)
+            is PmsEvents.ShowTransactionDetailEvent -> prepareCommonMap(
+                ACTION_CLICK_TRANSACTION_DETAIL
+            )
+            is PmsEvents.InvokeEditBcaUserIdEvent -> prepareCommonMap(ACTION_CLICK_EDIT_KLIC_BCA)
+            is PmsEvents.ConfirmAccountDetailsEvent -> prepareCommonMap(
+                ACTION_CLICK_CONFIRM_BANK_DETAIL
+            )
+            is PmsEvents.UploadPaymentProofEvent -> prepareCommonMap(
+                ACTION_CLICK_UPLOAD_PAYMENT_PROOF
+            )
+            is PmsEvents.SelectImageEvent -> prepareCommonMap(ACTION_CLICK_SELECT_IMAGE)
+            is PmsEvents.SelectAnotherImageEvent -> prepareCommonMap(
+                ACTION_CLICK_SELECT_ANOTHER_IMAGE
+            )
+            is PmsEvents.ConfirmSelectedImageEvent -> prepareCommonMap(ACTION_CLICK_CONFIRM_IMAGE)
+            is PmsEvents.HowToPayRedirectionEvent -> prepareCommonMap(ACTION_CLICK_HTP_REDIRECTION)
+            is PmsEvents.WaitingCardClickEvent -> prepareCommonMap(
                 ACTION_CLICK_WAITING_CARD,
                 "${LABEL_PAYMENT_CARD_TYPE}: ${event.paymentType}"
             )
-            is PmsEvents.DeferredPaymentsShownEvent -> sendPmsEvent(
-                ACTION_OPEN_PMS_INITIAL,
-                "$LABEL_WAITING_PAYMENT_COUNT: ${event.waitingPaymentCount ?: 0}"
-
-            )
-            is PmsEvents.InvokeCancelTransactionBottomSheetEvent -> sendPmsEvent(
+            is PmsEvents.InvokeCancelTransactionBottomSheetEvent -> prepareCommonMap(
                 ACTION_CLICK_CANCEL_TRANSACTION
             )
-            is PmsEvents.ConfirmCancelTransactionEvent -> sendPmsEvent(
+            is PmsEvents.ConfirmCancelTransactionEvent -> prepareCommonMap(
                 ACTION_CLICK_CONFIRM_CANCEL_TRANSACTION
             )
-            is PmsEvents.InvokeCancelTransactionOnDetailEvent -> sendPmsEvent(
+            is PmsEvents.InvokeCancelTransactionOnDetailEvent -> prepareCommonMap(
                 ACTION_CLICK_CANCEL_ON_TRANSACTION_DETAIL
             )
-            is PmsEvents.ConfirmEditBcaUserIdEvent -> sendPmsEvent(
+            is PmsEvents.ConfirmEditBcaUserIdEvent -> prepareCommonMap(
                 ACTION_CLICK_CONFIRM_EDIT_KLIC_BCA
             )
-            is PmsEvents.InvokeChangeAccountDetailsEvent -> sendPmsEvent(
+            is PmsEvents.InvokeChangeAccountDetailsEvent -> prepareCommonMap(
                 ACTION_CLICK_CHANGE_BANK_DETAIL
+            )
+            is PmsEvents.DeferredPaymentsShownEvent -> prepareOpenScreenEventMap(
+                "$LABEL_WAITING_PAYMENT_COUNT: ${event.waitingPaymentCount}",
             )
         }
     }
@@ -58,9 +64,19 @@ class PmsAnalytics @Inject constructor(
             action,
             label
         )
+        sendAnalytics(map)
+    }
+
+    private fun prepareOpenScreenEventMap(eventLabel: String) {
+        val map = TrackAppUtils.gtmData(EVENT_NAME_OPEN_SCREEN, "", "", eventLabel)
+        map[KEY_LOGGED_IN_STATUS] = if (userId.isEmpty()) "false" else "true"
+        sendAnalytics(map)
+    }
+
+    private fun sendAnalytics(map: MutableMap<String, Any>) {
         map[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_PAYMENT
         map[KEY_CURRENT_SITE] = CURRENT_SITE_PAYMENT
-        map[KEY_USER_ID] = userSession.get().userId
+        map[KEY_USER_ID] = userId
         analyticTracker.sendGeneralEvent(map)
     }
 
@@ -70,6 +86,7 @@ class PmsAnalytics @Inject constructor(
         const val KEY_USER_ID = "userId"
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
+        const val KEY_LOGGED_IN_STATUS = "isLoggedInStatus"
 
         const val BUSINESS_UNIT_PAYMENT = "Payment"
         const val CURRENT_SITE_PAYMENT = "tokopedia"
