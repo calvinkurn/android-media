@@ -43,7 +43,9 @@ data class GetBuyerOrderDetailResponse(
                 @SerializedName("shop")
                 val shop: Shop = Shop(),
                 @SerializedName("ticker_info")
-                val tickerInfo: TickerInfo = TickerInfo()
+                val tickerInfo: TickerInfo = TickerInfo(),
+                @SerializedName("dropship")
+                val dropship: Dropship = Dropship()
         ) {
             data class Button(
                     @SerializedName("display_name")
@@ -255,6 +257,13 @@ data class GetBuyerOrderDetailResponse(
                     val isBebasOngkir: Boolean = false,
                     @SerializedName("bo_image_url")
                     val boImageUrl: String = "false"
+            )
+
+            data class Dropship(
+                    @SerializedName("name")
+                    val name: String = "",
+                    @SerializedName("phone_number")
+                    val phoneNumber: String = ""
             )
         }
     }

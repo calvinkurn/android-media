@@ -17,7 +17,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 orderStatusUiModel = mapOrderStatusUiModel(buyerOrderDetail.orderStatus, buyerOrderDetail.tickerInfo, buyerOrderDetail.preOrder, buyerOrderDetail.invoice, buyerOrderDetail.invoiceUrl, buyerOrderDetail.deadline, buyerOrderDetail.paymentDate, buyerOrderDetail.orderId),
                 paymentInfoUiModel = mapPaymentInfoUiModel(buyerOrderDetail.payment, buyerOrderDetail.cashbackInfo),
                 productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.shop, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id),
-                shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id)
+                shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id, buyerOrderDetail.dropship)
         )
     }
 
@@ -53,12 +53,12 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapShipmentInfoUiModel(shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment, meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta, orderId: String, orderStatusId: String): ShipmentInfoUiModel {
+    private fun mapShipmentInfoUiModel(shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment, meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta, orderId: String, orderStatusId: String, dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): ShipmentInfoUiModel {
         return ShipmentInfoUiModel(
                 awbInfoUiModel = mapAwbInfoUiModel(shipment.shippingRefNum, orderStatusId, orderId),
                 courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment.driver),
                 courierInfoUiModel = mapCourierInfoUiModel(shipment, meta),
-                dropShipperInfoUiModel = mapDropShipperInfoUiModel(), // TODO: Use data from backend
+                dropShipperInfoUiModel = mapDropShipperInfoUiModel(dropship),
                 headerUiModel = mapPlainHeader(resourceProvider.getShipmentInfoSectionHeader()),
                 receiverAddressInfoUiModel = mapReceiverAddressInfoUiModel(shipment.receiver),
                 ticker = mapTicker(shipment.shippingInfo, BuyerOrderDetailConst.TICKER_KEY_SHIPPING_INFO)
@@ -248,10 +248,10 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapDropShipperInfoUiModel(): ShipmentInfoUiModel.DropShipperInfoUiModel {
+    private fun mapDropShipperInfoUiModel(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): ShipmentInfoUiModel.DropShipperInfoUiModel {
         return ShipmentInfoUiModel.DropShipperInfoUiModel(
-                name = if (random() <= 0.5) "Smitty WerbenJagerManJensen" else "",
-                phoneNumber = if (random() <= 0.5) "0812345678" else ""
+                name = dropship.name,
+                phoneNumber = dropship.phoneNumber
         )
     }
 

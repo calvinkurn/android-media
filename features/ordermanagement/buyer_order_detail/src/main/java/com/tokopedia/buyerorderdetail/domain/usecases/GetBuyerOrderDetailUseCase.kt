@@ -184,6 +184,10 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   is_bo
                   bo_image_url
                 }
+                dropship {
+                  name
+                  phone_number
+                }
               }
             }
         """.trimIndent()
