@@ -28,13 +28,7 @@ class RxWebSocketUtilStub constructor() : RxWebSocketUtil(
     }
 
     override fun send(msg: String) {
-        val requestObj: WebSocketResponse = CommonUtil.fromJson(
-            msg, WebSocketResponse::class.java
-        )
-        val startTime = requestObj.jsonObject
-            ?.get("start_time")
-            ?.asString ?: return
-        startTimeQueue.add(startTime)
+        startTimeQueue.add(msg)
     }
 
     fun simulateResponse(wsResponseText: WebSocketResponse) {
@@ -48,7 +42,13 @@ class RxWebSocketUtilStub constructor() : RxWebSocketUtil(
     fun simulateResponseMatchRequestStartTime(
         wsResponseText: WebSocketResponse
     ) {
-        val startTime = startTimeQueue.remove() ?: return
+        val requestMsg = startTimeQueue.remove() ?: return
+        val requestObj: WebSocketResponse = CommonUtil.fromJson(
+            requestMsg, WebSocketResponse::class.java
+        )
+        val startTime = requestObj.jsonObject
+            ?.get("start_time")
+            ?.asString ?: return
         wsResponseText.jsonObject?.addProperty("start_time", startTime)
         val responseString = CommonUtil.toJson(wsResponseText)
         val wsInfo = WebSocketInfo(
