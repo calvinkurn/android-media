@@ -5,8 +5,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -19,9 +22,10 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
+import com.google.android.gms.tasks.OnFailureListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -29,6 +33,8 @@ import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.logisticCommon.util.rxEditText
 import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentSearchAddressBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
@@ -37,6 +43,8 @@ import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LATITUDE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LONGITUDE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
@@ -57,14 +65,13 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private lateinit var autoCompleteAdapter: AutoCompleteListAdapter
 
-    private val compositeSubs: CompositeSubscription by lazy { CompositeSubscription() }
-
+    private var bottomSheetLocUndefined: BottomSheetUnify? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var hasRequestedLocation: Boolean = false
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION)
-
+    private val compositeSubs: CompositeSubscription by lazy { CompositeSubscription() }
     private var binding by autoCleared<FragmentSearchAddressBinding>()
 
     override fun getScreenName(): String = ""
@@ -154,38 +161,14 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
         })
 
- /*       binding.searchPageInput.searchBarTextField.run {
-            setOnClickListener {
-                binding.searchPageInput.searchBarTextField.isCursorVisible = true
-                openSoftKeyboard()
-
-            }
-
-            rxEditText(this).subscribe(object: Subscriber<String>() {
-                override fun onNext(t: String) {
-                    if (t.isNotEmpty()) {
-                        loadAutoComplete(t)
-                    }
-                }
-
-                override fun onCompleted() {
-                    //no-op
-                }
-
-                override fun onError(e: Throwable?) {
-                    //no-op
-                }
-
-            }).toCompositeSubs(compositeSubs)
-        }*/
 
     }
-
+/*
     private fun openSoftKeyboard() {
         binding.searchPageInput.searchBarTextField.let {
             (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
         }
-    }
+    }*/
 
     private fun setViewListener() {
         fusedLocationClient = FusedLocationProviderClient(requireActivity())
@@ -199,6 +182,84 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 requestPermissionLocation()
             }
         }
+    }
+
+    private fun showBottomSheetLocUndefined(){
+        bottomSheetLocUndefined = BottomSheetUnify()
+        val viewBinding = BottomsheetLocationUndefinedBinding.inflate(LayoutInflater.from(context), null, false)
+        setupBottomSheetLocUndefined(viewBinding)
+
+        bottomSheetLocUndefined?.apply {
+            setCloseClickListener { dismiss() }
+            setChild(viewBinding.root)
+            setOnDismissListener { dismiss() }
+        }
+
+        childFragmentManager.let {
+            bottomSheetLocUndefined?.show(it, "")
+        }
+    }
+
+    private fun setupBottomSheetLocUndefined(viewBinding: BottomsheetLocationUndefinedBinding) {
+        viewBinding?.run {
+            imgLocUndefined.setImageUrl(LOCATION_NOT_FOUND)
+            tvLocUndefined.text = "Lokasi tidak terdeteksi"
+            tvInfoLocUndefined.text = "Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu."
+            btnActivateLocation.setOnClickListener {
+                goToSettingLocationPage()
+            }
+        }
+    }
+
+    private fun goToSettingLocationPage() {
+        if (context?.let { turnGPSOn(it) } == false) {
+            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+        }
+    }
+
+    private fun turnGPSOn(context: Context): Boolean {
+        var isGpsOn = false
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val mSettingsClient = LocationServices.getSettingsClient(context)
+
+        val locationRequest = LocationRequest.create()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 10 * 1000
+        locationRequest.fastestInterval = 2 * 1000
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+        val mLocationSettingsRequest = builder.build()
+        builder.setAlwaysShow(true)
+
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            isGpsOn = true
+        } else {
+            mSettingsClient
+                    .checkLocationSettings(mLocationSettingsRequest)
+                    .addOnSuccessListener(context as Activity) {
+                        //  GPS is already enable, callback GPS status through listener
+                        isGpsOn = true
+                    }
+                    .addOnFailureListener(context, OnFailureListener { e ->
+                        when ((e as ApiException).statusCode) {
+                            LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
+
+                                try {
+                                    // Show the dialog by calling startResolutionForResult(), and check the
+                                    // result in onActivityResult().
+                                    val rae = e as ResolvableApiException
+                                    rae.startResolutionForResult(context, AddressConstants.GPS_REQUEST)
+                                } catch (sie: IntentSender.SendIntentException) {
+                                    sie.printStackTrace()
+                                }
+
+                            LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                                val errorMessage = "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
+                                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    })
+        }
+        return isGpsOn
     }
 
     private fun getLastLocationClient() {
@@ -260,7 +321,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
             }
         } else {
-            //bottomsheet blm aktifin GPS
+            showBottomSheetLocUndefined()
         }
     }
 

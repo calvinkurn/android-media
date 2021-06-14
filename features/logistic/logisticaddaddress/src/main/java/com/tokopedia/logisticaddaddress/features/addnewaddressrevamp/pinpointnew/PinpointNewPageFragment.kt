@@ -51,6 +51,8 @@ import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LATITUDE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LONGITUDE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.IMAGE_OUTSIDE_INDONESIA
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -510,9 +512,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
         const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
         const val LOCATION_NOT_FOUND_MESSAGE = "Lokasi gagal ditemukan"
-
-        const val IMAGE_OUTSIDE_INDONESIA = "https://images.tokopedia.net/img/android/logistic/location_outside_indonesia.png"
-        const val LOCATION_NOT_FOUND = "https://images.tokopedia.net/img/android/logistic/location_not_found.png"
 
         fun newInstance(extra: Bundle): PinpointNewPageFragment {
             return PinpointNewPageFragment().apply {
