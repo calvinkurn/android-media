@@ -11,6 +11,7 @@ import com.tkpd.atc_variant.usecase.GetAggregatorAndMiniCartUseCase
 import com.tkpd.atc_variant.util.AtcCommonMapper
 import com.tkpd.atc_variant.util.AtcCommonMapper.asFail
 import com.tkpd.atc_variant.util.AtcCommonMapper.asSuccess
+import com.tkpd.atc_variant.util.AtcCommonMapper.generateAvailableButtonIngatkanSaya
 import com.tkpd.atc_variant.views.adapter.AtcVariantVisitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
@@ -26,7 +27,6 @@ import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantMapper
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
@@ -169,13 +169,12 @@ class AtcVariantViewModel @Inject constructor(
         _variantActivityResult.run {
             postValue(AtcCommonMapper.updateActivityResultData(
                     recentData = value,
-                    listVariant = listVariant,
-                    parentProductId = getVariantData()?.parentId,
                     selectedProductId = selectedProductId,
+                    parentProductId = getVariantData()?.parentId,
                     mapOfSelectedVariantOption = mapOfSelectedVariantOption,
                     atcMessage = atcSuccessMessage,
-                    requestCode = requestCode,
-                    shouldRefreshPreviousPage = shouldRefreshPreviousPage))
+                    shouldRefreshPreviousPage = shouldRefreshPreviousPage,
+                    requestCode = requestCode))
         }
     }
 
@@ -321,16 +320,10 @@ class AtcVariantViewModel @Inject constructor(
     }
 
     private fun updateRemindMeCartRedirection(productId: String) {
-        val alternateCopy = aggregatorData?.alternateCopy?.firstOrNull {
-            it.cartType == ProductDetailCommonConstant.KEY_REMIND_ME
-        }
+        val availableButtonIngatkanSaya = generateAvailableButtonIngatkanSaya(aggregatorData?.alternateCopy, aggregatorData?.cardRedirection?.get(productId))
         //update cart redir localy
         aggregatorData?.cardRedirection?.let {
-            it[productId]?.availableButtons = listOf(it[productId]?.availableButtons?.firstOrNull()?.copy(
-                    cartType = ProductDetailCommonConstant.KEY_CHECK_WISHLIST,
-                    color = alternateCopy?.color ?: "",
-                    text = alternateCopy?.text ?: ""
-            ) ?: return@let)
+            it[productId]?.availableButtons = availableButtonIngatkanSaya ?: return@let
         }
     }
 

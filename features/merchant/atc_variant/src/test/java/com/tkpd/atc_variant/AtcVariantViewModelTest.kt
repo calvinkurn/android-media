@@ -289,8 +289,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val updateResultData = viewModel.variantActivityResult.value
         val variantDataVisitable = visitablesData[1] as VariantComponentDataModel
         Assert.assertTrue(updateResultData != null)
-        Assert.assertTrue(updateResultData!!.listOfVariantSelected!!.containsAll(variantDataVisitable.listOfVariantCategory!!))
-        Assert.assertTrue(updateResultData.mapOfSelectedVariantOption?.values?.toList()?.containsAll(variantDataVisitable.mapOfSelectedVariant.values.toList())
+        Assert.assertTrue(updateResultData?.mapOfSelectedVariantOption?.values?.toList()?.containsAll(variantDataVisitable.mapOfSelectedVariant.values.toList())
                 ?: false)
         Assert.assertEquals(updateResultData.selectedProductId, "2147818586")
     }
