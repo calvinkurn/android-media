@@ -257,7 +257,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
 
     private fun mapCourierInfoUiModel(shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment, meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta): ShipmentInfoUiModel.CourierInfoUiModel {
         return ShipmentInfoUiModel.CourierInfoUiModel(
-                arrivalEstimation = shipment.eta,
+                arrivalEstimation = composeETA(shipment.eta),
                 courierNameAndProductName = shipment.shippingDisplayName,
                 isFreeShipping = meta.isBebasOngkir,
                 boBadgeUrl = meta.boImageUrl
@@ -292,5 +292,9 @@ class GetBuyerOrderDetailMapper @Inject constructor(
     private fun composeReceiverAddress(street: String, district: String, city: String, province: String, postal: String): String {
         return StringBuilder().append(street).append(", ").append(district).append(", ").append(city)
                 .append(", ").append(province).append(" ").append(postal).toString()
+    }
+
+    private fun composeETA(eta: String): String {
+        return if (eta.startsWith("(") && eta.endsWith(")")) eta else "($eta)"
     }
 }
