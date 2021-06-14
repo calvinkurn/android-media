@@ -28,7 +28,7 @@ import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartDataResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.GlobalEvent
-import com.tokopedia.minicart.common.widget.MiniCartWidgetViewModel
+import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.totalamount.TotalAmount
@@ -44,7 +44,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                                                   var analytics: MiniCartAnalytics)
     : MiniCartListActionListener {
 
-    private var viewModel: MiniCartWidgetViewModel? = null
+    private var viewModel: MiniCartViewModel? = null
     private var bottomsheetContainer: CoordinatorLayout? = null
     private var bottomSheet: BottomSheetUnify? = null
     private var totalAmount: TotalAmount? = null
@@ -66,7 +66,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     fun show(context: Context?,
              fragmentManager: FragmentManager,
              lifecycleOwner: LifecycleOwner,
-             viewModel: MiniCartWidgetViewModel,
+             viewModel: MiniCartViewModel,
              bottomSheetListener: MiniCartListBottomSheetListener) {
         context?.let {
             if (!isShow) {
@@ -120,7 +120,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         }
     }
 
-    private fun initializeCartData(viewModel: MiniCartWidgetViewModel) {
+    private fun initializeCartData(viewModel: MiniCartViewModel) {
         adapter?.clearAllElements()
         showLoading()
         viewModel.getCartList(true)
@@ -135,7 +135,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         }
     }
 
-    private fun initializeViewModel(fragmentManager: FragmentManager, viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
+    private fun initializeViewModel(fragmentManager: FragmentManager, viewModel: MiniCartViewModel, lifecycleOwner: LifecycleOwner) {
         this.viewModel = viewModel
         viewModel.initializeGlobalState()
         initializeGlobalEventObserver(viewModel, fragmentManager)
@@ -182,7 +182,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         analytics.eventClickBuy(pageName, products)
     }
 
-    private fun initializeGlobalEventObserver(viewModel: MiniCartWidgetViewModel, fragmentManager: FragmentManager) {
+    private fun initializeGlobalEventObserver(viewModel: MiniCartViewModel, fragmentManager: FragmentManager) {
         globalEventObserver = Observer<GlobalEvent> {
             when (it.state) {
                 GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
@@ -222,7 +222,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         }
     }
 
-    private fun onSuccessUndoDeleteCartItem(globalEvent: GlobalEvent, viewModel: MiniCartWidgetViewModel) {
+    private fun onSuccessUndoDeleteCartItem(globalEvent: GlobalEvent, viewModel: MiniCartViewModel) {
         hideProgressLoading()
         viewModel.getCartList()
         val data = globalEvent.data as? UndoDeleteCartDataResponse
@@ -269,13 +269,13 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         }
     }
 
-    private fun observeGlobalEvent(viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
+    private fun observeGlobalEvent(viewModel: MiniCartViewModel, lifecycleOwner: LifecycleOwner) {
         globalEventObserver?.let {
             viewModel.globalEvent.observe(lifecycleOwner, it)
         }
     }
 
-    private fun onFailedUpdateCartForCheckout(globalEvent: GlobalEvent, viewModel: MiniCartWidgetViewModel, fragmentManager: FragmentManager) {
+    private fun onFailedUpdateCartForCheckout(globalEvent: GlobalEvent, viewModel: MiniCartViewModel, fragmentManager: FragmentManager) {
         if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
             hideProgressLoading()
             setTotalAmountLoading(true)
@@ -313,7 +313,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         }
     }
 
-    private fun onSuccessDeleteCartItem(globalEvent: GlobalEvent, viewModel: MiniCartWidgetViewModel) {
+    private fun onSuccessDeleteCartItem(globalEvent: GlobalEvent, viewModel: MiniCartViewModel) {
         hideProgressLoading()
         val data = globalEvent.data as? RemoveFromCartData
         val message = data?.data?.message?.firstOrNull() ?: ""
@@ -331,7 +331,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         }
     }
 
-    private fun observeMiniCartListUiModel(viewModel: MiniCartWidgetViewModel, lifecycleOwner: LifecycleOwner) {
+    private fun observeMiniCartListUiModel(viewModel: MiniCartViewModel, lifecycleOwner: LifecycleOwner) {
         bottomSheetUiModelObserver?.let {
             viewModel.miniCartListBottomSheetUiModel.observe(lifecycleOwner, it)
         }

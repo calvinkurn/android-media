@@ -11,7 +11,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import javax.inject.Inject
 
-class MiniCartListViewHolderMapper @Inject constructor() {
+class MiniCartListUiModelMapper @Inject constructor() {
 
     fun mapUiModel(miniCartData: MiniCartData): MiniCartListUiModel {
         return MiniCartListUiModel().apply {
