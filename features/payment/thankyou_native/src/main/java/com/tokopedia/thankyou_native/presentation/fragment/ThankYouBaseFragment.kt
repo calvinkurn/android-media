@@ -134,9 +134,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     private fun addRecommendation() {
+        val pgCategoryIds = mutableListOf<Int>()
         when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
             is MarketPlaceThankPage -> {
-                val pgCategoryIds = mutableListOf<Int>()
                 thanksPageData.shopOrder.forEach { shopOrder ->
                     shopOrder.purchaseItemList.forEach { purchaseItem ->
                         val categoryId = purchaseItem.categoryId.toIntOrNull()
@@ -149,7 +149,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 addDigitalRecommendation(pgCategoryIds, MarketPlaceThankPage)
             }
             is DigitalThankPage -> {
-                addDigitalRecommendation()
+                addDigitalRecommendation(pgCategoryIds, DigitalThankPage)
                 addMarketPlaceRecommendation()
             }
         }
