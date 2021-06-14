@@ -357,5 +357,16 @@
     <string name="kejar_ulasan_coach_mark_subtitle">Ulasan yang masuk lewat Kejar Ulasan akan disertai dengan tanda khusus seperti ini, ya!</string>
 
     <!-- Reading   -->
+    <string name="review_reading_title">Ulasan Pembeli</string>
     <string name="review_reading_bottom_sheet_statistics_description">Dihitung dari presentase jumlah rating positif (bintang 4 &amp; 5) terhadap total rating.</string>
+    <string name="review_reading_rating_and_review_count">%d rating, %d ulasan</string>
+    <string name="review_reading_header_maximum_score">/5.0</string>
+    <string name="review_reading_sort_most_helpful">Paling Membantu</string>
+    <string name="review_reading_sort_latest">Terbaru</string>
+    <string name="review_reading_sort_highest_rating">Rating Tertinggi</string>
+    <string name="review_reading_sort_lowest_rating">Rating Terendah</string>
+    <string name="review_reading_filter_with_attachment">Dengan Foto</string>
+    <string name="review_reading_filter_all_ratings">Semua Rating</string>
+    <string name="review_reading_filter_all_topics">Semua Topik</string>
+
 </resources>

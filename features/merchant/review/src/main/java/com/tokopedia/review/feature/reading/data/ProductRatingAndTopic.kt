@@ -15,7 +15,7 @@ data class ProductrevGetProductRatingAndTopic(
         val rating: ProductRating = ProductRating(),
         @SerializedName("topics")
         @Expose
-        val topics: ProductTopic = ProductTopic(),
+        val topics: List<ProductTopic> = listOf(),
         @SerializedName("variants")
         @Expose
         val variants: List<String> = listOf(),
@@ -25,18 +25,21 @@ data class ProductrevGetProductRatingAndTopic(
 )
 
 data class ProductRating(
+        @SerializedName("positivePercentageFmt")
+        @Expose
+        val satisfactionRate: String = "",
         @SerializedName("ratingScore")
         @Expose
         val ratingScore: String = "",
         @SerializedName("totalRating")
         @Expose
-        val totalRating: String = "",
+        val totalRating: Int = 0,
         @SerializedName("totalRatingWithImage")
         @Expose
-        val totalRatingWithImage: String = "",
+        val totalRatingWithImage: Int = 0,
         @SerializedName("totalRatingTextAndImage")
         @Expose
-        val totalRatingTextAndImage: String = "",
+        val totalRatingTextAndImage: Int = 0,
         @SerializedName("detail")
         @Expose
         val detail: List<ProductReviewDetail> = listOf()
@@ -75,7 +78,7 @@ data class AvailableFilters(
 data class ProductReviewDetail(
         @SerializedName("rate")
         @Expose
-        val rate: Long = 0L,
+        val rate: Int = 0,
         @SerializedName("totalReviews")
         @Expose
         val totalReviews: Long = 0L,
