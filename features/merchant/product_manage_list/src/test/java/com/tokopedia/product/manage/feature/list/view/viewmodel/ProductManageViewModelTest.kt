@@ -421,7 +421,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 .verifySuccessEquals(expectedProductList)
 
             viewModel.showStockTicker
-                .verifyValueEquals(false)
+                .verifyValueEquals(null)
 
             verifyHideProgressBar()
         }
@@ -482,7 +482,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
                 .verifySuccessEquals(expectedProductList)
 
             viewModel.showStockTicker
-                .verifyValueEquals(false)
+                .verifyValueEquals(null)
 
             verifyHideProgressBar()
         }
@@ -517,7 +517,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
     }
 
     @Test
-    fun `given multi location shop and hideStockTicker called when getProductList again should set showStockTicker FALSE`() {
+    fun `given multi location shop and hideStockTicker called when getProductList again should set showStockTicker TRUE`() {
         runBlocking {
             val isMultiLocationShop = true
 
@@ -540,7 +540,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
             viewModel.getProductList(shopId)
 
             viewModel.showStockTicker
-                .verifyValueEquals(false)
+                .verifyValueEquals(true)
         }
     }
 

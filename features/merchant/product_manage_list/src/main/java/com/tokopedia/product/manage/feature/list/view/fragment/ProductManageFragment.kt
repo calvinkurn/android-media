@@ -291,7 +291,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         setupErrorPage()
         setupNoAccessPage()
         setupStockTicker()
-        setTickerStockVisibility()
         renderCheckedView()
 
         observeShopInfo()
@@ -392,14 +391,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
         val tabName = getString(R.string.product_manage_filter)
         ProductManageTracking.eventInventory(tabName)
-    }
-
-    private fun setTickerStockVisibility() {
-        if (userSession.isMultiLocationShop) {
-            stockTicker?.visibility = View.INVISIBLE
-        } else {
-            stockTicker?.visibility = View.GONE
-        }
     }
 
     private fun onClickFilterTab(filter: FilterTabUiModel) {
@@ -829,7 +820,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             }
 
             override fun onDismiss() {
-                animateProductTicker(false)
+                viewModel.hideStockTicker()
             }
         })
     }
@@ -940,8 +931,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         } else {
             if (isLoadingInitialData) {
                 productManageListAdapter.updateProduct(list)
-                tickerIsReady = true
-                hideStockTicker()
             } else {
                 removeEmptyStateWhenLazyLoad()
                 productManageListAdapter.updateProduct(productManageListAdapter.data.plus(list))
@@ -1952,7 +1941,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             updateStateScrollListener()
             showRetryToast()
         }
-        hideStockTicker()
+        viewModel.hideStockTicker()
         hideLoading()
     }
 
@@ -2248,6 +2237,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             }
         }
         observe(viewModel.showStockTicker) { shouldShow ->
+            if (shouldShow)                 {
+                tickerIsReady = true
+            }
             animateProductTicker(shouldShow)
         }
         observe(viewModel.refreshList) { shouldRefresh ->
@@ -2378,10 +2370,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private fun hideErrorPage() {
         errorPage.hide()
-    }
-
-    private fun hideStockTicker() {
-        stockTicker.hide()
     }
 
     private fun goToTopAdsOnBoarding() {
