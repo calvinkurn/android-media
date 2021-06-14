@@ -21,14 +21,11 @@ class GetUserShopInfoUseCase @Inject constructor(
                 info {
                   date_shop_created
                 }
-                stats {
-                  shop_total_transaction
-                }
               }
               shopInfoByID(
                 input: {
                   shopIDs: [${'$'}shopId]
-                  fields: ["other-goldos"]
+                  fields: ["other-goldos", "shopstats-limited"]
                 }
               ) {
                 result {
@@ -39,6 +36,11 @@ class GetUserShopInfoUseCase @Inject constructor(
                     shopTierWording
                     shopGrade
                     shopGradeWording
+                  }
+                  statsByDate {
+                    identifier
+                    value
+                    startTime
                   }
                 }
               }
