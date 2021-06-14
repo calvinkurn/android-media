@@ -400,7 +400,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwPreviewExpanded()
     }
 
-    // TODO: SRW bubble should displayed after click SRW preview
     @Test
     fun srw_bubble_should_displayed_after_click_srw_preview() {
         // Given
