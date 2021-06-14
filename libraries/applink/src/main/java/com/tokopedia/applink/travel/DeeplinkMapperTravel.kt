@@ -5,6 +5,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder
+import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
@@ -22,10 +23,10 @@ object DeeplinkMapperTravel {
             deeplink.equals(ApplinkConst.HOTEL_ORDER, true) -> {
                 DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(context, deeplink)
             }
-            deeplink.equals(ApplinkConst.HOTEL, true) -> {
+            deeplink.startsWith(ApplinkConst.HOTEL, true) -> {
                 ApplinkConstInternalTravel.DASHBOARD_HOTEL
             }
-            deeplink.equals(ApplinkConst.HOTEL_DETAIL, true) -> {
+            deeplink.startsWithPattern(ApplinkConst.HOTEL_DETAIL) -> {
                 ApplinkConstInternalTravel.HOTEL_DETAIL
             }
             else -> deeplink
