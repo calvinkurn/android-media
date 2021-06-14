@@ -253,7 +253,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
     private fun setupViewPager(data: PowerMerchantBasicInfoUiModel) {
         when (data.pmStatus.status) {
-            PMStatusConst.INACTIVE -> setupRegistrationPage(data)
+            PMStatusConst.INACTIVE -> setupRegistrationPage()
             else -> setupActiveState()
         }
 
@@ -281,8 +281,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         })
         tabPmSubscription.setupWithViewPager(viewPagerPmSubscription)
 
-        val isChargingPeriodPmPro = data.periodTypePmPro == PeriodType.CHARGING_PERIOD_PM_PRO
-        val defaultTabIndex = if (data.shopInfo.isEligiblePmPro && isChargingPeriodPmPro) {
+        val defaultTabIndex = if (data.shopInfo.isEligiblePmPro) {
             PM_PRO_TAB_INDEX
         } else {
             PM_TAB_INDEX
@@ -312,13 +311,11 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         }
     }
 
-    private fun setupRegistrationPage(data: PowerMerchantBasicInfoUiModel) {
+    private fun setupRegistrationPage() {
         setViewForRegistrationPage()
         viewPagerAdapter.clearFragment()
         viewPagerAdapter.addFragment(pmRegistrationPage.second, pmRegistrationPage.first)
-        if (data.periodTypePmPro == PeriodType.CHARGING_PERIOD_PM_PRO) {
-            viewPagerAdapter.addFragment(pmProRegistrationPage.second, pmProRegistrationPage.first)
-        }
+        viewPagerAdapter.addFragment(pmProRegistrationPage.second, pmProRegistrationPage.first)
     }
 
     private fun setOnTabIndexSelected(data: PowerMerchantBasicInfoUiModel, tabIndex: Int) {

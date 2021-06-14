@@ -32,8 +32,7 @@ class GetPMBasicInfoUseCase @Inject constructor(
             return@coroutineScope PowerMerchantBasicInfoUiModel(
                     pmStatus = pmStatusInfoAsync.await(),
                     shopInfo = pmShopInfo.copy(shopScore = shopScoreResult.shopScore.toInt()),
-                    tickers = pmSettingInfo.tickers,
-                    periodTypePmPro = pmSettingInfo.periodeTypePmPro
+                    tickers = pmSettingInfo.tickers
             )
         }
     }

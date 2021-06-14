@@ -60,8 +60,7 @@ class PowerMerchantSharedViewModelTest {
         val result = PowerMerchantBasicInfoUiModel(
                 PMStatusUiModel(),
                 PMShopInfoUiModel(),
-                emptyList(),
-                PeriodType.COMMUNICATION_PERIOD_PM_PRO
+                emptyList()
         )
         val isFirstLoad = anyBoolean()
 
