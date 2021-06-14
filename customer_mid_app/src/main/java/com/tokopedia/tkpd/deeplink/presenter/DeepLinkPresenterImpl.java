@@ -375,8 +375,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 context.finish();
             } else if (linkSegment.size() >= 4 && linkSegment.get(2).equals("h")) {
                 // eg : https://www.tokopedia.com/hotel/Indonesia/h/the-apurva-kempinski-bali-960088/
-                String[] hotelNames = linkSegment.get(3).split("-");
-                String hotelId = hotelNames[hotelNames.length - 1];
                 if (uri.getQuery() != null) {
                     String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DETAIL);
                     RouteManager.route(context, applink + "?" + uri.getQuery());
