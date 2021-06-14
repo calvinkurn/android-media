@@ -466,10 +466,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     }
                     if (pdpUiUpdater?.productSingleVariant == null
                             || pdpUiUpdater?.productSingleVariant?.isVariantError == true
-                            || mapOfSelectedVariantOption == null
-                            || listOfVariantSelected == null) return@onActivityResultAtcVariant
+                            || mapOfSelectedVariantOption == null) return@onActivityResultAtcVariant
                     pdpUiUpdater?.updateVariantSelected(mapOfSelectedVariantOption)
-                    val variantLevelOne = listOfVariantSelected?.firstOrNull()
+                    val variantLevelOne = ProductDetailVariantLogic.determineVariant(mapOfSelectedVariantOption ?: mapOf(), viewModel.variantData)
                     updateVariantDataToExistingProductData(if (variantLevelOne != null) listOf(variantLevelOne) else listOf())
                     scrollVariantToSelectedPosition()
                 }
@@ -1421,7 +1420,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val miniCartItem = if (it.basic.isTokoNow) viewModel.getMiniCartItem() else null
             val alternateText = viewModel.p2Data.value?.alternateCopy?.firstOrNull {
                 it.cartType == ProductDetailCommonConstant.KEY_CART_TYPE_UPDATE_CART
-            }?.text ?: ""
+            }?.text ?: ProductDetailCommonConstant.TEXT_SAVE_ATC
 
             val alternateButtonVariant = if (it.data.variant.isVariant && viewModel.isParentExistInMiniCart(it.parentProductId)) alternateText else ""
             actionButtonView.renderData(

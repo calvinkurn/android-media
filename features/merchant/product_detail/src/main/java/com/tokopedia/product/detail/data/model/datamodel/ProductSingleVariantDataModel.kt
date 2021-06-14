@@ -41,7 +41,7 @@ data class ProductSingleVariantDataModel(
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         val bundle = Bundle()
-        return if (newData is VariantDataModel && isSelectedVariantChanged(newData)) {
+        return if (newData is ProductSingleVariantDataModel && isSelectedVariantChanged(newData)) {
             bundle.putInt(ProductDetailConstant.DIFFUTIL_PAYLOAD, ProductDetailConstant.PAYLOAD_VARIANT_COMPONENT)
             bundle
         } else {
@@ -49,7 +49,7 @@ data class ProductSingleVariantDataModel(
         }
     }
 
-    private fun isSelectedVariantChanged(newVariantDataModel: VariantDataModel): Boolean {
+    private fun isSelectedVariantChanged(newVariantDataModel: ProductSingleVariantDataModel): Boolean {
         var isChanged = false
         for ((key, value) in newVariantDataModel.mapOfSelectedVariant) {
             val currentValue = mapOfSelectedVariant[key]

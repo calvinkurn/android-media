@@ -23,7 +23,7 @@ object ProductDetailVariantLogic {
         val haveCustomImage = variantOptions.all {
             it.picture?.url100?.isNotEmpty() == true
         }
-        var hasSelected = false
+        var areAllVariantHaveSelectedChild = false
 
         for (i in variantOptions) {
             val isBuyable = productVariant.children.any {
@@ -32,7 +32,7 @@ object ProductDetailVariantLogic {
 
             val isSelected = getVariantOptionsLevelOneByProductId == i.id && isBuyable
             val currentState = if (isSelected) {
-                hasSelected = true
+                areAllVariantHaveSelectedChild = true
                 VariantConstant.STATE_SELECTED
             } else if (!isBuyable) {
                 VariantConstant.STATE_EMPTY
@@ -40,7 +40,8 @@ object ProductDetailVariantLogic {
                 VariantConstant.STATE_UNSELECTED
             }
 
-            val isFlashSale = productVariant.isSelectedChildHasFlashSale(getVariantOptionsLevelOneByProductId)
+            val isFlashSale = if (isSelected) productVariant.children.firstOrNull { it.productId == productId }?.isFlashSale ?: false else productVariant.isSelectedChildHasFlashSale(i.id
+                    ?: "")
 
             listOfVariantLevelOne.add(VariantOptionWithAttribute(
                     variantName = i.value.orEmpty(),
@@ -59,7 +60,7 @@ object ProductDetailVariantLogic {
                 ?: ""
         val stringVariantIdentifier = productVariant.variants.mapNotNull { it.identifier }.joinToString()
 
-        val variantTitle = if (hasSelected) selectedVariantName else stringVariantIdentifier
+        val variantTitle = if (areAllVariantHaveSelectedChild) selectedVariantName else stringVariantIdentifier //to determine pilih warna,ukuran or pilih hitam,xl
         return VariantCategory(
                 name = variantTitle,
                 identifier = variantLevelOne?.name.orEmpty(),
