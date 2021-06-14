@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.top
 
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -24,7 +25,7 @@ class TopAdsHeadlineViewHolder (itemView: View, private val fragment: Fragment) 
     private val topadsHeadlineView: TopAdsHeadlineView = itemView.findViewById(R.id.topads_headline_view)
 
     init {
-//        topadsHeadlineView.setTopAdsBannerClickListener(this)
+        topadsHeadlineView.setTopAdsBannerClickListener(this)
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -61,6 +62,7 @@ class TopAdsHeadlineViewHolder (itemView: View, private val fragment: Fragment) 
 
     override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
         data?.let {
+            RouteManager.route(fragment.context, applink)
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().onTopAdsHeadlineAdsClick(position, applink, it)
         }
     }
