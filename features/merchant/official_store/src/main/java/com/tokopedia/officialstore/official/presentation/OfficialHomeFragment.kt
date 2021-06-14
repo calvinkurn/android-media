@@ -42,6 +42,7 @@ import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OSMixLeftTracking
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
+import com.tokopedia.officialstore.category.presentation.data.OSChooseAddressData
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
@@ -115,7 +116,7 @@ class OfficialHomeFragment :
     private var isLoadedOnce: Boolean = false
     private var isScrolling = false
     private var remoteConfig: RemoteConfig? = null
-    private var localChooseAddress: LocalCacheModel? = null
+    private var localChooseAddress: OSChooseAddressData? = null
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
@@ -695,7 +696,7 @@ class OfficialHomeFragment :
     }
 
     private fun reloadDataForDifferentAddressSaved() {
-        localChooseAddress = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+        localChooseAddress?.setLocalCacheModel(ChooseAddressUtils.getLocalizingAddressData(requireContext())?.copy())
         officialHomeMapper.resetState(adapter)
         viewModel.loadFirstData(category, getLocation())
     }
@@ -918,16 +919,21 @@ class OfficialHomeFragment :
     }
 
     private fun initLocalChooseAddressData() {
-        localChooseAddress = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+        val addressData = ChooseAddressUtils.getLocalizingAddressData(requireContext())
+        addressData?.let {
+            localChooseAddress = OSChooseAddressData()
+            localChooseAddress?.setLocalCacheModel(it.copy())
+        }
     }
 
     private fun isChooseAddressUpdated(): Boolean {
         try {
             localChooseAddress?.let {
-                return ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it)
+                return ChooseAddressUtils.isLocalizingAddressHasUpdated(requireContext(), it.toLocalCacheModel())
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            return false
         }
         return false
 
