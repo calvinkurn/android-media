@@ -5,13 +5,13 @@ import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.ACTION
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.ACTION.ACTION_CLICK_LEVEL_TWO
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.ACTION.ACTION_COLLAPSE_LEVEL_ONE
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.ACTION.ACTION_EXPAND_LEVEL_ONE
-import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.EVENT.BUSINESSUNIT_VALUE
-import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.EVENT.CURRENTSITE_VALUE
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.EVENT.EVENT_CATEGORY_VALUE
-import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.EVENT.EVENT_CLICK_VALUE
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.MISC.BUSINESSUNIT
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.MISC.CURRENTSITE
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.MISC.SEE_ALL_CATEGORY
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
@@ -19,11 +19,7 @@ import com.tokopedia.track.interfaces.Analytics
 class CategoryListAnalytics{
 
     object EVENT{
-        const val EVENT_CLICK_VALUE = "clickTokoNow"
         const val EVENT_CATEGORY_VALUE = "tokonow semua category jumper"
-        //Todo still need value data currentsite and businessunit from team data
-        const val CURRENTSITE_VALUE = "currentSite"
-        const val BUSINESSUNIT_VALUE = "businessUnit"
     }
 
     object ACTION{
@@ -91,9 +87,8 @@ class CategoryListAnalytics{
     private fun MutableMap<String, Any>.addCategoryJumperGeneralClick(): MutableMap<String, Any>? {
         this[TrackAppUtils.EVENT] = EVENT_CLICK_VALUE
         this[TrackAppUtils.EVENT_CATEGORY] = EVENT_CATEGORY_VALUE
-        //Todo still harcoded need value data currentsite and businessunit from team data
-        this[CURRENTSITE] = CURRENTSITE_VALUE
-        this[BUSINESSUNIT] = BUSINESSUNIT_VALUE
+        this[CURRENTSITE] = CURRENT_SITE_VALUE
+        this[BUSINESSUNIT] = BUSINESS_UNIT_VALUE
         return this
     }
 }

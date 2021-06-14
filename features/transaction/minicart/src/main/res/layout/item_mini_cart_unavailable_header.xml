@@ -23,7 +23,7 @@
         android:paddingStart="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_0"
         android:text="Hapus"
-        android:textColor="@color/Unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="heading_5" />

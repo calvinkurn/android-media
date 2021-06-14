@@ -51,6 +51,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockk
 }
 
 project.ext {
