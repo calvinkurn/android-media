@@ -37,7 +37,7 @@ class ProductMiniSocialProofStockViewHolder(
             setupLoading(element.shouldShowSingleViewSocialProof())
             showLoading()
         } else {
-            val availableData = element.getSocialProofData()
+            val availableData = element.socialProofData
             view.run {
                 if (availableData.isEmpty()) {
                     layoutParams.height = 0
@@ -84,6 +84,6 @@ class ProductMiniSocialProofStockViewHolder(
     }
 
     private fun setAdapterData(element: ProductMiniSocialProofStockDataModel) {
-        miniSocialProofAdapter?.setData(element.getSocialProofData().toMutableList(), getComponentTrackData(element))
+        miniSocialProofAdapter?.setData(element.socialProofData.toMutableList(), getComponentTrackData(element))
     }
 }

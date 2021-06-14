@@ -15,7 +15,8 @@ data class ProductMiniSocialProofStockDataModel(
         var wishlistCount: Int = 0,
         var buyerPhotosCount: Int = 0,
         var paymentVerifiedCount: Int = 0,
-        var shouldRenderSocialProof: Boolean = false
+        var shouldRenderSocialProof: Boolean = false,
+        var socialProofData: List<ProductMiniSocialProofItemDataModel> = emptyList()
 ) : DynamicPdpDataModel {
     companion object {
         const val RATING = "rating"
@@ -62,12 +63,6 @@ data class ProductMiniSocialProofStockDataModel(
             else -> ProductMiniSocialProofItemDataModel(type = type)
         }
     }
-
-    /**
-     * Social proof mini should only show 4 of this, with hierarchy
-     * When it only contains 1 data, it will show single line social proof
-     */
-    private var socialProofData: List<ProductMiniSocialProofItemDataModel> = emptyList()
 
     fun shouldShowSingleViewSocialProof(): Boolean {
         return ratingCount == 0 && buyerPhotosCount == 0 && stock == 0
