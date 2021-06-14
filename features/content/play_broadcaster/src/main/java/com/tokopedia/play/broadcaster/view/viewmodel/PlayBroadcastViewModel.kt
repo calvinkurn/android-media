@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
 import com.tokopedia.play.broadcaster.socket.PlaySocketType
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
@@ -33,6 +34,8 @@ import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 /**
@@ -47,6 +50,7 @@ class PlayBroadcastViewModel @Inject constructor(
         private val getChannelUseCase: GetChannelUseCase,
         private val createChannelUseCase: CreateChannelUseCase,
         private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
+        private val getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val dispatcher: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
@@ -54,9 +58,6 @@ class PlayBroadcastViewModel @Inject constructor(
         private val playBroadcastMapper: PlayBroadcastMapper,
         private val countDownTimer: PlayCountDownTimer
 ) : ViewModel() {
-
-    private val job: Job = SupervisorJob()
-    private val scope = CoroutineScope(job + dispatcher.main)
 
     val isFirstStreaming: Boolean
         get() = sharedPref.isFirstStreaming()
@@ -66,7 +67,12 @@ class PlayBroadcastViewModel @Inject constructor(
     private val ingestUrl: String
         get() = hydraConfigStore.getIngestUrl()
     val title: String
-        get() = hydraConfigStore.getTitle()
+        get() {
+            return when (val titleModel = mDataStore.getSetupDataStore().getTitle()) {
+                is PlayTitleUiModel.HasTitle -> titleModel.title
+                else -> ""
+            }
+        }
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
@@ -86,10 +92,13 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableNewChat
     val observableNewMetrics: LiveData<Event<List<PlayMetricUiModel>>>
         get() = _observableNewMetrics
-    val observableProductList = Transformations.map(getCurrentSetupDataStore().getObservableSelectedProducts()) { dataList ->
-        dataList.map { ProductContentUiModel.createFromData(it) }
-    }
+    val observableProductList = getCurrentSetupDataStore().getObservableSelectedProducts()
+            .map { dataList -> dataList.map { ProductContentUiModel.createFromData(it) } }
+            .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
     val observableCover = getCurrentSetupDataStore().getObservableSelectedCover()
+    val observableTitle: LiveData<PlayTitleUiModel.HasTitle> = getCurrentSetupDataStore().getObservableTitle()
+                .filterIsInstance<PlayTitleUiModel.HasTitle>()
+                .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
     val observableBroadcastSchedule = getCurrentSetupDataStore().getObservableSchedule()
@@ -136,7 +145,7 @@ class PlayBroadcastViewModel @Inject constructor(
             updateChannelStatus(channelStatusType)
         }
     }
-    
+
     private val countDownTimerListener = object : PlayCountDownTimer.Listener {
         override fun onCountDownActive(millis: Long) {
             _observableLiveDurationState.value = PlayTimerState.Active(millis.convertMillisToMinuteSecond())
@@ -177,7 +186,7 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun getConfiguration() {
-        scope.launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             _observableConfigInfo.value = NetworkResult.Loading
 
             val config = withContext(dispatcher.io) {
@@ -240,17 +249,32 @@ class PlayBroadcastViewModel @Inject constructor(
     private suspend fun getChannelById(channelId: String): Throwable? {
         _observableChannelInfo.value = NetworkResult.Loading
         return try {
-            val channel =  withContext(dispatcher.io) {
-                getChannelUseCase.params = GetChannelUseCase.createParams(channelId)
-                return@withContext getChannelUseCase.executeOnBackground()
+            val (channel, tags) = supervisorScope {
+                val channelDeferred = async(dispatcher.io) {
+                    getChannelUseCase.apply {
+                        params = GetChannelUseCase.createParams(channelId)
+                    }.executeOnBackground()
+                }
+
+                val tagsDeferred = async {
+                    getAddedChannelTagsUseCase.apply {
+                        setChannelId(channelId)
+                    }.executeOnBackground()
+                }
+
+                return@supervisorScope channelDeferred.await() to tagsDeferred.await()
             }
+
             val channelInfo = playBroadcastMapper.mapChannelInfo(channel)
             _observableChannelInfo.value = NetworkResult.Success(channelInfo)
 
             setChannelId(channelInfo.channelId)
+            setChannelTitle(channelInfo.title)
             setChannelInfo(channelInfo)
+            setAddedTags(tags.recommendedTags.tags.toSet())
+
             setSelectedProduct(playBroadcastMapper.mapChannelProductTags(channel.productTags))
-            setSelectedCover(playBroadcastMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl, channel.basic.title))
+            setSelectedCover(playBroadcastMapper.mapCover(getCurrentSetupDataStore().getSelectedCover(), channel.basic.coverUrl))
             setBroadcastSchedule(playBroadcastMapper.mapChannelSchedule(channel.basic.timestamp))
 
             generateShareLink(playBroadcastMapper.mapShareInfo(channel))
@@ -263,7 +287,7 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun updateChannelStatus(status: PlayChannelStatusType) {
-        scope.launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             withContext(dispatcher.io) {
                 updateChannelUseCase.apply {
                     setQueryParams(
@@ -306,7 +330,7 @@ class PlayBroadcastViewModel @Inject constructor(
         sendLivePusherState(PlayLivePusherViewState.Connecting)
 
         fun reconnectJob() {
-            scope.launch {
+            viewModelScope.launch {
                 val err = getChannelDetail()
                 if (err == null && _observableChannelInfo.value is NetworkResult.Success) {
                     val channelInfo = (_observableChannelInfo.value as NetworkResult.Success).data
@@ -330,7 +354,7 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     fun startLivePusherTimer() {
-        scope.launch {
+        viewModelScope.launch {
             delay(1000)
             countDownTimer.start()
         }
@@ -354,20 +378,20 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun sendLivePusherState(state: PlayLivePusherViewState) {
-        scope.launch(dispatcher.main) {
+        viewModelScope.launch(dispatcher.main) {
             _observableLivePusherState.value = state
         }
     }
 
     private fun startWebSocket() {
-        scope.launch {
+        viewModelScope.launch {
             val socketCredential =  withContext(dispatcher.io) {
                 return@withContext getSocketCredentialUseCase.executeOnBackground()
             }
 
             playSocket.config(socketCredential.setting.minReconnectDelay, socketCredential.setting.maxRetries, socketCredential.setting.pingInterval)
 
-            fun connectWebSocket(): Job = scope.launch(dispatcher.io) {
+            fun connectWebSocket(): Job = viewModelScope.launch(dispatcher.io) {
                 playSocket.connect(channelId = channelId, groupChatToken = socketCredential.gcToken)
                 playSocket.socketInfoListener(object : PlaySocketInfoListener{
                     override fun onReceive(data: PlaySocketType) {
@@ -417,13 +441,20 @@ class PlayBroadcastViewModel @Inject constructor(
         getCurrentSetupDataStore().setFullCover(cover)
     }
 
+    private fun setChannelTitle(title: String) {
+        getCurrentSetupDataStore().setTitle(title)
+    }
+
     private fun setBroadcastSchedule(schedule: BroadcastScheduleUiModel) {
         getCurrentSetupDataStore().setBroadcastSchedule(schedule)
     }
 
     private fun setChannelInfo(channelInfo: ChannelInfoUiModel) {
         hydraConfigStore.setIngestUrl(channelInfo.ingestUrl)
-        hydraConfigStore.setTitle(channelInfo.title)
+    }
+
+    private fun setAddedTags(tags: Set<String>) {
+        getCurrentSetupDataStore().setTags(tags)
     }
 
     private fun setProductConfig(configModel: ProductTagConfigUiModel) {
@@ -447,14 +478,14 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun restartLiveDuration(duration: LiveDuration) {
-        scope.launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             val remainingDuration = duration.remaining*1000
             countDownTimer.restart(duration = remainingDuration)
         }) { }
     }
 
     private fun resumeTimer() {
-        scope.launchCatchError(block = {
+        viewModelScope.launchCatchError(block = {
             countDownTimer.resume()
         }) { }
     }
@@ -469,19 +500,19 @@ class PlayBroadcastViewModel @Inject constructor(
     }
 
     private fun queueNewMetrics(metricList: List<PlayMetricUiModel>) {
-        scope.launch(dispatcher.main) {
+        viewModelScope.launch(dispatcher.main) {
             _observableNewMetrics.value = Event(metricList)
         }
     }
 
     private fun retrieveNewChat(newChat: PlayChatUiModel) {
-        scope.launch(dispatcher.io) {
+        viewModelScope.launch(dispatcher.io) {
             onRetrievedNewChat(newChat)
         }
     }
 
     private fun generateShareLink(shareUiModel: ShareUiModel) {
-        scope.launch {
+        viewModelScope.launch {
             PlayShareWrapper.generateShareLink(shareUiModel) {
                 _observableShareInfo.value = it
             }

@@ -76,9 +76,12 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private var topAdsBannerClickListener: TopAdsBannerClickListener? = null
     private var impressionListener: TopAdsItemImpressionListener? = null
     private var topAdsShopFollowBtnClickListener: TopAdsShopFollowBtnClickListener? = null
+    private var topAdsAddToCartClickListener: TopAdsAddToCartClickListener? = null
     private var bannerAdsAdapter: BannerAdsAdapter? = null
     private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerView"
     private var showProductShimmer: Boolean = false
+    private var hasAddToCartButton: Boolean = false
+    private var isShowCta: Boolean = true
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context)
     }
@@ -109,7 +112,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
             BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
             findViewById<TextView>(R.id.shop_name)?.text = escapeHTML(cpmData.cpm.name)
-            bannerAdsAdapter = BannerAdsAdapter(BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener))
+            bannerAdsAdapter = BannerAdsAdapter(BannerAdsAdapterTypeFactory(topAdsBannerClickListener, impressionListener, topAdsAddToCartClickListener))
             val list = findViewById<RecyclerView>(R.id.list)
             list.layoutManager = LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
             list.adapter = bannerAdsAdapter
@@ -200,15 +203,25 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 renderLabelMerchantVouchers(cpmData)
 
                 val items = ArrayList<Item<*>>()
-                items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl))
+                items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl, isShowCta))
                 if (cpmData.cpm?.cpmShop?.products?.isNotEmpty() == true) {
                     val productCardModelList: ArrayList<ProductCardModel> = getProductCardModels(cpmData.cpm.cpmShop.products)
                     for (i in 0 until productCardModelList.size) {
                         if (i < 3) {
-                            items.add(BannerShopProductViewModel(cpmData, productCardModelList[i],
+                            val model = BannerShopProductViewModel(cpmData, productCardModelList[i],
                                     cpmData.cpm.cpmShop.products[i].applinks,
                                     cpmData.cpm.cpmShop.products[i].image.m_url,
-                                    cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl))
+                                    cpmData.cpm.cpmShop.products[i].imageProduct.imageClickUrl)
+                            val product = cpmData.cpm.cpmShop.products[i]
+                            model.apply {
+                                productId = product.id
+                                productName = product.name
+                                productMinOrder = product.productMinimumOrder
+                                productCategory = product.categoryBreadcrumb
+                                productPrice = product.priceFormat
+                                shopId = cpmData.cpm.cpmShop.id
+                            }
+                            items.add(model)
                         }
                     }
                     if (productCardModelList.size < 3) {
@@ -241,7 +254,9 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     product.labelGroupList.map {
                         add(ProductCardModel.LabelGroup(it.position, it.title, it.type))
                     }
-                })
+                },
+                hasAddToCartButton = this.hasAddToCartButton,
+                addToCartButtonType = UnifyButton.Type.MAIN)
     }
 
     private fun bindFavorite(isFollowed: Boolean) {
@@ -418,6 +433,18 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     fun setTopAdsImpressionListener(adsImpressionListener: TopAdsItemImpressionListener) {
         this.impressionListener = adsImpressionListener
+    }
+
+    fun setHasAddToCartButton(hasAddToCartButton: Boolean) {
+        this.hasAddToCartButton = hasAddToCartButton
+    }
+
+    fun setAddToCartClickListener(topAdsAddToCartClickListener: TopAdsAddToCartClickListener) {
+        this.topAdsAddToCartClickListener = topAdsAddToCartClickListener
+    }
+
+    fun setShowCta(isShowCta: Boolean) {
+        this.isShowCta = isShowCta
     }
 
     override fun showLoading() {
