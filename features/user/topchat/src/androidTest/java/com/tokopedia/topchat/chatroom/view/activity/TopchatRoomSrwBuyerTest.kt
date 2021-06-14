@@ -250,21 +250,21 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwPreviewContentIsVisible()
-        assertSrwExpanded()
+        assertSrwPreviewExpanded()
 
         // When
         onView(withId(R.id.tp_srw_container_partial)).perform(click())
 
         // Then
         assertSrwPreviewContentIsVisible()
-        assertSrwCollapsed()
+        assertSrwPreviewCollapsed()
 
         // When
         onView(withId(R.id.tp_srw_container_partial)).perform(click())
 
         // Then
         assertSrwPreviewContentIsVisible()
-        assertSrwExpanded()
+        assertSrwPreviewExpanded()
     }
 
     @Test
@@ -302,7 +302,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwPreviewContentIsVisible()
-        assertSrwCollapsed()
+        assertSrwPreviewCollapsed()
     }
 
     @Test
@@ -322,7 +322,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwPreviewContentIsVisible()
-        assertSrwExpanded()
+        assertSrwPreviewExpanded()
     }
 
     @Test
@@ -342,7 +342,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwPreviewContentIsVisible()
-        assertSrwExpanded()
+        assertSrwPreviewExpanded()
         assertKeyboardIsNotVisible()
     }
 
@@ -364,7 +364,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwPreviewContentIsVisible()
-        assertSrwCollapsed()
+        assertSrwPreviewCollapsed()
     }
 
     /**
@@ -397,10 +397,35 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
         // Then
         assertSrwPreviewContentIsVisible()
-        assertSrwExpanded()
+        assertSrwPreviewExpanded()
     }
 
     // TODO: SRW bubble should displayed after click SRW preview
+    @Test
+    fun srw_bubble_should_displayed_after_click_srw_preview() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+        intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
+            .respondWith(
+                Instrumentation.ActivityResult(
+                    Activity.RESULT_OK, getAttachProductData(1)
+                )
+            )
+
+        // When
+        clickSrwPreviewItemAt(0)
+
+        // Then
+        assertSrwBubbleContentIsVisibleAt(0)
+        assertSrwBubbleExpanded(0)
+    }
+
     // TODO: SRW bubble should always stays at the bottom when receive response msg from ws
     // TODO: SRW bubble should always stays at the bottom when receive response different-day msg from ws
     // TODO: SRW bubble should removed when user request sent invoice
