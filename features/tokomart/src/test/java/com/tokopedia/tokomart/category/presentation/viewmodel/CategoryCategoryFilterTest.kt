@@ -22,14 +22,11 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
     private val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
 
     @Test
-    fun `when view created, category filter isSelected should be based on query params`() {
+    fun `when view created, category filter isSelected should be based on category L2 value`() {
         val selectedFilterOption =
                 OptionHelper.copyOptionAsExclude(categoryModel.categoryFilter.filter[0].options[1])
-        val queryParamWithFilter = mapOf(
-                selectedFilterOption.key to selectedFilterOption.value,
-        )
 
-        `Given category view model`(defaultCategoryL1, defaultCategoryL2, queryParamWithFilter)
+        `Given category view model`(defaultCategoryL1, selectedFilterOption.value, mapOf())
         `Given get category first page use case will be successful`(categoryModel)
 
         `When view created`()
