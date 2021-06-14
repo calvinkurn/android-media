@@ -19,7 +19,8 @@ open class BaseSuggestionDataView(
         var urlTracker: String = "",
         var trackingCode: String = "",
         var discountPercentage: String = "",
-        var originalPrice: String = ""
+        var originalPrice: String = "",
+        var dimension90: String = ""
 ) {
     fun hasSlashedPrice(): Boolean {
         return discountPercentage.isNotEmpty() && originalPrice.isNotEmpty()

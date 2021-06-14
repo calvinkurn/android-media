@@ -1,7 +1,5 @@
 package com.tokopedia.autocomplete.analytics;
 
-import android.os.Bundle;
-
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel;
 import com.tokopedia.iris.Iris;
@@ -64,12 +62,17 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickShop(String label) {
+    public static void eventClickShop(String label, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AutocompleteEventTracking.Event.CLICK_SEARCH_RESULT,
-                AutocompleteEventTracking.Category.TOP_NAV,
-                AutocompleteEventTracking.Action.CLICK_SHOP_SUGGESTION,
-                label
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_SEARCH_RESULT,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_SHOP_SUGGESTION,
+                        EVENT_LABEL, label,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        PAGE_SOURCE, pageSource
+                )
         );
     }
 
@@ -82,22 +85,30 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickKeyword(String label) {
+    public static void eventClickKeyword(String label, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AutocompleteEventTracking.Event.CLICK_SEARCH_RESULT,
-                AutocompleteEventTracking.Category.TOP_NAV,
-                AutocompleteEventTracking.Action.CLICK_KEYWORD_SUGGESTION,
-                label
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_SEARCH_RESULT,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_KEYWORD_SUGGESTION,
+                        EVENT_LABEL, label,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        PAGE_SOURCE, pageSource
+                )
         );
     }
 
-    public static void eventClickCurated(String label, String campaignCode) {
+    public static void eventClickCurated(String label, String campaignCode, String pageSource) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, AutocompleteEventTracking.Event.CLICK_SEARCH_RESULT,
                         EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - /",
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_DIGITAL_PRODUCT_SUGGESTION,
                         EVENT_LABEL, label,
-                        CAMPAIGN_CODE, campaignCode
+                        CAMPAIGN_CODE, campaignCode,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        PAGE_SOURCE, pageSource
                 )
         );
     }
@@ -139,12 +150,17 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickRecentKeyword(String keyword) {
+    public static void eventClickRecentKeyword(String keyword, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AutocompleteEventTracking.Event.CLICK_TOP_NAV,
-                AutocompleteEventTracking.Category.TOP_NAV + " - homepage",
-                AutocompleteEventTracking.Action.CLICK_RECENT_SEARCH_AUTOCOMPLETE,
-                keyword
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - homepage",
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_RECENT_SEARCH_AUTOCOMPLETE,
+                        EVENT_LABEL, keyword,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        PAGE_SOURCE, pageSource
+                )
         );
     }
 
@@ -280,7 +296,7 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickLocalKeyword(String label, String userId) {
+    public static void eventClickLocalKeyword(String label, String userId, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
                         EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
@@ -289,12 +305,13 @@ public class AutocompleteTracking {
                         EVENT_LABEL, label,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
                         CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
-                        USER_ID, userId
+                        USER_ID, userId,
+                        PAGE_SOURCE, pageSource
                 )
         );
     }
 
-    public static void eventClickGlobalKeyword(String label, String userId) {
+    public static void eventClickGlobalKeyword(String label, String userId, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
                         EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
@@ -303,7 +320,8 @@ public class AutocompleteTracking {
                         EVENT_LABEL, label,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
                         CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
-                        USER_ID, userId
+                        USER_ID, userId,
+                        PAGE_SOURCE, pageSource
                 )
         );
     }
