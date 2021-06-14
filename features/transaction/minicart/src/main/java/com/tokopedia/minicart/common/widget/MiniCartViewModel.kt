@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.*
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -28,8 +29,8 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
     val currentShopIds: LiveData<List<String>>
         get() = _currentShopIds
 
-    private val _currentPage = MutableLiveData<String>()
-    val currentPage: LiveData<String>
+    private val _currentPage = MutableLiveData<MiniCartAnalytics.Page>()
+    val currentPage: LiveData<MiniCartAnalytics.Page>
         get() = _currentPage
 
     // Widget DATA
@@ -50,7 +51,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
 
     private var lastDeletedProductItem: MiniCartProductUiModel? = null
 
-    fun initializeCurrentPage(currentPage: String) {
+    fun initializeCurrentPage(currentPage: MiniCartAnalytics.Page) {
         _currentPage.value = currentPage
     }
 

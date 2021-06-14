@@ -176,7 +176,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     private fun sendEventClickBuy() {
-        val pageName = viewModel?.currentPage?.value ?: ""
+        val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
         val products = viewModel?.miniCartListBottomSheetUiModel?.value?.getMiniCartProductUiModelList()
                 ?: emptyList()
         analytics.eventClickBuy(pageName, products)

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
@@ -30,7 +31,12 @@ class ExampleFragment : Fragment(), MiniCartWidgetListener {
         super.onViewCreated(view, savedInstanceState)
         val shopIds = listOf(SHOP_ID_PROD)
         miniCartWidget = view.findViewById<MiniCartWidget>(R.id.mini_cart_widget)
-        miniCartWidget?.initialize(shopIds, this, this, true)
+        miniCartWidget?.initialize(
+                shopIds = shopIds,
+                fragment = this,
+                listener = this,
+                pageName = MiniCartAnalytics.Page.HOME_PAGE
+        )
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {

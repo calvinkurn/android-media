@@ -76,7 +76,7 @@ class MiniCartWidget @JvmOverloads constructor(
     /*
     * Function to initialize the widget
     * */
-    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true, pageName: String = MiniCartAnalytics.TOKONOW_HOME_PAGE) {
+    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true, pageName: MiniCartAnalytics.Page) {
         val application = fragment.activity?.application
         initializeInjector(application)
         initializeView(fragment)
@@ -245,7 +245,7 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun sendEventClickBuy() {
-        val pageName = viewModel?.currentPage?.value ?: ""
+        val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
         val products = viewModel?.miniCartSimplifiedData?.value?.miniCartItems ?: emptyList()
         analytics.eventClickBuy(pageName, products)
     }
