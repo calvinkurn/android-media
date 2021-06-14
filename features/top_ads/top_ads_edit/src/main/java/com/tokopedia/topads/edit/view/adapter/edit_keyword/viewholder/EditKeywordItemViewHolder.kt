@@ -46,7 +46,7 @@ class EditKeywordItemViewHolder(
         private const val EXACT_POSITIVE = 21
     }
 
-    override fun bind(item: EditKeywordItemViewModel, added: MutableList<Boolean>, minBid: String) {
+    override fun bind(item: EditKeywordItemViewModel, added: MutableList<Boolean>, minBid: Float) {
 
         item.let {
             btnDelete.setOnClickListener {
@@ -84,7 +84,7 @@ class EditKeywordItemViewHolder(
                 typeKeyword.text = SPECIFIC_TYPE
             else
                 typeKeyword.text = BROAD_TYPE
-            if (item.data.priceBid != "0")
+            if (item.data.priceBid != 0.0f)
                 keywordBudget.text = "Rp " + item.data.priceBid
             else
                 keywordBudget.text = "Rp $minBid"
