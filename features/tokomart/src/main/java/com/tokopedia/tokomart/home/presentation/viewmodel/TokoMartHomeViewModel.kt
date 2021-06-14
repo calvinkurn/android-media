@@ -141,15 +141,17 @@ class TokoMartHomeViewModel @Inject constructor(
     }
 
     fun getMiniCart(shopId: List<String>) {
-        launchCatchError(block = {
-            getMiniCartUseCase.setParams(shopId)
-            getMiniCartUseCase.execute({
-                _miniCart.postValue(Success(it))
-            }, {
+        if(!shopId.isNullOrEmpty()) {
+            launchCatchError(block = {
+                getMiniCartUseCase.setParams(shopId)
+                getMiniCartUseCase.execute({
+                    _miniCart.postValue(Success(it))
+                }, {
+                    _miniCart.postValue(Fail(it))
+                })
+            }) {
                 _miniCart.postValue(Fail(it))
-            })
-        }) {
-            _miniCart.postValue(Fail(it))
+            }
         }
     }
 
