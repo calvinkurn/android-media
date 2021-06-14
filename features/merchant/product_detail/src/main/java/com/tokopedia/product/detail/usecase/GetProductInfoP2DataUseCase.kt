@@ -46,7 +46,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                         putObject(ProductDetailCommonConstant.PARAM_AFFILIATE_UUID, affiliateUUIDRequest)
                 }
 
-        val QUERY = """query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String, ${'$'}userLocation: pdpUserLocation, ${'$'}affiliate: affiliate) {
+        val QUERY = """query GetPdpGetData(${'$'}productID: String,${'$'}deviceID: String, ${'$'}pdpSession: String, ${'$'}userLocation: pdpUserLocation, ${'$'}affiliate: pdpAffiliate) {
           pdpGetData(productID: ${'$'}productID,deviceID: ${'$'}deviceID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, affiliate: ${'$'}affiliate) {
             error {
               Code

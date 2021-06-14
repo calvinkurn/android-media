@@ -5,12 +5,14 @@ import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
+import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
 import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
+import com.tokopedia.track.TrackApp
 import com.tokopedia.variant_common.model.*
 import com.tokopedia.variant_common.model.ThematicCampaign
 
@@ -314,5 +316,9 @@ object DynamicProductDetailMapper {
     fun generateUserLocationRequestRates(localData: LocalCacheModel): String {
         val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
         return "${localData.district_id}|${localData.postal_code}|${latlong}"
+    }
+
+    fun getAffiliateUIID(affiliateUniqueString: String, uuid: String): AffiliateUIIDRequest? {
+        return if(affiliateUniqueString.isNotBlank()) AffiliateUIIDRequest(uuid, affiliateUniqueString, TrackApp.getInstance().gtm.irisSessionId) else null
     }
 }

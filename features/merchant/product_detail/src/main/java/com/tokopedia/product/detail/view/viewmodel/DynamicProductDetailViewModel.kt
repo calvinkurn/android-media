@@ -31,7 +31,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
@@ -41,6 +40,7 @@ import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.getAffiliateUIID
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
@@ -62,7 +62,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -207,8 +206,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var shippingMinimumPrice: Int = getDynamicProductInfoP1?.basic?.getDefaultOngkirInt() ?: 30000
     var talkLastAction: DynamicProductDetailTalkLastAction? = null
     var isNewShipment: Boolean = false
-    var affiliateUniqueId: String = ""
-    var uuidString: String = ""
     private var userLocationCache: LocalCacheModel = LocalCacheModel()
     private var forceRefresh: Boolean = false
     private var shopDomain: String? = null
@@ -380,8 +377,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             shopDomain = productParams.shopDomain
             forceRefresh = refreshPage
             userLocationCache = userLocationLocal
-            affiliateUniqueId = affiliateUniqueString
-            uuidString = uuid
             getPdpLayout(productParams.productId ?: "", productParams.shopDomain
                     ?: "", productParams.productName ?: "", productParams.warehouseId
                     ?: "", layoutId).also {
@@ -405,7 +400,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 _productLayout.postValue(it.listOfLayout.asSuccess())
             }
             // Then update the following, it will not throw anything when error
-            getProductP2()
+            getProductP2(affiliateUniqueString, uuid)
 
         }) {
             _productLayout.postValue(it.asFail())
@@ -481,13 +476,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductP2() {
+    private suspend fun getProductP2(affiliateUniqueString: String, uuid: String) {
         getDynamicProductInfoP1?.let {
             val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
                 getProductInfoP2LoginAsync(it.basic.getShopId(),
                         it.basic.productID)
             } else null
-            val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession)
+            val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession, affiliateUniqueString, uuid)
             val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
 
             p2DataDeffered.await()?.let {
@@ -893,7 +888,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private fun getProductInfoP2DataAsync(productId: String, pdpSession: String): Deferred<ProductInfoP2UiData> {
+    private fun getProductInfoP2DataAsync(productId: String, pdpSession: String, affiliateUniqueString: String, uuid: String): Deferred<ProductInfoP2UiData> {
         return async(dispatcher.io) {
             getProductInfoP2DataUseCase.get().setErrorLogListener { logP2Data(it, productId, pdpSession) }
             getProductInfoP2DataUseCase.get().executeOnBackground(
@@ -902,14 +897,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                             pdpSession,
                             generatePdpSessionWithDeviceId(),
                             generateUserLocationRequest(userLocationCache),
-                            getAffiliateUIID()
+                            getAffiliateUIID(affiliateUniqueString, uuid)
                     ), forceRefresh
             )
         }
-    }
-
-    private fun getAffiliateUIID(): AffiliateUIIDRequest? {
-        return if(affiliateUniqueId.isNotBlank()) AffiliateUIIDRequest(uuidString, affiliateUniqueId, TrackApp.getInstance().gtm.irisSessionId) else null
     }
 
     private fun generatePdpSessionWithDeviceId(): String {

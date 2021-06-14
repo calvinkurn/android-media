@@ -269,7 +269,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var alreadyHitVideoTracker: Boolean = false
     private var shouldRefreshProductInfoBottomSheet = false
     private var shouldRefreshShippingBottomSheet = false
-    private var uuid = UUID.randomUUID().toString()
+    private var uuid = ""
 
     //Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
@@ -391,6 +391,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         activity?.let {
             sharedViewModel = ViewModelProvider(it).get(ProductDetailSharedViewModel::class.java)
         }
+        uuid = UUID.randomUUID().toString()
         firstOpenPage = true
         super.onCreate(savedInstanceState)
         setupRemoteConfig()
@@ -2446,7 +2447,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 deeplinkUrl = deeplinkUrl,
                 isStockAvailable = viewModel.getDynamicProductInfoP1?.getFinalStock() ?: "0",
                 boType = boType,
-                affiliateUniqueId = "$uuid-$affiliateUniqueId"
+                affiliateUniqueId = "$uuid - $affiliateUniqueId"
         )
     }
 
