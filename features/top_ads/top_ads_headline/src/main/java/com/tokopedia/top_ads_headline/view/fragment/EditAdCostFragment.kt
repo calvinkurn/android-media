@@ -200,4 +200,8 @@ class EditAdCostFragment : BaseDaggerFragment() {
         }
         stepperModel?.let { sharedEditHeadlineViewModel?.saveKeywordOperation(it) }
     }
+
+    fun hideToolTip(visibility: Int) {
+        tooltipBtn.visibility = visibility
+    }
 }

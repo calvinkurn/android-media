@@ -571,10 +571,14 @@
     </entry>
     <entry>
         <key>app_enable_branch_utm_only_branch_link</key>
-        <value>true</value>
+        <value>false</value>
     </entry>
     <entry>
         <key>android_branch_callback_timeout_key</key>
         <value>5000</value>
+    </entry>
+    <entry>
+        <key>android_enable_seller_global_feedback</key>
+        <value>true</value>
     </entry>
 </defaultsMap>

@@ -55,6 +55,13 @@ class EditKeywordListAdapter(val typeFactory: EditKeywordListAdapterTypeFactory)
         notifyDataSetChanged()
     }
 
+    fun clearList(){
+        this.items.clear()
+        this.added.clear()
+        this.data.clear()
+    }
+
+    fun setBid(bid: String) {
     fun setBid(bid: Float) {
         minBid = bid
         notifyDataSetChanged()
