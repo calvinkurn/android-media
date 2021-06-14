@@ -60,6 +60,13 @@ class ProductSingleVariantViewHolder(val view: View,
         }
     }
 
+    override fun bind(element: ProductSingleVariantDataModel, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        element.variantLevelOne?.let {
+            containerAdapter?.setData(it.variantOptions)
+        }
+    }
+
     override fun onSelectionChanged(view: View, position: Int) {
     }
 

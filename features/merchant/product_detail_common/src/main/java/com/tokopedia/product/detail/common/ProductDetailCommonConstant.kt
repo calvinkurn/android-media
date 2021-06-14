@@ -64,6 +64,9 @@ object ProductDetailCommonConstant{
     const val KEY_BUTTON_SECONDARY_GRAY = "secondary_gray"
     const val KEY_CART_TYPE_UPDATE_CART = "update_cart"
 
+    const val TEXT_REMIND_ME = "Cek Wishlist Kamu"
+    const val TEXT_SAVE_ATC = "Simpan Perubahan"
+
     //Button Action
     const val BUY_BUTTON = 1
     const val ATC_BUTTON = 2

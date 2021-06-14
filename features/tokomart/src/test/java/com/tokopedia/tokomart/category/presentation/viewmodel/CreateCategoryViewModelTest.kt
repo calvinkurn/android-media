@@ -2,6 +2,7 @@ package com.tokopedia.tokomart.category.presentation.viewmodel
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_SORT
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.tokomart.searchcategory.CreateSearchCategoryViewModelTestHelper
 import com.tokopedia.tokomart.util.SearchCategoryDummyUtils.dummyChooseAddressData
 import org.junit.Assert.assertThat
@@ -31,7 +32,8 @@ class CreateCategoryViewModelTest:
         `Given category view model`()
 
         `Then assert query param has default sort`()
-        `Then assert category id`()
+        `Then assert category ids`()
+        `Then assert query param has exclude sc category L2`()
         `Then assert content is loading`()
     }
 
@@ -42,10 +44,21 @@ class CreateCategoryViewModelTest:
         )
     }
 
-    private fun `Then assert category id`() {
+    private fun `Then assert category ids`() {
         assertThat(
-                categoryViewModel.categoryId,
-                shouldBe(defaultCategoryId)
+                categoryViewModel.categoryL1,
+                shouldBe(defaultCategoryL1)
+        )
+        assertThat(
+                categoryViewModel.categoryL2,
+                shouldBe(defaultCategoryL2)
+        )
+    }
+
+    private fun `Then assert query param has exclude sc category L2`() {
+        assertThat(
+                categoryViewModel.queryParam["${OptionHelper.EXCLUDE_PREFIX}_${SearchApiConst.SC}"],
+                shouldBe(defaultCategoryL2)
         )
     }
 

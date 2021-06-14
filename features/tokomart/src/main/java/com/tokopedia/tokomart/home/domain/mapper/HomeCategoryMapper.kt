@@ -14,8 +14,8 @@ object HomeCategoryMapper {
         return HomeCategoryGridUiModel(response.id, response.header.name, emptyList(), HomeLayoutState.LOADING)
     }
 
-    fun mapToCategoryList(response: List<CategoryResponse>): List<HomeCategoryItemUiModel> {
-        return response.take(MAX_HOME_CATEGORY_ITEM_COUNT).map {
+    fun mapToCategoryList(response: List<CategoryResponse>?): List<HomeCategoryItemUiModel>? {
+        return response?.take(MAX_HOME_CATEGORY_ITEM_COUNT)?.map {
             HomeCategoryItemUiModel(it.id, it.name, it.imageUrl, it.appLinks)
         }
     }
