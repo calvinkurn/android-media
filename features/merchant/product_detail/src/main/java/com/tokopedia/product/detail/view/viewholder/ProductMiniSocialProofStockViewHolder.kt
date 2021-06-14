@@ -63,9 +63,9 @@ class ProductMiniSocialProofStockViewHolder(
 
     private fun setupLoading(shouldShowSingleSocialProof: Boolean) = with(view) {
         if (shouldShowSingleSocialProof)
-            pdp_shimmering_social_proof.setPadding(16.toPx(), 0, 16.toPx(), 16.toPx())
+            pdp_shimmering_social_proof.setPadding(8.toPx(), 0, 16.toPx(), 16.toPx())
         else
-            pdp_shimmering_social_proof.setPadding(16.toPx(), 8.toPx(), 16.toPx(), 20.toPx())
+            pdp_shimmering_social_proof.setPadding(8.toPx(), 8.toPx(), 16.toPx(), 20.toPx())
     }
 
     private fun getComponentTrackData(element: ProductMiniSocialProofStockDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
