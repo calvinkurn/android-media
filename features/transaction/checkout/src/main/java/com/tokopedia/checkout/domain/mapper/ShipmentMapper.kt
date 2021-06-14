@@ -134,8 +134,7 @@ class ShipmentMapper @Inject constructor() {
                         shopShipments = mapShopShipments(it.shopShipments)
                         val mapProducts = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
                         products = mapProducts.first
-                        productErrorCount = mapProducts.second
-                        firstProductErrorIndex = mapProducts.third
+                        firstProductErrorIndex = mapProducts.second
                         isDisableChangeCourier = it.isDisableChangeCourier
                         autoCourierSelection = it.autoCourierSelection
                         boMetadata = it.boMetadata
@@ -150,10 +149,9 @@ class ShipmentMapper @Inject constructor() {
                             groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
                             shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
                             isDisablePPP: Boolean,
-                            shopTypeInfoData: ShopTypeInfoData): Triple<MutableList<Product>, Int, Int> {
+                            shopTypeInfoData: ShopTypeInfoData): Pair<MutableList<Product>, Int> {
         val productListResult = arrayListOf<Product>()
         var firstErrorIndex = -1
-        var productErrorCount = 0
         groupShop.products.forEachIndexed { index, it ->
             val productResult = Product().apply {
                 analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
@@ -171,7 +169,6 @@ class ShipmentMapper @Inject constructor() {
                 errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (it.errors.isNotEmpty()) it.errors[0] else ""
                 errorMessageDescription = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (it.errors.size >= 2) it.errors[1] else ""
                 if (isError) {
-                    productErrorCount++
                     if (firstErrorIndex == -1) {
                         firstErrorIndex = index
                     }
@@ -227,7 +224,7 @@ class ShipmentMapper @Inject constructor() {
             }
             productListResult.add(productResult)
         }
-        return Triple(productListResult, productErrorCount, firstErrorIndex)
+        return productListResult to firstErrorIndex
     }
 
     private fun mapAnalyticsProductCheckoutData(product: com.tokopedia.checkout.data.model.response.shipmentaddressform.Product,
