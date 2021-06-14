@@ -22,6 +22,8 @@ import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_CLIENT_NUMBER
 import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_IDENTIFIER
 import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_OPERATOR_ID
@@ -164,7 +166,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
         })
 
         rechargeCCViewModel.bankNotSupported.observe(viewLifecycleOwner, Observer {
-            cc_widget_client_number.setErrorTextField(getString(R.string.cc_bank_is_not_supported))
+            var throwable =  MessageErrorException(getString(R.string.cc_bank_is_not_supported))
+            cc_widget_client_number.setErrorTextField(ErrorHandler.getErrorMessage(requireContext(), throwable))
         })
 
         rechargeCCViewModel.tickers.observe(viewLifecycleOwner, Observer {
@@ -234,10 +237,11 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 clientNumber, menuId)
     }
 
-    private fun showErrorToaster(message: String) {
+    private fun showErrorToaster(error: Throwable) {
         KeyboardHandler.hideSoftKeyboard(activity)
         view?.run {
-            Toaster.build(this, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            Toaster.build(this, ErrorHandler.getErrorMessage(requireContext(), error),
+                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -264,7 +268,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 dialog.show()
             }
         } else {
-            showErrorToaster(getString(R.string.cc_error_default_message))
+            showErrorToaster(MessageErrorException(getString(R.string.cc_error_default_message)))
         }
     }
 
@@ -296,6 +300,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
             rechargeSubmitCCViewModel.postCreditCard(RechargeCCGqlQuery.rechargeCCSignature, categoryId, mapParam)
         } else {
+            hideLoading()
             navigateUserLogin()
         }
     }
@@ -337,7 +342,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
                     if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
                         val message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)
                         if (!TextUtils.isEmpty(message)) {
-                            showErrorToaster(message)
+                            showErrorToaster(MessageErrorException(message))
                         }
                     }
                 }
