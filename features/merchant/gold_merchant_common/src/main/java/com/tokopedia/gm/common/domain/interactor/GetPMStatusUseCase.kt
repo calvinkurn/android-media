@@ -68,14 +68,5 @@ class GetPMStatusUseCase @Inject constructor(
                 putBoolean(KEY_INCLUDE_OS, true)
             }
         }
-
-        fun getCacheStrategy(shouldFromCache: Boolean): GraphqlCacheStrategy {
-            val cacheType = if (shouldFromCache) {
-                CacheType.CACHE_FIRST
-            } else {
-                CacheType.ALWAYS_CLOUD
-            }
-            return GraphqlCacheStrategy.Builder(cacheType).build()
-        }
     }
 }
