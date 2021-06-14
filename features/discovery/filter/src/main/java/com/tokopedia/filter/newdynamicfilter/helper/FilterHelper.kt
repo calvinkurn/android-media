@@ -188,13 +188,10 @@ object FilterHelper {
 
     fun copyFilterWithOptionAsExclude(filters: List<Filter>): List<Filter> {
         return filters.map { filter ->
-            Filter(
-                    title = filter.title,
-                    templateName = filter.templateName,
-                    search = filter.search,
+            filter.clone(
                     options = filter.options.map { option ->
                         OptionHelper.copyOptionAsExclude(option)
-                    },
+                    }
             )
         }
     }
