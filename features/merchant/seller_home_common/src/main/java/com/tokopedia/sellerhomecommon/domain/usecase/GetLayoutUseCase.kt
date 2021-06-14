@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -34,8 +35,9 @@ class GetLayoutUseCase(
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GetLayoutResponse::class.java)
         if (errors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<GetLayoutResponse>()
-            return mapper.mapRemoteDataToUiData(data, cacheStrategy.type == CacheType.CACHE_ONLY)
+            //val data = gqlResponse.getData<GetLayoutResponse>()
+            val dummy = Gson().fromJson<GetLayoutResponse>(DUMMY, GetLayoutResponse::class.java)
+            return mapper.mapRemoteDataToUiData(dummy, cacheStrategy.type == CacheType.CACHE_ONLY)
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }
@@ -89,6 +91,87 @@ class GetLayoutUseCase(
                     value
                   }
                 }
+              }
+            }
+        """.trimIndent()
+
+        private val DUMMY = """
+            {
+              "GetSellerDashboardPageLayout": {
+                "widget": [
+                  {
+                    "ID": 539,
+                    "widgetType": "post",
+                    "title": "Khusus untukmu",
+                    "subtitle": "",
+                    "comparePeriode": false,
+                    "tooltip": {
+                      "title": "Informasi",
+                      "content": "Informasi ini hanya khusus untukmu",
+                      "show": true,
+                      "list": []
+                    },
+                    "showEmpty": true,
+                    "postFilter": [
+                      {
+                        "name": "Info",
+                        "value": "info"
+                      },
+                      {
+                        "name": "Aktivitas",
+                        "value": "activity"
+                      }
+                    ],
+                    "url": "",
+                    "applink": "tokopedia://sellerinfo",
+                    "dataKey": "dummyEmphasize",
+                    "ctaText": "Lihat selengkapnya",
+                    "emptyState": {
+                      "imageUrl": "https://ecs7.tokopedia.net/seller-dashboard/seller_Info.png",
+                      "title": "Belum ada informasi untukmu",
+                      "description": "Tenang, kamu tetap bisa ikuti semua update mengenai Seller di Pusat Edukasi Seller, ya.",
+                      "ctaText": "Ke Pusat Edukasi Seller",
+                      "applink": "tokopedia://webview?url=https%3A%2F%2Fseller.tokopedia.com%2Fedu"
+                    },
+                    "searchTableColumnFilter": []
+                  },
+                  {
+                    "ID": 539,
+                    "widgetType": "post",
+                    "title": "Khusus untukmu",
+                    "subtitle": "",
+                    "comparePeriode": false,
+                    "tooltip": {
+                      "title": "Informasi",
+                      "content": "Informasi ini hanya khusus untukmu",
+                      "show": true,
+                      "list": []
+                    },
+                    "showEmpty": true,
+                    "postFilter": [
+                      {
+                        "name": "Info",
+                        "value": "info"
+                      },
+                      {
+                        "name": "Aktivitas",
+                        "value": "activity"
+                      }
+                    ],
+                    "url": "",
+                    "applink": "tokopedia://sellerinfo",
+                    "dataKey": "sellerInfo",
+                    "ctaText": "Lihat selengkapnya",
+                    "emptyState": {
+                      "imageUrl": "https://ecs7.tokopedia.net/seller-dashboard/seller_Info.png",
+                      "title": "Belum ada informasi untukmu",
+                      "description": "Tenang, kamu tetap bisa ikuti semua update mengenai Seller di Pusat Edukasi Seller, ya.",
+                      "ctaText": "Ke Pusat Edukasi Seller",
+                      "applink": "tokopedia://webview?url=https%3A%2F%2Fseller.tokopedia.com%2Fedu"
+                    },
+                    "searchTableColumnFilter": []
+                  }
+                ]
               }
             }
         """.trimIndent()

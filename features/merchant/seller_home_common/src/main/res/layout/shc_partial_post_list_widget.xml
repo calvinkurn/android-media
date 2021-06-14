@@ -60,7 +60,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvPostListTitle"
         app:layout_constraintVertical_bias="0.0"
         tools:itemCount="3"
-        tools:listitem="@layout/shc_item_post"
+        tools:listitem="@layout/shc_item_post_image_emphasized"
         tools:targetApi="lollipop" />
 
     <com.tokopedia.unifyprinciples.Typography

@@ -7,21 +7,21 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.presentation.model.PostUiModel
-import kotlinx.android.synthetic.main.shc_item_post.view.*
+import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
+import kotlinx.android.synthetic.main.shc_item_post_image_emphasized.view.*
 import timber.log.Timber
 
 /**
  * Created By @ilhamsuaib on 20/05/20
  */
 
-class PostViewHolder(view: View?) : AbstractViewHolder<PostUiModel>(view) {
+class PostImageEmphasizedViewHolder(view: View?) : AbstractViewHolder<PostItemUiModel.PostImageEmphasizedUiModel>(view) {
 
     companion object {
-        val RES_LAYOUT = R.layout.shc_item_post
+        val RES_LAYOUT = R.layout.shc_item_post_image_emphasized
     }
 
-    override fun bind(element: PostUiModel) {
+    override fun bind(element: PostItemUiModel.PostImageEmphasizedUiModel) {
         with(itemView) {
             try {
                 parentViewShcItemPost.background = context.getResDrawable(R.drawable.shc_bg_ripple_radius_4dp)
@@ -31,7 +31,7 @@ class PostViewHolder(view: View?) : AbstractViewHolder<PostUiModel>(view) {
 
             tvPostTitle.text = element.title.parseAsHtml()
             tvPostDescription.text = element.subtitle.parseAsHtml()
-            loadImage(element.featuredMediaURL)
+            loadImage(element.featuredMediaUrl)
         }
     }
 

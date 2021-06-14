@@ -10,9 +10,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.presentation.adapter.ListAdapterTypeFactory
+import com.tokopedia.sellerhomecommon.presentation.adapter.factory.PostListAdapterTypeFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.PostUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
@@ -28,7 +28,7 @@ import kotlinx.android.synthetic.main.shc_partial_shimmering_post_list_widget.vi
 class PostListViewHolder(
         view: View?,
         private val listener: Listener
-) : AbstractViewHolder<PostListWidgetUiModel>(view), BaseListAdapter.OnAdapterInteractionListener<PostUiModel> {
+) : AbstractViewHolder<PostListWidgetUiModel>(view), BaseListAdapter.OnAdapterInteractionListener<PostItemUiModel> {
 
     companion object {
         @LayoutRes
@@ -36,7 +36,7 @@ class PostListViewHolder(
         private const val IMG_EMPTY_STATE = "https://ecs7.tokopedia.net/android/others/shc_post_list_info_empty_state.png"
     }
 
-    private val postAdapter = BaseListAdapter(ListAdapterTypeFactory(), this)
+    private val postAdapter = BaseListAdapter(PostListAdapterTypeFactoryImpl(), this)
 
     private var dataKey: String = ""
 
@@ -44,6 +44,12 @@ class PostListViewHolder(
         itemView.rvPostList.isNestedScrollingEnabled = false
         itemView.visible()
         observeState(element)
+    }
+
+    override fun onItemClicked(post: PostItemUiModel) {
+        if (RouteManager.route(itemView.context, post.appLink)) {
+            listener.sendPosListItemClickEvent(dataKey, post.title)
+        }
     }
 
     private fun observeState(postListWidgetUiModel: PostListWidgetUiModel) {
@@ -248,7 +254,7 @@ class PostListViewHolder(
         }
     }
 
-    private fun setupPostList(posts: List<PostUiModel>) {
+    private fun setupPostList(posts: List<PostItemUiModel>) {
         itemView.rvPostList.apply {
             layoutManager = object : LinearLayoutManager(itemView.context) {
                 override fun canScrollVertically(): Boolean {
@@ -262,12 +268,6 @@ class PostListViewHolder(
             data.clear()
             data.addAll(posts)
             notifyDataSetChanged()
-        }
-    }
-
-    override fun onItemClicked(post: PostUiModel) {
-        if (RouteManager.route(itemView.context, post.appLink)) {
-            listener.sendPosListItemClickEvent(dataKey, post.title)
         }
     }
 

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parentViewShcItemPostTextEmphasized"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/layout_lvl1"
+    android:paddingTop="@dimen/shc_dimen_6dp"
+    android:paddingEnd="@dimen/layout_lvl1"
+    android:paddingBottom="@dimen/shc_dimen_6dp"
+    tools:background="@drawable/shc_bg_ripple_radius_4dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgShcPostState"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        app:layout_constraintBottom_toBottomOf="@+id/tvShcPostState"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvShcPostState"
+        app:unify_image_corner_radius="0"
+        app:unify_image_placeholder="@android:color/transparent"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcPostState"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgShcPostState"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Yah, pengunjung tokomu terus menurun" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcPostTextTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toStartOf="@+id/imgShcPostMedia"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcPostState"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Tonton sharing session ‘Tips Memulai Berjualan’ bersama Top Seller" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcPostTextDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tvShcPostTextTitle"
+        app:layout_constraintStart_toStartOf="@id/tvShcPostTextTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvShcPostTextTitle"
+        app:layout_constraintVertical_bias="0.0"
+        app:typographyType="small"
+        tools:text="Rekomendasi Artikel" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgShcPostMedia"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/shc_content_desc_image_post"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvShcPostTextTitle"
+        app:layout_constraintVertical_bias="0.0"
+        app:unify_image_placeholder="@android:color/transparent"
+        tools:src="@tools:sample/avatars" />
+
+    <View
+        android:id="@+id/lineShcItemPost"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/shc_dimen_1dp"
+        android:layout_marginTop="@dimen/shc_dimen_10dp"
+        android:background="@color/Unify_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcPostTextDescription" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
