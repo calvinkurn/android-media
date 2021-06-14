@@ -51,14 +51,24 @@
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl1"
         android:focusable="false"
-        android:nestedScrollingEnabled="false"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvPostListTitle"
         app:layout_constraintVertical_bias="0.0"
         tools:itemCount="3"
-        tools:listitem="@layout/shc_item_post_image_emphasized"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/shc_item_post_list_pager"
         tools:targetApi="lollipop" />
+
+    <com.tokopedia.unifycomponents.PageControl
+        android:id="@+id/pageControlShcPostPager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvPostList" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPostListSeeDetails"
@@ -76,14 +86,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/icPostListSeeDetails"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rvPostList"
+        app:layout_constraintTop_toBottomOf="@+id/pageControlShcPostPager"
         app:layout_constraintVertical_bias="1.0"
         app:typographyType="body_2"
         app:typographyWeight="reguler" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icPostListSeeDetails"
-        android:layout_width="@dimen/layout_lvl2"
+        android:layout_width="@dimen/layout_lvl1"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl1"
@@ -91,7 +101,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/tvPostListSeeDetails"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tvPostListSeeDetails"
-        app:srcCompat="@drawable/ic_arrow_right_default" />
+        app:srcCompat="@drawable/ic_arrow_right_default"
+        app:unify_image_placeholder="@android:color/transparent" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgShcPostEmpty"

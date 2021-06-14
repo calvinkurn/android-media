@@ -10,7 +10,7 @@ data class PostListDataUiModel(
         override var isFromCache: Boolean = false,
         override val showWidget: Boolean = false,
         val emphasizeType: Int = IMAGE_EMPHASIZED,
-        val items: List<PostItemUiModel> = emptyList(),
+        val postPagers: List<PostListPagerUiModel> = emptyList(),
         val cta: PostCtaDataUiModel = PostCtaDataUiModel()
 ) : BaseDataUiModel {
 
@@ -19,7 +19,9 @@ data class PostListDataUiModel(
         const val TEXT_EMPHASIZED = 1
     }
 
+    fun isEmptyPost(): Boolean = postPagers.isEmpty()
+
     override fun shouldRemove(): Boolean {
-        return items.isEmpty()
+        return isEmptyPost()
     }
 }

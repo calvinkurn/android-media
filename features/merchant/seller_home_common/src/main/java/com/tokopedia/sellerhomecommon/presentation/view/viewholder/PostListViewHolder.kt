@@ -3,23 +3,27 @@ package com.tokopedia.sellerhomecommon.presentation.view.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
-import com.tokopedia.sellerhomecommon.presentation.adapter.factory.PostListAdapterTypeFactoryImpl
+import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
+import com.tokopedia.sellerhomecommon.presentation.view.adapter.PostListPagerAdapter
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_post_list_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_post_list_widget_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_shimmering_post_list_widget.view.*
+import timber.log.Timber
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -28,7 +32,7 @@ import kotlinx.android.synthetic.main.shc_partial_shimmering_post_list_widget.vi
 class PostListViewHolder(
         view: View?,
         private val listener: Listener
-) : AbstractViewHolder<PostListWidgetUiModel>(view), BaseListAdapter.OnAdapterInteractionListener<PostItemUiModel> {
+) : AbstractViewHolder<PostListWidgetUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -36,20 +40,20 @@ class PostListViewHolder(
         private const val IMG_EMPTY_STATE = "https://ecs7.tokopedia.net/android/others/shc_post_list_info_empty_state.png"
     }
 
-    private val postAdapter = BaseListAdapter(PostListAdapterTypeFactoryImpl(), this)
-
     private var dataKey: String = ""
+
+    private val pagerAdapter by lazy {
+        PostListPagerAdapter {
+            if (RouteManager.route(itemView.context, it.appLink)) {
+                listener.sendPosListItemClickEvent(dataKey, it.title)
+            }
+        }
+    }
 
     override fun bind(element: PostListWidgetUiModel) {
         itemView.rvPostList.isNestedScrollingEnabled = false
         itemView.visible()
         observeState(element)
-    }
-
-    override fun onItemClicked(post: PostItemUiModel) {
-        if (RouteManager.route(itemView.context, post.appLink)) {
-            listener.sendPosListItemClickEvent(dataKey, post.title)
-        }
     }
 
     private fun observeState(postListWidgetUiModel: PostListWidgetUiModel) {
@@ -73,13 +77,13 @@ class PostListViewHolder(
         hideShimmeringLayout()
         with(itemView) {
             tvPostListTitleOnError.text = cardTitle
-            imgWidgetOnError.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
+            imgWidgetOnError.loadImage(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
             showErrorLayout()
         }
     }
 
     private fun onSuccessLoadData(postListWidgetUiModel: PostListWidgetUiModel) {
-        val isEmpty = postListWidgetUiModel.data?.items.isNullOrEmpty()
+        val isEmpty = postListWidgetUiModel.data?.isEmptyPost().orFalse()
         when {
             isEmpty && !postListWidgetUiModel.isShowEmpty -> {
                 itemView.gone()
@@ -96,7 +100,8 @@ class PostListViewHolder(
             icPostListSeeDetails.gone()
             imgShcPostEmpty.visible()
             tvShcPostEmptyTitle.run {
-                text = element.emptyState.title.takeIf { it.isNotBlank() } ?: getString(R.string.shc_empty_state_title_post_list)
+                text = element.emptyState.title.takeIf { it.isNotBlank() }
+                        ?: getString(R.string.shc_empty_state_title_post_list)
                 visible()
             }
             tvShcPostEmptyDescription.run {
@@ -108,7 +113,8 @@ class PostListViewHolder(
                 showWithCondition(element.emptyState.ctaText.isNotBlank())
                 setOnClickListener { goToSellerEducationCenter(element) }
             }
-            ImageHandler.loadImageWithoutPlaceholderAndError(imgShcPostEmpty, element.emptyState.imageUrl.takeIf { it.isNotBlank() } ?: IMG_EMPTY_STATE)
+            ImageHandler.loadImageWithoutPlaceholderAndError(imgShcPostEmpty, element.emptyState.imageUrl.takeIf { it.isNotBlank() }
+                    ?: IMG_EMPTY_STATE)
         }
     }
 
@@ -137,11 +143,10 @@ class PostListViewHolder(
             showListLayout()
             addImpressionTracker(element)
 
-            val isEmpty = items.isNullOrEmpty()
-            if (isEmpty) {
+            if (isEmptyPost()) {
                 showEmptyState(element)
             } else {
-                setupPostList(items)
+                setupPostPager(postPagers)
             }
         }
     }
@@ -216,7 +221,7 @@ class PostListViewHolder(
     }
 
     private fun setupCtaButton(element: PostListWidgetUiModel) {
-        val (ctaText, appLink) = if(element.data?.cta?.text?.isNotBlank() == true && element.data?.cta?.appLink?.isNotBlank() == true) {
+        val (ctaText, appLink) = if (element.data?.cta?.text?.isNotBlank() == true && element.data?.cta?.appLink?.isNotBlank() == true) {
             Pair(element.data?.cta?.text.orEmpty(), element.data?.cta?.appLink.orEmpty())
         } else {
             Pair(element.ctaText, element.appLink)
@@ -254,20 +259,40 @@ class PostListViewHolder(
         }
     }
 
-    private fun setupPostList(posts: List<PostItemUiModel>) {
-        itemView.rvPostList.apply {
-            layoutManager = object : LinearLayoutManager(itemView.context) {
-                override fun canScrollVertically(): Boolean {
-                    return false
+    private fun setupPostPager(pagers: List<PostListPagerUiModel>) {
+        with(itemView) {
+            pageControlShcPostPager.setIndicator(pagers.size)
+            pageControlShcPostPager.isVisible = pagers.size > 1
+
+            rvPostList.run {
+                val mLayoutManager = object : LinearLayoutManager(itemView.context, HORIZONTAL, false) {
+                    override fun canScrollVertically(): Boolean = false
                 }
+                layoutManager = mLayoutManager
+                adapter = pagerAdapter
+
+                try {
+                    PagerSnapHelper().attachToRecyclerView(this)
+                } catch (e: IllegalStateException) {
+                    Timber.e(e)
+                }
+
+                addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        super.onScrolled(recyclerView, dx, dy)
+                        val position = mLayoutManager.findFirstCompletelyVisibleItemPosition()
+                        if (position != RecyclerView.NO_POSITION) {
+                            itemView.pageControlShcPostPager.setCurrentIndicator(position)
+                        }
+                    }
+                })
             }
-            adapter = this@PostListViewHolder.postAdapter
-            isNestedScrollingEnabled = true
         }
-        postAdapter.run {
-            data.clear()
-            data.addAll(posts)
-            notifyDataSetChanged()
+
+        if (pagerAdapter.itemCount <= 0) {
+            pagerAdapter.setItems(pagers)
+            pagerAdapter.notifyDataSetChanged()
         }
     }
 

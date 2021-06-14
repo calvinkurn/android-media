@@ -6,6 +6,7 @@ import com.tokopedia.sellerhomecommon.domain.model.PostItemDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostCtaDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
 import javax.inject.Inject
 
 /**
@@ -14,11 +15,15 @@ import javax.inject.Inject
 
 class PostMapper @Inject constructor() : BaseResponseMapper<GetPostDataResponse, List<PostListDataUiModel>> {
 
+    companion object {
+        private const val MAX_ITEM_PER_PAGE = 3
+    }
+
     override fun mapRemoteDataToUiData(response: GetPostDataResponse, isFromCache: Boolean): List<PostListDataUiModel> {
         return response.getPostWidgetData?.data.orEmpty().map {
             PostListDataUiModel(
                     dataKey = it.dataKey.orEmpty(),
-                    items = getPostItems(it.list.orEmpty(), it.emphasizeType),
+                    postPagers = getPostPagers(it.list.orEmpty(), it.emphasizeType),
                     cta = PostCtaDataUiModel(
                             text = it.cta?.text.orEmpty(),
                             appLink = it.cta?.appLink.orEmpty()
@@ -28,6 +33,13 @@ class PostMapper @Inject constructor() : BaseResponseMapper<GetPostDataResponse,
                     showWidget = it.showWidget.orFalse(),
                     emphasizeType = it.emphasizeType ?: PostListDataUiModel.IMAGE_EMPHASIZED
             )
+        }
+    }
+
+    private fun getPostPagers(postItems: List<PostItemDataModel>, emphasizeType: Int?): List<PostListPagerUiModel> {
+        return postItems.chunked(MAX_ITEM_PER_PAGE).map {
+            val postListItem = getPostItems(it, emphasizeType)
+            PostListPagerUiModel(postListItem)
         }
     }
 
