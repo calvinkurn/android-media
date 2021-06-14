@@ -171,6 +171,8 @@ data class ProductCardModel (
 
     fun isShowLabelBestSeller() = getLabelBestSeller()?.title?.isNotEmpty() == true
 
+    fun isStockBarShown() = stockBarLabel.isNotEmpty() && !isOutOfStock
+
     fun isShowLabelCampaign(): Boolean {
         val labelCampaign = getLabelCampaign()
 

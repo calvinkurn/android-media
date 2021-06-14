@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.ExpandableItemViewHolder
 import com.tokopedia.power_merchant.subscribe.view.adapter.viewholder.ExpandableSectionViewHolder
 import com.tokopedia.power_merchant.subscribe.view.model.ExpandableItemUiModel

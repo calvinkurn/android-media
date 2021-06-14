@@ -1215,6 +1215,11 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         activityShouldEnd = true
         registerPushNotif()
         activity?.let {
+
+            if (isSmartLogin) {
+                analytics.trackerSuccessRegisterFromLogin(userSession.loginMethod)
+            }
+
             val bundle = Bundle()
             bundle.putBoolean(PARAM_IS_SUCCESS_REGISTER, true)
             it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
