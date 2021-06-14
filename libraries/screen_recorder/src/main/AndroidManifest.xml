@@ -12,7 +12,8 @@
         <service android:name=".ScreenRecordService" android:enabled="true" android:exported="false"
             android:process=":ScreenRecorder"/>
 
-        <activity android:name=".ScreenRecorderActivity">
+        <activity android:name=".ScreenRecorderActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

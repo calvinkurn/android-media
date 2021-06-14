@@ -169,6 +169,7 @@ object AccountConstants {
         const val SETTING_DEV_OPTIONS = -1
         const val SETTING_APP_REVIEW_ID = 10
         const val SETTING_APP_ADVANCED_CLEAR_CACHE = 20
+        const val SETTING_APP_ADVANCED_SCREEN_RECORD = 21
         const val SETTING_ABOUT_US = 36
         const val SETTING_NOTIFICATION = 38
         const val SETTING_SECURITY = 39
