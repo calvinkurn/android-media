@@ -23,7 +23,7 @@ object DeeplinkMapperTravel {
             deeplink.equals(ApplinkConst.HOTEL_ORDER, true) -> {
                 DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(context, deeplink)
             }
-            deeplink.startsWith(ApplinkConst.HOTEL, true) -> {
+            deeplink.startsWith(ApplinkConst.HOTEL_DASHBOARD, true) -> {
                 ApplinkConstInternalTravel.DASHBOARD_HOTEL
             }
             deeplink.startsWith(ApplinkConst.HOTEL_DETAIL, true) -> {
