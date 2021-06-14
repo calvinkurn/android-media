@@ -8,12 +8,12 @@ import android.widget.SeekBar
  * Author errysuprayogi on 13,May,2019
  */
 
-data class Range(val min: Int, val max: Int, private val defaultIncrement: Int) {
+data class Range(val min: Float, val max: Float, private val defaultIncrement: Int) {
     val increment = if ((max - min) < defaultIncrement) 1 else defaultIncrement
 }
 
 
-internal fun Range.toSeekbarMaximum(): Int = (max - min) / increment
+internal fun Range.toSeekbarMaximum(): Float = (max - min) / increment
 
 
 class RangeSeekBar: SeekBar, SeekBar.OnSeekBarChangeListener {
@@ -21,16 +21,16 @@ class RangeSeekBar: SeekBar, SeekBar.OnSeekBarChangeListener {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    var range: Range = Range(0, 100, 1)
+    var range: Range = Range(0.0f, 100.0f, 1)
         set(value) {
             field = value
-            max = value.toSeekbarMaximum()
+            max = value.toSeekbarMaximum().toInt()
         }
 
-    var value: Int = 0
+    var value: Float = 0.0f
         get() = range.min + progress * range.increment
         set(value) {
-            progress = (value - range.min) / range.increment
+            progress = ((value - range.min) / range.increment).toInt()
             field = value
         }
 
@@ -42,7 +42,7 @@ class RangeSeekBar: SeekBar, SeekBar.OnSeekBarChangeListener {
     }
 
     override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-        onSeekBarChangeListenerDelegate?.onProgressChanged(seekBar, value, fromUser)
+        onSeekBarChangeListenerDelegate?.onProgressChanged(seekBar, value.toInt(), fromUser)
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar?) {

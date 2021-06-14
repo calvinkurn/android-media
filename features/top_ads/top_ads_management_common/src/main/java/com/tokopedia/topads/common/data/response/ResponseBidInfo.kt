@@ -10,7 +10,7 @@ data class ResponseBidInfo(
         val result: Result = Result()
 ) {
     data class Result(
-            @field:SerializedName("topadsBidInfo")
+            @field:SerializedName("topadsBidInfoV2")
             val topadsBidInfo: TopadsBidInfo = TopadsBidInfo()
     )
 }
@@ -29,23 +29,23 @@ data class TopadsBidInfo(
             @field:SerializedName("id")
             var adId: String = "0",
             @field:SerializedName("suggestion_bid")
-            var suggestionBid: String = "0",
+            var suggestionBid: Float = 0.0f,
             @field:SerializedName("max_bid")
-            var maxBid: String = "0",
+            var maxBid: Float = 0.0f,
             @field:SerializedName("min_bid")
-            var minBid: String = "0",
+            var minBid: Float = 0.0f,
             @SerializedName("estimation")
             var estimation: Estimation = Estimation(),
             @SerializedName("max_bid_fmt")
             var maxBidFmt: String = "",
             @SerializedName("max_daily_budget")
-            var maxDailyBudget: Int = 0,
+            var maxDailyBudget: Float = 0.0f,
             @SerializedName("max_daily_budget_fmt")
             var maxDailyBudgetFmt: String = "",
             @SerializedName("min_bid_fmt")
             var minBidFmt: String = "",
             @SerializedName("min_daily_budget")
-            var minDailyBudget: Int = 0,
+            var minDailyBudget: Float = 0.0f,
             @SerializedName("min_daily_budget_fmt")
             var minDailyBudgetFmt: String = "",
             @SerializedName("multiplier")
@@ -60,11 +60,11 @@ data class TopadsBidInfo(
         @Parcelize
         data class Estimation(
                 @SerializedName("max_bid")
-                var maxBid: String = "0",
+                var maxBid: Float = 0.0f,
                 @SerializedName("max_bid_fmt")
                 var maxBidFmt: String = "",
                 @SerializedName("min_bid")
-                var minBid: String = "0",
+                var minBid: Float = 0.0f,
                 @SerializedName("min_bid_fmt")
                 var minBidFmt: String = ""
         ) : Parcelable

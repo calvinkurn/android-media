@@ -42,7 +42,7 @@ class ProductAdsListViewModel @Inject constructor(
                     onEmpty: (() -> Unit), onError: ((Throwable) -> Unit)) {
         launchCatchError(
                 block = {
-                    topAdsGetListProductUseCase.setParams(keyword, etalaseId, sortBy, isPromoted, rows, start, userSession.shopId.toIntOrZero())
+                    topAdsGetListProductUseCase.setParams(keyword, etalaseId, sortBy, isPromoted, rows, start, userSession.shopId)
                     topAdsGetListProductUseCase.execute(
                             {
                                 if (it.topadsGetListProduct.data.isEmpty()) {

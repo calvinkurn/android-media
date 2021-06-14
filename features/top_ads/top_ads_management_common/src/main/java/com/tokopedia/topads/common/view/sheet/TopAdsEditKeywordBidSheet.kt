@@ -31,7 +31,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     private var fromEdit = 99
     private var userID: String = ""
     private var groupId: String = ""
-    var onSaved: ((bid: String, pos: Int) -> Unit)? = null
+    var onSaved: ((bid: Float, pos: Int) -> Unit)? = null
     private var shopID = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -103,7 +103,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
             dismiss()
         }
         btnSave.setOnClickListener {
-            onSaved?.invoke(budget.textFieldInput.text.toString().removeCommaRawString(), position)
+            onSaved?.invoke(budget.textFieldInput.text.toString().removeCommaRawString().toFloat(), position)
             dismiss()
         }
         if(suggestedBid.toIntOrZero() < minBid.toIntOrZero()) {

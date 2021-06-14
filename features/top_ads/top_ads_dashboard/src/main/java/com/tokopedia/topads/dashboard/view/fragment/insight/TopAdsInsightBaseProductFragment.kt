@@ -103,7 +103,7 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
     }
 
     private fun getMaxBid(list: List<TopadsBidInfo.DataItem>) {
-        adapter.setMaxValue(list.firstOrNull()?.maxBid ?: "0")
+        adapter.setMaxValue(list.firstOrNull()?.maxBid ?: 0.0f)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

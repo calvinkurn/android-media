@@ -20,9 +20,9 @@ import javax.inject.Inject
 class GetAdsUseCase @Inject constructor(@ActivityContext val context: Context?, graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<GetAdProductResponse>(graphqlRepository) {
 
 
-    fun setParams(page:Int,groupId: Int?) {
+    fun setParams(page:Int,groupId: String?) {
         val queryMap = HashMap<String, Any?>()
-        queryMap[ParamObject.SHOP_ID] = Integer.parseInt(userSession.shopId)
+        queryMap[ParamObject.SHOP_ID] = userSession.shopId
         queryMap[ParamObject.TYPE] = ParamObject.PRODUCT
         queryMap[ParamObject.PAGE] = page
         queryMap[ParamObject.PER_PAGE] = 20

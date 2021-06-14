@@ -61,7 +61,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var userSession: UserSessionInterface
-    private var minSuggestedBid = "0"
+    private var minSuggestedBid = 0.0f
 
     companion object {
         fun createInstance() = TopAdsHeadlineKeyFragment()
@@ -274,9 +274,9 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<HeadlineAdStepperM
     private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         keywordSelectedAdapter.setDefaultValues(data.firstOrNull()?.maxBid,
                 data.firstOrNull()?.minBid, data.firstOrNull()?.suggestionBid)
-        keywordListAdapter.setMax(data.firstOrNull()?.maxBid ?: "0")
-        stepperModel?.maxBid = data.firstOrNull()?.maxBid ?: "0"
-        minSuggestedBid = data.firstOrNull()?.minBid ?: "0"
+        keywordListAdapter.setMax(data.firstOrNull()?.maxBid ?: 0.0f)
+        stepperModel?.maxBid = data.firstOrNull()?.maxBid ?: 0.0f
+        minSuggestedBid = data.firstOrNull()?.minBid ?: 0.0f
     }
 
     private fun setAdapter() {

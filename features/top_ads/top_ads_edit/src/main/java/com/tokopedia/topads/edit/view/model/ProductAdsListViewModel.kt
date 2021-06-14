@@ -36,7 +36,7 @@ class ProductAdsListViewModel @Inject constructor(
                     start: Int, onSuccess: ((List<TopAdsProductModel>, eof: Boolean) -> Unit),
                     onEmpty: (() -> Unit), onError: ((Throwable) -> Unit)) {
         launch {
-            getProductUseCase.setParams(keyword, etalaseId, sortBy, isPromoted, rows, start, userSession.shopId.toIntOrZero())
+            getProductUseCase.setParams(keyword, etalaseId, sortBy, isPromoted, rows, start, userSession.shopId)
             getProductUseCase.execute(
                     {
                         if (it.topadsGetListProduct.data.isEmpty()) {

@@ -229,7 +229,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
                 }
             } else {
                 productsListAdapter.list.forEach {
-                    val category = Category(it.departmentID.toString(), it.departmentName)
+                    val category = Category(it.departmentID, it.departmentName)
                     selectedTopAdsProductMap[category]?.remove(it)
                 }
             }
@@ -340,7 +340,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private fun checkIfDeterminate() {
         var totalCount = 0
         productsListAdapter.list.forEach {
-            val category = Category(it.departmentID.toString(), it.departmentName)
+            val category = Category(it.departmentID, it.departmentName)
             totalCount += selectedTopAdsProductMap[category]?.size ?: 0
         }
         selectProductCheckBox.isChecked = totalCount != 0
@@ -352,7 +352,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     }
 
     private fun fetchTopAdsProducts() {
-        viewModel.getTopAdsProductList(userSession.shopId.toIntOrZero(), getKeyword(), "", getSelectedSortId(), "", ROW, start,
+        viewModel.getTopAdsProductList(userSession.shopId, getKeyword(), "", getSelectedSortId(), "", ROW, start,
                 selectedTabModel?.id, this::onSuccessGetProductList, this::onError)
     }
 
@@ -437,7 +437,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     }
 
     override fun onProductClick(product: TopAdsProductModel) {
-        val category = Category(product.departmentID.toString(), product.departmentName)
+        val category = Category(product.departmentID, product.departmentName)
         isProductSelectedListEdited = true
         if (selectedTabModel?.id == DEFAULT_RECOMMENDATION_TAB_ID) {
             checkIfDeterminate()

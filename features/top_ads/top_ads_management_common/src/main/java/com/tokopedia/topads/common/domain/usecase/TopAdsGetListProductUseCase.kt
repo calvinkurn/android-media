@@ -9,9 +9,9 @@ import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.ResponseProductList
 import javax.inject.Inject
 
-const val TOP_ADS_GET_LIST_PRODUCT_QUERY: String = """query topadsGetListProduct(${'$'}shopID: Int!, ${'$'}keyword: String, 
+const val TOP_ADS_GET_LIST_PRODUCT_QUERY: String = """query topadsGetListProductV2(${'$'}shopID: String!, ${'$'}keyword: String, 
     ${'$'}etalase: String, ${'$'}sortBy: String,  ${'$'}rows: Int!, ${'$'}start: Int,${'$'}status:String)
-    { topadsGetListProduct(shopID: ${'$'}shopID, keyword: ${'$'}keyword, etalase: ${'$'}etalase, sortBy: ${'$'}sortBy,  
+    { topadsGetListProductV2(shopID: ${'$'}shopID, keyword: ${'$'}keyword, etalase: ${'$'}etalase, sortBy: ${'$'}sortBy,  
     rows: ${'$'}rows, start: ${'$'}start,status:${'$'}status) {
     data {
       productID
@@ -52,7 +52,7 @@ class TopAdsGetListProductUseCase @Inject constructor(graphqlRepository: Graphql
         setGraphqlQuery(TopAdsGetListProductQuery.GQL_QUERY)
     }
 
-    fun setParams(keyword: String, etalaseId: String, sortBy: String, promoted: String, rows: Int, start: Int, shopId:Int) {
+    fun setParams(keyword: String, etalaseId: String, sortBy: String, promoted: String, rows: Int, start: Int, shopId:String) {
         val queryMap = mutableMapOf(
                 ParamObject.KEYWORD to keyword,
                 ParamObject.ETALASE to etalaseId,

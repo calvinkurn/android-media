@@ -25,13 +25,13 @@ class TopAdsProductListViewModel @Inject constructor(private val topAdsGetListPr
         }
     }
 
-    fun getTopAdsProductList(shopId: Int, keyword: String, etalaseId: String, sortBy: String, isPromoted: String, rows: Int, start: Int, tabId: Int?,
+    fun getTopAdsProductList(shopId: String, keyword: String, etalaseId: String, sortBy: String, isPromoted: String, rows: Int, start: Int, tabId: Int?,
                              onSuccess: ((List<TopAdsProductModel>, eof: Boolean) -> Unit),
                              onError: ((Throwable) -> Unit)) {
         viewModelScope.launchCatchError(
                 block = {
                     if (tabId == DEFAULT_RECOMMENDATION_TAB_ID) {
-                        getRecommendedHeadlineProductsUseCase.setParams(shopId = shopId.toString())
+                        getRecommendedHeadlineProductsUseCase.setParams(shopId = shopId)
                         val response = getRecommendedHeadlineProductsUseCase.executeOnBackground()
                         if (response.topadsGetRecommendedHeadlineProducts.errors.isNotEmpty()) {
                             onError(Throwable(response.topadsGetRecommendedHeadlineProducts.errors.first().detail))
@@ -57,7 +57,7 @@ class TopAdsProductListViewModel @Inject constructor(private val topAdsGetListPr
         response.topadsGetRecommendedHeadlineProducts.recommendedProducts.products.forEach {
             list.add(TopAdsProductModel(productID = it.id,
                     productName = it.name, productPrice = it.priceFmt, productPriceNum = it.price, productImage = it.imageURL, productRating = it.rating.toIntOrZero(),
-                    productReviewCount = it.reviewCount.toIntOrZero(), departmentID = it.category.id.toIntOrZero(), departmentName = it.category.name, isRecommended = true
+                    productReviewCount = it.reviewCount.toIntOrZero(), departmentID = it.category.id, departmentName = it.category.name, isRecommended = true
             ))
         }
         return list

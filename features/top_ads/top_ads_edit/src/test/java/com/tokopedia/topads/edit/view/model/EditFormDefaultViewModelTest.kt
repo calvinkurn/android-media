@@ -45,7 +45,7 @@ class EditFormDefaultViewModelTest {
     private val singleAdInfoUseCase: TopAdsGetPromoUseCase = mockk(relaxed = true)
     private lateinit var viewModel: EditFormDefaultViewModel
     private val userSession: UserSession = mockk()
-    private var groupId = 123
+    private var groupId = "123"
 
     @Before
     fun setUp() {
@@ -157,7 +157,7 @@ class EditFormDefaultViewModelTest {
             onSuccess.invoke(data)
         }
 
-        viewModel.getAdKeyword(groupId, "") { list: List<GetKeywordResponse.KeywordsItem>, s: String -> }
+        viewModel.getAdKeyword(groupId.toInt(), "") { list: List<GetKeywordResponse.KeywordsItem>, s: String -> }
 
 
         verify {

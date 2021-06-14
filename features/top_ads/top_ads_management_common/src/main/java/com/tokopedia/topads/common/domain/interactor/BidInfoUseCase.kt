@@ -20,11 +20,11 @@ import javax.inject.Inject
 private const val BID_INFO: String = """
 query BidInfo(
   ${'$'}dataSuggestions: [BidInfoDataSuggestions]!,
-  ${'$'}shopId: Int!,
+  ${'$'}shopId: String!,
   ${'$'}requestType: String!,
   ${'$'}source: String!
 ) {
-  topadsBidInfo(dataSuggestions: ${'$'}dataSuggestions, shopId: ${'$'}shopId, requestType: ${'$'}requestType, source: ${'$'}source) {
+  topadsBidInfoV2(dataSuggestions: ${'$'}dataSuggestions, shopId: ${'$'}shopId, requestType: ${'$'}requestType, source: ${'$'}source) {
     data {
       id
       max_bid
@@ -56,7 +56,7 @@ class BidInfoUseCase @Inject constructor(graphqlRepository: GraphqlRepository, v
 
     fun setParams(suggestion: List<DataSuggestions>, requestType: String, sourceValue: String = SOURCE_VALUE) {
         val queryMap = HashMap<String, Any?>()
-        queryMap[ParamObject.SHOP_Id] = userSession.shopId.toIntOrZero()
+        queryMap[ParamObject.SHOP_Id] = userSession.shopId
         queryMap[ParamObject.SOURCE] = sourceValue
         queryMap[ParamObject.SUGGESTION] = suggestion
         queryMap[ParamObject.REQUEST_TYPE] = requestType

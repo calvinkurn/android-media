@@ -84,8 +84,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var adapter: EditKeywordListAdapter
     private lateinit var callBack: ButtonAction
-    private var minSuggestKeyword = "0"
-    private var maxSuggestKeyword = "0"
+    private var minSuggestKeyword = 0.0f
+    private var maxSuggestKeyword = 0.0f
     private var deletedKeywords: ArrayList<KeySharedModel>? = arrayListOf()
     private var addedKeywords: ArrayList<KeySharedModel>? = arrayListOf()
     private var editedKeywords: ArrayList<KeySharedModel>? = arrayListOf()
@@ -112,9 +112,9 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private var userID: String = ""
     private lateinit var addKeyword: Typography
     private lateinit var ticker: Ticker
-    private var minBid = "0"
-    private var maxBid = "0"
-    private var suggestBidPerClick = "0"
+    private var minBid = 0.0f
+    private var maxBid = 0.0f
+    private var suggestBidPerClick = 0.0f
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
     }
@@ -223,7 +223,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             viewModel.getBidInfo(suggestions, this::onSuccessSuggestion)
         })
         sharedViewModel.getAutoBidStatus().observe(viewLifecycleOwner, {
-            if (it.isEmpty() || minBid == "0") {
+            if (it.isEmpty() || minBid == 0.0f) {
                 getLatestBid()
             }
         })
@@ -257,16 +257,16 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun checkForbidValidity(result: Int) {
         when {
-            minBid == "0" || maxBid == "0" -> {
+            minBid == 0.0f || maxBid == 0.0f -> {
                 return
             }
             result < minBid.toDouble() -> {
-                setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true)
+                setMessageErrorField(getString(R.string.min_bid_error_new), minBid.toString(), true)
                 actionEnable(false)
             }
             result > maxBid.toDouble() -> {
                 actionEnable(false)
-                setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true)
+                setMessageErrorField(getString(R.string.max_bid_error_new), maxBid.toString(), true)
             }
             result % (Constants.MULTIPLY_CONST.toInt()) != 0 -> {
                 actionEnable(false)
@@ -280,7 +280,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 actionEnable(true)
                 setMessageErrorField(
                     getString(R.string.recommendated_bid_message),
-                    suggestBidPerClick,
+                    suggestBidPerClick.toString(),
                     false
                 )
             }
@@ -374,7 +374,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             selected.tag,
             "-1",
             getString(R.string.topads_common_keyword_competition_unknown),
-            selected.priceBid,
+            selected.priceBid.toFloat(),
             minSuggestKeyword,
             selected.source,
             selected.type,
@@ -390,7 +390,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             selected.tag,
             recommend.totalSearch,
             recommend.competition,
-            selected.priceBid,
+            selected.priceBid.toFloat(),
             minSuggestKeyword,
             selected.source,
             selected.type,
@@ -400,11 +400,11 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     private fun prepareBundle(pos: Int): Bundle {
         val bundle = Bundle()
-        if ((adapter.items[pos] as EditKeywordItemViewModel).data.priceBid == "0")
+        if ((adapter.items[pos] as EditKeywordItemViewModel).data.priceBid == 0.0f)
             (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid = minSuggestKeyword
-        bundle.putString(MAX_BID, maxSuggestKeyword)
-        bundle.putString(MIN_BID, minSuggestKeyword)
-        bundle.putString(
+        bundle.putFloat(MAX_BID, maxSuggestKeyword)
+        bundle.putFloat(MIN_BID, minSuggestKeyword)
+        bundle.putFloat(
             SUGGESTION_BID,
             (adapter.items[pos] as EditKeywordItemViewModel).data.priceBid
         )
@@ -617,7 +617,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         selectedKeywords?.forEach {
             if (adapter.items.find { item -> it.keyword == (item as EditKeywordItemViewModel).data.name } == null) {
                 if (it.bidSuggest == "0")
-                    it.bidSuggest = minSuggestKeyword
+                    it.bidSuggest = minSuggestKeyword.toString()
                 adapter.items.add(EditKeywordItemViewModel(mapToSharedModel(it)))
                 initialBudget.add(it.bidSuggest)
                 isnewlyAddded.add(true)
@@ -635,7 +635,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             it.keyword,
             it.totalSearch,
             it.competition,
-            it.bidSuggest,
+            it.bidSuggest.toFloat(),
             minSuggestKeyword,
             it.source,
             BROAD_POSITIVE,
@@ -659,7 +659,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
         if (adapter.items.isNotEmpty() && adapter.items[0] !is EditKeywordEmptyViewModel) {
             adapter.items.forEachIndexed { index, item ->
-                if ((item as EditKeywordItemViewModel).data.priceBid != adapter.data[index]) {
+                if ((item as EditKeywordItemViewModel).data.priceBid.toString() != adapter.data[index]) {
                     if (isExistsOriginal(item.data.name))
                         editedKeywords?.add(item.data)
                 }

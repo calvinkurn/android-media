@@ -22,7 +22,7 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: (keywordDataItem: KeywordDat
 
     var items: MutableList<KeywordDataItem> = mutableListOf()
     private var minimumBid: Int = 0
-    private var maxBid: String = "0"
+    private var maxBid: Float = 0.0f
     private var stateRestore: Boolean = false
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
@@ -110,7 +110,7 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: (keywordDataItem: KeywordDat
         notifyDataSetChanged()
     }
 
-    fun setMax(max: String) {
+    fun setMax(max: Float) {
         maxBid = max
         notifyDataSetChanged()
     }
