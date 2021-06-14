@@ -3,6 +3,7 @@ package com.tokopedia.rechargegeneral.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -13,7 +14,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicInput
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -33,7 +33,7 @@ class RechargeGeneralViewModel @Inject constructor(
     val productList: LiveData<Result<RechargeGeneralDynamicInput>>
         get() = mutableProductList
 
-    fun getOperatorCluster(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+    fun getOperatorCluster(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false, nullErrorMessage: String) {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(rawQuery, RechargeGeneralOperatorCluster.Response::class.java, mapParams)
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
@@ -43,7 +43,7 @@ class RechargeGeneralViewModel @Inject constructor(
             }.getSuccessData<RechargeGeneralOperatorCluster.Response>()
 
             if (data.response.operatorGroups == null) {
-                throw MessageErrorException(NULL_PRODUCT_ERROR)
+                throw MessageErrorException(nullErrorMessage)
             } else {
                 mutableOperatorCluster.postValue(Success(data.response))
             }
@@ -52,7 +52,7 @@ class RechargeGeneralViewModel @Inject constructor(
         }
     }
 
-    fun getProductList(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+    fun getProductList(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false, nullErrorMessage: String) {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(rawQuery, RechargeGeneralDynamicInput.Response::class.java, mapParams)
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
@@ -63,7 +63,7 @@ class RechargeGeneralViewModel @Inject constructor(
 
             val foundProduct = data.response.enquiryFields.find { it.name == PARAM_PRODUCT }
             if (foundProduct == null) {
-                throw MessageErrorException(NULL_PRODUCT_ERROR)
+                throw MessageErrorException(nullErrorMessage)
             } else {
                 mutableProductList.postValue(Success(data.response))
             }

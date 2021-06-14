@@ -29,7 +29,6 @@ import com.tokopedia.digital_checkout.usecase.DigitalPatchOtpUseCase
 import com.tokopedia.digital_checkout.utils.DeviceUtil
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
-import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.ResponseDataNullException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -179,7 +178,7 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.getCart(categoryId, userNotLoginMessage)
 
         //then
-        assert(digitalCartViewModel.errorMessage.value == userNotLoginMessage)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable.message == userNotLoginMessage)
     }
 
     @Test
@@ -308,7 +307,7 @@ class DigitalCartViewModelTest {
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorMessage.value == ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is UnknownHostException)
     }
 
     @Test
@@ -325,7 +324,7 @@ class DigitalCartViewModelTest {
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorMessage.value == ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is SocketTimeoutException)
     }
 
     @Test
@@ -342,7 +341,7 @@ class DigitalCartViewModelTest {
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorMessage.value == ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is ConnectException)
     }
 
     @Test
@@ -360,7 +359,7 @@ class DigitalCartViewModelTest {
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorMessage.value == errorMessage)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is ResponseErrorException)
     }
 
     @Test
@@ -378,7 +377,7 @@ class DigitalCartViewModelTest {
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorMessage.value == errorMessage)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is ResponseDataNullException)
     }
 
     @Test
@@ -396,7 +395,8 @@ class DigitalCartViewModelTest {
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorMessage.value == ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is HttpErrorException)
+        assert((digitalCartViewModel.errorThrowable.value!!.throwable as HttpErrorException).errorCode == 504)
     }
 
     @Test
@@ -414,7 +414,7 @@ class DigitalCartViewModelTest {
 
         //then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorMessage.value == ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable.message == errorMessage)
     }
 
     @Test
@@ -426,7 +426,7 @@ class DigitalCartViewModelTest {
         }
 
         // when
-        digitalCartViewModel.cancelVoucherCart("")
+        digitalCartViewModel.cancelVoucherCart("", "")
 
         // then
         assert(digitalCartViewModel.cancelVoucherData.value is Success)
@@ -440,13 +440,14 @@ class DigitalCartViewModelTest {
         coEvery { digitalCancelVoucherUseCase.execute(any(), any(), any()) } coAnswers {
             secondArg<(CancelVoucherData.Response) -> Unit>().invoke(CancelVoucherData.Response(cancelVoucherData))
         }
+        val defaultErrorMsg = "default error message"
 
         // when
-        digitalCartViewModel.cancelVoucherCart("")
+        digitalCartViewModel.cancelVoucherCart("", defaultErrorMsg)
 
         // then
         assert(digitalCartViewModel.cancelVoucherData.value is Fail)
-        assert((digitalCartViewModel.cancelVoucherData.value as Fail).throwable.message?.isEmpty()
+        assert((digitalCartViewModel.cancelVoucherData.value as Fail).throwable.message?.equals(defaultErrorMsg)
                 ?: false)
     }
 
@@ -459,10 +460,11 @@ class DigitalCartViewModelTest {
         }
 
         // when
-        digitalCartViewModel.cancelVoucherCart("")
+        digitalCartViewModel.cancelVoucherCart("", "")
 
         // then
         assert(digitalCartViewModel.cancelVoucherData.value is Fail)
+        assert((digitalCartViewModel.cancelVoucherData.value as Fail).throwable.message == errorMessage)
     }
 
     @Test
@@ -502,7 +504,7 @@ class DigitalCartViewModelTest {
 
         // then
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorMessage.value == ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is IOException)
     }
 
     @Test
@@ -553,7 +555,7 @@ class DigitalCartViewModelTest {
         val paymentPassDataValue = digitalCartViewModel.paymentPassData.value
         assert(paymentPassDataValue == null)
         assert(!digitalCartViewModel.showLoading.value!!)
-        assert(digitalCartViewModel.errorMessage.value == ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is IOException)
     }
 
     @Test
@@ -569,7 +571,7 @@ class DigitalCartViewModelTest {
         // then
         assertNull(digitalCartViewModel.paymentPassData.value)
         assertNull(digitalCartViewModel.showLoading.value)
-        assertNull(digitalCartViewModel.errorMessage.value)
+        assertNull(digitalCartViewModel.errorThrowable.value)
     }
 
     @Test

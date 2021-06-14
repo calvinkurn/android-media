@@ -167,7 +167,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> viewModel.getCart(it.data)
-                is Fail -> closeViewWithMessageAlert(it.throwable.message ?: ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                is Fail -> closeViewWithMessageAlert(ErrorHandler.getErrorMessage(requireContext(), it.throwable))
             }
         })
 
@@ -176,8 +176,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             renderCartBasedOnParamState()
         })
 
-        viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
-            closeViewWithMessageAlert(it ?: ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+        viewModel.errorThrowable.observe(viewLifecycleOwner, Observer {
+            closeViewWithMessageAlert(ErrorHandler.getErrorMessage(requireContext(), it.throwable))
         })
 
         viewModel.cancelVoucherData.observe(viewLifecycleOwner, Observer {
@@ -369,11 +369,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun onFailedCancelVoucher(throwable: Throwable) {
         checkoutBottomViewWidget.promoButtonState = ButtonPromoCheckoutView.State.ACTIVE
-        var message: String = getString(R.string.digital_checkout_error_remove_coupon_message)
-        if (!throwable.message.isNullOrEmpty()) {
-            message = ErrorHandler.getErrorMessage(activity, throwable)
-        }
-        showToastMessage(message)
+        showToastMessage(ErrorHandler.getErrorMessage(activity, throwable))
     }
 
     private fun showToastMessage(message: String) {
@@ -574,7 +570,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun onResetPromoDiscount() {
         digitalAnalytics.eventClickCancelApplyCoupon(getCategoryName(), getPromoData().promoCode)
-        viewModel.cancelVoucherCart(getPromoData().promoCode)
+        viewModel.cancelVoucherCart(getPromoData().promoCode, getString(R.string.digital_checkout_error_remove_coupon_message))
     }
 
     private fun navigateToPromoListPage() {
