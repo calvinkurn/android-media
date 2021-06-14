@@ -111,12 +111,46 @@ object NewShopPageHeaderMapper {
             BaseShopHeaderComponentUiModel.ComponentType.IMAGE_ONLY.toLowerCase() -> mapShopHeaderImageOnlyComponent(component)
             BaseShopHeaderComponentUiModel.ComponentType.BADGE_TEXT_VALUE.toLowerCase() -> mapShopHeaderBadgeTextValueComponent(component)
             BaseShopHeaderComponentUiModel.ComponentType.BUTTON.toLowerCase() -> mapShopHeaderButtonComponent(component)
-//            BaseShopHeaderComponentUiModel.ComponentType.IMAGE_TEXT.toLowerCase() -> mapaasdShopHeaderButtonComponent(component)
+            BaseShopHeaderComponentUiModel.ComponentType.IMAGE_TEXT.toLowerCase() -> mapShopHeaderImageTextComponent(component)
             else -> null
         }?.apply {
             this.componentPosition = componentPosition
         }
     }
+
+    private fun mapShopHeaderImageTextComponent(
+            component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
+    ) = ShopHeaderImageTextComponentUiModel(
+            component.name,
+            component.type,
+            mapShopHeaderImageTextComponentImagesData(component.data.images),
+            mapShopHeaderImageTextComponentTextData(component.data.textComponent)
+    )
+
+    private fun mapShopHeaderImageTextComponentTextData(
+            textComponent: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component.TextComponent
+    ) = ShopHeaderImageTextComponentUiModel.TextComponent(
+            ShopHeaderImageTextComponentUiModel.TextComponent.Data(
+                    textComponent.data.icon,
+                    textComponent.data.isBottomSheet,
+                    textComponent.data.textHtml,
+                    textComponent.data.textLink
+            ),
+            textComponent.style
+    )
+
+    private fun mapShopHeaderImageTextComponentImagesData(
+            images: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component.Images
+    ) = ShopHeaderImageTextComponentUiModel.Images(
+            images.data.map {
+                ShopHeaderImageTextComponentUiModel.Images.Data(
+                        it.image,
+                        it.imageLink,
+                        it.isBottomSheet
+                )
+            },
+            images.style
+    )
 
     private fun mapShopHeaderButtonComponent(
             component: ShopPageHeaderLayoutResponse.ShopPageGetHeaderLayout.Widget.Component
