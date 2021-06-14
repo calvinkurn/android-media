@@ -38,7 +38,7 @@ data class ProductMiniSocialProofStockDataModel(
     }
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return if (newData is ProductMiniSocialProofDataModel) {
+        return if (newData is ProductMiniSocialProofStockDataModel) {
             wishlistCount == newData.wishlistCount &&
                     viewCount == newData.viewCount &&
                     shouldRenderSocialProof == newData.shouldRenderSocialProof
