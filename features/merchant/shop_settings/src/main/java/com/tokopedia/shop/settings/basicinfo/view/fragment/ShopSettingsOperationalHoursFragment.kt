@@ -24,7 +24,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.constant.ShopStatusDef
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.util.OperationalHoursUtil
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsSetOperationalHoursActivity
@@ -33,6 +32,7 @@ import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsOperatio
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
@@ -59,7 +59,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         val HOLIDAY_BOTTOMSHEET_LAYOUT = R.layout.bottomsheet_shop_set_holiday
 
         @LayoutRes
-        val HOLIDAY_EDIT_BOTTOMSHEET_LAYOUT = R.layout.bottomsheet_shop_edit_holiday
+        val ACTION_BOTTOMSHEET_LAYOUT = R.layout.bottomsheet_shop_edit_holiday
 
         private const val NO_HOLIDAY_DATE = "0"
     }
@@ -69,6 +69,10 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    private val todayDate = Calendar.getInstance(TimeZone.getDefault()).time
+    private val tomorrowDate = Calendar.getInstance(TimeZone.getDefault()).apply { add(Calendar.DAY_OF_YEAR, 1) }.time
+    private val defaultMaxDate = Calendar.getInstance().apply { add(Calendar.YEAR, 1) }.time // next year
 
     private var headerOpsHour: HeaderUnify? = null
     private var icEditOpsHour: IconUnify? = null
@@ -91,16 +95,20 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var shopIsOnHolidayContainer: RelativeLayout? = null
     private var shopIsOnHolidayEndDateText: Typography? = null
     private var shopIsOnHolidaySwitcher: SwitchUnify? = null
+    private var checkBoxCloseNow: CheckboxUnify? = null
 
     private var isNeedToShowToaster: Boolean = false
+    private var isShopOnScheduledHoliday: Boolean = false
+    private var isShouldShowHolidaySchedule: Boolean = false
+    private var isActionEdit: Boolean = false
     private var setShopHolidayScheduleStatusMessage: String = ""
     private var setShopHolidayScheduleStatusType: Int = 0
     private var startHolidayDateMilliseconds: Long = 0L
     private var endHolidayDateMilliseconds: Long = 0L
-    private val todayDate = Calendar.getInstance(TimeZone.getDefault()).time
-    private val defaultMaxDate = Calendar.getInstance().apply { add(Calendar.YEAR, 1) }.time
-    private var selectedStartDate = todayDate
+    private var selectedStartDate = tomorrowDate
     private var selectedEndDate = Date()
+    private var existingStartDate = Date()
+    private var existingEndDate = Date()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(FRAGMENT_LAYOUT, container, false).apply {
@@ -159,6 +167,41 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
             startDateTextField = findViewById(R.id.text_field_start_date_holiday)
             endDateTextField = findViewById(R.id.text_field_end_date_holiday)
             buttonSaveHolidaySchedule = findViewById(R.id.btn_save_holiday_schedule)
+            checkBoxCloseNow = findViewById(R.id.checkbox_close_now)
+
+            // setup text field start date
+            setupStartDateTextFieldBottomSheet()
+
+            // setup text field end date
+            setupEndDateTextFieldBottomSheet()
+
+            // setup checkbox close now
+            setupCloseNowCheckboxBottomSheet()
+
+            // set listener for save schedule button
+            buttonSaveHolidaySchedule?.setOnClickListener {
+                showConfirmDialogForSaveHolidaySchedule(selectedStartDate, selectedEndDate)
+            }
+        }
+    }
+
+    private fun getActionBottomSheetView(): View {
+        return View.inflate(context, ACTION_BOTTOMSHEET_LAYOUT, null).apply {
+            val actionEdit = findViewById<LinearLayout>(R.id.action_edit_holiday)
+            val actionDelete = findViewById<LinearLayout>(R.id.action_delete_holiday)
+
+            // set action edit schedule click listener
+            actionEdit.setOnClickListener {
+                isActionEdit = true
+                resetSelectedDates(isActionEdit)
+                setupEditHolidayCalendarPickerBottomSheet()
+                showHolidayBottomSheet()
+            }
+
+            // set action delete schedule click listener
+            actionDelete.setOnClickListener {
+                showConfirmDialogForDeleteHolidaySchedule()
+            }
         }
     }
 
@@ -181,7 +224,9 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
         // set click listener for button add holiday schedule
         buttonAddHoliday?.setOnClickListener {
-            setupHolidayCalendarBottomSheet()
+            isActionEdit = false
+            resetSelectedDates(isActionEdit)
+            setupHolidayCalendarPickerBottomSheet()
             showHolidayBottomSheet()
         }
 
@@ -196,28 +241,306 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         headerOpsHour?.addRightIcon(R.drawable.ic_ops_hour_help)
     }
 
-    private fun setupActionBottomSheet() {
-        context?.let { ctx ->
-            val bottomSheetView = View.inflate(context, HOLIDAY_EDIT_BOTTOMSHEET_LAYOUT, null).apply {
-                val actionEdit = findViewById<LinearLayout>(R.id.action_edit_holiday)
-                val actionDelete = findViewById<LinearLayout>(R.id.action_delete_holiday)
+    private fun setBackgroundColor() {
+        activity?.run {
+            window.decorView.setBackgroundColor(
+                    androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            )
+        }
+    }
 
-                actionEdit.setOnClickListener {
-                    //setupEditHolidayCalendarBottomSheet()
-                    //showHolidayBottomSheet()
+    private fun observeLiveData() {
+
+        // observe get shop operational hours list data
+        observe(shopSettingsOperationalHoursViewModel.shopSettingsOperationalHoursListUiModel) { result ->
+            if (result is Success) {
+                hideLoader()
+                val opsHourListUiModel = result.data
+                val holidayInfo = opsHourListUiModel.closeInfo
+                val statusInfo = opsHourListUiModel.statusInfo
+
+                // should show upcoming holiday section if available
+                isShouldShowHolidaySchedule = holidayInfo.closeDetail.startDate != NO_HOLIDAY_DATE && holidayInfo.closeDetail.endDate != NO_HOLIDAY_DATE
+                if (isShouldShowHolidaySchedule) {
+                    startHolidayDateMilliseconds = holidayInfo.closeDetail.startDate.toLongOrZero() * 1000L
+                    endHolidayDateMilliseconds = holidayInfo.closeDetail.endDate.toLongOrZero() * 1000L
+                    existingStartDate = Date(startHolidayDateMilliseconds)
+                    existingEndDate = Date(endHolidayDateMilliseconds)
+                    selectedStartDate = existingStartDate
+                    selectedEndDate = existingEndDate
                 }
 
-                actionDelete.setOnClickListener {
-                    showConfirmDialogForDeleteHolidaySchedule()
+                // holiday schedule is on going
+                isShopOnScheduledHoliday = holidayInfo.closeDetail.status == ShopStatusDef.CLOSED
+
+                // render UI for holiday section
+                renderHolidaySection()
+
+                // update UI for operational hours list section
+                val opsHourList = opsHourListUiModel.operationalHourList
+                rvOpsHourListAdapter?.updateOpsHourList(opsHourList)
+
+                // show toaster if refresh after set shop holiday schedule
+                if (isNeedToShowToaster) {
+                    showToaster(setShopHolidayScheduleStatusMessage, setShopHolidayScheduleStatusType)
+                    isNeedToShowToaster = false
+                }
+            }
+        }
+
+        // observe set shop close info
+        observe(shopSettingsOperationalHoursViewModel.shopInfoCloseSchedule) { result ->
+            if (result is Success) {
+                setShopHolidayScheduleStatusMessage = "Jadwal libur berhasil ditambahkan"
+                setShopHolidayScheduleStatusType = Toaster.TYPE_NORMAL
+            }
+            if (result is Fail) {
+                setShopHolidayScheduleStatusMessage = "Oops, jadwal tidak tersimpan. Cek koneksi dan ulangi lagi, ya."
+                setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
+            }
+            getInitialData()
+        }
+
+    }
+
+    private fun getInitialData() {
+        // get shop operational hours list
+        shopSettingsOperationalHoursViewModel.getShopOperationalHoursInitialData(userSession.shopId)
+    }
+
+    private fun deleteShopHolidaySchedule() {
+        // delete upcoming/ongoing holiday schedule
+        shopSettingsOperationalHoursViewModel.setShopCloseSchedule(
+                action = ShopScheduleActionDef.ABORT,
+        )
+    }
+
+    private fun setShopHolidaySchedule(startDate: Date, endDate: Date) {
+        // create or edit for upcoming shop holiday schedule
+        shopSettingsOperationalHoursViewModel.setShopCloseSchedule(
+                action = ShopScheduleActionDef.CLOSED,
+                closeStart = startDate.time.toString(),
+                closeEnd = endDate.time.toString(),
+                closeNow = DateUtils.isToday(startDate.time)
+        )
+        isNeedToShowToaster = true
+    }
+
+    private fun renderHolidaySection() {
+        // render holiday switcher container
+        shopIsOnHolidayContainer?.shouldShowWithAction(isShopOnScheduledHoliday) {
+            // set holiday container text
+            shopIsOnHolidayEndDateText?.text = getString(
+                    R.string.shop_operational_hour_is_on_holiday_until,
+                    OperationalHoursUtil.toShortDateFormat(selectedEndDate)
+            )
+
+            // set holiday switcher
+            shopIsOnHolidaySwitcher?.apply {
+                isChecked = isShopOnScheduledHoliday
+                setOnCheckedChangeListener { _, isChecked ->
+                    if (!isChecked) {
+                        showConfirmDialogForOpenShopNow()
+                    }
+                }
+            }
+        }
+
+        // render holiday schedule section
+        buttonAddHoliday?.showWithCondition(!isShouldShowHolidaySchedule)
+        holidayScheduleContainer?.shouldShowWithAction(isShouldShowHolidaySchedule) {
+            autoChatTicker?.visible()
+            tvShopHolidaySchedule?.apply {
+                text = getString(
+                        R.string.shop_operational_hour_list_textview,
+                        OperationalHoursUtil.toIndonesianDateFormat(selectedStartDate),
+                        OperationalHoursUtil.toIndonesianDateFormat(selectedEndDate)
+                )
+            }
+        }
+    }
+
+    private fun initCalendarView(
+            minDate: Date,
+            maxDate: Date,
+            calendarUnifyStart: UnifyCalendar?,
+            calendarUnifyEnd: UnifyCalendar?,
+            isChooseStartDate: Boolean,
+            selectedDate: Date? = null
+    ) {
+
+        // init start date calendar view picker
+        calendarUnifyStart?.shouldShowWithAction(isChooseStartDate) {
+            calendarUnifyStart.apply {
+                calendarPickerView?.run {
+                    init(minDate, maxDate, listOf()).inMode(CalendarPickerView.SelectionMode.SINGLE).withSelectedDate(selectedDate ?: minDate)
+                    setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
+                        override fun onDateSelected(date: Date) {
+                            onSelectedHolidayStartDate(date)
+                            adapter?.notifyDataSetChanged()
+                        }
+                        override fun onDateUnselected(date: Date) {}
+                    })
+                }
+            }
+        }
+
+        // init end date calendar view picker
+        calendarUnifyEnd?.shouldShowWithAction(!isChooseStartDate) {
+            calendarUnifyEnd.apply {
+                calendarPickerView?.run {
+                    init(minDate, maxDate, listOf()).inMode(CalendarPickerView.SelectionMode.SINGLE).withSelectedDate(selectedDate ?: minDate)
+                    setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
+                        override fun onDateSelected(date: Date) {
+                            onSelectedHolidayEndDate(date)
+                            adapter?.notifyDataSetChanged()
+                        }
+                        override fun onDateUnselected(date: Date) {}
+                    })
+                }
+            }
+        }
+
+    }
+
+    private fun setupStartDateTextFieldBottomSheet() {
+        startDateTextField?.textFieldInput?.apply {
+            inputType = InputType.TYPE_NULL
+            setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    initCalendarView(
+                            minDate = tomorrowDate,
+                            maxDate = defaultMaxDate,
+                            calendarUnifyStart = calendarUnifyStart,
+                            calendarUnifyEnd = calendarUnifyEnd,
+                            isChooseStartDate = true,
+                            selectedDate = if (isActionEdit) selectedStartDate else null
+                    )
+                    calendarUnifyStart?.calendarPickerView?.adapter?.notifyDataSetChanged()
                 }
             }
 
+            // if shop is on scheduled holiday, seller can only edit the end date
+            // so we disable the start date text field
+            if (!isShopOnScheduledHoliday) {
+                isEnabled = true
+                requestFocus()
+            }
+            else {
+                isEnabled = false
+            }
+        }
+    }
+
+    private fun setupEndDateTextFieldBottomSheet() {
+        endDateTextField?.textFieldInput?.apply {
+            inputType = InputType.TYPE_NULL
+            setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    initCalendarView(
+                            minDate = selectedStartDate,
+                            maxDate = defaultMaxDate,
+                            calendarUnifyStart = calendarUnifyStart,
+                            calendarUnifyEnd = calendarUnifyEnd,
+                            isChooseStartDate = false,
+                            selectedDate = if (isActionEdit && isShopOnScheduledHoliday) selectedEndDate else null
+                    )
+                    calendarUnifyEnd?.calendarPickerView?.adapter?.notifyDataSetChanged()
+                }
+            }
+            addTextChangedListener { field ->
+                buttonSaveHolidaySchedule?.isEnabled = field?.length.isMoreThanZero()
+            }
+
+            // if shop is on scheduled holiday, seller can only edit the end date
+            // so we enable the text field and requesting for focus
+            if (!isShopOnScheduledHoliday) {
+                isEnabled = false
+            }
+            else {
+                isEnabled = true
+                requestFocus()
+            }
+        }
+    }
+
+    private fun setupCloseNowCheckboxBottomSheet() {
+        checkBoxCloseNow?.shouldShowWithAction(!isShopOnScheduledHoliday) {
+            checkBoxCloseNow?.apply {
+                setOnCheckedChangeListener { _, isChecked ->
+                    if (isChecked) {
+                        selectedStartDate = todayDate
+                        initCalendarView(
+                                minDate = selectedStartDate,
+                                maxDate = defaultMaxDate,
+                                calendarUnifyStart = calendarUnifyStart,
+                                calendarUnifyEnd = calendarUnifyEnd,
+                                isChooseStartDate = false
+                        )
+                        calendarUnifyEnd?.calendarPickerView?.adapter?.notifyDataSetChanged()
+                        startDateTextField?.textFieldInput?.apply {
+                            isEnabled = false
+                            setText(OperationalHoursUtil.toIndonesianDateFormat(todayDate))
+                        }
+                        endDateTextField?.textFieldInput?.apply {
+                            isEnabled = true
+                            requestFocus()
+                        }
+                    }
+                    else {
+                        startDateTextField?.textFieldInput?.apply {
+                            isEnabled = true
+                            text.clear()
+                            requestFocus()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupHolidayCalendarPickerBottomSheet() {
+        context?.let { ctx ->
+            holidayBottomSheet = BottomSheetUnify().apply {
+                setTitle(ctx.getString(R.string.shop_operational_hour_set_holiday_schedule_title))
+                setChild(getHolidayDatePickerBottomSheetView())
+                setCloseClickListener { dismiss() }
+            }
+        }
+    }
+
+    private fun setupEditHolidayCalendarPickerBottomSheet() {
+        context?.let { ctx ->
+            val bottomSheetEditView = getHolidayDatePickerBottomSheetView().apply {
+                // set text field for existing start date
+                startDateTextField?.textFieldInput?.setText(OperationalHoursUtil.toIndonesianDateFormat(selectedStartDate))
+
+                // set text field for existing end date
+                endDateTextField?.textFieldInput?.setText(OperationalHoursUtil.toIndonesianDateFormat(selectedEndDate))
+            }
+            holidayBottomSheet = BottomSheetUnify().apply {
+                setTitle(ctx.getString(R.string.shop_operational_hour_set_holiday_schedule_title))
+                setChild(bottomSheetEditView)
+                setCloseClickListener { dismiss() }
+            }
+        }
+    }
+
+    private fun setupActionBottomSheet() {
+        context?.let { ctx ->
             actionBottomSheet = BottomSheetUnify().apply {
                 setTitle(ctx.getString(R.string.shop_operational_hour_title_holiday))
-                setChild(bottomSheetView)
+                setChild(getActionBottomSheetView())
                 showKnob = true
                 showCloseIcon = false
             }
+        }
+    }
+
+    private fun showHolidayBottomSheet() {
+        fragmentManager?.let {
+            holidayBottomSheet?.show(it, screenName)
+            actionBottomSheet?.dismiss()
         }
     }
 
@@ -227,119 +550,28 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         }
     }
 
-//    private fun setupEditHolidayCalendarBottomSheet() {
-//
-//        val currentStartHolidayDate = Date(startHolidayDateMilliseconds)
-//        val currentEndHolidayDate = Date(endHolidayDateMilliseconds)
-//        val nextYear = Calendar.getInstance().apply { add(Calendar.YEAR, 1) }.time
-//
-//        context?.let { ctx ->
-//            val bottomSheetView = View.inflate(context, HOLIDAY_BOTTOMSHEET_LAYOUT, null).apply {
-//                val calendarUnify = findViewById<UnifyCalendar>(R.id.ops_hour_holiday_calendar)
-//                val buttonSaveHolidaySchedule = findViewById<UnifyButton>(R.id.btn_save_holiday_schedule)
-//                val calendarView = calendarUnify.calendarPickerView
-//
-//                // init calendar view
-//                calendarView?.run {
-//                    calendarView
-//                            .init(todayDate, nextYear, listOf())
-//                            .inMode(CalendarPickerView.SelectionMode.RANGE)
-//                            .withSelectedDates(listOf(currentStartHolidayDate, currentEndHolidayDate))
-//                }
-//
-//                // set listener for save schedule button
-//                buttonSaveHolidaySchedule.setOnClickListener {
-//                    showConfirmDialogForSaveHolidaySchedule(selectedStartDate, selectedEndDate)
-//                }
-//            }
-//
-//            holidayBottomSheet = BottomSheetUnify().apply {
-//                setTitle(ctx.getString(R.string.shop_operational_hour_set_holiday_schedule_title))
-//                setChild(bottomSheetView)
-//                setCloseClickListener { dismiss() }
-//            }
-//        }
-//    }
-
-    private fun initCalendarView(
-            minDate: Date,
-            maxDate: Date,
-            calendarView: CalendarPickerView?,
-            startTextField: TextFieldUnify?,
-            endTextField: TextFieldUnify?,
-            isChooseStartDate: Boolean
-    ) {
-        calendarView?.run {
-            calendarView
-                    .init(minDate, maxDate, listOf())
-                    .inMode(CalendarPickerView.SelectionMode.SINGLE)
-                    .withSelectedDate(minDate)
-            setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
-                override fun onDateSelected(date: Date) {
-                    if (isChooseStartDate) {
-                        selectedStartDate = date
-                        startTextField?.textFieldInput?.setText(OperationalHoursUtil.toIndonesianDateFormat(date))
-                        endTextField?.textFieldInput?.text?.clear()
-                        endTextField?.textFieldInput?.isEnabled = true
-                    }
-                    else {
-                        selectedEndDate = date
-                        endTextField?.textFieldInput?.setText(OperationalHoursUtil.toIndonesianDateFormat(date))
-                    }
-                    adapter?.notifyDataSetChanged()
-                }
-
-                override fun onDateUnselected(date: Date) {
-                    // no op
-                }
-            })
+    private fun onSelectedHolidayStartDate(date: Date) {
+        selectedStartDate = OperationalHoursUtil.setDefaultServerTimeForSelectedDate(date)
+        startDateTextField?.textFieldInput?.setText(OperationalHoursUtil.toIndonesianDateFormat(date))
+        endDateTextField?.textFieldInput?.apply {
+            text.clear()
+            isEnabled = true
         }
     }
 
-    private fun setupHolidayCalendarBottomSheet() {
-        context?.let { ctx ->
-            val bottomSheetView = getHolidayDatePickerBottomSheetView().apply {
-                // setup text field start date
-                startDateTextField?.textFieldInput?.apply {
-                    inputType = InputType.TYPE_NULL
-                    setOnFocusChangeListener { _, hasFocus ->
-                        if (hasFocus) {
-                            calendarUnifyStart?.visible()
-                            calendarUnifyEnd?.gone()
-                            initCalendarView(todayDate, defaultMaxDate, calendarUnifyStart?.calendarPickerView, startDateTextField, endDateTextField, true)
-                        }
-                    }
-                    requestFocus()
-                }
+    private fun onSelectedHolidayEndDate(date: Date) {
+        selectedEndDate = OperationalHoursUtil.setDefaultServerTimeForSelectedDate(date)
+        endDateTextField?.textFieldInput?.setText(OperationalHoursUtil.toIndonesianDateFormat(date))
+    }
 
-                // setup text field end date
-                endDateTextField?.textFieldInput?.apply {
-                    isEnabled = false
-                    inputType = InputType.TYPE_NULL
-                    setOnFocusChangeListener { _, hasFocus ->
-                        if (hasFocus) {
-                            calendarUnifyStart?.gone()
-                            initCalendarView(selectedStartDate, defaultMaxDate, calendarUnifyEnd?.calendarPickerView, startDateTextField, endDateTextField, false)
-                            calendarUnifyEnd?.calendarPickerView?.adapter?.notifyDataSetChanged()
-                            calendarUnifyEnd?.visible()
-                        }
-                    }
-                    addTextChangedListener { field ->
-                        buttonSaveHolidaySchedule?.isEnabled = field?.length.isMoreThanZero()
-                    }
-                }
-
-                // set listener for save schedule button
-                buttonSaveHolidaySchedule?.setOnClickListener {
-                    showConfirmDialogForSaveHolidaySchedule(selectedStartDate, selectedEndDate)
-                }
-            }
-
-            holidayBottomSheet = BottomSheetUnify().apply {
-                setTitle(ctx.getString(R.string.shop_operational_hour_set_holiday_schedule_title))
-                setChild(bottomSheetView)
-                setCloseClickListener { dismiss() }
-            }
+    private fun resetSelectedDates(isActionEdit: Boolean) {
+        if (isActionEdit) {
+            selectedStartDate = existingStartDate
+            selectedEndDate = existingEndDate
+        }
+        else {
+            selectedStartDate = tomorrowDate
+            selectedEndDate = Date()
         }
     }
 
@@ -407,127 +639,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 setSecondaryCTAClickListener {
                     dismiss()
                 }
-            }
-        }
-    }
-
-    private fun showHolidayBottomSheet() {
-        fragmentManager?.let {
-            holidayBottomSheet?.show(it, screenName)
-        }
-    }
-
-    private fun setBackgroundColor() {
-        activity?.run {
-            window.decorView.setBackgroundColor(
-                    androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-            )
-        }
-    }
-
-    private fun observeLiveData() {
-
-        // observe get shop operational hours list data
-        observe(shopSettingsOperationalHoursViewModel.shopSettingsOperationalHoursListUiModel) { result ->
-            if (result is Success) {
-                hideLoader()
-                val opsHourListUiModel = result.data
-
-                // update UI for holiday section
-                val holidayInfo = opsHourListUiModel.closeInfo
-                val statusInfo = opsHourListUiModel.statusInfo
-                startHolidayDateMilliseconds = holidayInfo.closeDetail.startDate.toLongOrZero()
-                endHolidayDateMilliseconds = holidayInfo.closeDetail.endDate.toLongOrZero()
-                renderHolidaySection(holidayInfo, statusInfo)
-
-                // update UI for operational hours list section
-                val opsHourList = opsHourListUiModel.operationalHourList
-                rvOpsHourListAdapter?.updateOpsHourList(opsHourList)
-
-                // show toaster if refresh after set shop holiday schedule
-                if (isNeedToShowToaster) {
-                    showToaster(setShopHolidayScheduleStatusMessage, setShopHolidayScheduleStatusType)
-                    isNeedToShowToaster = false
-                }
-            }
-        }
-
-        // observe set shop close info
-        observe(shopSettingsOperationalHoursViewModel.shopInfoCloseSchedule) { result ->
-            if (result is Success) {
-                setShopHolidayScheduleStatusMessage = "Jadwal libur berhasil ditambahkan"
-                setShopHolidayScheduleStatusType = Toaster.TYPE_NORMAL
-            }
-            if (result is Fail) {
-                setShopHolidayScheduleStatusMessage = "Oops, jadwal tidak tersimpan. Cek koneksi dan ulangi lagi, ya."
-                setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
-            }
-            getInitialData()
-        }
-
-    }
-
-    private fun getInitialData() {
-        shopSettingsOperationalHoursViewModel.getShopOperationalHoursInitialData(
-                userSession.shopId
-        )
-    }
-
-    private fun deleteShopHolidaySchedule() {
-        // delete upcoming/ongoing holiday schedule
-        shopSettingsOperationalHoursViewModel.setShopCloseSchedule(
-                action = ShopScheduleActionDef.ABORT,
-        )
-    }
-
-    private fun setShopHolidaySchedule(startDate: Date, endDate: Date) {
-        // create or edit for upcoming shop holiday schedule
-        shopSettingsOperationalHoursViewModel.setShopCloseSchedule(
-                action = ShopScheduleActionDef.CLOSED,
-                closeStart = startDate.time.toString(),
-                closeEnd = endDate.time.toString(),
-                closeNow = DateUtils.isToday(startDate.time)
-        )
-        isNeedToShowToaster = true
-    }
-
-    private fun renderHolidaySection(holidayInfo: ShopInfo.ClosedInfo, statusInfo: ShopInfo.StatusInfo) {
-        val shopCloseInfo = holidayInfo.closeDetail
-        val shopStatusInfo = statusInfo.shopStatus
-        val isShowHolidaySchedule = shopCloseInfo.startDate != NO_HOLIDAY_DATE && shopCloseInfo.endDate != NO_HOLIDAY_DATE
-        val isShopOnScheduledHoliday = shopCloseInfo.status == ShopStatusDef.CLOSED
-
-        // render holiday switcher container
-        shopIsOnHolidayContainer?.shouldShowWithAction(isShopOnScheduledHoliday) {
-            // set holiday container text
-            shopIsOnHolidayEndDateText?.text = getString(
-                    R.string.shop_operational_hour_is_on_holiday_until,
-                    OperationalHoursUtil.toShortDateFormat(Date(shopCloseInfo.endDate.toLong() * 1000L))
-            )
-
-            // set holiday switch text
-            shopIsOnHolidaySwitcher?.apply {
-                isChecked = isShopOnScheduledHoliday
-                setOnCheckedChangeListener { _, isChecked ->
-                    if (!isChecked) {
-                        showConfirmDialogForOpenShopNow()
-                    }
-                }
-            }
-        }
-
-        // render section UI
-        buttonAddHoliday?.showWithCondition(!isShowHolidaySchedule)
-        holidayScheduleContainer?.shouldShowWithAction(isShowHolidaySchedule) {
-            autoChatTicker?.visible()
-            tvShopHolidaySchedule?.apply {
-                val startDate = Date(shopCloseInfo.startDate.toLong() * 1000L)
-                val endDate = Date(shopCloseInfo.endDate.toLong() * 1000L)
-                text = getString(
-                        R.string.shop_operational_hour_list_textview,
-                        OperationalHoursUtil.toIndonesianDateFormat(startDate),
-                        OperationalHoursUtil.toIndonesianDateFormat(endDate)
-                )
             }
         }
     }

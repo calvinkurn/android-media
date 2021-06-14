@@ -28,63 +28,6 @@
         android:visibility="gone"
         />
 
-    <RelativeLayout
-        android:id="@+id/holiday_toggle_container"
-        app:layout_constraintTop_toBottomOf="@id/ops_hour_chat_auto_ticker"
-        app:layout_constraintRight_toLeftOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_holiday_container_gradient"
-        android:padding="@dimen/dp_16"
-        android:visibility="gone"
-        app:layout_constraintVertical_chainStyle="spread">
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/img_shop_holiday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_shop_holiday_container"
-            />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_is_on_holiday_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            app:typographyType="heading_5"
-            app:typographyWeight="bold"
-            android:layout_toEndOf="@id/img_shop_holiday"
-            android:text="@string/shop_operational_hour_is_on_holiday"
-            android:layout_marginStart="@dimen/dp_24"
-            android:textColor="@color/Unify_N700_96"
-            />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_holiday_end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:typographyType="body_3"
-            android:layout_toEndOf="@id/img_shop_holiday"
-            android:layout_below="@id/tv_is_on_holiday_text"
-            android:layout_marginTop="@dimen/dp_4"
-            app:typographyWeight="reguler"
-            android:layout_marginStart="@dimen/dp_24"
-            android:textColor="@color/Unify_N700_68"
-            tools:text="sampai 10/10/2021"
-            />
-
-        <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
-            android:id="@+id/open_shop_switch"
-            app:bold="false"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:checked="true"
-            />
-
-    </RelativeLayout>
-
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/ops_hour_loader"
         android:layout_width="@dimen/dp_48"
@@ -99,7 +42,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/holiday_toggle_container"
+        app:layout_constraintTop_toBottomOf="@id/ops_hour_chat_auto_ticker"
         app:layout_constraintBottom_toBottomOf="parent"
         android:paddingBottom="@dimen/dp_8"
         android:fillViewport="true">
@@ -110,6 +53,61 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:focusableInTouchMode="true">
+
+            <RelativeLayout
+                android:id="@+id/holiday_toggle_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_holiday_container_gradient"
+                android:padding="@dimen/dp_16"
+                android:visibility="gone"
+                app:layout_constraintVertical_chainStyle="spread">
+
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/img_shop_holiday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_shop_holiday_container"
+                    />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_is_on_holiday_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_8"
+                    app:typographyType="heading_5"
+                    app:typographyWeight="bold"
+                    android:layout_toEndOf="@id/img_shop_holiday"
+                    android:text="@string/shop_operational_hour_is_on_holiday"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:textColor="@color/Unify_N700_96"
+                    />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_holiday_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="body_3"
+                    android:layout_toEndOf="@id/img_shop_holiday"
+                    android:layout_below="@id/tv_is_on_holiday_text"
+                    android:layout_marginTop="@dimen/dp_4"
+                    app:typographyWeight="reguler"
+                    android:layout_marginStart="@dimen/dp_24"
+                    android:textColor="@color/Unify_N700_68"
+                    tools:text="sampai 10/10/2021"
+                    />
+
+                <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+                    android:id="@+id/open_shop_switch"
+                    app:bold="false"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:checked="true"
+                    />
+
+            </RelativeLayout>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_title_shop_holiday"

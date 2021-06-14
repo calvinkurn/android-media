@@ -32,6 +32,9 @@ object OperationalHoursUtil {
 
     private const val INDONESIA_LANGUAGE_ID = "id"
     private const val INDONESIA_COUNTRY_ID = "ID"
+    private const val DEFAULT_HOUR = 23
+    private const val DEFAULT_MINUTE = 59
+    private const val DEFAULT_SECONDS = 59
     private val defaultLocale = Locale(INDONESIA_LANGUAGE_ID, INDONESIA_COUNTRY_ID)
     private val defaultLocalFormatter = SimpleDateFormat("dd MMMM yyyy", defaultLocale)
     private val shortDateFormatter = SimpleDateFormat("dd/MM/yyyy", defaultLocale)
@@ -115,6 +118,21 @@ object OperationalHoursUtil {
 
     fun toIndonesianDateFormat(date: Date): String {
         return defaultLocalFormatter.format(date)
+    }
+
+    /**
+     * Set default time before send the datetime to server
+     * the default time must 23:59:59
+     * @return [Date]
+     */
+    fun setDefaultServerTimeForSelectedDate(selectedDate: Date): Date {
+        return Calendar.getInstance().let { calendar ->
+            calendar.time = selectedDate
+            calendar.add(Calendar.HOUR_OF_DAY, DEFAULT_HOUR)
+            calendar.add(Calendar.MINUTE, DEFAULT_MINUTE)
+            calendar.add(Calendar.SECOND, DEFAULT_SECONDS)
+            calendar.time
+        }
     }
 
     /**

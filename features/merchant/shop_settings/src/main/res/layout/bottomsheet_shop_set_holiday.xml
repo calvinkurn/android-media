@@ -28,11 +28,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         />
 
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checkbox_close_now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/shop_operational_hour_close_now_text"
+        app:layout_constraintTop_toBottomOf="@id/text_field_start_date_holiday"
+        app:layout_constraintStart_toStartOf="@id/text_field_start_date_holiday"
+        android:layout_marginTop="@dimen/dp_8"
+        />
+
     <com.tokopedia.calendar.UnifyCalendar
         android:id="@+id/ops_hour_holiday_calendar_start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/text_field_start_date_holiday"
+        app:layout_constraintTop_toBottomOf="@id/checkbox_close_now"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="@dimen/dp_8"
         android:visibility="gone"
@@ -42,7 +52,7 @@
         android:id="@+id/ops_hour_holiday_calendar_end"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/text_field_start_date_holiday"
+        app:layout_constraintTop_toBottomOf="@id/checkbox_close_now"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="@dimen/dp_8"
         android:visibility="gone"
