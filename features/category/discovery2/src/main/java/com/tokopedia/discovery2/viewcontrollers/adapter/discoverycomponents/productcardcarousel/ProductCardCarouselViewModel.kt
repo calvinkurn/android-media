@@ -179,7 +179,7 @@ class ProductCardCarouselViewModel(val application: Application, val components:
     fun isLoadingData() = isLoading
 
 
-    private fun getProductList(): ArrayList<ComponentsItem>? {
+    fun getProductList(): ArrayList<ComponentsItem>? {
         components.getComponentsItem()?.let { productList ->
             return productList as ArrayList<ComponentsItem>
         }
