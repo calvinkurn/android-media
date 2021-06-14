@@ -57,7 +57,7 @@ class PmsAnalytics @Inject constructor(
         }
     }
 
-    private fun sendPmsEvent(action: String, label: String? = "") {
+    private fun prepareCommonMap(action: String, label: String? = "") {
         val map = TrackAppUtils.gtmData(
             EVENT_NAME,
             getCategoryName(),
@@ -93,7 +93,7 @@ class PmsAnalytics @Inject constructor(
 
         const val SCREEN_NAME = "pms page"
         const val EVENT_NAME = "clickPMS"
-        const val ACTION_OPEN_PMS_INITIAL = "open pms page"
+        const val EVENT_NAME_OPEN_SCREEN = "openScreen"
         const val ACTION_TAP_THREE_DOTS = "tap three dots"
 
         const val ACTION_CLICK_CANCEL_TRANSACTION = "click batalkan transaksi"
