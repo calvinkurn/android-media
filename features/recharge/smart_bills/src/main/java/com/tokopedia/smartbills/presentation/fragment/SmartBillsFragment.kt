@@ -2,9 +2,8 @@ package com.tokopedia.smartbills.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,15 +11,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -53,7 +49,6 @@ import com.tokopedia.smartbills.util.DividerSBMItemDecoration
 import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.getAccordionSection
 import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.getNotAccordionSection
 import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.getUUIDAction
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
@@ -266,7 +261,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // Handle user not logging in from onboarding
-        if (resultCode == Activity.RESULT_CANCELED) activity?.finish()
+        if(requestCode == REQUEST_CODE_SETTING) {
+            showLoading()
+            loadInitialData()
+        } else if (resultCode == Activity.RESULT_CANCELED) activity?.finish()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -592,6 +590,11 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 showLoading()
                 loadInitialData()
             }
+
+            setSecondaryActionClickListener {
+                val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+                startActivityForResult(intent, REQUEST_CODE_SETTING)
+            }
         }
     }
 
@@ -618,6 +621,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         const val SMART_BILLS_COACH_MARK_HIGHLIGHT_MARGIN = 4
 
         const val REQUEST_CODE_SMART_BILLS_ONBOARDING = 1700
+
+        const val REQUEST_CODE_SETTING = 1669
 
         const val LANGGANAN_URL = "https://www.tokopedia.com/langganan"
         const val HELP_SBM_URL = "https://www.tokopedia.com/help/article/bayar-sekaligus"
