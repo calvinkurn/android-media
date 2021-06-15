@@ -13,6 +13,8 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.broadcaster.error.ClientException
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -89,13 +91,15 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     private suspend fun doCreateLiveStream(channelId: String) = withContext(dispatcher.io) {
         return@withContext try {
             NetworkResult.Success(createLiveStreamChannelUseCase.apply {
-                val cover = mDataStore.getSetupDataStore().getSelectedCover() ?: throw IllegalStateException("Cover is not set")
+                val cover = mDataStore.getSetupDataStore().getSelectedCover() ?: throw ClientException("Cover")
                 val coverImage =
-                        if (cover.croppedCover !is CoverSetupState.Cropped) throw IllegalStateException("Cover image is not set")
+                        if (cover.croppedCover !is CoverSetupState.Cropped) throw ClientException("Cover image")
                         else cover.croppedCover.coverImage
+                val titleModel = mDataStore.getSetupDataStore().getTitle()
+                val title = if (titleModel is PlayTitleUiModel.HasTitle) titleModel.title else throw ClientException("Title")
                 params = CreateLiveStreamChannelUseCase.createParams(
                         channelId = channelId,
-                        title = "", //TODO("Handle This")
+                        title = title,
                         thumbnail = coverImage.toString()
                 )
             }.executeOnBackground())
