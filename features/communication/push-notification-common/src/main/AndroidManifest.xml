@@ -4,7 +4,8 @@
 
     <application>
         <service
-            android:name=".service.PushNotificationService"/>
+            android:name=".service.PushNotificationService"
+            android:exported="true"/>
     </application>
 
 </manifest>

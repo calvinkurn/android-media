@@ -14,7 +14,7 @@
         android:layout_width="@dimen/layout_lvl5"
         android:layout_height="@dimen/layout_lvl5"
         android:padding="@dimen/gmc_dimen_6dp"
-        app:icon_color_light_enable="@color/Unify_GN500"
+        app:icon_color_light_enable="@color/Unify_G500"
         tools:background="@drawable/bg_pm_oval_green" />
 
     <com.tokopedia.unifyprinciples.Typography
