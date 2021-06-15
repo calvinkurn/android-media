@@ -459,7 +459,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                       EgoldAttributeModel egoldAttributeModel,
                                       ShipmentButtonPaymentModel shipmentButtonPaymentModel,
                                       boolean isInitialRender,
-                                      boolean isReloadAfterPriceChangeHigher) {
+                                      boolean isReloadAfterPriceChangeHigher,
+                                      boolean isLocalReload) {
         shipmentAdapter.clearData();
         rvShipment.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvShipment.setAdapter(shipmentAdapter);
@@ -528,6 +529,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (isInitialRender) {
             sendEEStep2();
+        }
+        if (!isLocalReload) {
+            sendErrorAnalytics();
         }
 
         if (isReloadAfterPriceChangeHigher) {
@@ -598,6 +602,25 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
                 ConstantTransactionAnalytics.EventLabel.SUCCESS,
                 getCheckoutLeasingId());
+    }
+
+    private void sendErrorAnalytics() {
+        if (shipmentPresenter.getShipmentTickerErrorModel().isError()) {
+            onViewTickerPaymentError(shipmentPresenter.getShipmentTickerErrorModel().getErrorMessage());
+        }
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
+            if (shipmentCartItemModel.isError() && !TextUtils.isEmpty(shipmentCartItemModel.getErrorTitle())) {
+                onViewTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), shipmentCartItemModel.getErrorTitle());
+            } else if (!shipmentCartItemModel.isError() && shipmentCartItemModel.isHasUnblockingError()
+                    && !TextUtils.isEmpty(shipmentCartItemModel.getUnblockingErrorMessage()) && shipmentCartItemModel.getFirstProductErrorIndex() > 0) {
+                onViewTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), shipmentCartItemModel.getUnblockingErrorMessage());
+            }
+            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                if (cartItemModel.isError() && !TextUtils.isEmpty(cartItemModel.getErrorMessage())) {
+                    onViewTickerProductError(String.valueOf(shipmentCartItemModel.getShopId()), cartItemModel.getErrorMessage());
+                }
+            }
+        }
     }
 
     @Override
@@ -728,7 +751,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getEgoldAttributeModel(),
                 shipmentPresenter.getShipmentButtonPaymentModel(),
                 isInitialRender,
-                isReloadAfterPriceChangeHigher
+                isReloadAfterPriceChangeHigher,
+                false
         );
     }
 
@@ -753,7 +777,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getEgoldAttributeModel(),
                 shipmentPresenter.getShipmentButtonPaymentModel(),
                 false,
-                false
+                false,
+                true
         );
     }
 
@@ -3032,19 +3057,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    @Override
-    public void onViewTickerProductError(String shopId, String errorMessage) {
+    private void onViewTickerProductError(String shopId, String errorMessage) {
         checkoutAnalyticsCourierSelection.eventViewTickerProductLevelErrorInCheckoutPage(shopId, errorMessage);
     }
 
-    @Override
-    public void onViewTickerOrderError(String shopId, String errorMessage) {
+    private void onViewTickerOrderError(String shopId, String errorMessage) {
         checkoutAnalyticsCourierSelection.eventViewTickerOrderLevelErrorInCheckoutPage(shopId, errorMessage);
     }
 
-    @Override
-    public void onViewTickerPaymentError(String errorMessage) {
-        checkoutAnalyticsCourierSelection.eventViewTickerPaymentLevelErrorInCheckoutPage(errorMessage);
+    private void onViewTickerPaymentError(String errorMessage) {
+        List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentPresenter.getShipmentCartItemModelList();
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+            checkoutAnalyticsCourierSelection.eventViewTickerPaymentLevelErrorInCheckoutPage(String.valueOf(shipmentCartItemModel.getShopId()), errorMessage);
+        }
     }
 
     @Override

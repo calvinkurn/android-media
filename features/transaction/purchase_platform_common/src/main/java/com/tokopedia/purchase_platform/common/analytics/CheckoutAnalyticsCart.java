@@ -1275,12 +1275,12 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
-    public void eventLoadCartWithUnavailableProduct(String errorGrouping) {
+    public void eventLoadCartWithUnavailableProduct(String shopId, String errorGrouping) {
         Map<String, Object> gtmData = getGtmData(
                 EventName.VIEW_CART_IRIS,
                 EventCategory.CART,
                 EventAction.LOAD_CART_WITH_UNAVAILABLE_PRODUCT,
-                errorGrouping
+                shopId + " - " + errorGrouping
         );
         gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
         gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);

@@ -1965,8 +1965,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.enhancedECommerceCartLoadedStep0(
                 dPresenter.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_0)
         )
-        cartListData.unavailableGroupData.forEach {
-            cartPageAnalytics.eventLoadCartWithUnavailableProduct(it.title)
+        cartListData.unavailableGroupData.forEach { unavailableGroup ->
+            unavailableGroup.shopGroupWithErrorDataList.forEach { shop ->
+                cartPageAnalytics.eventLoadCartWithUnavailableProduct(shop.shopId, unavailableGroup.title)
+            }
         }
 
         cartAdapter.notifyDataSetChanged()

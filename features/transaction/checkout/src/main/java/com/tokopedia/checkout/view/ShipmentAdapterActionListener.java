@@ -113,12 +113,6 @@ public interface ShipmentAdapterActionListener {
 
     void scrollToPositionWithOffset(int position, float dy);
 
-    void onViewTickerProductError(String shopId, String errorMessage);
-
-    void onViewTickerOrderError(String shopId, String errorMessage);
-
-    void onViewTickerPaymentError(String errorMessage);
-
     void onClickLihatOnTickerOrderError(String shopId, String errorMessage);
 
     void onClickRefreshErrorLoadCourier();

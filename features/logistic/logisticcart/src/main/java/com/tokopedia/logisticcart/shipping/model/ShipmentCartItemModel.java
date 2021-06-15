@@ -101,7 +101,6 @@ public class ShipmentCartItemModel implements Parcelable {
     private String courierSelectionErrorDescription;
 
     // Flag for tracking
-    private boolean hasShownErrorTicker;
     private boolean hasShownCourierError;
 
     public ShipmentCartItemModel() {
@@ -786,14 +785,6 @@ public class ShipmentCartItemModel implements Parcelable {
 
     public void setCourierSelectionErrorDescription(String courierSelectionErrorDescription) {
         this.courierSelectionErrorDescription = courierSelectionErrorDescription;
-    }
-
-    public boolean isHasShownErrorTicker() {
-        return hasShownErrorTicker;
-    }
-
-    public void setHasShownErrorTicker(boolean hasShownErrorTicker) {
-        this.hasShownErrorTicker = hasShownErrorTicker;
     }
 
     public boolean isHasShownCourierError() {

@@ -57,8 +57,6 @@ import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.utils.currency.CurrencyFormatUtil;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -381,11 +379,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         mActionListener.navigateToProtectionMore(protectionLinkUrl);
     }
 
-    @Override
-    public void onViewTickerError(@NotNull String shopId, @NotNull String errorMessage) {
-        mActionListener.onViewTickerProductError(shopId, errorMessage);
-    }
-
     public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
                                List<Object> shipmentDataList,
                                RecipientAddressModel recipientAddressModel,
@@ -473,7 +466,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderCustomError(ShipmentCartItemModel shipmentCartItemModel) {
         if (!shipmentCartItemModel.isError() && shipmentCartItemModel.isHasUnblockingError()
-                && !shipmentCartItemModel.getUnblockingErrorMessage().isEmpty() && shipmentCartItemModel.getFirstProductErrorIndex() > 0) {
+                && !TextUtils.isEmpty(shipmentCartItemModel.getUnblockingErrorMessage()) && shipmentCartItemModel.getFirstProductErrorIndex() > 0) {
             final String errorMessage = shipmentCartItemModel.getUnblockingErrorMessage();
             customTickerDescription.setText(errorMessage);
             customTickerAction.setOnClickListener(v -> {
@@ -488,10 +481,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             customTickerError.setVisibility(View.VISIBLE);
             if (shipmentCartItemModel.isTriggerScrollToErrorProduct()) {
                 scrollToErrorProduct(shipmentCartItemModel);
-            }
-            if (!shipmentCartItemModel.isHasShownErrorTicker()) {
-                mActionListener.onViewTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), errorMessage);
-                shipmentCartItemModel.setHasShownErrorTicker(true);
             }
         } else {
             customTickerError.setVisibility(View.GONE);
@@ -987,7 +976,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             labelSingleShippingMessage.setVisibility(View.VISIBLE);
             if (shipmentCartItemModel.getVoucherLogisticItemUiModel() == null && !shipmentCartItemModel.isHasShownCourierError()) {
                 mActionListener.onViewErrorInCourierSection(selectedCourierItemData.getLogPromoDesc());
-                shipmentCartItemModel.setHasShownErrorTicker(true);
+                shipmentCartItemModel.setHasShownCourierError(true);
             }
         } else {
             labelSingleShippingMessage.setVisibility(View.GONE);
@@ -1671,10 +1660,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 tickerError.setCloseButtonVisibility(View.GONE);
                 tickerError.setVisibility(View.VISIBLE);
                 layoutError.setVisibility(View.VISIBLE);
-                if (!shipmentCartItemModel.isHasShownErrorTicker()) {
-                    mActionListener.onViewTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), errorTitle);
-                    shipmentCartItemModel.setHasShownErrorTicker(true);
-                }
             } else {
                 tickerError.setVisibility(View.GONE);
                 layoutError.setVisibility(View.GONE);
