@@ -145,6 +145,8 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           product_notes
                           product_min_order
                           product_max_order
+                          product_invenage_value
+                          product_switch_invenage
                           parent_id
                           wholesale_price {
                             qty_min

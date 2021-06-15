@@ -10,6 +10,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import javax.inject.Inject
+import kotlin.math.min
 
 class MiniCartListUiModelMapper @Inject constructor() {
 
@@ -191,7 +192,11 @@ class MiniCartListUiModelMapper @Inject constructor() {
             productQty = cartDetail.product.productQuantity
             productWeight = cartDetail.product.productWeight
             productMinOrder = cartDetail.product.productMinOrder
-            productMaxOrder = cartDetail.product.productMaxOrder
+            productMaxOrder = if (cartDetail.product.productSwitchInvenage == 0) {
+                cartDetail.product.productMaxOrder
+            } else {
+                min(cartDetail.product.productMaxOrder, cartDetail.product.productInvenageValue)
+            }
             productActions = action
             wholesalePriceGroup = cartDetail.product.wholesalePrice.asReversed()
             isProductDisabled = isDisabled
