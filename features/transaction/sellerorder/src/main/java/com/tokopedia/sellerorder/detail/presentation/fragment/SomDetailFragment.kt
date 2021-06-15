@@ -22,7 +22,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
@@ -130,7 +129,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         SomBottomSheetRejectOrderAdapter.ActionListener,
         SomDetailAdapter.ActionListener,
         SomBottomSheetRejectReasonsAdapter.ActionListener,
-        SomBaseRejectOrderBottomSheet.SomRejectOrderBottomSheetListener {
+        SomBaseRejectOrderBottomSheet.SomRejectOrderBottomSheetListener, SomBottomSheetSetDelivered.SomBottomSheetSetDeliveredListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -160,6 +159,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private var bottomSheetCourierProblems: SomBottomSheetCourierProblem? = null
     private var bottomSheetBuyerNoResponse: SomBottomSheetBuyerNoResponse? = null
     private var bottomSheetBuyerOtherReason: SomBottomSheetBuyerOtherReason? = null
+    private var bottomSheetSetDelivered: SomBottomSheetSetDelivered? = null
 
     private var pendingAction: SomPendingAction? = null
 
@@ -293,6 +293,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
         som_detail_toolbar?.addCustomRightContent(chatIcon)
     }
 
+    override fun doSetDelivered(receiverName: String) {
+        val gqlQuery = GraphqlHelper.loadRawString(resources, R.raw.som_set_delivered)
+        setLoadingIndicator(true)
+        somDetailViewModel.setDelivered(gqlQuery, orderId, receiverName)
+    }
+
     private fun checkUserRole() {
         showLoading()
         if (connectionMonitor?.isConnected == true) {
@@ -370,7 +376,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     if (acceptOrderResponse.success == 1) {
                         onSuccessAcceptOrder()
                     } else {
-                        showToasterError(acceptOrderResponse.listMessage.first(), view)
+                        showToasterError(acceptOrderResponse.listMessage.first(), view, TYPE_ERROR)
                     }
                 }
                 is Fail -> {
@@ -722,36 +728,20 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showSetDeliveredDialog() {
-        secondaryBottomSheet?.dismiss()
-        context?.let { ctx ->
-            val dialog = DialogUnify(ctx, HORIZONTAL_ACTION, NO_IMAGE).apply {
-                if (DeviceScreenInfo.isTablet(context)) {
-                    dialogMaxWidth = getScreenWidth() / 2
-                }
+    private fun showSetDeliveredBottomSheet() {
+        view.let {
+            if (it is ViewGroup) {
+                val setDeliveredBottomSheet = bottomSheetSetDelivered ?: initSetDeliveredBottomSheet()
+                bottomSheetSetDelivered = setDeliveredBottomSheet
+                bottomSheetSetDelivered?.init(it)
+                bottomSheetSetDelivered?.show()
             }
-            val gqlQuery = GraphqlHelper.loadRawString(resources, R.raw.som_set_delivered)
+        }
+    }
 
-            val dialogView = View.inflate(ctx, R.layout.dialog_set_delivered, null).apply {
-                val receiverEditText = findViewById<TextInputEditText>(R.id.et_receiver)
-                findViewById<View>(R.id.btn_cancel).setOnClickListener { dialog.dismiss() }
-                findViewById<View>(R.id.btn_ok).setOnClickListener {
-                    val name = receiverEditText.text.toString()
-                    if (name.isBlank()) {
-                        receiverEditText.error = ctx.getString(R.string.et_empty_error)
-                    } else {
-                        dialog.dismiss()
-                        setLoadingIndicator(true)
-                        somDetailViewModel.setDelivered(gqlQuery, orderId, receiverEditText.text.toString())
-                    }
-                }
-            }
-
-            with(dialog) {
-                setUnlockVersion()
-                setChild(dialogView)
-                show()
-            }
+    private fun initSetDeliveredBottomSheet(): SomBottomSheetSetDelivered? {
+        return context?.let { context ->
+            SomBottomSheetSetDelivered(context, this)
         }
     }
 
@@ -867,7 +857,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
                     key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it.displayName, orderId, skipOrderValidation())
                     key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
-                    key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
+                    key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredBottomSheet()
                     key.equals(KEY_PRINT_AWB, true) -> SomNavigator.goToPrintAwb(activity, view, listOf(detailResponse?.orderId.orEmpty()), true)
                 }
             }
@@ -932,14 +922,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     if (successEditAwbResponse.mpLogisticEditRefNum.listMessage.isNotEmpty()) {
                         onSuccessEditAwb()
                     } else {
-                        showToasterError(getString(R.string.global_error), view)
+                        showToasterError(getString(R.string.global_error), view, TYPE_ERROR)
                     }
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_EDIT_AWB)
                     failEditAwbResponse.message = it.throwable.message.toString()
                     if (failEditAwbResponse.message.isNotEmpty()) {
-                        showToasterError(failEditAwbResponse.message, view)
+                        showToasterError(failEditAwbResponse.message, view, TYPE_ERROR)
                     } else {
                         it.throwable.showErrorToaster()
                     }
@@ -1396,7 +1386,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedValidateOrder() {
-        showToasterError(getString(R.string.som_error_validate_order), view)
+        showToasterError(getString(R.string.som_error_validate_order), view, TYPE_ERROR)
     }
 
     private fun onSuccessValidateOrder(valid: Boolean) {
@@ -1446,7 +1436,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
             })
             activity?.finish()
         } else {
-            showToasterError(rejectOrderData.message.first(), view)
+            showToasterError(rejectOrderData.message.firstOrNull() ?: getString(R.string.global_error), view, TYPE_ERROR)
         }
     }
 
@@ -1473,12 +1463,13 @@ open class SomDetailFragment : BaseDaggerFragment(),
         bottomSheetCourierProblems?.dismiss()
         bottomSheetBuyerNoResponse?.dismiss()
         bottomSheetBuyerOtherReason?.dismiss()
+        bottomSheetSetDelivered?.dismiss()
     }
 
-    protected fun showToasterError(message: String, view: View?) {
+    protected fun showToasterError(message: String, view: View?, type: Int) {
         val toasterError = Toaster
         view?.let { v ->
-            toasterError.make(v, message, LENGTH_SHORT, TYPE_ERROR, ACTION_OK)
+            toasterError.make(v, message, LENGTH_SHORT, type, ACTION_OK)
         }
     }
 }
