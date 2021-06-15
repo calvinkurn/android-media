@@ -33,6 +33,7 @@
         app:layout_goneMarginStart="@dimen/spacing_lvl4"
         app:layout_goneMarginTop="@dimen/unify_space_12"
         app:typographyType="body_2"
+        app:layout_goneMarginBottom="@dimen/unify_space_12"
         tools:text="Otomatis Bayar Otomatis Otomatis
         Bayar Otomatis Otomatis Bayar Otomatis" />
 

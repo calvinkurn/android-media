@@ -9,8 +9,8 @@ import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedback
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.utils.verifyCoroutineFailEquals
 import com.tokopedia.review.utils.verifyCoroutineSuccessEquals
-import com.tokopedia.review.utils.verifyErrorEquals
-import com.tokopedia.review.utils.verifySuccessEquals
+import com.tokopedia.review.utils.verifyReviewErrorEquals
+import com.tokopedia.review.utils.verifyReviewSuccessEquals
 import io.mockk.coEvery
 import io.mockk.coVerify
 import kotlinx.coroutines.Job
@@ -124,11 +124,11 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
     }
 
     private fun verifyReviewListEquals(response: Success<ProductrevWaitForFeedbackResponse>) {
-        viewModel.reviewList.verifySuccessEquals(response)
+        viewModel.reviewList.verifyReviewSuccessEquals(response)
     }
 
     private fun verifyReviewListErrorEquals(error: Fail<Any>) {
-        viewModel.reviewList.verifyErrorEquals(error)
+        viewModel.reviewList.verifyReviewErrorEquals(error)
     }
 
     private fun verifyGetReviewUseCaseExecuted() {

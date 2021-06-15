@@ -332,6 +332,9 @@ public class DeveloperOptionActivity extends BaseActivity {
         Button alwaysOldBalanceWidget = findViewById(R.id.buttonAlwaysOldBalanceWidget);
         Button alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
 
+        setupNewInboxAbButton();
+        setupNewNotifcenterAbButton();
+
         TextInputEditText inputRollenceKey = findViewById(R.id.input_rollence_key);
         TextInputEditText inputRollenceVariant = findViewById(R.id.input_rollence_variant);
         Button btnApplyRollence = findViewById(R.id.btn_apply_rollence);
@@ -434,6 +437,54 @@ public class DeveloperOptionActivity extends BaseActivity {
                     Toast.makeText(DeveloperOptionActivity.this, "Rollence Key Applied", Toast.LENGTH_SHORT).show();
                 }
             }
+        });
+    }
+
+    private void setupNewInboxAbButton() {
+        Button oldInboxBtn = findViewById(R.id.btn_always_old_inbox);
+        Button newInboxBtn = findViewById(R.id.btn_always_new_inbox);
+
+        oldInboxBtn.setOnClickListener(v -> {
+            RemoteConfigInstance.getInstance()
+                    .getABTestPlatform()
+                    .setString(
+                            AbTestPlatform.KEY_AB_INBOX_REVAMP,
+                            AbTestPlatform.VARIANT_OLD_INBOX
+                    );
+            Toast.makeText(DeveloperOptionActivity.this, "Inbox: Old", Toast.LENGTH_SHORT).show();
+        });
+        newInboxBtn.setOnClickListener(v -> {
+            RemoteConfigInstance.getInstance()
+                    .getABTestPlatform()
+                    .setString(
+                            AbTestPlatform.KEY_AB_INBOX_REVAMP,
+                            AbTestPlatform.VARIANT_NEW_INBOX
+                    );
+            Toast.makeText(DeveloperOptionActivity.this, "Inbox: New", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void setupNewNotifcenterAbButton() {
+        Button oldInboxBtn = findViewById(R.id.btn_always_old_notifcenter);
+        Button newInboxBtn = findViewById(R.id.btn_always_new_notifcenter);
+
+        oldInboxBtn.setOnClickListener(v -> {
+            RemoteConfigInstance.getInstance()
+                    .getABTestPlatform()
+                    .setString(
+                            AbTestPlatform.KEY_NEW_NOTFICENTER,
+                            AbTestPlatform.VARIANT_OLD_NOTFICENTER
+                    );
+            Toast.makeText(DeveloperOptionActivity.this, "Notifcenter: Old", Toast.LENGTH_SHORT).show();
+        });
+        newInboxBtn.setOnClickListener(v -> {
+            RemoteConfigInstance.getInstance()
+                    .getABTestPlatform()
+                    .setString(
+                            AbTestPlatform.KEY_NEW_NOTFICENTER,
+                            AbTestPlatform.VARIANT_NEW_NOTFICENTER
+                    );
+            Toast.makeText(DeveloperOptionActivity.this, "Notifcenter: New", Toast.LENGTH_SHORT).show();
         });
     }
 

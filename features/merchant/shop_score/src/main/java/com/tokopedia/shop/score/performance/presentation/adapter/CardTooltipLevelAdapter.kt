@@ -45,7 +45,7 @@ class CardTooltipLevelAdapter: RecyclerView.Adapter<CardTooltipLevelAdapter.Card
                     cardLevelInformation?.setCardBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G200))
                     levelLabel?.show()
                 } else {
-                    cardLevelInformation?.setCardBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50))
+                    cardLevelInformation?.setCardBackgroundColor(ContextCompat.getColor(context, R.color.shop_score_dms_card_level))
                     levelLabel?.hide()
                 }
             }

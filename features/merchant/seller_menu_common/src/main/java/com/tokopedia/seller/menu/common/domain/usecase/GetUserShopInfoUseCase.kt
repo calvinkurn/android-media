@@ -21,17 +21,11 @@ class GetUserShopInfoUseCase @Inject constructor(
                 info {
                   date_shop_created
                 }
-                owner {
-                  pm_status
-                }
-                stats {
-                  shop_total_transaction
-                }
               }
               shopInfoByID(
                 input: {
                   shopIDs: [${'$'}shopId]
-                  fields: ["other-goldos"]
+                  fields: ["other-goldos", "shopstats-limited"]
                 }
               ) {
                 result {
@@ -43,10 +37,29 @@ class GetUserShopInfoUseCase @Inject constructor(
                     shopGrade
                     shopGradeWording
                   }
+                  statsByDate {
+                    identifier
+                    value
+                    startTime
+                  }
                 }
               }
               goldGetPMSettingInfo(shopID: ${'$'}shopId, source: "goldmerchant") {
                 period_type_pm_pro
+              }
+              goldGetPMOSStatus(
+                 shopID: ${'$'}shopId,
+                 includeOS: true){
+                 data {
+                   power_merchant {
+                     status
+                     pm_tier              
+                   }
+                   official_store {
+                     status
+                     error
+                   }
+                 }
               }
             }
         """.trimIndent()

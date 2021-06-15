@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetCancelDeactivationSubmissionUiModel
 import kotlinx.android.synthetic.main.widget_pm_cancel_deactivation_submission.view.*
 
@@ -14,8 +14,7 @@ import kotlinx.android.synthetic.main.widget_pm_cancel_deactivation_submission.v
 
 class CancelDeactivationSubmissionWidget(
         itemView: View,
-        private val listener: Listener,
-        private val powerMerchantTracking: PowerMerchantTracking
+        private val listener: Listener
 ) : AbstractViewHolder<WidgetCancelDeactivationSubmissionUiModel>(itemView) {
 
     companion object {
@@ -30,7 +29,6 @@ class CancelDeactivationSubmissionWidget(
             btnPmCancelQuitSubmission.setOnClickListener {
                 listener.cancelPmDeactivationSubmission(adapterPosition)
                 btnPmCancelQuitSubmission.isLoading = true
-                powerMerchantTracking.sendEventClickCancelOptOutPowerMerchant()
             }
         }
     }

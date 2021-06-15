@@ -31,7 +31,7 @@ class PotentialWidget(itemView: View) : AbstractViewHolder<WidgetPotentialUiMode
             }
             rvPmPotential.adapter = PotentialAdapter(benefitList)
 
-            tvPmPotentialDescription.text = getString(R.string.pm_registration_potential_description, Constant.POWER_MERCHANT_CHARGING).parseAsHtml()
+            tvPmPotentialDescription.text = context.getString(R.string.pm_registration_potential_description, Constant.POWER_MERCHANT_CHARGING, Constant.OLD_POWER_MERCHANT_CHARGING).parseAsHtml()
         }
     }
 
