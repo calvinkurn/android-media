@@ -326,7 +326,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
             imgPmHeaderImage.loadImage(PMConstant.Images.PM_PRO_BADGE)
             tvPmHeaderDesc.setText(R.string.pm_registration_header_pm_pro)
         } else {
-            imgPmHeaderBackdrop.loadImage(R.drawable.bg_pm_registration_header)
+            imgPmHeaderBackdrop.loadImage(Constant.Image.PM_BG_REGISTRATION_PM)
             imgPmHeaderImage.loadImage(PMConstant.Images.PM_BADGE)
             tvPmHeaderDesc.setText(R.string.pm_registration_header_pm)
         }
