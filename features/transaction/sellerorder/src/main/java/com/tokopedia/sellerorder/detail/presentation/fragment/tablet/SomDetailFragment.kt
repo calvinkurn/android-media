@@ -135,7 +135,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
 
     override fun onSuccessRejectOrder(rejectOrderData: SomRejectOrderResponse.Data.RejectOrder) {
         if (rejectOrderData.success == 1) {
-            showToasterError(rejectOrderData.message.firstOrNull() ?: getString(R.string.message_change_order_status_success), view, Toaster.TYPE_NORMAL)
+            showToasterError(rejectOrderData.message.firstOrNull() ?: getString(R.string.message_set_delivered_success), view, Toaster.TYPE_NORMAL)
         } else {
             showToasterError(rejectOrderData.message.firstOrNull() ?: getString(R.string.global_error), view, Toaster.TYPE_ERROR)
         }

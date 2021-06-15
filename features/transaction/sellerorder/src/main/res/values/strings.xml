@@ -69,6 +69,7 @@
 
     <string name="global_error">Terjadi kesalahan. Mohon ulangi kembali</string>
     <string name="message_change_order_status_success">Berhasil merubah status pesanan</string>
+    <string name="message_set_delivered_success">Konfirmasi Tiba di Tujuan berhasil diupdate</string>
     <string name="image_product">Image Product</string>
     <string name="product_name">Product Name</string>
     <string name="product_price">Rp 10.000.000</string>
