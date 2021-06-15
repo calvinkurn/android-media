@@ -67,7 +67,10 @@ fun Visitable<*>.assertCategoryFilterDataView(categoryFilterDataValue: DataValue
     }
 }
 
-fun Visitable<*>.assertQuickFilterDataView(quickFilterDataValue: DataValue) {
+fun Visitable<*>.assertQuickFilterDataView(
+        quickFilterDataValue: DataValue,
+        mapParameter: Map<String, String>,
+) {
     assertThat(this, instanceOf(QuickFilterDataView::class.java))
 
     val quickFilterDataView = this as QuickFilterDataView
@@ -75,6 +78,8 @@ fun Visitable<*>.assertQuickFilterDataView(quickFilterDataValue: DataValue) {
     val quickFilterItemList = quickFilterDataView.quickFilterItemList
     val expectedQuickFilter = quickFilterDataValue.filter
     assertThat(quickFilterItemList.size, shouldBe(expectedQuickFilter.size))
+
+    assertThat(quickFilterDataView.mapParameter, shouldBe(mapParameter))
 
     expectedQuickFilter.forEachIndexed { index, quickFilter ->
         val sortFilterItemDataView = quickFilterItemList[index]

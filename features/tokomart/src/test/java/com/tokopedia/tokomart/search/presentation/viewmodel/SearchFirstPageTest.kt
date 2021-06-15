@@ -49,11 +49,13 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
             visitableList: List<Visitable<*>>,
             searchModel: SearchModel,
     ) {
+        val mapParameter = searchViewModel.queryParam
+
         visitableList[0].assertChooseAddressDataView()
         visitableList[1].assertBannerDataView()
         visitableList[2].assertTitleDataView(title = "", hasSeeAllCategoryButton = false)
         visitableList[3].assertCategoryFilterDataView(searchModel.categoryFilter)
-        visitableList[4].assertQuickFilterDataView(searchModel.quickFilter)
+        visitableList[4].assertQuickFilterDataView(searchModel.quickFilter, mapParameter)
         visitableList[5].assertProductCountDataView(searchModel.searchProduct.header.totalDataText)
     }
 

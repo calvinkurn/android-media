@@ -1,10 +1,11 @@
-package com.tokopedia.search.utils
+package com.tokopedia.filter.common.helper
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.search.shouldBe
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.filter.testutils.shouldBe
 import org.junit.Test
 
-internal class SearchFilterUtilsTest {
+class ParamUtilsTest {
 
     @Test
     fun `Get sort filter count`() {
@@ -54,6 +55,13 @@ internal class SearchFilterUtilsTest {
                         SearchApiConst.USER_ADDRESS_ID to "123444",
                 )
         ) shouldBe 1
+
+        getSortFilterCount(
+                mapOf(
+                        SearchApiConst.Q to "samsung",
+                        OptionHelper.EXCLUDE_PREFIX + SearchApiConst.SC to "1234"
+                )
+        ) shouldBe 0
     }
 
     @Test
