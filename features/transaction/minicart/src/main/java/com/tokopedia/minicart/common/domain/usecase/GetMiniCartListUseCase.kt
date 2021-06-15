@@ -58,14 +58,6 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                 status
                 data {
                   errors
-                  empty_cart {
-                    title
-                    image
-                    description
-                    buttons {
-                      id
-                    }
-                  }
                   out_of_service {
                     id
                     code
