@@ -1816,7 +1816,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             setTopLayoutVisibility(false)
         } else {
             renderCartNotEmpty(it)
-            setTopLayoutVisibility(true)
+            setTopLayoutVisibility(it.shopGroupAvailableDataList.isNotEmpty())
         }
     }
 

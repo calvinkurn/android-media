@@ -706,9 +706,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             rvCartItem.setVisibility(View.GONE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
-            tvExpandOtherProduct.setText(String.format(tvExpandOtherProduct.getContext().getString(R.string.label_other_item_count_format),
-                    String.valueOf(cartItemModels.size())));
-            tvExpandOtherProduct.setTextColor(ContextCompat.getColor(tvExpandOtherProduct.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
+            tvExpandOtherProduct.setText(R.string.label_show_other_item_new);
             ivExpandOtherProduct.setImage(IconUnify.CHEVRON_DOWN, null, null, null, null);
         }
     }
