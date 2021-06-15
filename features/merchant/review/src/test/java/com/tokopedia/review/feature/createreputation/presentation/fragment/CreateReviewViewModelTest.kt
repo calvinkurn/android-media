@@ -431,6 +431,19 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `when getReviewTemplates is not empty should execute expected usecase and indicate that template is available`() {
+        val expectedResponse = ProductrevGetReviewTemplateResponseWrapper(ProductrevGetReviewTemplate(templates = listOf("template1", "template2")))
+
+        onGetReviewTemplate_thenReturn(expectedResponse)
+
+        viewModel.getReviewTemplates(productId)
+
+        verifyGetReviewTemplateUseCaseCalled()
+        verifyReviewTemplatesSuccess(Success(expectedResponse.productrevGetPersonalizedReviewTemplate.templates))
+        assertTrue(viewModel.isTemplateAvailable())
+    }
+
+    @Test
     fun `when getReviewTemplates error should still execute expected usecase and return error`() {
         val expectedResponse = Throwable()
 
@@ -440,6 +453,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         verifyGetReviewTemplateUseCaseCalled()
         verifyReviewTemplatesError(Fail(expectedResponse))
+        assertFalse(viewModel.isTemplateAvailable())
     }
 
     @Test
