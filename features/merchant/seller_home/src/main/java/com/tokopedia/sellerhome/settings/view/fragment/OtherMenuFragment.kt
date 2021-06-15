@@ -115,8 +115,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private var canShowErrorToaster = true
 
-    private var isNewSeller = false
-
     @FragmentType
     private var currentFragmentType: Int = FragmentType.OTHER
 
