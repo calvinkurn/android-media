@@ -424,7 +424,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK,
                 eventAction = CLICK_TOPADS_HEADLINE, eventLabel = if(isCekSekarang) CEK_SEKARANG else HEADLINE_SHOP_NAME)
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
-                com.tokopedia.discovery2.analytics.EVENT_PROMO_VIEW to mapOf(
+                com.tokopedia.discovery2.analytics.EVENT_PROMO_CLICK to mapOf(
                         KEY_PROMOTIONS to list))
         map[KEY_E_COMMERCE] = eCommerce
         trackingQueue.putEETracking(map as HashMap<String, Any>)
