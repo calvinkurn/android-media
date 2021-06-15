@@ -21,6 +21,8 @@ import com.tokopedia.cart.view.subscriber.*
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -32,6 +34,8 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -1107,7 +1111,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val clickUrl = productModel.clickUrl
             if (clickUrl.isNotEmpty() && productModel.isTopAds) view?.sendATCTrackingURLRecent(productModel)
         } else if (productModel is CartRecommendationItemHolderData) {
-            val (_, recommendationItem) = productModel
+            val recommendationItem = productModel.recommendationItem
             productId = recommendationItem.productId.toLong()
             shopId = recommendationItem.shopId
             productName = recommendationItem.name
@@ -1118,6 +1122,17 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             val clickUrl = recommendationItem.clickUrl
             if (clickUrl.isNotEmpty()) view?.sendATCTrackingURL(recommendationItem)
+        } else if (productModel is BannerShopProductViewModel) {
+            productId = productModel.productId.toLongOrZero()
+            shopId = productModel.shopId.toIntOrZero()
+            productName = productModel.productName
+            productCategory = productModel.productCategory
+            productPrice = productModel.productPrice
+            quantity = productModel.productMinOrder
+            externalSource = AddToCartRequestParams.ATC_FROM_RECOMMENDATION
+
+            val clickUrl = productModel.adsClickUrl
+            if (clickUrl.isNotEmpty()) view?.sendATCTrackingURL(productModel)
         }
 
         val addToCartRequestParams = AddToCartRequestParams().apply {

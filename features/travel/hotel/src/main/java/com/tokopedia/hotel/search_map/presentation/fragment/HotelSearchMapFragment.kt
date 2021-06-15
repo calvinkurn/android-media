@@ -81,7 +81,7 @@ import javax.inject.Inject
  */
 class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFactory>(),
         BaseEmptyViewHolder.Callback, HotelSearchResultAdapter.OnClickListener,
-        OnMapReadyCallback, GoogleMap.OnMarkerClickListener, SubmitFilterListener, GoogleMap.OnCameraMoveStartedListener {
+        OnMapReadyCallback, GoogleMap.OnMarkerClickListener, SubmitFilterListener, GoogleMap.OnCameraMoveStartedListener, GoogleMap.OnCameraMoveListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -332,6 +332,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         initGetMyLocation()
         setupPersistentBottomSheet()
         halfExpandBottomSheet()
+        initInfoMaxRadius()
 
         ivHotelSearchMapNoResult.loadImage(getString(R.string.hotel_url_empty_search_map_result))
 
@@ -349,12 +350,58 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         setGoogleMap()
     }
 
+    override fun onCameraMove() {
+        getInfoMaxRadius()
+    }
+
     override fun onCameraMoveStarted(reason: Int) {
         when (reason) {
             GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE -> {
                 showFindNearHereView()
+                googleMap.setOnCameraMoveListener(this)
             }
             else -> hideFindNearHereView()
+        }
+    }
+
+    private fun getInfoMaxRadius(){
+        val zoomLevel = googleMap.cameraPosition.zoom
+        if(zoomLevel <= MAX_RADIUS){
+            hideFindNearHereView()
+            showInfoMaxRadius()
+        }else{
+            hideInfoMaxRadius()
+            showFindNearHereView()
+        }
+    }
+
+    private fun initInfoMaxRadius() {
+        context?.let {
+            val wrapper = LinearLayout(it)
+            wrapper.gravity = Gravity.CENTER
+
+            val textView = Typography(it)
+            textView.apply {
+                setHeadingText(BUTTON_RADIUS_HEADING_SIZE)
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+                text = getString(R.string.hotel_search_map_max_radius_info)
+            }
+            wrapper.addView(textView)
+            fabHotelInfoMaxRadius.addItem(wrapper)
+        }
+        fabHotelInfoMaxRadius.setMargins(0, resources.getDimensionPixelSize(R.dimen.hotel_70dp), 0, 0)
+        hideInfoMaxRadius()
+    }
+
+    private fun hideInfoMaxRadius(){
+        view?.let {
+            animateFAB(fabHotelInfoMaxRadius, false)
+        }
+    }
+
+    private fun showInfoMaxRadius(){
+        view?.let {
+            animateFAB(fabHotelInfoMaxRadius, true)
         }
     }
 
@@ -594,6 +641,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         googleMap.uiSettings.isZoomGesturesEnabled = true
                         googleMap.uiSettings.isRotateGesturesEnabled = false
                         googleMap.uiSettings.isScrollGesturesEnabled = true
+                        googleMap.uiSettings.isTiltGesturesEnabled = false
 
                         if (!isViewFullMap) {
                             trackingHotelUtil.searchViewFullMap(context,
@@ -763,6 +811,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             googleMap.uiSettings.isZoomGesturesEnabled = true
             googleMap.uiSettings.isRotateGesturesEnabled = false
             googleMap.uiSettings.isScrollGesturesEnabled = true
+            googleMap.uiSettings.isTiltGesturesEnabled = false
 
             googleMap.setOnMarkerClickListener(this)
             googleMap.setOnCameraMoveStartedListener(this)
@@ -1116,20 +1165,20 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private fun showFindNearHereView() {
         view?.let {
             btnGetRadiusHotelSearchMap.visible()
+            animateFAB(btnGetRadiusHotelSearchMap, true)
         }
-        animatebtnGetRadiusHotelSearchMap(BUTTON_RADIUS_SHOW_VALUE)
     }
 
     private fun hideFindNearHereView() {
-        animatebtnGetRadiusHotelSearchMap(BUTTON_RADIUS_HIDE_VALUE)
         view?.let {
+            animateFAB(btnGetRadiusHotelSearchMap, false)
             btnGetRadiusHotelSearchMap.gone()
         }
     }
 
-    private fun animatebtnGetRadiusHotelSearchMap(value: Float) {
-        ObjectAnimator.ofFloat(btnGetRadiusHotelSearchMap, BUTTON_RADIUS_ANIMATION_Y, value).apply {
-            duration = DELAY_BUTTON_RADIUS
+    private fun animateFAB(button: View, visibility: Boolean){
+        val alphaValue: Float = if(visibility) BUTTON_RADIUS_SHOW_VALUE else BUTTON_RADIUS_HIDE_VALUE
+        ObjectAnimator.ofFloat(button, BUTTON_RADIUS_ANIMATION_Y, alphaValue).apply {
             start()
         }
     }
@@ -1446,7 +1495,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val ARG_SORT_PARAM = "arg_hotel_sort_param"
 
         const val SELECTED_POSITION_INIT = 0
-        const val DELAY_BUTTON_RADIUS: Long = 1000L
         const val DELAY_EMPTY_STATE: Long = 100L
         const val BUTTON_RADIUS_SHOW_VALUE: Float = 128f
         const val BUTTON_RADIUS_HIDE_VALUE: Float = -150f
@@ -1454,6 +1502,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val MAPS_STREET_LEVEL_ZOOM: Float = 15f
         private const val MAPS_ZOOM_IN: Float = 11f
         private const val MAPS_ZOOM_OUT: Float = 9f
+        private const val MAX_RADIUS: Float = 10.5f
 
         private const val PREFERENCES_NAME = "hotel_search_map_preferences"
         private const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"

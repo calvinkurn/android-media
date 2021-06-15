@@ -101,6 +101,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                             errors.put(requests.get(i).getTypeOfT(), CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
                             }.getType()));
                         }
+                        LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
                     } catch (JsonSyntaxException jse) {
                         jse.printStackTrace();
                         Map<String, String> messageMap = new HashMap<>();
@@ -160,6 +161,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
                 Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests.get(i).getQuery()) + " KEY: " + copyRequests.get(i).cacheKey());
             }
+            LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
         } catch (JsonSyntaxException jse) {
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "json");

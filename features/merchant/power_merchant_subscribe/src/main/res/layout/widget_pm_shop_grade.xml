@@ -46,10 +46,10 @@
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/layout_lvl2"
             android:text="@string/power_merchant_status_label"
-            android:textColor="@color/Unify_N0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_2" />
+            app:typographyType="heading_2"
+            tools:textColor="@color/Unify_N0" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvPmShopGradeStatus"
@@ -63,11 +63,11 @@
             android:paddingEnd="@dimen/spacing_lvl2"
             android:paddingBottom="@dimen/spacing_lvl1"
             android:text="@string/pm_active"
-            android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="@+id/tvPmShopGrade"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tvPmShopGrade"
-            app:typographyType="heading_5" />
+            app:typographyType="heading_5"
+            tools:textColor="@color/Unify_Static_White" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgPmShopGrade"
