@@ -382,7 +382,8 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().miniCartWidgetLiveData.observe(this::updateMiniCartWidget)
         getViewModel().isShowMiniCartLiveData.observe(this::updateMiniCartWidgetVisibility)
         getViewModel().updatedVisitableIndicesLiveData.observe(this::notifyAdapterItemChange)
-        getViewModel().cartEventMessageLiveData.observe(this::showAddToCartMessage)
+        getViewModel().successATCMessageLiveData.observe(this::showSuccessATCMessage)
+        getViewModel().errorATCMessageLiveData.observe(this::showErrorATCMessage)
         getViewModel().isHeaderBackgroundVisibleLiveData
                 .observe(this::updateHeaderBackgroundVisibility)
         getViewModel().isContentLoadingLiveData.observe(this::updateContentVisibility)
@@ -580,16 +581,20 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onViewATCProductNonVariant(productItemDataView, quantity)
     }
 
-    private fun showAddToCartMessage(message: String?) {
+    protected open fun showSuccessATCMessage(message: String?) {
+        showToaster(message, Toaster.TYPE_NORMAL)
+    }
+
+    protected open fun showToaster(message: String?, toasterType: Int) {
         val view = view ?: return
         message ?: return
+        if (message.isEmpty()) return
 
-        if (message.isEmpty()) {
-            val successMessage = getString(R.string.tokomart_add_to_cart_success)
-            Toaster.build(view, successMessage, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
-        } else {
-            Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-        }
+        Toaster.build(view, message, Toaster.LENGTH_LONG, toasterType).show()
+    }
+
+    protected open fun showErrorATCMessage(message: String?) {
+        showToaster(message, Toaster.TYPE_ERROR)
     }
 
     protected open fun updateHeaderBackgroundVisibility(isVisible: Boolean) {
