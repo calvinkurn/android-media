@@ -185,4 +185,5 @@
     <string name="title_address_form">Detail Alamat</string>
     <string name="tv_pinpoint_not_defined">Kamu belum pinpoint. &lt;b&gt;Atur Pinpoint (Opsional)&lt;/b&gt;</string>
     <string name="tv_pinpoint_defined">Kamu Sudah pinpoint. &lt;b&gt;Atur Pinpoint (Opsional)&lt;/b&gt;</string>
+    <string name="tv_discom_item_revamp">%1$s, &lt;b&gt;%2$s,&lt;/b&gt; %3$s</string>
 </resources>

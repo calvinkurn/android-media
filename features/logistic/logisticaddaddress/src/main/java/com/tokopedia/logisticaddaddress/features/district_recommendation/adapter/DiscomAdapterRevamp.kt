@@ -4,9 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.meituan.robust.patch.annotaion.Add
+import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistrictRecommendationItemBinding
 import com.tokopedia.logisticaddaddress.databinding.ItemDistrictRecommendationRevampBinding
 import com.tokopedia.logisticaddaddress.domain.model.Address
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class DiscomAdapterRevamp(private var listener: ActionListener): RecyclerView.Adapter<DiscomAdapterRevamp.DiscomAdapterViewHolder>() {
 
@@ -25,6 +27,17 @@ class DiscomAdapterRevamp(private var listener: ActionListener): RecyclerView.Ad
         holder.bindData(districtData[position])
     }
 
+    fun setData(data: List<Address>) {
+        districtData.clear()
+        districtData.addAll(data)
+        notifyDataSetChanged()
+    }
+
+    fun appendData(data: List<Address>) {
+        districtData.addAll(data)
+        notifyDataSetChanged()
+    }
+
 
     interface ActionListener {
         fun onDistrictItemClicked(districtModel: Address)
@@ -35,8 +48,9 @@ class DiscomAdapterRevamp(private var listener: ActionListener): RecyclerView.Ad
         val tvDistrictName = binding.searchPlaceName
 
         fun bindData(data: Address) {
-            val districtSelected = "${data.provinceName}, ${data.cityName}, ${data.districtName}"
+            val districtSelected = HtmlLinkHelper(itemView.context, itemView.context.getString(R.string.tv_discom_item_revamp, data.provinceName, data.cityName, data.districtName)).spannedString
             itemView.apply {
+
                 tvDistrictName.text = districtSelected
                 tvDistrictName.setOnClickListener {
                     listener.onDistrictItemClicked(data)

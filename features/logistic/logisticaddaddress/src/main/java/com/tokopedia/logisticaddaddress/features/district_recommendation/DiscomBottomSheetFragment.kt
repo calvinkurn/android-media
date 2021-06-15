@@ -22,6 +22,7 @@ import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomAdapterRevamp
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomNewAdapter
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.network.utils.ErrorHandler
@@ -41,10 +42,12 @@ import javax.inject.Inject
 class DiscomBottomSheetFragment : BottomSheets(),
         PopularCityAdapter.ActionListener,
         DiscomContract.View,
-        DiscomNewAdapter.ActionListener {
+        DiscomNewAdapter.ActionListener,
+        DiscomAdapterRevamp.ActionListener {
 
     private lateinit var popularCityAdapter: PopularCityAdapter
     private lateinit var listDistrictAdapter: DiscomNewAdapter
+    private lateinit var listDistrictAdapterRevamp: DiscomAdapterRevamp
     private var isLoading: Boolean = false
     private var input: String = ""
     private val mLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -107,9 +110,18 @@ class DiscomBottomSheetFragment : BottomSheets(),
         }
 
         listDistrictAdapter = DiscomNewAdapter(this)
-        binding.rvListDistrict.apply {
-            layoutManager = mLayoutManager
-            adapter = listDistrictAdapter
+        listDistrictAdapterRevamp = DiscomAdapterRevamp(this)
+
+        if (isAnaRevamp) {
+            binding.rvListDistrict.apply {
+                layoutManager = mLayoutManager
+                adapter = listDistrictAdapterRevamp
+            }
+        } else {
+            binding.rvListDistrict.apply {
+                layoutManager = mLayoutManager
+                adapter = listDistrictAdapter
+            }
         }
 
         binding.etSearchDistrictRecommendation.setSelection(binding.etSearchDistrictRecommendation.text.length)
@@ -145,11 +157,13 @@ class DiscomBottomSheetFragment : BottomSheets(),
         binding.tvDescInputDistrict.visibility = View.VISIBLE
         binding.tvDescInputDistrict.setText(R.string.hint_advice_search_address)
         if (mIsInitialLoading) {
-            listDistrictAdapter.setData(list)
+            if (isAnaRevamp) listDistrictAdapterRevamp.setData(list)
+            else listDistrictAdapter.setData(list)
             mEndlessListener.resetState()
             mIsInitialLoading = false
         } else {
-            listDistrictAdapter.appendData(list)
+            if (isAnaRevamp) listDistrictAdapterRevamp.appendData(list)
+            else listDistrictAdapter.appendData(list)
             mEndlessListener.updateStateAfterGetData()
         }
         mEndlessListener.setHasNextPage(hasNextPage)

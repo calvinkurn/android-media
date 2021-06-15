@@ -24,6 +24,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="heading_2"
+        android:textAlignment="center"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
