@@ -4,26 +4,25 @@ object BuyerOrderDetailTrackerConstant {
     // keys
     const val EVENT_KEY_BUSINESS_UNIT = "businessUnit"
     const val EVENT_KEY_CURRENT_SITE = "currentSite"
-    const val EVENT_KEY_ENHANCED_ECOMMERCE = "ecommerce"
-    const val EVENT_KEY_ENHANCED_ECOMMERCE_ADD = "add"
-    const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCTS = "products"
-    const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_CATEGORY = "category"
+    const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCTS_ITEMS = "items"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_CATEGORY_ID = "category_id"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_DIMENSION_45 = "dimension45"
-    const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_PRODUCT_ID = "id"
-    const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_NAME = "name"
+    const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_BRAND = "item_brand"
+    const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_CATEGORY = "item_category"
+    const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_PRODUCT_ID = "item_id"
+    const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_NAME = "item_name"
+    const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_VARIANT = "item_variant"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_PRICE = "price"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_QUANTITY = "quantity"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_SHOP_ID = "shop_id"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_SHOP_NAME = "shop_name"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_SHOP_TYPE = "shop_type"
-    const val EVENT_KEY_ENHANCED_ECOMMERCE_CURRENCY_CODE = "currencyCode"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_ID = "productId"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_USER_ID = "userId"
 
     // event names
     const val EVENT_NAME_CLICK_PURCHASE_LIST = "clickPurchaseList"
-    const val EVENT_NAME_ADD_TO_CART = "addToCart"
+    const val EVENT_NAME_ADD_TO_CART = "add_to_cart"
 
     // event categories
     const val EVENT_CATEGORY_MY_PURCHASE_LIST_DETAIL_MP = "my purchase list detail - mp"

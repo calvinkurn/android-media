@@ -760,7 +760,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
                 viewModel.getShopId(),
                 viewModel.getShopName(),
                 viewModel.getShopType(),
-                viewModel.getCurrencyCode(),
                 viewModel.getUserId())
     }
 }

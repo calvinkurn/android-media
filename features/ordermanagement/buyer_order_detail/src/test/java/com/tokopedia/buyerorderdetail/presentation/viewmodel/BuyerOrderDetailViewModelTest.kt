@@ -13,7 +13,8 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.Test
 
-class BuyerOrderDetailViewModelTest: BuyerOrderDetailViewModelTestFixture() {
+class
+BuyerOrderDetailViewModelTest: BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getBuyerOrderDetail should success when use case return expected data`() {
         val expectedParams = GetBuyerOrderDetailParams(orderId = orderId, paymentId = paymentId, cart = cart)
@@ -257,48 +258,6 @@ class BuyerOrderDetailViewModelTest: BuyerOrderDetailViewModelTestFixture() {
         createFailedBuyerOrderDetailResult()
         val returnedShopType = viewModel.getShopType()
         assert(returnedShopType == 0)
-    }
-
-    @Test
-    fun `getCurrencyCode should return Rp currency code when getBuyerOrderDetail result is success and price is in rupiah`() {
-        val product = createProductItemWithCurrencyCode(rupiahCurrencyCode)
-        val buyerOrderDetailResult = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-            every { productListUiModel.productList } returns listOf(product)
-        }
-
-        createSuccessBuyerOrderDetailResult(buyerOrderDetailResult)
-        val returnedCurrencyCode = viewModel.getCurrencyCode()
-        assert(returnedCurrencyCode == rupiahCurrencyCode)
-    }
-
-    @Test
-    fun `getCurrencyCode should return empty shop type when getBuyerOrderDetail result is success but there's no products`() {
-        val buyerOrderDetailResult = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-            every { productListUiModel.productList } returns emptyList()
-        }
-
-        createSuccessBuyerOrderDetailResult(buyerOrderDetailResult)
-        val returnedCurrencyCode = viewModel.getCurrencyCode()
-        assert(returnedCurrencyCode.isBlank())
-    }
-
-    @Test
-    fun `getCurrencyCode should return empty shop type when getBuyerOrderDetail result is success but product priceText is null`() {
-        val product = createProductItemWithCurrencyCode("", "")
-        val buyerOrderDetailResult = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-            every { productListUiModel.productList } returns listOf(product)
-        }
-
-        createSuccessBuyerOrderDetailResult(buyerOrderDetailResult)
-        val returnedCurrencyCode = viewModel.getCurrencyCode()
-        assert(returnedCurrencyCode.isBlank())
-    }
-
-    @Test
-    fun `getCurrencyCode should return empty shop type when getBuyerOrderDetail result is fail`() {
-        createFailedBuyerOrderDetailResult()
-        val returnedCurrencyCode = viewModel.getCurrencyCode()
-        assert(returnedCurrencyCode.isBlank())
     }
 
     @Test
