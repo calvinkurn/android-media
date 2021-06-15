@@ -228,7 +228,8 @@ class ScreenRecordService : Service(), CoroutineScope {
         val result = PublicFolderUtil.putFileToPublicFolder(applicationContext,
                 srcFile,
                 "${getOutputFileName()}_${getTimestamp()}.mp4",
-                "video/mp4")
+                "video/mp4",
+                getOutputPathName())
         val outputFile = result.first
         if (outputFile != null) {
             MediaScannerConnection.scanFile(applicationContext, arrayOf(outputFile.absolutePath), null, null)
@@ -236,6 +237,10 @@ class ScreenRecordService : Service(), CoroutineScope {
         } else {
             return ""
         }
+    }
+
+    private fun getOutputPathName(): String {
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).absolutePath + "/Tokopedia"
     }
 
     private fun getTimestamp(): String {
