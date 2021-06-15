@@ -31,7 +31,7 @@ class RegisterNegativeCase: RegisterInitialBase() {
     /* Disable button "Selanjutnya" when input text length is too long for email */
     fun emailTooLong() {
         runTest {
-            inputEmailOrPhone("123@12345678012345567899111111.com")
+            inputEmailOrPhone("yorisprayogooooo@gmail.commmmmmmmmmmmmmmmmmmmmmmmm")
             shouldBeDisabled(R.id.register_btn)
         }
     }

@@ -102,13 +102,13 @@ class RegisterNormalCase: RegisterInitialBase() {
     /* Show proceed dialog if phone not registered */
     fun showProceedPhoneDialog_IfPhoneNotRegistered() {
         isDefaultRegisterCheck = false
-        val data = RegisterCheckData(isExist = false , userID = "0", registerType = "phone", view = "082242454511")
+        val data = RegisterCheckData(isExist = false , userID = "0", registerType = "phone", view = "08224245450411")
         registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
-            inputEmailOrPhone("082242454511")
+            inputEmailOrPhone("08224245450411")
             clickSubmit()
-            isDialogDisplayed("0822-4245-4504-11")
+            isDialogDisplayed("08224245450411")
         }
     }
 
