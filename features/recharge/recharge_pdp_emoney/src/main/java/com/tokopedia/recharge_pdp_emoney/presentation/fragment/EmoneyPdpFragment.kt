@@ -617,10 +617,16 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun showCoachMark(show: Boolean) {
-        if (show) {
-            coachMark.showCoachMark(coachMarks)
-        } else {
-            coachMark.hideCoachMark()
+        try {
+            if (coachMarks.isNotEmpty()) {
+                if (show) {
+                    coachMark.showCoachMark(coachMarks)
+                } else {
+                    coachMark.hideCoachMark()
+                }
+            }
+        } catch (e: Throwable) {
+            //do nothing. don't show coachmark.
         }
     }
 
