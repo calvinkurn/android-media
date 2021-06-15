@@ -88,10 +88,17 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         getMiniCartListUseCase.setParams(shopIds)
         getMiniCartListUseCase.execute(
                 onSuccess = {
-                    val tmpMiniCartListUiModel = miniCartListUiModelMapper.mapUiModel(it)
-                    tmpMiniCartListUiModel.isFirstLoad = isFirstLoad
-                    tmpMiniCartListUiModel.needToCalculateAfterLoad = needToCalculateAfterLoad
-                    _miniCartListBottomSheetUiModel.value = tmpMiniCartListUiModel
+                    if (it.data.outOfService.id != "0") {
+                        _globalEvent.value = GlobalEvent(
+                                state = GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET,
+                                data = it
+                        )
+                    } else {
+                        val tmpMiniCartListUiModel = miniCartListUiModelMapper.mapUiModel(it)
+                        tmpMiniCartListUiModel.isFirstLoad = isFirstLoad
+                        tmpMiniCartListUiModel.needToCalculateAfterLoad = needToCalculateAfterLoad
+                        _miniCartListBottomSheetUiModel.value = tmpMiniCartListUiModel
+                    }
                 },
                 onError = {
                     if (isFirstLoad) {
