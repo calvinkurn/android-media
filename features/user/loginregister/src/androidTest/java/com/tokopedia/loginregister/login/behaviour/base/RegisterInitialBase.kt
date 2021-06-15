@@ -19,6 +19,7 @@ import com.tokopedia.loginregister.login.behaviour.di.RegisterInitialComponentSt
 import com.tokopedia.loginregister.login.behaviour.di.modules.AppModuleStub
 import com.tokopedia.loginregister.login.behaviour.di.modules.DaggerMockLoginRegisterComponent
 import com.tokopedia.loginregister.login.idling.FragmentTransactionIdle
+import com.tokopedia.loginregister.login.stub.RegisterInitialRouterHelperStub
 import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
@@ -61,6 +62,9 @@ open class RegisterInitialBase: LoginRegisterBase() {
 
     @Inject
     lateinit var discoverUseCaseStub: DiscoverUseCaseStub
+
+    @Inject
+    lateinit var routerHelperStub: RegisterInitialRouterHelperStub
 
     @ExperimentalCoroutinesApi
     @Before
