@@ -105,7 +105,7 @@ object PublicFolderUtil {
     }
 
 
-private fun getContentUriFromMime(mimeType: String): Uri {
+    private fun getContentUriFromMime(mimeType: String): Uri {
         return when {
             mimeType.startsWith("image") -> {
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI
