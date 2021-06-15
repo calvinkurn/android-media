@@ -82,7 +82,7 @@ abstract class BaseAtcVariantViewModelTest {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), false)
         } throws Throwable()
 
-        viewModel.decideInitialValue(ProductVariantBottomSheetParams())
+        viewModel.decideInitialValue(ProductVariantBottomSheetParams(), true)
 
         coVerify {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), false)
@@ -100,7 +100,7 @@ abstract class BaseAtcVariantViewModelTest {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), isTokoNow)
         } returns mockData
 
-        viewModel.decideInitialValue(aggregatorParams)
+        viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify {
             aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), isTokoNow)

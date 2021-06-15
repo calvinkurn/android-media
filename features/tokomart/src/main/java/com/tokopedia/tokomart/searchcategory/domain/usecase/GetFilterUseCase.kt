@@ -37,6 +37,7 @@ class GetFilterUseCase(
                       data {
                         filter {
                           title
+                          subTitle
                           search {
                             searchable
                             placeholder

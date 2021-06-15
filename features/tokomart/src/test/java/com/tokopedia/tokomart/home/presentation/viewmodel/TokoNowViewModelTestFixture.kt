@@ -81,6 +81,11 @@ abstract class TokoMartHomeViewModelTestFixture {
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
     }
 
+    protected fun verifyMiniCartNullResponse() {
+        val actualResponse = viewModel.miniCart.value
+        Assert.assertNull(actualResponse)
+    }
+
     protected fun verfifyGetChooseAddressSuccess(expectedResponse: GetStateChosenAddressResponse) {
         val actualResponse = viewModel.chooseAddress.getOrAwaitValue()
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)

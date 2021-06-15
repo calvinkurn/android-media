@@ -37,7 +37,7 @@ class ProductMiniSocialProofStockViewHolder(
             setupLoading(element.shouldShowSingleViewSocialProof())
             showLoading()
         } else {
-            val availableData = element.getSocialProofData()
+            val availableData = element.socialProofData
             view.run {
                 if (availableData.isEmpty()) {
                     layoutParams.height = 0
@@ -63,9 +63,9 @@ class ProductMiniSocialProofStockViewHolder(
 
     private fun setupLoading(shouldShowSingleSocialProof: Boolean) = with(view) {
         if (shouldShowSingleSocialProof)
-            pdp_shimmering_social_proof.setPadding(16.toPx(), 0, 16.toPx(), 16.toPx())
+            pdp_shimmering_social_proof.setPadding(8.toPx(), 0, 16.toPx(), 16.toPx())
         else
-            pdp_shimmering_social_proof.setPadding(16.toPx(), 8.toPx(), 16.toPx(), 20.toPx())
+            pdp_shimmering_social_proof.setPadding(8.toPx(), 8.toPx(), 16.toPx(), 20.toPx())
     }
 
     private fun getComponentTrackData(element: ProductMiniSocialProofStockDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
@@ -84,6 +84,6 @@ class ProductMiniSocialProofStockViewHolder(
     }
 
     private fun setAdapterData(element: ProductMiniSocialProofStockDataModel) {
-        miniSocialProofAdapter?.setData(element.getSocialProofData().toMutableList(), getComponentTrackData(element))
+        miniSocialProofAdapter?.setData(element.socialProofData.toMutableList(), getComponentTrackData(element))
     }
 }

@@ -22,14 +22,11 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
     private val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
 
     @Test
-    fun `when view created, category filter isSelected should be based on query params`() {
+    fun `when view created, category filter isSelected should be based on category L2 value`() {
         val selectedFilterOption =
                 OptionHelper.copyOptionAsExclude(categoryModel.categoryFilter.filter[0].options[1])
-        val queryParamWithFilter = mapOf(
-                selectedFilterOption.key to selectedFilterOption.value,
-        )
 
-        `Given category view model`(defaultCategoryId, queryParamWithFilter)
+        `Given category view model`(defaultCategoryL1, selectedFilterOption.value, mapOf())
         `Given get category first page use case will be successful`(categoryModel)
 
         `When view created`()
@@ -109,7 +106,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
                 previouslySelectedFilterOption.key to previouslySelectedFilterOption.value,
         )
 
-        `Given category view model`(defaultCategoryId, queryParamWithFilter)
+        `Given category view model`(defaultCategoryL1, defaultCategoryL2, queryParamWithFilter)
         `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
         `Given view already created`()
 
@@ -142,7 +139,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
                 SearchApiConst.SC to "1324",
         )
 
-        `Given category view model`(defaultCategoryId, queryParamWithCategoryFilter)
+        `Given category view model`(defaultCategoryL1, defaultCategoryL2, queryParamWithCategoryFilter)
         `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
         `Given view already created`()
 

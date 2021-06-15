@@ -6,6 +6,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.tokomart.search.di.SearchComponent
@@ -73,6 +74,9 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
             emptyProductListener = this,
             suggestionListener = this,
     )
+
+    override val miniCartWidgetPageName: MiniCartAnalytics.Page
+        get() = MiniCartAnalytics.Page.SEARCH_PAGE
 
     override fun getViewModel() = searchViewModel
 

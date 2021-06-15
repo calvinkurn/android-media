@@ -186,12 +186,12 @@ class AtcVariantViewModel @Inject constructor(
         localQuantityData[productId] = quantity
     }
 
-    fun decideInitialValue(aggregatorParams: ProductVariantBottomSheetParams) {
+    fun decideInitialValue(aggregatorParams: ProductVariantBottomSheetParams, isLoggedIn: Boolean) {
         viewModelScope.launchCatchError(dispatcher.io, block = {
             _initialData.postValue(listOf(VariantShimmeringDataModel(99L)).asSuccess())
             isShopOwner = aggregatorParams.isShopOwner
 
-            getAggregatorAndMiniCartData(aggregatorParams)
+            getAggregatorAndMiniCartData(aggregatorParams, isLoggedIn)
 
             //Get selected child by product id, if product parent auto select first child
             //If parent just update the header and ignore the variant selection
@@ -242,12 +242,12 @@ class AtcVariantViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getAggregatorAndMiniCartData(aggregatorParams: ProductVariantBottomSheetParams) {
+    private suspend fun getAggregatorAndMiniCartData(aggregatorParams: ProductVariantBottomSheetParams, isLoggedIn: Boolean) {
         /**
          * If data completely provided from previous page, use that
          * if not call GQL
          */
-        if (aggregatorParams.variantAggregator.isAggregatorEmpty() || (aggregatorParams.isTokoNow && aggregatorParams.miniCartData == null)) {
+        if (aggregatorParams.variantAggregator.isAggregatorEmpty() || (aggregatorParams.isTokoNow && aggregatorParams.miniCartData == null && isLoggedIn)) {
             val result = aggregatorMiniCartUseCase.executeOnBackground(
                     productId = aggregatorParams.productId,
                     source = aggregatorParams.pageSource,
