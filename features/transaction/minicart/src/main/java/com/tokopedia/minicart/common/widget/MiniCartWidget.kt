@@ -77,16 +77,20 @@ class MiniCartWidget @JvmOverloads constructor(
     * Function to initialize the widget
     * */
     fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true, pageName: MiniCartAnalytics.Page) {
-        val application = fragment.activity?.application
-        initializeInjector(application)
-        initializeView(fragment)
-        initializeListener(listener)
-        initializeViewModel(fragment)
-        viewModel?.initializeCurrentPage(pageName)
-        if (autoInitializeData) {
-            updateData(shopIds)
+        if (viewModel == null) {
+            val application = fragment.activity?.application
+            initializeInjector(application)
+            initializeView(fragment)
+            initializeListener(listener)
+            initializeViewModel(fragment)
+            viewModel?.initializeCurrentPage(pageName)
+            if (autoInitializeData) {
+                updateData(shopIds)
+            } else {
+                viewModel?.initializeShopIds(shopIds)
+            }
         } else {
-            viewModel?.initializeShopIds(shopIds)
+            updateData(shopIds)
         }
     }
 
