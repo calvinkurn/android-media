@@ -178,7 +178,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
         sheet.show(childFragmentManager, "")
         sheet.onSaved = { bid, position ->
-            (bidInfoAdapter.items[position] as BidInfoItemViewModel).data.bidSuggest = bid
+            (bidInfoAdapter.items[position] as BidInfoItemViewModel).data.bidSuggest = bid.toString()
             bidInfoAdapter.notifyItemChanged(position)
         }
     }
