@@ -122,7 +122,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (id == R.id.action_menu_share) {
             val sharingIntent = Intent(Intent.ACTION_SEND)
             sharingIntent.type = "text/plain"
-            sharingIntent.putExtra(Intent.EXTRA_TEXT, CommonConstant.WebLink.DETAIL + requireArguments().getString(CommonConstant.EXTRA_CATALOG_CODE))
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, CommonConstant.WebLink.DETAIL +"/"+requireArguments().getString(CommonConstant.EXTRA_CATALOG_CODE))
             startActivity(Intent.createChooser(sharingIntent, null))
             return true
         }
