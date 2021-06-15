@@ -25,6 +25,10 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                                             private val miniCartListUiModelMapper: MiniCartListUiModelMapper)
     : BaseViewModel(executorDispatchers.main) {
 
+    companion object {
+        const val TEMPORARY_PARENT_ID_FORMAT = "tmp_"
+    }
+
     // Global Data
     private val _currentShopIds = MutableLiveData<List<String>>()
     val currentShopIds: LiveData<List<String>>
@@ -150,7 +154,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         var tmpParentId = 0
         miniCartProductList.forEach { visitable ->
             if (visitable.parentId == "0") {
-                visitable.parentId = (++tmpParentId).toString()
+                visitable.parentId = TEMPORARY_PARENT_ID_FORMAT + ++tmpParentId
             }
         }
 
@@ -176,6 +180,9 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         var totalWeight = 0
         visitables.forEach { visitable ->
             if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
+                if (visitable.parentId.contains(TEMPORARY_PARENT_ID_FORMAT)) {
+                    visitable.parentId = "0"
+                }
                 val price = if (visitable.productWholeSalePrice > 0) visitable.productWholeSalePrice else visitable.productPrice
                 totalQty += visitable.productQty
                 totalPrice += visitable.productQty * price
