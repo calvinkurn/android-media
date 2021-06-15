@@ -174,7 +174,7 @@ data class OrderPaymentWalletActionData(
     val successToaster: String = "",
     val errorToaster: String = "",
     val errorMessage: String = "",
-    val isHideDigital: Int = 0,
+    val isHideDigital: Boolean = false,
     val headerTitle: String = ""
 )
 

@@ -163,7 +163,7 @@ data class WalletData(
         @SerializedName("error_message")
         val errorMessage: String = "",
         @SerializedName("is_hide_digital")
-        val isHideDigital: Int = 0,
+        val isHideDigital: Boolean = false,
         @SerializedName("header_title")
         val headerTitle: String = ""
 )

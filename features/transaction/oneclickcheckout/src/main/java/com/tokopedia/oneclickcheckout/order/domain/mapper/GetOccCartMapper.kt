@@ -198,7 +198,7 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapPayment(payment: Payment): OrderProfilePayment {
-        return OrderProfilePayment(payment.enable, payment.active, payment.gatewayCode, payment.gatewayName, payment.image,
+        return OrderProfilePayment(payment.enable, payment.active, payment.gatewayCode, "Gopay", payment.image,
                 payment.description, payment.metadata, payment.tickerMessage
         )
     }
@@ -210,7 +210,7 @@ class GetOccCartMapper @Inject constructor() {
                 payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
                 mapPaymentCreditCard(payment, data), mapPaymentErrorMessage(payment.errorMessage), mapPaymentRevampErrorMessage(payment.occRevampErrorMessage), data.errorTicker,
                 payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign, mapPaymentOvoData(payment.ovoAdditionalData, data), null,
-                null, payment.bid, payment.specificGatewayCampaignOnlyType, mapPaymentWalletDummyData())
+                null, payment.bid, 2, mapPaymentWalletDummyData())
             // TODO : unremark & delete dummy data
             // mapPaymentWalletData(payment.walletAdditionalData))
     }
@@ -281,7 +281,8 @@ class GetOccCartMapper @Inject constructor() {
     private fun mapPaymentWalletDummyData(): OrderPaymentWalletAdditionalData {
         return OrderPaymentWalletAdditionalData(
             WALLET_TYPE_GOPAY, true,
-            activation = OrderPaymentWalletActionData(true, "Aktivasi", "Yay, aktivasi Gopay berhasil. Sekarang kamu bisa bayar pakai Gopay.")
+            activation = OrderPaymentWalletActionData(false, "", "Yay, aktivasi Gopay berhasil. Sekarang kamu bisa bayar pakai Gopay.", "", "Aktivasi di aplikasi Gojek dulu, ya", false, "Sambungkan Gopay"),
+            topUp = OrderPaymentWalletActionData(false, "", "", "", "Limit kamu tidak cukup.")
         )
     }
 
