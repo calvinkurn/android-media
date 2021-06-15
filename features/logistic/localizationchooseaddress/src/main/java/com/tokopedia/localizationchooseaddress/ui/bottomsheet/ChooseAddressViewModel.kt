@@ -44,7 +44,7 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
     }
 
     fun setStateChosenAddress(status: Int, addressId: String?, receiverName: String, addressName: String, latitude: String?, longitude: String?,
-                              districtId: String, postalCode: String, isTokonow: Boolean?) {
+                              districtId: String, postalCode: String, isTokonow: Boolean) {
         viewModelScope.launch(onErrorSetStateChosenAddress) {
             val setStateChosenAddress = chooseAddressRepo.setStateChosenAddress(status, addressId?.toInt(), receiverName, addressName, latitude, longitude,
                     districtId.toInt(), postalCode, isTokonow)
@@ -52,14 +52,14 @@ class ChooseAddressViewModel @Inject constructor(private val chooseAddressRepo: 
         }
     }
 
-    fun getStateChosenAddress(source: String, isTokonow: Boolean?) {
+    fun getStateChosenAddress(source: String, isTokonow: Boolean) {
         viewModelScope.launch(onErrorGetStateChosenAddress) {
             val getStateChosenAddress = chooseAddressRepo.getStateChosenAddress(source, isTokonow)
             _getChosenAddress.value = Success(chooseAddressMapper.mapGetStateChosenAddress(getStateChosenAddress.response))
         }
     }
 
-    fun getDefaultChosenAddress(latLong: String?, source: String, isTokonow: Boolean?) {
+    fun getDefaultChosenAddress(latLong: String?, source: String, isTokonow: Boolean) {
         viewModelScope.launch(onErrorGetDefaultChosenAddress) {
             val getDefaultChosenAddress = chooseAddressRepo.getDefaultChosenAddress(latLong, source, isTokonow)
             _getDefaultAddress.value  = Success(chooseAddressMapper.mapDefaultChosenAddress(getDefaultChosenAddress.response))

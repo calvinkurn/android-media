@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -46,7 +45,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     private var buttonChooseAddress: ConstraintLayout? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
     private var hasClicked: Boolean? = false
-    private var isSupportWarehouseLoc: Boolean? = false
+    private var isSupportWarehouseLoc: Boolean = true
 
     init {
         View.inflate(context, R.layout.choose_address_widget, this)
@@ -167,7 +166,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             viewModel = ViewModelProviders.of(fragment, viewModelFactory)[ChooseAddressViewModel::class.java]
         }
 
-        isSupportWarehouseLoc = chooseAddressWidgetListener?.isSupportWarehouseLoc()
+        isSupportWarehouseLoc = chooseAddressWidgetListener?.isSupportWarehouseLoc() ?: true
         initChooseAddressFlow()
 
         buttonChooseAddress?.setOnClickListener {
