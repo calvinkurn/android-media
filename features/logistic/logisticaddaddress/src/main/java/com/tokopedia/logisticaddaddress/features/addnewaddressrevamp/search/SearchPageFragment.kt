@@ -95,7 +95,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == 1599 && resultCode == Activity.RESULT_OK) {
+        if(requestCode == 1998 && resultCode == Activity.RESULT_OK) {
             val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
             finishActivity(newAddress)
         } else if (requestCode == 1995) {
@@ -163,12 +163,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
 
     }
-/*
-    private fun openSoftKeyboard() {
-        binding.searchPageInput.searchBarTextField.let {
-            (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
-        }
-    }*/
+
 
     private fun setViewListener() {
         fusedLocationClient = FusedLocationProviderClient(requireActivity())
@@ -347,7 +342,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         latitude?.let { bundle.putDouble(EXTRA_LATITUDE, it) }
         longitude?.let { bundle.putDouble(EXTRA_LONGITUDE, it) }
         startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, 1998)
-        activity?.finish()
     }
 
     companion object {

@@ -3,17 +3,20 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressfor
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
@@ -135,7 +138,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 }
 
                 is Fail -> {
-                    it.throwable.printStackTrace()
+                    val msg = it.throwable.message.toString()
+                    view?.let { view -> Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
             }
         })
@@ -151,6 +155,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         staticDimen8dp = context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
         setOnTouchLabelAddress(ANA_POSITIVE)
         setupRvLabelAlamatChips()
+        setTextListener()
 
         binding.run {
             cardAddress.addressDistrict.text = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
@@ -214,6 +219,29 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
             layoutManager = labelAlamatChipsLayoutManager
             adapter = labelAlamatChipsAdapter
+        }
+    }
+
+    private fun setTextListener() {
+        binding.formAccount.etNomorHp.textFieldInput.apply {
+            addTextChangedListener(object: TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    //
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    //
+                }
+
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                    if (s.contains("0")) {
+                           filters = arrayOf(InputFilter.LengthFilter(15))
+                    } else {
+                        filters = arrayOf(InputFilter.LengthFilter(16))
+                    }
+                }
+
+            })
         }
     }
 
@@ -292,7 +320,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     companion object {
 
-        const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRES_NEW"
+        const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
         const val REQUEST_CODE_CONTACT_PICKER = 99
 
         fun newInstance(extra: Bundle): AddressFormFragment {

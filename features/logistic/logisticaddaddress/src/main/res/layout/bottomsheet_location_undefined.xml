@@ -37,6 +37,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:gravity="center"
+        android:textColor="@color/light_N700_68"
         app:typographyType="body_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -54,7 +55,5 @@
         app:unifyButtonVariant="filled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_info_loc_undefined"/>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

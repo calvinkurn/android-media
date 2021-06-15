@@ -95,7 +95,7 @@
             android:layout_marginTop="@dimen/unify_space_8"
             android:text="@string/btn_not_found_location"
             android:textStyle="bold"
-            app:unifyButtonType="main"
+            app:unifyButtonType="alternate"
             app:unifyButtonVariant="ghost" />
 
     </LinearLayout>
