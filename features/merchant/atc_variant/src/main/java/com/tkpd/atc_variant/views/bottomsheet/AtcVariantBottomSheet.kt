@@ -162,7 +162,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     private fun observeData() {
         sharedViewModel.aggregatorParams.observeOnce(viewLifecycleOwner, {
-            viewModel.decideInitialValue(it)
+            viewModel.decideInitialValue(it, userSessionInterface.isLoggedIn)
         })
 
         observeInitialVisitablesData()

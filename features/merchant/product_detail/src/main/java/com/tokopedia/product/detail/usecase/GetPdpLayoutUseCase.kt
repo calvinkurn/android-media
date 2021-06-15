@@ -43,6 +43,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                   catalogID
                   isLeasing
                   isBlacklisted
+                  totalStockFmt
                   menu {
                     id
                     name
