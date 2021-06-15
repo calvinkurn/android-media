@@ -393,12 +393,21 @@ class NotificationUpdateAnalytics @Inject constructor(
                 notification.templateKey,
                 notification.notificationId
         )
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_NAME_CLICK_NOTIF_CENTER,
-                CATEGORY_NOTIF_CENTER,
-                EVENT_ACTION_CLICK_NOTIF_LIST,
-                label
-        ))
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = EVENT_NAME_CLICK_NOTIF_CENTER,
+                eventAction = EVENT_ACTION_CLICK_NOTIF_LIST,
+                eventCategory = CATEGORY_NOTIF_CENTER,
+                eventLabel = label,
+                businessUnit = BUSINESS_UNIT_COMM,
+                currentSite = CURRENT_SITE,
+                additionalAttribute = mapOf(
+                    ATTR_PRODUCT_ID to notification.getAtcProduct()?.productId.toString(),
+                    ATTR_SHOP_ID to notification.getAtcProduct()?.shop?.id.toString(),
+                    ATTR_USER_ID to userSessionInterface.userId
+                )
+            )
+        )
     }
     // #NC3
     override fun trackClickFilterRequest(filter: String) {
