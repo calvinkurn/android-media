@@ -17,7 +17,10 @@ data class GoldGetPMOStatusResponse(
         data class Data(
                 @Expose
                 @SerializedName("power_merchant")
-                val powerMerchant: PowerMerchant = PowerMerchant()
+                val powerMerchant: PowerMerchant = PowerMerchant(),
+                @Expose
+                @SerializedName("official_store")
+                val officialStore: OfficialStore = OfficialStore()
         ) {
             data class PowerMerchant(
                     @Expose
@@ -26,6 +29,15 @@ data class GoldGetPMOStatusResponse(
                     @Expose
                     @SerializedName("status")
                     val status: String = ""
+            )
+
+            data class OfficialStore(
+                    @Expose
+                    @SerializedName("status")
+                    val status: String = "",
+                    @Expose
+                    @SerializedName("error")
+                    val error: String = ""
             )
         }
     }

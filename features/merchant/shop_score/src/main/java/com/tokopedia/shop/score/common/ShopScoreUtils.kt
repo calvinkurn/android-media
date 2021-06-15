@@ -83,12 +83,12 @@ fun getNPastDaysPenalty(): Int {
     val calendar = Calendar.getInstance(getLocale())
     calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - ShopScoreConstant.FOUR_WEEKS)
     return when (calendar.get(Calendar.DAY_OF_WEEK)) {
-        Calendar.SUNDAY -> 6
-        Calendar.SATURDAY -> 5
-        Calendar.FRIDAY -> 4
-        Calendar.THURSDAY -> 3
-        Calendar.WEDNESDAY -> 2
-        Calendar.TUESDAY -> 1
+        Calendar.SATURDAY -> 6
+        Calendar.FRIDAY -> 5
+        Calendar.THURSDAY -> 4
+        Calendar.WEDNESDAY -> 3
+        Calendar.TUESDAY -> 2
+        Calendar.MONDAY -> 1
         else -> 0
     }
 }

@@ -3,10 +3,7 @@ package com.tokopedia.shop.score.performance.domain.mapper
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
-import com.tokopedia.gm.common.constant.NEW_SELLER_DAYS
-import com.tokopedia.gm.common.constant.PMStatusConst
-import com.tokopedia.gm.common.constant.PMTier
-import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
+import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -125,7 +122,8 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 
     fun mapToShopPerformanceVisitable(shopScoreWrapperResponse: ShopScoreWrapperResponse, shopInfoPeriodUiModel: ShopInfoPeriodUiModel): List<BaseShopPerformance> {
         val shopScoreVisitableList = mutableListOf<BaseShopPerformance>()
-        val powerMerchantResponse = shopScoreWrapperResponse.goldGetPMOStatusResponse
+        val powerMerchantResponse = shopScoreWrapperResponse.goldGetPMOStatusResponse?.powerMerchant
+        val officialStoreResponse = shopScoreWrapperResponse.goldGetPMOStatusResponse?.officialStore
         val isEligiblePM = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePm
         val isEligiblePMPro = shopScoreWrapperResponse.goldGetPMShopInfoResponse?.isEligiblePmPro
         val shopScoreResult = shopScoreWrapperResponse.shopScoreLevelResponse?.result
@@ -160,7 +158,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             }
 
             when {
-                userSession.isShopOfficialStore || shopAge < SHOP_AGE_SIXTY -> {
+                officialStoreResponse?.status == OSStatus.ACTIVE || shopAge < SHOP_AGE_SIXTY -> {
                     add(SectionFaqUiModel(mapToItemFaqUiModel()))
                 }
                 powerMerchantResponse?.pmTier == PMTier.PRO -> {

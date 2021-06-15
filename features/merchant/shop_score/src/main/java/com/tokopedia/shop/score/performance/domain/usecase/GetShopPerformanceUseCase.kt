@@ -99,6 +99,10 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
                     status
                     pm_tier              
                   }
+                  official_store {
+                    status
+                    error
+                  }
                 }
               }
             }
@@ -181,7 +185,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
             }
 
             if (gqlResponse.getError(GoldGetPMOStatusResponse::class.java).isNullOrEmpty()) {
-                val powerMerchantResponse = gqlResponse.getData<GoldGetPMOStatusResponse>(GoldGetPMOStatusResponse::class.java).goldGetPMOSStatus.data.powerMerchant
+                val powerMerchantResponse = gqlResponse.getData<GoldGetPMOStatusResponse>(GoldGetPMOStatusResponse::class.java).goldGetPMOSStatus.data
                 shopScoreWrapperResponse.goldGetPMOStatusResponse = powerMerchantResponse
             }
 
