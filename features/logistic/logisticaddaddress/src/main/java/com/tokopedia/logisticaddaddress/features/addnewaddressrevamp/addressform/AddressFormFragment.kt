@@ -18,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -34,13 +35,18 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.databinding.FragmentAddressFormBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
+import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.domain.model.add_address.ContactData
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.LabelAlamatChipsAdapter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageViewModel
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant
 import com.tokopedia.logisticaddaddress.utils.AddEditAddressUtil
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -50,7 +56,8 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
 import javax.inject.Inject
 
-class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.ActionListener {
+class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.ActionListener,
+        DiscomBottomSheetFragment.ActionListener {
 
     private var saveDataModel: SaveAddressDataModel? = null
     private var currentLat: Double = 0.0
@@ -58,6 +65,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private var labelAlamatList: Array<String> = emptyArray()
     private var staticDimen8dp: Int? = 0
     private var isPositiveFlow: Boolean = true
+    /*To differentiate user pinpoint on ANA Negative*/
+    private var isPinpoint: Boolean = false
+    /*To differentiate flow from logistic or not*/
+    private var isLogisticLabel: Boolean = true
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private lateinit var labelAlamatChipsLayoutManager: ChipsLayoutManager
 
@@ -111,6 +122,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 contact = context?.let { AddEditAddressUtil.convertContactUriToData(it.contentResolver, contactURI) }
             }
             binding.formAccount.etNomorHp.textFieldInput.setText(contact?.contactNumber)
+        } else if (requestCode == 1998 && resultCode == Activity.RESULT_OK) {
+
         }
     }
 
@@ -164,7 +177,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
         binding.run {
             formAccount.etNamaPenerima.textFieldInput.setText(userSession.name)
-            formAccount.etNomorHp.textFieldInput.setText(userSession.phoneNumber)
             formAccount.etNomorHp.setFirstIcon(R.drawable.ic_contact_black)
             formAccount.etNomorHp.getFirstIcon().setOnClickListener {
                 onNavigateToContact()
@@ -180,6 +192,31 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 formAddress.root.gone()
                 formAddressNegative.root.visible()
                 cardAddressNegative.root.visible()
+
+                if (!isPinpoint) {
+                    cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
+                    cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_not_defined)).spannedString }
+                }
+                else {
+                    cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
+                    cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
+                }
+
+                cardAddressNegative.root.setOnClickListener {
+                    goToPinpointPage()
+                }
+
+                formAddressNegative.etKotaKecamatan.textFieldInput.apply {
+                    setOnFocusChangeListener { _, hasFocus ->
+                        if (hasFocus) {
+                            showDistrictRecommendationBottomSheet()
+                        }
+                    }
+                    setOnClickListener {
+                        showDistrictRecommendationBottomSheet()
+                    }
+                }
+
             }
         } else {
             setOnTouchLabelAddress(ANA_POSITIVE)
@@ -192,6 +229,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 cardAddressNegative.root.gone()
 
                 cardAddress.addressDistrict.text = "${data?.districtName}, ${data?.cityName}, ${data?.provinceName}"
+                formAccount.etNomorHp.textFieldInput.setText(userSession.phoneNumber)
 
                 formAddress.etLabel.textFieldInput.setText("Rumah")
             }
@@ -200,6 +238,23 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         binding.btnSaveAddress.setOnClickListener {
             doSaveAddress()
         }
+    }
+
+    private fun showDistrictRecommendationBottomSheet() {
+        val districtRecommendationBottomSheetFragment =
+                DiscomBottomSheetFragment.newInstance(isLogisticLabel, true)
+        districtRecommendationBottomSheetFragment.setActionListener(this)
+        childFragmentManager?.run {
+            districtRecommendationBottomSheetFragment.show(this, "")
+        }
+    }
+
+    private fun goToPinpointPage() {
+        val bundle = Bundle()
+        saveDataModel?.latitude?.toDouble()?.let { bundle.putDouble(AddAddressConstant.EXTRA_LATITUDE, it) }
+        saveDataModel?.longitude?.toDouble()?.let { bundle.putDouble(AddAddressConstant.EXTRA_LONGITUDE, it) }
+        bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, false)
+        startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, 1998)
     }
 
     private fun onNavigateToContact() {
@@ -414,6 +469,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             setText(labelAlamat)
             setSelection(binding.formAddress.etLabel.textFieldInput.text.length)
         }
+    }
+
+    override fun onGetDistrict(districtAddress: Address) {
+       //no-op
     }
 
 }

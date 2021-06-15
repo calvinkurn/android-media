@@ -30,6 +30,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_info_courier"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/light_N700_68"
         android:text="Tenang, kamu akan isi alamat nanti. Pastikan pinpoint sudah sesuai dulu."
         android:gravity="center"
         app:typographyType="body_2" />
@@ -46,7 +47,6 @@
         android:textStyle="bold"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"
-        android:textColor="@color/light_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_info_courier_detail"/>
 

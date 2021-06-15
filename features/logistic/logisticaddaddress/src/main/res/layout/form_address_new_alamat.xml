@@ -21,16 +21,6 @@
         android:visibility="gone" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/et_kota_kecamatan"
-        style="@style/HintTextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_32"
-        app:text_field_label="Kota - Kecamatan"
-        android:visibility="gone"
-        app:text_field_message="Isi kota dan kecamatan tujuan pengiriman"/>
-
-    <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_alamat"
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
@@ -38,7 +28,6 @@
         android:layout_marginTop="@dimen/unify_space_32"
         app:text_field_label="Alamat"
         app:text_field_counter="200"/>
-
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_courier_note"

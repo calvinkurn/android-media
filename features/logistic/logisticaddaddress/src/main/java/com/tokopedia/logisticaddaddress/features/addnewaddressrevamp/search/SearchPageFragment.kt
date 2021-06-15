@@ -34,6 +34,7 @@ import com.tokopedia.logisticCommon.util.rxEditText
 import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentSearchAddressBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
@@ -349,6 +350,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         bundle.putString(EXTRA_PLACE_ID, placeId)
         latitude?.let { bundle.putDouble(EXTRA_LATITUDE, it) }
         longitude?.let { bundle.putDouble(EXTRA_LONGITUDE, it) }
+        bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, true)
         startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, 1998)
     }
 

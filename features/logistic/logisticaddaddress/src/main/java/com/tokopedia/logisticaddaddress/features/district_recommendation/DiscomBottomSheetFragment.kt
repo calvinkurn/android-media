@@ -13,10 +13,11 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.design.component.BottomSheets
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_FULL_FLOW
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_LOGISTIC_LABEL
+import com.tokopedia.logisticaddaddress.common.AddressConstants.*
+import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistrictRecommendationBinding
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
@@ -24,6 +25,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomNewAdapter
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.utils.lifecycle.autoCleared
 import rx.Emitter
 import rx.Observable
 import rx.Subscription
@@ -41,17 +43,8 @@ class DiscomBottomSheetFragment : BottomSheets(),
         DiscomContract.View,
         DiscomNewAdapter.ActionListener {
 
-    private var bottomSheetView: View? = null
     private lateinit var popularCityAdapter: PopularCityAdapter
     private lateinit var listDistrictAdapter: DiscomNewAdapter
-    private lateinit var rvChips: RecyclerView
-    private lateinit var etSearch: EditText
-    private lateinit var llListDistrict: LinearLayout
-    private lateinit var llPopularCity: LinearLayout
-    private lateinit var rvListDistrict: RecyclerView
-    private lateinit var icCloseBtn: ImageView
-    private lateinit var mProgressbar: ProgressBar
-    private lateinit var mMessage: TextView
     private var isLoading: Boolean = false
     private var input: String = ""
     private val mLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -66,6 +59,9 @@ class DiscomBottomSheetFragment : BottomSheets(),
     private lateinit var actionListener: ActionListener
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
+    private var isAnaRevamp: Boolean = true
+
+    private var binding by autoCleared<BottomsheetDistrictRecommendationBinding>()
 
     @Inject
     lateinit var presenter: DiscomContract.Presenter
@@ -75,6 +71,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
         arguments?.let {
             isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
             isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
+            isAnaRevamp = it.getBoolean(EXTRA_IS_ANA_REVAMP, true)
         }
     }
 
@@ -83,22 +80,14 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     override fun initView(view: View) {
+        binding = BottomsheetDistrictRecommendationBinding.bind(view)
         prepareLayout(view)
         initInjector()
         setViewListener()
     }
 
     private fun prepareLayout(view: View) {
-        bottomSheetView = view
-        rvChips = view.findViewById(R.id.rv_chips)
-        etSearch = view.findViewById(R.id.et_search_district_recommendation)
-        llPopularCity = view.findViewById(R.id.ll_popular_city)
-        rvListDistrict = view.findViewById(R.id.rv_list_district)
-        icCloseBtn = view.findViewById(R.id.ic_close)
-        mProgressbar = view.findViewById(R.id.progress_bar)
-        llListDistrict = view.findViewById(R.id.ll_list_district)
-        mMessage = view.findViewById(R.id.tv_desc_input_district)
-        llListDistrict.visibility = View.GONE
+        binding.llListDistrict.visibility = View.GONE
 
         val cityList = resources.getStringArray(R.array.cityList)
         val chipsLayoutManager = ChipsLayoutManager.newBuilder(view.context)
@@ -106,11 +95,11 @@ class DiscomBottomSheetFragment : BottomSheets(),
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
 
-        ViewCompat.setLayoutDirection(rvChips, ViewCompat.LAYOUT_DIRECTION_LTR)
+        ViewCompat.setLayoutDirection(binding.rvChips, ViewCompat.LAYOUT_DIRECTION_LTR)
         popularCityAdapter = PopularCityAdapter(context, this)
         popularCityAdapter.cityList = cityList.toMutableList()
 
-        rvChips.apply {
+        binding.rvChips.apply {
             val dist = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
             layoutManager = chipsLayoutManager
             adapter = popularCityAdapter
@@ -118,12 +107,12 @@ class DiscomBottomSheetFragment : BottomSheets(),
         }
 
         listDistrictAdapter = DiscomNewAdapter(this)
-        rvListDistrict.apply {
+        binding.rvListDistrict.apply {
             layoutManager = mLayoutManager
             adapter = listDistrictAdapter
         }
 
-        etSearch.setSelection(etSearch.text.length)
+        binding.etSearchDistrictRecommendation.setSelection(binding.etSearchDistrictRecommendation.text.length)
     }
 
     override fun onDetach() {
@@ -151,10 +140,10 @@ class DiscomBottomSheetFragment : BottomSheets(),
 
     override fun renderData(list: List<Address>, hasNextPage: Boolean) {
         isLoading = false
-        llPopularCity.visibility = View.GONE
-        llListDistrict.visibility = View.VISIBLE
-        mMessage.visibility = View.VISIBLE
-        mMessage.setText(R.string.hint_advice_search_address)
+        binding.llPopularCity.visibility = View.GONE
+        binding.llListDistrict.visibility = View.VISIBLE
+        binding.tvDescInputDistrict.visibility = View.VISIBLE
+        binding.tvDescInputDistrict.setText(R.string.hint_advice_search_address)
         if (mIsInitialLoading) {
             listDistrictAdapter.setData(list)
             mEndlessListener.resetState()
@@ -172,25 +161,25 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     override fun setLoadingState(active: Boolean) {
-        if (active) icCloseBtn.visibility = View.INVISIBLE
+        if (active) binding.icClose.visibility = View.INVISIBLE
         else {
-            icCloseBtn.visibility = View.VISIBLE
-            icCloseBtn.setOnClickListener {
-                etSearch.setText("")
-                llListDistrict.visibility = View.GONE
-                llPopularCity.visibility = View.VISIBLE
+            binding.icClose.visibility = View.VISIBLE
+            binding.icClose.setOnClickListener {
+                binding.etSearchDistrictRecommendation.setText("")
+                binding.llListDistrict.visibility = View.GONE
+                binding.llPopularCity.visibility = View.VISIBLE
                 popularCityAdapter.notifyDataSetChanged()
-                icCloseBtn.visibility = View.GONE
+                binding.icClose.visibility = View.GONE
             }
         }
-        mProgressbar.visibility = if (active) View.VISIBLE else View.INVISIBLE
+        binding.progressBar.visibility = if (active) View.VISIBLE else View.INVISIBLE
     }
 
     override fun showEmpty() {
-        mMessage.visibility = View.VISIBLE
-        mMessage.setText(R.string.hint_search_address_no_result)
-        llPopularCity.visibility = View.VISIBLE
-        llListDistrict.visibility = View.GONE
+        binding.tvDescInputDistrict.visibility = View.VISIBLE
+        binding.tvDescInputDistrict.setText(R.string.hint_search_address_no_result)
+        binding.llPopularCity.visibility = View.VISIBLE
+        binding.llListDistrict.visibility = View.GONE
     }
 
     override fun setResultDistrict(data: Data, lat: Double, long: Double) {
@@ -198,8 +187,8 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     override fun onCityChipClicked(city: String) {
-        etSearch.setText(city)
-        etSearch.setSelection(city.length)
+        binding.etSearchDistrictRecommendation.setText(city)
+        binding.etSearchDistrictRecommendation.setSelection(city.length)
         AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
     }
 
@@ -219,11 +208,11 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     private fun setViewListener() {
-        etSearch.apply {
+        binding.etSearchDistrictRecommendation.apply {
             isFocusableInTouchMode = true
             requestFocus()
         }
-        watchTextRx(etSearch)
+        watchTextRx(binding.etSearchDistrictRecommendation)
                 .subscribe { s ->
                     if (s.isNotEmpty()) {
                         input = s
@@ -232,14 +221,14 @@ class DiscomBottomSheetFragment : BottomSheets(),
                             presenter.loadData(input, 1)
                         }, 200)
                     } else {
-                        icCloseBtn.visibility = View.GONE
-                        mMessage.visibility = View.GONE
-                        llPopularCity.visibility = View.VISIBLE
-                        llListDistrict.visibility = View.GONE
+                        binding.icClose.visibility = View.GONE
+                        binding.tvDescInputDistrict.visibility = View.GONE
+                        binding.llPopularCity.visibility = View.VISIBLE
+                        binding.llListDistrict.visibility = View.GONE
                     }
                 }.toCompositeSubs()
 
-        rvListDistrict.addOnScrollListener(mEndlessListener)
+        binding.rvListDistrict.addOnScrollListener(mEndlessListener)
     }
 
     override fun onDistrictItemClicked(districtModel: Address) {
@@ -280,11 +269,15 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     companion object {
+
+        private const val MAX_HEIGHT_MULTIPLIER = 0.90
+
         @JvmStatic
-        fun newInstance(isLogisticLabel: Boolean): DiscomBottomSheetFragment {
+        fun newInstance(isLogisticLabel: Boolean, isAnaRevamp: Boolean): DiscomBottomSheetFragment {
             return DiscomBottomSheetFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(EXTRA_IS_LOGISTIC_LABEL, isLogisticLabel)
+                    putBoolean(EXTRA_IS_ANA_REVAMP, isAnaRevamp)
                 }
             }
         }

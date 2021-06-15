@@ -196,6 +196,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             currentLat = it.getDouble(EXTRA_LATITUDE)
             currentLong = it.getDouble(EXTRA_LONGITUDE)
             saveAddressDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
+            isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
         }
 
@@ -336,8 +337,11 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             }
 
             bottomsheetLocation.btnPrimary.setOnClickListener {
-                isPositiveFlow = true
-                goToAddressForm()
+                if (!isPositiveFlow) {
+                    goToAddressForm()
+                } else {
+                    goToAddressForm()
+                }
             }
 
             bottomsheetLocation.btnSecondary.setOnClickListener {
@@ -521,6 +525,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     putString(EXTRA_PLACE_ID, extra.getString(EXTRA_PLACE_ID))
                     putDouble(EXTRA_LATITUDE, extra.getDouble(EXTRA_LATITUDE))
                     putDouble(EXTRA_LONGITUDE, extra.getDouble(EXTRA_LONGITUDE))
+                    putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                 }
             }
         }

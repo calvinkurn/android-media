@@ -61,6 +61,7 @@ public class AddressConstants {
     public static final String EXTRA_WAREHOUSE_DATA = "EXTRA_WAREHOUSE_DATA";
     public static final String EXTRA_IS_EDIT_WAREHOUSE = "EXTRA_IS_EDIT_WAREHOUSE";
     public static final String EXTRA_IS_POSITIVE_FLOW = "EXTRA_IS_POSITIVE_FLOW";
+    public static final String EXTRA_IS_ANA_REVAMP = "EXTRA_IS_ANA_REVAMP";
 
     public static final int CIRCUIT_BREAKER_ON_CODE = 101;
 

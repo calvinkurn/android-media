@@ -795,7 +795,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     private fun showDistrictRecommendationBottomSheet() {
         val districtRecommendationBottomSheetFragment =
-                DiscomBottomSheetFragment.newInstance(isLogisticLabel)
+                DiscomBottomSheetFragment.newInstance(isLogisticLabel, false)
         districtRecommendationBottomSheetFragment.setActionListener(this)
         fragmentManager?.run {
             districtRecommendationBottomSheetFragment.show(this, "")
