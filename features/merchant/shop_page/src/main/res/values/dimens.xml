@@ -54,5 +54,8 @@
     <dimen name="play_sgc_btn_start_live_width">120dp</dimen>
     <dimen name="play_sgc_btn_start_live_height">36dp</dimen>
     <dimen name="play_widget_seller_action_height">56dp</dimen>
-
+    <dimen name="header_button_shop_note_width">24dp</dimen>
+    <dimen name="header_button_shop_note_height">24dp</dimen>
+    <dimen name="header_button_margin_top">12dp</dimen>
+    <dimen name="header_button_margin_left">4dp</dimen>
 </resources>
