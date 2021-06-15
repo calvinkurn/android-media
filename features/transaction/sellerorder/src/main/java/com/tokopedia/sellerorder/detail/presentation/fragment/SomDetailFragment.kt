@@ -1441,8 +1441,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     protected open fun onSuccessSetDelivered(deliveredData: SetDelivered) {
+        val message = deliveredData.message.joinToString().takeIf { it.isNotBlank() }
+                ?: getString(R.string.global_error)
         activity?.setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(RESULT_SET_DELIVERED, getString(R.string.message_set_delivered_success))
+            putExtra(RESULT_SET_DELIVERED, message)
         })
         activity?.finish()
     }

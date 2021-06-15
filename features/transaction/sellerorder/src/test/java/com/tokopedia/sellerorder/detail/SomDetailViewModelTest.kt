@@ -198,6 +198,21 @@ class SomDetailViewModelTest: SomOrderBaseViewModelTest<SomDetailViewModel>() {
     }
 
     @Test
+    fun setDelivered_msgShouldNotReturnEmpty() {
+        //given
+        coEvery {
+            somSetDeliveredUseCase.execute(any(), any(), any())
+        } returns Success(SetDeliveredResponse(SetDelivered(message = listMsg)))
+
+        //when
+        viewModel.setDelivered("","","")
+
+        //then
+        assert(viewModel.setDelivered.value is Success)
+        assert((viewModel.setDelivered.value as Success<SetDeliveredResponse>).data.setDelivered.message.first() == "msg1")
+    }
+
+    @Test
     fun checkAdminAccess_ifShopOwner_shouldReturnTruePair() {
         coEvery {
             userSessionInterface.isShopOwner
