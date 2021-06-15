@@ -57,8 +57,6 @@ import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.utils.currency.CurrencyFormatUtil;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -381,11 +379,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         mActionListener.navigateToProtectionMore(protectionLinkUrl);
     }
 
-    @Override
-    public void onViewTickerError(@NotNull String shopId, @NotNull String errorMessage) {
-        mActionListener.onViewTickerProductError(shopId, errorMessage);
-    }
-
     public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
                                List<Object> shipmentDataList,
                                RecipientAddressModel recipientAddressModel,
@@ -472,8 +465,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderCustomError(ShipmentCartItemModel shipmentCartItemModel) {
-        if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getProductErrorCount() > 0 && shipmentCartItemModel.getFirstProductErrorIndex() > 0) {
-            final String errorMessage = itemView.getContext().getString(R.string.checkout_disabled_items_description, shipmentCartItemModel.getProductErrorCount());
+        if (!shipmentCartItemModel.isError() && shipmentCartItemModel.isHasUnblockingError()
+                && !TextUtils.isEmpty(shipmentCartItemModel.getUnblockingErrorMessage()) && shipmentCartItemModel.getFirstProductErrorIndex() > 0) {
+            final String errorMessage = shipmentCartItemModel.getUnblockingErrorMessage();
             customTickerDescription.setText(errorMessage);
             customTickerAction.setOnClickListener(v -> {
                 mActionListener.onClickLihatOnTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), errorMessage);
@@ -487,10 +481,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             customTickerError.setVisibility(View.VISIBLE);
             if (shipmentCartItemModel.isTriggerScrollToErrorProduct()) {
                 scrollToErrorProduct(shipmentCartItemModel);
-            }
-            if (!shipmentCartItemModel.isHasShownErrorTicker()) {
-                mActionListener.onViewTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), errorMessage);
-                shipmentCartItemModel.setHasShownErrorTicker(true);
             }
         } else {
             customTickerError.setVisibility(View.GONE);
@@ -602,7 +592,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     @SuppressLint("StringFormatInvalid")
     private void renderFirstCartItem(CartItemModel cartItemModel) {
-        if (cartItemModel.isError() && !cartItemModel.isShopError()) {
+        if (cartItemModel.isError()) {
             showShipmentWarning(cartItemModel);
         } else {
             hideShipmentWarning();
@@ -716,9 +706,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             rvCartItem.setVisibility(View.GONE);
             vSeparatorMultipleProductSameStore.setVisibility(View.GONE);
-            tvExpandOtherProduct.setText(String.format(tvExpandOtherProduct.getContext().getString(R.string.label_other_item_count_format),
-                    String.valueOf(cartItemModels.size())));
-            tvExpandOtherProduct.setTextColor(ContextCompat.getColor(tvExpandOtherProduct.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
+            tvExpandOtherProduct.setText(R.string.label_show_other_item_new);
             ivExpandOtherProduct.setImage(IconUnify.CHEVRON_DOWN, null, null, null, null);
         }
     }
@@ -986,7 +974,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             labelSingleShippingMessage.setVisibility(View.VISIBLE);
             if (shipmentCartItemModel.getVoucherLogisticItemUiModel() == null && !shipmentCartItemModel.isHasShownCourierError()) {
                 mActionListener.onViewErrorInCourierSection(selectedCourierItemData.getLogPromoDesc());
-                shipmentCartItemModel.setHasShownErrorTicker(true);
+                shipmentCartItemModel.setHasShownCourierError(true);
             }
         } else {
             labelSingleShippingMessage.setVisibility(View.GONE);
@@ -1670,10 +1658,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 tickerError.setCloseButtonVisibility(View.GONE);
                 tickerError.setVisibility(View.VISIBLE);
                 layoutError.setVisibility(View.VISIBLE);
-                if (!shipmentCartItemModel.isHasShownErrorTicker()) {
-                    mActionListener.onViewTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), errorTitle);
-                    shipmentCartItemModel.setHasShownErrorTicker(true);
-                }
             } else {
                 tickerError.setVisibility(View.GONE);
                 layoutError.setVisibility(View.GONE);
@@ -1824,7 +1808,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             tickerProductError.setVisibility(View.GONE);
         }
-        disableItemView();
+
+        if (!cartItemModel.isShopError()) {
+            disableItemView();
+        }
     }
 
     private void hideShipmentWarning() {

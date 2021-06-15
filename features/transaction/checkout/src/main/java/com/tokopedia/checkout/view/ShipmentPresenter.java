@@ -554,7 +554,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         setLatValidateUseRequest(null);
         setValidateUsePromoRevampUiModel(null);
 
-        shipmentTickerErrorModel = new ShipmentTickerErrorModel(cartShipmentAddressFormData.getErrorTicker(), false);
+        shipmentTickerErrorModel = new ShipmentTickerErrorModel(cartShipmentAddressFormData.getErrorTicker());
 
         if (cartShipmentAddressFormData.getTickerData() != null) {
             setTickerAnnouncementHolderData(
@@ -1419,10 +1419,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                           List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
         if (shipmentCartItemModel == null) return;
         CourierItemData courierData = null;
-        if (getView().isTradeInByDropOff()) {
-            courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff();
-        } else {
-            courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
+        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+            if (getView().isTradeInByDropOff()) {
+                courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff();
+            } else {
+                courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
+            }
         }
 
         if (courierData != null) {

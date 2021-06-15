@@ -112,6 +112,8 @@ class ShipmentMapper @Inject constructor() {
                     GroupShop().apply {
                         isError = !it.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
                         errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else convertToString(it.errors)
+                        hasUnblockingError = !it.unblockingErrors.isNullOrEmpty()
+                        unblockingErrorMessage = convertToString(it.unblockingErrors)
                         shippingId = it.shippingId
                         spId = it.spId
                         dropshipperName = it.dropshiper.name
@@ -132,8 +134,7 @@ class ShipmentMapper @Inject constructor() {
                         shopShipments = mapShopShipments(it.shopShipments)
                         val mapProducts = mapProducts(it, groupAddress, shipmentAddressFormDataResponse, isDisablePPP, shop.shopTypeInfoData)
                         products = mapProducts.first
-                        productErrorCount = mapProducts.second
-                        firstProductErrorIndex = mapProducts.third
+                        firstProductErrorIndex = mapProducts.second
                         isDisableChangeCourier = it.isDisableChangeCourier
                         autoCourierSelection = it.autoCourierSelection
                         boMetadata = it.boMetadata
@@ -148,10 +149,9 @@ class ShipmentMapper @Inject constructor() {
                             groupAddress: com.tokopedia.checkout.data.model.response.shipmentaddressform.GroupAddress,
                             shipmentAddressFormDataResponse: ShipmentAddressFormDataResponse,
                             isDisablePPP: Boolean,
-                            shopTypeInfoData: ShopTypeInfoData): Triple<MutableList<Product>, Int, Int> {
+                            shopTypeInfoData: ShopTypeInfoData): Pair<MutableList<Product>, Int> {
         val productListResult = arrayListOf<Product>()
         var firstErrorIndex = -1
-        var productErrorCount = 0
         groupShop.products.forEachIndexed { index, it ->
             val productResult = Product().apply {
                 analyticsProductCheckoutData = mapAnalyticsProductCheckoutData(
@@ -165,11 +165,10 @@ class ShipmentMapper @Inject constructor() {
                 if (it.tradeInInfo.isValidTradeIn) {
                     productPrice = it.tradeInInfo.newDevicePrice.toLong()
                 }
-                isError = !it.errors.isNullOrEmpty()
-                errorMessage = if (it.errors.isNotEmpty()) it.errors[0] else ""
-                errorMessageDescription = if (it.errors.size >= 2) it.errors[1] else ""
+                isError = !it.errors.isNullOrEmpty() || shipmentAddressFormDataResponse.errorTicker.isNotEmpty()
+                errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (it.errors.isNotEmpty()) it.errors[0] else ""
+                errorMessageDescription = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) "" else if (it.errors.size >= 2) it.errors[1] else ""
                 if (isError) {
-                    productErrorCount++
                     if (firstErrorIndex == -1) {
                         firstErrorIndex = index
                     }
@@ -225,7 +224,7 @@ class ShipmentMapper @Inject constructor() {
             }
             productListResult.add(productResult)
         }
-        return Triple(productListResult, productErrorCount, firstErrorIndex)
+        return productListResult to firstErrorIndex
     }
 
     private fun mapAnalyticsProductCheckoutData(product: com.tokopedia.checkout.data.model.response.shipmentaddressform.Product,
@@ -723,25 +722,31 @@ class ShipmentMapper @Inject constructor() {
             for (groupShop in groupAddress.groupShop) {
                 if (groupShop.isError) {
                     hasError = true
-                    break
                 }
                 var totalProductError = 0
                 var defaultErrorMessage = ""
+                var allProductsHaveSameError = true
                 for ((isError, errorMessage) in groupShop.products) {
                     if (isError || !isNullOrEmpty(errorMessage)) {
                         hasError = true
                         totalProductError++
                         if (isNullOrEmpty(defaultErrorMessage)) {
                             defaultErrorMessage = errorMessage
+                        } else if (allProductsHaveSameError && defaultErrorMessage != errorMessage) {
+                            allProductsHaveSameError = false
                         }
                     }
                 }
                 if (totalProductError == groupShop.products.size) {
-                    groupShop.isError = true
-                    groupShop.errorMessage = defaultErrorMessage
+                    if (!groupShop.isError) {
+                        groupShop.isError = true
+                        groupShop.errorMessage = defaultErrorMessage
+                    }
                     for (product in groupShop.products) {
-                        product.isError = false
-                        product.errorMessage = ""
+                        if (allProductsHaveSameError) {
+                            product.isError = false
+                            product.errorMessage = ""
+                        }
                     }
                 }
             }

@@ -46,7 +46,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
 
     fun bindViewHolder(cartItem: CartItemModel, listener: ShipmentItemListener?) {
         shipmentItemListener = listener
-        if (cartItem.isError && !cartItem.isShopError) {
+        if (cartItem.isError) {
             showShipmentWarning(cartItem)
         } else {
             hideShipmentWarning()
@@ -150,14 +150,13 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
                 tickerError.setTextDescription(cartItemModel.errorMessage)
             }
             tickerError.visible()
-            if (!cartItemModel.hasShownTickerError) {
-                shipmentItemListener?.onViewTickerError(cartItemModel.shopId, cartItemModel.errorMessage)
-                cartItemModel.hasShownTickerError = true
-            }
         } else {
             tickerError.gone()
         }
-        disableItemView()
+
+        if (!cartItemModel.isShopError) {
+            disableItemView()
+        }
     }
 
     private fun hideShipmentWarning() {
@@ -197,7 +196,6 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     interface ShipmentItemListener {
         fun notifyOnPurchaseProtectionChecked(checked: Boolean, position: Int)
         fun navigateToWebView(protectionLinkUrl: String?)
-        fun onViewTickerError(shopId: String, errorMessage: String)
     }
 
     companion object {

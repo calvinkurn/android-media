@@ -26,10 +26,6 @@ class ShipmentTickerErrorViewHolder(itemView: View, val listener: ShipmentAdapte
                         View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
                 ticker?.requestLayout()
             }
-            if (!shipmentTickerErrorModel.hasShown) {
-                listener.onViewTickerPaymentError(shipmentTickerErrorModel.errorMessage)
-                shipmentTickerErrorModel.hasShown = true
-            }
         }
     }
 
