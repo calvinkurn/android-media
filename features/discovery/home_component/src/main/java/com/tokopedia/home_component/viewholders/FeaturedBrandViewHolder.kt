@@ -67,7 +67,7 @@ class FeaturedBrandViewHolder (itemView: View,
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                GridSpacingItemDecoration(2, 10, false))
+                GridSpacingItemDecoration(2, 20, false))
     }
 
     private fun setHeaderComponent(element: FeaturedBrandDataModel) {
