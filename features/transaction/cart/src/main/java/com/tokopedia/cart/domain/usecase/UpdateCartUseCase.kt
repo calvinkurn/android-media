@@ -35,7 +35,7 @@ class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlU
 
     override fun createObservable(requestParams: RequestParams?): Observable<UpdateCartData> {
         val paramUpdateList = requestParams?.getObject(PARAM_UPDATE_CART_REQUEST) as ArrayList<UpdateCartRequest>
-        val source = requestParams?.getString(PARAM_KEY_SOURCE, PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES)
+        val source = requestParams?.getString(PARAM_KEY_SOURCE, "")
 
         val variables = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
