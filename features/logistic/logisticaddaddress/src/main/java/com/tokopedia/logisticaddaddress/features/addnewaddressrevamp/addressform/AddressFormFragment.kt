@@ -25,12 +25,13 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.db.District
 import com.tokopedia.logisticCommon.data.response.DistrictItem
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants.ANA_POSITIVE
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
+import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.databinding.FragmentAddressFormBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.domain.model.add_address.ContactData
@@ -56,6 +57,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private var currentLong: Double = 0.0
     private var labelAlamatList: Array<String> = emptyArray()
     private var staticDimen8dp: Int? = 0
+    private var isPositiveFlow: Boolean = true
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private lateinit var labelAlamatChipsLayoutManager: ChipsLayoutManager
 
@@ -90,6 +92,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             saveDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
             currentLat = saveDataModel?.latitude?.toDouble() ?: 0.0
             currentLong = saveDataModel?.longitude?.toDouble() ?: 0.0
+            isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
         }
         permissionCheckerHelper = PermissionCheckerHelper()
     }
@@ -112,7 +115,11 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun prepareData() {
-        viewModel.getDistrictDetail(saveDataModel?.districtId.toString())
+        if (isPositiveFlow) {
+            viewModel.getDistrictDetail(saveDataModel?.districtId.toString())
+        } else {
+            prepareLayout(null)
+        }
     }
 
     private fun initObserver() {
@@ -146,29 +153,48 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     @SuppressLint("SetTextI18n")
-    private fun prepareLayout(data: DistrictItem) {
+    private fun prepareLayout(data: DistrictItem?) {
+
         labelAlamatChipsAdapter = LabelAlamatChipsAdapter(this)
         labelAlamatChipsLayoutManager = ChipsLayoutManager.newBuilder(view?.context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
         staticDimen8dp = context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
-        setOnTouchLabelAddress(ANA_POSITIVE)
-        setupRvLabelAlamatChips()
-        setTextListener()
 
         binding.run {
-            cardAddress.addressDistrict.text = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
-
-            formAddress.etLabel.textFieldInput.setText("Rumah")
-
             formAccount.etNamaPenerima.textFieldInput.setText(userSession.name)
             formAccount.etNomorHp.textFieldInput.setText(userSession.phoneNumber)
             formAccount.etNomorHp.setFirstIcon(R.drawable.ic_contact_black)
             formAccount.etNomorHp.getFirstIcon().setOnClickListener {
                 onNavigateToContact()
             }
+        }
 
+        if (!isPositiveFlow) {
+            setOnTouchLabelAddress(ANA_NEGATIVE)
+            setupRvLabelAlamatChips()
+            setTextListener()
+            binding.run {
+                cardAddress.root.gone()
+                formAddress.root.gone()
+                formAddressNegative.root.visible()
+                cardAddressNegative.root.visible()
+            }
+        } else {
+            setOnTouchLabelAddress(ANA_POSITIVE)
+            setupRvLabelAlamatChips()
+            setTextListener()
+            binding.run {
+                cardAddress.root.visible()
+                formAddress.root.visible()
+                formAddressNegative.root.gone()
+                cardAddressNegative.root.gone()
+
+                cardAddress.addressDistrict.text = "${data?.districtName}, ${data?.cityName}, ${data?.provinceName}"
+
+                formAddress.etLabel.textFieldInput.setText("Rumah")
+            }
         }
 
         binding.btnSaveAddress.setOnClickListener {
@@ -215,11 +241,20 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun setupRvLabelAlamatChips() {
-        binding.formAddress.rvLabelAlamatChips.apply {
-            staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
-            layoutManager = labelAlamatChipsLayoutManager
-            adapter = labelAlamatChipsAdapter
+        if (isPositiveFlow) {
+            binding.formAddress.rvLabelAlamatChips.apply {
+                staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
+                layoutManager = labelAlamatChipsLayoutManager
+                adapter = labelAlamatChipsAdapter
+            }
+        } else {
+            binding.formAddressNegative.rvLabelAlamatChips.apply {
+                staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
+                layoutManager = labelAlamatChipsLayoutManager
+                adapter = labelAlamatChipsAdapter
+            }
         }
+
     }
 
     private fun setTextListener() {
@@ -246,41 +281,80 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun setOnTouchLabelAddress(type: String) {
-        binding.formAddress.etLabel.textFieldInput.apply {
-            setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    eventShowListLabelAlamat(type)
-                } else {
-                    binding.formAddress.rvLabelAlamatChips.visibility = View.GONE
-                }
-            }
-            setOnClickListener {
-                eventShowListLabelAlamat(type)
-            }
-            addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
-                                               after: Int) {
-                }
-
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int,
-                                           count: Int) {
-                }
-
-                override fun afterTextChanged(s: Editable) {
-                    val filterList = labelAlamatList.filter {
-                        it.contains("$s", true)
+        if (isPositiveFlow) {
+            binding.formAddress.etLabel.textFieldInput.apply {
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        eventShowListLabelAlamat(type)
+                    } else {
+                        binding.formAddress.rvLabelAlamatChips.visibility = View.GONE
                     }
-                    labelAlamatChipsAdapter.submitList(filterList)
                 }
-            })
-            setOnTouchListener { view, event ->
-                view.parent.requestDisallowInterceptTouchEvent(true)
-                if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
-                    view.parent.requestDisallowInterceptTouchEvent(false)
+                setOnClickListener {
+                    eventShowListLabelAlamat(type)
                 }
-                return@setOnTouchListener false
+                addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
+                                                   after: Int) {
+                    }
+
+                    override fun onTextChanged(s: CharSequence, start: Int, before: Int,
+                                               count: Int) {
+                    }
+
+                    override fun afterTextChanged(s: Editable) {
+                        val filterList = labelAlamatList.filter {
+                            it.contains("$s", true)
+                        }
+                        labelAlamatChipsAdapter.submitList(filterList)
+                    }
+                })
+                setOnTouchListener { view, event ->
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                        view.parent.requestDisallowInterceptTouchEvent(false)
+                    }
+                    return@setOnTouchListener false
+                }
+            }
+        } else {
+            binding.formAddressNegative.etLabel.textFieldInput.apply {
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus) {
+                        eventShowListLabelAlamat(type)
+                    } else {
+                        binding.formAddressNegative.rvLabelAlamatChips.visibility = View.GONE
+                    }
+                }
+                setOnClickListener {
+                    eventShowListLabelAlamat(type)
+                }
+                addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
+                                                   after: Int) {
+                    }
+
+                    override fun onTextChanged(s: CharSequence, start: Int, before: Int,
+                                               count: Int) {
+                    }
+
+                    override fun afterTextChanged(s: Editable) {
+                        val filterList = labelAlamatList.filter {
+                            it.contains("$s", true)
+                        }
+                        labelAlamatChipsAdapter.submitList(filterList)
+                    }
+                })
+                setOnTouchListener { view, event ->
+                    view.parent.requestDisallowInterceptTouchEvent(true)
+                    if ((event.action and MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                        view.parent.requestDisallowInterceptTouchEvent(false)
+                    }
+                    return@setOnTouchListener false
+                }
             }
         }
+
     }
 
     private fun eventShowListLabelAlamat(type: String) {
@@ -291,7 +365,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         val res: Resources = resources
         labelAlamatList = res.getStringArray(R.array.labelAlamatList)
 
-        binding.formAddress.rvLabelAlamatChips.visibility = View.VISIBLE
+        if (isPositiveFlow) binding.formAddress.rvLabelAlamatChips.visibility = View.VISIBLE
+        else binding.formAddressNegative.rvLabelAlamatChips.visibility = View.VISIBLE
         ViewCompat.setLayoutDirection(binding.formAddress.rvLabelAlamatChips, ViewCompat.LAYOUT_DIRECTION_LTR)
         labelAlamatChipsAdapter.submitList(labelAlamatList.toList())
     }
@@ -327,6 +402,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             return AddressFormFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(EXTRA_SAVE_DATA_UI_MODEL))
+                    putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                 }
             }
         }

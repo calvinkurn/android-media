@@ -38,8 +38,7 @@ import com.tokopedia.logisticCommon.util.rxPinPoint
 import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
+import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentPinpointNewBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
@@ -84,6 +83,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var saveAddressDataModel: SaveAddressDataModel? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var hasRequestedLocation: Boolean = false
+    private var isPositiveFlow: Boolean = true
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
@@ -336,12 +336,13 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             }
 
             bottomsheetLocation.btnPrimary.setOnClickListener {
+                isPositiveFlow = true
                 goToAddressForm()
             }
 
             bottomsheetLocation.btnSecondary.setOnClickListener {
-                Toast.makeText(context, "This feature is under development", Toast.LENGTH_SHORT).show()
-                //go-to ANA Negative
+                isPositiveFlow = false
+                goToAddressForm()
             }
 
             chipsCurrentLoc.chipImageResource = context?.let { getIconUnifyDrawable(it, IconUnify.TARGET) }
@@ -488,8 +489,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         }
 
         binding?.bottomsheetLocation?.btnAnaNegative?.setOnClickListener {
-            Toast.makeText(context, "This feature is under development", Toast.LENGTH_SHORT).show()
-            //go-to ANA Negative
+            isPositiveFlow = false
+            goToAddressForm()
         }
     }
 
@@ -502,6 +503,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         val saveModel = viewModel.getAddress()
         Intent(context, AddressFormActivity::class.java).apply {
             putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
+            putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
             startActivityForResult(this, 1599)
         }
 

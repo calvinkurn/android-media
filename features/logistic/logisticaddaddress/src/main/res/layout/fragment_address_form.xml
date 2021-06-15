@@ -20,18 +20,21 @@
             android:layout_marginStart="@dimen/unify_space_16"
             android:layout_marginEnd="@dimen/unify_space_16"
             android:layout_marginTop="@dimen/unify_space_16"
+            android:paddingBottom="@dimen/dp_16"
             android:orientation="vertical">
 
             <include
                 android:id="@+id/card_address"
-                layout="@layout/card_address_new_loc" />
+                layout="@layout/card_address_new_loc"
+                android:visibility="visible"/>
 
             <include
                 android:id="@+id/form_address"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_16"
-                layout="@layout/form_address_new_alamat" />
+                layout="@layout/form_address_new_alamat"
+                android:visibility="visible"/>
 
             <include
                 android:id="@+id/form_account"
@@ -40,6 +43,18 @@
                 android:layout_marginTop="@dimen/unify_space_16"
                 layout="@layout/form_address_new_akun" />
 
+            <include
+                android:id="@+id/form_address_negative"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                layout="@layout/form_address_new_alamat_negative"
+                android:visibility="gone"/>
+
+            <include
+                android:id="@+id/card_address_negative"
+                layout="@layout/card_address_new_loc_negative"
+                android:visibility="gone"/>
 
         </LinearLayout>
 
@@ -61,7 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_20"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/cb_default_loc"

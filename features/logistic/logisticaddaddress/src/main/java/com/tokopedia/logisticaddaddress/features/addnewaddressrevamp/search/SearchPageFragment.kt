@@ -38,6 +38,7 @@ import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefined
 import com.tokopedia.logisticaddaddress.databinding.FragmentSearchAddressBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageFragment
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LATITUDE
@@ -95,10 +96,15 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == 1998 && resultCode == Activity.RESULT_OK) {
-            val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
-            finishActivity(newAddress)
-        } else if (requestCode == 1995) {
+        if (resultCode == Activity.RESULT_OK) {
+            if(requestCode == 1998) {
+                val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
+                finishActivity(newAddress)
+            } else if (requestCode == 1599) {
+                val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
+                finishActivity(newAddress)
+            }
+        } else {
             showInitialLoadMessage()
         }
     }
@@ -136,8 +142,10 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         binding.searchPageInput.searchBarTextField.setText("")
         binding.tvMessageSearch.text = getString(R.string.txt_message_initial_load)
         binding.tvMessageSearch.setOnClickListener {
-            Toast.makeText(context, "This feature is under development", Toast.LENGTH_SHORT).show()
-            //go to ANA form negative
+            Intent(context, AddressFormActivity::class.java).apply {
+                putExtra(AddressConstants.EXTRA_IS_POSITIVE_FLOW, false)
+                startActivityForResult(this, 1599)
+            }
         }
     }
 
