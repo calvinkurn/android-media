@@ -48,6 +48,7 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_RECOMMENDATION_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
+import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.common.exception.SellerHomeException
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
@@ -914,7 +915,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         view?.swipeRefreshLayout?.isRefreshing = false
         setProgressBarVisibility(false)
 
-        logToCrashlytics(throwable, ERROR_LAYOUT)
+        SellerHomeErrorHandler.logExceptionToCrashlytics(throwable, ERROR_LAYOUT)
     }
 
     private fun showErrorViewByException(throwable: Throwable) = view?.run {
@@ -998,7 +999,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
                 is Fail -> {
                     stopCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_TICKER_TRACE, false)
-                    logToCrashlytics(it.throwable, ERROR_TICKER)
+                    SellerHomeErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_TICKER)
                     view?.relTicker?.gone()
                 }
             }
@@ -1035,7 +1036,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     is Fail -> {
                         stopSellerHomeFragmentWidgetPerformanceMonitoring(type, isFromCache = false)
                         stopPltMonitoringIfNotCompleted(fromCache = false)
-                        logToCrashlytics(result.throwable, "$ERROR_WIDGET $type")
+                        SellerHomeErrorHandler.logExceptionToCrashlytics(result.throwable, "$ERROR_WIDGET $type")
                         result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
                     }
                 }
@@ -1197,19 +1198,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             isOfficialStore -> "OS"
             isPowerMerchant -> "PM"
             else -> "RM"
-        }
-    }
-
-    private fun logToCrashlytics(throwable: Throwable, message: String) {
-        if (!BuildConfig.DEBUG) {
-            val exceptionMessage = "$message - ${throwable.localizedMessage}"
-
-            FirebaseCrashlytics.getInstance().recordException(SellerHomeException(
-                    message = exceptionMessage,
-                    cause = throwable
-            ))
-        } else {
-            throwable.printStackTrace()
         }
     }
 
