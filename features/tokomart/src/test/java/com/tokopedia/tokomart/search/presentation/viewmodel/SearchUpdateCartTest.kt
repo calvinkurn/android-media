@@ -55,6 +55,11 @@ class SearchUpdateCartTest: SearchTestFixtures(), UpdateCartTestHelper.Callback 
     fun `onViewUpdateCartItems should update quantity in product list`() {
         updateCartTestHelper.`onViewUpdateCartItems should update quantity in product list`()
     }
+    
+    @Test
+    fun `update mini cart fail should hide mini cart`() {
+        updateCartTestHelper.`update mini cart fail should hide mini cart`()
+    }
 
     @Test
     fun `onViewReloadPage should have product with quantity from mini cart`() {

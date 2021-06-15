@@ -69,10 +69,8 @@
 
     <com.tokopedia.minicart.common.widget.MiniCartWidget
         android:id="@+id/tokonowSearchCategoryMiniCart"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        tools:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

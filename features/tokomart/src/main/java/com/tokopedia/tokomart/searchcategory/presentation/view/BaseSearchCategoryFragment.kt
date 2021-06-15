@@ -543,7 +543,9 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
     }
 
-    private fun updateMiniCartWidgetVisibility(isVisible: Boolean) {
+    private fun updateMiniCartWidgetVisibility(isVisible: Boolean?) {
+        isVisible ?: return
+
         miniCartWidget?.showWithCondition(isVisible)
     }
 

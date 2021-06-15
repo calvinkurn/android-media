@@ -60,6 +60,11 @@ class CategoryUpdateCartTest: CategoryTestFixtures(), Callback {
     }
 
     @Test
+    fun `update mini cart fail should hide mini cart`() {
+        updateCartTestHelper.`update mini cart fail should hide mini cart`()
+    }
+
+    @Test
     fun `onViewReloadPage should have product with quantity from mini cart`() {
         updateCartTestHelper.`onViewReloadPage should have product with quantity from mini cart`()
     }
