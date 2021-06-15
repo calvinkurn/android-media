@@ -23,24 +23,6 @@ import java.net.SocketTimeoutException
 class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
 
     @Test
-    fun `when getAllSettingShopInfo type comm period success should set live data success`() {
-        coroutineTestRule.runBlockingTest {
-            val shopScoreResponse = ShopScoreResult(data = ShopScoreDetailItemServiceModel(value = 70))
-            val shopSettingsResponse = createShopSettingsResponse()
-
-            onGetAllShopInfoUseCase_thenReturn(shopSettingsResponse)
-            onGetShopScore_thenReturn(shopScoreResponse)
-
-            viewModel.getAllSettingShopInfo(shopAge = 65)
-
-            val expectedResult = createShopInfoUiModel()
-            val actualResult = (viewModel.settingShopInfoLiveData.value as Success).data
-
-            assertEquals(expectedResult, actualResult)
-        }
-    }
-
-    @Test
     fun `when getAllSettingShopInfo type transition period success should set live data success`() {
         coroutineTestRule.runBlockingTest {
             val shopScoreResponse = ShopScoreLevelResponse.ShopScoreLevel.Result(shopScore = 70)
@@ -184,38 +166,6 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
 
         assertEquals(expectedResult, actualResult)
         assertEquals(expectedMessage, actualMessage)
-    }
-
-    @Test
-    fun `given getShopScore error comm period when getAllSettingShopInfo should set live data fail`() {
-        val error = IllegalStateException()
-        val shopSettingsResponse = createShopSettingsResponse()
-
-        onGetShopScore_thenReturn(error)
-        onGetAllShopInfoUseCase_thenReturn(shopSettingsResponse)
-
-        viewModel.getAllSettingShopInfo(shopAge = 65)
-
-        val expectedResult = IllegalStateException::class.java
-        val actualResult = (viewModel.settingShopInfoLiveData.value as Fail).throwable::class.java
-
-        assertEquals(expectedResult, actualResult)
-    }
-
-    @Test
-    fun `given getShopScore error transition period when getAllSettingShopInfo should set live data fail`() {
-        val error = IllegalStateException()
-        val shopSettingsResponse = createShopSettingsResponse()
-
-        onGetShopScoreLevel_thenReturn(anyString(), error)
-        onGetAllShopInfoUseCase_thenReturn(shopSettingsResponse)
-
-        viewModel.getAllSettingShopInfo(shopAge = 65)
-
-        val expectedResult = IllegalStateException::class.java
-        val actualResult = (viewModel.settingShopInfoLiveData.value as Fail).throwable::class.java
-
-        assertEquals(expectedResult, actualResult)
     }
 
     @Test
