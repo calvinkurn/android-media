@@ -179,8 +179,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 miniSocialProofStockMap?.run {
                     rating = it.basic.stats.rating
                     ratingCount = it.basic.stats.countReview.toIntOrZero()
-                    //  TODO vindo : should update data source for stock after BE up
-                    stock = it.data.stock.value
+                    stock = it.basic.totalStockFmt.toIntOrZero()
                     paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toIntOrZero()
                 }
             }

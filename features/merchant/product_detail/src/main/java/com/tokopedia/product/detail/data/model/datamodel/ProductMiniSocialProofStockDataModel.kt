@@ -15,7 +15,8 @@ data class ProductMiniSocialProofStockDataModel(
         var wishlistCount: Int = 0,
         var buyerPhotosCount: Int = 0,
         var paymentVerifiedCount: Int = 0,
-        var shouldRenderSocialProof: Boolean = false
+        var shouldRenderSocialProof: Boolean = false,
+        var socialProofData: List<ProductMiniSocialProofItemDataModel> = emptyList()
 ) : DynamicPdpDataModel {
     companion object {
         const val RATING = "rating"
@@ -37,7 +38,7 @@ data class ProductMiniSocialProofStockDataModel(
     }
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
-        return if (newData is ProductMiniSocialProofDataModel) {
+        return if (newData is ProductMiniSocialProofStockDataModel) {
             wishlistCount == newData.wishlistCount &&
                     viewCount == newData.viewCount &&
                     shouldRenderSocialProof == newData.shouldRenderSocialProof
@@ -63,12 +64,6 @@ data class ProductMiniSocialProofStockDataModel(
         }
     }
 
-    /**
-     * Social proof mini should only show 4 of this, with hierarchy
-     * When it only contains 1 data, it will show single line social proof
-     */
-    private var socialProofData: List<ProductMiniSocialProofItemDataModel> = emptyList()
-
     fun shouldShowSingleViewSocialProof(): Boolean {
         return ratingCount == 0 && buyerPhotosCount == 0 && stock == 0
     }
@@ -78,17 +73,13 @@ data class ProductMiniSocialProofStockDataModel(
             socialProofData = listOf(firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofSingleText))
             return
         }
-        val socialProofBuilder = mutableListOf(
-                stockData(ProductMiniSocialProofItemType.ProductMiniSocialProofTextDivider),
-                firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofText)
-        )
+
+        val socialProofBuilder = mutableListOf(firstPositionData(ProductMiniSocialProofItemType.ProductMiniSocialProofText))
+
+        appendStockAtFirst(socialProofBuilder)
         appendChipIfNotZero(ratingCount.toFloat(), RATING, socialProofBuilder, rating.toString())
         appendChipIfNotZero(buyerPhotosCount.toFloat(), BUYER_PHOTOS, socialProofBuilder)
         socialProofData = socialProofBuilder.take(4)
-    }
-
-    fun getSocialProofData(): List<ProductMiniSocialProofItemDataModel> {
-        return socialProofData
     }
 
     private fun appendChipIfNotZero(count: Float?, type: String, list: MutableList<ProductMiniSocialProofItemDataModel>, ratingTitle: String = ""): MutableList<ProductMiniSocialProofItemDataModel> {
@@ -104,7 +95,12 @@ data class ProductMiniSocialProofStockDataModel(
         return list
     }
 
-    private fun stockData(type: ProductMiniSocialProofItemType): ProductMiniSocialProofItemDataModel {
-        return ProductMiniSocialProofItemDataModel(STOCK, stock.productThousandFormatted(), type)
+    private fun appendStockAtFirst(builder: MutableList<ProductMiniSocialProofItemDataModel>) {
+        if (stock == 0) return
+        builder.add(0, ProductMiniSocialProofItemDataModel(
+                STOCK,
+                stock.productThousandFormatted(),
+                ProductMiniSocialProofItemType.ProductMiniSocialProofTextDivider
+        ))
     }
 }
