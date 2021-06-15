@@ -237,7 +237,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
             }
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_VIEW_COMPLAINT -> {
                 onViewComplaintActionButtonClicked(button.url)
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_VIEW_COMPLAINT_ORDER
+                if (isFromPrimaryButton) "" else BuyerOrderDetailTrackerConstant.BUTTON_NAME_VIEW_COMPLAINT_ORDER
             }
             BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER, BuyerOrderDetailConst.ACTION_BUTTON_KEY_RECEIVE_CONFIRMATION -> {
                 onReceiveConfirmationActionButtonClicked(button)
@@ -264,9 +264,19 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     override fun onPopUpActionButtonClicked(button: ActionButtonsUiModel.ActionButton.PopUp.PopUpButton) {
-        when (button.key) {
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER -> onDoReceiveConfirmationActionButtonClicked()
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> onComplaintActionButtonClicked(button.uri)
+        val buttonName = when (button.key) {
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER -> {
+                onDoReceiveConfirmationActionButtonClicked()
+                BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER_CONFIRMATION_CONFIRM_FINISH_ORDER
+            }
+            BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> {
+                onComplaintActionButtonClicked(button.uri)
+                BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER_CONFIRMATION_REQUEST_COMPLAINT
+            }
+            else -> ""
+        }
+        if (buttonName.isNotBlank()) {
+            trackClickActionButtonFromReceiveConfirmation(buttonName)
         }
     }
 
@@ -330,12 +340,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun onComplaintActionButtonClicked(complaintUrl: String) {
-        viewModel.buyerOrderDetailResult.value?.let {
-            if (it is Success) {
-                navigator.goToCreateResolution(this, complaintUrl)
-                trackClickActionButtonFromReceiveConfirmation(BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER_CONFIRMATION_REQUEST_COMPLAINT)
-            }
-        }
+        navigator.goToCreateResolution(this, complaintUrl)
         bottomSheetReceiveConfirmation?.finishLoading()
     }
 
@@ -357,7 +362,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun onDoReceiveConfirmationActionButtonClicked() {
         viewModel.finishOrder()
-        trackClickActionButtonFromReceiveConfirmation(BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER_CONFIRMATION_CONFIRM_FINISH_ORDER)
     }
 
     private fun onHelpActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
