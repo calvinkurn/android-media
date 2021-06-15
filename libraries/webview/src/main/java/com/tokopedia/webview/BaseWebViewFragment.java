@@ -669,7 +669,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     protected boolean shouldOverrideUrlLoading(@Nullable WebView webview, @NonNull String url) {
-        if (getActivity() == null) {
+        Activity activity = getActivity();
+        if (activity == null) {
             return false;
         }
         if ("".equals(url)) {
@@ -763,6 +764,18 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return redirectToLinkAjaApp(url);
         }
 
+        if (!uri.getHost().contains(TOKOPEDIA_STRING)) {
+            if (isLinkAjaAppLink(url)) {
+                return redirectToExternalAppAndFinish(activity, uri);
+            } else {
+                Intent intent = WebViewHelper.externalAppIntentNotBrowser(activity, uri);
+                if (intent!= null) {
+                    hasMoveToNativePage = true;
+                    startActivity(intent);
+                    return true;
+                }
+            }
+        }
 
         boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);
         if (isNotNetworkUrl) {
@@ -785,6 +798,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private boolean redirectToExternalAppAndFinish(Activity activity, Uri uri) {
+        Intent intent = WebViewHelper.actionViewIntent(activity, uri);
+        if (intent != null) {
+            startActivity(intent);
+            activity.finish();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void routeToNativeBrowser(String browserUrl){
