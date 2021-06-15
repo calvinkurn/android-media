@@ -21,6 +21,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
         return MiniCartWidgetData().apply {
             totalProductCount = miniCartData.data.totalProductCount
             totalProductPrice = miniCartData.data.totalProductPrice
+            totalProductError = miniCartData.data.totalProductError
             containsOnlyUnavailableItems = miniCartData.data.availableSection.availableGroup.isEmpty() && miniCartData.data.unavailableSection.isNotEmpty()
             unavailableItemsCount = miniCartData.data.totalProductError
         }

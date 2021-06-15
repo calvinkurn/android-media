@@ -238,7 +238,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     private fun initializeBottomSheetUiModelObserver() {
         bottomSheetUiModelObserver = Observer<MiniCartListUiModel> {
-            if (it.miniCartWidgetUiModel.totalProductCount == 0) {
+            if (it.miniCartWidgetUiModel.totalProductCount == 0 && it.miniCartWidgetUiModel.totalProductError == 0) {
                 bottomSheet?.dismiss()
             }
 

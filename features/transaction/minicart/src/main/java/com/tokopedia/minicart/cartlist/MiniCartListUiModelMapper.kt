@@ -42,6 +42,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         return MiniCartWidgetData().apply {
             totalProductCount = miniCartData.data.totalProductCount
             totalProductPrice = miniCartData.data.totalProductPrice
+            totalProductError = miniCartData.data.totalProductError
         }
     }
 
