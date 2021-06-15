@@ -59,10 +59,6 @@ import com.tokopedia.oneclickcheckout.common.view.utils.animateGone
 import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
-import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_EXISTING_USER_MULTI_PROFILE
-import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_EXISTING_USER_ONE_PROFILE
-import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_AFTER_CREATE_PROFILE
-import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_BEFORE_CREATE_PROFILE
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.*
@@ -197,26 +193,33 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun onResultFromPromo(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = data?.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT)
-            if (validateUsePromoRevampUiModel != null) {
-                viewModel.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
-                viewModel.updatePromoState(validateUsePromoRevampUiModel.promoUiModel)
-            }
+            val errorPromoExtra = data?.getStringExtra(ARGS_PROMO_ERROR) ?: ""
+            if (errorPromoExtra.isNotBlank()) {
+                if (errorPromoExtra.equals(ARGS_FINISH_ERROR, true)) {
+                    activity?.finish()
+                }
+            } else {
+                val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = data?.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT)
+                if (validateUsePromoRevampUiModel != null) {
+                    viewModel.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
+                    viewModel.updatePromoState(validateUsePromoRevampUiModel.promoUiModel)
+                }
 
-            val validateUsePromoRequest: ValidateUsePromoRequest? = data?.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
-            if (validateUsePromoRequest != null) {
-                viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
-            }
+                val validateUsePromoRequest: ValidateUsePromoRequest? = data?.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
+                if (validateUsePromoRequest != null) {
+                    viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
+                }
 
-            val clearPromoUiModel: ClearPromoUiModel? = data?.getParcelableExtra(ARGS_CLEAR_PROMO_RESULT)
-            if (clearPromoUiModel != null) {
-                //reset
-                viewModel.validateUsePromoRevampUiModel = null
-                viewModel.updatePromoState(PromoUiModel().apply {
-                    titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
-                })
-                // trigger validate to reset BBO benefit
-                viewModel.validateUsePromo()
+                val clearPromoUiModel: ClearPromoUiModel? = data?.getParcelableExtra(ARGS_CLEAR_PROMO_RESULT)
+                if (clearPromoUiModel != null) {
+                    //reset
+                    viewModel.validateUsePromoRevampUiModel = null
+                    viewModel.updatePromoState(PromoUiModel().apply {
+                        titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
+                    })
+                    // trigger validate to reset BBO benefit
+                    viewModel.validateUsePromo()
+                }
             }
         }
     }
@@ -662,10 +665,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 val coachMarkItems = ArrayList<CoachMark2Item>()
                 for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
                     val newView: View = when (onboarding.coachmarkType) {
-                        COACHMARK_TYPE_NEW_BUYER_BEFORE_CREATE_PROFILE -> generateNewCoachMarkAnchorForNewBuyerBeforeCreateProfile(it, detailIndexed.index)
-                        COACHMARK_TYPE_NEW_BUYER_AFTER_CREATE_PROFILE -> generateNewCoachMarkAnchorForNewBuyerAfterCreateProfile(it, detailIndexed.index)
-                        COACHMARK_TYPE_EXISTING_USER_ONE_PROFILE -> generateNewCoachMarkAnchorForExistingUserOneProfile(it, detailIndexed.index)
-                        COACHMARK_TYPE_EXISTING_USER_MULTI_PROFILE -> generateNewCoachMarkAnchorForExistingUserMultiProfile(it, detailIndexed.index)
                         COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE -> generateNewCoachMarkAnchorForNewBuyerRemoveProfile(it, detailIndexed.index)
                         else -> it.findViewById(R.id.tv_header_2)
                     }
@@ -679,10 +678,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 })
                 coachMark.onFinishListener = {
                     when (onboarding.coachmarkType) {
-                        COACHMARK_TYPE_NEW_BUYER_BEFORE_CREATE_PROFILE -> orderSummaryAnalytics.eventClickLanjutOnCoachmark2ForNewBuyerBeforeCreateProfile(userSession.get().userId)
-                        COACHMARK_TYPE_NEW_BUYER_AFTER_CREATE_PROFILE, COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE -> orderSummaryAnalytics.eventClickDoneOnCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
-                        COACHMARK_TYPE_EXISTING_USER_ONE_PROFILE -> orderSummaryAnalytics.eventClickDoneOnCoachmark2ForExistingUserOneProfile(userSession.get().userId)
-                        COACHMARK_TYPE_EXISTING_USER_MULTI_PROFILE -> orderSummaryAnalytics.eventClickDoneOnCoachmark2ForExistingUserMultiProfile(userSession.get().userId)
+                        COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE -> orderSummaryAnalytics.eventClickDoneOnCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
                     }
                 }
                 // manual scroll first item
@@ -701,52 +697,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun triggerCoachMarkAnalytics(onboarding: OccMainOnboarding, currentIndex: Int) {
         when (onboarding.coachmarkType) {
-            COACHMARK_TYPE_NEW_BUYER_BEFORE_CREATE_PROFILE -> when (currentIndex) {
-                0 -> orderSummaryAnalytics.eventViewCoachmark1ForNewBuyerBeforeCreateProfile(userSession.get().userId)
-                1 -> orderSummaryAnalytics.eventViewCoachmark2ForNewBuyerBeforeCreateProfile(userSession.get().userId)
-            }
-            COACHMARK_TYPE_NEW_BUYER_AFTER_CREATE_PROFILE, COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE -> when (currentIndex) {
+            COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE -> when (currentIndex) {
                 0 -> orderSummaryAnalytics.eventViewCoachmark1ForNewBuyerAfterCreateProfile(userSession.get().userId)
                 1 -> orderSummaryAnalytics.eventViewCoachmark2ForNewBuyerAfterCreateProfile(userSession.get().userId)
                 2 -> orderSummaryAnalytics.eventViewCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
             }
-            COACHMARK_TYPE_EXISTING_USER_ONE_PROFILE -> when (currentIndex) {
-                0 -> orderSummaryAnalytics.eventViewCoachmark1ForExistingUserOneProfile(userSession.get().userId)
-                1 -> orderSummaryAnalytics.eventViewCoachmark2ForExistingUserOneProfile(userSession.get().userId)
-            }
-            COACHMARK_TYPE_EXISTING_USER_MULTI_PROFILE -> when (currentIndex) {
-                0 -> orderSummaryAnalytics.eventViewCoachmark1ForExistingUserMultiProfile(userSession.get().userId)
-                1 -> orderSummaryAnalytics.eventViewCoachmark2ForExistingUserMultiProfile(userSession.get().userId)
-            }
-        }
-    }
-
-    private fun generateNewCoachMarkAnchorForNewBuyerBeforeCreateProfile(view: View, index: Int): View {
-        return when (index) {
-            1 -> view.findViewById(R.id.button_atur_pilihan)
-            else -> view.findViewById(R.id.tv_header_2)
-        }
-    }
-
-    private fun generateNewCoachMarkAnchorForNewBuyerAfterCreateProfile(view: View, index: Int): View {
-        return when (index) {
-            1 -> view.findViewById(R.id.btn_new_change_duration)
-            2 -> view.findViewById(R.id.tv_new_choose_preference)
-            else -> view.findViewById(R.id.tv_header_2)
-        }
-    }
-
-    private fun generateNewCoachMarkAnchorForExistingUserOneProfile(view: View, index: Int): View {
-        return when (index) {
-            0 -> view.findViewById(R.id.btn_new_change_duration)
-            else -> view.findViewById(R.id.tv_new_choose_preference)
-        }
-    }
-
-    private fun generateNewCoachMarkAnchorForExistingUserMultiProfile(view: View, index: Int): View {
-        return when (index) {
-            0 -> view.findViewById(R.id.btn_new_change_address)
-            else -> view.findViewById(R.id.tv_new_choose_preference)
         }
     }
 

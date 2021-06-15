@@ -10,10 +10,22 @@ import com.google.gson.annotations.SerializedName
 data class CancelVoucherData(
         @SerializedName("Success")
         @Expose
-        val success: Boolean = false
+        val success: Boolean = false,
+
+        @SerializedName("ticker_message")
+        @Expose
+        val tickerMessage: String = "",
+
+        @SerializedName("default_empty_promo_message")
+        @Expose
+        val defaultEmptyPromoMessage: String = "",
+
+        @SerializedName("error")
+        @Expose
+        val error: String = ""
 ) {
     data class Response(
-            @SerializedName("clearCacheAutoApplyV2")
+            @SerializedName("clearCacheAutoApplyStack")
             @Expose
             val response: CancelVoucherData
     )

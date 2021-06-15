@@ -15,8 +15,6 @@ data class GetPowerMerchantSettingInfoResponse(
 data class PMSettingInfoModel(
         @SerializedName("period_type")
         val periodeType: String? = PeriodType.COMMUNICATION_PERIOD,
-        @SerializedName("period_end_date_time")
-        val periodEndDateMillis: String? = "",
         @SerializedName("ticker_list")
         val tickers: List<PmTickerModel>? = emptyList()
 )
