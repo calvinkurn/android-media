@@ -27,7 +27,6 @@ import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomShee
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.updatecart.Data
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -64,7 +63,7 @@ class MiniCartWidget @JvmOverloads constructor(
     private var progressDialog: AlertDialog? = null
     private var miniCartChevronClickListener: OnClickListener? = null
 
-    private var viewModel: MiniCartWidgetViewModel? = null
+    private var viewModel: MiniCartViewModel? = null
 
     init {
         view = inflate(context, R.layout.widget_mini_cart, this)
@@ -77,7 +76,7 @@ class MiniCartWidget @JvmOverloads constructor(
     /*
     * Function to initialize the widget
     * */
-    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true, pageName: String = MiniCartAnalytics.TOKONOW_HOME_PAGE) {
+    fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true, pageName: MiniCartAnalytics.Page) {
         val application = fragment.activity?.application
         initializeInjector(application)
         initializeView(fragment)
@@ -96,7 +95,7 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun initializeViewModel(fragment: Fragment) {
-        viewModel = ViewModelProvider(fragment, viewModelFactory).get(MiniCartWidgetViewModel::class.java)
+        viewModel = ViewModelProvider(fragment, viewModelFactory).get(MiniCartViewModel::class.java)
         viewModel?.initializeGlobalState()
         observeGlobalEvent(fragment)
         observeMiniCartWidgetUiModel(fragment)
@@ -246,7 +245,7 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun sendEventClickBuy() {
-        val pageName = viewModel?.currentPage?.value ?: ""
+        val pageName = viewModel?.currentPage?.value ?: MiniCartAnalytics.Page.HOME_PAGE
         val products = viewModel?.miniCartSimplifiedData?.value?.miniCartItems ?: emptyList()
         analytics.eventClickBuy(pageName, products)
     }

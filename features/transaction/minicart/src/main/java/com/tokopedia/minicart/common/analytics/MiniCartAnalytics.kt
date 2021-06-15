@@ -11,6 +11,10 @@ import javax.inject.Inject
 
 class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterface) {
 
+    enum class Page {
+        HOME_PAGE, SEARCH_PAGE, CATEGORY_PAGE
+    }
+
     companion object {
         // HOST PAGE
         const val TOKONOW_HOME_PAGE = "landing"
@@ -267,19 +271,19 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
     // 10, 11, 12 Bottom Sheet - DONE
     @JvmName("eventClickBuyFromBottomSheet")
-    fun eventClickBuy(page: String, products: List<MiniCartProductUiModel>) {
+    fun eventClickBuy(page: Page, products: List<MiniCartProductUiModel>) {
         var eventAction = ""
         var eventCategory = ""
         when (page) {
-            TOKONOW_HOME_PAGE -> {
+            Page.HOME_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, "landing")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BELI, "homepage")
             }
-            SEARCH_PAGE -> {
+            Page.SEARCH_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, "search")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BELI, "search result")
             }
-            CATEGORY_PAGE -> {
+            Page.CATEGORY_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, "category")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BELI, "category page")
             }
@@ -311,19 +315,19 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
     // 10, 11, 12 Widget - DONE
     @JvmName("eventClickBuyFromWidget")
-    fun eventClickBuy(page: String, products: List<MiniCartItem>) {
+    fun eventClickBuy(page: Page, products: List<MiniCartItem>) {
         var eventAction = ""
         var eventCategory = ""
         when (page) {
-            TOKONOW_HOME_PAGE -> {
+            Page.HOME_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, "landing")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BELI, "homepage")
             }
-            SEARCH_PAGE -> {
+            Page.SEARCH_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, "search")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BELI, "search result")
             }
-            CATEGORY_PAGE -> {
+            Page.CATEGORY_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, "category")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BELI, "category page")
             }

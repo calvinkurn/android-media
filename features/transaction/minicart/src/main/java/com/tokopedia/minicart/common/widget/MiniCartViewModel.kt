@@ -5,8 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.minicart.cartlist.MiniCartListViewHolderMapper
+import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.*
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -14,13 +15,13 @@ import com.tokopedia.minicart.common.domain.usecase.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-class MiniCartWidgetViewModel @Inject constructor(private val executorDispatchers: CoroutineDispatchers,
-                                                  private val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
-                                                  private val getMiniCartListUseCase: GetMiniCartListUseCase,
-                                                  private val deleteCartUseCase: DeleteCartUseCase,
-                                                  private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
-                                                  private val updateCartUseCase: UpdateCartUseCase,
-                                                  private val miniCartListViewHolderMapper: MiniCartListViewHolderMapper)
+class MiniCartViewModel @Inject constructor(private val executorDispatchers: CoroutineDispatchers,
+                                            private val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
+                                            private val getMiniCartListUseCase: GetMiniCartListUseCase,
+                                            private val deleteCartUseCase: DeleteCartUseCase,
+                                            private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
+                                            private val updateCartUseCase: UpdateCartUseCase,
+                                            private val miniCartListUiModelMapper: MiniCartListUiModelMapper)
     : BaseViewModel(executorDispatchers.main) {
 
     // Global Data
@@ -28,8 +29,8 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
     val currentShopIds: LiveData<List<String>>
         get() = _currentShopIds
 
-    private val _currentPage = MutableLiveData<String>()
-    val currentPage: LiveData<String>
+    private val _currentPage = MutableLiveData<MiniCartAnalytics.Page>()
+    val currentPage: LiveData<MiniCartAnalytics.Page>
         get() = _currentPage
 
     // Widget DATA
@@ -50,7 +51,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
 
     private var lastDeletedProductItem: MiniCartProductUiModel? = null
 
-    fun initializeCurrentPage(currentPage: String) {
+    fun initializeCurrentPage(currentPage: MiniCartAnalytics.Page) {
         _currentPage.value = currentPage
     }
 
@@ -82,7 +83,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
         getMiniCartListUseCase.setParams(shopIds)
         getMiniCartListUseCase.execute(
                 onSuccess = {
-                    val tmpMiniCartListUiModel = miniCartListViewHolderMapper.mapUiModel(it)
+                    val tmpMiniCartListUiModel = miniCartListUiModelMapper.mapUiModel(it)
                     tmpMiniCartListUiModel.isFirstLoad = isFirstLoad
                     tmpMiniCartListUiModel.needToCalculateAfterLoad = needToCalculateAfterLoad
                     _miniCartListBottomSheetUiModel.value = tmpMiniCartListUiModel
@@ -268,7 +269,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                     ?: ""
             val overWeight = (totalWeight - maxWeight) / 1000.0f
             if (tickerWarning == null) {
-                tickerWarning = miniCartListViewHolderMapper.mapTickerWarningUiModel(overWeight, warningWording)
+                tickerWarning = miniCartListUiModelMapper.mapTickerWarningUiModel(overWeight, warningWording)
                 tickerWarning.let {
                     val firstItem = visitables.firstOrNull()
                     if (firstItem != null && firstItem is MiniCartTickerErrorUiModel) {
@@ -461,7 +462,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
             miniCartSimplifiedData.value?.miniCartItems?.let {
                 miniCartItems.addAll(it)
             }
-            updateCartUseCase.setParams(miniCartItems, true)
+            updateCartUseCase.setParams(miniCartItems, true, !isForCheckout)
         } else if (observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
             val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
             miniCartListBottomSheetUiModel.value?.visitables?.forEach {
@@ -469,7 +470,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
                     miniCartProductUiModels.add(it)
                 }
             }
-            updateCartUseCase.setParamsFromUiModels(miniCartProductUiModels)
+            updateCartUseCase.setParamsFromUiModels(miniCartProductUiModels, !isForCheckout)
         }
         updateCartUseCase.execute(
                 onSuccess = {
@@ -501,7 +502,7 @@ class MiniCartWidgetViewModel @Inject constructor(private val executorDispatcher
     }
 
     fun getLatestMiniCartData(): MiniCartSimplifiedData {
-        return miniCartListViewHolderMapper.reverseMapUiModel(miniCartListBottomSheetUiModel.value)
+        return miniCartListUiModelMapper.reverseMapUiModel(miniCartListBottomSheetUiModel.value)
     }
 
     fun updateMiniCartSimplifiedData(miniCartSimplifiedData: MiniCartSimplifiedData) {
