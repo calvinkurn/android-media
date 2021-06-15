@@ -65,7 +65,7 @@ public class AutocompleteTracking {
     public static void eventClickShop(String label, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
-                        EVENT, AutocompleteEventTracking.Event.CLICK_SEARCH_RESULT,
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
                         EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_SHOP_SUGGESTION,
                         EVENT_LABEL, label,
@@ -88,7 +88,7 @@ public class AutocompleteTracking {
     public static void eventClickKeyword(String label, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
-                        EVENT, AutocompleteEventTracking.Event.CLICK_SEARCH_RESULT,
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
                         EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_KEYWORD_SUGGESTION,
                         EVENT_LABEL, label,
@@ -101,7 +101,7 @@ public class AutocompleteTracking {
 
     public static void eventClickCurated(String label, String campaignCode, String pageSource) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, AutocompleteEventTracking.Event.CLICK_SEARCH_RESULT,
+                DataLayer.mapOf(EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
                         EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - /",
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_DIGITAL_PRODUCT_SUGGESTION,
                         EVENT_LABEL, label,

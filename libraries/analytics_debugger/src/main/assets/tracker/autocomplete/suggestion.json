@@ -27,7 +27,7 @@
       "pageSource": ".*"
     },
     {
-      "event": "clickSearchResult",
+      "event": "clickTopNav",
       "eventCategory": "top nav",
       "eventAction": "click - shop autocomplete",
       "eventLabel": ".+ - keyword: .+ - shop: .+",
@@ -37,7 +37,7 @@
       "pageSource": ".*"
     },
     {
-      "event": "clickSearchResult",
+      "event": "clickTopNav",
       "eventCategory": "top nav",
       "eventAction": "click - product autocomplete",
       "eventLabel": "keyword: .+ - value: .+ - po: .+ - applink: .+",
@@ -47,7 +47,7 @@
       "pageSource": ".*"
     },
     {
-      "event": "clickSearchResult",
+      "event": "clickTopNav",
       "eventCategory": "top nav - /",
       "eventAction": "click - digital product suggestion",
       "eventLabel": "keyword: .+ - product: .+ - po: .+ - page: .+",
