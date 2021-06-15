@@ -34,4 +34,27 @@ data class MiniCartListUiModel(
 
         return null
     }
+
+    fun getAvailableProduct(): List<MiniCartProductUiModel> {
+        val availableProducts = mutableListOf<MiniCartProductUiModel>()
+        loop@ for (visitable in visitables) {
+            if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
+                availableProducts.add(visitable)
+            }
+        }
+
+        return availableProducts
+    }
+
+    fun getUnavailableProduct(): List<MiniCartProductUiModel> {
+        val unavailableProducts = mutableListOf<MiniCartProductUiModel>()
+        loop@ for (visitable in visitables) {
+            if (visitable is MiniCartProductUiModel && visitable.isProductDisabled) {
+                unavailableProducts.add(visitable)
+            }
+        }
+
+        return unavailableProducts
+    }
+
 }
