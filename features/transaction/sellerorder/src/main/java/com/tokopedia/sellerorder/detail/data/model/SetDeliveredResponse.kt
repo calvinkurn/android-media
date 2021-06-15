@@ -9,8 +9,6 @@ data class SetDeliveredResponse(
 )
 
 data class SetDelivered(
-        @SerializedName("message")
-        var message: List<String> = listOf(),
         @SerializedName("success")
         var success: Int = 0
 )

@@ -1,6 +1,5 @@
 mutation setDelivered($input:SetDeliveredRequest!) {
   set_delivered(input: $input) {
     success
-    message
   }
 }
