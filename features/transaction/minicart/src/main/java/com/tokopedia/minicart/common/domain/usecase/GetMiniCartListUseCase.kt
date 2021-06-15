@@ -58,14 +58,6 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                 status
                 data {
                   errors
-                  empty_cart {
-                    title
-                    image
-                    description
-                    buttons {
-                      id
-                    }
-                  }
                   out_of_service {
                     id
                     code
@@ -145,6 +137,8 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           product_notes
                           product_min_order
                           product_max_order
+                          product_invenage_value
+                          product_switch_invenage
                           parent_id
                           wholesale_price {
                             qty_min

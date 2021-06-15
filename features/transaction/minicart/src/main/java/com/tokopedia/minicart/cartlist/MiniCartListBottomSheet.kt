@@ -24,9 +24,9 @@ import com.tokopedia.minicart.cartlist.subpage.summarytransaction.SummaryTransac
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartDataResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
+import com.tokopedia.minicart.common.domain.data.RemoveFromCartUiModel
 import com.tokopedia.minicart.common.widget.GlobalEvent
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.network.exception.ResponseErrorException
@@ -238,8 +238,8 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     private fun initializeBottomSheetUiModelObserver() {
         bottomSheetUiModelObserver = Observer<MiniCartListUiModel> {
-            if (it.miniCartWidgetUiModel.totalProductCount == 0) {
-                bottomSheet?.dismiss()
+            if (it.miniCartWidgetUiModel.totalProductCount == 0 && it.miniCartWidgetUiModel.totalProductError == 0) {
+                dismiss()
             }
 
             if (it.isFirstLoad) {
@@ -293,7 +293,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             bottomSheet?.context.let {
                 hideProgressLoading()
                 bottomSheetListener?.onBottomSheetSuccessUpdateCartForCheckout()
-                bottomSheet?.dismiss()
+                dismiss()
             }
         }
     }
@@ -315,17 +315,25 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     private fun onSuccessDeleteCartItem(globalEvent: GlobalEvent, viewModel: MiniCartViewModel) {
         hideProgressLoading()
-        val data = globalEvent.data as? RemoveFromCartData
-        val message = data?.data?.message?.firstOrNull() ?: ""
+        val data = globalEvent.data as? RemoveFromCartUiModel
+        val message = data?.removeFromCartData?.data?.message?.firstOrNull() ?: ""
         if (message.isNotBlank()) {
             val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_cta_cancel)
                     ?: ""
-            viewModel.getCartList()
-            bottomsheetContainer?.let { view ->
-                bottomSheetListener?.showToaster(view, message, Toaster.TYPE_NORMAL, ctaText) {
-                    analytics.eventClickUndoDelete()
-                    showProgressLoading()
-                    viewModel.undoDeleteCartItems()
+            if (data?.isLastItem == true) {
+                dismiss()
+                bottomSheetListener?.showToaster(
+                        message = message,
+                        type = Toaster.TYPE_NORMAL
+                )
+            } else {
+                viewModel.getCartList()
+                bottomsheetContainer?.let { view ->
+                    bottomSheetListener?.showToaster(view, message, Toaster.TYPE_NORMAL, ctaText) {
+                        analytics.eventClickUndoDelete()
+                        showProgressLoading()
+                        viewModel.undoDeleteCartItems()
+                    }
                 }
             }
         }

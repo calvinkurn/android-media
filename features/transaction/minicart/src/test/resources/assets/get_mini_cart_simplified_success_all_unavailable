@@ -1,0 +1,106 @@
+{
+  "status": "OK",
+  "mini_cart": {
+    "error_message": [],
+    "status": "OK",
+    "data": {
+      "errors": [],
+      "total_product_count": 0,
+      "total_product_error": 2,
+      "total_product_price": 0,
+      "available_section": { },
+      "unavailable_section": [
+        {
+          "unavailable_group": [
+            {
+              "shop": {
+                "shop_id": 2007325,
+                "shop_name": "AWgadget",
+                "shop_type_info": {
+                  "title_fmt": ""
+                }
+              },
+              "shipment_information": {
+                "free_shipping": {
+                  "eligible": false
+                },
+                "free_shipping_extra": {
+                  "eligible": false
+                }
+              },
+              "cart_details": [
+                {
+                  "cart_id": "2693179591",
+                  "product": {
+                    "parent_id": 1793152507,
+                    "product_id": 1809319671,
+                    "product_quantity": 1,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 0,
+                    "slash_price_label": "",
+                    "warehouse_id": 1603251,
+                    "category_id": 3054,
+                    "category": "Handphone & Tablet / Handphone / Android OS",
+                    "product_name": "Poco X3 Pro ram 8/256 gb garansi resmi - Frost Blue",
+                    "variant_description_detail": {
+                      "variant_name": [
+                        "Frost Blue"
+                      ]
+                    },
+                    "product_price": 3920000
+                  }
+                }
+              ]
+            },
+            {
+              "shop": {
+                "shop_id": 11130255,
+                "shop_name": "kingtel80 original100%",
+                "shop_type_info": {
+                  "title_fmt": ""
+                }
+              },
+              "shipment_information": {
+                "free_shipping": {
+                  "eligible": false
+                },
+                "free_shipping_extra": {
+                  "eligible": false
+                }
+              },
+              "cart_details": [
+                {
+                  "cart_id": "2693177964",
+                  "product": {
+                    "parent_id": 0,
+                    "product_id": 1815388587,
+                    "product_quantity": 1,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 0,
+                    "slash_price_label": "",
+                    "warehouse_id": 11131577,
+                    "category_id": 3054,
+                    "category": "Handphone & Tablet / Handphone / Android OS",
+                    "product_name": "XIAOMI POCO X3 PRO RAM 8GB/256GB BLACK ADA NFC",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "product_price": 3939000
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
