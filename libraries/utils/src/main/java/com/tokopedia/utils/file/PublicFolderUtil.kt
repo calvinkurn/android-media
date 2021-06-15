@@ -96,8 +96,10 @@ object PublicFolderUtil {
 
         var resultFile = File(filePath)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            val resultPath = resultFile.absolutePath.replace(resultFile.name, outputFileName)
-            resultFile.renameTo(File(resultPath))
+            try {
+                val resultPath = resultFile.absolutePath.replace(resultFile.name, outputFileName)
+                resultFile.renameTo(File(resultPath))
+            } catch (ex: Exception) {}
         }
         return resultFile to uri
     }
