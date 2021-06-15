@@ -251,7 +251,7 @@ class OfficialStoreTracking(context: Context) {
             shopId: String,
             campaignCode: String,
             isFromDC: Boolean = false,
-            attribute: String
+            attribute: String = ""
     ) {
         val creativeName = if (isFromDC) attribute else "$shopName - $additionalInformation"
         val statusLogin = if (isLogin) "login" else "nonlogin"
@@ -290,7 +290,7 @@ class OfficialStoreTracking(context: Context) {
             isLogin: Boolean,
             shopId: String,
             isFromDC: Boolean = false,
-            attribute: String,
+            attribute: String = "",
     ) {
         val creativeName = if (isFromDC) attribute else "$shopName - $additionalInformation"
         val statusLogin = if (isLogin) "login" else "nonlogin"

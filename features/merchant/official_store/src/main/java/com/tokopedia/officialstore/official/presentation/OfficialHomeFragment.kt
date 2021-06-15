@@ -849,28 +849,28 @@ class OfficialHomeFragment :
 
     override fun onShopImpression(categoryName: String, position: Int, shopData: Shop) {
         tracking?.eventImpressionFeatureBrand(
-                categoryName,
-                position,
-                shopData.name.orEmpty(),
-                shopData.imageUrl.orEmpty(),
-                shopData.additionalInformation.orEmpty(),
-                shopData.featuredBrandId.orEmpty(),
-                viewModel.isLoggedIn(),
-                shopData.shopId.orEmpty(),
+                categoryName = categoryName,
+                shopPosition = position,
+                shopName = shopData.name.orEmpty(),
+                url = shopData.imageUrl.orEmpty(),
+                additionalInformation = shopData.additionalInformation.orEmpty(),
+                featuredBrandId = shopData.featuredBrandId.orEmpty(),
+                isLogin = viewModel.isLoggedIn(),
+                shopId = shopData.shopId.orEmpty()
         )
     }
 
     override fun onShopClick(categoryName: String, position: Int, shopData: Shop) {
         tracking?.eventClickFeaturedBrand(
-                categoryName,
-                position,
-                shopData.name.orEmpty(),
-                shopData.url.orEmpty(),
-                shopData.additionalInformation.orEmpty(),
-                shopData.featuredBrandId.orEmpty(),
-                viewModel.isLoggedIn(),
-                shopData.shopId.orEmpty(),
-                shopData.campaignCode.orEmpty()
+                categoryName = categoryName,
+                shopPosition = position,
+                shopName = shopData.name.orEmpty(),
+                url = shopData.url.orEmpty(),
+                additionalInformation = shopData.additionalInformation.orEmpty(),
+                featuredBrandId = shopData.featuredBrandId.orEmpty(),
+                isLogin = viewModel.isLoggedIn(),
+                shopId = shopData.shopId.orEmpty(),
+                campaignCode = shopData.campaignCode.orEmpty()
         )
         RouteManager.route(context, shopData.url)
     }
