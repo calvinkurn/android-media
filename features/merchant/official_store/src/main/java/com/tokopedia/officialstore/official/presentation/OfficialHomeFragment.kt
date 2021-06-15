@@ -856,7 +856,7 @@ class OfficialHomeFragment :
                 shopData.additionalInformation.orEmpty(),
                 shopData.featuredBrandId.orEmpty(),
                 viewModel.isLoggedIn(),
-                shopData.shopId.orEmpty()
+                shopData.shopId.orEmpty(),
         )
     }
 

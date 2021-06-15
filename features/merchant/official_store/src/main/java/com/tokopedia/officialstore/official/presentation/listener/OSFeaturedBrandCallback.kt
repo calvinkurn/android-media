@@ -23,7 +23,9 @@ class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHa
                 additionalInformation = "",
                 featuredBrandId = "",
                 isLogin = dcEventHandler.isLogin(),
-                shopId = channelGrid.shopId
+                shopId = channelGrid.shopId,
+                isFromDC = true,
+                attribute = channelGrid.attribution
         )
     }
 
@@ -37,7 +39,9 @@ class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHa
                 featuredBrandId = "",
                 isLogin = dcEventHandler.isLogin(),
                 shopId = channelGrid.shopId,
-                campaignCode = channelGrid.campaignCode
+                campaignCode = channelGrid.campaignCode,
+                isFromDC = true,
+                attribute = channelGrid.attribution
         )
     }
 
