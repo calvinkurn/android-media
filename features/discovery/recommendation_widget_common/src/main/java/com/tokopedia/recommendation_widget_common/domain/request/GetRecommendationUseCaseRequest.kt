@@ -134,6 +134,9 @@ internal class GetRecommendationUseCaseRequest {
                            relatedProductUrlLink
                            price
                            priceInt
+                           discountPercentage
+                           slashedPrice
+                           slashedPriceInt
                            shop {
                                id
                                name

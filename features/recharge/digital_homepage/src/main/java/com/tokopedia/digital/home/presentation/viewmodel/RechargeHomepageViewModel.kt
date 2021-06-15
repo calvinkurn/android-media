@@ -172,12 +172,14 @@ class RechargeHomepageViewModel @Inject constructor(
     }
 
     fun getDynamicIconsSectionIds(): ArrayList<String> {
-        return if (rechargeHomepageSectionSkeleton.value is Success) {
-            val dynamicIconSectionsIds = arrayListOf<String>()
-            (rechargeHomepageSectionSkeleton.value as Success).data.sections.filter { it.template.equals(SECTION_DYNAMIC_ICONS) }
-                    .forEach { dynamicIconSectionsIds.add(it.id) }
-            dynamicIconSectionsIds
-        } else arrayListOf()
+        rechargeHomepageSectionSkeleton.value.let {
+            return if (it is Success){
+                val dynamicIconSectionsIds = arrayListOf<String>()
+                it.data.sections.filter { it.template.equals(SECTION_DYNAMIC_ICONS) }
+                        .forEach { dynamicIconSectionsIds.add(it.id) }
+                dynamicIconSectionsIds
+            } else arrayListOf()
+        }
     }
 
     fun getSearchBarPlaceholder(): String {

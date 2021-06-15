@@ -18,6 +18,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.RemoteConfigKey.LABEL_SHOP_PAGE_FREE_ONGKIR_TITLE
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -109,12 +110,10 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
                 )
             }
         }
-        when {
-            shopPageHeaderDataModel.isOfficial -> displayOfficial()
-            shopPageHeaderDataModel.isGoldMerchant -> displayGoldenShop()
-            else -> {
-                shopPageProfileBadgeView.visibility = View.GONE
-            }
+        if (shopPageHeaderDataModel.shopBadge.isNotEmpty()) {
+            setShopBadge(shopPageHeaderDataModel.shopBadge)
+        } else {
+            shopPageProfileBadgeView.visibility = View.GONE
         }
         TextAndContentDescriptionUtil.setTextAndContentDescription(view.shop_page_main_profile_name, MethodChecker.fromHtml(shopPageHeaderDataModel.shopName).toString(), view.shop_page_main_profile_name.context.getString(R.string.content_desc_shop_page_main_profile_name))
         if (isMyShop) setupSgcPlayWidget(shopPageHeaderDataModel)
@@ -468,14 +467,9 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.image_view_shop_reputation_badge.loadIcon(shopBadge.badgeHD)
     }
 
-    private fun displayGoldenShop() {
+    private fun setShopBadge(shopBadge: String){
         shopPageProfileBadgeView.visibility = View.VISIBLE
-        shopPageProfileBadgeView.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_power_merchant))
-    }
-
-    private fun displayOfficial() {
-        shopPageProfileBadgeView.visibility = View.VISIBLE
-        shopPageProfileBadgeView.setImageResource(R.drawable.shop_page_ic_badge_shop_official)
+        shopPageProfileBadgeView.loadImage(shopBadge)
     }
 
     /**

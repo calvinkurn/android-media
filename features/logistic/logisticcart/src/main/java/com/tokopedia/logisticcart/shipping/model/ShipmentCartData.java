@@ -32,6 +32,7 @@ public class ShipmentCartData implements Parcelable {
     private String categoryIds;
     private int preOrderDuration;
     private boolean isFulfillment;
+    private int shopTier;
 
     public ShipmentCartData() {
     }
@@ -196,6 +197,30 @@ public class ShipmentCartData implements Parcelable {
         this.categoryIds = categoryIds;
     }
 
+    public int getPreOrderDuration() {
+        return preOrderDuration;
+    }
+
+    public void setPreOrderDuration(int preOrderDuration) {
+        this.preOrderDuration = preOrderDuration;
+    }
+
+    public boolean isFulfillment() {
+        return isFulfillment;
+    }
+
+    public void setFulfillment(boolean fulfillment) {
+        isFulfillment = fulfillment;
+    }
+
+    public int getShopTier() {
+        return shopTier;
+    }
+
+    public void setShopTier(int shopTier) {
+        this.shopTier = shopTier;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -225,6 +250,7 @@ public class ShipmentCartData implements Parcelable {
         dest.writeString(this.categoryIds);
         dest.writeInt(this.preOrderDuration);
         dest.writeByte((byte) (isFulfillment? 1 : 0));
+        dest.writeInt(shopTier);
     }
 
     protected ShipmentCartData(Parcel in) {
@@ -250,6 +276,7 @@ public class ShipmentCartData implements Parcelable {
         this.categoryIds = in.readString();
         this.preOrderDuration = in.readInt();
         this.isFulfillment = in.readByte() != 0;
+        this.shopTier = in.readInt();
     }
 
     public static final Creator<ShipmentCartData> CREATOR = new Creator<ShipmentCartData>() {
@@ -264,19 +291,4 @@ public class ShipmentCartData implements Parcelable {
         }
     };
 
-    public int getPreOrderDuration() {
-        return preOrderDuration;
-    }
-
-    public void setPreOrderDuration(int preOrderDuration) {
-        this.preOrderDuration = preOrderDuration;
-    }
-
-    public boolean isFulfillment() {
-        return isFulfillment;
-    }
-
-    public void setFulfillment(boolean fulfillment) {
-        isFulfillment = fulfillment;
-    }
 }

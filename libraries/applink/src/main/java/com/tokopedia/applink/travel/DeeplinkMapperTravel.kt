@@ -2,8 +2,9 @@ package com.tokopedia.applink.travel
 
 import android.content.Context
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
@@ -17,6 +18,9 @@ object DeeplinkMapperTravel {
         return when {
             deeplink.startsWith(ApplinkConst.HOTEL_SRP, true) -> {
                 getHotelSrp(context)
+            }
+            deeplink.equals(ApplinkConst.HOTEL_ORDER, true) -> {
+                DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(context, deeplink)
             }
             else -> deeplink
         }
@@ -32,7 +36,7 @@ object DeeplinkMapperTravel {
     }
 
     @JvmStatic
-    fun isHotelSrpShowMap(context: Context): Boolean = FirebaseRemoteConfigImpl(context)
+    fun isHotelSrpShowMap(context: Context): Boolean = FirebaseRemoteConfigInstance.get(context)
             .getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_SEARCH_WITH_MAP, true)
 
     @JvmStatic

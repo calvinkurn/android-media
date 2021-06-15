@@ -32,17 +32,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".airport.view.activity.FlightAirportPickerActivity"
+            android:name=".search.presentation.activity.FlightSearchActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".searchV4.presentation.activity.FlightSearchActivity"
-            android:label="@string/search_flight"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" />
-        <activity
-            android:name=".searchV4.presentation.activity.FlightSearchReturnActivity"
+            android:name=".search.presentation.activity.FlightSearchReturnActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
@@ -58,7 +53,12 @@
             android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".cancellationV2.presentation.activity.FlightCancellationPassengerActivity"
+            android:name=".cancellation.presentation.activity.FlightCancellationPassengerActivity"
+            android:label="@string/activity_label_flight_cancellation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
+        <activity
+            android:name=".cancellation_navigation.presentation.FlightCancellationActivity"
             android:label="@string/activity_label_flight_cancellation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
@@ -75,18 +75,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".cancellationV2.presentation.activity.FlightCancellationReasonActivity"
+            android:name=".cancellation.presentation.activity.FlightCancellationReasonActivity"
             android:label="@string/activity_label_flight_cancellation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".cancellationV2.presentation.activity.FlightCancellationReviewActivity"
+            android:name=".cancellation.presentation.activity.FlightCancellationReviewActivity"
             android:label="@string/activity_label_flight_review_cancellation"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".cancellation.view.activity.FlightCancellationTermsAndConditionsActivity"
+            android:name=".cancellation.presentation.activity.FlightCancellationTermsAndConditionsActivity"
             android:label="@string/flight_cancellation_terms_and_condition_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
@@ -129,7 +129,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".cancellationV2.presentation.activity.FlightCancellationChooseReasonActivity"
+            android:name=".cancellation.presentation.activity.FlightCancellationChooseReasonActivity"
             android:label="@string/flight_cancellation_reason_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
@@ -139,7 +139,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".bookingV3.presentation.activity.FlightBookingActivity"
+            android:name=".booking.presentation.activity.FlightBookingActivity"
             android:label="@string/flight_booking_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />

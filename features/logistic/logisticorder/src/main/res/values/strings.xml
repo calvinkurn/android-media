@@ -32,6 +32,7 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="label_select_service_logistic_module">Tipe Pesanan</string>
     <string name="rationale_barcode_permission">Aplikasi ini membutuhkan beberapa izin. Perbolehkan?</string>
     <string name="permission_denied">Akses tidak diberikan</string>
+    <string name="label_image_preview">Gambar Bukti</string>
 
     <!--CONTENT DESC-->
     <string name="content_desc_reference_number">text nomor resi</string>

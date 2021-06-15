@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
 import com.tokopedia.logisticCommon.R
 import com.tokopedia.logisticCommon.domain.mapper.AddressCornerMapper
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
@@ -22,7 +23,7 @@ const val PARAM_ADDRESS_USECASE: String = "input"
  * Created by fajarnuha on 2019-05-21.
  */
 class GetAddressCornerUseCase
-@Inject constructor(@ApplicationContext val context: Context, val usecase: GraphqlUseCase, val mapper: AddressCornerMapper) {
+@Inject constructor(@ApplicationContext val context: Context, val usecase: GraphqlUseCaseInterface, val mapper: AddressCornerMapper) {
 
     fun execute(query: String, prevState: Int?, localChosenAddrId: Int?, isWhitelistChosenAddress: Boolean): Observable<AddressListModel> =
             this.getObservable(query = query, page = 1, isAddress = true, isCorner = false, limit = 10,

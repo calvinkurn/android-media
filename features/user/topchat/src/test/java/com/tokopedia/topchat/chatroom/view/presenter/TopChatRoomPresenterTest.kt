@@ -66,6 +66,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.data.Resource
@@ -792,7 +793,13 @@ class TopChatRoomPresenterTest {
 
         // Then
         verify(exactly = 1) {
-            sendAbleProductPreview.generateMsgObj(exMessageId, exOpponentId, exSendMessage, listInterceptor)
+            sendAbleProductPreview.generateMsgObj(
+                exMessageId,
+                exOpponentId,
+                exSendMessage,
+                listInterceptor,
+                LocalCacheModel()
+            )
         }
         verify(exactly = 1) { view.sendAnalyticAttachmentSent(sendAbleProductPreview) }
         verify(exactly = 1) { view.addDummyMessage(dummyMessage) }
@@ -1469,7 +1476,7 @@ class TopChatRoomPresenterTest {
         )
 
         // When
-        presenter.addOngoingUpdateProductStock(product, 0, null)
+        presenter.addOngoingUpdateProductStock(productId, product, 0, null)
 
         // Then
         assertThat(presenter.onGoingStockUpdate.containsKey(productId), `is`(true))

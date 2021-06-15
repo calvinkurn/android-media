@@ -100,8 +100,18 @@ fun String.parseAsHtml(): CharSequence {
 }
 
 fun String.asUpperCase(): String {
-    val locale = Locale("id")
+    val locale = Locale.getDefault()
     return this.toUpperCase(locale)
+}
+
+fun String.asLowerCase(): String {
+    val locale = Locale.getDefault()
+    return this.toLowerCase(locale)
+}
+
+fun String.asCamelCase(): String {
+    val locale = Locale.getDefault()
+    return this.capitalize(locale)
 }
 
 fun String?.toEmpty(): String = ""

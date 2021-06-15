@@ -123,7 +123,7 @@ data class RechargeGetCart(
 
         @SerializedName("admin_fee")
         @Expose
-        val adminFee: Int = 0
+        val adminFee: Double = 0.0
 ) {
     data class Response(
             @SerializedName("rechargeGetCart")

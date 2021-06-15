@@ -10,7 +10,6 @@ import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
@@ -237,11 +236,6 @@ class HomeVisitableFactoryImpl(
             headerViewModel.isUserLogin = userSessionInterface?.isLoggedIn?:false
             visitableList.add(headerViewModel)
         }
-        return this
-    }
-
-    override fun addGeolocationVisitable(): HomeVisitableFactory {
-        visitableList.add(GeoLocationPromptDataModel())
         return this
     }
 

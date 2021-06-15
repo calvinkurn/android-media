@@ -4,17 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.model.*
-import com.tokopedia.flight.searchV4.domain.FlightSearchCountUseCase
-import com.tokopedia.flight.searchV4.domain.FlightSearchStatisticsUseCase
-import com.tokopedia.flight.searchV4.presentation.model.filter.DepartureTimeEnum
-import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.searchV4.presentation.model.filter.TransitEnum
-import com.tokopedia.flight.searchV4.presentation.model.statistics.AirlineStat
-import com.tokopedia.flight.searchV4.presentation.model.statistics.FlightSearchStatisticModel
+import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
+import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
+import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
+import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.search.presentation.model.statistics.AirlineStat
+import com.tokopedia.flight.search.presentation.model.statistics.FlightSearchStatisticModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

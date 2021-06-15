@@ -35,6 +35,7 @@ public class ShippingParam implements Parcelable {
     private String uniqueId; // this is actually cart string
     private boolean isFulfillment;
     private int preOrderDuration;
+    private int shopTier;
 
     public ShippingParam() {
     }
@@ -65,6 +66,7 @@ public class ShippingParam implements Parcelable {
         uniqueId = in.readString();
         isFulfillment = in.readByte() != 0;
         preOrderDuration = in.readInt();
+        shopTier = in.readInt();
     }
 
     @Override
@@ -94,6 +96,7 @@ public class ShippingParam implements Parcelable {
         dest.writeString(uniqueId);
         dest.writeByte((byte) (isFulfillment? 1 : 0));
         dest.writeInt(preOrderDuration);
+        dest.writeInt(shopTier);
     }
 
     @Override
@@ -299,5 +302,13 @@ public class ShippingParam implements Parcelable {
 
     public void setPreOrderDuration(int preOrderDuration) {
         this.preOrderDuration = preOrderDuration;
+    }
+
+    public int getShopTier() {
+        return shopTier;
+    }
+
+    public void setShopTier(int shopTier) {
+        this.shopTier = shopTier;
     }
 }

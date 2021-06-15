@@ -22,6 +22,9 @@ data class BaseNotificationModel(
         @ColumnInfo(name = "notificationId")
         var notificationId: Int = 0,
 
+        @ColumnInfo(name = "elementId")
+        var elementId: String? = "",
+
         @PrimaryKey
         @ColumnInfo(name = "campaignId")
         var campaignId: Long = 0,
@@ -79,6 +82,12 @@ data class BaseNotificationModel(
 
         @ColumnInfo(name = "visualExpandedImg")
         var visualExpandedImageUrl: String? = null,
+
+        @ColumnInfo(name = "visualCollapsedElementId")
+        var visualCollapsedElementId: String? = "",
+
+        @ColumnInfo(name = "visualExpandedElementId")
+        var visualExpandedElementId: String? = "",
 
         @ColumnInfo(name = "carouselIndex")
         var carouselIndex: Int = 0,

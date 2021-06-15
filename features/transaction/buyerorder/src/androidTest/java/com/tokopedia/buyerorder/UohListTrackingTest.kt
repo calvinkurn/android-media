@@ -4,11 +4,11 @@ import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.cassava.validator.Utils.getJsonDataFromAsset
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.buyerorder.test.R
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
 import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -24,12 +24,14 @@ import org.junit.Test
 class UohListTrackingTest {
 
     companion object {
-        private const val QUERY_SUMMARY_UOH = "tracker/transaction/uoh_summary.json"
         private const val KEY_UOH_ORDERS = "GetOrderHistory"
     }
 
     @get:Rule
     var activityRule = ActivityTestRule(UohListActivity::class.java, false, false)
+
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
@@ -57,14 +59,14 @@ class UohListTrackingTest {
         activityRule.launchActivity(null)
         onIdle()
 
-        val query = getJsonDataFromAsset(context, QUERY_SUMMARY_UOH)
-                ?: throw AssertionError("Validator Query not found")
+        val query = "tracker/transaction/uoh_summary.json"
 
         runBot {
             loading()
             clickPrimaryButton()
             clickThreeDotsMenu()
             clickBeliLagi()
+            loading()
             clickOrderCard()
             doSearch("product 17")
             clickFilterStatus()
@@ -77,7 +79,7 @@ class UohListTrackingTest {
             selectFilterDate()
             doApplyFilter()
         } submit {
-            hasPassedAnalytics(gtmLogDBSource, query)
+            hasPassedAnalytics(cassavaTestRule, query)
         }
     }
 }

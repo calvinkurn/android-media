@@ -7,7 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.countdown.CountDownView
+import com.tokopedia.officialstore.official.presentation.widget.CountDownView
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header

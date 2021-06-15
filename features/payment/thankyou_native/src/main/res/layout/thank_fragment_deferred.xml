@@ -157,15 +157,25 @@
                 android:id="@+id/tvAccountNumberCopy"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/spacing_lvl4"
-                android:layout_marginRight="@dimen/spacing_lvl4"
                 android:text="@string/thank_copy"
+                android:layout_marginEnd="@dimen/unify_space_8"
                 android:textColor="@color/Unify_G500"
+                app:layout_constraintBottom_toBottomOf="@+id/tvAccountNumber"
+                app:layout_constraintEnd_toStartOf="@+id/icCopyAccountNumber"
+                app:layout_constraintTop_toTopOf="@+id/tvAccountNumber"
+                app:typographyType="heading_6"
+                app:typographyWeight="bold" />
+            
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icCopyAccountNumber"
+                app:icon_name="COPY"
+                android:layout_marginEnd="@dimen/unify_font_16"
                 app:layout_constraintBottom_toBottomOf="@+id/tvAccountNumber"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvAccountNumber"
-                app:typographyType="body_3"
-                app:typographyWeight="bold" />
+                app:icon_color_light_enable="@color/Unify_G500"
+                android:layout_width="@dimen/unify_font_16"
+                android:layout_height="@dimen/unify_space_16"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTotalAmountLabel"
@@ -181,15 +191,29 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvTotalAmount"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl1"
-                android:textColor="@color/Unify_Y500"
+                app:layout_constraintHorizontal_bias="0"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toStartOf="@+id/tvSeeDetail"
                 app:layout_constraintStart_toStartOf="@+id/tvTotalAmountLabel"
                 app:layout_constraintTop_toBottomOf="@+id/tvTotalAmountLabel"
                 app:typographyType="heading_5"
                 tools:text="RP 43.434.434.434" />
+
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icCopyAmount"
+                app:icon_name="COPY"
+                android:layout_marginStart="@dimen/unify_space_8"
+                app:layout_constraintBottom_toBottomOf="@id/tvTotalAmount"
+                app:layout_constraintTop_toTopOf="@id/tvTotalAmount"
+                app:layout_constraintStart_toEndOf="@id/tvTotalAmount"
+                android:layout_marginEnd="@dimen/unify_font_16"
+                app:icon_color_light_enable="@color/Unify_G500"
+                android:layout_width="@dimen/unify_font_16"
+                android:layout_height="@dimen/unify_space_16"/>
 
 
             <com.tokopedia.unifyprinciples.Typography
