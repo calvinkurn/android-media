@@ -4,7 +4,6 @@ import android.net.Uri
 import android.os.Bundle
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.discovery.common.utils.URLParser
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.category.di.CategoryComponent
 import com.tokopedia.tokomart.category.di.CategoryContextModule
@@ -30,6 +29,7 @@ class CategoryActivity: BaseSearchCategoryActivity(), HasComponent<CategoryCompo
         val categoryL1 = uri.getCategoryL1()
         val categoryL2 = uri.getCategoryL2()
         val queryParamMap = URLParser(uri.toString()).paramKeyValueMapDecoded
+        queryParamMap.removeCategoryEntries()
 
         return DaggerCategoryComponent.builder()
                 .baseAppComponent(getBaseAppComponent())
@@ -43,6 +43,13 @@ class CategoryActivity: BaseSearchCategoryActivity(), HasComponent<CategoryCompo
 
     private fun Uri?.getCategoryL2(): String =
             this?.getQueryParameter(PARAM_CATEGORY_L2) ?: ""
+
+    private fun MutableMap<String, String>.removeCategoryEntries(): Map<String, String> {
+        remove(PARAM_CATEGORY_L1)
+        remove(PARAM_CATEGORY_L2)
+
+        return this
+    }
 
     companion object {
         private const val PARAM_CATEGORY_L1 = "category_l1"
