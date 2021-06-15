@@ -38,7 +38,9 @@ class AddToCartNonVariantTestHelper(
 
     fun `test add to cart success`() {
         val addToCartQty = 10
+        val errorMessage = arrayListOf("Success nih", "1 barang berhasil ditambahkan ke keranjang!")
         val addToCartSuccessModel = AddToCartDataModel(
+                errorMessage = errorMessage,
                 status = AddToCartDataModel.STATUS_OK,
                 data = DataModel(
                         success = 1,
@@ -58,7 +60,9 @@ class AddToCartNonVariantTestHelper(
         `When add to cart a product`(productItemDataViewToATC, addToCartQty)
 
         `Then assert add to cart request params`(productItemDataViewToATC, addToCartQty)
-        `Then assert cart message is empty`()
+        `Then assert cart message event`(
+                expectedSuccessMessage = errorMessage.joinToString(separator = ", ")
+        )
         `Then assert product item quantity`(productItemDataViewToATC, addToCartQty)
         `Then verify mini cart is refreshed`()
     }
@@ -94,10 +98,15 @@ class AddToCartNonVariantTestHelper(
         assertThat(addToCartRequestParams.quantity, shouldBe(addToCartQty))
     }
 
-    private fun `Then assert cart message is empty`() {
-        val cartEventMessage = baseViewModel.cartEventMessageLiveData.value!!
+    private fun `Then assert cart message event`(
+            expectedSuccessMessage: String = "",
+            expectedErrorMessage: String = "",
+    ) {
+        val successMessageLiveData = baseViewModel.successATCMessageLiveData.value ?: ""
+        assertThat(successMessageLiveData, shouldBe(expectedSuccessMessage))
 
-        assertThat(cartEventMessage, shouldBe(""))
+        val errorMessageLiveData = baseViewModel.errorATCMessageLiveData.value ?: ""
+        assertThat(errorMessageLiveData, shouldBe(expectedErrorMessage))
     }
 
     private fun `Then assert product item quantity`(
@@ -127,7 +136,7 @@ class AddToCartNonVariantTestHelper(
         `When add to cart a product`(productItemDataViewToATC, addToCartQty)
 
         `Then assert add to cart request params`(productItemDataViewToATC, addToCartQty)
-        `Then assert cart message from exception`(responseErrorException)
+        `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
         `Then assert product item quantity`(productItemDataViewToATC, 0)
         `Then verify mini cart is refreshed`(0)
     }
@@ -138,14 +147,6 @@ class AddToCartNonVariantTestHelper(
         } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
-    }
-
-    private fun `Then assert cart message from exception`(
-            responseErrorMessage: ResponseErrorException
-    ) {
-        val cartEventMessage = baseViewModel.cartEventMessageLiveData.value!!
-
-        assertThat(cartEventMessage, shouldBe(responseErrorMessage.message))
     }
 
     fun `add to cart with current quantity should do nothing`() {
@@ -192,9 +193,14 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun `add to cart to update quantity success`() {
+        val updateCartSuccessMessage = "Success nih"
+        val successUpdateCartResponse = UpdateCartV2Data(
+                data = Data(status = true, message = updateCartSuccessMessage)
+        )
+
         callback.`Given first page API will be successful`()
         `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
-        `Given update cart use case will be successful`()
+        `Given update cart use case will be successful`(successUpdateCartResponse)
         `Given view already created`()
         `Given view resumed to update mini cart`()
 
@@ -208,14 +214,17 @@ class AddToCartNonVariantTestHelper(
         `When add to cart a product`(productInVisitable, productUpdatedQuantity)
 
         `Then assert update cart params`(productUpdatedQuantity, productInMiniCart)
-        `Then assert cart message is empty`()
+        `Then assert cart message event`(
+                expectedSuccessMessage = updateCartSuccessMessage
+        )
         `Then assert product item quantity`(productInVisitable, productUpdatedQuantity)
         `Then assert add to cart use case is not called`()
         `Then verify mini cart is refreshed`(2)
     }
 
-    private fun `Given update cart use case will be successful`() {
-        val successUpdateCartResponse = UpdateCartV2Data(data = Data(status = true))
+    private fun `Given update cart use case will be successful`(
+            successUpdateCartResponse: UpdateCartV2Data
+    ) {
         every {
             updateCartUseCase.execute(any(), any())
         } answers {
@@ -252,7 +261,7 @@ class AddToCartNonVariantTestHelper(
         `When add to cart a product`(productInVisitable, productUpdatedQuantity)
 
         `Then assert update cart params`(productUpdatedQuantity, productInMiniCart)
-        `Then assert cart message from exception`(responseErrorException)
+        `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
         `Then assert product item quantity`(productInVisitable, productInMiniCart.quantity)
         `Then assert add to cart use case is not called`()
         `Then verify mini cart is refreshed`(1)

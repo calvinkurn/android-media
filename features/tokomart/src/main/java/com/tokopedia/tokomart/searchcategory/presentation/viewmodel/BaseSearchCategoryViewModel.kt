@@ -128,8 +128,11 @@ abstract class BaseSearchCategoryViewModel(
     val updatedVisitableIndicesLiveData: LiveData<List<Int>> =
             updatedVisitableIndicesMutableLiveData
 
-    protected val cartEventMessageMutableLiveData = SingleLiveEvent<String>()
-    val cartEventMessageLiveData: LiveData<String> = cartEventMessageMutableLiveData
+    protected val successATCMessageMutableLiveData = SingleLiveEvent<String>()
+    val successATCMessageLiveData: LiveData<String> = successATCMessageMutableLiveData
+
+    protected val errorATCMessageMutableLiveData = SingleLiveEvent<String>()
+    val errorATCMessageLiveData: LiveData<String> = errorATCMessageMutableLiveData
 
     protected val isHeaderBackgroundVisibleMutableLiveData = MutableLiveData(true)
     val isHeaderBackgroundVisibleLiveData: LiveData<Boolean> = isHeaderBackgroundVisibleMutableLiveData
@@ -806,15 +809,23 @@ abstract class BaseSearchCategoryViewModel(
 
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
-            onAddToCartSuccess(productItem, it.data.quantity)
+            onAddToCartSuccess(
+                    productItem,
+                    it.data.quantity,
+                    it.errorMessage.joinToString(separator = ", "),
+            )
         }, {
             onAddToCartFailed(it)
         })
     }
 
-    private fun onAddToCartSuccess(productItem: ProductItemDataView, quantity: Int) {
+    private fun onAddToCartSuccess(
+            productItem: ProductItemDataView,
+            quantity: Int,
+            successMessage: String,
+    ) {
         updateProductNonVariantQuantity(productItem, quantity)
-        updateCartMessageSuccess()
+        updateCartMessageSuccess(successMessage)
         refreshMiniCart()
     }
 
@@ -825,12 +836,12 @@ abstract class BaseSearchCategoryViewModel(
         productItem.nonVariantATC?.quantity = quantity
     }
 
-    private fun updateCartMessageSuccess() {
-        cartEventMessageMutableLiveData.value = ""
+    private fun updateCartMessageSuccess(successMessage: String) {
+        successATCMessageMutableLiveData.value = successMessage
     }
 
     private fun onAddToCartFailed(throwable: Throwable) {
-        cartEventMessageMutableLiveData.value = throwable.message ?: ""
+        errorATCMessageMutableLiveData.value = throwable.message ?: ""
     }
 
     private fun updateCart(
@@ -842,7 +853,7 @@ abstract class BaseSearchCategoryViewModel(
         miniCartItem.quantity = quantity
         updateCartUseCase.setParams(listOf(miniCartItem))
         updateCartUseCase.execute({
-            onAddToCartSuccess(productItem, quantity)
+            onAddToCartSuccess(productItem, quantity, it.data.message)
         }, {
             onAddToCartFailed(it)
         })
