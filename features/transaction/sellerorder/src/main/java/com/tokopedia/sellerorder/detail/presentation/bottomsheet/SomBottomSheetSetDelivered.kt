@@ -69,6 +69,7 @@ class SomBottomSheetSetDelivered(
     }
 
     private fun onSetDeliveredClicked() {
+        startLoading()
         getSetDeliveredReceiverNameInputText()?.clearFocus()
         val receiverName = getSetDeliveredReceiverNameInputText()?.textFieldInput?.text?.toString()
         if (receiverName.isNullOrBlank()) {
@@ -77,6 +78,7 @@ class SomBottomSheetSetDelivered(
                 setMessage(context?.getString(R.string.et_empty_error).orEmpty())
             }
             getSetDeliveredButton()?.isEnabled = false
+            finishLoading()
         } else {
             listener.doSetDelivered(receiverName)
         }
@@ -89,6 +91,7 @@ class SomBottomSheetSetDelivered(
             isTextFieldError = false
             setMessage("")
         }
+        finishLoading()
     }
 
     private fun getKeyboardHeightEstimation(): Int {
@@ -135,6 +138,18 @@ class SomBottomSheetSetDelivered(
                 }
             }
         }
+    }
+
+    private fun startLoading() {
+        getSetDeliveredButton()?.isLoading = true
+    }
+
+    private fun finishLoading() {
+        getSetDeliveredButton()?.isLoading = false
+    }
+
+    fun onFailedSetDelivered() {
+        finishLoading()
     }
 
     interface SomBottomSheetSetDeliveredListener {

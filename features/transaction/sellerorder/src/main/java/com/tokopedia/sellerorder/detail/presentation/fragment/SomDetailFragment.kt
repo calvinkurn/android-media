@@ -149,6 +149,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private var somDetailLoadTimeMonitoring: SomDetailLoadTimeMonitoring? = null
     private lateinit var somDetailAdapter: SomDetailAdapter
     private var refreshHandler: RefreshHandler? = null
+    private var pendingAction: SomPendingAction? = null
 
     private var somOrderHasCancellationRequestDialog: SomOrderHasRequestCancellationDialog? = null
     private var secondaryBottomSheet: SomDetailSecondaryActionBottomSheet? = null
@@ -159,9 +160,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private var bottomSheetCourierProblems: SomBottomSheetCourierProblem? = null
     private var bottomSheetBuyerNoResponse: SomBottomSheetBuyerNoResponse? = null
     private var bottomSheetBuyerOtherReason: SomBottomSheetBuyerOtherReason? = null
-    private var bottomSheetSetDelivered: SomBottomSheetSetDelivered? = null
 
-    private var pendingAction: SomPendingAction? = null
+    protected var bottomSheetSetDelivered: SomBottomSheetSetDelivered? = null
 
     protected var orderId = ""
     protected var detailResponse: SomDetailOrder.Data.GetSomDetail? = SomDetailOrder.Data.GetSomDetail()
@@ -429,6 +429,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_WHEN_SET_DELIVERED)
                     it.throwable.showErrorToaster()
+                    bottomSheetSetDelivered?.onFailedSetDelivered()
                 }
             }
         })
@@ -1441,12 +1442,17 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     protected open fun onSuccessSetDelivered(deliveredData: SetDelivered) {
-        val message = deliveredData.message.joinToString().takeIf { it.isNotBlank() }
-                ?: getString(R.string.global_error)
-        activity?.setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra(RESULT_SET_DELIVERED, message)
-        })
-        activity?.finish()
+        if (deliveredData.success == 1) {
+            activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(RESULT_SET_DELIVERED, getString(R.string.message_set_delivered_success))
+            })
+            activity?.finish()
+        } else {
+            val message = deliveredData.message.joinToString().takeIf { it.isNotBlank() }
+                    ?: getString(R.string.global_error)
+            showToaster(message, view, TYPE_ERROR, "")
+            bottomSheetSetDelivered?.onFailedSetDelivered()
+        }
     }
 
     protected open fun showBackButton(): Boolean = true
