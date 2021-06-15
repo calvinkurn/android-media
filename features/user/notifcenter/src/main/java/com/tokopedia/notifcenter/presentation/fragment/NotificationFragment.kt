@@ -639,6 +639,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         analytic.trackClickOrderListItem(containerListener?.role, order)
     }
 
+    override fun trackNotificationImpression(element: NotificationUiModel) {
+        analytic.trackNotificationImpression(element)
+    }
+
     override fun hasFilter(): Boolean {
         return viewModel.hasFilter()
     }

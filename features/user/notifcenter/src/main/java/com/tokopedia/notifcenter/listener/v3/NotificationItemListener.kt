@@ -33,4 +33,5 @@ interface NotificationItemListener {
     fun trackExpandTimelineHistory(element: NotificationUiModel)
     fun amISeller(): Boolean
     fun trackClickOrderListItem(order: Card)
+    fun trackNotificationImpression(element: NotificationUiModel)
 }

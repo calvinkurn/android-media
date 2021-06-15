@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
@@ -44,6 +45,13 @@ abstract class BaseNotificationViewHolder constructor(
         bindTime(element)
         bindClick(element)
         trackSeenNotification(element)
+        trackNotificationImpression(element)
+    }
+
+    private fun trackNotificationImpression(element: NotificationUiModel) {
+        container?.addOnImpressionListener(element.impressHolder) {
+            listener?.trackNotificationImpression(element)
+        }
     }
 
     protected open fun bindClick(element: NotificationUiModel) {

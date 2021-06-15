@@ -375,6 +375,34 @@ class NotificationAnalytic @Inject constructor(
         )
     }
 
+    fun trackNotificationImpression(element: NotificationUiModel) {
+        val label = getImpressionWithoutLocationLabel(
+            element.templateKey,
+            element.notifId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            InboxAnalyticCommon.createGeneralEvent(
+                event = NotificationUpdateAnalytics.NAME_EVENT_VIEW_NOTIF,
+                eventAction = NotificationUpdateAnalytics.ACTION_VIEW_NOTIF_LIST,
+                eventCategory = NotificationUpdateAnalytics.CATEGORY_NOTIF_CENTER,
+                eventLabel = label,
+                businessUnit = NotificationUpdateAnalytics.BUSINESS_UNIT_COMM,
+                currentSite = NotificationUpdateAnalytics.CURRENT_SITE,
+                additionalAttribute = mapOf(
+                    NotificationUpdateAnalytics.ATTR_PRODUCT_ID to element.product?.productId.toString(),
+                    NotificationUpdateAnalytics.ATTR_SHOP_ID to element.product?.shop?.id.toString(),
+                    NotificationUpdateAnalytics.ATTR_USER_ID to userSession.userId
+                )
+            )
+        )
+    }
+
+    private fun getImpressionWithoutLocationLabel(
+        templateKey: String, notificationId: String
+    ): String {
+        return "$templateKey - $notificationId"
+    }
+
     private fun getEventLabelNotifOrderListItem(role: Int, order: Card): String {
         val roleStr = getRoleString(role)
         return "$roleStr - ${order.text} - ${order.counter}"
