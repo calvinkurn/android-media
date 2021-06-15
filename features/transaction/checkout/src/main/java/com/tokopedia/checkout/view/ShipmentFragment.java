@@ -132,6 +132,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -163,6 +164,8 @@ import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.P
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CHOSEN_ADDRESS;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_FINISH_ERROR;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_ERROR;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.PAGE_CHECKOUT;
 
 /**
@@ -1119,64 +1122,69 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onResultFromPromo(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            shipmentPresenter.setCouponStateChanged(true);
-            ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_DATA_RESULT);
-            if (validateUsePromoRevampUiModel != null) {
-                String messageInfo = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getErrorDetailUiModel().getMessage();
-                if (messageInfo.length() > 0) {
-                    showToastNormal(messageInfo);
-                }
-                shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel);
-                updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), false);
-            }
-
-            ValidateUsePromoRequest validateUsePromoRequest = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_LAST_VALIDATE_USE_REQUEST);
-            if (validateUsePromoRequest != null) {
-                boolean stillHasPromo = false;
-                for (String promoGlobalCode : validateUsePromoRequest.getCodes()) {
-                    if (promoGlobalCode.length() > 0) {
-                        stillHasPromo = true;
-                        break;
+            if (data.getStringExtra(ARGS_PROMO_ERROR) != null
+                    && Objects.equals(data.getStringExtra(ARGS_PROMO_ERROR), ARGS_FINISH_ERROR) && getActivity() != null) {
+                getActivity().finish();
+            } else {
+                shipmentPresenter.setCouponStateChanged(true);
+                ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_DATA_RESULT);
+                if (validateUsePromoRevampUiModel != null) {
+                    String messageInfo = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getErrorDetailUiModel().getMessage();
+                    if (messageInfo.length() > 0) {
+                        showToastNormal(messageInfo);
                     }
+                    shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel);
+                    updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), false);
                 }
 
-                if (!stillHasPromo) {
-                    for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                        for (String promoMerchantCode : ordersItem.getCodes()) {
-                            if (promoMerchantCode.length() > 0) {
-                                stillHasPromo = true;
-                                break;
+                ValidateUsePromoRequest validateUsePromoRequest = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_LAST_VALIDATE_USE_REQUEST);
+                if (validateUsePromoRequest != null) {
+                    boolean stillHasPromo = false;
+                    for (String promoGlobalCode : validateUsePromoRequest.getCodes()) {
+                        if (promoGlobalCode.length() > 0) {
+                            stillHasPromo = true;
+                            break;
+                        }
+                    }
+
+                    if (!stillHasPromo) {
+                        for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                            for (String promoMerchantCode : ordersItem.getCodes()) {
+                                if (promoMerchantCode.length() > 0) {
+                                    stillHasPromo = true;
+                                    break;
+                                }
                             }
                         }
                     }
+
+                    shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
+                    if (!stillHasPromo) {
+                        doResetButtonPromoCheckout();
+                    }
                 }
 
-                shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
-                if (!stillHasPromo) {
-                    doResetButtonPromoCheckout();
+                ClearPromoUiModel clearPromoUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CLEAR_PROMO_RESULT);
+                if (clearPromoUiModel != null) {
+                    PromoUiModel promoUiModel = new PromoUiModel();
+                    promoUiModel.setTitleDescription(clearPromoUiModel.getSuccessDataModel().getDefaultEmptyPromoMessage());
+
+                    TickerAnnouncementHolderData tickerAnnouncementHolderData = shipmentPresenter.getTickerAnnouncementHolderData();
+                    if (tickerAnnouncementHolderData != null && !TextUtils.isEmpty(clearPromoUiModel.getSuccessDataModel().getTickerMessage())) {
+                        tickerAnnouncementHolderData.setMessage(clearPromoUiModel.getSuccessDataModel().getTickerMessage());
+                        updateTickerAnnouncementMessage();
+                    }
+
+                    doUpdateButtonPromoCheckout(promoUiModel);
+                    shipmentPresenter.setValidateUsePromoRevampUiModel(null);
+                    shipmentAdapter.checkHasSelectAllCourier(false, -1, "");
                 }
-            }
 
-            ClearPromoUiModel clearPromoUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CLEAR_PROMO_RESULT);
-            if (clearPromoUiModel != null) {
-                PromoUiModel promoUiModel = new PromoUiModel();
-                promoUiModel.setTitleDescription(clearPromoUiModel.getSuccessDataModel().getDefaultEmptyPromoMessage());
-
-                TickerAnnouncementHolderData tickerAnnouncementHolderData = shipmentPresenter.getTickerAnnouncementHolderData();
-                if (tickerAnnouncementHolderData != null && !TextUtils.isEmpty(clearPromoUiModel.getSuccessDataModel().getTickerMessage())) {
-                    tickerAnnouncementHolderData.setMessage(clearPromoUiModel.getSuccessDataModel().getTickerMessage());
-                    updateTickerAnnouncementMessage();
+                boolean requiredToReloadRatesForMvcCourier = data.getBooleanExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false);
+                ArrayList<String> appliedMvcCartStrings = data.getStringArrayListExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_APPLIED_MVC_CART_STRINGS);
+                if (requiredToReloadRatesForMvcCourier) {
+                    reloadCourierForMvc(appliedMvcCartStrings);
                 }
-
-                doUpdateButtonPromoCheckout(promoUiModel);
-                shipmentPresenter.setValidateUsePromoRevampUiModel(null);
-                shipmentAdapter.checkHasSelectAllCourier(false, -1, "");
-            }
-
-            boolean requiredToReloadRatesForMvcCourier = data.getBooleanExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false);
-            ArrayList<String> appliedMvcCartStrings = data.getStringArrayListExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_APPLIED_MVC_CART_STRINGS);
-            if (requiredToReloadRatesForMvcCourier) {
-                reloadCourierForMvc(appliedMvcCartStrings);
             }
         }
     }

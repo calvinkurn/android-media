@@ -10,4 +10,6 @@
     <dimen name="fontvs">12sp</dimen>
     <dimen name="margin_small">10dp</dimen>
 
+    <dimen name="order_detail_seperator_1dp">1dp</dimen>
+
 </resources>

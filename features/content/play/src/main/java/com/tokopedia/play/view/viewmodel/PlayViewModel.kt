@@ -337,7 +337,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private val videoStateProcessor = videoStateProcessorFactory.create(playVideoPlayer, viewModelScope) { channelType }
-    private val channelStateProcessor = channelStateProcessorFactory.create(playVideoPlayer, viewModelScope) { channelType }
+    private val channelStateProcessor = channelStateProcessorFactory.create(playVideoPlayer, viewModelScope, { channelType }, { videoPlayer })
     private val videoBufferGovernor = videoBufferGovernorFactory.create(playVideoPlayer, viewModelScope)
 
     init {

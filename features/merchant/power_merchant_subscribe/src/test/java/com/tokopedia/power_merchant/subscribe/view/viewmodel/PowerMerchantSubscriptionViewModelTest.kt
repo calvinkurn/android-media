@@ -2,11 +2,12 @@ package com.tokopedia.power_merchant.subscribe.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.gm.common.data.source.local.model.PMActivationStatusUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMGradeBenefitInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
-import com.tokopedia.gm.common.domain.interactor.GetPMGradeBenefitUseCase
+import com.tokopedia.gm.common.domain.interactor.GetPMGradeBenefitInfoUseCase
+import com.tokopedia.gm.common.domain.interactor.GetPMGradeBenefitListUseCase
 import com.tokopedia.gm.common.domain.interactor.PowerMerchantActivateUseCase
-import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMActiveDataUseCase
-import com.tokopedia.power_merchant.subscribe.view.model.PMActiveDataUiModel
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
@@ -19,12 +20,12 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyInt
-import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers.*
 
 /**
  * Created By @ilhamsuaib on 21/04/21
@@ -40,10 +41,10 @@ class PowerMerchantSubscriptionViewModelTest {
     val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
-    lateinit var getPMGradeBenefitUseCase: GetPMGradeBenefitUseCase
+    lateinit var getPMGradeBenefitListUseCase: GetPMGradeBenefitListUseCase
 
     @RelaxedMockK
-    lateinit var getPMActiveDataUseCase: GetPMActiveDataUseCase
+    lateinit var getPMGradeBenefitInfoUseCase: GetPMGradeBenefitInfoUseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -58,8 +59,8 @@ class PowerMerchantSubscriptionViewModelTest {
         MockKAnnotations.init(this)
 
         viewModel = PowerMerchantSubscriptionViewModel(
-                Lazy { getPMGradeBenefitUseCase },
-                Lazy { getPMActiveDataUseCase },
+                Lazy { getPMGradeBenefitListUseCase },
+                Lazy { getPMGradeBenefitInfoUseCase },
                 Lazy { activatePMUseCase },
                 Lazy { userSession },
                 CoroutineTestDispatchersProvider
@@ -70,18 +71,20 @@ class PowerMerchantSubscriptionViewModelTest {
     fun `when get PM grade benefit should set result success`() = coroutineTestRule.runBlockingTest {
         val shopId = anyString()
         val source = anyString()
-        getPMGradeBenefitUseCase.params = GetPMGradeBenefitUseCase.createParams(shopId, source)
+        val cacheStrategy = mockk<GraphqlCacheStrategy>(relaxed = true)
+        getPMGradeBenefitListUseCase.setCacheStrategy(cacheStrategy)
+        getPMGradeBenefitListUseCase.params = GetPMGradeBenefitListUseCase.createParams(shopId, source)
 
         val result = emptyList<PMGradeWithBenefitsUiModel>()
 
         coEvery {
-            getPMGradeBenefitUseCase.executeOnBackground()
+            getPMGradeBenefitListUseCase.executeOnBackground()
         } returns result
 
-        viewModel.getPmRegistrationData()
+        viewModel.getPmRegistrationData(anyBoolean())
 
         coVerify {
-            getPMGradeBenefitUseCase.executeOnBackground()
+            getPMGradeBenefitListUseCase.executeOnBackground()
         }
 
         val expected = Success(result)
@@ -93,18 +96,20 @@ class PowerMerchantSubscriptionViewModelTest {
     fun `when get PM grade benefit should set result failed`() = coroutineTestRule.runBlockingTest {
         val shopId = anyString()
         val source = anyString()
-        getPMGradeBenefitUseCase.params = GetPMGradeBenefitUseCase.createParams(shopId, source)
+        val cacheStrategy = mockk<GraphqlCacheStrategy>(relaxed = true)
+        getPMGradeBenefitListUseCase.setCacheStrategy(cacheStrategy)
+        getPMGradeBenefitListUseCase.params = GetPMGradeBenefitListUseCase.createParams(shopId, source)
 
         val throwable = Throwable()
 
         coEvery {
-            getPMGradeBenefitUseCase.executeOnBackground()
+            getPMGradeBenefitListUseCase.executeOnBackground()
         } throws throwable
 
-        viewModel.getPmRegistrationData()
+        viewModel.getPmRegistrationData(anyBoolean())
 
         coVerify {
-            getPMGradeBenefitUseCase.executeOnBackground()
+            getPMGradeBenefitListUseCase.executeOnBackground()
         }
 
         val expected = Fail(throwable)
@@ -114,16 +119,17 @@ class PowerMerchantSubscriptionViewModelTest {
 
     @Test
     fun `when get PM active state data should set result success`() = coroutineTestRule.runBlockingTest {
-        val data = PMActiveDataUiModel()
+        val data = PMGradeBenefitInfoUiModel()
+        val pmProTire = 1
 
         coEvery {
-            getPMActiveDataUseCase.executeOnBackground()
+            getPMGradeBenefitInfoUseCase.executeOnBackground()
         } returns data
 
-        viewModel.getPmActiveStateData()
+        viewModel.getPmActiveStateData(pmProTire)
 
         coVerify {
-            getPMActiveDataUseCase.executeOnBackground()
+            getPMGradeBenefitInfoUseCase.executeOnBackground()
         }
 
         val expected = Success(data)
@@ -135,13 +141,13 @@ class PowerMerchantSubscriptionViewModelTest {
     fun `when get PM active state data should set result failed`() = coroutineTestRule.runBlockingTest {
         val error = Throwable()
         coEvery {
-            getPMActiveDataUseCase.executeOnBackground()
+            getPMGradeBenefitInfoUseCase.executeOnBackground()
         } throws error
 
-        viewModel.getPmActiveStateData()
+        viewModel.getPmActiveStateData(1)
 
         coVerify {
-            getPMActiveDataUseCase.executeOnBackground()
+            getPMGradeBenefitInfoUseCase.executeOnBackground()
         }
 
         val expected = Fail(error)
