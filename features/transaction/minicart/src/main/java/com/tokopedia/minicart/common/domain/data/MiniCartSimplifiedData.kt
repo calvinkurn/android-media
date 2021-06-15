@@ -9,6 +9,7 @@ data class MiniCartSimplifiedData(
 data class MiniCartWidgetData(
         var totalProductCount: Int = 0,
         var totalProductPrice: Long = 0,
+        var totalProductError: Int = 0,
         var containsOnlyUnavailableItems: Boolean = false,
         var unavailableItemsCount: Int = 0
 )

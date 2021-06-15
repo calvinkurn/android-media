@@ -22,21 +22,25 @@ class ExampleFragment : Fragment(), MiniCartWidgetListener {
     }
 
     private var miniCartWidget: MiniCartWidget? = null
+    private val shopIds = listOf(SHOP_ID_PROD)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_example, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val shopIds = listOf(SHOP_ID_PROD)
-        miniCartWidget = view.findViewById<MiniCartWidget>(R.id.mini_cart_widget)
+    override fun onResume() {
+        super.onResume()
         miniCartWidget?.initialize(
                 shopIds = shopIds,
                 fragment = this,
                 listener = this,
                 pageName = MiniCartAnalytics.Page.HOME_PAGE
         )
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        miniCartWidget = view.findViewById<MiniCartWidget>(R.id.mini_cart_widget)
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {

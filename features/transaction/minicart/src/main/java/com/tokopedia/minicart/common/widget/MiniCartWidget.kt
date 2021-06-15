@@ -25,6 +25,7 @@ import com.tokopedia.minicart.cartlist.MiniCartListBottomSheetListener
 import com.tokopedia.minicart.cartlist.subpage.GlobalErrorBottomSheet
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.updatecart.Data
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
@@ -77,16 +78,20 @@ class MiniCartWidget @JvmOverloads constructor(
     * Function to initialize the widget
     * */
     fun initialize(shopIds: List<String>, fragment: Fragment, listener: MiniCartWidgetListener, autoInitializeData: Boolean = true, pageName: MiniCartAnalytics.Page) {
-        val application = fragment.activity?.application
-        initializeInjector(application)
-        initializeView(fragment)
-        initializeListener(listener)
-        initializeViewModel(fragment)
-        viewModel?.initializeCurrentPage(pageName)
-        if (autoInitializeData) {
-            updateData(shopIds)
+        if (viewModel == null) {
+            val application = fragment.activity?.application
+            initializeInjector(application)
+            initializeView(fragment)
+            initializeListener(listener)
+            initializeViewModel(fragment)
+            viewModel?.initializeCurrentPage(pageName)
+            if (autoInitializeData) {
+                updateData(shopIds)
+            } else {
+                viewModel?.initializeShopIds(shopIds)
+            }
         } else {
-            viewModel?.initializeShopIds(shopIds)
+            updateData(shopIds)
         }
     }
 
@@ -105,7 +110,7 @@ class MiniCartWidget @JvmOverloads constructor(
         viewModel?.globalEvent?.observe(fragment.viewLifecycleOwner, {
             when (it.state) {
                 GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET -> {
-                    onFailedToLoadMiniCartBottomSheet(fragment)
+                    onFailedToLoadMiniCartBottomSheet(it, fragment)
                 }
                 GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
@@ -144,7 +149,7 @@ class MiniCartWidget @JvmOverloads constructor(
         }
     }
 
-    private fun handleFailedUpdateCartWithOutOfService(view: View?, data: Any?, fragmentManager: FragmentManager, context: Context) {
+    private fun handleFailedUpdateCartWithOutOfService(view: View?, data: Any, fragmentManager: FragmentManager, context: Context) {
         if (data is Data) {
             if (data.outOfService.id.isNotBlank() && data.outOfService.id != "0") {
                 // Prioritize to show out of service data
@@ -204,8 +209,31 @@ class MiniCartWidget @JvmOverloads constructor(
         context.startActivity(intent)
     }
 
-    private fun onFailedToLoadMiniCartBottomSheet(fragment: Fragment) {
+    private fun onFailedToLoadMiniCartBottomSheet(globalEvent: GlobalEvent, fragment: Fragment) {
         miniCartListBottomSheet.dismiss()
+        if (globalEvent.data != null && globalEvent.data is MiniCartData) {
+            val outOfService = (globalEvent.data as MiniCartData).data.outOfService
+            if (outOfService.id.isNotBlank() && outOfService.id != "0") {
+                fragment.context?.let {
+                    globalErrorBottomSheet.show(fragment.parentFragmentManager, it, GlobalError.SERVER_ERROR, outOfService, object : GlobalErrorBottomSheetActionListener {
+                        override fun onGoToHome() {
+                            // No-op
+                        }
+
+                        override fun onRefreshErrorPage() {
+                            showMiniCartListBottomSheet(fragment)
+                        }
+                    })
+                }
+            } else {
+                showGlobalErrorNoConnection(fragment)
+            }
+        } else {
+            showGlobalErrorNoConnection(fragment)
+        }
+    }
+
+    private fun showGlobalErrorNoConnection(fragment: Fragment) {
         fragment.context?.let {
             globalErrorBottomSheet.show(fragment.parentFragmentManager, it, GlobalError.NO_CONNECTION, null, object : GlobalErrorBottomSheetActionListener {
                 override fun onGoToHome() {
@@ -268,8 +296,10 @@ class MiniCartWidget @JvmOverloads constructor(
     override fun showToaster(view: View?, message: String, type: Int, ctaText: String, onClickListener: OnClickListener?) {
         if (message.isBlank()) return
 
-        view?.let {
-            Toaster.toasterCustomBottomHeight = view.resources?.getDimensionPixelSize(R.dimen.dp_72)
+        var toasterViewRoot = view
+        if (toasterViewRoot == null) toasterViewRoot = this.view
+        toasterViewRoot?.let {
+            Toaster.toasterCustomBottomHeight = it.resources?.getDimensionPixelSize(R.dimen.dp_72)
                     ?: 0
             if (ctaText.isNotBlank()) {
                 var tmpCtaClickListener = OnClickListener { }
