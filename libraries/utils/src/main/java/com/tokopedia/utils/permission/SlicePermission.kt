@@ -10,7 +10,9 @@ import android.service.voice.VoiceInteractionService
 import androidx.slice.SliceManager
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import timber.log.Timber
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class SlicePermission {
 
@@ -21,7 +23,9 @@ class SlicePermission {
     }
 
     fun initPermission(context: Context, authority: String){
-        grantAssistantPermissions(context, authority)
+        GlobalScope.launch(Dispatchers.IO) {
+            grantAssistantPermissions(context, authority)
+        }
     }
 
     private fun grantAssistantPermissions(context: Context, authority: String) {
