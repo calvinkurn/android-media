@@ -206,7 +206,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var accordionCollapseState = true
     private var hasCalledOnSaveInstanceState = false
     private var isCheckUncheckDirectAction = true
-    private var toolbarType = ""
+    private var isNavToolbar = false
 
     companion object {
 
@@ -229,8 +229,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
         const val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
-        const val TOOLBAR_VARIANT_BASIC = AbTestPlatform.NAVIGATION_VARIANT_OLD
-        const val TOOLBAR_VARIANT_NAVIGATION = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartFragment {
@@ -454,9 +452,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun initRemoteConfig() {
         val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
-        toolbarType = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                EXP_NAME, TOOLBAR_VARIANT_BASIC
-        )
+        isNavToolbar = isNavRevamp()
+    }
+
+    private fun isNavRevamp(): Boolean {
+        return try {
+            return (context as? MainParentStateListener)?.isNavigationRevamp?:false
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 
     override fun initView(view: View) {
@@ -567,7 +572,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onBackPressed() {
-        if (toolbarType == TOOLBAR_VARIANT_NAVIGATION) {
+        if (isNavToolbar) {
             cartPageAnalytics.eventClickBackNavToolbar(userSession.userId)
         } else {
             cartPageAnalytics.eventClickAtcCartClickArrowBack()
@@ -776,7 +781,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun initToolbar(view: View) {
-        if (toolbarType == TOOLBAR_VARIANT_NAVIGATION) {
+        if (isNavToolbar) {
             initNavigationToolbar(view)
             binding?.toolbar?.gone()
             binding?.navToolbar?.show()
@@ -2963,7 +2968,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val tmpAnimatedImage = binding?.tmpAnimatedImage ?: return
         var target: Pair<Int, Int>? = null
 
-        if (toolbarType.equals(TOOLBAR_VARIANT_NAVIGATION, true)) {
+        if (isNavToolbar) {
             val targetX = getScreenWidth() - resources.getDimensionPixelSize(R.dimen.dp_64)
             target = Pair(targetX, 0)
         } else {
@@ -2993,7 +2998,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 override fun onAnimationEnd(animation: Animator) {
                     binding?.tmpAnimatedImage?.gone()
 
-                    if (toolbarType.equals(TOOLBAR_VARIANT_NAVIGATION, true)) {
+                    if (isNavToolbar) {
                         binding?.navToolbar?.triggerAnimatedVectorDrawableAnimation(IconList.ID_WISHLIST)
                     } else {
                         toolbar.animateWishlistIcon()
