@@ -12,7 +12,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.*
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -29,7 +28,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
-import com.tokopedia.sellerhome.BuildConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationSearchTracking
 import com.tokopedia.sellerhome.analytic.NavigationTracking
@@ -49,7 +47,6 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_RECOMMENDATION_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
-import com.tokopedia.sellerhome.common.exception.SellerHomeException
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
@@ -915,7 +912,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         view?.swipeRefreshLayout?.isRefreshing = false
         setProgressBarVisibility(false)
 
-        SellerHomeErrorHandler.logExceptionToCrashlytics(throwable, ERROR_LAYOUT)
+        SellerHomeErrorHandler.logException(
+                throwable = throwable,
+                message = ERROR_LAYOUT,
+                errorType = SellerHomeErrorHandler.ErrorType.ERROR_LAYOUT,
+                deviceId = userSession.deviceId.orEmpty())
     }
 
     private fun showErrorViewByException(throwable: Throwable) = view?.run {
@@ -999,7 +1000,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
                 is Fail -> {
                     stopCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_TICKER_TRACE, false)
-                    SellerHomeErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_TICKER)
+                    SellerHomeErrorHandler.logException(
+                            throwable = it.throwable,
+                            message = ERROR_TICKER,
+                            errorType = SellerHomeErrorHandler.ErrorType.ERROR_TICKER,
+                            deviceId = userSession.deviceId.orEmpty())
                     view?.relTicker?.gone()
                 }
             }
@@ -1036,7 +1041,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     is Fail -> {
                         stopSellerHomeFragmentWidgetPerformanceMonitoring(type, isFromCache = false)
                         stopPltMonitoringIfNotCompleted(fromCache = false)
-                        SellerHomeErrorHandler.logExceptionToCrashlytics(result.throwable, "$ERROR_WIDGET $type")
                         result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
                     }
                 }
@@ -1142,6 +1146,22 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 widget
             }
         }
+
+        // Log error to crashlytics and scalyr.
+        // We define layoutId value as joined list of error layout id. Ex: (100, 150)
+        // The extras will be defined as widget type as JSON object. Ex: ({"widget_type": "lineGraph"})
+        val layoutId = adapter.data.mapNotNull {
+            if (it.widgetType == widgetType) it.id else null
+        }.joinToString(", ")
+        val widgetTypeExtras = mapOf(SellerHomeErrorHandler.WIDGET_TYPE_KEY to widgetType).toString()
+        SellerHomeErrorHandler.logException(
+                throwable = this,
+                message = "$ERROR_WIDGET $widgetType",
+                errorType = SellerHomeErrorHandler.ErrorType.ERROR_WIDGET,
+                layoutId = layoutId,
+                deviceId = userSession.deviceId.orEmpty(),
+                extras = widgetTypeExtras)
+
         updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
         showErrorToaster()
         view?.addOneTimeGlobalLayoutListener {
