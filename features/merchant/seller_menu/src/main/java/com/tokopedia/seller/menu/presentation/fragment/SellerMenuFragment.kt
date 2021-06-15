@@ -79,7 +79,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                 this,
                 this,
                 this,
-                this,
                 sellerMenuTracker,
                 userSession
         ))

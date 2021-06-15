@@ -174,7 +174,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                 return@apply
                             }
                             else -> {
-                                add(mapToItemPMUiModel(isNewSeller, isNewSellerProjection))
+                                add(mapToItemPMUiModel(isNewSellerProjection))
                                 return@apply
                             }
                         }
