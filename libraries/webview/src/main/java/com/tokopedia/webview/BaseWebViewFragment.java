@@ -760,9 +760,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
             return true;
         }
-        if (isLinkAjaAppLink(url)) {
-            return redirectToLinkAjaApp(url);
-        }
 
         if (!uri.getHost().contains(TOKOPEDIA_STRING)) {
             if (isLinkAjaAppLink(url)) {
@@ -878,21 +875,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private boolean isLinkAjaAppLink(String url) {
         return url.contains(LINK_AJA_APP_LINK);
-    }
-
-    private boolean redirectToLinkAjaApp(String url) {
-        Uri uri = Uri.parse(url);
-        Intent linkAjaIntent = new Intent(Intent.ACTION_VIEW, uri);
-        List<ResolveInfo> activities = getActivity().getPackageManager()
-                .queryIntentActivities(linkAjaIntent, 0);
-        boolean isIntentSafe = activities.isEmpty();
-        if (!isIntentSafe) {
-            startActivity(linkAjaIntent);
-            getActivity().finish();
-            return true;
-        } else
-            return false;
-
     }
 
     // If back pressed is disabled and the webview has moved to a native page,
