@@ -150,11 +150,11 @@ class PlayFragment @Inject constructor(
 
     override fun onPause() {
         unregisterKeyboardListener(requireView())
+        onPageDefocused()
         playParentViewModel.setLatestChannelStorageData(
                 channelId,
                 playViewModel.latestCompleteChannelData
         )
-        onPageDefocused()
         super.onPause()
     }
 

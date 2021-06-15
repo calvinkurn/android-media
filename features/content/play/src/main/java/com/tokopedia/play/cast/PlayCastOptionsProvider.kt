@@ -13,6 +13,7 @@ class PlayCastOptionsProvider : OptionsProvider {
     override fun getCastOptions(context: Context): CastOptions {
         return CastOptions.Builder()
                 .setReceiverApplicationId("B607CC94")
+                .setStopReceiverApplicationWhenEndingSession(true)
                 .build()
     }
 

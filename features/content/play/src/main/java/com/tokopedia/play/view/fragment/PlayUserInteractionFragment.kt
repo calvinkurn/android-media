@@ -573,6 +573,7 @@ class PlayUserInteractionFragment @Inject constructor(
             videoSettingsViewOnStateChanged(videoOrientation = meta.videoStream.orientation)
             gradientBackgroundViewOnStateChanged(videoOrientation = meta.videoStream.orientation)
             pipViewOnStateChanged(videoPlayer = meta.videoPlayer)
+            playButtonViewOnStateChanged(videoPlayer = meta.videoPlayer)
 
             changeLayoutBasedOnVideoType(meta.videoPlayer, playViewModel.channelType)
             if (meta.videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoControlView.setPlayer(meta.videoPlayer.exoPlayer)
@@ -1093,9 +1094,10 @@ class PlayUserInteractionFragment @Inject constructor(
     //region OnStateChanged
     private fun playButtonViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
-            state: PlayViewerVideoState
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
+            state: PlayViewerVideoState = playViewModel.observableVideoProperty.value?.state ?: PlayViewerVideoState.Unknown
     ) {
-        if (!channelType.isVod) {
+        if (!channelType.isVod || (videoPlayer is PlayVideoPlayerUiModel.General.Complete && videoPlayer.playerType != PlayerType.Client)) {
             playButtonView.hide()
             return
         }

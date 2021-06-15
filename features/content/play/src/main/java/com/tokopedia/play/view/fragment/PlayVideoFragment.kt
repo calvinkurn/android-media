@@ -474,6 +474,7 @@ class PlayVideoFragment @Inject constructor(
             PlayViewerVideoState.Waiting -> videoLoadingView.showWaitingState()
             is PlayViewerVideoState.Buffer -> videoLoadingView.show(source = state.bufferSource)
             PlayViewerVideoState.Play, PlayViewerVideoState.End, PlayViewerVideoState.Pause -> videoLoadingView.hide()
+            PlayViewerVideoState.Unknown -> videoLoadingView.show(source = BufferSource.Unknown)
         }
     }
 

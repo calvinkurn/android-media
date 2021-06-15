@@ -3,14 +3,8 @@ package com.tokopedia.play.view.viewmodel
 import android.net.Uri
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.ext.cast.CastPlayer
-import com.google.android.exoplayer2.ext.cast.MediaItem
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
-import com.google.android.exoplayer2.util.MimeTypes
-import com.google.android.gms.cast.MediaInfo
-import com.google.android.gms.cast.MediaMetadata
-import com.google.android.gms.cast.MediaQueueItem
-import com.google.android.gms.common.images.WebImage
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -18,13 +12,13 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
-import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.data.websocket.revamp.WebSocketAction
 import com.tokopedia.play.data.websocket.revamp.WebSocketClosedReason
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
@@ -44,16 +38,12 @@ import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.Event
-import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 /**
@@ -73,7 +63,6 @@ class PlayViewModel @Inject constructor(
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
-        private val playSocket: PlaySocket,
         private val playSocketToModelMapper: PlaySocketToModelMapper,
         private val playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
@@ -82,7 +71,7 @@ class PlayViewModel @Inject constructor(
         private val playPreference: PlayPreference,
         private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
         private val playChannelWebSocket: PlayChannelWebSocket,
-        private val castPlayer: CastPlayer
+        private val castPlayerHelper: CastPlayerHelper
 ) : ViewModel() {
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
@@ -567,6 +556,7 @@ class PlayViewModel @Inject constructor(
     fun defocusPage(shouldPauseVideo: Boolean) {
         stopJob()
         defocusVideoPlayer(shouldPauseVideo)
+        returnToNonCastPlayer()
         stopWebSocket()
     }
 
@@ -575,39 +565,45 @@ class PlayViewModel @Inject constructor(
         if (!channelData.videoMetaInfo.videoPlayer.isGeneral()) return
 
         fun loadCast() {
-            defocusVideoPlayer(true)
+            playVideoPlayer.stop(resetState = false)
+            playVideoPlayer.removeListener(videoManagerListener)
 
-            val params = channelData.videoMetaInfo.videoPlayer.params
             val videoStream = channelData.videoMetaInfo.videoStream
-            val mediaItem = getCastMediaItem(params, videoStream, channelData.partnerInfo, channelData.channelInfo.coverUrl)
-            castPlayer.loadItem(mediaItem, playVideoPlayer.getCurrentPosition())
+            castPlayerHelper.castPlay(
+                    channelId = channelData.id,
+                    title = videoStream.title,
+                    partnerName = channelData.partnerInfo.basicInfo.name,
+                    coverUrl = channelData.channelInfo.coverUrl,
+                    videoUrl = channelData.videoMetaInfo.videoPlayer.params.videoUrl,
+                    currentPosition = playVideoPlayer.getCurrentPosition()
+            )
             _observableVideoMeta.value = channelData.videoMetaInfo.copy(
-                    videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(castPlayer, channelData.channelInfo.coverUrl)
+                    videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(castPlayerHelper.player, channelData.channelInfo.coverUrl)
             )
         }
 
         fun loadPlayer() {
             playVideoPlayer.addListener(videoManagerListener)
-            playVideoPlayer.resume()
+//            playVideoPlayer.resume()
+            updateVideoMetaInfo(channelData.videoMetaInfo)
 
             _observableVideoMeta.value = channelData.videoMetaInfo.copy(
                     videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(playVideoPlayer.videoPlayer)
             )
         }
 
-        if (castPlayer.isCastSessionAvailable) loadCast()
-        else {
-            loadPlayer()
-            castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
-                override fun onCastSessionAvailable() {
-                    loadCast()
-                }
+        castPlayerHelper.setSessionAvailabilityListener(object : SessionAvailabilityListener {
+            override fun onCastSessionAvailable() {
+                loadCast()
+            }
 
-                override fun onCastSessionUnavailable() {
-                    loadPlayer()
-                }
-            })
-        }
+            override fun onCastSessionUnavailable() {
+                loadPlayer()
+            }
+        })
+
+        if (castPlayerHelper.hasAvailableSession) loadCast()
+        else loadPlayer()
     }
 
     private fun defocusVideoPlayer(shouldPauseVideo: Boolean) {
@@ -618,12 +614,21 @@ class PlayViewModel @Inject constructor(
         playVideoPlayer.removeListener(videoManagerListener)
     }
 
+    private fun returnToNonCastPlayer() {
+        val vidPlayer = videoPlayer
+        if (vidPlayer.isGeneral()) {
+            _observableVideoMeta.value = _observableVideoMeta.value?.copy(
+                    videoPlayer = vidPlayer.setPlayer(playVideoPlayer.videoPlayer)
+            )
+        }
+    }
+
     private fun updateChannelInfo(channelData: PlayChannelData) {
         updateStatusInfo(channelData.id)
         updatePartnerInfo(channelData.partnerInfo.basicInfo)
         updateCartInfo(channelData.cartInfo)
         if (!channelData.statusInfo.statusType.isFreeze) {
-            updateVideoMetaInfo(channelData.videoMetaInfo)
+//            updateVideoMetaInfo(channelData.videoMetaInfo)
             updateLikeAndTotalViewInfo(channelData.likeInfo.param, channelData.id)
             updateProductTagsInfo(channelData.pinnedInfo.pinnedProduct.productTags, channelData.pinnedInfo, channelData.id)
         }
@@ -834,10 +839,17 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun updateVideoMetaInfo(videoMetaInfo: PlayVideoMetaInfoUiModel) {
-        if (videoMetaInfo.videoPlayer is PlayVideoPlayerUiModel.General) {
-            if (videoMetaInfo.videoPlayer is PlayVideoPlayerUiModel.General.Complete && videoMetaInfo.videoPlayer.playerType == PlayerType.Client) playGeneralVideo(videoMetaInfo.videoPlayer)
+        when (videoMetaInfo.videoPlayer) {
+            is PlayVideoPlayerUiModel.General.Incomplete -> {
+                if (!castPlayerHelper.hasAvailableSession) playGeneralVideo(videoMetaInfo.videoPlayer)
+                else playVideoPlayer.release()
+            }
+            is PlayVideoPlayerUiModel.General.Complete -> {
+                if (videoMetaInfo.videoPlayer.playerType == PlayerType.Client) playGeneralVideo(videoMetaInfo.videoPlayer)
+                else playVideoPlayer.release()
+            }
+            else -> playVideoPlayer.release()
         }
-        else playVideoPlayer.release()
     }
 
     private fun updateLikeAndTotalViewInfo(likeParamInfo: PlayLikeParamInfoUiModel, channelId: String) {
@@ -1123,24 +1135,6 @@ class PlayViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun getCastMediaItem(
-            params: PlayGeneralVideoPlayerParams,
-            videoStream: PlayVideoStreamUiModel,
-            partnerInfo: PlayPartnerInfoUiModel,
-            coverUrl: String,
-    ): MediaQueueItem {
-        val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE)
-        movieMetadata.putString(MediaMetadata.KEY_TITLE, videoStream.title)
-        movieMetadata.putString(MediaMetadata.KEY_ALBUM_ARTIST, partnerInfo.basicInfo.name)
-        movieMetadata.addImage(WebImage(Uri.parse(coverUrl)))
-        val mediaInfo = MediaInfo.Builder(params.videoUrl)
-                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
-                .setContentType(MimeTypes.VIDEO_UNKNOWN)
-                .setMetadata(movieMetadata).build()
-
-        return MediaQueueItem.Builder(mediaInfo).build()
     }
 
     companion object {
