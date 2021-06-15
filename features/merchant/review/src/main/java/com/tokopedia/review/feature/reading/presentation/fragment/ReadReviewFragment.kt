@@ -19,6 +19,7 @@ import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.reading.data.ProductReviewDetail
 import com.tokopedia.review.feature.reading.data.ProductTopic
 import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
+import com.tokopedia.review.feature.reading.data.ProductrevGetProductReviewList
 import com.tokopedia.review.feature.reading.di.DaggerReadReviewComponent
 import com.tokopedia.review.feature.reading.di.ReadReviewComponent
 import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewAdapterTypeFactory
@@ -64,6 +65,14 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     private val readReviewFilterFactory by lazy {
         ReadReviewSortFilterFactory()
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.read_review_swipe_refresh_layout
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.read_review_recycler_view
     }
 
     override fun getAdapterTypeFactory(): ReadReviewAdapterTypeFactory {
@@ -129,7 +138,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onSortClicked() {
         val filterOptions = readReviewFilterFactory.getSortOptions(listOf(getString(R.string.review_reading_sort_most_helpful), getString(R.string.review_reading_sort_latest), getString(R.string.review_reading_sort_highest_rating), getString(R.string.review_reading_sort_lowest_rating)))
-        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_sort_title),filterOptions, this).show(it, ReadReviewFilterBottomSheet.TAG) }
+        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_sort_title), filterOptions, this).show(it, ReadReviewFilterBottomSheet.TAG) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -142,7 +151,9 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        showLoading()
         observeRatingAndTopics()
         observeProductReviews()
     }
@@ -165,7 +176,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun getProductReview(page: Int) {
-
+        viewModel.setPage(page)
     }
 
     private fun observeRatingAndTopics() {
@@ -180,7 +191,12 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     private fun observeProductReviews() {
         viewModel.productReviews.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessGetProductReviews(it.data)
+                is Fail -> {
 
+                }
+            }
         })
     }
 
@@ -191,6 +207,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             setAvailableFilters(ratingAndTopics.topics, ratingAndTopics.availableFilters, this@ReadReviewFragment)
         }
         hideLoading()
+    }
+
+    private fun onSuccessGetProductReviews(productrevGetProductReviewList: ProductrevGetProductReviewList) {
+        renderList(viewModel.mapProductReviewToReadReviewUiModel(productrevGetProductReviewList.reviewList, productrevGetProductReviewList.shopInfo.shopID), productrevGetProductReviewList.hasNext)
     }
 
     private fun getReviewStatistics(): List<ProductReviewDetail> {

@@ -27,9 +27,9 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
         bindViews()
         with(element.reviewData) {
             setRating(productRating)
-            setCreateTime(reviewCreateTime)
+            setCreateTime(reviewCreateTimestamp)
             setReviewerName(user.fullName)
-            showReportOptionWithCondition(isReportable)
+            showReportOptionWithCondition(isReportable, feedbackID, element.shopId)
         }
     }
 
@@ -52,12 +52,12 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
         }
     }
 
-    private fun showReportOptionWithCondition(isReportable: Boolean) {
+    private fun showReportOptionWithCondition(isReportable: Boolean, reviewId: String, shopId: String) {
         reportOption?.let {
             if(isReportable) {
                 it.show()
                 it.setOnClickListener {
-                    readReviewItemListener.onThreeDotsClicked()
+                    readReviewItemListener.onThreeDotsClicked(reviewId, shopId)
                 }
             } else {
                 it.hide()
@@ -71,4 +71,19 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
         }
     }
 
+    private fun setReview() {
+
+    }
+
+    private fun setImageReview() {
+
+    }
+
+    private fun setLikeButton() {
+
+    }
+
+    private fun setReply() {
+
+    }
 }

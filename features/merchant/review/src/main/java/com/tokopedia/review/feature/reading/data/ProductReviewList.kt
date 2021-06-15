@@ -34,6 +34,9 @@ data class ProductReview(
         @SerializedName("reviewCreateTime")
         @Expose
         val reviewCreateTime: String = "",
+        @SerializedName("reviewCreateTimestamp")
+        @Expose
+        val reviewCreateTimestamp: String = "",
         @SerializedName("isAnonymous")
         @Expose
         val isAnonymous: Boolean = false,

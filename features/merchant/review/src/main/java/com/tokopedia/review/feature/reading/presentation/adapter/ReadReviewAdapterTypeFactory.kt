@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.review.feature.inbox.history.presentation.adapter.viewholder.ReviewHistoryViewHolder
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.adapter.viewholder.ReadReviewLoadingViewHolder
 import com.tokopedia.review.feature.reading.presentation.adapter.viewholder.ReadReviewProductViewHolder
@@ -23,7 +22,7 @@ class ReadReviewAdapterTypeFactory(private val readReviewItemListener: ReadRevie
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            ReviewHistoryViewHolder.LAYOUT -> ReadReviewProductViewHolder(parent, readReviewItemListener)
+            ReadReviewProductViewHolder.LAYOUT -> ReadReviewProductViewHolder(parent, readReviewItemListener)
             ReadReviewLoadingViewHolder.LAYOUT -> ReadReviewLoadingViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }

@@ -63,7 +63,7 @@ class GetProductReviewListUseCase @Inject constructor(graphqlRepository: Graphql
 
     private val requestParams = RequestParams.create()
 
-    fun setParams(productId: String, page: Int, sort: String, filter: String) {
+    fun setParams(productId: String, page: Int, sort: String = "", filter: String = "") {
         requestParams.apply {
             putString(PARAM_PRODUCT_ID, productId)
             putInt(PARAM_PAGE, page)

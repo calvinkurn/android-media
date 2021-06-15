@@ -6,11 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.review.feature.reading.data.ProductReview
 import com.tokopedia.review.feature.reading.data.ProductReviewDetail
 import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
 import com.tokopedia.review.feature.reading.data.ProductrevGetProductReviewList
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductRatingAndTopicsUseCase
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductReviewListUseCase
+import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -23,18 +25,18 @@ class ReadReviewViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
-        private const val INITIAL_PAGE = 0
+        const val INITIAL_PAGE = 0
     }
 
     private val _ratingAndTopics = MediatorLiveData<Result<ProductrevGetProductRatingAndTopic>>()
     val ratingAndTopic: LiveData<Result<ProductrevGetProductRatingAndTopic>>
         get() = _ratingAndTopics
 
-    private val _productReviews = MediatorLiveData<ProductrevGetProductReviewList>()
-    val productReviews: LiveData<ProductrevGetProductReviewList>
+    private val _productReviews = MediatorLiveData<Result<ProductrevGetProductReviewList>>()
+    val productReviews: LiveData<Result<ProductrevGetProductReviewList>>
         get() = _productReviews
 
-    private val currentPage = MutableLiveData(INITIAL_PAGE)
+    private val currentPage = MutableLiveData<Int>()
     private var productId: MutableLiveData<String> = MutableLiveData()
 
     fun setProductId(productId: String) {
@@ -49,9 +51,32 @@ class ReadReviewViewModel @Inject constructor(
         return (ratingAndTopic.value as? Success)?.data?.rating?.satisfactionRate ?: ""
     }
 
+    fun setPage(page: Int) {
+        currentPage.value = page
+    }
+
+    fun mapProductReviewToReadReviewUiModel(productReviews: List<ProductReview>, shopId: String): List<ReadReviewUiModel> {
+        return productReviews.map {
+            ReadReviewUiModel(it, false, shopId)
+        }
+    }
+
     init {
         _ratingAndTopics.addSource(productId) {
             getRatingAndTopics(it)
+        }
+        _productReviews.addSource(currentPage) {
+            getProductReviews(it)
+        }
+    }
+
+    private fun getProductReviews(page: Int) {
+        launchCatchError(block = {
+            getProductReviewListUseCase.setParams(productId.value ?: "", page)
+            val data = getProductReviewListUseCase.executeOnBackground()
+            _productReviews.postValue(Success(data.productrevGetProductReviewList))
+        }) {
+            _productReviews.postValue(Fail(it))
         }
     }
 
