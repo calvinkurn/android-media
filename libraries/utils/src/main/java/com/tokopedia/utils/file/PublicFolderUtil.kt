@@ -65,34 +65,7 @@ object PublicFolderUtil {
             mimeType: String,
             directory: String? = null,
     ): Pair<File?, Uri?> {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            return putFileToPublicFolderQ(context, localFile, outputFileName, mimeType, directory)
-        } else {
-            return putFileToPublicFolderLegacy(context, localFile, outputFileName, mimeType, directory)
-        }
-    }
 
-    fun putFileToPublicFolderLegacy(
-            context: Context,
-            localFile: File,
-            outputFileName: String,
-            mimeType: String,
-            directory: String? = null,
-    ): Pair<File?, Uri?> {
-        val publicFolder = if (directory != null) File(directory) else getPublicDirFromMimeLegacy(mimeType)
-        publicFolder.mkdirs()
-        val outputFile = File(publicFolder, outputFileName)
-        localFile.copyTo(target = outputFile)
-        return outputFile to Uri.fromFile(outputFile)
-    }
-
-    fun putFileToPublicFolderQ(
-            context: Context,
-            localFile: File,
-            outputFileName: String,
-            mimeType: String,
-            directory: String? = null,
-    ): Pair<File?, Uri?> {
         try {
             val contentResolver: ContentResolver = context.contentResolver
             val contentValues = createContentValues(outputFileName, mimeType, directory)
@@ -111,36 +84,22 @@ object PublicFolderUtil {
                 }
                 resetPending(contentResolver, contentValues, uri)
             }
-            return fileAndUriPair(contentResolver, uri)
+            return fileAndUriPair(contentResolver, uri, outputFileName)
         } catch (ex: Exception) {
             return null to null
         }
     }
 
-    private fun fileAndUriPair (contentResolver: ContentResolver, uri:Uri?): Pair<File?, Uri?> {
+    private fun fileAndUriPair (contentResolver: ContentResolver, uri:Uri?, outputFileName: String = ""): Pair<File?, Uri?> {
         val filePath = FileUtil.getPath(contentResolver, uri)
-        return if (filePath != null) {
-            File(filePath) to uri
-        } else {
-            null to null
-        }
-    }
+        if (filePath == null) return null to null
 
-    private fun getPublicDirFromMimeLegacy(mimeType: String): File {
-        return when {
-            mimeType.startsWith("image") -> {
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-            }
-            mimeType.startsWith("video") -> {
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)
-            }
-            mimeType.startsWith("audio") -> {
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
-            }
-            else -> {
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-            }
+        var resultFile = File(filePath)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            val resultPath = resultFile.absolutePath.replace(resultFile.name, outputFileName)
+            resultFile.renameTo(File(resultPath))
         }
+        return resultFile to uri
     }
 
 
