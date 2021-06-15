@@ -43,6 +43,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.ChooseAddressBottomSheetListener
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
@@ -396,8 +397,11 @@ abstract class BaseSearchCategoryFragment:
                 fragment = this,
                 listener = this,
                 autoInitializeData = false,
+                pageName = miniCartWidgetPageName,
         )
     }
+
+    abstract val miniCartWidgetPageName: MiniCartAnalytics.Page
 
     abstract fun getViewModel(): BaseSearchCategoryViewModel
 
