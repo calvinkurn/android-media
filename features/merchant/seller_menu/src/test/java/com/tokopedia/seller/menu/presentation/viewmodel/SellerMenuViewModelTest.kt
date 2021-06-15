@@ -1,8 +1,6 @@
 package com.tokopedia.seller.menu.presentation.viewmodel
 
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
-import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreDetailItemServiceModel
-import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
