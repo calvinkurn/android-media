@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
@@ -52,6 +53,7 @@ import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
+import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub.Companion.START_TIME_FORMAT
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.websocket.WebSocketResponse
@@ -63,6 +65,8 @@ import org.hamcrest.Matchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
+import java.sql.Date
+import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 abstract class TopchatRoomTest {
@@ -635,5 +639,23 @@ fun ChatSmartReplyQuestionResponse.hasQuestion(
     hasQuestion: Boolean
 ): ChatSmartReplyQuestionResponse {
     chatSmartReplyQuestion.hasQuestion = hasQuestion
+    return this
+}
+
+fun WebSocketResponse.changeTimeStampTo(
+    timeMillis: Long
+): WebSocketResponse {
+    val date = Date(timeMillis)
+    val startTime = SimpleDateFormat(START_TIME_FORMAT).format(date)
+    jsonObject?.apply {
+        addProperty("start_time", startTime)
+        get("message")?.apply {
+            addProperty("timestamp", startTime)
+            addProperty("timestamp_fmt", startTime)
+            addProperty("timestamp_unix", timeMillis)
+            addProperty("timestamp_unix_nano", timeMillis * 1_000_000)
+        }
+    }
+    Log.d("CHECK_SDF", jsonObject.toString())
     return this
 }

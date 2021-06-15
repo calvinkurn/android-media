@@ -33,7 +33,6 @@ class RxWebSocketUtilStub constructor(
     private val websocketInfoObservable = PublishSubject.create<WebSocketInfo>()
     private val websocket: WebSocket = WebSocketStub()
     private val gson: Gson = GsonBuilder().create()
-    private val startTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
     private val startTimeQueue = LinkedList<String>()
 
     override fun getWebSocketInfo(url: String, accessToken: String): Observable<WebSocketInfo>? {
@@ -102,7 +101,7 @@ class RxWebSocketUtilStub constructor(
         )
         val requestProductId = request.jsonObject?.get("product_id")?.asString ?: ""
         val requestTimeStamp = RfcDateTimeParser.parseDateString(
-            requestStartTime, arrayOf(startTimeFormat)
+            requestStartTime, arrayOf(START_TIME_FORMAT)
         ).time
         val requestAttributes = ProductAttachmentAttributes(
             requestProductId, requestProductProfile
@@ -155,7 +154,7 @@ class RxWebSocketUtilStub constructor(
         val requestMsg = request.jsonObject?.get("message")?.asString ?: ""
         val uiModel = mapper.map(room)
         val timestamp = RfcDateTimeParser.parseDateString(
-            requestStartTime, arrayOf(startTimeFormat)
+            requestStartTime, arrayOf(START_TIME_FORMAT)
         ).time
         val message = MessagePojo(
             censoredReply = requestMsg,
@@ -206,6 +205,10 @@ class RxWebSocketUtilStub constructor(
 
     private fun isReplyMessage(requestObj: WebSocketResponse): Boolean {
         return requestObj.code == ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE
+    }
+
+    companion object {
+        const val START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
     }
 }
 

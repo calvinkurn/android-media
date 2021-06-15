@@ -12,13 +12,16 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
+import com.tokopedia.chat_common.data.SendableViewModel
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.base.changeTimeStampTo
 import com.tokopedia.topchat.chatroom.view.activity.base.hasQuestion
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
-import com.tokopedia.topchat.stub.chatroom.view.presenter.TopChatRoomPresenterStub
+import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
+import com.tokopedia.utils.time.RfcDateTimeParser
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
@@ -475,13 +478,23 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // When
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket.simulateResponse(
+            wsMineResponseText.changeTimeStampTo(today())
+        )
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
         assertSrwBubbleExpanded(0)
     }
 
-    // TODO: add functionality to adjust timestram ws response
+    // TODO: identify why not pointing to `Hari Ini`
+    private fun today(): Long {
+        val stringDate = SendableViewModel.generateStartTime()
+        return RfcDateTimeParser.parseDateString(
+            stringDate, arrayOf(RxWebSocketUtilStub.START_TIME_FORMAT)
+        ).time
+    }
+
     // TODO: SRW bubble should removed when user request sent invoice
     // TODO: SRW bubble should removed when user receive invoice event from ws.
     // TODO: SRW preview should removed when user re-attach preview with invoice
