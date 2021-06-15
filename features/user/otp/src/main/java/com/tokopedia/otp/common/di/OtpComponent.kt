@@ -2,6 +2,8 @@ package com.tokopedia.otp.common.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.otp.notif.view.fragment.*
+import com.tokopedia.otp.qrcode.view.fragment.LoginByQrFragment
+import com.tokopedia.otp.qrcode.view.fragment.LoginByQrResultFragment
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.fragment.*
 import dagger.Component
@@ -27,4 +29,6 @@ interface OtpComponent {
     fun inject(fragment: ResultNotifFragment)
     fun inject(fragment: ActivePushNotifFragment)
     fun inject(fragment: InactivePushNotifFragment)
+    fun inject(fragment: LoginByQrFragment)
+    fun inject(fragment: LoginByQrResultFragment)
 }

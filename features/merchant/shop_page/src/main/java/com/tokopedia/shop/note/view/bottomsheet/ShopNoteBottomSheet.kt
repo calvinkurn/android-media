@@ -119,7 +119,8 @@ class ShopNoteBottomSheet : BottomSheetUnify() {
                 }
                 is Fail -> {
                     handleError(result.throwable)
-                    result.throwable.message?.let { logExceptionToCrashlytics(it, result.throwable) }
+                    val errorMessage = result.throwable.message.orEmpty()
+                    logExceptionToCrashlytics(errorMessage, result.throwable)
                 }
             }
         }

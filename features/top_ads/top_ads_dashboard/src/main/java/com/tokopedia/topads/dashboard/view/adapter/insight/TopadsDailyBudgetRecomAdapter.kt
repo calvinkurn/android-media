@@ -61,7 +61,7 @@ class TopadsDailyBudgetRecomAdapter(private val userSession: UserSessionInterfac
                 holder.view.buttonSubmitEdit.isLoading = true
                 onBudgetClicked(holder.adapterPosition)
             }
-            setPotensiKlik = holder.view.potentialClick.text.toString()
+            setPotensiKlik = calculatePotentialClick(holder).toLong()
             holder.view.addOnImpressionListener(impressHolder) {
                 dailyRecommendationModel.clear()
                     var dailyBudgetModel = InsightDailyBudgetModel().apply {
@@ -78,7 +78,7 @@ class TopadsDailyBudgetRecomAdapter(private val userSession: UserSessionInterfac
                     super.onNumberChanged(number)
                     items[holder.adapterPosition].setCurrentBid = number
                     holder.view.potentialClick.text = String.format(holder.view.context.getString(R.string.topads_dash_potential_click_text), calculatePotentialClick(holder).thousandFormatted())
-                    setPotensiKlik = holder.view.potentialClick.text.toString()
+                    setPotensiKlik = calculatePotentialClick(holder).toLong()
                     when {
                         number < items[holder.adapterPosition].suggestedPriceDaily && number > items[holder.adapterPosition].priceDaily -> {
                             holder.view.buttonSubmitEdit.isEnabled = true

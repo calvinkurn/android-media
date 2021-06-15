@@ -1,5 +1,6 @@
 package com.tokopedia.onboarding.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -23,6 +24,7 @@ import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SMART_REGISTER
 import com.tokopedia.onboarding.data.OnboardingConstant.PARAM_SOURCE_ONBOARDING
 import com.tokopedia.onboarding.data.OnboardingScreenItem
 import com.tokopedia.onboarding.di.OnboardingComponent
@@ -102,6 +104,28 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
         Weaver.executeWeaveCoRoutineWithFirebase(executeViewCreatedWeave, RemoteConfigKey.ENABLE_ASYNC_ONBOARDING_CREATE, context)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_REGISTER -> {
+                activity?.let {
+                    val intentNewUser = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
+                    val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
+                    intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    if (resultCode == Activity.RESULT_OK &&
+                            userSession.isLoggedIn &&
+                            data?.extras?.getBoolean(PARAM_IS_SMART_REGISTER, false) == false
+                    ) {
+                        it.startActivities(arrayOf(intentHome, intentNewUser))
+                    } else {
+                        it.startActivity(intentHome)
+                    }
+                    it.finish()
+                }
+            }
+        }
+    }
+
     @NotNull
     private fun executeViewCreateFlow(): Boolean {
         GlobalScope.launch(coroutineContext) {
@@ -166,7 +190,7 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
             context?.let {
                 onboardingAnalytics.eventOnboardingJoin(screenViewpager.currentItem)
                 if (TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)) {
-                    startActivityWithBackTask()
+                    goToRegisterPage()
                 } else {
                     RouteManager.route(it, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
                 }
@@ -187,9 +211,10 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
 
                 launchCatchError(
                         block = {
+                            finishOnBoarding()
                             val intent = getIntentforApplink(it, applink)
                             startActivity(intent)
-                            finishOnBoarding()
+                            activity?.finish()
                         },
                         onError = {
                         }
@@ -210,20 +235,13 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
         }
     }
 
-    private fun startActivityWithBackTask() {
+    private fun goToRegisterPage() {
         context?.let {
             launchCatchError(
                     block = {
-                        val taskStackBuilder = TaskStackBuilder.create(it)
-                        val homeIntent = getIntentforApplink(it, ApplinkConst.HOME)
-                        taskStackBuilder.addNextIntent(homeIntent)
-
-                        val intent = getIntentforApplink(it, ApplinkConst.REGISTER)
-                        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, PARAM_SOURCE_ONBOARDING)
-
-                        taskStackBuilder.addNextIntent(intent)
-                        taskStackBuilder.startActivities()
                         finishOnBoarding()
+                        val intent = getIntentforApplink(it, ApplinkConst.REGISTER)
+                        startActivityForResult(intent, REQUEST_REGISTER)
                     },
                     onError = {
                     }
@@ -247,7 +265,6 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
         activity?.let {
             saveFirstInstallTime()
             userSession.setFirstTimeUserOnboarding(false)
-            it.finish()
         }
     }
 
@@ -297,6 +314,8 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
 
         const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
         const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
+
+        private const val REQUEST_REGISTER = 779
 
         fun createInstance(bundle: Bundle): OnboardingFragment {
             val fragment = OnboardingFragment()

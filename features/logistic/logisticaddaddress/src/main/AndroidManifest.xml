@@ -47,7 +47,6 @@
         </activity>
         <activity
             android:name=".features.addnewaddress.addedit.AddEditAddressActivity"
-            android:exported="true"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

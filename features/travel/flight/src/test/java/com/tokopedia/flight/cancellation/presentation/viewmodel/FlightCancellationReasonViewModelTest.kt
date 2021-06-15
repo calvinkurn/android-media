@@ -48,7 +48,8 @@ class FlightCancellationReasonViewModelTest {
         // then
         viewModel.selectedReason shouldBe null
         viewModel.editedAttachmentPosition shouldBe -1
-        viewModel.canNavigateToNextStep.value shouldBe false
+        viewModel.canNavigateToNextStep.value!!.first shouldBe false
+        viewModel.canNavigateToNextStep.value!!.second shouldBe false
         viewModel.attachmentErrorStringRes.value shouldBe FlightCancellationReasonViewModel.DEFAULT_STRING_RES_ERROR
         viewModel.getAttachments().size shouldBe 0
     }
@@ -103,7 +104,8 @@ class FlightCancellationReasonViewModelTest {
         viewModel.onNextButtonClicked()
 
         // then
-        viewModel.canNavigateToNextStep.value shouldBe true
+        viewModel.canNavigateToNextStep.value!!.first shouldBe true
+        viewModel.canNavigateToNextStep.value!!.second shouldBe true
         viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.reason shouldBe ""
         viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.reasonId shouldBe "0"
         viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.attachmentList.size shouldBe 0
@@ -126,7 +128,8 @@ class FlightCancellationReasonViewModelTest {
         viewModel.onNextButtonClicked()
 
         // then
-        viewModel.canNavigateToNextStep.value shouldBe true
+        viewModel.canNavigateToNextStep.value!!.first shouldBe true
+        viewModel.canNavigateToNextStep.value!!.second shouldBe true
         viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.reason shouldBe ""
         viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.reasonId shouldBe "1"
         viewModel.cancellationWrapperModel.cancellationReasonAndAttachmentModel.attachmentList.size shouldBe 3

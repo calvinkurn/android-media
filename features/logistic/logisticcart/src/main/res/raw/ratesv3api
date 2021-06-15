@@ -148,6 +148,11 @@ query RatesV3Api($param: OngkirRatesV3Input!) {
               error_code
             }
       }
+      pre_order {
+         header
+         label
+         display
+      }
       info {
         blackbox_info {
           text_info

@@ -73,5 +73,4 @@ include "libraries:tokopatch"
 include ':libraries:annotation_proc_central'
 include "libraries:screen_recorder"
 include "libraries:screenshot_observer"
-include "libraries:work_manager_util"
 include "libraries:unit_test"
