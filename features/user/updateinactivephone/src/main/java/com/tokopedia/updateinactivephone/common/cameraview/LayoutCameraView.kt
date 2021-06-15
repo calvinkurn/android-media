@@ -25,7 +25,7 @@ class LayoutCameraView @JvmOverloads constructor(
         }
 
     init {
-        paintWhite.color = Color.WHITE
+        paintWhite.color = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         paintWhite.style = Paint.Style.STROKE
         paintWhite.strokeWidth = STROKE_WIDTH
 
