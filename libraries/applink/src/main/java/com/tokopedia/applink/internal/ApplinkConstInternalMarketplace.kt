@@ -1,7 +1,5 @@
 package com.tokopedia.applink.internal
 
-import android.content.Context
-import android.net.Uri
 import com.tokopedia.applink.constant.DeeplinkConstant
 
 /**
