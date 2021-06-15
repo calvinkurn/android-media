@@ -99,10 +99,6 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-    override fun getAnalytic(): NotificationUpdateAnalytics {
-        return NotificationUpdateAnalytics()
-    }
-
     override fun showNotificationDetail(bottomSheet: BottomSheetType, element: NotificationItemViewBean) {
         when (bottomSheet) {
             is BottomSheetType.LongerContent -> showLongerContent(element)

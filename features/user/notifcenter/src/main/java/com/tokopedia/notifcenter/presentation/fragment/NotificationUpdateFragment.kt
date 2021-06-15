@@ -324,7 +324,7 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
     override fun analytics(): NotificationTracker = getAnalytic()
 
     override fun getAnalytic(): NotificationUpdateAnalytics {
-        return NotificationUpdateAnalytics()
+        return analytics
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
