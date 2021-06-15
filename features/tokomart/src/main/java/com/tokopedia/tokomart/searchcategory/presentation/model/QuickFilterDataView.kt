@@ -5,7 +5,8 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 
 class QuickFilterDataView(
-        val quickFilterItemList: List<SortFilterItemDataView> = listOf()
+        val quickFilterItemList: List<SortFilterItemDataView> = listOf(),
+        val mapParameter: Map<String, String> = mapOf(),
 ): Visitable<BaseSearchCategoryTypeFactory> {
 
     override fun type(typeFactory: BaseSearchCategoryTypeFactory?) =

@@ -109,10 +109,10 @@ import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.decodeQueryParameter
-import com.tokopedia.search.utils.getFilterParams
-import com.tokopedia.search.utils.getSortFilterCount
-import com.tokopedia.search.utils.getSortFilterParamsString
-import com.tokopedia.search.utils.isSortHasDefaultValue
+import com.tokopedia.filter.common.helper.getFilterParams
+import com.tokopedia.filter.common.helper.getSortFilterCount
+import com.tokopedia.filter.common.helper.getSortFilterParamsString
+import com.tokopedia.filter.common.helper.isSortHasDefaultValue
 import com.tokopedia.search.utils.removeQuickFilterElevation
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -1234,7 +1234,10 @@ class ProductListFragment: BaseDaggerFragment(),
         get() = filterController.isFilterActive()
 
     override val isAnySortActive: Boolean
-        get() = (searchParameter?.getSearchParameterMap()?.isSortHasDefaultValue() == false)
+        get() {
+            val mapParameter = searchParameter?.getSearchParameterMap() ?: mapOf()
+            return !isSortHasDefaultValue(mapParameter)
+        }
 
     override fun clearLastProductItemPositionFromCache() {
         activity?.applicationContext?.let {

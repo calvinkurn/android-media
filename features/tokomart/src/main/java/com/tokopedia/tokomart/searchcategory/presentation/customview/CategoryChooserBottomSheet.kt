@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.searchcategory.utils.copyParcelable
@@ -182,18 +183,28 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
     }
 
     private fun determineSelectedOption(mapParameter: Map<String, String>, filter: Filter) {
+        val key = getUniqueOptionKey(filter)
+        var selectedValue = mapParameter[key] ?: ""
+        if (selectedValue.isEmpty())
+            selectedValue = mapParameter[OptionHelper.EXCLUDE_PREFIX + key] ?: ""
+
         val firstOption = filter.options.firstOrNull() ?: Option()
-        val key = firstOption.key
-        val selectedValue = mapParameter[key] ?: ""
 
         val selectedOption = filter.options.withIndex().find {
             val opt = it.value
-            opt.key == key && opt.value == selectedValue
+            opt.key.removePrefix(OptionHelper.EXCLUDE_PREFIX) == key
+                    && opt.value == selectedValue
         } ?: IndexedValue(0, firstOption)
 
         this.selectedOption = selectedOption
         this.initialSelectedOptionIndex = selectedOption.index
     }
+
+    private fun getUniqueOptionKey(filter: Filter) =
+            filter.options
+                    .groupBy { it.key.removePrefix(OptionHelper.EXCLUDE_PREFIX) }
+                    .keys
+                    .firstOrNull() ?: ""
 
     interface Callback {
 

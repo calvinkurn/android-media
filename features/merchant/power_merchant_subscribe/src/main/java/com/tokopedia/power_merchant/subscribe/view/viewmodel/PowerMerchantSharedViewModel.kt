@@ -6,9 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMBasicInfoUseCase
-import com.tokopedia.power_merchant.subscribe.domain.interactor.GetShopModerationStatusUseCase
+import com.tokopedia.power_merchant.subscribe.domain.usecase.GetShopModerationStatusUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.ModerationShopStatusUiModel
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantRemoteConfig
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -24,7 +23,6 @@ import javax.inject.Inject
 class PowerMerchantSharedViewModel @Inject constructor(
         private val getPmBasicInfo: Lazy<GetPMBasicInfoUseCase>,
         private val getShopModerationStatusUseCase: Lazy<GetShopModerationStatusUseCase>,
-        private val remoteConfig: Lazy<PowerMerchantRemoteConfig>,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -36,12 +34,10 @@ class PowerMerchantSharedViewModel @Inject constructor(
     private val _powerMerchantBasicInfo: MutableLiveData<Result<PowerMerchantBasicInfoUiModel>> = MutableLiveData()
     private val _shopModerationStatus: MutableLiveData<Result<ModerationShopStatusUiModel>> = MutableLiveData()
 
-    fun getPowerMerchantBasicInfo() {
+    fun getPowerMerchantBasicInfo(isFirstLoad: Boolean) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                val isFreeShippingEnabled = remoteConfig.get().isFreeShippingEnabled()
-                val data = getPmBasicInfo.get().executeOnBackground()
-                return@withContext data.copy(isFreeShippingEnabled = isFreeShippingEnabled)
+                return@withContext getPmBasicInfo.get().executeOnBackground(isFirstLoad)
             }
             _powerMerchantBasicInfo.value = Success(result)
         }, onError = {

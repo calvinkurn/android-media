@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokomart.searchcategory.jsonToObject
@@ -21,6 +22,31 @@ import org.hamcrest.CoreMatchers.`is` as shouldBe
 class SearchQuickFilterTest: SearchTestFixtures() {
 
     private val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
+
+    @Test
+    fun `quick filter with same option as category filter should have exclude_ prefix in option key`() {
+        val quickFilterWithCategoryOptionJSON =
+                "search/quickfilter/quick-filter-contains-category-filter.json"
+        val searchModel = quickFilterWithCategoryOptionJSON.jsonToObject<SearchModel>()
+
+        `Given search view model`()
+        `Given get search first page use case will be successful`(searchModel)
+
+        `When view created`()
+
+        `Then assert quick filter key has exclude prefix`()
+    }
+
+    private fun `Then assert quick filter key has exclude prefix`() {
+        val quickFilterVisitable = searchViewModel.visitableListLiveData.value.getQuickFilterDataView()
+        val actualQuickFilterKeyWithCategoryOption =
+                quickFilterVisitable.quickFilterItemList[0].filter.options[0].key
+
+        val hasExcludePrefix =
+                actualQuickFilterKeyWithCategoryOption.startsWith(OptionHelper.EXCLUDE_PREFIX)
+
+        assertThat(hasExcludePrefix, shouldBe(true))
+    }
 
     @Test
     fun `when view created, quick filter type selected should be based on query params`() {

@@ -32,6 +32,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -1110,7 +1111,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val clickUrl = productModel.clickUrl
             if (clickUrl.isNotEmpty() && productModel.isTopAds) view?.sendATCTrackingURLRecent(productModel)
         } else if (productModel is CartRecommendationItemHolderData) {
-            val (_, recommendationItem) = productModel
+            val recommendationItem = productModel.recommendationItem
             productId = recommendationItem.productId.toLong()
             shopId = recommendationItem.shopId
             productName = recommendationItem.name
@@ -1121,6 +1122,17 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             val clickUrl = recommendationItem.clickUrl
             if (clickUrl.isNotEmpty()) view?.sendATCTrackingURL(recommendationItem)
+        } else if (productModel is BannerShopProductViewModel) {
+            productId = productModel.productId.toLongOrZero()
+            shopId = productModel.shopId.toIntOrZero()
+            productName = productModel.productName
+            productCategory = productModel.productCategory
+            productPrice = productModel.productPrice
+            quantity = productModel.productMinOrder
+            externalSource = AddToCartRequestParams.ATC_FROM_RECOMMENDATION
+
+            val clickUrl = productModel.adsClickUrl
+            if (clickUrl.isNotEmpty()) view?.sendATCTrackingURL(productModel)
         }
 
         val addToCartRequestParams = AddToCartRequestParams().apply {

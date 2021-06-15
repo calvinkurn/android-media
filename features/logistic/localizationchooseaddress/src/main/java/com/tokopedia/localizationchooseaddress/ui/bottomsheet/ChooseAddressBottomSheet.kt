@@ -102,7 +102,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     //flag variable to differentiate setState from address list or not
     private var isAddressListFlow: Boolean = false
     //flag variable to support warehous location, ex: for tokonow
-    private var isSupportWarehouseLoc: Boolean = false
+    private var isSupportWarehouseLoc: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -275,7 +275,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
 
     private fun initData() {
         source = listener?.getLocalizingAddressHostSourceBottomSheet().toString()
-        isSupportWarehouseLoc = listener?.isSupportWarehouseLoc()?: false
+        isSupportWarehouseLoc = listener?.isSupportWarehouseLoc() ?: true
         viewModel.getChosenAddressList(source)
     }
 

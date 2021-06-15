@@ -69,7 +69,7 @@ fun Visitable<*>.assertCategoryFilterDataView(categoryFilterDataValue: DataValue
 
 fun Visitable<*>.assertQuickFilterDataView(
         quickFilterDataValue: DataValue,
-        categoryFilterDataValue: DataValue,
+        mapParameter: Map<String, String>,
 ) {
     assertThat(this, instanceOf(QuickFilterDataView::class.java))
 
@@ -79,25 +79,16 @@ fun Visitable<*>.assertQuickFilterDataView(
     val expectedQuickFilter = quickFilterDataValue.filter
     assertThat(quickFilterItemList.size, shouldBe(expectedQuickFilter.size))
 
+    assertThat(quickFilterDataView.mapParameter, shouldBe(mapParameter))
+
     expectedQuickFilter.forEachIndexed { index, quickFilter ->
         val sortFilterItemDataView = quickFilterItemList[index]
 
-        assertThat(sortFilterItemDataView.filter, shouldBe(quickFilter))
         assertThat(sortFilterItemDataView.sortFilterItem.title.toString(), shouldBe(quickFilter.title))
         assertThat(sortFilterItemDataView.sortFilterItem.typeUpdated, shouldBe(false))
 
         val chevronListenerMatcher = if (quickFilter.options.size > 1) notNullValue() else nullValue()
         assertThat(sortFilterItemDataView.sortFilterItem.chevronListener, chevronListenerMatcher)
-
-//        sortFilterItemDataView.filter.options.forEach { quickOption ->
-//            val hasCategoryFilter = categoryFilterDataValue.filter[0].options.find { categoryOption ->
-//                categoryOption.key == quickOption.key
-//                        && categoryOption.value == quickOption.value
-//            } != null
-//
-//            if (hasCategoryFilter)
-//                assertThat(quickOption.key.startsWith(OptionHelper.EXCLUDE_PREFIX), shouldBe(true))
-//        }
     }
 }
 

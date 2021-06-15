@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="pm_static_y400_dms">#FF8B00</color>
+    <color name="pm_static_yn100_dms">#FFF1BA</color>
+    <color name="pm_static_y100_dms">#FFFAE6</color>
+    <color name="pm_static_n700_68_dms">#AD31353B</color>
+    <color name="pm_static_n700_96_dms">#F531353B</color>
+    <color name="pm_static_nn100_dms">#E4EBF5</color>
+    <color name="pm_static_nn500_dms">#8D96AA</color>
+    <color name="pm_static_t100_dms">#EBF6F6</color>
+    <color name="pm_static_t200_dms">#D2F2F2</color>
+    <color name="pm_static_t500_dms">#689C9E</color>
+    <color name="pm_static_r100_dms">#FFEAEF</color>
+    <color name="pm_static_r600_dms">#D6001C</color>
+    <color name="pm_static_g100_dms">#EBFFEF</color>
+    <color name="pm_static_g200_dms">#D6FFDE</color>
+    <color name="pm_static_g500_dms">#03AC0E</color>
+</resources>
