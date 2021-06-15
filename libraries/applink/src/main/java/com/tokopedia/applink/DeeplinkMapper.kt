@@ -402,7 +402,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.ORDER_BUYER_CANCELLATION_REQUEST_PAGE) { _, _, _, _ -> DeeplinkMapperOrder.getBuyerCancellationRequestInternalAppLink() },
             DLP.exact(ApplinkConst.TokopediaNow.HOME, ApplinkConstInternalTokopediaNow.HOME),
             DLP.startWith(ApplinkConst.TokopediaNow.SEARCH) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowSearch(deeplink) },
-            DLP.matchPattern(ApplinkConst.TokopediaNow.CATEGORY) { _, uri, _, idList -> getRegisteredNavigationTokopediaNowCategory(uri, idList) },
+            DLP.startWith(ApplinkConst.TokopediaNow.CATEGORY) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowCategory(deeplink) },
     )
 
     fun getTokopediaSchemeList():List<DLP>{

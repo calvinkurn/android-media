@@ -1,6 +1,9 @@
 package com.tokopedia.tokomart.home.presentation.viewmodel
 
-import com.tokopedia.home_component.model.*
+import com.tokopedia.home_component.model.ChannelConfig
+import com.tokopedia.home_component.model.ChannelHeader
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.tokomart.data.*
 import com.tokopedia.tokomart.home.constant.HomeLayoutState
@@ -8,7 +11,9 @@ import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_S
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokomart.home.domain.mapper.TickerMapper.mapTickerData
 import com.tokopedia.tokomart.home.presentation.fragment.TokoMartHomeFragment.Companion.SOURCE
-import com.tokopedia.tokomart.home.presentation.uimodel.*
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryItemUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyString
@@ -138,6 +143,15 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
         viewModel.getMiniCart(shopId = listOf("123"))
 
         verifyMiniCartResponseSuccess(createMiniCartSimplifier())
+    }
+
+    @Test
+    fun `when getting data for mini cart empty category should run`(){
+        onGetMiniCart_thenReturn(createMiniCartSimplifier())
+
+        viewModel.getMiniCart(shopId = listOf())
+
+        verifyMiniCartNullResponse()
     }
 
     @Test

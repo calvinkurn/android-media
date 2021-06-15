@@ -35,12 +35,21 @@ class CategoryFilterViewHolder(
 
         filterRecyclerView.layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
         filterRecyclerView.adapter = Adapter(element.categoryFilterItemList, categoryFilterListener)
+        filterRecyclerView.scrollToSelected(element)
 
         if (filterRecyclerView.itemDecorationCount == 0) {
             val unifySpace16 = com.tokopedia.unifyprinciples.R.dimen.unify_space_16
             val spacing = context.resources.getDimensionPixelSize(unifySpace16)
             filterRecyclerView.addItemDecoration(ItemDecoration(spacing))
         }
+    }
+
+    private fun RecyclerView.scrollToSelected(element: CategoryFilterDataView) {
+        val categoryFilterItemList = element.categoryFilterItemList
+        val selectedFilterIndex = categoryFilterItemList.indexOfFirst { it.isSelected }
+
+        if (selectedFilterIndex in categoryFilterItemList.indices)
+            scrollToPosition(selectedFilterIndex)
     }
 
     private class Adapter(
@@ -77,7 +86,9 @@ class CategoryFilterViewHolder(
             val LAYOUT = R.layout.item_tokomart_search_category_category_filter_chips
         }
 
-        private val filterChip: FilterChip? = itemView.findViewById(R.id.tokomartSearchCategoryCategoryFilterChip)
+        private val filterChip: FilterChip? = itemView.findViewById(
+                R.id.tokomartSearchCategoryCategoryFilterChip
+        )
 
         fun bind(categoryFilterItemDataView: CategoryFilterItemDataView) {
             val option = categoryFilterItemDataView.option
@@ -100,7 +111,12 @@ class CategoryFilterViewHolder(
 
     private class ItemDecoration(private val spacing: Int): RecyclerView.ItemDecoration() {
 
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        override fun getItemOffsets(
+                outRect: Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State,
+        ) {
             val adapter = parent.adapter ?: return
 
             when (parent.getChildAdapterPosition(view)) {

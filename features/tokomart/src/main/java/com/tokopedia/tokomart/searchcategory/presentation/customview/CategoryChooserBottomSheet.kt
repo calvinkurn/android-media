@@ -43,7 +43,7 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
 
     private fun initBottomSheet() {
         showCloseIcon = true
-        setTitle(filter?.title ?: "")
+        setTitle(filter?.subTitle ?: "")
         setCloseClickListener { dismiss() }
 
         categoryChooserView = View.inflate(context, R.layout.bottom_sheet_tokomart_category_chooser, null)

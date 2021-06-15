@@ -92,6 +92,7 @@ private const val CATEGORY_FILTER_QUERY = """
         data {
           filter {
             title
+            subTitle
             options {
               name
               key
@@ -132,6 +133,7 @@ private const val QUICK_FILTER_QUERY = """
         data {
           filter {
             title
+            subTitle
             options {
               name
               key

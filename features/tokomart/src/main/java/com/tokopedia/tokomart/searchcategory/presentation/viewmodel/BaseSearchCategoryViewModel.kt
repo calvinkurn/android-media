@@ -128,9 +128,6 @@ abstract class BaseSearchCategoryViewModel(
     val updatedVisitableIndicesLiveData: LiveData<List<Int>> =
             updatedVisitableIndicesMutableLiveData
 
-    protected val isRefreshPageMutableLiveData = MutableLiveData(false)
-    val isRefreshPageLiveData: LiveData<Boolean> = isRefreshPageMutableLiveData
-
     protected val cartEventMessageMutableLiveData = SingleLiveEvent<String>()
     val cartEventMessageLiveData: LiveData<String> = cartEventMessageMutableLiveData
 
@@ -508,8 +505,6 @@ abstract class BaseSearchCategoryViewModel(
     protected open fun createFooterVisitableList() = listOf<Visitable<*>>()
 
     private fun updateViewForFirstPage(isEmptyProductList: Boolean) {
-        updateIsRefreshPage()
-
         clearVisitableListLiveData()
         updateVisitableListLiveData()
 
@@ -517,10 +512,6 @@ abstract class BaseSearchCategoryViewModel(
         updateHeaderBackgroundVisibility(!isEmptyProductList)
 
         showPageContent()
-    }
-
-    protected fun updateIsRefreshPage() {
-        isRefreshPageMutableLiveData.value = true
     }
 
     protected fun clearVisitableListLiveData() {

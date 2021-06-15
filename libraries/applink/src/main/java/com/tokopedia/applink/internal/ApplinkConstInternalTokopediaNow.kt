@@ -22,5 +22,5 @@ object ApplinkConstInternalTokopediaNow {
     val SEARCH = "$INTERNAL_TOKOPEDIA_NOW/search"
 
     @JvmField
-    val CATEGORY = "$INTERNAL_TOKOPEDIA_NOW/category/{category_id}/"
+    val CATEGORY = "$INTERNAL_TOKOPEDIA_NOW/category"
 }

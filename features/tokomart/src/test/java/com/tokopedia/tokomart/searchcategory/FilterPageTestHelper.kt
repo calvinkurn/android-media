@@ -3,6 +3,7 @@ package com.tokopedia.tokomart.searchcategory
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.tokomart.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.usecase.RequestParams
@@ -188,9 +189,11 @@ class FilterPageTestHelper(
 
     private fun `Then verify query params with filter map param`(queryParams: Map<String?, Any>) {
         mockApplyFilterMapParam.forEach { (key, value) ->
+            val expectedKey = key.removePrefix(OptionHelper.EXCLUDE_PREFIX)
+
             assertThat(
                     "Query param with key $key is incorrect",
-                    queryParams[key],
+                    queryParams[expectedKey],
                     shouldBe(value)
             )
         }
@@ -235,8 +238,9 @@ class FilterPageTestHelper(
         val getProductCountParams = getProductCountRequestParams.parameters
 
         expectedGetProductCountParams.forEach { (key, value) ->
-            val reason = "Get product count params key \"$key\" value is invalid"
-            assertThat(reason, getProductCountParams[key].toString(), shouldBe(value.toString()))
+            val expectedKey = key.removePrefix(OptionHelper.EXCLUDE_PREFIX)
+            val reason = "Get product count params expectedKey \"$expectedKey\" value is invalid"
+            assertThat(reason, getProductCountParams[expectedKey].toString(), shouldBe(value.toString()))
         }
     }
 

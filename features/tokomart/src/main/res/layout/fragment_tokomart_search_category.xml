@@ -94,10 +94,7 @@
         android:id="@+id/tokonowSearchCategoryContentGroup"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_0"
-        app:constraint_referenced_ids=
-            "tokonowSearchCategoryBackgroundImage,
-            tokonowSearchCategoryStatusBarBackground,
-            tokonowSearchCategoryStickyView,
-            tokonowSearchCategoryMiniCart"/>
+        app:constraint_referenced_ids="tokonowSearchCategoryBackgroundImage,tokonowSearchCategoryStatusBarBackground,tokonowSearchCategoryStickyView,tokonowSearchCategoryMiniCart"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

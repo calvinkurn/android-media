@@ -33,4 +33,5 @@
     <string name="tokomart_category_is_failed_to_display_title">Oops, bagian ini gagal ditampilkan</string>
     <string name="tokomart_category_is_failed_to_display_description">Klik iklan di samping untuk coba lagi</string>
 
+    <string name="tokomart_search_bar_hint">Cari di Tokopedia NOW!</string>
 </resources>

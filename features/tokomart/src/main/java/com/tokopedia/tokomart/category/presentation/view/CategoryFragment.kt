@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.tokomart.category.di.CategoryComponent
 import com.tokopedia.tokomart.category.presentation.listener.CategoryAisleListener
@@ -69,6 +70,9 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
     )
 
     override fun getViewModel() = categoryViewModel
+
+    override val miniCartWidgetPageName: MiniCartAnalytics.Page
+        get() = MiniCartAnalytics.Page.CATEGORY_PAGE
 
     override fun onAisleClick(categoryAisleItemDataView: CategoryAisleItemDataView) {
         RouteManager.route(context, categoryAisleItemDataView.applink)
