@@ -72,7 +72,7 @@ class RechargeCCViewModelTest {
         //then
         val actualData = rechargeCCViewModel.errorCCBankList
         Assert.assertNotNull(actualData)
-        Assert.assertEquals(errorMessage, actualData.value)
+        Assert.assertEquals(errorMessage, actualData.value?.message)
     }
 
     @Test
@@ -92,7 +92,7 @@ class RechargeCCViewModelTest {
         //then
         val actualData = rechargeCCViewModel.errorCCBankList
         Assert.assertNotNull(actualData)
-        Assert.assertEquals(errorGql.message, actualData.value)
+        Assert.assertEquals(errorGql.message, actualData.value?.message)
     }
 
     //========================================= MENU DETAIL ================================
@@ -186,7 +186,7 @@ class RechargeCCViewModelTest {
         //then
         val actualData = rechargeCCViewModel.bankNotSupported
         Assert.assertNotNull(actualData)
-        Assert.assertEquals("", actualData.value)
+        Assert.assertEquals("", actualData.value?.message)
     }
 
     @Test
@@ -212,7 +212,7 @@ class RechargeCCViewModelTest {
         //then
         val actualData = rechargeCCViewModel.bankNotSupported
         Assert.assertNotNull(actualData)
-        Assert.assertEquals("", actualData.value)
+        Assert.assertEquals("", actualData.value?.message)
     }
 
     @Test
@@ -232,6 +232,6 @@ class RechargeCCViewModelTest {
         //then
         val actualData = rechargeCCViewModel.errorPrefix
         Assert.assertNotNull(actualData)
-        Assert.assertEquals(errorGql.message, actualData.value)
+        Assert.assertEquals(errorGql.message, actualData.value?.message)
     }
 }
