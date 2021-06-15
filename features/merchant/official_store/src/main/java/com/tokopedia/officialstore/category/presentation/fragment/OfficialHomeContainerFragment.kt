@@ -169,7 +169,10 @@ class OfficialHomeContainerFragment
         if(dy == 0) return
 
         tabLayout?.adjustTabCollapseOnScrolled(dy)
-        chooseAddressView?.adjustViewCollapseOnScrolled(dy)
+        chooseAddressView?.adjustViewCollapseOnScrolled(
+                dy = dy,
+                whenWidgetGone = {osDivider.gone()},
+                whenWidgetShow = {osDivider.show()})
     }
 
     // from: GlobalNav, to show notification maintoolbar
@@ -282,7 +285,7 @@ class OfficialHomeContainerFragment
         tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 val categoryReselected = tabAdapter.categoryList.getOrNull(tab?.position.toZeroIfNull())
-                chooseAddressView?.forceExpandView()
+                chooseAddressView?.forceExpandView(whenWidgetShow = {osDivider.show()})
                 categoryReselected?.let {
                     tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
                 }
@@ -292,7 +295,7 @@ class OfficialHomeContainerFragment
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val categorySelected = tabAdapter.categoryList.getOrNull(tab?.position.toZeroIfNull())
-                chooseAddressView?.forceExpandView()
+                chooseAddressView?.forceExpandView(whenWidgetShow = {osDivider.show()})
                 categorySelected?.let {
                     tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
                 }
