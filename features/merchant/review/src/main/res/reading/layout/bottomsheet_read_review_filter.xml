@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/layout_lvl2">
+
+    <com.tokopedia.unifycomponents.list.ListUnify
+        android:id="@+id/read_review_filter_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/read_review_submit_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:text="@string/review_reading_submit_filter"
+        app:layout_constraintTop_toBottomOf="@id/read_review_filter_list" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

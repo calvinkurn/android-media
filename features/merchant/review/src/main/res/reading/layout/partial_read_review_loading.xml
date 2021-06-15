@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/Unify_N0">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/read_review_rating_star_loading"
@@ -298,6 +299,16 @@
         app:layout_constraintEnd_toEndOf="@id/read_review_filter_loading_2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/read_review_content_loading_5" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/read_review_item_divider_loading_2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:background="@color/Unify_N75"
+        app:corners="8"
+        app:custom_color="@color/Unify_N50"
+        app:layout_constraintTop_toBottomOf="@id/read_review_content_loading_6" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

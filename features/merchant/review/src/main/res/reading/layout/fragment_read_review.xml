@@ -10,4 +10,10 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <include
+        android:id="@+id/read_review_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/partial_read_review_loading" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

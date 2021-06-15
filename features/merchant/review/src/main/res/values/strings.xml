@@ -368,5 +368,11 @@
     <string name="review_reading_filter_with_attachment">Dengan Foto</string>
     <string name="review_reading_filter_all_ratings">Semua Rating</string>
     <string name="review_reading_filter_all_topics">Semua Topik</string>
+    <string name="review_reading_submit_filter">Terapkan Filter</string>
+    <string name="review_reading_reset_filter">Reset</string>
+    <string name="review_reading_report_option">Laporkan Ulasan</string>
+    <string name="review_reading_rating_filter_title">Rating dengan ulasan</string>
+    <string name="review_reading_topic_filter_title">Topik ulasan</string>
+    <string name="review_reading_sort_title">Urutkan</string>
 
 </resources>
