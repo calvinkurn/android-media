@@ -318,7 +318,10 @@ abstract class BaseSearchCategoryViewModel(
         visitableList.add(EmptyProductDataView())
     }
 
-    private fun createVisitableListWithProduct(headerDataView: HeaderDataView, contentDataView: ContentDataView) {
+    private fun createVisitableListWithProduct(
+            headerDataView: HeaderDataView,
+            contentDataView: ContentDataView,
+    ) {
         visitableList.addAll(createHeaderVisitableList(headerDataView))
         visitableList.addAll(createContentVisitableList(contentDataView))
         visitableList.addFooter()
@@ -854,12 +857,41 @@ abstract class BaseSearchCategoryViewModel(
             val hasSeeAllCategoryButton: Boolean = false,
             val aceSearchProductHeader: SearchProductHeader = SearchProductHeader(),
             categoryFilterDataValue: DataValue = DataValue(),
-            val quickFilterDataValue: DataValue = DataValue(),
+            quickFilterDataValue: DataValue = DataValue(),
             val bannerChannel: Channels = Channels(),
     ) {
         val categoryFilterDataValue = DataValue(
                 filter = FilterHelper.copyFilterWithOptionAsExclude(categoryFilterDataValue.filter)
         )
+
+        val quickFilterDataValue = DataValue(
+                filter = quickFilterDataValue.filter.map { filter ->
+                    filter.clone(options = createOptionListWithExclude(filter))
+                }
+        )
+
+        private fun createOptionListWithExclude(filter: Filter) =
+                filter.options.map { option ->
+                    option.clone().also { copyOption ->
+                        modifyOptionKeyInCategoryFilter(copyOption)
+                    }
+                }
+
+        private fun modifyOptionKeyInCategoryFilter(option: Option) {
+            val isCategoryFilter = isInCategoryFilter(option)
+
+            if (isCategoryFilter)
+                option.key = OptionHelper.EXCLUDE_PREFIX + option.key
+        }
+
+        private fun isInCategoryFilter(optionToCheck: Option): Boolean {
+            val categoryOptionList = categoryFilterDataValue.filter.map { it.options }.flatten()
+
+            return categoryOptionList.any {
+                it.key.removePrefix(OptionHelper.EXCLUDE_PREFIX) == optionToCheck.key
+                        && it.value == optionToCheck.value
+            }
+        }
     }
 
     protected data class ContentDataView(
