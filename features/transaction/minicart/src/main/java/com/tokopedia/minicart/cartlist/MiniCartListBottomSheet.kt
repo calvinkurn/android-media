@@ -239,7 +239,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     private fun initializeBottomSheetUiModelObserver() {
         bottomSheetUiModelObserver = Observer<MiniCartListUiModel> {
             if (it.miniCartWidgetUiModel.totalProductCount == 0 && it.miniCartWidgetUiModel.totalProductError == 0) {
-                bottomSheet?.dismiss()
+                dismiss()
             }
 
             if (it.isFirstLoad) {
@@ -293,7 +293,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             bottomSheet?.context.let {
                 hideProgressLoading()
                 bottomSheetListener?.onBottomSheetSuccessUpdateCartForCheckout()
-                bottomSheet?.dismiss()
+                dismiss()
             }
         }
     }
@@ -321,7 +321,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             val ctaText = bottomSheet?.context?.getString(R.string.mini_cart_cta_cancel)
                     ?: ""
             if (data?.isLastItem == true) {
-                bottomSheet?.dismiss()
+                dismiss()
                 bottomSheetListener?.showToaster(
                         message = message,
                         type = Toaster.TYPE_NORMAL
