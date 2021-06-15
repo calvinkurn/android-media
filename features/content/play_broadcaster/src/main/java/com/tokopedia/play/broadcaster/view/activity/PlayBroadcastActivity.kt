@@ -3,6 +3,8 @@ package com.tokopedia.play.broadcaster.view.activity
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowManager
@@ -218,6 +220,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun setupContent() {
+        viewModel.createStreamer(Handler(Looper.getMainLooper()))
     }
 
     private fun initView() {

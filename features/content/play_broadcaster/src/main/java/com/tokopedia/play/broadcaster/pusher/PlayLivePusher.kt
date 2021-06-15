@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.pusher
 
-import com.pedro.rtplibrary.view.LightOpenGlView
+import android.os.Handler
+import android.view.SurfaceView
 
 
 /**
@@ -10,11 +11,13 @@ interface PlayLivePusher {
 
     val state: PlayLivePusherState
 
+    fun init(handler: Handler)
+
     fun prepare(config: PlayLivePusherConfig? = null)
 
     fun setListener(listener: PlayLivePusherListener)
 
-    fun startPreview(lightOpenGlView: LightOpenGlView)
+    fun startPreview(surfaceView: SurfaceView)
 
     fun stopPreview()
 
@@ -26,7 +29,7 @@ interface PlayLivePusher {
 
     fun pause()
 
-    fun reconnect(reason: String)
+    fun reconnect()
 
     fun stop()
 }

@@ -35,6 +35,12 @@ android {
     viewBinding.enabled = true
 }
 
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
@@ -97,6 +103,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
 
     implementation 'com.github.pedroSG94.rtmp-rtsp-stream-client-java:rtplibrary:2.0.3'
+
+    implementation(name: 'libstream-release', ext: 'aar')
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.assertJCore

@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
+import android.os.Handler
 import androidx.lifecycle.*
 import com.pedro.rtplibrary.view.LightOpenGlView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -175,7 +176,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        scope.cancel()
+        viewModelScope.cancel()
         livePusherMediator.removeListener(livePusherViewStateListener)
         livePusherMediator.removeListener(channelLivePusherStateListener)
         countDownTimer.destroy()
@@ -301,6 +302,10 @@ class PlayBroadcastViewModel @Inject constructor(
             }
         }) {
         }
+    }
+
+    fun createStreamer(handler: Handler) {
+        livePusherMediator.init(handler)
     }
 
     fun switchCamera() {

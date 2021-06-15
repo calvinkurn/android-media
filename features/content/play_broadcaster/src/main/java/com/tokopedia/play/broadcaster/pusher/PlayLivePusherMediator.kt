@@ -23,7 +23,7 @@ class PlayLivePusherMediator(
             broadcastStateChanged(pusherState)
 
             if (pusherState.isStopped) removeLastPauseMillis()
-            if (pusherState is PlayLivePusherState.Error) handleErrorState(pusherState.reason)
+            if (pusherState is PlayLivePusherState.Error) triggerAutoReconnect(pusherState.reason)
         }
     }
 
@@ -57,9 +57,9 @@ class PlayLivePusherMediator(
         livePusher.stopPreview()
     }
 
-    private fun handleErrorState(reason: String) {
+    private fun triggerAutoReconnect(reason: String) {
         val errorState = errorStateParser(reason)
-        if (errorState.isNetworkTrouble) livePusher.reconnect(reason)
+        if (errorState.isNetworkTrouble) livePusher.reconnect()
     }
 
     private fun broadcastStateChanged(state: PlayLivePusherState) {
