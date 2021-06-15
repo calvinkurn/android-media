@@ -117,6 +117,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private var canShowErrorToaster = true
 
+    private var isNewSeller = false
+
     @FragmentType
     private var currentFragmentType: Int = FragmentType.OTHER
 
@@ -331,7 +333,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         observe(otherMenuViewModel.shopPeriodType) {
             when (it) {
                 is Success -> {
-                    setPerformanceMenu(it.data)
+                    setTrackerPerformanceMenu(it.data.isNewSeller)
                 }
                 is Fail -> {}
             }
@@ -339,38 +341,16 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         otherMenuViewModel.getShopPeriodType()
     }
 
-    private fun setPerformanceMenu(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
-        if (shopInfoPeriodUiModel.periodType.isNotBlank()) {
-            if (shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD || shopInfoPeriodUiModel.periodType == END_PERIOD) {
-                val shopPerformanceData = adapter.list.filterIsInstance<MenuItemUiModel>().find {
-                    it.onClickApplink == ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
-                }
-
-                if (shopPerformanceData != null) {
-                    return
-                } else {
-                    val promotionItem = adapter.list.filterIsInstance<MenuItemUiModel>().find {
-                        it.onClickApplink == ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
-                    }
-                    val promotionIndex = adapter.list.indexOfFirst { it == promotionItem }
-                    val performanceData = MenuItemUiModel(
-                            resources.getString(R.string.setting_menu_performance),
-                            null,
-                            ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
-                            eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
-                            iconUnify = IconUnify.PERFORMANCE,
-                    )
-                    performanceData.clickSendTracker = {
-                        settingPerformanceTracker.clickItemEntryPointPerformance(shopInfoPeriodUiModel.isNewSeller)
-                    }
-                    if (promotionIndex != -1) {
-                        adapter.addElement(promotionIndex + 1, performanceData)
-                        adapter.notifyItemRangeInserted(promotionIndex, 1)
-                        settingPerformanceTracker.impressItemEntryPointPerformance(shopInfoPeriodUiModel.isNewSeller)
-                    }
-                }
-            }
-        } else return
+    private fun setTrackerPerformanceMenu(isNewSeller: Boolean) {
+        val shopPerformanceData = adapter.list.filterIsInstance<MenuItemUiModel>().find {
+            it.onClickApplink == ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
+        }
+        if (shopPerformanceData != null) {
+            settingPerformanceTracker.impressItemEntryPointPerformance(isNewSeller)
+        }
+        shopPerformanceData?.clickSendTracker = {
+            settingPerformanceTracker.clickItemEntryPointPerformance(isNewSeller)
+        }
     }
 
     private fun observeShopOperationalHour() {
@@ -401,6 +381,13 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
                         eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION,
                         iconUnify = IconUnify.PROMO_ADS),
+                MenuItemUiModel(
+                        resources.getString(R.string.setting_menu_performance),
+                        null,
+                        ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
+                        eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
+                        iconUnify = IconUnify.PERFORMANCE,
+                ),
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),
                 MenuItemUiModel(
                         resources.getString(R.string.setting_menu_discussion),
