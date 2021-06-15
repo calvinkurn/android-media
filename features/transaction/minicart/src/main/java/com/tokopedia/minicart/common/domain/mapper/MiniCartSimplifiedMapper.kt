@@ -18,8 +18,14 @@ class MiniCartSimplifiedMapper @Inject constructor() {
     }
 
     private fun mapMiniCartWidgetData(miniCartData: MiniCartData): MiniCartWidgetData {
+        var totalQty = 0
+        miniCartData.data.availableSection.availableGroup.forEach { availableGroup ->
+            availableGroup.cartDetails.forEach { cartDetail ->
+                totalQty += cartDetail.product.productQuantity
+            }
+        }
         return MiniCartWidgetData().apply {
-            totalProductCount = miniCartData.data.totalProductCount
+            totalProductCount = totalQty
             totalProductPrice = miniCartData.data.totalProductPrice
             totalProductError = miniCartData.data.totalProductError
             containsOnlyUnavailableItems = miniCartData.data.availableSection.availableGroup.isEmpty() && miniCartData.data.unavailableSection.isNotEmpty()
