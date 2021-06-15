@@ -3,8 +3,8 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
-import com.tokopedia.search.analytics.SearchEventTracking.NONE
-import com.tokopedia.search.analytics.SearchEventTracking.OTHER
+import com.tokopedia.search.analytics.SearchEventTracking.Companion.NONE
+import com.tokopedia.search.analytics.SearchEventTracking.Companion.OTHER
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel

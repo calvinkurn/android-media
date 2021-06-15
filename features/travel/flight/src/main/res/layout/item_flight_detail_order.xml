@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container_flight_detail_order"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/flight_dp_20"
@@ -46,10 +47,10 @@
             android:id="@+id/image_expendable_journey"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/flight_dp_20"
-            app:icon_name="CHEVRON_UP"
             android:layout_gravity="center_vertical"
             app:icon_color_light_enable="@color/Unify_G500"
-            app:icon_color_night_enable="@color/Unify_G500"/>
+            app:icon_color_night_enable="@color/Unify_G500"
+            app:icon_name="CHEVRON_UP" />
     </LinearLayout>
 
     <View

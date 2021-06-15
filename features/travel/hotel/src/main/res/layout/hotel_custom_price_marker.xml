@@ -7,7 +7,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtPriceHotelMarker"
-        android:background="@color/hotel_color_active_price_marker"
+        android:background="@color/hotel_dms_active_price_marker_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:elevation="@dimen/hotel_6dp"

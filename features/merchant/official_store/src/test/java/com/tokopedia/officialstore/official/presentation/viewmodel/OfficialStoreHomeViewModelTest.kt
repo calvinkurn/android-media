@@ -145,10 +145,10 @@ class OfficialStoreHomeViewModelTest {
     fun given_get_data_success__when_load_more__should_set_value_with_first_product_recommendation() {
         val page = 1
         val categoryId = "0"     // "65, 20, 60, 288, 297, 578, 2099
-        val listOfRecom = RecommendationWidget()
+        val listOfRecom = mutableListOf(RecommendationWidget())
 
         coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first().get(0)
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
         } returns listOfRecom
 
         viewModel.loadMoreProducts(categoryId, page)
@@ -157,7 +157,7 @@ class OfficialStoreHomeViewModelTest {
             getRecommendationUseCase.createObservable(any())
         }
         print(viewModel.productRecommendation.value)
-        Assert.assertEquals((viewModel.productRecommendation.value as Success).data, listOfRecom)
+        Assert.assertEquals((viewModel.productRecommendation.value as Success).data, listOfRecom[0])
     }
 
     @Test

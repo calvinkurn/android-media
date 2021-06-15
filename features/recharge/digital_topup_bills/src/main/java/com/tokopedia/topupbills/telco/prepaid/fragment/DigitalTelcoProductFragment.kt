@@ -12,11 +12,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topupbills.R
@@ -112,7 +112,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 if (telcoFilterData.isFilterSelected()) titleFilterResult.show() else titleFilterResult.hide()
                 when (it) {
                     is Success -> onSuccessProductList()
-                    is Fail -> onErrorProductList()
+                    is Fail -> onErrorProductList(it.throwable)
                 }
             })
 
@@ -292,11 +292,17 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun onErrorProductList() {
+    private fun onErrorProductList(error: Throwable? = null) {
         titleEmptyState.text = getString(R.string.title_telco_product_empty_state, titleProduct)
         descEmptyState.text = getString(R.string.desc_telco_product_empty_state, titleProduct)
         emptyStateProductView.show()
         telcoTelcoProductView.hide()
+        error?.let {
+            if (!it.message.isNullOrEmpty()) {
+                Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), error),
+                        Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            }
+        }
     }
 
     private fun showShimmering() {

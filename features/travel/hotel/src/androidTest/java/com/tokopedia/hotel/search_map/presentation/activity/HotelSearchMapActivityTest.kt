@@ -80,6 +80,9 @@ class HotelSearchMapActivityTest {
         clickHotelFromHorizontalItems()
         validateHotelSearchPageTracking()
 
+        scrollToPropertyCard()
+        onMarkerClick()
+
 //        assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTIC_VALIDATOR_QUERY_HOTEL_DISCO), hasAllSuccess())
     }
 
@@ -199,6 +202,25 @@ class HotelSearchMapActivityTest {
     private fun getHotelResultCount(): Int {
         val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.rvVerticalPropertiesHotelSearchMap) as RecyclerView
         return recyclerView.adapter?.itemCount ?: 0
+    }
+
+    private fun getPropertyResultCount(): Int {
+        val recyclerView: RecyclerView = activityRule.activity.findViewById(R.id.rvHorizontalPropertiesHotelSearchMap) as RecyclerView
+        return recyclerView.adapter?.itemCount ?: 0
+    }
+
+    private fun scrollToPropertyCard(){
+        Thread.sleep(2000)
+        assert(getPropertyResultCount() > 1)
+        actionCloseMap()
+
+        Thread.sleep(2000)
+        if (getPropertyResultCount() > 0) {
+            Espresso.onView(ViewMatchers.withId(R.id.rvHorizontalPropertiesHotelSearchMap)).perform(RecyclerViewActions
+                    .actionOnItemAtPosition<SearchPropertyViewHolder>(3, ViewActions.scrollTo()))
+        }
+
+        Thread.sleep(2000)
     }
 
     /**When marker clicked, scrollTo hotel position*/

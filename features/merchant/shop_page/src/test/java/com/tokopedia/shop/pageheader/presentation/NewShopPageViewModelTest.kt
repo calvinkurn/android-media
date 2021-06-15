@@ -36,6 +36,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.File
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 
 class NewShopPageViewModelTest {
 
@@ -416,5 +417,23 @@ class NewShopPageViewModelTest {
         assert(shopPageViewModel.shopPageShopShareData.value == null)
     }
 
+    @Test
+    fun `check whether shopOperationalHoursListData value is success`() {
+        val mockShopId = "123"
+        coEvery {
+            getShopOperationalHoursListUseCase.get().executeOnBackground()
+        } returns ShopOperationalHoursListResponse()
+        shopPageViewModel.getShopOperationalHoursList(mockShopId)
+        assert(shopPageViewModel.shopOperationalHoursListData.value is Success)
+    }
 
+    @Test
+    fun `check whether shopOperationalHoursListData value is fail if exception happened`() {
+        val mockShopId = "123"
+        coEvery {
+            getShopOperationalHoursListUseCase.get().executeOnBackground()
+        } throws Throwable()
+        shopPageViewModel.getShopOperationalHoursList(mockShopId)
+        assert(shopPageViewModel.shopOperationalHoursListData.value is Fail)
+    }
 }

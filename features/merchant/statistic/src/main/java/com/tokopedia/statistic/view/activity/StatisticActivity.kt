@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
@@ -12,6 +13,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.analytics.StatisticTracker
@@ -19,6 +23,7 @@ import com.tokopedia.statistic.analytics.performance.StatisticIdlingResourceList
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoring
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringInterface
 import com.tokopedia.statistic.analytics.performance.StatisticPerformanceMonitoringListener
+import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.common.StatisticPageHelper
 import com.tokopedia.statistic.common.utils.StatisticAppLinkHandler
 import com.tokopedia.statistic.di.DaggerStatisticComponent
@@ -57,6 +62,8 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         StatisticPerformanceMonitoring()
     }
     var pltListener: StatisticIdlingResourceListener? = null
+
+    private val coachMark by lazy { CoachMark2(this) }
 
     private var selectedPageSource = ""
     private var selectedWidget = ""
@@ -115,15 +122,16 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     private fun getStatisticPages(isWhiteListed: Boolean): List<StatisticPageUiModel> {
         adjustHeaderConfig(isWhiteListed)
+        supportActionBar?.title = getString(R.string.stc_statistic)
         return if (isWhiteListed) {
-            supportActionBar?.title = getString(R.string.stc_statistic)
             tabStatistic.visible()
             listOf(StatisticPageHelper.getShopStatistic(this, userSession),
+                    StatisticPageHelper.getProductStatistic(this, userSession),
                     StatisticPageHelper.getBuyerStatistic(this, userSession))
         } else {
-            supportActionBar?.title = getString(R.string.stc_shop_statistic)
             tabStatistic.gone()
-            listOf(StatisticPageHelper.getShopStatistic(this, userSession))
+            listOf(StatisticPageHelper.getShopStatistic(this, userSession),
+                    StatisticPageHelper.getProductStatistic(this, userSession))
         }
     }
 
@@ -153,6 +161,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         tabStatistic.tabLayout.setOnTabSelectedListener {
             val tabIndex = tabStatistic.tabLayout.selectedTabPosition
             val title = viewPagerAdapter?.titles?.getOrNull(tabIndex).orEmpty()
+            dismissCoachMarkIfProductInsightTab(title)
             StatisticTracker.sendPageTabClickEvent(userSession.userId, title)
         }
     }
@@ -191,6 +200,9 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
             }
             adapter.titles.forEach { title ->
                 val tab = tabStatistic.addNewTab(title)
+                if (getIsProductInsightTab(title)) {
+                    setProductInsightCoachMark(tab.view)
+                }
                 sendTabImpressionEvent(tab.view, title)
             }
         }
@@ -238,4 +250,36 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     private fun initPerformanceMonitoring() {
         performanceMonitoring.initPerformanceMonitoring()
     }
+
+    private fun getIsProductInsightTab(title: String) = title == getString(R.string.stc_product)
+
+    private fun setProductInsightCoachMark(itemView: View) {
+        if (!CoachMarkPreference.hasShown(this, Const.SHOW_PRODUCT_INSIGHT_COACHMARK_KEY)) {
+            setProductInsightCoachMarkListener()
+            val coachMarkItem = CoachMark2Item(
+                    itemView,
+                    getString(R.string.stc_product_coachmark_title),
+                    getString(R.string.stc_product_coachmark_desc)
+            )
+            coachMark.showCoachMark(arrayListOf(coachMarkItem), index = 0)
+        }
+    }
+
+    private fun setProductInsightCoachMarkListener() {
+        coachMark.setOnDismissListener {
+            setProductInsightCoachMarkHasShown()
+        }
+    }
+
+    private fun dismissCoachMarkIfProductInsightTab(title: String) {
+        if (getIsProductInsightTab(title)) {
+            coachMark.dismissCoachMark()
+            setProductInsightCoachMarkHasShown()
+        }
+    }
+
+    private fun setProductInsightCoachMarkHasShown() {
+        CoachMarkPreference.setShown(this, Const.SHOW_PRODUCT_INSIGHT_COACHMARK_KEY, true)
+    }
+
 }

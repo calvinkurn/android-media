@@ -5,82 +5,82 @@
 
     {
       "eventCategory": "recommendation page with product id",
-      "item_list": "{{.*}}",
+      "item_list": ".*",
       "event": "select_content",
       "eventAction": "click primary product",
-      "sessionIris" : "{{.*}}",
-      "shopId" : "{{.*}}",
+      "sessionIris" : ".*",
+      "shopId" : ".*",
       "items": [{
-        "item_id": "{{.*}}",
-        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-        "dimension40": "{{.*}}",
-        "dimension90": "{{.*}}",
-        "index": "{{\\d*.\\d*}}",
-        "item_name": "{{.*}}",
-        "item_brand": "{{.*}}",
-        "item_variant": "{{.*}}",
-        "item_category": "{{.*}}"
+        "item_id": ".*",
+        "price": "\\d*.\\d*|\\d.\\d+E\\d",
+        "dimension40": ".*",
+        "dimension90": ".*",
+        "index": "\\d*.\\d*",
+        "item_name": ".*",
+        "item_brand": ".*",
+        "item_variant": ".*",
+        "item_category": ".*"
       }],
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     },{
       "eventCategory": "recommendation page with product id",
-      "item_list": "{{.*}}",
+      "item_list": ".*",
       "event": "select_content",
       "eventAction": "click - product recommendation",
-      "sessionIris" : "{{.*}}",
+      "sessionIris" : ".*",
       "items": [{
-        "dimension83": "{{.*}}",
-        "item_id": "{{.*}}",
-        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-        "dimension40": "{{.*}}",
-        "dimension90": "{{.*}}",
-        "index": "{{\\d*.\\d*}}",
-        "item_name": "{{.*}}",
-        "item_brand": "{{.*}}",
-        "item_variant": "{{.*}}",
-        "item_category": "{{.*}}"
+        "dimension83": ".*",
+        "item_id": ".*",
+        "price": "\\d*.\\d*|\\d.\\d+E\\d",
+        "dimension40": ".*",
+        "dimension90": ".*",
+        "index": "\\d*.\\d*",
+        "item_name": ".*",
+        "item_brand": ".*",
+        "item_variant": ".*",
+        "item_category": ".*"
       }],
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     },
     {
       "eventCategory": "recommendation page with product id",
-      "item_list": "{{.*}}",
+      "item_list": ".*",
       "event": "view_item_list",
-      "eventAction": "{{impression - product recommendation|impression - product recommendation - non login}}",
-      "sessionIris" : "{{.*}}",
+      "eventAction": "impression - product recommendation|impression - product recommendation - non login",
+      "sessionIris" : ".*",
       "items": [{
-        "dimension83": "{{.*}}",
-        "item_id": "{{.*}}",
-        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-        "dimension40": "{{.*}}",
-        "dimension90": "{{.*}}",
-        "index": "{{\\d*.\\d*}}",
-        "item_name": "{{.*}}",
-        "item_brand": "{{.*}}",
-        "item_variant": "{{.*}}",
-        "item_category": "{{.*}}"
+        "dimension83": ".*",
+        "item_id": ".*",
+        "price": "\\d*.\\d*|\\d.\\d+E\\d",
+        "dimension40": ".*",
+        "dimension90": ".*",
+        "index": "\\d*.\\d*",
+        "item_name": ".*",
+        "item_brand": ".*",
+        "item_variant": ".*",
+        "item_category": ".*"
       }],
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     },
     {
       "eventCategory": "recommendation page with product id",
-      "item_list": "{{.*}}",
+      "item_list": ".*",
       "event": "view_item_list",
       "eventAction": "impression primary product",
-      "sessionIris" : "{{.*}}",
-      "shopId" : "{{.*}}",
+      "sessionIris" : ".*",
+      "shopId" : ".*",
       "items": [{
-        "item_id": "{{.*}}",
-        "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-        "dimension40": "{{.*}}",
-        "dimension90": "{{.*}}",
-        "index": "{{\\d*.\\d*}}",
-        "item_name": "{{.*}}",
-        "item_brand": "{{.*}}",
-        "item_variant": "{{.*}}",
-        "item_category": "{{.*}}"
+        "item_id": ".*",
+        "price": "\\d*.\\d*|\\d.\\d+E\\d",
+        "dimension40": ".*",
+        "dimension90": ".*",
+        "index": "\\d*.\\d*",
+        "item_name": ".*",
+        "item_brand": ".*",
+        "item_variant": ".*",
+        "item_category": ".*"
       }],
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     }
   ]
 }

@@ -19,90 +19,79 @@
             android:layout_height="wrap_content"
             android:background="@color/Unify_N0">
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/courier_btn"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_85"
                 android:layout_height="@dimen/dp_32"
                 android:layout_marginRight="@dimen/dp_16"
-                android:background="@drawable/bg_green_rounded_tradein"
-                android:fontFamily="sans-serif"
-                android:gravity="center"
-                android:paddingLeft="@dimen/dp_20"
-                android:paddingRight="@dimen/dp_20"
+                android:layout_marginLeft="@dimen/dp_16"
                 android:text="@string/choose"
-                android:textAllCaps="false"
-                android:textColor="@color/Unify_N0"
                 android:textSize="14sp"
                 android:textStyle="bold"
+                android:gravity="center"
                 app:layout_constraintBottom_toTopOf="@+id/seperator_3"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/courier_label" />
+                app:layout_constraintTop_toTopOf="@+id/courier_label"/>
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/retrival_time_btn"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/dp_85"
                 android:layout_height="@dimen/dp_32"
                 android:layout_marginRight="@dimen/dp_16"
-                android:background="@drawable/bg_green_rounded_tradein"
-                android:fontFamily="sans-serif"
-                android:gravity="center"
-                android:paddingLeft="@dimen/dp_20"
-                android:paddingRight="@dimen/dp_20"
+                android:layout_marginLeft="@dimen/dp_16"
                 android:text="@string/choose"
-                android:textAllCaps="false"
-                android:textColor="@color/Unify_N0"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/seperator_4"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/retriever_time_label" />
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/bt_buy"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_40"
+                android:text="@string/select_payment"
                 android:layout_marginRight="@dimen/dp_16"
-                android:background="@drawable/bg_button_orange_enabled"
-                android:fontFamily="sans-serif"
+                android:layout_marginLeft="@dimen/dp_16"
                 android:gravity="center"
                 android:paddingLeft="@dimen/dp_20"
                 android:paddingRight="@dimen/dp_20"
-                android:text="@string/select_payment"
-                android:textAllCaps="false"
-                android:textColor="@color/Unify_N0"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_total_payment_value"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_total_payment_label" />
+                app:layout_constraintTop_toTopOf="@+id/tv_total_payment_label"
+                app:unifyButtonType="transaction"
+                app:unifyButtonVariant="filled"
+                app:unifyButtonSize="medium" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_total_payment_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_1"
-                android:fontFamily="sans-serif"
                 android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
                 android:paddingBottom="@dimen/dp_16"
                 android:textColor="@color/Unify_Y500"
-                android:textSize="16sp"
-                android:textStyle="bold"
+                app:typographyType="heading_4"
+                app:typographyWeight="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 tools:text="Rp 66.000" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_total_payment_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
                 android:paddingTop="@dimen/dp_16"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold"
                 android:text="@string/trade_in_label_wording_payment_total"
                 android:textColor="@color/Unify_N700_44"
-                android:textSize="14sp"
-                android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/tv_total_payment_value"
                 app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -360,7 +349,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/seperator_4"
                 app:typographyType="body_2" />
 
-            <ProgressBar
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/progress_bar_layout"
                 android:layout_width="@dimen/dp_50"
                 android:layout_height="@dimen/dp_50"

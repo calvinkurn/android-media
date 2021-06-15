@@ -5,18 +5,18 @@
     {
       "customProperties": {
         "nameValuePairs": {
-          "product_category": "{{\\w+}}",
-          "product_name": "{{\\w+}}",
-          "journey_id": "{{\\w+}}",
-          "invoice_id": "{{\\w+}}",
-          "paymentID": "{{.*}}",
-          "price": "{{.*}}",
-          "userId": "{{\\w+}}"
+          "product_category": "\\w+",
+          "product_name": "\\w+",
+          "journey_id": "\\w+",
+          "invoice_id": "\\w+",
+          "paymentID": ".*",
+          "price": ".*",
+          "userId": "\\w+"
         }
       },
       "eventName": "FLIGHT_PURCHASE",
       "buoList": [],
-      "isStandardEvent": "{{true|false}}",
+      "isStandardEvent": "true|false",
       "standardProperties": {
         "nameValuePairs": {}
       }

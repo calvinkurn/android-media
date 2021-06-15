@@ -396,7 +396,11 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
     }
 
     public void onInvisible(){
-        destroyCamera();
+        try {
+            hideLoading();
+        } catch (Throwable e) {
+            // no-op
+        }
     }
 
     private void showLoading(){
@@ -469,6 +473,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
         hideLoading();
         super.onDestroy();
         stopCamera();
+        destroyCamera();
     }
 
     private void startCamera() {
@@ -492,7 +497,7 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
 
     private void destroyCamera() {
         try {
-            hideLoading();
+            cameraView.destroy();
         } catch (Throwable e) {
             // no-op
         }

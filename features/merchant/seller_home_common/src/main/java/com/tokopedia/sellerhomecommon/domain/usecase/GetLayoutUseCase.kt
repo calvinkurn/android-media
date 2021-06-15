@@ -1,13 +1,13 @@
 package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhomecommon.domain.mapper.LayoutMapper
 import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
 import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
@@ -83,6 +83,10 @@ class GetLayoutUseCase(
                     description
                     ctaText
                     applink
+                  }
+                  searchTableColumnFilter{
+                    name
+                    value
                   }
                 }
               }

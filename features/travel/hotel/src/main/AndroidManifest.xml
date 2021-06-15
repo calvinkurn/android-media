@@ -190,6 +190,12 @@
 
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".booking.presentation.activity.HotelPayAtHotelPromoActivity"
+            android:label="@string/hotel_pay_at_hotel_promo_header_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify" />
     </application>
 
 </manifest>

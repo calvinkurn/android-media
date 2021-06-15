@@ -3,11 +3,11 @@
   "mode": "exact",
   "query": [
     {
-      "eventCategory": "{{.*}}",
+      "eventCategory": ".*",
       "eventAction": "click view all",
       "event": "clickDiscovery",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".*",
+      "sessionIris": ".*"
     }
   ]
 }

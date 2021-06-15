@@ -39,6 +39,8 @@ class InitialStateUseCase(
                     label_type
                     shortcut_image
                     type
+                    discount_percentage
+                    original_price
                   }
                 }
               }

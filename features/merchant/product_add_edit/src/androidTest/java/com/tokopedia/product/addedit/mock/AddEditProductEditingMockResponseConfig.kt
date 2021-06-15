@@ -10,6 +10,7 @@ class AddEditProductEditingMockResponseConfig: MockModelConfig() {
     companion object {
         private const val VALIDATE_SHOP_INFO = "shopInfoByID"
         private const val GET_PRODUCT_V3 = "getProductV3"
+        private const val PRODUCT_ADD_RULE = "ProductAddRule"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -21,6 +22,11 @@ class AddEditProductEditingMockResponseConfig: MockModelConfig() {
         addMockResponse(
                 GET_PRODUCT_V3,
                 InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_get_product),
+                FIND_BY_CONTAINS
+        )
+        addMockResponse(
+                PRODUCT_ADD_RULE,
+                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_product_add_rule),
                 FIND_BY_CONTAINS
         )
 

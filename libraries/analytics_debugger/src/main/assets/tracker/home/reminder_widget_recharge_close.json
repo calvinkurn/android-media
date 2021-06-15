@@ -6,8 +6,8 @@
       "eventCategory": "homepage-digital",
       "event": "clickHomepage",
       "eventAction": "click close on digital bills",
-      "sessionIris": "{{.+}}",
-      "eventLabel": "{{.+}}"
+      "sessionIris": ".+",
+      "eventLabel": ".+"
     }
   ]
 }

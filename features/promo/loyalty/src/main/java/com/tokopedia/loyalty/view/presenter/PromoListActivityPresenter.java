@@ -9,7 +9,6 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
 import com.tokopedia.loyalty.view.interactor.IPromoInteractor;
-import com.tokopedia.loyalty.view.util.CommonConstant;
 import com.tokopedia.loyalty.view.view.IPromoListActivityView;
 import com.tokopedia.network.constant.ErrorNetMessage;
 
@@ -23,7 +22,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-import timber.log.Timber;
 
 /**
  * @author anggaprasetiyo on 04/01/18.

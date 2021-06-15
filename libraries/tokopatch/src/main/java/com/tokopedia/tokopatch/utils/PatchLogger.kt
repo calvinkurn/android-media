@@ -29,7 +29,7 @@ class PatchLogger : PatchCallBack {
     override fun onFinish() {
         end = System.currentTimeMillis()
         var elapsed = end - start
-        Timber.i("P1#ROBUST#patch process time took: %s ms", elapsed.toString())
+        Timber.i("ROBUST#patch process time took: %s ms", elapsed.toString())
     }
 
     override fun onPatchListFetched(
@@ -62,7 +62,7 @@ class PatchLogger : PatchCallBack {
     }
 
     override fun logMessage(context: Context, log: String) {
-        Timber.i("P1#ROBUST#$log")
+        Timber.i("ROBUST#$log")
     }
 
     override fun exceptionNotify(context: Context, throwable: Throwable, where: String) {
@@ -70,7 +70,6 @@ class PatchLogger : PatchCallBack {
     }
 
     companion object {
-        const val TAG = "ROBUST_LOGS"
         val instance: PatchLogger by lazy { HOLDER.INSTANCE }
     }
 }

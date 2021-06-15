@@ -18,6 +18,7 @@ object WidgetType {
     const val BAR_CHART = "barChart"
     const val MULTI_LINE_GRAPH = "multiTrendline"
     const val ANNOUNCEMENT = "announcement"
+    const val RECOMMENDATION = "recommendation"
 
     fun isValidWidget(widgetType: String): Boolean {
         return getWidgetList().contains(widgetType)
@@ -36,7 +37,8 @@ object WidgetType {
                 PIE_CHART,
                 BAR_CHART,
                 MULTI_LINE_GRAPH,
-                ANNOUNCEMENT
+                ANNOUNCEMENT,
+                RECOMMENDATION
         )
     }
 }

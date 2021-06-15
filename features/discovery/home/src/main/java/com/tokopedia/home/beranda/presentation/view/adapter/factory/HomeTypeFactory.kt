@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
@@ -41,8 +40,6 @@ interface HomeTypeFactory {
     fun type(spotlightDataModel: SpotlightDataModel): Int
 
     fun type(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel): Int
-
-    fun type(geoLocationPromptDataModel: GeoLocationPromptDataModel): Int
 
     fun type(reviewDataModel: ReviewDataModel): Int
 

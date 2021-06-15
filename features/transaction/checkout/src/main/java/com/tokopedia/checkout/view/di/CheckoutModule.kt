@@ -7,9 +7,6 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.domain.mapper.CheckoutMapper
-import com.tokopedia.checkout.domain.mapper.ICheckoutMapper
-import com.tokopedia.checkout.domain.mapper.IShipmentMapper
-import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase.Companion.CHANGE_SHIPPING_ADDRESS_MUTATION
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase.Companion.CHECKOUT_MUTATION
@@ -27,11 +24,8 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
-import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
@@ -65,21 +59,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
 
     @Provides
     @CheckoutScope
-    fun provideICheckoutMapper(): ICheckoutMapper {
-        return CheckoutMapper()
-    }
-
-    @Provides
-    @CheckoutScope
-    fun provideIShipmentMapper(): IShipmentMapper {
-        return ShipmentMapper()
-    }
-
-    @Provides
-    @CheckoutScope
-    fun provideCheckPromoStackingCodeUseCase(context: Context,
-                                             mapper: CheckPromoStackingCodeMapper): CheckPromoStackingCodeUseCase {
-        return CheckPromoStackingCodeUseCase(context.resources, mapper)
+    fun provideICheckoutMapper(gson: Gson): CheckoutMapper {
+        return CheckoutMapper(gson)
     }
 
     @Provides
@@ -149,12 +130,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @CheckoutScope
     fun provideSellerCashbackListener(): SellerCashbackListener {
         return shipmentFragment
-    }
-
-    @Provides
-    @CheckoutScope
-    fun provideTrackingPromo(): TrackingPromoCheckoutUtil {
-        return TrackingPromoCheckoutUtil()
     }
 
     @Provides

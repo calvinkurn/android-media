@@ -115,14 +115,9 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         val firstProductPosition = 0
 
         `When handle product impressed`(productItemViewModel, firstProductPosition)
-        `When getting suggestedRelatedKeyword`()
 
         `Then verify interaction for product impression with no coach mark shown`(productItemViewModel)
         `Then verify relatedKeyword`()
-    }
-
-    private fun `When getting suggestedRelatedKeyword`() {
-        productListPresenter.suggestedRelatedKeyword
     }
 
     private fun `Then verify interaction for product impression with no coach mark shown`(productItemDataView: ProductItemDataView) {
@@ -147,7 +142,6 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         val firstProductPosition = 0
 
         `When handle product impressed`(productItemViewModel, firstProductPosition)
-        `When getting suggestedRelatedKeyword`()
 
         `Then verify interaction for Organic Ads product impression with no coach mark shown`(productItemViewModel)
         `Then verify relatedKeyword`()
@@ -212,7 +206,6 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         val firstProductPosition = 0
 
         `When handle product impressed`(productItemViewModel, firstProductPosition)
-        `When getting suggestedRelatedKeyword`()
 
         `Then verify interaction for product impression with coach mark shown`(productItemViewModel, firstProductPosition)
         `Then verify relatedKeyword`()

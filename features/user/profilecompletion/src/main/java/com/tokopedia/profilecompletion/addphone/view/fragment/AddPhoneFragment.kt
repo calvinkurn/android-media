@@ -23,6 +23,7 @@ import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
 import com.tokopedia.profilecompletion.addphone.data.analitycs.AddPhoneNumberTracker
 import com.tokopedia.profilecompletion.addphone.view.activity.AddPhoneActivity
 import com.tokopedia.profilecompletion.addphone.viewmodel.AddPhoneViewModel
+import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -56,6 +57,10 @@ open class AddPhoneFragment : BaseDaggerFragment() {
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        ColorUtils.setBackgroundColor(context, activity)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         splitCompatInstall()

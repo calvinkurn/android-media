@@ -6,6 +6,7 @@ import com.tokopedia.common_digital.common.constant.DigitalTrackingConst
 import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.common_digital.common.presentation.model.RechargePushEventRecommendationResponseEntity
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
+import com.tokopedia.common_digital.common.util.BranchProductGroup
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
@@ -41,9 +42,11 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         TrackApp.getInstance().gtm.sendScreenAuthenticated(stringScreenName.toString(), mapOpenScreen)
         TrackApp.getInstance().gtm.pushEvent(EVENT_DIGITAL_CATEGORY_SCREEN_LAUNCH, mapScreenLaunchData)
 
+        val groupWiseCategoryId = BranchProductGroup.getGroupWiseProductID(categoryId)
+
         // Branch
         LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(
-                LinkerConstants.EVENT_DIGITAL_SCREEN_LAUNCH, createScreenLaunchLinkerData(userId, categoryName, categoryId)
+                LinkerConstants.EVENT_DIGITAL_SCREEN_LAUNCH, createScreenLaunchLinkerData(userId, categoryName, groupWiseCategoryId)
         ))
     }
 
@@ -67,13 +70,13 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
                 subscriber)
     }
 
-    private fun createScreenLaunchLinkerData(userId: String, categoryName: String, categoryId: String): RechargeLinkerData {
+    private fun createScreenLaunchLinkerData(userId: String, categoryName: String, groupWiseCategoryId: String): RechargeLinkerData {
         val rechargeLinkerData = RechargeLinkerData()
         rechargeLinkerData.linkerData = LinkerData().apply {
             productCategory = categoryName
             this.userId = userId
         }
-        rechargeLinkerData.categoryId = categoryId
+        rechargeLinkerData.categoryIds = groupWiseCategoryId
         return rechargeLinkerData
     }
 

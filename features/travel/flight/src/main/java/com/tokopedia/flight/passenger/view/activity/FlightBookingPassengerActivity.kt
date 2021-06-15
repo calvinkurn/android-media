@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.Menu
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
@@ -42,6 +43,8 @@ class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<Flight
         outState?.putParcelable(EXTRA_PASSENGER, passengerModel)
         outState?.putString(EXTRA_SELECTED_PASSENGER_ID, selectedPassengerId)
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean = true
 
     override fun getNewFragment(): Fragment {
         return FlightBookingPassengerFragment.newInstance(

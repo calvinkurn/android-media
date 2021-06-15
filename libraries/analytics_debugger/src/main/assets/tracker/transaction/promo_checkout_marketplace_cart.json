@@ -6,7 +6,7 @@
       "eventAction": "view available promo list",
       "eventCategory": "cart",
       "event": "view_item",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": "eligible promo",
       "promotions": [
         {
@@ -25,7 +25,7 @@
       "eventAction": "view available promo list",
       "eventCategory": "cart",
       "event": "view_item",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": "ineligible product",
       "promotions": [
         {
@@ -44,59 +44,59 @@
       "eventAction": "view available promo list",
       "eventCategory": "cart",
       "event": "viewATCIris",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": "no promo"
     },
     {
       "eventAction": "select kupon",
       "eventCategory": "cart",
       "event": "clickATC",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.+}}"
+      "sessionIris": ".*",
+      "eventLabel": ".+"
     },
     {
       "eventAction": "deselect kupon",
       "eventCategory": "cart",
       "event": "clickATC",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.+}}"
+      "sessionIris": ".*",
+      "eventLabel": ".+"
     },
     {
       "eventAction": "select promo",
       "eventCategory": "cart",
       "event": "clickATC",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.+}}"
+      "sessionIris": ".*",
+      "eventLabel": ".+"
     },
     {
       "eventAction": "deselect promo",
       "eventCategory": "cart",
       "event": "clickATC",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.+}}"
+      "sessionIris": ".*",
+      "eventLabel": ".+"
     },
     {
       "eventAction": "click terapkan promo",
       "eventCategory": "cart",
       "event": "clickATC",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.+}}"
+      "sessionIris": ".*",
+      "eventLabel": ".+"
     },
     {
       "eventAction": "click pilih promo recommendation",
       "eventCategory": "cart",
       "event": "clickATC",
-      "sessionIris": "{{.*}}",
+      "sessionIris": ".*",
       "eventLabel": "",
-      "promoCode": "{{.+}}"
+      "promoCode": ".+"
     },
     {
       "eventAction": "click pakai promo",
       "eventCategory": "cart",
       "event": "clickATC",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{success - (?:0|1)}}",
-      "promoCode": "{{.+}}"
+      "sessionIris": ".*",
+      "eventLabel": "success - (?:0|1)",
+      "promoCode": ".+"
     }
   ]
 }

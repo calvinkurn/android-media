@@ -31,6 +31,7 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
@@ -115,7 +116,6 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onCreate(savedInstanceState)
         pageSource = args.StringMainNavArgsSourceKey
         viewModel.setPageSource(pageSource)
-        viewModel.setUserHaveLogoutData(haveUserLogoutData())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -123,6 +123,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             it.setToolbarTitle(getString(R.string.title_main_nav))
             it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_CLOSE)
             navToolbar = it
+            viewLifecycleOwner.lifecycle.addObserver(it)
         }
         return inflater.inflate(R.layout.fragment_main_nav, container, false)
     }
@@ -257,8 +258,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             ID_ALL_TRANSACTION -> TrackingTransactionSection.clickOnAllTransaction(userSession.userId)
             ID_TICKET -> TrackingTransactionSection.clickOnTicket(userSession.userId)
             ID_REVIEW -> TrackingTransactionSection.clickOnReview(userSession.userId)
-            ID_WISHLIST_MENU -> TrackingTransactionSection.clickOnWishlist(userSession.userId)
+            ID_WISHLIST_MENU -> TrackingUserMenuSection.clickOnUserMenu(homeNavMenuDataModel.trackerName, userSession.userId)
             ID_FAVORITE_SHOP -> TrackingTransactionSection.clickOnTokoFavorit(userSession.userId)
+            ID_HOME -> TrackingBuSection.onClickBackToHome(userSession.userId)
             else -> TrackingUserMenuSection.clickOnUserMenu(homeNavMenuDataModel.trackerName, userSession.userId)
         }
     }

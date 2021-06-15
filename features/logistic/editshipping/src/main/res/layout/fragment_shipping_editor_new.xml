@@ -39,7 +39,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:closeButtonVisibility="gone"
-                        app:tckv_content_text_size = "@dimen/sp_12"
                         android:layout_marginTop="@dimen/dp_4"
                         android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginEnd="@dimen/unify_space_16"
@@ -68,7 +67,6 @@
                         android:layout_marginTop="@dimen/unify_space_16"
                         android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginEnd="@dimen/unify_space_16"
-                        app:tckv_content_text_size = "@dimen/sp_12"
                         app:tickerShapeType="loose"
                         app:tickerType="error"
                         android:visibility="gone"
@@ -108,7 +106,6 @@
                         android:layout_marginTop="@dimen/unify_space_16"
                         android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginEnd="@dimen/unify_space_16"
-                        app:tckv_content_text_size = "@dimen/sp_12"
                         app:tickerShapeType="loose"
                         app:layout_constraintTop_toBottomOf="@id/tv_dijemput_kurir_detail"
                         app:layout_constraintStart_toStartOf="parent"/>

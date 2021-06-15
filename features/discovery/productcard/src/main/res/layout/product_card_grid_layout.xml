@@ -6,6 +6,7 @@
     app:cardElevation="@dimen/dp_4"
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
+    app:cardBackgroundColor="@color/product_card_dms_card_background"
     android:foreground="?attr/selectableItemBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -36,7 +37,6 @@
             android:id="@+id/labelCampaignBackground"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/product_card_label_campaign_height"
-            android:layout_marginEnd="@dimen/dp_16"
             android:visibility="gone"
             android:contentDescription="null"
             app:layout_constraintStart_toStartOf="parent"

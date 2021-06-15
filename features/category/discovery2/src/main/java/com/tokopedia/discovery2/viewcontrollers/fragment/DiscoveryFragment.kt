@@ -14,12 +14,12 @@ import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -62,12 +62,12 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -116,6 +116,7 @@ class DiscoveryFragment :
     private lateinit var discoveryAdapter: DiscoveryRecycleAdapter
     private var chooseAddressWidget: ChooseAddressWidget? = null
     private var chooseAddressWidgetDivider: View? = null
+    private var shouldShowChooseAddressWidget:Boolean = true
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -200,6 +201,7 @@ class DiscoveryFragment :
         showOldToolbar = !RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
         val oldToolbar: Toolbar = view.findViewById(R.id.oldToolbar)
         navToolbar = view.findViewById(R.id.navToolbar)
+        viewLifecycleOwner.lifecycle.addObserver(navToolbar)
         if (showOldToolbar) {
             oldToolbar.visibility = View.VISIBLE
             navToolbar.visibility = View.GONE
@@ -229,6 +231,8 @@ class DiscoveryFragment :
         mSwipeRefreshLayout.setOnRefreshListener(this)
         ivToTop.setOnClickListener(this)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            var scrollDist = 0
+            val MINIMUM = 25.toPx()
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0) {
@@ -236,6 +240,7 @@ class DiscoveryFragment :
                 } else if (dy < 0) {
                     ivToTop.show()
                 }
+                scrollDist += dy
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -244,6 +249,19 @@ class DiscoveryFragment :
                         && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     ivToTop.hide()
                 }
+                if (scrollDist > MINIMUM) {
+                    chooseAddressWidget?.hide()
+                    chooseAddressWidgetDivider?.hide()
+                    shouldShowChooseAddressWidget = false
+                    scrollDist = 0
+                } else if (scrollDist < -MINIMUM) {
+                    if (discoveryViewModel.getAddressVisibilityValue() && ChooseAddressUtils.isRollOutUser(context)) {
+                        chooseAddressWidget?.show()
+                        chooseAddressWidgetDivider?.show()
+                        shouldShowChooseAddressWidget = true
+                    }
+                    scrollDist = 0
+                }
             }
         })
     }
@@ -251,6 +269,7 @@ class DiscoveryFragment :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
+        discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
         setAdapter()
@@ -282,16 +301,19 @@ class DiscoveryFragment :
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
                         if (listComponent.isNullOrEmpty()) {
+                            discoveryAdapter.addDataList(ArrayList())
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
                             scrollToPinnedComponent(listComponent)
                         }
                     }
+                    hideGlobalError()
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
                 }
                 is Fail -> {
                     mProgressBar.hide()
+                    setPageErrorState(it)
                 }
             }
             mSwipeRefreshLayout.isRefreshing = false
@@ -317,6 +339,7 @@ class DiscoveryFragment :
                     setToolBarPageInfoOnSuccess(it.data)
                 }
                 is Fail -> {
+                    discoveryAdapter.addDataList(ArrayList())
                     setToolBarPageInfoOnFail()
                     setPageErrorState(it)
                 }
@@ -348,10 +371,12 @@ class DiscoveryFragment :
 
         discoveryViewModel.checkAddressVisibility().observe(viewLifecycleOwner, { widgetVisibilityStatus ->
             context?.let {
-                if (ChooseAddressUtils.isRollOutUser(it) && widgetVisibilityStatus) {
-                    chooseAddressWidget?.show()
-                    chooseAddressWidgetDivider?.show()
-                    if (ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true) {
+                if (widgetVisibilityStatus && ChooseAddressUtils.isRollOutUser(it)) {
+                    if(shouldShowChooseAddressWidget) {
+                        chooseAddressWidget?.show()
+                        chooseAddressWidgetDivider?.show()
+                    }
+                    if(ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true){
                         ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
                         showLocalizingAddressCoachMark()
                     }
@@ -435,6 +460,7 @@ class DiscoveryFragment :
                                 .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
                                 .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
                 )
+                navToolbar.updateNotification()
             }
         } else {
             if (showOldToolbar) {
@@ -497,6 +523,7 @@ class DiscoveryFragment :
                         .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
                         .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
         )
+        navToolbar.updateNotification()
     }
 
     private fun setupSearchBar(data: PageInfo?) {
@@ -556,6 +583,10 @@ class DiscoveryFragment :
             globalError.hide()
             showLoadingWithRefresh()
         }
+    }
+
+    private fun hideGlobalError(){
+        globalError.hide()
     }
 
     private fun fetchDiscoveryPageData() {
@@ -641,6 +672,12 @@ class DiscoveryFragment :
         startActivityForResult(intent, OPEN_PLAY_CHANNEL)
     }
 
+    fun refreshCarouselData(componentPosition: Int = -1) {
+        if (componentPosition >= 0) {
+            discoveryAdapter.getViewModelAtPosition(componentPosition)?.refreshProductCarouselError()
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
@@ -651,7 +688,14 @@ class DiscoveryFragment :
         }
         when (requestCode) {
             LOGIN_REQUEST_CODE -> {
-                discoveryBaseViewModel?.loggedInCallback()
+                if (resultCode == Activity.RESULT_OK) {
+                    if(this.componentPosition != null && this.componentPosition!! >= 0) {
+                        discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
+                        discoveryBaseViewModel?.loggedInCallback()
+                    }else{
+                        discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
+                    }
+                }
             }
             MOBILE_VERIFICATION_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -662,6 +706,7 @@ class DiscoveryFragment :
             }
             PAGE_REFRESH_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK) {
+                    discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
                     refreshPage()
                 }
             }
@@ -840,11 +885,11 @@ class DiscoveryFragment :
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_SOURCE
+        return analytics.getHostSource()
     }
 
     override fun getLocalizingAddressHostSourceTrackingData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
+        return analytics.getHostTrackingSource()
     }
 
     override fun onLocalizingAddressLoginSuccess() {
@@ -852,6 +897,10 @@ class DiscoveryFragment :
 
     override fun onLocalizingAddressUpdatedFromBackground() {
 
+    }
+
+    override fun getEventLabelHostPage(): String {
+        return analytics.getEventLabel()
     }
 
     private fun fetchUserLatestAddressData() {

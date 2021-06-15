@@ -6,15 +6,15 @@
       "eventCategory": "wishlist page",
       "event": "clickWishlist",
       "eventAction": "remove wishlist - wishlist - login",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     },
     {
       "eventCategory": "wishlist page",
       "event": "clickWishlist",
       "eventAction": "click batalkan hapus wishlist",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}"
+      "sessionIris": ".*",
+      "eventLabel": ".*"
     }
   ]
 }

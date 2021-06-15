@@ -417,21 +417,22 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return {
 
             val list = it.listChat.filter {
-                !(it is FallbackAttachmentViewModel && it.message.isEmpty())
+                !((it is FallbackAttachmentViewModel && it.message.isEmpty()) ||
+                        (it is MessageViewModel && it.message.isEmpty()))
             }
 
             updateViewData(it)
             renderList(list, it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it)
             checkShowLoading(it.canLoadMore)
-            presenter.sendReadEvent(messageId)
         }
     }
 
     private fun onSuccessGetPreviousChat(): (ChatroomViewModel) -> Unit {
         return {
             val list = it.listChat.filter {
-                !(it is FallbackAttachmentViewModel && it.message.isEmpty())
+                !((it is FallbackAttachmentViewModel && it.message.isEmpty()) ||
+                        (it is MessageViewModel && it.message.isEmpty()))
             }
             renderList(list, it.canLoadMore)
             checkShowLoading(it.canLoadMore)

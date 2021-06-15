@@ -10,7 +10,6 @@ import com.airbnb.deeplinkdispatch.DeepLinkResult;
  * @author okasurya on 8/30/18.
  */
 public interface ApplinkDelegate {
-    DeepLinkResult dispatchFrom(Activity activity);
 
     DeepLinkResult dispatchFrom(Activity activity, Intent sourceIntent);
 

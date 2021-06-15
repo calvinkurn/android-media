@@ -51,8 +51,8 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
                 when (result) {
                     is Success -> showToast(
                             when (result.data) {
-                                PlayWidgetReminderType.Remind -> fragment.getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
-                                PlayWidgetReminderType.UnRemind -> fragment.getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
+                                PlayWidgetReminderType.Reminded -> fragment.getString(com.tokopedia.play.widget.R.string.play_widget_success_add_reminder)
+                                PlayWidgetReminderType.NotReminded -> fragment.getString(com.tokopedia.play.widget.R.string.play_widget_success_remove_reminder)
                             }, Toaster.TYPE_NORMAL)
                     is Fail -> showToast(fragment.getString(com.tokopedia.play.widget.R.string.play_widget_error_reminder), Toaster.TYPE_ERROR)
                 }

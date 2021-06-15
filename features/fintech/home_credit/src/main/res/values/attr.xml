@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RectangleOverlayView">
+        <attr name="fg_color" format="reference"/>
+        <attr name="inset_distance" format="dimension"/>
+        <attr name="outline_img" format="reference"/>
+    </declare-styleable>
+</resources>

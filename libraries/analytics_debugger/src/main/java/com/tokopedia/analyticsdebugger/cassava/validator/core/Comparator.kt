@@ -1,6 +1,27 @@
 package com.tokopedia.analyticsdebugger.cassava.validator.core
 
 import com.google.gson.internal.LinkedTreeMap
+import com.tokopedia.analyticsdebugger.database.GtmLogDB
+
+fun Map<String, Any>.containsPairOf(pair: Pair<String, String>): Boolean {
+    forEach {
+        when {
+            it.key == pair.first && regexEquals(pair.second, it.value) -> return true
+            it.value is LinkedTreeMap<*, *> -> return (it.value as Map<String, Any>).containsPairOf(pair)
+        }
+    }
+    return false
+}
+
+fun List<GtmLogDB>.containsMapOf(map: Map<String, Any>, isExact: Boolean): Boolean {
+    for (gtm in this) {
+        val mapGtm = gtm.data.toJsonMap()
+        if (map.canValidate(mapGtm, isExact)) {
+            return true
+        }
+    }
+    return false
+}
 
 internal fun Map<String, Any>.canValidate(obj: Map<String, Any>, strict: Boolean = false): Boolean {
     for (entry in this) {
@@ -25,17 +46,12 @@ private fun List<Map<String, Any>>.validateArray(arr: List<Map<String, Any>>): B
 private fun Any.eq(v: Any): Boolean = when {
     this is LinkedTreeMap<*, *> && v is LinkedTreeMap<*, *> -> (this as Map<String, Any>).canValidate(v as Map<String, Any>)
     this is ArrayList<*> && v is ArrayList<*> -> (this as List<Map<String, Any>>).validateArray(v as List<Map<String, Any>>)
-    this is String && this.contains("\\{\\{.*\\}\\}".toRegex()) -> regexEquals(this, v)
+    this is String -> regexEquals(this, v)
     else -> this == v
 }
 
 fun regexEquals(s: String, v: Any): Boolean {
-    val syntax = Regex("\\{\\{(.*)\\}\\}")
-    val m = syntax.find(s)
-
-    val regex: Regex = m?.groupValues?.get(1)?.toRegex()
-            ?: throw Exception("Syntax not parsed")
-
+    val regex = Regex(s)
     val vString = v.toString()
     return regex.matchEntire(vString) != null
 }

@@ -744,7 +744,8 @@ class OfficialStoreTracking(context: Context) {
             channel: ChannelModel,
             productItem: ChannelGrid,
             productPosition: String,
-            isLogin: Boolean
+            isLogin: Boolean,
+            userId: String
     ) {
         val valueDynamicMix = when (channel.layout) {
             DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
@@ -754,20 +755,23 @@ class OfficialStoreTracking(context: Context) {
         val eventAction = "$IMPRESSION on product $valueDynamicMix"
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_VIEW,
-                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_CATEGORY, OS_MICROSITE_SINGLE,
                 EVENT_ACTION, eventAction,
-                EVENT_LABEL, channel.id,
+                EVENT_LABEL, channel.id + " - " + categoryName,
+                FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
+                FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT,
+                USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
-                ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
-                ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
-                createFlashSaleCardProductItemMapComponent(
-                        productItem,
-                        productPosition,
-                        isLogin,
-                        valueDynamicMix
+                    ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
+                    ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
+                            createFlashSaleCardProductItemMapComponent(
+                                    productItem,
+                                    productPosition,
+                                    isLogin,
+                                    valueDynamicMix
+                        )
+                    )
                 )
-        )
-        )
         )
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }

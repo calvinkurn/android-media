@@ -6,6 +6,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.applink.order.DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerCancellationRequest
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerCancelled
@@ -112,15 +113,16 @@ object AppLinkMapperSellerHome {
 
     fun getSomAllOrderAppLink(uri: Uri): String {
         val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
+        val orderId = uri.getQueryParameter(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).orEmpty()
         return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(uri)) {
-            if(searchKeyword.isNotBlank()) {
-                val param = mapOf(QUERY_PARAM_SEARCH to searchKeyword)
-                UriUtil.buildUriAppendParam(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL, param)
-            } else {
-                ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL
+            val param = mutableMapOf<String, Any>().apply {
+                if (searchKeyword.isNotEmpty()) put(QUERY_PARAM_SEARCH, searchKeyword)
+                if (orderId.isNotEmpty()) put(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID, orderId)
+                if (shouldRedirectToSellerApp(uri)) put(RouteManager.KEY_REDIRECT_TO_SELLER_APP, true)
             }
+            UriUtil.buildUriAppendParams(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_ALL, param)
         } else {
-            getRegisteredNavigationMainAppSellerHistory()
+            getRegisteredNavigationMainAppSellerHistory(orderId)
         }
     }
 
@@ -137,7 +139,8 @@ object AppLinkMapperSellerHome {
     }
 
     fun getSellerHomeAppLink(deepLink: String): String {
-        val query = Uri.parse(deepLink).query
-        return DeeplinkMapper.createAppendDeeplinkWithQuery(ApplinkConstInternalSellerapp.SELLER_HOME, query)
+        val uri = Uri.parse(deepLink)
+        val query = uri.query
+        return UriUtil.appendDiffDeeplinkWithQuery(ApplinkConstInternalSellerapp.SELLER_HOME, query)
     }
 }

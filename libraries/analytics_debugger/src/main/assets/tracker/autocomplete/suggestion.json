@@ -6,71 +6,71 @@
       "event": "clickTopNav",
       "eventCategory": "top nav - /",
       "eventAction": "click - shop - carousel",
-      "eventLabel": "{{.+ - keyword: .+}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".+ - keyword: .+",
+      "sessionIris": ".*"
     },
     {
       "event": "clickTopNav",
       "eventCategory": "top nav - /",
       "eventAction": "click - lihat toko lainnya - carousel",
-      "eventLabel": "{{keyword: .+}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "keyword: .+",
+      "sessionIris": ".*"
     },
     {
       "event": "clickTopNav",
       "eventCategory": "top nav - homepage",
       "eventAction": "click - recent search autocomplete",
-      "eventLabel": "{{.+}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".+",
+      "sessionIris": ".*"
     },
     {
       "event": "clickSearchResult",
       "eventCategory": "top nav",
       "eventAction": "click - shop autocomplete",
-      "eventLabel": "{{.+ - keyword: .+ - shop: .+}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".+ - keyword: .+ - shop: .+",
+      "sessionIris": ".*"
     },
     {
       "event": "clickSearchResult",
       "eventCategory": "top nav",
       "eventAction": "click - product autocomplete",
-      "eventLabel": "{{keyword: .+ - value: .+ - po: .+ - applink: .+}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "keyword: .+ - value: .+ - po: .+ - applink: .+",
+      "sessionIris": ".*"
     },
     {
       "event": "clickSearchResult",
       "eventCategory": "top nav - /",
       "eventAction": "click - digital product suggestion",
-      "eventLabel": "{{keyword: .+ - product: .+ - po: .+ - page: .+}}",
-      "campaignCode": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": "keyword: .+ - product: .+ - po: .+ - page: .+",
+      "campaignCode": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "clickSearch",
       "eventCategory": "top nav",
       "eventAction": "click - search",
-      "eventLabel": "{{.+}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".+",
+      "sessionIris": ".*"
     },
     {
       "event": "clickTopNav",
       "eventCategory": "top nav - /",
       "eventAction": "click - autocomplete local",
-      "eventLabel": "{{keyword: .+ - value: .+ - applink: .+ - campaign: .+}}",
+      "eventLabel": "keyword: .+ - value: .+ - applink: .+ - campaign: .+",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "businessUnit": "search",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickTopNav",
       "eventCategory": "top nav - /",
       "eventAction": "click - autocomplete global",
-      "eventLabel": "{{keyword: .+ - value: .+ - applink: .+}}",
+      "eventLabel": "keyword: .+ - value: .+ - applink: .+",
       "currentSite": "tokopediamarketplace",
-      "userId": "{{.+}}",
+      "userId": ".+",
       "businessUnit": "search",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     }
   ]
 }

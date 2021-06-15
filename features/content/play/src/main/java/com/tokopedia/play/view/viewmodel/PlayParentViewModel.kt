@@ -98,7 +98,9 @@ class PlayParentViewModel constructor(
     fun setNewChannelParams(bundle: Bundle) {
         val channelId = bundle.get(PLAY_KEY_CHANNEL_ID) as? String
 
-        if (!channelId.isNullOrEmpty()) {
+        val isFromPiP = bundle.getBoolean(IS_FROM_PIP, false)
+
+        if (!isFromPiP && !channelId.isNullOrEmpty()) {
             handle.set(PLAY_KEY_CHANNEL_ID, channelId)
             handle.set(PLAY_KEY_SOURCE_TYPE, bundle.get(PLAY_KEY_SOURCE_TYPE))
             handle.set(PLAY_KEY_SOURCE_ID, bundle.get(PLAY_KEY_SOURCE_ID))
@@ -165,5 +167,6 @@ class PlayParentViewModel constructor(
     companion object {
 
         private const val KEY_START_MILLIS = "start_vod_millis"
+        private const val IS_FROM_PIP = "is_from_pip"
     }
 }

@@ -26,8 +26,6 @@ public class AppsflyerEventValidation {
     public static final String AF_KEY_CATEGORY_NAME = "category";
     public static final String AF_KEY_CRITEO = "criteo_track_transaction";
 
-    public static String TAG = "P2#APPSFLYER_VALIDATION#";
-
     public void validateAppsflyerData(String eventName, Map<String, Object> data) {
 
         Completable.fromAction(new Action0() {

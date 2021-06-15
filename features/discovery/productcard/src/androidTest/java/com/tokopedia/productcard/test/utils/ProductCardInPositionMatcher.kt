@@ -65,6 +65,8 @@ private class ProductCardInPositionMatcher(
                         || productCardComponent.id == R.id.cardViewProductCard
                         || productCardComponent.id == R.id.constraintLayoutProductCard
                         || productCardComponent.id == R.id.productCardContentLayout
+                        // Ignore spaces, barriers, and not visible view helpers
+                        || productCardComponent.id == R.id.spaceCampaignBestSeller
             }
         }
     }

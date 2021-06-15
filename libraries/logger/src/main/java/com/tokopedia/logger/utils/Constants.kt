@@ -11,6 +11,7 @@ class Constants {
         val OFFLINE_TAG_THRESHOLD: Long = TimeUnit.DAYS.toMillis(1)
 
         const val MAX_BUFFER = 3900
+        const val MAX_LENGTH_PER_ITEM = 1500
         const val SCALYR_SERVER_URL = "https://app.scalyr.com/addEvents"
         const val DATE_TIME_FORMAT = "dd/MM/yyyy HH:mm:ss:SSS"
 

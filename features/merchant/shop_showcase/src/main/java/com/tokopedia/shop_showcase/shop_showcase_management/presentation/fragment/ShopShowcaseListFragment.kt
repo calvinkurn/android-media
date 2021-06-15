@@ -30,7 +30,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_DEFAULT
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.Companion.ETALASE_DEFAULT
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R

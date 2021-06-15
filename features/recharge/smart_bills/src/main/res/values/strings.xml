@@ -40,4 +40,8 @@
     <string name="smart_bills_tooltip_desc_2">Tagihan yang bisa dibayar sekaligus didapatkan dari riwayat transaksimu sebelumnya</string>
     <string name="smart_bills_tooltip_button">Pelajari Selengkapnya</string>
     <string name="smart_bills_tooltip_bullet">\u2022</string>
+
+    <string name="smart_bills_clustering_local_load_title">Bagian ini gagal ditampilkan</string>
+    <string name="smart_bills_clustering_local_load_desc">Klik ikon di samping untuk coba lagi.</string>
+    <string name="smart_bills_clustering_price">-</string>
 </resources>

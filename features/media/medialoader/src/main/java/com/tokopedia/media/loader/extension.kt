@@ -82,17 +82,16 @@ inline fun ImageView.loadImageRounded(
 inline fun ImageView.loadIcon(
         url: String?,
         crossinline properties: Properties.() -> Unit = {}
-) = call(url, Properties().apply {
-    apply(properties)
-    useBlurHash(false)
+) = call(url, Properties().apply(properties)
+    .useCache(false)
+    .useBlurHash(false)
 
     /*
-    * loadIcon() extension must be haven't placeholder,
-    * the loader effect should be handled by team by
-    * using own shimmering.
-    * */
-    setPlaceHolder(-1)
-})
+     * loadIcon() extension must be haven't placeholder,
+     * the loader effect should be handled by team by
+     * using own shimmering.
+     * */
+    .setPlaceHolder(-1))
 
 fun ImageView.loadImageTopRightCrop(source: String) {
     if (context.isValid()) {
@@ -116,10 +115,7 @@ internal fun ImageView.call(source: Any?, properties: Properties) {
         try {
             loadImageBuilder(
                     imageView = this,
-                    properties = properties.apply {
-                        useBlurHash(false)
-                        setSource(source)
-                    }
+                    properties = properties.setSource(source)
             )
         } catch (e: Exception) {
             e.printStackTrace()

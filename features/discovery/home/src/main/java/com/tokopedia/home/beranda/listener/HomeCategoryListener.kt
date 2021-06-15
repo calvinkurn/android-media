@@ -85,10 +85,6 @@ interface HomeCategoryListener {
 
     fun onTokopointCheckNowClicked(applink: String)
 
-    fun launchPermissionChecker()
-
-    fun onCloseGeolocationView()
-
     fun sendEETracking(data: HashMap<String, Any>)
 
     fun putEEToTrackingQueue(data: HashMap<String, Any>)

@@ -6,25 +6,25 @@
       "event": "clickDigitalCC",
       "eventCategory": "digital - cc page",
       "eventAction": "click confirmation to checkout",
-      "eventLabel": "{{.* - .*}}",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".* - .*",
+      "userId": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "clickDigitalCC",
       "eventCategory": "digital - cc page",
       "eventAction": "checkout page",
-      "eventLabel": "{{.* - .*}}",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".* - .*",
+      "userId": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "clickDigitalCC",
       "eventCategory": "digital - cc page",
       "eventAction": "click confirmation to pdp",
-      "eventLabel": "{{.* - .*}}",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".* - .*",
+      "userId": ".*",
+      "sessionIris": ".*"
     }
   ]
 }

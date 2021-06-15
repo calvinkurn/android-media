@@ -77,7 +77,6 @@ import timber.log.Timber;
 public class DeeplinkHandlerActivity extends AppCompatActivity implements DefferedDeeplinkCallback {
 
     private static final String ENABLE_ASYNC_APPLINK_DELEGATE_CREATION = "android_async_applink_delegate_creation";
-    private static final String APPLINK_LOG_FORMAT = "P1#WEBVIEW_OPENED#applink;domain='%s';url='%s'";
     private static final String TOKOPEDIA_DOMAIN = "tokopedia";
     private static final String URL_QUERY_PARAM = "url";
     private static ApplinkDelegate applinkDelegate;

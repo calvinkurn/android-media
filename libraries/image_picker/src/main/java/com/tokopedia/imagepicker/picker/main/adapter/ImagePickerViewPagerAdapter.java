@@ -13,7 +13,6 @@ import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
-import com.tokopedia.imagepicker.picker.video.VideoRecorderFragment;
 
 /**
  * Created by hendry on 19/04/18.
@@ -39,8 +38,6 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
                 return createGalleryFragment();
             case TYPE_CAMERA:
                 return createCameraFragment();
-            case TYPE_RECORDER:
-                return createVideoFragment();
             default:
                 return new Fragment();
         }
@@ -61,10 +58,6 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
         return ImagePickerCameraFragment.newInstance();
     }
 
-    protected Fragment createVideoFragment(){
-        return new VideoRecorderFragment();
-    }
-
     @Override
     public CharSequence getPageTitle(int position) {
         switch (imagePickerBuilder.getImagePickerTab()[position]) {
@@ -72,8 +65,6 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
                 return context.getString(R.string.gallery);
             case TYPE_CAMERA:
                 return context.getString(R.string.camera);
-            case TYPE_RECORDER:
-                return context.getString(R.string.recorder);
             default:
                 return context.getString(R.string.gallery);
         }

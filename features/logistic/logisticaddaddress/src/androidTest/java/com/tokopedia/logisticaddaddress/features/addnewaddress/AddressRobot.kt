@@ -8,8 +8,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
@@ -99,7 +98,7 @@ class AddressRobot {
 }
 
 class ResultRobot {
-    fun hasPassedAnalytics(repository: GtmLogDBSource, queryString: String) {
-        assertThat(getAnalyticsWithQuery(repository, queryString), hasAllSuccess())
+    fun hasPassedAnalytics(rule: CassavaTestRule, path: String) {
+        assertThat(rule.validate(path), hasAllSuccess())
     }
 }

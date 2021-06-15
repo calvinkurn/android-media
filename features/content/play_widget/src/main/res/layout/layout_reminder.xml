@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/layout_lvl4"
+    android:layout_height="@dimen/layout_lvl4"
+    android:background="@drawable/bg_play_widget_reminder"
+    >
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/play_widget_iv_reminder"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_gravity="center"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="BELL"
+        />
+
+</FrameLayout>

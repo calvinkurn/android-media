@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
@@ -363,7 +364,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_LOGIN_PHONE_NUMBER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, getIsLoginRegisterFlow())
         startActivityForResult(intent, REQUEST_LOGIN_PHONE)
     }
 
@@ -376,7 +377,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_REGISTER_PHONE_NUMBER)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, getIsLoginRegisterFlow())
         startActivityForResult(intent, REQUEST_REGISTER_PHONE)
     }
 
@@ -387,8 +388,16 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, getIsLoginRegisterFlow())
         startActivityForResult(intent, REQUEST_COTP_PHONE_VERIFICATION)
+    }
+
+    private fun getIsLoginRegisterFlow(): Boolean {
+        return if(GlobalConfig.isSellerApp()) {
+            true
+        } else {
+            return !userSession.isLoggedIn
+        }
     }
 
     private fun goToRegisterAddNamePage(phone: String) {

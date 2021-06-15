@@ -11,4 +11,5 @@
 
     <dimen name="common_travel_dp_10">10dp</dimen>
     <dimen name="common_travel_dp_20">20dp</dimen>
+    <dimen name="common_travel_1dp">1dp</dimen>
 </resources>

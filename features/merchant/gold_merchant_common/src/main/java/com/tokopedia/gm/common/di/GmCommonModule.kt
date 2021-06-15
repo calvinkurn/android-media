@@ -22,8 +22,9 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import javax.inject.Named
-import com.chuckerteam.chucker.api.RetentionManager
 import com.chuckerteam.chucker.api.ChuckerCollector
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 
 /**
  * @author by milhamj on 12/06/19.
@@ -106,21 +107,14 @@ class GmCommonModule {
     }
 
     @Provides
-    @Named(GMParamConstant.RAW_DEACTIVATION)
-    fun providePmOffRaw(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_turn_off)
-    }
-
-    @Provides
-    @Named(GMParamConstant.RAW_ACTIVATION)
-    fun providePmOnRaw(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_activation)
-    }
-
-    @Provides
     @Named(GMParamConstant.RAW_GM_STATUS)
     fun provicePmStatusRaw(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gold_merchant_status)
     }
 
+    @GmCommonQualifier
+    @Provides
+    fun provideGqlRepository(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
+    }
 }

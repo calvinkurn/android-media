@@ -46,7 +46,7 @@ class CmDialogHandler {
         if (null != inAppViewPrev) return
         val root = activity.window
                 .decorView
-                .findViewById<View>(R.id.content)
+                .findViewById<View>(android.R.id.content)
                 .rootView as FrameLayout
         root.addView(view)
         cmDialogHandlerCallback.onShow(activity)

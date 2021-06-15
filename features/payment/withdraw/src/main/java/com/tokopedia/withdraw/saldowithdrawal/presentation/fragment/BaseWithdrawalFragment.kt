@@ -259,7 +259,11 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
 
     private fun openTermsAndConditionBottomSheet() {
         activity?.let {
-            val bottomSheetUnify = BottomSheetUnify()
+            val bottomSheetUnify = BottomSheetUnify().apply {
+                isDragable = true
+                isFullpage = true
+                isHideable = true
+            }
             bottomSheetUnify.setTitle(getString(R.string.swd_tnc_title))
             val view = layoutInflater.inflate(R.layout.swd_layout_withdraw_tnc,
                     null, true)

@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.view.SurfaceView
 import androidx.core.app.ActivityCompat
 import com.alivc.live.pusher.*
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.pusher.config.ApsaraLivePusherConfig
 import com.tokopedia.play.broadcaster.pusher.config.DefaultApsaraLivePusherConfig
 import com.tokopedia.play.broadcaster.pusher.error.ApsaraFatalException
@@ -14,6 +15,7 @@ import com.tokopedia.play.broadcaster.pusher.listener.ApsaraLivePusherErrorListe
 import com.tokopedia.play.broadcaster.pusher.listener.ApsaraLivePusherNetworkListenerImpl
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherState
 import com.tokopedia.play.broadcaster.pusher.state.ApsaraLivePusherStateProcessor
+import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentLinkedQueue
 
 
@@ -22,10 +24,13 @@ import java.util.concurrent.ConcurrentLinkedQueue
  */
 class ApsaraLivePusherWrapper private constructor(
         val context: Context,
-        private val pusherConfig: ApsaraLivePusherConfig
+        private val pusherConfig: ApsaraLivePusherConfig,
+        private val dispatchers: CoroutineDispatchers,
 ) {
 
-    class Builder(context: Context) {
+    class Builder(
+            context: Context,
+            private val dispatchers: CoroutineDispatchers) {
 
         private val mContext: Context = context.applicationContext
         private var mApsaraLivePushConfig: ApsaraLivePusherConfig? = null
@@ -38,17 +43,22 @@ class ApsaraLivePusherWrapper private constructor(
         fun build(): ApsaraLivePusherWrapper {
             return ApsaraLivePusherWrapper(
                     context = mContext,
-                    pusherConfig = mApsaraLivePushConfig ?: DefaultApsaraLivePusherConfig(mContext)
+                    pusherConfig = mApsaraLivePushConfig ?: DefaultApsaraLivePusherConfig(mContext),
+                    dispatchers = dispatchers
             )
         }
 
     }
 
+    private var aliVcLivePusher: AlivcLivePusher? = null
+    private var apsaraLivePusherState: ApsaraLivePusherState = ApsaraLivePusherState.Idle
+
     val pusherState: ApsaraLivePusherState
         get() = apsaraLivePusherState
 
-    private var aliVcLivePusher: AlivcLivePusher? = null
-    private var apsaraLivePusherState: ApsaraLivePusherState = ApsaraLivePusherState.Idle
+    val isActivePushing: Boolean
+        get() = aliVcLivePusher?.isNetworkPushing == true
+                && aliVcLivePusher?.isPushing == true
 
     private val livePusherStateProcessor = object : ApsaraLivePusherStateProcessor {
         override fun onStateChanged(state: ApsaraLivePusherState) {
@@ -146,8 +156,8 @@ class ApsaraLivePusherWrapper private constructor(
         safeAction { aliVcLivePusher?.stopPush() }
     }
 
-    fun resume() {
-        safeAction { aliVcLivePusher?.resumeAsync() }
+    suspend fun resume() = withContext(dispatchers.default) {
+        safeAction { aliVcLivePusher?.resume() }
     }
 
     fun pause() {
@@ -158,7 +168,7 @@ class ApsaraLivePusherWrapper private constructor(
         safeAction { aliVcLivePusher?.destroy() }
     }
 
-    fun reconnect() {
+    suspend fun reconnect() = withContext(dispatchers.default) {
         safeAction { aliVcLivePusher?.reconnectPushAsync(ingestUrl) }
     }
 

@@ -20,6 +20,8 @@ class PhoneCodePickerViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     private val _countryList = MutableLiveData<Result<List<TravelCountryPhoneCode>>>()
+    val countryList: LiveData<Result<List<TravelCountryPhoneCode>>>
+        get() = _countryList
 
     private val _filteredCountryList = MutableLiveData<Result<List<TravelCountryPhoneCode>>>()
     val filteredCountryList: LiveData<Result<List<TravelCountryPhoneCode>>>

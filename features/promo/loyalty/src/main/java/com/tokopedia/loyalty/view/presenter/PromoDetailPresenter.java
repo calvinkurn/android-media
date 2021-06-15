@@ -4,10 +4,8 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import com.google.gson.JsonSyntaxException;
-import com.tokopedia.graphql.GraphqlConstant;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
-import com.tokopedia.loyalty.view.util.CommonConstant;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -31,7 +29,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-import timber.log.Timber;
 
 /**
  * @author Aghny A. Putra on 4/4/18

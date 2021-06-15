@@ -28,7 +28,7 @@ class GetSearchShopProductUseCaseTest {
     lateinit var graphqlUseCase: MultiRequestGraphqlUseCase
 
     private val getSearchShopProductUseCase by lazy {
-        GetSearchShopProductUseCase(graphqlUseCase, anyString())
+        GetSearchShopProductUseCase(graphqlUseCase)
     }
 
     @Before

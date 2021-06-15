@@ -13,6 +13,7 @@ import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
 import com.tokopedia.hotel.booking.data.model.TokopointsSumCoupon
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
+import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
@@ -110,6 +111,7 @@ class HotelBookingViewModelTest {
         //then
         assert(hotelBookingViewModel.hotelCartResult.value is Success)
         assert((hotelBookingViewModel.hotelCartResult.value as Success<HotelCart.Response>).data.response.cartID == "123")
+        assert((hotelBookingViewModel.promoData.value?.promoCode == cart.response.appliedVoucher.code))
     }
 
     @Test
@@ -268,5 +270,36 @@ class HotelBookingViewModelTest {
         //then
         val actual = hotelBookingViewModel.tickerData.value
         assert(actual is Fail)
+    }
+
+    @Test
+    fun applyPromoData_onPromoApply(){
+        //given
+        var promoData = PromoData()
+        promoData.apply {
+            promoCode = "TOPED"
+            description = "Potensi Cashback senilai Rp. 10.000"
+            amount = 1000
+        }
+
+        //when
+        hotelBookingViewModel.applyPromoData(promoData)
+
+        //then
+        assert(hotelBookingViewModel.promoData.value?.promoCode == promoData.promoCode)
+        assert(hotelBookingViewModel.promoData.value?.description == promoData.description)
+        assert(hotelBookingViewModel.promoData.value?.amount == promoData.amount)
+    }
+
+    @Test
+    fun applyPromoData_onReset(){
+        //given
+        var promoData = PromoData()
+
+        //when
+        hotelBookingViewModel.applyPromoData(promoData)
+
+        //then
+        assert(hotelBookingViewModel.promoData.value?.promoCode == "")
     }
 }

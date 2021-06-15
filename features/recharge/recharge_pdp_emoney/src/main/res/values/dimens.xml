@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="emoney_pdp_checkout_button_min_width">116dp</dimen>
+</resources>

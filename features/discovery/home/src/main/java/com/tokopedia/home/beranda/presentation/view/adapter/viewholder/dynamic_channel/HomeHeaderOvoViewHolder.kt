@@ -1,9 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
-import android.os.Build
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -18,6 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoWidgetView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt.getFullToolbarHeight
 import kotlinx.android.synthetic.main.home_header_ovo.view.*
 
 class HomeHeaderOvoViewHolder(itemView: View,
@@ -32,7 +32,7 @@ class HomeHeaderOvoViewHolder(itemView: View,
 
     override fun bind(element: HomeHeaderOvoDataModel) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
-        renderEmptySpace(element.headerDataModel?.isUserLogin?:false)
+        renderEmptySpace()
         element.headerDataModel?.let {
             resetView()
             when(it.homeBalanceModel.balanceType) {
@@ -71,31 +71,12 @@ class HomeHeaderOvoViewHolder(itemView: View,
         }
     }
 
-    private fun renderEmptySpace(isUserLogin: Boolean) {
+    private fun renderEmptySpace() {
         val emptySpace = itemView.findViewById<FrameLayout>(R.id.view_empty)
-        emptySpace.viewTreeObserver.addOnGlobalLayoutListener(
-                object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        val viewTreeObserver = emptySpace.viewTreeObserver
-                        viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        val layoutParams = emptySpace.layoutParams
-                        setupHeight(isUserLogin, layoutParams)
-                        emptySpace.layoutParams = layoutParams
-                        emptySpace.invalidate()
-                    }
-                }
-        )
-    }
-
-    private fun setupHeight(isUserLogin: Boolean, layoutParams: ViewGroup.LayoutParams) {
-        var additionalHeight = 0
-
-        if (listener.isNewNavigation()) {
-            additionalHeight = -(itemView.resources.getDimensionPixelOffset(R.dimen.dp_8))
-            if (!isUserLogin) additionalHeight = -(itemView.resources.getDimensionPixelOffset(R.dimen.dp_12))
-        }
-
-        layoutParams.height = listener.homeMainToolbarHeight + additionalHeight
+        val layoutParams = emptySpace.layoutParams
+        layoutParams.height = getFullToolbarHeight(itemView.context)
+        emptySpace.layoutParams = layoutParams
+        emptySpace.invalidate()
     }
 
     private fun renderOvoLayout(data: HeaderDataModel?, needToShowUserWallet: Boolean ) {

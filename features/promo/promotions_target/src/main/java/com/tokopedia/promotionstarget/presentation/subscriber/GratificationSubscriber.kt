@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import androidx.annotation.NonNull
 import com.tokopedia.applink.RouteManager
@@ -136,7 +137,12 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
             val waitingForLogin = intent.getBooleanExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, false)
             if (waitingForLogin) {
                 val isLoggedIn = UserSession(activity).isLoggedIn
-                mapOfDialogs[activity]?.first?.onActivityResumeIfWaitingForLogin(isLoggedIn)
+                val handler = Handler()
+                handler.postDelayed({
+                    if(activity?.isFinishing == false && !activity.isDestroyed) {
+                        mapOfDialogs[activity]?.first?.onActivityResumeIfWaitingForLogin(isLoggedIn)
+                    }
+                },2000L)
             }
         }
     }

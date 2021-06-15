@@ -803,7 +803,8 @@ class OfficialHomeFragment :
                 channel,
                 grid,
                 position.toString(),
-                viewModel.isLoggedIn()
+                viewModel.isLoggedIn(),
+                viewModel.getUserId()
         )
     }
 

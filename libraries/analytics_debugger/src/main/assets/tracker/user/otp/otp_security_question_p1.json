@@ -7,28 +7,28 @@
       "eventCategory": "choose otp page",
       "eventAction": "click on otp method",
       "eventLabel": "134 - sms",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickBack",
       "eventCategory": "input otp page",
       "eventAction": "click back button",
       "eventLabel": "134",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickConfirm",
       "eventCategory": "input otp page",
       "eventAction": "click on verifikasi",
       "eventLabel": "134",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     },
     {
       "event": "clickOtp",
       "eventCategory": "input otp page",
       "eventAction": "click on kirim ulang",
       "eventLabel": "134",
-      "sessionIris": "{{.*}}"
+      "sessionIris": ".*"
     }
   ]
 }

@@ -130,9 +130,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.topads.sdk.domain.model.Data
-import com.tokopedia.topads.sdk.domain.model.Product
-import com.tokopedia.topads.sdk.domain.model.Shop
+import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
 import com.tokopedia.track.TrackApp
@@ -144,11 +142,18 @@ import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * @author by nisie on 5/15/17.
  */
 
+const val CLICK_FOLLOW_TOPADS = "click - follow - topads"
+const val IMPRESSION_CARD_TOPADS = "impression - card - topads"
+const val IMPRESSION_PRODUCT_TOPADS = "impression - product - topads"
+const val CLICK_CEK_SEKARANG = "click - cek sekarang - topads"
+const val CLICK_SHOP_TOPADS = "click - shop - topads"
+const val CLICK_PRODUCT_TOPADS = "click - product - topads"
 class FeedPlusFragment : BaseDaggerFragment(),
         SwipeRefreshLayout.OnRefreshListener,
         TopAdsItemClickListener, TopAdsInfoClickListener,
@@ -2103,8 +2108,56 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedViewModel.updatePlayWidgetTotalView(channelId, totalView)
     }
 
-    override fun onFollowClick(positionInFeed: Int, shopId: String) {
+    override fun onFollowClick(positionInFeed: Int, shopId: String, adId: String) {
+        var eventLabel = "$adId - $shopId"
+
+        var eventAction = CLICK_FOLLOW_TOPADS
+        analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
         feedViewModel.doToggleFavoriteShop(positionInFeed, 0, shopId)
+    }
+
+    override fun onTopAdsHeadlineImpression(position: Int, cpmModel: CpmModel) {
+        var eventLabel = "${cpmModel.data[0].id} - ${cpmModel.data[0].cpm.cpmShop.id}"
+        var eventAction = IMPRESSION_CARD_TOPADS
+
+        analytics.sendFeedTopAdsHeadlineAdsImpression(eventAction, eventLabel, cpmModel.data[0].id, position, userSession.userId)
+    }
+
+    override fun onTopAdsProductItemListsner(position: Int, product: Product, cpmData: CpmData) {
+
+        var eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
+        var eventAction = IMPRESSION_PRODUCT_TOPADS
+        var productList: MutableList<Product> = mutableListOf()
+        productList.clear()
+        productList.add(product)
+        analytics.sendFeedTopAdsHeadlineProductImpression(eventAction, eventLabel, productList, position, userSession.userId)
+    }
+
+    override fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData) {
+        RouteManager.route(context, applink)
+
+        var eventAction = ""
+        var eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
+
+        if(applink?.contains("shop") == true && position == 0){
+            eventAction = CLICK_CEK_SEKARANG
+            analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
+        } else if(applink?.contains("shop") == true && position == 1){
+            eventAction = CLICK_SHOP_TOPADS
+            analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
+        } else {
+            var productId = applink?.substring(applink.lastIndexOf("/") + 1)
+            eventAction = CLICK_PRODUCT_TOPADS
+            var clickedProducts : MutableList<Product> = mutableListOf()
+            for((index, productItem) in cpmData.cpm.cpmShop.products.withIndex()) {
+                if(productId.equals(productItem.id)) {
+                    clickedProducts.clear()
+                    clickedProducts.add(productItem)
+                    analytics.sendFeedTopAdsHeadlineProductClick(eventAction, eventLabel, clickedProducts, index+1, userSession.userId)
+                }
+            }
+
+        }
     }
 
     override fun urlCreated(linkerShareData: LinkerShareResult?) {
