@@ -721,14 +721,26 @@ class NotificationUpdateAnalytics @Inject constructor(
         )
     }
 
-    fun trackOnClickLongerContentBtn(templateKey: String, notificationId: String) {
+    fun trackOnClickLongerContentBtn(
+        templateKey: String,
+        notificationId: String,
+        productId: String,
+        shopId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        EVENT_NAME_CLICK_NOTIF_CENTER,
-                        CATEGORY_NOTIF_CENTER,
-                        ACTION_CLICK_LONGER_CONTENT_BUTTON,
-                        "$templateKey - $notificationId"
+            createGeneralEvent(
+                event = EVENT_NAME_CLICK_NOTIF_CENTER,
+                eventAction = ACTION_CLICK_LONGER_CONTENT_BUTTON,
+                eventCategory = CATEGORY_NOTIF_CENTER,
+                eventLabel = "$templateKey - $notificationId",
+                businessUnit = BUSINESS_UNIT_COMM,
+                currentSite = CURRENT_SITE,
+                additionalAttribute = mapOf(
+                    ATTR_PRODUCT_ID to productId,
+                    ATTR_SHOP_ID to shopId,
+                    ATTR_USER_ID to userSessionInterface.userId
                 )
+            )
         )
     }
 
