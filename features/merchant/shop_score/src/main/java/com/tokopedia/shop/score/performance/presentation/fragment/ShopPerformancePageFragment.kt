@@ -84,7 +84,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         context?.let { PenaltyDotBadge(it) }
     }
 
-    private var counterPenalty = 0
+    private var counterPenalty = 0L
     private var menu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -148,7 +148,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         getComponent(ShopPerformanceComponent::class.java).inject(this)
     }
 
-    override fun onTooltipLevelClicked(level: Int) {
+    override fun onTooltipLevelClicked(level: Long) {
         val shopLevelData = shopScoreWrapperResponse?.shopScoreTooltipResponse?.result
         val bottomSheetShopTooltipLevel = BottomSheetShopTooltipLevel.createInstance(
                 shopLevel = level,
@@ -345,7 +345,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         Handler().postDelayed({
             context?.let {
                 val menuItem = menu?.findItem(PENALTY_WARNING_MENU_ID)
-                if (counterPenalty.isLessThanZero()) {
+                if (counterPenalty < 0L) {
                     penaltyDotBadge?.showBadge(menuItem ?: return@let)
                 } else {
                     penaltyDotBadge?.removeBadge(menuItem ?: return@let)

@@ -78,7 +78,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private var canShowErrorToaster = true
     private var isNewSeller = false
     private var periodType = ""
-    private var shopAge = 0
+    private var shopAge = 0L
 
     private val adapter by lazy {
         SellerMenuAdapter(OtherMenuAdapterTypeFactory(
@@ -261,7 +261,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         }
     }
 
-    private fun showShopInfo(settingResponseState: SettingResponseState, shopScore: Int = 0, shopAge: Int = 0) {
+    private fun showShopInfo(settingResponseState: SettingResponseState, shopScore: Long = 0, shopAge: Long = 0) {
         when (settingResponseState) {
             is SettingSuccess -> {
                 if (periodType == COMMUNICATION_PERIOD) {

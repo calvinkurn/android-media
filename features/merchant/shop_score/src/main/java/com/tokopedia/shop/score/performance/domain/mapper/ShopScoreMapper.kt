@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.constant.*
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.CHAT_DISCUSSION_REPLY_SPEED_KEY
@@ -61,6 +60,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 class ShopScoreMapper @Inject constructor(private val userSession: UserSessionInterface,
                                           @ApplicationContext val context: Context?) {
@@ -210,7 +210,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         return shopScoreVisitableList
     }
 
-    private fun mapToHeaderShopPerformance(shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?, shopAge: Int): HeaderShopPerformanceUiModel {
+    private fun mapToHeaderShopPerformance(shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?, shopAge: Long): HeaderShopPerformanceUiModel {
         val headerShopPerformanceUiModel = HeaderShopPerformanceUiModel()
         with(headerShopPerformanceUiModel) {
             when {
@@ -219,7 +219,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                             ?: ""
                     this.showCardNewSeller = true
                     val nextSellerDays = SHOP_AGE_SIXTY - shopAge
-                    val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays)
+                    val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays.toInt())
                     val dateNewSellerProjection = format(effectiveDate.timeInMillis, PATTERN_DATE_NEW_SELLER)
                     descHeaderShopService = context?.getString(R.string.desc_new_seller_level_0, dateNewSellerProjection)
                             ?: ""
@@ -375,29 +375,34 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             }
             this.shopAge = shopAge
             this.shopLevel =
-                    if (shopAge < SHOP_AGE_SIXTY) {
-                        "-"
-                    } else {
-                        if (shopScoreLevelResponse?.shopLevel?.isZero() == true) "-" else shopScoreLevelResponse?.shopLevel?.toString().orEmpty()
-                    }
+                    shopScoreLevelResponse?.shopLevel?.let {
+                        if (it < 0) {
+                            "-"
+                        } else {
+                            it.toString()
+                        }
+                    } ?: "-"
             this.shopScore =
-                    if (shopAge < SHOP_AGE_SIXTY) {
-                        "-"
-                    } else {
-                        if (shopScoreLevelResponse?.shopScore?.isZero() == true) "-" else shopScoreLevelResponse?.shopScore?.toString().orEmpty()
-                    }
-            this.scorePenalty = shopScoreLevelResponse?.shopScoreDetail?.find { it.identifier == PENALTY_IDENTIFIER }?.rawValue?.roundToInt().orZero()
+                    shopScoreLevelResponse?.shopScore?.let {
+                        if (it < 0) {
+                            "-"
+                        } else {
+                            it.toString()
+                        }
+                    } ?: "-"
+
+            this.scorePenalty = shopScoreLevelResponse?.shopScoreDetail?.find { it.identifier == PENALTY_IDENTIFIER }?.rawValue?.roundToLong().orZero()
         }
         return headerShopPerformanceUiModel
     }
 
-    fun mapToShopInfoLevelUiModel(shopLevel: Int): ShopInfoLevelUiModel {
+    fun mapToShopInfoLevelUiModel(shopLevel: Long): ShopInfoLevelUiModel {
         val shopInfoLevelUiModel = ShopInfoLevelUiModel()
         shopInfoLevelUiModel.cardTooltipLevelList = mapToCardTooltipLevel(shopLevel)
         return shopInfoLevelUiModel
     }
 
-    private fun mapToItemDetailPerformanceUiModel(shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?, shopAge: Int): List<ItemDetailPerformanceUiModel> {
+    private fun mapToItemDetailPerformanceUiModel(shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?, shopAge: Long): List<ItemDetailPerformanceUiModel> {
         return mutableListOf<ItemDetailPerformanceUiModel>().apply {
 
             val multipleFilterShopScore = listOf(CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY,
@@ -472,7 +477,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 
                 add(ItemDetailPerformanceUiModel(
                         titleDetailPerformance = shopScoreDetail.title,
-                        valueDetailPerformance = if (shopAge < SHOP_AGE_SIXTY) "-" else rawValueFormatted,
+                        valueDetailPerformance = rawValueFormatted,
                         colorValueDetailPerformance = shopScoreDetail.colorText,
                         targetDetailPerformance = targetDetailPerformanceText,
                         isDividerHide = index + 1 == shopScoreLevelSize,
@@ -609,7 +614,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         )
     }
 
-    private fun mapToCardTooltipLevel(level: Int = 0): List<CardTooltipLevelUiModel> {
+    private fun mapToCardTooltipLevel(level: Long = 0): List<CardTooltipLevelUiModel> {
         return mutableListOf<CardTooltipLevelUiModel>().apply {
             add(CardTooltipLevelUiModel(R.string.title_level_1, R.string.desc_level_1, SHOP_SCORE_LEVEL_ONE == level))
             add(CardTooltipLevelUiModel(R.string.title_level_2, R.string.desc_level_2, SHOP_SCORE_LEVEL_TWO == level))
@@ -671,11 +676,11 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
         }
     }
 
-    private fun mapToTimerNewSellerUiModel(shopAge: Int = 0, isEndTenure: Boolean)
+    private fun mapToTimerNewSellerUiModel(shopAge: Long = 0, isEndTenure: Boolean)
             : Pair<ItemTimerNewSellerUiModel, Boolean> {
         val nextSellerDays = COUNT_DAYS_NEW_SELLER - shopAge
 
-        val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays)
+        val effectiveDate = getNNextDaysTimeCalendar(nextSellerDays.toInt())
         return Pair(ItemTimerNewSellerUiModel(effectiveDate = effectiveDate,
                 effectiveDateText = format(effectiveDate.timeInMillis, PATTERN_DATE_NEW_SELLER),
                 isTenureDate = isEndTenure,

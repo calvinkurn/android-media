@@ -1,28 +1,28 @@
 package com.tokopedia.shop.score.common
 
 object ShopScoreConstant {
-    const val SHOP_SCORE_LEVEL_ONE = 1
-    const val SHOP_SCORE_LEVEL_TWO = 2
-    const val SHOP_SCORE_LEVEL_THREE = 3
-    const val SHOP_SCORE_LEVEL_FOUR = 4
+    const val SHOP_SCORE_LEVEL_ONE = 1L
+    const val SHOP_SCORE_LEVEL_TWO = 2L
+    const val SHOP_SCORE_LEVEL_THREE = 3L
+    const val SHOP_SCORE_LEVEL_FOUR = 4L
 
-    const val SHOP_SCORE_ZERO = 0
-    const val SHOP_SCORE_FORTY_NINE = 49
-    const val SHOP_SCORE_FIFTY = 50
-    const val SHOP_SCORE_FIFTY_NINE = 59
-    const val SHOP_SCORE_SIXTY = 60
-    const val SHOP_SCORE_SIXTY_NINE = 69
-    const val SHOP_SCORE_SEVENTY = 70
-    const val SHOP_SCORE_SEVENTY_NINE = 79
-    const val SHOP_SCORE_EIGHTY = 80
-    const val SHOP_SCORE_EIGHTY_NINE = 89
-    const val SHOP_SCORE_NINETY = 90
-    const val SHOP_SCORE_ONE_HUNDRED = 100
+    const val SHOP_SCORE_ZERO = 0L
+    const val SHOP_SCORE_FORTY_NINE = 49L
+    const val SHOP_SCORE_FIFTY = 50L
+    const val SHOP_SCORE_FIFTY_NINE = 59L
+    const val SHOP_SCORE_SIXTY = 60L
+    const val SHOP_SCORE_SIXTY_NINE = 69L
+    const val SHOP_SCORE_SEVENTY = 70L
+    const val SHOP_SCORE_SEVENTY_NINE = 79L
+    const val SHOP_SCORE_EIGHTY = 80L
+    const val SHOP_SCORE_EIGHTY_NINE = 89L
+    const val SHOP_SCORE_NINETY = 90L
+    const val SHOP_SCORE_ONE_HUNDRED = 100L
 
-    const val SHOP_AGE_SIXTY = 60
+    const val SHOP_AGE_SIXTY = 60L
     const val FOUR_WEEKS = 28
 
-    const val COUNT_DAYS_NEW_SELLER = 90
+    const val COUNT_DAYS_NEW_SELLER = 90L
     const val PATTERN_DATE_NEW_SELLER = "dd MMMM yyyy"
     const val ONE_HUNDRED_PERCENT = 100
 

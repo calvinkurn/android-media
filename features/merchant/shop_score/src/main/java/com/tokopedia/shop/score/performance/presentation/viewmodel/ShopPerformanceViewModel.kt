@@ -86,7 +86,7 @@ class ShopPerformanceViewModel @Inject constructor(
         }
     }
 
-    fun getShopInfoLevel(level: Int) {
+    fun getShopInfoLevel(level: Long) {
         launch {
             _shopInfoLevel.value = shopScoreMapper.mapToShopInfoLevelUiModel(level)
         }
