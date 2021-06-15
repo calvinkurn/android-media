@@ -34,7 +34,7 @@ class UpdateCartTestHelper(
         `Then assert get mini cart simplified use case params`()
         `Then assert mini cart widget live data is updated`(miniCartSimplifiedData)
         `Then assert product quantity is updated`()
-        `Then assert mini cart widget visibility`()
+        `Then assert mini cart widget visibility`(miniCartSimplifiedData.isShowMiniCartWidget)
     }
 
     private fun `Given get mini cart simplified use case will be successful`(
@@ -160,10 +160,26 @@ class UpdateCartTestHelper(
         return expectedUpdatedIndices
     }
 
-    private fun `Then assert mini cart widget visibility`() {
-        val isShowMiniCartWidget = miniCartSimplifiedData.isShowMiniCartWidget
-
+    private fun `Then assert mini cart widget visibility`(isShowMiniCartWidget: Boolean) {
         assertThat(baseViewModel.isShowMiniCartLiveData.value, shouldBe(isShowMiniCartWidget))
+    }
+
+    fun `update mini cart fail should hide mini cart`() {
+        callback.`Given first page API will be successful`()
+        `Given get mini cart simplified use case will fail`()
+        `Given view already created`()
+
+        `When view resumed`()
+
+        `Then assert mini cart widget visibility`(false)
+    }
+
+    private fun `Given get mini cart simplified use case will fail`() {
+        every {
+            getMiniCartListSimplifiedUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(Throwable(message = "error"))
+        }
     }
 
     fun `onViewReloadPage should have product with quantity from mini cart`() {

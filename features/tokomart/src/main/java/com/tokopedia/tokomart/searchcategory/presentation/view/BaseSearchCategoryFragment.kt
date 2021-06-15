@@ -39,6 +39,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
@@ -543,7 +544,9 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
     }
 
-    private fun updateMiniCartWidgetVisibility(isVisible: Boolean) {
+    private fun updateMiniCartWidgetVisibility(isVisible: Boolean?) {
+        isVisible ?: return
+
         miniCartWidget?.showWithCondition(isVisible)
     }
 

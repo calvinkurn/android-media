@@ -117,8 +117,8 @@ abstract class BaseSearchCategoryViewModel(
     protected val isL3FilterPageOpenMutableLiveData = MutableLiveData<Filter?>(null)
     val isL3FilterPageOpenLiveData: LiveData<Filter?> = isL3FilterPageOpenMutableLiveData
 
-    protected val isShowMiniCartMutableLiveData = MutableLiveData(false)
-    val isShowMiniCartLiveData: LiveData<Boolean> = isShowMiniCartMutableLiveData
+    protected val isShowMiniCartMutableLiveData = MutableLiveData<Boolean?>(null)
+    val isShowMiniCartLiveData: LiveData<Boolean?> = isShowMiniCartMutableLiveData
 
     protected val miniCartWidgetMutableLiveData = MutableLiveData<MiniCartSimplifiedData?>(null)
     val miniCartWidgetLiveData: LiveData<MiniCartSimplifiedData?> = miniCartWidgetMutableLiveData
@@ -781,7 +781,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun onGetMiniCartDataFailed(throwable: Throwable) {
-
+        isShowMiniCartMutableLiveData.value = false
     }
 
     private fun getIsChooseAddressUpdated(): Boolean {
