@@ -419,27 +419,46 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                 val (targetDetailPerformanceText, parameterItemDetailPerformance) =
                         when (shopScoreDetail.identifier) {
                             CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> {
-                                val rawValueFormatted = if (roundNextMinValue.rem(1) == 0.0) {
-                                    roundNextMinValue.roundToInt().toString()
-                                } else {
-                                    getNumberFormatted(roundNextMinValue)
-                                }
+                                val rawValueFormatted =
+                                        if (roundNextMinValue < 0.0) {
+                                            "-"
+                                        } else {
+                                            if (roundNextMinValue.rem(1) == 0.0) {
+                                                roundNextMinValue.roundToInt().toString()
+                                            } else {
+                                                getNumberFormatted(roundNextMinValue)
+                                            }
+                                        }
                                 Pair("$rawValueFormatted $minuteText", minuteText)
                             }
                             ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY -> {
                                 val minValueFormattedPercent = (shopScoreDetail.nextMinValue * ONE_HUNDRED_PERCENT)
-                                val minValueFormatted = if (minValueFormattedPercent.rem(1) == 0.0) {
-                                    minValueFormattedPercent.roundToInt().toString()
+                                val minValueFormatted = if (minValueFormattedPercent < 0.0) {
+                                    "-"
                                 } else {
-                                    getNumberFormatted(minValueFormattedPercent)
+                                    if (minValueFormattedPercent.rem(1) == 0.0) {
+                                        minValueFormattedPercent.roundToInt().toString()
+                                    } else {
+                                        getNumberFormatted(minValueFormattedPercent)
+                                    }
                                 }
                                 Pair("$minValueFormatted$percentText", percentText)
                             }
                             TOTAL_BUYER_KEY -> {
-                                Pair("${roundNextMinValue.roundToInt()} $peopleText", peopleText)
+                                val peopleCount = if (roundNextMinValue < 0.0) {
+                                    "-"
+                                } else {
+                                    roundNextMinValue.roundToInt()
+                                }
+                                Pair("$peopleCount $peopleText", peopleText)
                             }
                             OPEN_TOKOPEDIA_SELLER_KEY -> {
-                                Pair("${roundNextMinValue.roundToInt()} $dayText", dayText)
+                                val openSellerAppCount = if (roundNextMinValue < 0.0) {
+                                    "-"
+                                } else {
+                                    roundNextMinValue.roundToInt()
+                                }
+                                Pair("$openSellerAppCount $dayText", dayText)
                             }
                             else -> Pair("-", "")
                         }
