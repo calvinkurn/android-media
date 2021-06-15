@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -431,7 +432,7 @@ class TokoMartHomeFragment: Fragment(),
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
         if(data.isShowMiniCartWidget) {
             val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
-            miniCartWidget.initialize(shopIds, this, this)
+            miniCartWidget.initialize(shopIds, this, this, pageName = MiniCartAnalytics.Page.HOME_PAGE)
             miniCartWidget.show()
         } else {
             miniCartWidget.hide()
