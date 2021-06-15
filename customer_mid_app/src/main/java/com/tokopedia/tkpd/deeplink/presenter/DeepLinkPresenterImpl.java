@@ -383,12 +383,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     RouteManager.route(context, applink);
                 }
                 context.finish();
-            } else if(uri.getLastPathSegment().equals("dashboard")) {
+            } else{
                 String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DASHBOARD);
                 RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, applink));
                 context.finish();
             }
-        } else if(uri.getLastPathSegment().equals("dashboard")) {
+        } else {
             String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DASHBOARD);
             RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, applink));
             context.finish();
