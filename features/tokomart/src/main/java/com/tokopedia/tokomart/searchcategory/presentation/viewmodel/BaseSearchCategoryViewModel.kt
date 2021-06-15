@@ -336,7 +336,7 @@ abstract class BaseSearchCategoryViewModel(
 
         processCategoryFilter(headerList, headerDataView.categoryFilterDataValue)
 
-        headerList.add(QuickFilterDataView(createQuickFilterItemList(headerDataView)))
+        headerList.add(QuickFilterDataView(createQuickFilterItemList(headerDataView), queryParam))
         headerList.add(ProductCountDataView(headerDataView.aceSearchProductHeader.totalDataText))
 
         postProcessHeaderList(headerList)
