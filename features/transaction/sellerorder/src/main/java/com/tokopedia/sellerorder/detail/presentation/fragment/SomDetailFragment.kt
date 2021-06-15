@@ -376,7 +376,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     if (acceptOrderResponse.success == 1) {
                         onSuccessAcceptOrder()
                     } else {
-                        showToasterError(acceptOrderResponse.listMessage.first(), view, TYPE_ERROR)
+                        showToaster(acceptOrderResponse.listMessage.first(), view, TYPE_ERROR)
                     }
                 }
                 is Fail -> {
@@ -922,14 +922,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     if (successEditAwbResponse.mpLogisticEditRefNum.listMessage.isNotEmpty()) {
                         onSuccessEditAwb()
                     } else {
-                        showToasterError(getString(R.string.global_error), view, TYPE_ERROR)
+                        showToaster(getString(R.string.global_error), view, TYPE_ERROR)
                     }
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_EDIT_AWB)
                     failEditAwbResponse.message = it.throwable.message.toString()
                     if (failEditAwbResponse.message.isNotEmpty()) {
-                        showToasterError(failEditAwbResponse.message, view, TYPE_ERROR)
+                        showToaster(failEditAwbResponse.message, view, TYPE_ERROR)
                     } else {
                         it.throwable.showErrorToaster()
                     }
@@ -1386,7 +1386,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedValidateOrder() {
-        showToasterError(getString(R.string.som_error_validate_order), view, TYPE_ERROR)
+        showToaster(getString(R.string.som_error_validate_order), view, TYPE_ERROR)
     }
 
     private fun onSuccessValidateOrder(valid: Boolean) {
@@ -1436,7 +1436,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
             })
             activity?.finish()
         } else {
-            showToasterError(rejectOrderData.message.firstOrNull() ?: getString(R.string.global_error), view, TYPE_ERROR)
+            showToaster(rejectOrderData.message.firstOrNull() ?: getString(R.string.global_error), view, TYPE_ERROR)
         }
     }
 
@@ -1466,10 +1466,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
         bottomSheetSetDelivered?.dismiss()
     }
 
-    protected fun showToasterError(message: String, view: View?, type: Int) {
+    protected fun showToaster(message: String, view: View?, type: Int, action: String = ACTION_OK) {
         val toasterError = Toaster
         view?.let { v ->
-            toasterError.make(v, message, LENGTH_SHORT, type, ACTION_OK)
+            if (action.isBlank()) {
+                toasterError.build(v, message, LENGTH_SHORT, type).show()
+            } else {
+                toasterError.build(v, message, LENGTH_SHORT, type, action).show()
+            }
         }
     }
 }

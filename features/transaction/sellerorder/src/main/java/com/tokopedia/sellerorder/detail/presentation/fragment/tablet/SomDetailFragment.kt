@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.widget.Toolbar
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
@@ -135,9 +134,9 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
 
     override fun onSuccessRejectOrder(rejectOrderData: SomRejectOrderResponse.Data.RejectOrder) {
         if (rejectOrderData.success == 1) {
-            showToasterError(rejectOrderData.message.firstOrNull() ?: getString(R.string.message_set_delivered_success), view, Toaster.TYPE_NORMAL)
+            showToaster(rejectOrderData.message.firstOrNull() ?: getString(R.string.message_set_delivered_success), view, Toaster.TYPE_NORMAL, "")
         } else {
-            showToasterError(rejectOrderData.message.firstOrNull() ?: getString(R.string.global_error), view, Toaster.TYPE_ERROR)
+            showToaster(rejectOrderData.message.firstOrNull() ?: getString(R.string.global_error), view, Toaster.TYPE_ERROR)
         }
         shouldRefreshOrderList = true
         loadDetail()
@@ -145,7 +144,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
 
     override fun onSuccessSetDelivered(deliveredData: SetDelivered) {
         val message = deliveredData.message.joinToString().takeIf { it.isNotBlank() } ?: getString(R.string.message_change_order_status_success)
-        showToasterError(message, view, Toaster.TYPE_NORMAL)
+        showToaster(message, view, Toaster.TYPE_NORMAL)
         dismissBottomSheets()
         shouldRefreshOrderList = true
         loadDetail()
