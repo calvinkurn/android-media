@@ -3,7 +3,7 @@
   "mode": "exact",
   "query": [
     {
-      "networkSpeed": "WI-FI",
+      "networkSpeed": ".*",
       "businessUnit": "top up and tagihan",
       "clientId": ".*",
       "currentSite": "tokopediaDigitalRecharge",
