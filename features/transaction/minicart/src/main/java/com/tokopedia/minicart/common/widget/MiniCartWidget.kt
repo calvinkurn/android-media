@@ -272,8 +272,10 @@ class MiniCartWidget @JvmOverloads constructor(
     override fun showToaster(view: View?, message: String, type: Int, ctaText: String, onClickListener: OnClickListener?) {
         if (message.isBlank()) return
 
-        view?.let {
-            Toaster.toasterCustomBottomHeight = view.resources?.getDimensionPixelSize(R.dimen.dp_72)
+        var toasterViewRoot = view
+        if (toasterViewRoot == null) toasterViewRoot = this.view
+        toasterViewRoot?.let {
+            Toaster.toasterCustomBottomHeight = it.resources?.getDimensionPixelSize(R.dimen.dp_72)
                     ?: 0
             if (ctaText.isNotBlank()) {
                 var tmpCtaClickListener = OnClickListener { }

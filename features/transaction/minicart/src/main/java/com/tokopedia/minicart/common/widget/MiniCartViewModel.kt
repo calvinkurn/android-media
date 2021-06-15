@@ -11,6 +11,7 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.RemoveFromCartUiModel
 import com.tokopedia.minicart.common.domain.usecase.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -390,9 +391,17 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                 miniCartListBottomSheetUiModel.value?.visitables = tmpVisitables
                 _miniCartListBottomSheetUiModel.value = miniCartListBottomSheetUiModel.value
 
+                var isLastItem = true
+                innerLoop@ for (item in tmpVisitables) {
+                    if (item is MiniCartProductUiModel) {
+                        isLastItem = false
+                        break@innerLoop
+                    }
+                }
+
                 _globalEvent.value = GlobalEvent(
                         state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
-                        data = removeFromCartData
+                        data = RemoveFromCartUiModel(removeFromCartData = removeFromCartData, isLastItem = isLastItem)
                 )
                 break@loop
             }
@@ -419,12 +428,22 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                 unavailableCartItems.add(it)
             }
         }
+
+        val tmpVisitables = miniCartListBottomSheetUiModel.value?.visitables ?: mutableListOf()
+        var isLastItem = true
+        loop@ for (item in tmpVisitables) {
+            if (item is MiniCartProductUiModel && !item.isProductDisabled) {
+                isLastItem = false
+                break@loop
+            }
+        }
+
         deleteCartUseCase.setParams(unavailableCartItems)
         deleteCartUseCase.execute(
                 onSuccess = {
                     _globalEvent.value = GlobalEvent(
                             state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
-                            data = it
+                            data = RemoveFromCartUiModel(removeFromCartData = it, isLastItem = isLastItem)
                     )
                 },
                 onError = {
