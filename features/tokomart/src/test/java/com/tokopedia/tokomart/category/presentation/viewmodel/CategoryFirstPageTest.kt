@@ -53,7 +53,7 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         visitableList[1].assertBannerDataView()
         visitableList[2].assertTitleDataView(title = categoryTitle, hasSeeAllCategoryButton = true)
         visitableList[3].assertCategoryFilterDataView(categoryModel.categoryFilter)
-        visitableList[4].assertQuickFilterDataView(categoryModel.quickFilter, categoryModel.categoryFilter)
+        visitableList[4].assertQuickFilterDataView(categoryModel.quickFilter)
         visitableList[5].assertProductCountDataView(categoryModel.searchProduct.header.totalDataText)
     }
 

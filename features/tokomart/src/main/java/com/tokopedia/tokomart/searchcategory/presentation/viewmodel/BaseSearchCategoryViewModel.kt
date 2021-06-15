@@ -854,12 +854,35 @@ abstract class BaseSearchCategoryViewModel(
             val hasSeeAllCategoryButton: Boolean = false,
             val aceSearchProductHeader: SearchProductHeader = SearchProductHeader(),
             categoryFilterDataValue: DataValue = DataValue(),
-            val quickFilterDataValue: DataValue = DataValue(),
+            quickFilterDataValue: DataValue = DataValue(),
             val bannerChannel: Channels = Channels(),
     ) {
         val categoryFilterDataValue = DataValue(
                 filter = FilterHelper.copyFilterWithOptionAsExclude(categoryFilterDataValue.filter)
         )
+
+        val quickFilterDataValue = DataValue(
+                filter = quickFilterDataValue.filter.map { filter ->
+                    filter.clone(
+                            options = filter.options.map { option ->
+                                option.clone().also { copyOption ->
+                                    val isCategoryFilter = isInCategoryFilter(copyOption)
+                                    if (isCategoryFilter)
+                                        copyOption.key = OptionHelper.EXCLUDE_PREFIX + option.key
+                                }
+                            }
+                    )
+                }
+        )
+
+        private fun isInCategoryFilter(optionToCheck: Option): Boolean {
+            val categoryOptionList = categoryFilterDataValue.filter.map { it.options }.flatten()
+
+            return categoryOptionList.any {
+                it.key.removePrefix(OptionHelper.EXCLUDE_PREFIX) == optionToCheck.key
+                        && it.value == optionToCheck.value
+            }
+        }
     }
 
     protected data class ContentDataView(
