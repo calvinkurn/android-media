@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.model
 
 import android.os.Parcel
 import android.os.Parcelable
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -10,8 +9,6 @@ import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.utils.safeCastRupiahToInt
-import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
-import com.tokopedia.topads.sdk.domain.model.Category
 import com.tokopedia.utils.text.currency.StringUtils
 
 class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductListTypeFactory> {
