@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.combinePriceFilterIfExists
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokomart.R
@@ -80,7 +81,11 @@ class EmptyProductViewHolder(
         val filterList = filterList ?: return
 
         filterList.shouldShowWithAction(hasActiveFilter) {
-            filterList.adapter = Adapter(element.activeFilterList, emptyProductListener)
+            val optionList = combinePriceFilterIfExists(
+                    element.activeFilterList,
+                    getString(R.string.tokomart_empty_product_filter_price_name)
+            )
+            filterList.adapter = Adapter(optionList, emptyProductListener)
             filterList.layoutManager = layoutManager
 
             val chipSpacing = itemView.context.resources.getDimensionPixelSize(

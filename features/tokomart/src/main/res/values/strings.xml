@@ -27,6 +27,7 @@
     <string name="tokomart_empty_product_description">Coba cari barang yang lain, atau cek rekomendasi di bawah.</string>
     <string name="tokomart_empty_product_filter_title">Oops, product nggak ditemukan</string>
     <string name="tokomart_empty_product_filter_description">Coba kurangi filter yang sedang aktif berikut:</string>
+    <string name="tokomart_empty_product_filter_price_name">Filter Harga</string>
     <string name="tokomart_global_search_button">Cari di Tokopedia</string>
     <string name="tokomart_change_keyword_button">Ganti Kata Kunci</string>
 
