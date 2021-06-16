@@ -20,6 +20,7 @@ import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearc
 import com.tokopedia.autocomplete.util.getShopIdFromApplink
 import com.tokopedia.autocomplete.util.getValueString
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -248,13 +249,7 @@ class InitialStatePresenter @Inject constructor(
 
     //dimension90 = pageSource
     private fun getDimension90(): String {
-        val navSource = searchParameter.getValueString(SearchApiConst.NAVSOURCE)
-        val pageId = searchParameter.getValueString(SearchApiConst.SRP_PAGE_ID)
-        val pageTitle = searchParameter.getValueString(SearchApiConst.SRP_PAGE_TITLE)
-        val searchRef = searchParameter.getValueString(SearchApiConst.SEARCH_REF)
-
-        return if (navSource.isNotEmpty() && pageId.isNotEmpty()) "$pageTitle.$navSource.local_search.$pageId"
-        else searchRef
+        return Dimension90Utils.getDimension90(searchParameter)
     }
 
     private fun MutableList<Visitable<*>>.insertTitle(title: String): List<Visitable<*>> {

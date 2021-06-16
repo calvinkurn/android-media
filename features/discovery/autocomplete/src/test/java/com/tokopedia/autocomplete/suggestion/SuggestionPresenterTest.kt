@@ -15,6 +15,7 @@ import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetDataView
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchConstant
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.verify
@@ -34,7 +35,8 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
             SearchApiConst.SRP_PAGE_TITLE to searchProductPageTitle,
             SearchApiConst.SRP_PAGE_ID to "1234"
     )
-    private val expectedDimension90 =
+    private val expectedDefaultDimension90 = SearchConstant.CustomDimension.DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL
+    private val expectedLocalDimension90 =
             "${searchParameter[SearchApiConst.SRP_PAGE_TITLE]}.${searchParameter[SearchApiConst.NAVSOURCE]}." +
                     "local_search.${searchParameter[SearchApiConst.SRP_PAGE_ID]}"
 
@@ -85,7 +87,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList[8].shouldBeInstanceOf<SuggestionDoubleLineDataDataView>()
         visitableList.size shouldBe suggestionUniverse.data.items.size
 
-        assertVisitableListData(visitableList, suggestionUniverse)
+        assertVisitableListData(visitableList, suggestionUniverse, expectedDefaultDimension90)
     }
 
     private fun assertVisitableListData(visitableList: List<Visitable<*>>, suggestionUniverse: SuggestionUniverse, dimension90: String = "") {
@@ -211,7 +213,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList[9].shouldBeInstanceOf<SuggestionTopShopWidgetDataView>()
         visitableList.size shouldBe suggestionUniverse.data.items.size
 
-        assertVisitableListData(visitableList, suggestionUniverse)
+        assertVisitableListData(visitableList, suggestionUniverse, expectedDefaultDimension90)
     }
 
     @Test
@@ -243,7 +245,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList[10].shouldBeInstanceOf<SuggestionDoubleLineWithoutImageDataDataView>()
         visitableList.size shouldBe suggestionUniverse.data.items.size + 1
 
-        assertVisitableListData(visitableList, suggestionUniverse, expectedDimension90)
+        assertVisitableListData(visitableList, suggestionUniverse, expectedLocalDimension90)
     }
 
     @Test
@@ -266,6 +268,6 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList[1].shouldBeInstanceOf<SuggestionDoubleLineWithoutImageDataDataView>()
         visitableList.size shouldBe suggestionUniverse.data.items.size
 
-        assertVisitableListData(visitableList, suggestionUniverse, expectedDimension90)
+        assertVisitableListData(visitableList, suggestionUniverse, expectedLocalDimension90)
     }
 }
