@@ -29,6 +29,9 @@ import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncement
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.imagepicker.common.PICKER_RESULT_PATHS
+import com.tokopedia.imagepicker.common.RESULT_IMAGES_FED_INTO_IMAGE_PICKER
+import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
@@ -615,6 +618,14 @@ abstract class TopchatRoomTest {
             putParcelableArrayListExtra(
                 ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY, products
             )
+        }
+    }
+
+    protected fun getImageData(): Intent {
+        return Intent().apply {
+            putStringArrayListExtra(PICKER_RESULT_PATHS, arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg"))
+            putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg"))
+            putStringArrayListExtra(RESULT_IMAGES_FED_INTO_IMAGE_PICKER, arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg"))
         }
     }
 

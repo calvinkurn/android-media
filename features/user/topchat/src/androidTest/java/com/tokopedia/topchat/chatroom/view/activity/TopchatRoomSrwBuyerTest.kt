@@ -539,8 +539,30 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertTemplateChatVisibility(isDisplayed())
     }
 
-    // TODO: SRW bubble should removed when user return from attach image and request upload image.
-    // TODO: SRW bubble should removed when user receive attach image event from ws.
+    @Test
+    fun srw_bubble_should_removed_when_user_receive_attach_image_event_from_ws() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData())
+        )
+
+        // When
+        clickSrwPreviewItemAt(0)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket.simulateResponse(wsSellerImageResponse.changeTimeStampTo(today()))
+
+        // Then
+        assertSrwBubbleDoesNotExist()
+        assertTemplateChatVisibility(isDisplayed())
+    }
+
     // TODO: SRW preview should not be sent when user attach image.
     // TODO: SRW bubble should removed when user receive voucher event from ws.
     // TODO: SRW bubble should removed when user re-attach product (in preview mode).
@@ -577,6 +599,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     // TODO: SRW should hide broadcast handler if visible
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
     // TODO: SRW bubble should not be added if SRW preview state is error when user send msg/sticker.
+    // TODO: SRW bubble should removed when user return from attach image and request upload image.
 
     // TODO-Note: What if BE create new ws event to indicate closing of SRW if it's no longer relevant
     // TODO: CTA on left msg - possibly different tasks
