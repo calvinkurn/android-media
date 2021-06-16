@@ -56,6 +56,7 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.N
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.BottomSheetFactory
+import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationLongerContentBottomSheet
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationProductLongerContentBottomSheet
 import com.tokopedia.notifcenter.presentation.lifecycleaware.RecommendationLifeCycleAware
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
@@ -73,7 +74,7 @@ import javax.inject.Inject
 class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
         InboxFragment, NotificationItemListener, LoadMoreViewHolder.Listener,
         NotificationEndlessRecyclerViewScrollListener.Listener,
-        NotificationAdapter.Listener {
+        NotificationAdapter.Listener, NotificationLongerContentBottomSheet.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

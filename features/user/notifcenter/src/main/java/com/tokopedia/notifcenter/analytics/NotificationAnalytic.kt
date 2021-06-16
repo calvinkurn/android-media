@@ -56,6 +56,7 @@ class NotificationAnalytic @Inject constructor(
             const val CLICK_ORDER_LIST_ITEM = "click on going transaction entry point"
             const val ACTION_VIEW_NOTIF_LIST = "view on notif list"
             const val EVENT_ACTION_CLICK_NOTIF_LIST = "click on notif list"
+            const val ACTION_CLICK_LONGER_CONTENT_BUTTON = "click on text (longer content)"
         }
     }
 
@@ -424,6 +425,29 @@ class NotificationAnalytic @Inject constructor(
                 additionalAttribute = mapOf(
                     OtherAttr.ATTR_PRODUCT_ID to element.product?.productId.toString(),
                     OtherAttr.ATTR_SHOP_ID to element.product?.shop?.id.toString(),
+                    OtherAttr.ATTR_USER_ID to userSession.userId
+                )
+            )
+        )
+    }
+
+    fun trackClickLongerContentCta(notification: NotificationUiModel?) {
+        notification ?: return
+        val label = getImpressionWithoutLocationLabel(
+            notification.templateKey,
+            notification.notifId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            InboxAnalyticCommon.createGeneralEvent(
+                event = Event.CLICK_NOTIF_CENTER,
+                eventAction = EventAction.ACTION_CLICK_LONGER_CONTENT_BUTTON,
+                eventCategory = EventCategory.NOTIFCENTER,
+                eventLabel = label,
+                businessUnit = BusinessUnit.COMMUNICATION,
+                currentSite = CurrentSite.MARKETPLACE,
+                additionalAttribute = mapOf(
+                    OtherAttr.ATTR_PRODUCT_ID to notification.product?.productId.toString(),
+                    OtherAttr.ATTR_SHOP_ID to notification.product?.shop?.id.toString(),
                     OtherAttr.ATTR_USER_ID to userSession.userId
                 )
             )
