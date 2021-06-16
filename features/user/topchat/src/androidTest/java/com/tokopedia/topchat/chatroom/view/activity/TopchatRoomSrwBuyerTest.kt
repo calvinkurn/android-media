@@ -613,7 +613,26 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertTemplateChatVisibility(not(isDisplayed()))
     }
 
-    // TODO: Template chat should be hidden when SRW bubble exist
+    @Test
+    fun template_chat_should_be_hidden_when_srw_bubble_exist() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // When
+        clickSrwPreviewItemAt(0)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+
+        // Then
+        assertSrwBubbleContentIsVisibleAt(0)
+        assertTemplateChatVisibility(not(isDisplayed()))
+    }
+
     // TODO: SRW preview should collapsed when user open sticker
     // TODO: SRW preview should expanded when user close sticker
     // TODO: SRW preview should collapsed when user open chat menu
