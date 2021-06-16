@@ -101,4 +101,8 @@ class ReadReviewHeader : BaseCustomView {
     fun setAvailableFilters(topics: List<ProductTopic>, availableFilters: AvailableFilters, listener: ReadReviewFilterChipsListener) {
         sortFilter?.addItem(mapAvailableFiltersToSortFilter(topics, availableFilters, listener))
     }
+
+    fun updateFilter() {
+
+    }
 }

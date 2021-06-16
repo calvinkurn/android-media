@@ -51,7 +51,10 @@ data class ProductReview(
         val user: ProductReviewUser = ProductReviewUser(),
         @SerializedName("imageAttachments")
         @Expose
-        val imageAttachments: List<ProductReviewAttachments> = listOf()
+        val imageAttachments: List<ProductReviewAttachments> = listOf(),
+        @SerializedName("likeDislike")
+        @Expose
+        val likeDislike: LikeDislike = LikeDislike()
 )
 
 data class ProductReviewResponse(
@@ -100,4 +103,13 @@ data class ProductReviewShopInfo(
         @SerializedName("image")
         @Expose
         val image: String = "",
+)
+
+data class LikeDislike(
+        @SerializedName("totalLike")
+        @Expose
+        val totalLike: Int = 0,
+        @SerializedName("likeStatus")
+        @Expose
+        val likeStatus: Int = 0
 )

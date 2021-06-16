@@ -43,6 +43,10 @@ class GetProductReviewListUseCase @Inject constructor(graphqlRepository: Graphql
                     imageThumbnailUrl
                     imageUrl
                   }
+                  likeDislike {
+                    totalLike
+                    likeStatus
+                  }
                 }
                 shop {
                   shopID

@@ -44,6 +44,7 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
         bindViews(view)
         setListUnifyData()
         setSubmitButton()
+        setResetButton()
     }
 
     private fun bindViews(view: View) {
@@ -74,7 +75,7 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
 
     private fun clearOtherItems(position: Int) {
         filterData.forEachIndexed { index, listItemUnify ->
-            if(position != index) {
+            if (position != index) {
                 (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightRadiobtn?.isChecked = false
             }
         }
@@ -82,7 +83,7 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
 
     private fun getSelectedFilters(): List<ListItemUnify> {
         val selectedFilters = mutableListOf<ListItemUnify>()
-        if(sortFilterType is SortFilterType.Sort) {
+        if (sortFilterType is SortFilterType.Sort) {
             filterData.forEachIndexed { index, listItemUnify ->
                 if ((listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightRadiobtn?.isChecked == true) {
                     selectedFilters.add(listItemUnify)
@@ -96,5 +97,16 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
             }
         }
         return selectedFilters
+    }
+
+    private fun setResetButton() {
+        if (sortFilterType is SortFilterType.Sort) return
+        setAction(getString(R.string.review_reading_reset_filter)) { resetFilters() }
+    }
+
+    private fun resetFilters() {
+        filterData.forEachIndexed { index, listItemUnify ->
+            (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightCheckbox?.isChecked = false
+        }
     }
 }

@@ -6,13 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.review.feature.reading.data.ProductReview
-import com.tokopedia.review.feature.reading.data.ProductReviewDetail
-import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
-import com.tokopedia.review.feature.reading.data.ProductrevGetProductReviewList
+import com.tokopedia.review.feature.reading.data.*
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductRatingAndTopicsUseCase
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductReviewListUseCase
+import com.tokopedia.review.feature.reading.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
+import com.tokopedia.review.feature.reading.utils.ReadReviewUtils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,6 +20,7 @@ import javax.inject.Inject
 class ReadReviewViewModel @Inject constructor(
         private val getProductRatingAndTopicsUseCase: GetProductRatingAndTopicsUseCase,
         private val getProductReviewListUseCase: GetProductReviewListUseCase,
+        private val toggleLikeReviewUseCase: ToggleLikeReviewUseCase,
         dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
@@ -36,8 +36,21 @@ class ReadReviewViewModel @Inject constructor(
     val productReviews: LiveData<Result<ProductrevGetProductReviewList>>
         get() = _productReviews
 
+    private val _toggleLikeReview = MutableLiveData<Result<ToggleProductReviewLike>>()
+    val toggleLikeReview: LiveData<Result<ToggleProductReviewLike>>
+        get() = _toggleLikeReview
+
     private val currentPage = MutableLiveData<Int>()
     private var productId: MutableLiveData<String> = MutableLiveData()
+
+    init {
+        _ratingAndTopics.addSource(productId) {
+            getRatingAndTopics(it)
+        }
+        _productReviews.addSource(currentPage) {
+            getProductReviews(it)
+        }
+    }
 
     fun setProductId(productId: String) {
         this.productId.value = productId
@@ -55,18 +68,19 @@ class ReadReviewViewModel @Inject constructor(
         currentPage.value = page
     }
 
-    fun mapProductReviewToReadReviewUiModel(productReviews: List<ProductReview>, shopId: String): List<ReadReviewUiModel> {
+    fun mapProductReviewToReadReviewUiModel(productReviews: List<ProductReview>, shopId: String, shopName: String): List<ReadReviewUiModel> {
         return productReviews.map {
-            ReadReviewUiModel(it, false, shopId)
+            ReadReviewUiModel(it, false, shopId, shopName)
         }
     }
 
-    init {
-        _ratingAndTopics.addSource(productId) {
-            getRatingAndTopics(it)
-        }
-        _productReviews.addSource(currentPage) {
-            getProductReviews(it)
+    fun toggleLikeReview(reviewId: String, shopId: String, likeStatus: Int) {
+        launchCatchError(block = {
+            toggleLikeReviewUseCase.setParams(reviewId, shopId, productId.value ?: "", ReadReviewUtils.invertLikeStatus(likeStatus))
+            val data = toggleLikeReviewUseCase.executeOnBackground()
+            _toggleLikeReview.postValue(Success(data.toggleProductReviewLike))
+        }) {
+            _toggleLikeReview.postValue(Fail(it))
         }
     }
 

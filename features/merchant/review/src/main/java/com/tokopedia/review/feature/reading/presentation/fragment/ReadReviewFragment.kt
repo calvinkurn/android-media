@@ -108,6 +108,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         ReadReviewReportBottomSheet.newInstance(reviewId, shopId, this)
     }
 
+    override fun onLikeButtonClicked(reviewId: String, shopId: String, likeStatus: Int) {
+        viewModel.toggleLikeReview(reviewId, shopId, likeStatus)
+    }
+
     override fun onChevronClicked() {
         if (statisticsBottomSheet == null) {
             statisticsBottomSheet = ReadReviewStatisticsBottomSheet.createInstance(getReviewStatistics(), getSatisfactionRate())
@@ -157,6 +161,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         showLoading()
         observeRatingAndTopics()
         observeProductReviews()
+        observeToggleLikeReview()
     }
 
     override fun showLoading() {
@@ -201,6 +206,19 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         })
     }
 
+    private fun observeToggleLikeReview() {
+        viewModel.toggleLikeReview.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    // No Op
+                }
+                is Fail -> {
+
+                }
+            }
+        })
+    }
+
     private fun onSuccessGetRatingAndTopic(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
         reviewHeader?.apply {
             setRatingData(ratingAndTopics.rating)
@@ -211,7 +229,9 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun onSuccessGetProductReviews(productrevGetProductReviewList: ProductrevGetProductReviewList) {
-        renderList(viewModel.mapProductReviewToReadReviewUiModel(productrevGetProductReviewList.reviewList, productrevGetProductReviewList.shopInfo.shopID), productrevGetProductReviewList.hasNext)
+        with(productrevGetProductReviewList) {
+            renderList(viewModel.mapProductReviewToReadReviewUiModel(reviewList, shopInfo.shopID, shopInfo.name), hasNext)
+        }
     }
 
     private fun getReviewStatistics(): List<ProductReviewDetail> {

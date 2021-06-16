@@ -7,7 +7,8 @@ import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewAdapt
 data class ReadReviewUiModel(
         val reviewData: ProductReview,
         val isProductType: Boolean,
-        val shopId: String
+        val shopId: String,
+        val shopName: String
 ) : Visitable<ReadReviewAdapterTypeFactory> {
 
     override fun type(typeFactory: ReadReviewAdapterTypeFactory): Int {
