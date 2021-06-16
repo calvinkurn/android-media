@@ -52,7 +52,12 @@ class ReadReviewHeader : BaseCustomView {
     private fun mapAvailableFiltersToSortFilter(topics: List<ProductTopic>, availableFilters: AvailableFilters, listener: ReadReviewFilterChipsListener): ArrayList<SortFilterItem> {
         val filter = arrayListOf<SortFilterItem>()
         if (availableFilters.withAttachment) {
-            filter.add(SortFilterItem(context.getString(R.string.review_reading_filter_with_attachment), ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_MEDIUM) { listener.onFilterWithAttachmentClicked(false) })
+            filter.add(SortFilterItem(context.getString(R.string.review_reading_filter_with_attachment), ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_SMALL).apply {
+                this.listener = {
+                    doActionIfNotActive { listener.onFilterWithAttachmentClicked(false) }
+                    toggleSelected()
+                }
+            })
         }
         if (availableFilters.rating) {
             filter.add(getSortFilterItem(context.getString(R.string.review_reading_filter_all_ratings)) { listener.onFilterWithRatingClicked(false) })
@@ -65,8 +70,19 @@ class ReadReviewHeader : BaseCustomView {
     }
 
     private fun getSortFilterItem(text: String, action: () -> Unit): SortFilterItem {
-        return SortFilterItem(text, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_MEDIUM) { action }.apply {
-            chevronListener = action
+        return SortFilterItem(text, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_SMALL).apply {
+            listener = {
+                doActionIfNotActive(action)
+            }
+            chevronListener = {
+                doActionIfNotActive(action)
+            }
+        }
+    }
+
+    private fun SortFilterItem.doActionIfNotActive(action: () -> Unit) {
+        if (this.type == ChipsUnify.TYPE_NORMAL) {
+            action.invoke()
         }
     }
 

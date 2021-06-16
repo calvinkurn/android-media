@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterBottomSheetListener
+import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterType
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -15,11 +16,12 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val TAG = "ReadReviewFilterBottomSheet Tag"
-        fun newInstance(title: String, filterList: ArrayList<ListItemUnify>, readReviewFilterBottomSheetListener: ReadReviewFilterBottomSheetListener): ReadReviewFilterBottomSheet {
+        fun newInstance(title: String, filterList: ArrayList<ListItemUnify>, readReviewFilterBottomSheetListener: ReadReviewFilterBottomSheetListener, sortFilterType: SortFilterType): ReadReviewFilterBottomSheet {
             return ReadReviewFilterBottomSheet().apply {
                 setTitle(title)
                 this.filterData = filterList
                 this.listener = readReviewFilterBottomSheetListener
+                this.sortFilterType = sortFilterType
             }
         }
     }
@@ -29,6 +31,7 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
 
     private var filterData: ArrayList<ListItemUnify> = arrayListOf()
     private var listener: ReadReviewFilterBottomSheetListener? = null
+    private var sortFilterType: SortFilterType? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = View.inflate(context, R.layout.bottomsheet_read_review_filter, null)
@@ -52,19 +55,46 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
         listUnify?.apply {
             setData(filterData)
             setOnItemClickListener { parent, view, position, id ->
-                (listUnify?.adapter?.getItem(position) as? ListItemUnify)?.listRightCheckbox?.toggle()
-                (listUnify?.adapter?.getItem(position) as? ListItemUnify)?.listRightRadiobtn?.toggle()
+                if (sortFilterType is SortFilterType.Sort) {
+                    (listUnify?.adapter?.getItem(position) as? ListItemUnify)?.listRightRadiobtn?.toggle()
+                    clearOtherItems(position)
+                } else {
+                    (listUnify?.adapter?.getItem(position) as? ListItemUnify)?.listRightCheckbox?.toggle()
+                }
             }
         }
     }
 
     private fun setSubmitButton() {
         submitButton?.setOnClickListener {
+            dismiss()
             listener?.onFilterSubmitted(getSelectedFilters())
         }
     }
 
+    private fun clearOtherItems(position: Int) {
+        filterData.forEachIndexed { index, listItemUnify ->
+            if(position != index) {
+                (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightRadiobtn?.isChecked = false
+            }
+        }
+    }
+
     private fun getSelectedFilters(): List<ListItemUnify> {
-        return listOf()
+        val selectedFilters = mutableListOf<ListItemUnify>()
+        if(sortFilterType is SortFilterType.Sort) {
+            filterData.forEachIndexed { index, listItemUnify ->
+                if ((listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightRadiobtn?.isChecked == true) {
+                    selectedFilters.add(listItemUnify)
+                }
+            }
+        } else {
+            filterData.forEachIndexed { index, listItemUnify ->
+                if ((listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightCheckbox?.isChecked == true) {
+                    selectedFilters.add(listItemUnify)
+                }
+            }
+        }
+        return selectedFilters
     }
 }

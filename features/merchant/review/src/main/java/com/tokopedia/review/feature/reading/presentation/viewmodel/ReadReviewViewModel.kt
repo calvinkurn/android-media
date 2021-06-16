@@ -89,4 +89,8 @@ class ReadReviewViewModel @Inject constructor(
             _ratingAndTopics.postValue(Fail(it))
         }
     }
+
+    private fun resetPage() {
+        setPage(INITIAL_PAGE)
+    }
 }

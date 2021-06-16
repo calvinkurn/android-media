@@ -30,6 +30,7 @@ import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilt
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterChipsListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewReportBottomSheetListener
+import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterType
 import com.tokopedia.review.feature.reading.presentation.viewmodel.ReadReviewViewModel
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewFilterBottomSheet
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
@@ -120,12 +121,12 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onFilterWithTopicClicked(topics: List<ProductTopic>, isActive: Boolean) {
         val filterOptions = readReviewFilterFactory.getTopicFilters(topics)
-        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_topic_filter_title), filterOptions, this).show(it, ReadReviewFilterBottomSheet.TAG) }
+        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_topic_filter_title), filterOptions, this, SortFilterType.TopicFilter).show(it, ReadReviewFilterBottomSheet.TAG) }
     }
 
     override fun onFilterWithRatingClicked(isActive: Boolean) {
         val filterOptions = readReviewFilterFactory.getRatingFilters((MAX_RATING downTo MIN_RATING).map { it.toString() })
-        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_rating_filter_title), filterOptions, this).show(it, ReadReviewFilterBottomSheet.TAG) }
+        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_rating_filter_title), filterOptions, this, SortFilterType.RatingFilter).show(it, ReadReviewFilterBottomSheet.TAG) }
     }
 
     override fun onFilterSubmitted(selectedFilter: List<ListItemUnify>) {
@@ -133,12 +134,12 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onReportOptionClicked(reviewId: String, shopId: String) {
-        goToReview(reviewId, shopId)
+        goToReportReview(reviewId, shopId)
     }
 
     override fun onSortClicked() {
         val filterOptions = readReviewFilterFactory.getSortOptions(listOf(getString(R.string.review_reading_sort_most_helpful), getString(R.string.review_reading_sort_latest), getString(R.string.review_reading_sort_highest_rating), getString(R.string.review_reading_sort_lowest_rating)))
-        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_sort_title), filterOptions, this).show(it, ReadReviewFilterBottomSheet.TAG) }
+        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_sort_title), filterOptions, this, SortFilterType.Sort).show(it, ReadReviewFilterBottomSheet.TAG) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -221,7 +222,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         return viewModel.getReviewSatisfactionRate()
     }
 
-    private fun goToReview(reviewId: String, shopId: String) {
+    private fun goToReportReview(reviewId: String, shopId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_SELLER_REPORT)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId.toIntOrZero())
