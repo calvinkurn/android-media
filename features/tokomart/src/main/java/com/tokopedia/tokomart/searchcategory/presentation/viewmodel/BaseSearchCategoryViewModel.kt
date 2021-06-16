@@ -318,7 +318,7 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun createVisitableListWithEmptyProduct() {
         visitableList.add(chooseAddressDataView)
-        visitableList.add(EmptyProductDataView())
+        visitableList.add(EmptyProductDataView(filterController.getActiveFilterOptionList()))
     }
 
     private fun createVisitableListWithProduct(
@@ -389,7 +389,7 @@ abstract class BaseSearchCategoryViewModel(
 
         if (filter.options.size == 1) {
             sortFilterItem.listener = {
-                onFilterChipSelected(option, !isSelected)
+                filter(option, !isSelected)
             }
 
         }
@@ -407,10 +407,10 @@ abstract class BaseSearchCategoryViewModel(
     private fun getSortFilterItemType(isSelected: Boolean) =
             if (isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
 
-    private fun onFilterChipSelected(option: Option, isFilterApplied: Boolean) {
+    private fun filter(option: Option, isApplied: Boolean) {
         filterController.setFilter(
                 option = option,
-                isFilterApplied = isFilterApplied,
+                isFilterApplied = isApplied,
                 isCleanUpExistingFilterWithSameKey = option.isCategoryOption,
         )
 
@@ -600,11 +600,14 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onViewClickCategoryFilterChip(option: Option, isSelected: Boolean) {
+        removeFilterWithExclude(option)
+        filter(option, isSelected)
+    }
+
+    private fun removeFilterWithExclude(option: Option) {
         queryParamMutable.remove(OptionHelper.getKeyRemoveExclude(option))
         queryParamMutable.remove(option.key)
         filterController.refreshMapParameter(queryParam)
-
-        onFilterChipSelected(option, isSelected)
     }
 
     open fun onViewApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
@@ -852,6 +855,14 @@ abstract class BaseSearchCategoryViewModel(
 
     fun onLocalizingAddressSelected() {
         onViewReloadPage()
+    }
+
+    fun onViewRemoveFilter(option: Option) {
+        val isOptionKeyHasExclude = option.key.startsWith(OptionHelper.EXCLUDE_PREFIX)
+        if (isOptionKeyHasExclude)
+            removeFilterWithExclude(option)
+
+        filter(option, false)
     }
 
     protected class HeaderDataView(
