@@ -196,7 +196,7 @@ class PlayBroadcastAnalytic(
      */
     fun clickAddTitle() {
         clickGeneralEvent(
-            action = "add title"
+                action = "add title"
         )
     }
 
@@ -382,7 +382,7 @@ class PlayBroadcastAnalytic(
      */
     fun clickSubmitOnEditTitleBottomSheet() {
         clickGeneralEvent(
-            action = "simpan"
+                action = "simpan"
         )
     }
 
