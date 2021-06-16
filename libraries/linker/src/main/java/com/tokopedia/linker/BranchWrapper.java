@@ -485,6 +485,7 @@ public class BranchWrapper implements WrapperInterface {
         String utmCampaign;
         String utmMedium;
         String utmTerm = null;
+        String clickTime;
         utmSource = referringParams.optString(LinkerConstants.UTM_SOURCE);
         if (!TextUtils.isEmpty(utmSource)) {
             utmCampaign = referringParams.optString(LinkerConstants.UTM_CAMPAIGN);
@@ -495,10 +496,11 @@ public class BranchWrapper implements WrapperInterface {
             utmCampaign = referringParams.optString(LinkerConstants.BRANCH_CAMPAIGN);
             utmMedium = referringParams.optString(LinkerConstants.BRANCH_UTM_MEDIUM);
         }
-        convertToCampaign(context, utmSource, utmCampaign, utmMedium, utmTerm);
+        clickTime = referringParams.optString(LinkerConstants.CLICK_TIME);
+        convertToCampaign(context, utmSource, utmCampaign, utmMedium, utmTerm, clickTime);
     }
 
-    private void convertToCampaign(Context context, String utmSource, String utmCampaign, String utmMedium, String utmTerm) {
+    private void convertToCampaign(Context context, String utmSource, String utmCampaign, String utmMedium, String utmTerm, String clickTime) {
         if (!(TextUtils.isEmpty(utmSource) || TextUtils.isEmpty(utmMedium))) {
             Map<String, Object> param = new HashMap<>();
             param.put(LinkerConstants.SCREEN_NAME_KEY, LinkerConstants.SCREEN_NAME_VALUE);
@@ -510,6 +512,7 @@ public class BranchWrapper implements WrapperInterface {
             }
 
             sendCampaignToTrackApp(context, param);
+            logValidCampaignUtmParams(context, utmSource, utmMedium, utmCampaign, clickTime);
         }
     }
 
@@ -561,6 +564,10 @@ public class BranchWrapper implements WrapperInterface {
             new BranchHelperValidation().logSkipDeeplinkNonBranchLink(referringParams, isFirstOpen(context));
         }
 
+    }
+
+    private void logValidCampaignUtmParams(Context context, String utmSource, String utmMedium, String utmCampaign, String clickTime) {
+            new BranchHelperValidation().logValidCampaignData(utmSource, utmMedium, utmCampaign, clickTime, isFirstOpen(context), APP_OPEN_FROM_BRANCH_LINK);
     }
 
     private void updateFirstOpenCache(Context context) {
