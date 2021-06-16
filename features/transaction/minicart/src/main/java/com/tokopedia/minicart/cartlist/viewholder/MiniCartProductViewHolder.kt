@@ -188,7 +188,7 @@ class MiniCartProductViewHolder(private val view: View,
     private fun renderSlashPriceFromWholesale(element: MiniCartProductUiModel) {
         val priceDropValue = element.productInitialPriceBeforeDrop
         val price = element.productPrice
-        val originalPrice = if (priceDropValue > price) price else if(priceDropValue > price) priceDropValue else price
+        val originalPrice = if (priceDropValue > price) price else if (priceDropValue > price) priceDropValue else price
         textSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice, false)
         textSlashPrice?.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
         textProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productWholeSalePrice, false)
@@ -408,8 +408,10 @@ class MiniCartProductViewHolder(private val view: View,
                     val newValue = s.toString().replace(".", "").toIntOrZero()
                     if (element.productQty != newValue) {
                         validateQty(newValue, element)
-                        element.productQty = newValue
-                        listener.onQuantityChanged(element.productId, newValue)
+                        if (newValue != 0) {
+                            element.productQty = newValue
+                            listener.onQuantityChanged(element.productId, newValue)
+                        }
                     }
                 }
             }
