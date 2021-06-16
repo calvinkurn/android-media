@@ -12,7 +12,7 @@
         android:layout_height="@dimen/image_picker_thumbnail_inner_width"
         android:layout_gravity="center">
 
-        <com.tokopedia.imagepicker.common.view.ImageViewCatch
+        <ImageView
             android:id="@+id/image_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
