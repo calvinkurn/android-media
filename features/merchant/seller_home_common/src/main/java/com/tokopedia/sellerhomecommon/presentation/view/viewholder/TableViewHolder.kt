@@ -14,6 +14,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_post_list_widget.view.*
@@ -37,6 +38,9 @@ class TableViewHolder(
     private val tableFilter: Typography? = itemView?.findViewById(R.id.filterShcTable)
 
     override fun bind(element: TableWidgetUiModel) {
+        if (!listener.getIsShouldRemoveWidget()) {
+            itemView.toggleWidgetHeight(true)
+        }
         itemView.tvTableWidgetTitle.text = element.title
         itemView.tvTableWidgetTitle.visible()
         itemView.commonWidgetErrorState.gone()
@@ -83,7 +87,12 @@ class TableViewHolder(
                 if (element.isShowEmpty) {
                     setOnTableEmpty(element)
                 } else {
-                    listener.removeWidget(adapterPosition, element)
+                    if (listener.getIsShouldRemoveWidget()) {
+                        listener.removeWidget(adapterPosition, element)
+                    } else {
+                        listener.onRemoveWidget(adapterPosition)
+                        itemView.toggleWidgetHeight(false)
+                    }
                 }
             }
         }
