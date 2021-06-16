@@ -70,7 +70,6 @@ class NotificationUpdateAnalytics @Inject constructor(
         const val ATTR_USER_ID = "userId"
         const val ATTR_PRODUCT_ID = "productId"
         const val ATTR_SHOP_ID = "shopId"
-        // TODO: replace with real value
         const val BUSINESS_UNIT_COMM = "communication"
         const val CURRENT_SITE = "tokopediamarketplace"
     }

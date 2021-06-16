@@ -50,7 +50,7 @@ abstract class BaseNotificationViewHolder constructor(
 
     private fun trackNotificationImpression(element: NotificationUiModel) {
         container?.addOnImpressionListener(element.impressHolder) {
-            listener?.trackNotificationImpression(element)
+            listener?.getNotifAnalytic()?.trackNotificationImpression(element)
         }
     }
 
@@ -60,6 +60,8 @@ abstract class BaseNotificationViewHolder constructor(
         }
         container?.setOnClickListener {
             markAsReadIfUnread(element)
+            listener?.getNotifAnalytic()?.trackNotificationClick(element)
+            trackNotificationImpression(element)
             if (isLongerContent(element)) {
                 showLongerContent(element)
             } else {
