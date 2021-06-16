@@ -14,6 +14,7 @@ import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -38,6 +39,7 @@ class CatalogProductListingViewModelTest {
     private var productListObserver = mockk<Observer<Result<List<CatalogProductItem>>>>(relaxed = true)
     private var quickFilterObserver = mockk<Observer<Result<DynamicFilterModel>>>(relaxed = true)
     private var dynamicFilterObserver = mockk<Observer<Result<DynamicFilterModel>>>(relaxed = true)
+    private var sortFilterItemsObserver = mockk<Observer<List<SortFilterItem>>>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -45,7 +47,7 @@ class CatalogProductListingViewModelTest {
         viewModel.mProductList.observeForever(productListObserver)
         viewModel.mQuickFilterModel.observeForever(quickFilterObserver)
         viewModel.mDynamicFilterModel.observeForever(dynamicFilterObserver)
-
+        viewModel.sortFilterItems.observeForever(sortFilterItemsObserver)
     }
 
     @Test
@@ -59,8 +61,8 @@ class CatalogProductListingViewModelTest {
             (secondArg() as Subscriber<ProductListResponse>).onCompleted()
         }
         viewModel.fetchProductListing(RequestParams())
-
-        if(viewModel.mProductList.value is Success) {
+        viewModel.isPagingAllowed = false
+        if(viewModel.mProductList.value is Success && viewModel.pageCount > 0 && !viewModel.isPagingAllowed) {
             assert(true)
         }else {
             assert(false)
@@ -72,11 +74,12 @@ class CatalogProductListingViewModelTest {
         val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_empty_dummy_response.json"),CatalogSearchProductResponse().javaClass)
         val data = mockGqlResponse.getData(CatalogSearchProductResponse::class.java) as CatalogSearchProductResponse
         val productListResponse = ProductListResponse(data.searchProduct)
-
+        viewModel.catalogUrl = CatalogTestUtils.CATALOG_URL
         every { getProductListUseCase.execute(any(), any()) }.answers {
             (secondArg() as Subscriber<ProductListResponse>).onNext(productListResponse)
             (secondArg() as Subscriber<ProductListResponse>).onCompleted()
         }
+        viewModel.catalogUrl
         viewModel.fetchProductListing(RequestParams())
 
         if(viewModel.mProductList.value is Success && (viewModel.mProductList.value as Success<List<CatalogProductItem>>).data.isEmpty()) {
@@ -84,6 +87,7 @@ class CatalogProductListingViewModelTest {
         }else {
             assert(false)
         }
+        viewModel.onDetach()
     }
 
     @Test
@@ -129,7 +133,7 @@ class CatalogProductListingViewModelTest {
         }
         viewModel.fetchDynamicAttribute(RequestParams())
 
-        if(viewModel.mDynamicFilterModel.value is Success) {
+        if(viewModel.getDynamicFilterData().value is Success) {
             assert(true)
         }else {
             assert(false)

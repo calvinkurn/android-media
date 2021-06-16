@@ -27,46 +27,6 @@
                 "Description": "Nikmati potongan ongkir untuk toko bertanda khusus."
               }
             ]
-          },
-          {
-            "title": "Lainnya",
-            "template_name": "",
-            "search": {
-              "searchable": 0,
-              "placeholder": ""
-            },
-            "options": [
-              {
-                "name": "Pre Order",
-                "key": "preorder",
-                "icon": "",
-                "value": "true",
-                "inputType": "checkbox",
-                "totalData": "",
-                "valMax": "",
-                "valMin": "",
-                "hexColor": "",
-                "child": [],
-                "isPopular": true,
-                "isNew": false,
-                "Description": ""
-              },
-              {
-                "name": "Ready Stock",
-                "key": "preorder",
-                "icon": "",
-                "value": "false",
-                "inputType": "checkbox",
-                "totalData": "",
-                "valMax": "",
-                "valMin": "",
-                "hexColor": "",
-                "child": [],
-                "isPopular": true,
-                "isNew": false,
-                "Description": ""
-              }
-            ]
           }
         ],
         "sort": [

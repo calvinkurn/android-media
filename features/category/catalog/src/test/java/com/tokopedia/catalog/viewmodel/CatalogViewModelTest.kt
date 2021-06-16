@@ -57,6 +57,21 @@ class CatalogViewModelTest {
     }
 
     @Test
+    fun `Get Catalog Detail View Model Response Success`() {
+        val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_detail_dummy_response.json"))
+        runBlocking {
+            coEvery { catalogDetailRepository.getCatalogDetail(any(),any(), any()) } returns mockGqlResponse
+            viewModel.getProductCatalog(CatalogTestUtils.CATALOG_ID,CatalogTestUtils.USER_ID,CatalogTestUtils.DEVICE)
+            if(viewModel.getCatalogResponseData().value is Success){
+                assert(true)
+            }else {
+                assert(false)
+            }
+        }
+    }
+
+
+    @Test
     fun `Get Catalog Detail Response Fail`() {
         val mockGqlResponse: GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_empty_dummy_response.json"))
         runBlocking {

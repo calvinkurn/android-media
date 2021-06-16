@@ -127,31 +127,6 @@
                 "Description": ""
               }
             ]
-          },
-          {
-            "title": "Bebas Ongkir",
-            "template_name": "",
-            "search": {
-              "searchable": 0,
-              "placeholder": ""
-            },
-            "options": [
-              {
-                "name": "Bebas Ongkir",
-                "key": "bebas_ongkir_extra",
-                "icon": "",
-                "value": "true",
-                "inputType": "checkbox",
-                "totalData": "",
-                "valMax": "",
-                "valMin": "",
-                "hexColor": "",
-                "child": [],
-                "isPopular": true,
-                "isNew": false,
-                "Description": "Nikmati potongan ongkir untuk toko bertanda khusus."
-              }
-            ]
           }
         ],
         "sort": []
