@@ -190,6 +190,10 @@ public class ShipmentDataConverter {
             }
             setCartItemModelError(shipmentCartItemModel);
             shipmentCartItemModel.setEligibleNewShippingExperience(cartShipmentAddressFormData.isEligibleNewShippingExperience());
+            shipmentCartItemModel.setDisableChangeCourier(groupShop.isDisableChangeCourier());
+            shipmentCartItemModel.setAutoCourierSelection(groupShop.getAutoCourierSelection());
+            shipmentCartItemModel.setCourierSelectionErrorTitle(groupShop.getCourierSelectionErrorData().getTitle());
+            shipmentCartItemModel.setCourierSelectionErrorDescription(groupShop.getCourierSelectionErrorData().getDescription());
             shipmentCartItemModels.add(shipmentCartItemModel);
         }
 
@@ -200,6 +204,7 @@ public class ShipmentDataConverter {
         if (shipmentCartItemModel.isAllItemError()) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                 cartItemModel.setError(true);
+                cartItemModel.setShopError(true);
             }
         }
     }
@@ -213,7 +218,10 @@ public class ShipmentDataConverter {
         if (shipmentCartItemModel.isError()) {
             shipmentCartItemModel.setAllItemError(true);
         }
+        shipmentCartItemModel.setHasUnblockingError(groupShop.getHasUnblockingError());
+        shipmentCartItemModel.setUnblockingErrorMessage(groupShop.getUnblockingErrorMessage());
         shipmentCartItemModel.setErrorTitle(groupShop.getErrorMessage());
+        shipmentCartItemModel.setFirstProductErrorIndex(groupShop.getFirstProductErrorIndex());
         if (orderIndex > 0) {
             shipmentCartItemModel.setOrderNumber(orderIndex);
         }
@@ -293,6 +301,7 @@ public class ShipmentDataConverter {
         cartItemModel.setQuantity(product.getProductQuantity());
         cartItemModel.setWeight(product.getProductWeight());
         cartItemModel.setWeightFmt(product.getProductWeightFmt());
+        cartItemModel.setWeightActual(product.getProductWeightActual());
         cartItemModel.setNoteToSeller(product.getProductNotes());
         cartItemModel.setPreOrder(product.isProductIsPreorder());
         cartItemModel.setPreOrderInfo(product.getProductPreOrderInfo());

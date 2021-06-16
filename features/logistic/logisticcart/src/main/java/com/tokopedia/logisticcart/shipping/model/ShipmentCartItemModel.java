@@ -17,6 +17,10 @@ public class ShipmentCartItemModel implements Parcelable {
     private boolean isError;
     private String errorTitle;
     private String errorDescription;
+    private boolean hasUnblockingError;
+    private String unblockingErrorMessage;
+    private int firstProductErrorIndex = -1;
+    private boolean triggerScrollToErrorProduct;
 
     private ShipmentCartData shipmentCartData;
     private ShipmentDetailData selectedShipmentDetailData;
@@ -89,6 +93,15 @@ public class ShipmentCartItemModel implements Parcelable {
     private boolean isEligibleNewShippingExperience;
     private boolean isTriggerShippingVibrationAnimation;
     private boolean isShippingBorderRed;
+    private boolean isDisableChangeCourier;
+    private boolean autoCourierSelection;
+
+    // Courier Selection Error
+    private String courierSelectionErrorTitle;
+    private String courierSelectionErrorDescription;
+
+    // Flag for tracking
+    private boolean hasShownCourierError;
 
     public ShipmentCartItemModel() {
     }
@@ -98,6 +111,9 @@ public class ShipmentCartItemModel implements Parcelable {
         isError = in.readByte() != 0;
         errorTitle = in.readString();
         errorDescription = in.readString();
+        hasUnblockingError = in.readByte() != 0;
+        unblockingErrorMessage = in.readString();
+        firstProductErrorIndex = in.readInt();
         shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
         selectedShipmentDetailData = in.readParcelable(ShipmentDetailData.class.getClassLoader());
         shopShipmentList = in.createTypedArrayList(ShopShipment.CREATOR);
@@ -144,6 +160,10 @@ public class ShipmentCartItemModel implements Parcelable {
         bookingFee = in.readInt();
         hasSetDropOffLocation = in.readByte() != 0;
         listPromoCodes = in.createStringArrayList();
+        isDisableChangeCourier = in.readByte() != 0;
+        autoCourierSelection = in.readByte() != 0;
+        courierSelectionErrorTitle = in.readString();
+        courierSelectionErrorDescription = in.readString();
     }
 
     @Override
@@ -152,6 +172,9 @@ public class ShipmentCartItemModel implements Parcelable {
         dest.writeByte((byte) (isError ? 1 : 0));
         dest.writeString(errorTitle);
         dest.writeString(errorDescription);
+        dest.writeByte((byte) (hasUnblockingError ? 1 : 0));
+        dest.writeString(unblockingErrorMessage);
+        dest.writeInt(firstProductErrorIndex);
         dest.writeParcelable(shipmentCartData, flags);
         dest.writeParcelable(selectedShipmentDetailData, flags);
         dest.writeTypedList(shopShipmentList);
@@ -198,6 +221,10 @@ public class ShipmentCartItemModel implements Parcelable {
         dest.writeInt(bookingFee);
         dest.writeByte((byte) (hasSetDropOffLocation ? 1 : 0));
         dest.writeStringList(listPromoCodes);
+        dest.writeByte((byte) (isDisableChangeCourier ? 1 : 0));
+        dest.writeByte((byte) (autoCourierSelection ? 1 : 0));
+        dest.writeString(courierSelectionErrorTitle);
+        dest.writeString(courierSelectionErrorDescription);
     }
 
     @Override
@@ -259,6 +286,8 @@ public class ShipmentCartItemModel implements Parcelable {
         newShipmentCartItemModel.setIsLeasingProduct(shipmentCartItemModel.getIsLeasingProduct());
         newShipmentCartItemModel.setListPromoCodes(shipmentCartItemModel.getListPromoCodes());
         newShipmentCartItemModel.setShopTypeInfoData(shipmentCartItemModel.getShopTypeInfoData());
+        newShipmentCartItemModel.setDisableChangeCourier(shipmentCartItemModel.isDisableChangeCourier());
+        newShipmentCartItemModel.setAutoCourierSelection(shipmentCartItemModel.isAutoCourierSelection());
         return newShipmentCartItemModel;
     }
 
@@ -292,6 +321,38 @@ public class ShipmentCartItemModel implements Parcelable {
 
     public void setErrorDescription(String errorDescription) {
         this.errorDescription = errorDescription;
+    }
+
+    public boolean isHasUnblockingError() {
+        return hasUnblockingError;
+    }
+
+    public void setHasUnblockingError(boolean hasUnblockingError) {
+        this.hasUnblockingError = hasUnblockingError;
+    }
+
+    public String getUnblockingErrorMessage() {
+        return unblockingErrorMessage;
+    }
+
+    public void setUnblockingErrorMessage(String unblockingErrorMessage) {
+        this.unblockingErrorMessage = unblockingErrorMessage;
+    }
+
+    public int getFirstProductErrorIndex() {
+        return firstProductErrorIndex;
+    }
+
+    public void setFirstProductErrorIndex(int firstProductErrorIndex) {
+        this.firstProductErrorIndex = firstProductErrorIndex;
+    }
+
+    public boolean isTriggerScrollToErrorProduct() {
+        return triggerScrollToErrorProduct;
+    }
+
+    public void setTriggerScrollToErrorProduct(boolean triggerScrollToErrorProduct) {
+        this.triggerScrollToErrorProduct = triggerScrollToErrorProduct;
     }
 
     public long getShopId() {
@@ -692,6 +753,46 @@ public class ShipmentCartItemModel implements Parcelable {
 
     public void setShopTypeInfoData(ShopTypeInfoData shopTypeInfoData) {
         this.shopTypeInfoData = shopTypeInfoData;
+    }
+
+    public boolean isDisableChangeCourier() {
+        return isDisableChangeCourier;
+    }
+
+    public void setDisableChangeCourier(boolean disableChangeCourier) {
+        isDisableChangeCourier = disableChangeCourier;
+    }
+
+    public boolean isAutoCourierSelection() {
+        return autoCourierSelection;
+    }
+
+    public void setAutoCourierSelection(boolean autoCourierSelection) {
+        this.autoCourierSelection = autoCourierSelection;
+    }
+
+    public String getCourierSelectionErrorTitle() {
+        return courierSelectionErrorTitle;
+    }
+
+    public void setCourierSelectionErrorTitle(String courierSelectionErrorTitle) {
+        this.courierSelectionErrorTitle = courierSelectionErrorTitle;
+    }
+
+    public String getCourierSelectionErrorDescription() {
+        return courierSelectionErrorDescription;
+    }
+
+    public void setCourierSelectionErrorDescription(String courierSelectionErrorDescription) {
+        this.courierSelectionErrorDescription = courierSelectionErrorDescription;
+    }
+
+    public boolean isHasShownCourierError() {
+        return hasShownCourierError;
+    }
+
+    public void setHasShownCourierError(boolean hasShownCourierError) {
+        this.hasShownCourierError = hasShownCourierError;
     }
 
     @Override

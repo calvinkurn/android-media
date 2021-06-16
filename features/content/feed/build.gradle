@@ -66,6 +66,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.features.playWidget)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)

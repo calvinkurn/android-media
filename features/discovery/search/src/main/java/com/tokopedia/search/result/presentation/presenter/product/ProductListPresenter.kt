@@ -12,7 +12,6 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartPar
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartResult
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
-import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
@@ -1298,7 +1297,9 @@ class ProductListPresenter @Inject constructor(
                                 priceString = product.priceStr,
                                 ratingAverage = product.ratingAverage,
                                 labelGroupDataList = product.labelGroupDataList,
-                                carouselProductType = DynamicCarouselProduct(option.inspirationCarouselType)
+                                carouselProductType = DynamicCarouselProduct(option.inspirationCarouselType),
+                                badgeItemDataViewList = product.badgeItemDataViewList,
+                                shopLocation = product.shopLocation,
                         )
                     }
             )

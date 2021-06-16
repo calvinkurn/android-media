@@ -29,19 +29,6 @@ object ProductDetailConstant {
     const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
     const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
 
-    const val KEY_NORMAL_BUTTON = "normal"
-    const val KEY_OCS_BUTTON = "ocs"
-    const val KEY_OCC_BUTTON = "occ"
-    const val KEY_CHAT = "chat"
-    const val KEY_BYME = "byme"
-    const val KEY_REMIND_ME = "remind_me"
-    const val KEY_CHECK_WISHLIST = "check_wishlist"
-    const val KEY_BUTTON_PRIMARY = "primary"
-    const val KEY_BUTTON_PRIMARY_GREEN = "primary_green"
-    const val KEY_BUTTON_SECONDARY_GREEN = "secondary_green"
-    const val KEY_BUTTON_DISABLE = "disabled"
-    const val KEY_BUTTON_SECONDARY = "secondary"
-    const val KEY_BUTTON_SECONDARY_GRAY = "secondary_gray"
     const val DEFAULT_PAGE_NUMBER = 1
     const val DEFAULT_X_SOURCE = "pdp"
     const val KEY_TOP_ADS = "tdn_topads"
@@ -85,6 +72,7 @@ object ProductDetailConstant {
 
     //Mapper
     const val MINI_SOCIAL_PROOF = "social_proof_mini"
+    const val MINI_SOCIAL_PROOF_STOCK = "mini_social_proof_stock"
     const val PRODUCT_INFO = "product_info"
     const val PRODUCT_DETAIL = "product_detail"
     const val DISCUSSION_FAQ = "discussion_faq"
@@ -98,6 +86,7 @@ object ProductDetailConstant {
     const val TICKER_INFO = "ticker_info"
     const val UPCOMING_DEALS = "upcoming_deals"
     const val VARIANT_OPTIONS = "variant_options"
+    const val MINI_VARIANT_OPTIONS = "mini_variant_options"
     const val VARIANT = "variant"
     const val PDP_3 = "pdp_3"
     const val PRODUCT_VARIANT_INFO = "variant"
@@ -117,6 +106,7 @@ object ProductDetailConstant {
     const val TOP_ADS = "banner_ads"
     const val REPORT = "report"
     const val MVC = "mvc"
+    const val MINI_SHOP_WIDGET = "mini_shop_widget"
 
 
     //Arguments
@@ -145,23 +135,6 @@ object ProductDetailConstant {
 
     //Save Instance State
     const val SAVED_ACTIVITY_RESULT = "saved_activity_result"
-
-    //Button Action
-    const val BUY_BUTTON = 1
-    const val ATC_BUTTON = 2
-    const val OCS_BUTTON = 3
-    const val OCC_BUTTON = 4
-    const val LEASING_BUTTON = 5
-    const val TRADEIN_BUTTON = 6
-    const val TRADEIN_AFTER_DIAGNOSE = 7
-    const val REMIND_ME_BUTTON = 8
-    const val CHECK_WISHLIST_BUTTON = 9
-
-    const val REQUEST_CODE_CHECKOUT = 12382
-
-    //OVO
-    const val OVO_INACTIVE_STATUS = 1;
-    const val OVO_INSUFFICIENT_BALANCE_STATUS = 2;
 
     //SHOP
     const val ALREADY_FAVORITE_SHOP = 1

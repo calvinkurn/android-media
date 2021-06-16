@@ -473,6 +473,13 @@ public interface ApplinkConst {
         String SHOP_SETTINGS_SELLER_APP = "sellerapp://shop/{shop_id}/settings";
     }
 
+    interface TokopediaNow {
+        String HOME = "tokopedia://now";
+        String TOKOPEDIA_NOW_PRODUCTION_SHOP_ID = "11530573";
+        String SEARCH = "tokopedia://now/search";
+        String CATEGORY = "tokopedia://now/category";
+    }
+
     interface Query {
         String ORDER_TRACKING_ORDER_ID = "order_id";
         String ORDER_TRACKING_URL_LIVE_TRACKING = "url_live_tracking";

@@ -1,0 +1,285 @@
+package com.tokopedia.tokomart.searchcategory
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.minicart.common.data.response.updatecart.Data
+import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
+import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokomart.util.SearchCategoryDummyUtils.miniCartItems
+import com.tokopedia.tokomart.util.SearchCategoryDummyUtils.miniCartSimplifiedData
+import io.mockk.every
+import io.mockk.slot
+import io.mockk.verify
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.CoreMatchers.`is` as shouldBe
+
+class AddToCartNonVariantTestHelper(
+        private val baseViewModel: BaseSearchCategoryViewModel,
+        private val addToCartUseCase: AddToCartUseCase,
+        private val updateCartUseCase: UpdateCartUseCase,
+        private val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
+        private val callback: Callback,
+) {
+
+    private val addToCartRequestParamsSlot = slot<AddToCartRequestParams>()
+    private val addToCartRequestParams by lazy { addToCartRequestParamsSlot.captured }
+    private val responseErrorException = ResponseErrorException(
+            "Jumlah barang melebihi stok di toko. Kurangi pembelianmu, ya!"
+    )
+
+    fun `test add to cart success`() {
+        val addToCartQty = 10
+        val errorMessage = arrayListOf("Success nih", "1 barang berhasil ditambahkan ke keranjang!")
+        val addToCartSuccessModel = AddToCartDataModel(
+                errorMessage = errorMessage,
+                status = AddToCartDataModel.STATUS_OK,
+                data = DataModel(
+                        success = 1,
+                        cartId = "12345",
+                        message = arrayListOf(),
+                        quantity = addToCartQty,
+                ),
+        )
+
+        callback.`Given first page API will be successful`()
+        `Given view already created`()
+        `Given add to cart API will success`(addToCartSuccessModel)
+
+        val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
+        val productItemDataViewToATC = productItemList[0]
+
+        `When add to cart a product`(productItemDataViewToATC, addToCartQty)
+
+        `Then assert add to cart request params`(productItemDataViewToATC, addToCartQty)
+        `Then assert cart message event`(
+                expectedSuccessMessage = errorMessage.joinToString(separator = ", ")
+        )
+        `Then assert product item quantity`(productItemDataViewToATC, addToCartQty)
+        `Then verify mini cart is refreshed`()
+    }
+
+    private fun `Given view already created`() {
+        baseViewModel.onViewCreated()
+    }
+
+    private fun `Given add to cart API will success`(addToCartSuccessModel: AddToCartDataModel) {
+        every {
+            addToCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(AddToCartDataModel) -> Unit>().invoke(addToCartSuccessModel)
+        }
+    }
+
+    private fun List<Visitable<*>>.getProductItemList() = filterIsInstance<ProductItemDataView>()
+
+    private fun `When add to cart a product`(productItemToATC: ProductItemDataView, addToCartQty: Int) {
+        baseViewModel.onViewATCProductNonVariant(productItemToATC, addToCartQty)
+    }
+
+    private fun `Then assert add to cart request params`(
+            productItem: ProductItemDataView,
+            addToCartQty: Int,
+    ) {
+        verify {
+            addToCartUseCase.setParams(capture(addToCartRequestParamsSlot))
+        }
+
+        assertThat(addToCartRequestParams.productId.toString(), shouldBe(productItem.id))
+        assertThat(addToCartRequestParams.shopId.toString(), shouldBe(productItem.shop.id))
+        assertThat(addToCartRequestParams.quantity, shouldBe(addToCartQty))
+    }
+
+    private fun `Then assert cart message event`(
+            expectedSuccessMessage: String = "",
+            expectedErrorMessage: String = "",
+    ) {
+        val successMessageLiveData = baseViewModel.successATCMessageLiveData.value ?: ""
+        assertThat(successMessageLiveData, shouldBe(expectedSuccessMessage))
+
+        val errorMessageLiveData = baseViewModel.errorATCMessageLiveData.value ?: ""
+        assertThat(errorMessageLiveData, shouldBe(expectedErrorMessage))
+    }
+
+    private fun `Then assert product item quantity`(
+            productItemDataViewToATC: ProductItemDataView,
+            expectedQuantity: Int,
+    ) {
+        val actualQuantity = productItemDataViewToATC.nonVariantATC?.quantity ?: -1
+
+        assertThat(actualQuantity, shouldBe(expectedQuantity))
+    }
+
+    private fun `Then verify mini cart is refreshed`(exactly: Int = 1) {
+        verify(exactly = exactly) {
+            getMiniCartListSimplifiedUseCase.execute(any(), any())
+        }
+    }
+
+    fun `test add to cart failed`() {
+        callback.`Given first page API will be successful`()
+        `Given view already created`()
+        `Given add to cart API will fail`(responseErrorException)
+
+        val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
+        val productItemDataViewToATC = productItemList[0]
+        val addToCartQty = 15
+
+        `When add to cart a product`(productItemDataViewToATC, addToCartQty)
+
+        `Then assert add to cart request params`(productItemDataViewToATC, addToCartQty)
+        `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
+        `Then assert product item quantity`(productItemDataViewToATC, 0)
+        `Then verify mini cart is refreshed`(0)
+    }
+
+    private fun `Given add to cart API will fail`(throwable: Throwable) {
+        every {
+            addToCartUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+    }
+
+    fun `add to cart with current quantity should do nothing`() {
+        callback.`Given first page API will be successful`()
+        `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
+        `Given view already created`()
+        `Given view resumed to update mini cart`()
+
+        val (currentQty, productInVisitable) = getAvailableProductAndQuantity()
+        `When add to cart a product`(productInVisitable, currentQty)
+
+        `Then assert add to cart use case is not called`()
+    }
+
+    private fun `Given get mini cart simplified use case will be successful`(
+            miniCartSimplifiedData: MiniCartSimplifiedData
+    ) {
+        every {
+            getMiniCartListSimplifiedUseCase.execute(any(), any())
+        } answers {
+            firstArg<(MiniCartSimplifiedData) -> Unit>().invoke(miniCartSimplifiedData)
+        }
+    }
+
+    private fun `Given view resumed to update mini cart`() {
+        baseViewModel.onViewResumed()
+    }
+
+    private fun getAvailableProductAndQuantity(): Pair<Int, ProductItemDataView> {
+        val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
+        val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
+        val productInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
+
+        val productCurrentQuantity = productInMiniCart.quantity
+        val productInVisitable = productItemList.find { it.id == productIdToATC }!!
+
+        return Pair(productCurrentQuantity, productInVisitable)
+    }
+
+    private fun `Then assert add to cart use case is not called`() {
+        verify(exactly = 0) {
+            addToCartUseCase.execute(any(), any())
+        }
+    }
+
+    fun `add to cart to update quantity success`() {
+        val updateCartSuccessMessage = "Success nih"
+        val successUpdateCartResponse = UpdateCartV2Data(
+                data = Data(status = true, message = updateCartSuccessMessage)
+        )
+
+        callback.`Given first page API will be successful`()
+        `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
+        `Given update cart use case will be successful`(successUpdateCartResponse)
+        `Given view already created`()
+        `Given view resumed to update mini cart`()
+
+        val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
+        val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
+        val productInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
+
+        val productUpdatedQuantity = productInMiniCart.quantity - 3
+        val productInVisitable = productItemList.find { it.id == productIdToATC }!!
+
+        `When add to cart a product`(productInVisitable, productUpdatedQuantity)
+
+        `Then assert update cart params`(productUpdatedQuantity, productInMiniCart)
+        `Then assert cart message event`(
+                expectedSuccessMessage = updateCartSuccessMessage
+        )
+        `Then assert product item quantity`(productInVisitable, productUpdatedQuantity)
+        `Then assert add to cart use case is not called`()
+        `Then verify mini cart is refreshed`(2)
+    }
+
+    private fun `Given update cart use case will be successful`(
+            successUpdateCartResponse: UpdateCartV2Data
+    ) {
+        every {
+            updateCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(UpdateCartV2Data) -> Unit>().invoke(successUpdateCartResponse)
+        }
+    }
+
+    private fun `Then assert update cart params`(productUpdatedQuantity: Int, productInMiniCart: MiniCartItem) {
+        val updateCartParamSlot = slot<List<MiniCartItem>>()
+        val updateCartParam by lazy { updateCartParamSlot.captured }
+
+        verify {
+            updateCartUseCase.setParams(capture(updateCartParamSlot))
+        }
+        val updatedMiniCartItem = updateCartParam[0]
+        assertThat(updatedMiniCartItem.quantity, shouldBe(productUpdatedQuantity))
+        assertThat(updatedMiniCartItem.cartId, shouldBe(productInMiniCart.cartId))
+    }
+
+    fun `add to cart to update quantity failed`() {
+        callback.`Given first page API will be successful`()
+        `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
+        `Given update cart use case will fail`()
+        `Given view already created`()
+        `Given view resumed to update mini cart`()
+
+        val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
+        val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
+        val productInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
+
+        val productUpdatedQuantity = productInMiniCart.quantity - 3
+        val productInVisitable = productItemList.find { it.id == productIdToATC }!!
+
+        `When add to cart a product`(productInVisitable, productUpdatedQuantity)
+
+        `Then assert update cart params`(productUpdatedQuantity, productInMiniCart)
+        `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
+        `Then assert product item quantity`(productInVisitable, productInMiniCart.quantity)
+        `Then assert add to cart use case is not called`()
+        `Then verify mini cart is refreshed`(1)
+    }
+
+    private fun `Given update cart use case will fail`() {
+        every {
+            updateCartUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(responseErrorException)
+        }
+    }
+
+    companion object {
+        private const val PRODUCT_ID_NON_VARIANT_ATC = "574261655"
+    }
+
+    interface Callback {
+        fun `Given first page API will be successful`()
+    }
+}

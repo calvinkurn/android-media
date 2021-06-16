@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tokomartSearchCategoryAisleContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/tokomart_ic_aisle_background"
+    android:paddingBottom="@dimen/dp_16">
+
+    <View
+        android:id="@+id/tokomartSearchCategoryAisleDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/Unify_N50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokomartSearchCategoryAisleHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:text="@string/tokomart_category_aisle_header"
+        app:layout_constraintTop_toBottomOf="@id/tokomartSearchCategoryAisleDivider"
+        app:typographyType="heading_4" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/tokomartSearchCategoryAisleGroupLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tokomartSearchCategoryAisleImageLeft, tokomartSearchCategoryAisleNameLeft"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/tokomartSearchCategoryAisleGroupRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="tokomartSearchCategoryAisleImageRight, tokomartSearchCategoryAisleNameRight"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/tokomartSearchCategoryAisleImageLeft"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintEnd_toStartOf="@id/tokomartSearchCategoryAisleImageRight"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tokomartSearchCategoryAisleHeader"
+        app:unify_image_corner_radius="8"
+        app:unify_image_type="rect" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/tokomartSearchCategoryAisleImageRight"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tokomartSearchCategoryAisleImageLeft"
+        app:layout_constraintTop_toBottomOf="@id/tokomartSearchCategoryAisleHeader"
+        app:unify_image_corner_radius="8" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokomartSearchCategoryAisleNameLeft"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_8"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="@id/tokomartSearchCategoryAisleImageLeft"
+        app:layout_constraintStart_toStartOf="@id/tokomartSearchCategoryAisleImageLeft"
+        app:layout_constraintTop_toBottomOf="@id/tokomartSearchCategoryAisleImageLeft"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Kategori" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tokomartSearchCategoryAisleNameRight"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_8"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="@id/tokomartSearchCategoryAisleImageRight"
+        app:layout_constraintStart_toStartOf="@id/tokomartSearchCategoryAisleImageRight"
+        app:layout_constraintTop_toBottomOf="@id/tokomartSearchCategoryAisleImageRight"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Kategori" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

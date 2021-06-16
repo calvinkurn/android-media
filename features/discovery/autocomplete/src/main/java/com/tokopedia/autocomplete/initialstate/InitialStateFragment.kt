@@ -23,6 +23,9 @@ import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTr
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchDataView
 import com.tokopedia.autocomplete.util.getModifiedApplink
 import com.tokopedia.iris.Iris
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import kotlinx.android.synthetic.main.fragment_initial_state.*
 import javax.inject.Inject
 
@@ -190,7 +193,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         presenter.refreshPopularSearch(featureId)
     }
 
-    fun setSearchParameter(searchParameter: HashMap<String, String> ) {
+    fun setSearchParameter(searchParameter: HashMap<String, String>) {
         presenter.setSearchParameter(searchParameter)
     }
 
@@ -262,4 +265,13 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     override fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String) {
         AutocompleteTracking.impressedCuratedCampaign(iris, userId, label, type)
     }
+
+    override val chooseAddressData: LocalCacheModel
+        get() = context?.let {
+            try {
+                ChooseAddressUtils.getLocalizingAddressData(it)
+            } catch (e: Throwable) {
+                ChooseAddressConstant.emptyAddress
+            }
+        } ?: ChooseAddressConstant.emptyAddress
 }

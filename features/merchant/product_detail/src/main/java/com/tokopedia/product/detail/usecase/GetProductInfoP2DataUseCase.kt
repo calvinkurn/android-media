@@ -12,9 +12,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.OnErrorLog
 import com.tokopedia.product.detail.view.util.CacheStrategyUtil
@@ -288,9 +288,13 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             cartRedirection {
               status
               error_message
+              alternate_copy {
+                 text
+                 cart_type
+                 color
+              }
               data{
                 product_id
-                config_name
                 available_buttons {
                   text
                   color
@@ -524,6 +528,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.merchantVoucherSummary = merchantVoucherSummary
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
             p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
+            p2UiData.alternateCopy = cartRedirection.alternateCopy
         }
         return p2UiData
     }

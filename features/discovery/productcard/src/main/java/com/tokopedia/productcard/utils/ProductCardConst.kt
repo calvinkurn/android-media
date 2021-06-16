@@ -52,3 +52,5 @@ internal val FIRE_WIDTH = R.dimen.dp_12
 
 @DimenRes
 internal val FIRE_HEIGHT = R.dimen.dp_13
+
+internal const val QUANTITY_EDITOR_DEBOUNCE_IN_MS: Long = 200
