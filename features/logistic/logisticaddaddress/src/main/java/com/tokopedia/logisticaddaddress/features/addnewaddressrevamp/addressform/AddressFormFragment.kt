@@ -3,7 +3,6 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressfor
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Build
@@ -16,20 +15,17 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
-import androidx.core.content.ContextCompat
+import android.widget.AutoCompleteTextView
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.data.entity.address.db.District
 import com.tokopedia.logisticCommon.data.response.DistrictItem
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
@@ -38,22 +34,19 @@ import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressReva
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.domain.model.add_address.ContactData
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
-import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.LabelAlamatChipsAdapter
-import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageViewModel
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant
 import com.tokopedia.logisticaddaddress.utils.AddEditAddressUtil
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import kotlinx.android.synthetic.main.form_add_new_address_default_item.*
 import javax.inject.Inject
 
 class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.ActionListener,
@@ -69,6 +62,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private var isPinpoint: Boolean = false
     /*To differentiate flow from logistic or not*/
     private var isLogisticLabel: Boolean = true
+    private var validated: Boolean = true
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private lateinit var labelAlamatChipsLayoutManager: ChipsLayoutManager
 
@@ -229,14 +223,98 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 cardAddressNegative.root.gone()
 
                 cardAddress.addressDistrict.text = "${data?.districtName}, ${data?.cityName}, ${data?.provinceName}"
-                formAccount.etNomorHp.textFieldInput.setText(userSession.phoneNumber)
 
                 formAddress.etLabel.textFieldInput.setText("Rumah")
+                formAddress.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etLabel.textFieldWrapper, null))
+                formAddress.etAlamat.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etAlamat.textFieldWrapper, null))
+
+                formAccount.etNamaPenerima.textFieldInput.addTextChangedListener(setWrapperWatcher(formAccount.etNamaPenerima.textFieldWrapper, null))
+                formAccount.etNomorHp.textFieldInput.setText(userSession.phoneNumber)
+                formAccount.etNomorHp.textFieldInput.addTextChangedListener(setWrapperWatcherPhone(formAccount.etNomorHp.textFieldWrapper, getString(R.string.validate_no_ponsel_less_char)))
             }
         }
 
         binding.btnSaveAddress.setOnClickListener {
-            doSaveAddress()
+            if (validateForm()) {
+                doSaveAddress()
+            }
+        }
+    }
+
+    private fun validateForm(): Boolean {
+        validated = true
+        binding.run {
+            if (formAddress.etLabel.textFieldInput.text.toString().isEmpty()) {
+                validated = false
+                setWrapperError(formAddress.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
+            }
+
+            if (formAddress.etAlamat.textFieldInput.text.toString().isEmpty()) {
+                validated = false
+                setWrapperError(formAddress.etAlamat.textFieldWrapper, getString(R.string.tv_error_field))
+            }
+
+            if (formAccount.etNamaPenerima.textFieldInput.text.toString().isEmpty()) {
+                validated = false
+                setWrapperError(formAccount.etNamaPenerima.textFieldWrapper, getString(R.string.tv_error_field))
+            }
+
+            if (formAccount.etNomorHp.textFieldInput.text.toString().isEmpty()) {
+                validated = false
+                setWrapperError(formAccount.etNomorHp.textFieldWrapper, getString(R.string.tv_error_field))
+            }
+        }
+        return validated
+    }
+
+    private fun setWrapperWatcher(wrapper: TextInputLayout, text: String?): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.isNotEmpty()) {
+                    setWrapperError(wrapper, text)
+                } else {
+                    setWrapperError(wrapper, null)
+                }
+            }
+
+            override fun afterTextChanged(text: Editable) {
+                if (text.isNotEmpty()) {
+                    setWrapperError(wrapper, null)
+                }
+            }
+        }
+    }
+
+    private fun setWrapperWatcherPhone(wrapper: TextInputLayout, textWatcher: String?): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.length < 9 && s.isNotEmpty()) {
+                    setWrapperError(wrapper, textWatcher)
+                } else {
+                    setWrapperError(wrapper, null)
+                }
+            }
+
+            override fun afterTextChanged(text: Editable) {
+            }
+        }
+    }
+
+    private fun setWrapperError(wrapper: TextInputLayout, s: String?) {
+        if (s.isNullOrBlank()) {
+            wrapper.error = s
+            wrapper.setErrorEnabled(false)
+        } else {
+            wrapper.setErrorEnabled(true)
+            wrapper.error = s
         }
     }
 

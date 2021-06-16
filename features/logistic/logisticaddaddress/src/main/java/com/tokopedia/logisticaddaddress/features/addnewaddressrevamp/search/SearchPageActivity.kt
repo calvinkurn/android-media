@@ -7,9 +7,16 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_search_address.*
 
 class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampComponent> {
+
+    private val userSession: UserSessionInterface by lazy {
+        UserSession(this)
+    }
 
     override fun getComponent(): AddNewAddressRevampComponent {
         return DaggerAddNewAddressRevampComponent.builder()
@@ -22,6 +29,11 @@ class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampCompo
         setContentView(R.layout.activity_search_address)
         initViews()
         component.inject(this)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        AddNewAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
     }
 
     private fun initViews() {

@@ -760,7 +760,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         token.setUt(shipmentAddressFormData.getKeroUnixTime());
         token.setDistrictRecommendation(shipmentAddressFormData.getKeroDiscomToken());
 
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V3);
         intent.putExtra(KERO_TOKEN, token);
         intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER);
 

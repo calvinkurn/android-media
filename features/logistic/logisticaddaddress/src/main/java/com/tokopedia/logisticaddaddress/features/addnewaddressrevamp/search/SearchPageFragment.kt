@@ -40,6 +40,7 @@ import com.tokopedia.logisticaddaddress.databinding.FragmentSearchAddressBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageFragment
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LATITUDE
@@ -49,6 +50,7 @@ import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FO
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
 import kotlinx.android.synthetic.main.fragment_google_map.*
 import rx.Subscriber
@@ -57,6 +59,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoCompleteItemListener {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -121,9 +126,24 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.size == requiredPermissions.size) {
-            getLocation()
+
+        var isAllowed = false
+        for (i in permissions.indices) {
+            if (grantResults.isNotEmpty() && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                isAllowed = true
+                getLocation()
+            }
         }
+
+        if (isAllowed) {
+            AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
+        } else {
+            AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
+        }
+
+      /*  if (grantResults.size == requiredPermissions.size) {
+            getLocation()
+        }*/
     }
 
     override fun onDestroy() {
@@ -143,34 +163,39 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         binding.searchPageInput.searchBarTextField.setText("")
         binding.tvMessageSearch.text = getString(R.string.txt_message_initial_load)
         binding.tvMessageSearch.setOnClickListener {
+            AddNewAddressRevampAnalytics.onClickIsiAlamatManualSearch(userSession.userId)
             Intent(context, AddressFormActivity::class.java).apply {
-                putExtra(AddressConstants.EXTRA_IS_POSITIVE_FLOW, false)
+                putExtra(EXTRA_IS_POSITIVE_FLOW, false)
                 startActivityForResult(this, 1599)
             }
         }
     }
 
     private fun setSearchView() {
-        binding.searchPageInput.searchBarTextField.addTextChangedListener(object: TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
+        binding.searchPageInput.searchBarTextField.run {
+            setOnClickListener {
+                AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                //no-op
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.tvMessageSearch.text = "Tidak ketemu? Isi alamat secara manual"
-                if (TextUtils.isEmpty(binding.searchPageInput.searchBarTextField.text.toString())) {
-                    hideListLocation()
-                } else {
-                    loadAutoComplete(binding.searchPageInput.searchBarTextField.text.toString())
+            addTextChangedListener(object: TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
                 }
-            }
 
-        })
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    //no-op
+                }
 
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    binding.tvMessageSearch.text = "Tidak ketemu? Isi alamat secara manual"
+                    if (TextUtils.isEmpty(binding.searchPageInput.searchBarTextField.text.toString())) {
+                        hideListLocation()
+                    } else {
+                        loadAutoComplete(binding.searchPageInput.searchBarTextField.text.toString())
+                    }
+                }
 
+            })
+        }
     }
 
 
@@ -178,6 +203,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         fusedLocationClient = FusedLocationProviderClient(requireActivity())
         //loading dsb
         binding.rlSearchCurrentLocation.setOnClickListener {
+            AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
             if (allPermissionsGranted()) {
                 hasRequestedLocation = true
                 getLocation()
@@ -194,7 +220,10 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         setupBottomSheetLocUndefined(viewBinding)
 
         bottomSheetLocUndefined?.apply {
-            setCloseClickListener { dismiss() }
+            setCloseClickListener {
+                AddNewAddressRevampAnalytics.onClickXOnBlockGpsSearch(userSession.userId)
+                dismiss()
+            }
             setChild(viewBinding.root)
             setOnDismissListener { dismiss() }
         }
@@ -205,11 +234,12 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     }
 
     private fun setupBottomSheetLocUndefined(viewBinding: BottomsheetLocationUndefinedBinding) {
-        viewBinding?.run {
+        viewBinding.run {
             imgLocUndefined.setImageUrl(LOCATION_NOT_FOUND)
             tvLocUndefined.text = "Lokasi tidak terdeteksi"
             tvInfoLocUndefined.text = "Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu."
             btnActivateLocation.setOnClickListener {
+                AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiSearch(userSession.userId)
                 goToSettingLocationPage()
             }
         }
@@ -342,6 +372,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
 
     override fun onItemClicked(placeId: String) {
+        AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
         goToPinpointPage(placeId, null, null)
     }
 

@@ -11,9 +11,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_BUNDLE
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 class PinpointNewPageActivity: BaseSimpleActivity(), HasComponent<AddNewAddressRevampComponent> {
+
+    private val userSession: UserSessionInterface by lazy {
+        UserSession(this)
+    }
 
     override fun getComponent(): AddNewAddressRevampComponent {
         return DaggerAddNewAddressRevampComponent.builder()
@@ -28,6 +35,11 @@ class PinpointNewPageActivity: BaseSimpleActivity(), HasComponent<AddNewAddressR
             fragment = PinpointNewPageFragment.newInstance(bundle)
         }
         return fragment
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        AddNewAddressRevampAnalytics.onClickBackArrowPinpoint(userSession.userId)
     }
 
     companion object{

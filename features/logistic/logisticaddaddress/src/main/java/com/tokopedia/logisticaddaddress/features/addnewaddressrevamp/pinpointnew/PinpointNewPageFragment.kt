@@ -3,9 +3,13 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointne
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,15 +17,16 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.OnFailureListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
@@ -39,6 +44,7 @@ import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
+import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentPinpointNewBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
@@ -47,6 +53,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LATITUDE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LONGITUDE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
@@ -55,12 +62,16 @@ import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FO
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
 class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -79,6 +90,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var currentPlaceId: String? = ""
     private var zipCodes: MutableList<String>? = null
     private var bottomSheetInfo: BottomSheetUnify? = null
+    private var bottomSheetLocUndefined: BottomSheetUnify? = null
 
     private var saveAddressDataModel: SaveAddressDataModel? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
@@ -119,6 +131,25 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         if(requestCode == 1599 && resultCode == Activity.RESULT_OK) {
             val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
             finishActivity(newAddress)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        var isAllowed = false
+        for (i in permissions.indices) {
+            if (grantResults.isNotEmpty() && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                isAllowed = true
+                getLocation()
+            }
+        }
+
+        if (isAllowed) {
+            AddNewAddressRevampAnalytics.onClickAllowLocationPinpoint(userSession.userId)
+        } else {
+            AddNewAddressRevampAnalytics.onClickDontAllowLocationPinpoint(userSession.userId)
+
         }
     }
 
@@ -332,25 +363,30 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         binding?.run {
 
             bottomsheetLocation.btnInfo.setOnClickListener {
+                AddNewAddressRevampAnalytics.onClickIconQuestion(userSession.userId)
                 bottomsheetLocation.root.hide()
                 showBottomSheetInfo()
             }
 
             bottomsheetLocation.btnPrimary.setOnClickListener {
                 if (!isPositiveFlow) {
+                    AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId)
                     goToAddressForm()
                 } else {
+                    AddNewAddressRevampAnalytics.onClickPilihLokasiPositive(userSession.userId)
                     goToAddressForm()
                 }
             }
 
             bottomsheetLocation.btnSecondary.setOnClickListener {
+                AddNewAddressRevampAnalytics.onClickIsiAlamatManual(userSession.userId)
                 isPositiveFlow = false
                 goToAddressForm()
             }
 
             chipsCurrentLoc.chipImageResource = context?.let { getIconUnifyDrawable(it, IconUnify.TARGET) }
             chipsCurrentLoc.setOnClickListener {
+                AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
                 if (allPermissionsGranted()) {
                     hasRequestedLocation = true
                     getLocation()
@@ -362,6 +398,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
             chipsSearch.chipImageResource = context?.let { getIconUnifyDrawable(it, IconUnify.SEARCH) }
             chipsSearch.setOnClickListener {
+                AddNewAddressRevampAnalytics.onClickCariUlangAlamat(userSession.userId)
                 goToSearchPage()
             }
         }
@@ -395,8 +432,90 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
             }
         } else {
-            //bottomsheet blm aktifin GPS
+            showBottomSheetLocUndefined()
         }
+    }
+
+    private fun showBottomSheetLocUndefined(){
+        bottomSheetLocUndefined = BottomSheetUnify()
+        val viewBinding = BottomsheetLocationUndefinedBinding.inflate(LayoutInflater.from(context), null, false)
+        setupBottomSheetLocUndefined(viewBinding)
+
+        bottomSheetLocUndefined?.apply {
+            setCloseClickListener {
+                AddNewAddressRevampAnalytics.onClickXOnBlockGpsPinpoint(userSession.userId)
+                dismiss()
+            }
+            setChild(viewBinding.root)
+            setOnDismissListener { dismiss() }
+        }
+
+        childFragmentManager.let {
+            bottomSheetLocUndefined?.show(it, "")
+        }
+    }
+
+    private fun setupBottomSheetLocUndefined(viewBinding: BottomsheetLocationUndefinedBinding) {
+        viewBinding.run {
+            imgLocUndefined.setImageUrl(LOCATION_NOT_FOUND)
+            tvLocUndefined.text = "Lokasi tidak terdeteksi"
+            tvInfoLocUndefined.text = "Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu."
+            btnActivateLocation.setOnClickListener {
+                AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiPinpoint(userSession.userId)
+                goToSettingLocationPage()
+            }
+        }
+    }
+
+    private fun goToSettingLocationPage() {
+        if (context?.let { turnGPSOn(it) } == false) {
+            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+        }
+    }
+
+    private fun turnGPSOn(context: Context): Boolean {
+        var isGpsOn = false
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val mSettingsClient = LocationServices.getSettingsClient(context)
+
+        val locationRequest = LocationRequest.create()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 10 * 1000
+        locationRequest.fastestInterval = 2 * 1000
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+        val mLocationSettingsRequest = builder.build()
+        builder.setAlwaysShow(true)
+
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            isGpsOn = true
+        } else {
+            mSettingsClient
+                    .checkLocationSettings(mLocationSettingsRequest)
+                    .addOnSuccessListener(context as Activity) {
+                        //  GPS is already enable, callback GPS status through listener
+                        isGpsOn = true
+                    }
+                    .addOnFailureListener(context, OnFailureListener { e ->
+                        when ((e as ApiException).statusCode) {
+                            LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
+
+                                try {
+                                    // Show the dialog by calling startResolutionForResult(), and check the
+                                    // result in onActivityResult().
+                                    val rae = e as ResolvableApiException
+                                    rae.startResolutionForResult(context, GPS_REQUEST)
+                                } catch (sie: IntentSender.SendIntentException) {
+                                    sie.printStackTrace()
+                                }
+
+                            LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                                val errorMessage = "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
+                                Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    })
+        }
+        return isGpsOn
     }
 
     fun createLocationCallback(): LocationCallback {
@@ -478,13 +597,15 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun updateInvalidBottomSheetData(type: Int) {
-        if (type == 1) {
+        if (type == BOTTOMSHEET_OUT_OF_INDO) {
+            AddNewAddressRevampAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
             binding?.bottomsheetLocation?.run {
                 imgInvalidLoc.setImageUrl(IMAGE_OUTSIDE_INDONESIA)
                 tvInvalidLoc.text = "Lokasi di luar jangkauan"
                 tvInvalidLocDetail.text = "Saat ini, Tokopedia belum melayani pengiriman ke luar Indonesia. Pilih ulang lokasimu, ya."
             }
         } else {
+            AddNewAddressRevampAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(userSession.userId)
             binding?.bottomsheetLocation?.run {
                 imgInvalidLoc.setImageUrl(LOCATION_NOT_FOUND)
                 tvInvalidLoc.text = "Yaah, alamatmu tidak terdeteksi"
@@ -493,6 +614,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         }
 
         binding?.bottomsheetLocation?.btnAnaNegative?.setOnClickListener {
+            if (type == BOTTOMSHEET_OUT_OF_INDO) AddNewAddressRevampAnalytics.onClickIsiAlamatOutOfIndo(userSession.userId)
+            else AddNewAddressRevampAnalytics.onClickIsiAlamatManualUndetectedLocation(userSession.userId)
             isPositiveFlow = false
             goToAddressForm()
         }
@@ -518,6 +641,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
         const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
         const val LOCATION_NOT_FOUND_MESSAGE = "Lokasi gagal ditemukan"
+        const val BOTTOMSHEET_OUT_OF_INDO = 1
 
         fun newInstance(extra: Bundle): PinpointNewPageFragment {
             return PinpointNewPageFragment().apply {
