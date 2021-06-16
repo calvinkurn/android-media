@@ -17,6 +17,7 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
     protected var wsMineResponseText: WebSocketResponse = WebSocketResponse()
     protected var wsInterlocutorResponseText: WebSocketResponse = WebSocketResponse()
     protected var wsSellerResponseText: WebSocketResponse = WebSocketResponse()
+    protected var wsSellerInvoiceResponse: WebSocketResponse = WebSocketResponse()
 
     private val templateChats = listOf(
         "I am buyer", "Is this product ready?"
@@ -43,6 +44,10 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
         )
         wsSellerResponseText = AndroidFileUtil.parse(
             "buyer/ws_opposite_with_label.json",
+            WebSocketResponse::class.java
+        )
+        wsSellerInvoiceResponse = AndroidFileUtil.parse(
+            "buyer/ws_seller_invoice_response.json",
             WebSocketResponse::class.java
         )
         wsInterlocutorResponseText = AndroidFileUtil.parse(

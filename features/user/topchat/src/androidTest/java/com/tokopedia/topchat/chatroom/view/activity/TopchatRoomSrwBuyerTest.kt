@@ -496,7 +496,28 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertTemplateChatVisibility(isDisplayed())
     }
 
-    // TODO: SRW bubble should removed when user receive invoice event from ws.
+    @Test
+    fun srw_bubble_should_removed_when_user_receive_invoice_event_from_ws() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // When
+        clickSrwPreviewItemAt(0)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket.simulateResponse(wsSellerInvoiceResponse.changeTimeStampTo(today()))
+        websocket.simulateResponse(wsSellerResponseText.changeTimeStampTo(today()))
+
+        // Then
+        assertSrwBubbleDoesNotExist()
+        assertTemplateChatVisibility(isDisplayed())
+    }
+
     // TODO: SRW preview should removed when user re-attach preview with invoice
     // TODO: SRW bubble should removed when user return from attach image and request upload image.
     // TODO: SRW bubble should removed when user receive attach image event from ws.

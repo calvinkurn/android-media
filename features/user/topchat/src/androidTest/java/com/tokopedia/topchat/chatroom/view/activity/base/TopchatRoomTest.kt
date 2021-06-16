@@ -9,7 +9,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -666,16 +665,18 @@ fun ChatSmartReplyQuestionResponse.hasQuestion(
 fun WebSocketResponse.changeTimeStampTo(
     timeMillis: Long
 ): WebSocketResponse {
+    Log.d("CHECK_SDF", jsonObject.toString())
     val date = Date(timeMillis)
     val startTime = SimpleDateFormat(START_TIME_FORMAT).format(date)
+    val msg = jsonObject?.get("message")?.asJsonObject
+    msg?.apply {
+        addProperty("timestamp", startTime)
+        addProperty("timestamp_fmt", startTime)
+        addProperty("timestamp_unix", timeMillis)
+        addProperty("timestamp_unix_nano", timeMillis * 1_000_000)
+    }
     jsonObject?.apply {
         addProperty("start_time", startTime)
-        get("message")?.apply {
-            addProperty("timestamp", startTime)
-            addProperty("timestamp_fmt", startTime)
-            addProperty("timestamp_unix", timeMillis)
-            addProperty("timestamp_unix_nano", timeMillis * 1_000_000)
-        }
     }
     Log.d("CHECK_SDF", jsonObject.toString())
     return this
