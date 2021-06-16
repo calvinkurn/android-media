@@ -925,9 +925,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         clickSrwPreviewItemAt(0)
         websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
         clickStickerIconMenu()
-        waitForIt(5000)
         clickSrwBubbleExpandCollapse(0)
-        waitForIt(5000)
 
         // Then
         assertSrwBubbleContentIsVisibleAt(0)
