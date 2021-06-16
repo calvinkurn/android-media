@@ -3,20 +3,20 @@ package com.tokopedia.kol.feature.comment.data.mapper;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel;
-import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel;
-import com.tokopedia.network.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.kolcommon.util.GraphqlErrorException;
-import com.tokopedia.kolcommon.util.TimeConverter;
 import com.tokopedia.kol.feature.comment.data.pojo.get.Comment;
 import com.tokopedia.kol.feature.comment.data.pojo.get.GetKolCommentData;
 import com.tokopedia.kol.feature.comment.data.pojo.get.GetUserPostComment;
 import com.tokopedia.kol.feature.comment.data.pojo.get.PostKol;
 import com.tokopedia.kol.feature.comment.data.type.SourceType;
+import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel;
+import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel;
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolComments;
+import com.tokopedia.kolcommon.util.GraphqlErrorException;
+import com.tokopedia.kolcommon.util.TimeConverter;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
 
 import java.util.ArrayList;
 
@@ -52,7 +52,7 @@ public class KolGetCommentMapper
                 postKol.getUserName() == null ? "" : postKol.getUserName(),
                 postKol.getDescription() == null ? "" : postKol.getDescription(),
                 postKol.getCreateTime() == null ? "" :
-                        TimeConverter.generateTime(context, postKol.getCreateTime()),
+                        postKol.getCreateTime(),
                 String.valueOf(postKol.getUserId()),
                 postKol.getUserUrl(),
                 getTagsLink(postKol),
@@ -63,8 +63,7 @@ public class KolGetCommentMapper
                 postKol.getUserPhoto() == null ? "" : postKol.getUserPhoto(),
                 postKol.getUserName() == null ? "" : postKol.getUserName(),
                 postKol.getDescription() == null ? "" : postKol.getDescription(),
-                postKol.getCreateTime() == null ? "" :
-                        TimeConverter.generateTime(context, postKol.getCreateTime()),
+                postKol.getCreateTime() == null ? "" : postKol.getCreateTime(),
                 String.valueOf(postKol.getUserId()),
                 postKol.getUserUrl(),
                 getTagsLink(postKol),
@@ -141,7 +140,7 @@ public class KolGetCommentMapper
                     comment.getUserName() == null ? "" : comment.getUserName(),
                     comment.getComment() == null ? "" : comment.getComment(),
                     comment.getCreateTime() == null ? "" :
-                            TimeConverter.generateTime(context, comment.getCreateTime()),
+                            comment.getCreateTime(),
                     comment.isKol(),
                     comment.isCommentOwner(),
                     comment.getUserBadges(),

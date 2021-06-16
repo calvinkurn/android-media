@@ -356,8 +356,20 @@ open class DynamicPostViewHolder(v: View,
 
             if (template.comment) {
                 itemView.commentGroup.show()
-                itemView.commentIcon.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
-                itemView.commentText.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
+                itemView.commentIcon.setOnClickListener {
+                    listener.onCommentClick(
+                        adapterPosition,
+                        id,
+                        ""
+                    )
+                }
+                itemView.commentText.setOnClickListener {
+                    listener.onCommentClick(
+                        adapterPosition,
+                        id, ""
+
+                    )
+                }
                 bindComment(footer.comment)
             } else {
                 itemView.commentGroup.hide()
@@ -547,7 +559,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean, type: Boolean = false)
 
-        fun onCommentClick(positionInFeed: Int, id: Int)
+        fun onCommentClick(positionInFeed: Int, id: Int, authorType: String)
 
         fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int)
 

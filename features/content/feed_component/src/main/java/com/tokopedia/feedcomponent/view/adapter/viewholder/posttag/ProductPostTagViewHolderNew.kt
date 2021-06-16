@@ -3,24 +3,29 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.posttag
 import android.graphics.Paint
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
-class ProductPostTagViewHolderNew(val mainView: View,
-                                  val listener: DynamicPostViewHolder.DynamicPostListener)
-    : AbstractViewHolder<ProductPostTagViewModelNew>(mainView) {
+private const val RATING_FORMAT = 20.0
+
+class ProductPostTagViewHolderNew(
+    val mainView: View,
+    val listener: DynamicPostViewHolder.DynamicPostListener
+) : AbstractViewHolder<ProductPostTagViewModelNew>(mainView) {
 
     private lateinit var productLayout: FrameLayout
     private lateinit var productImage: ImageUnify
@@ -31,7 +36,9 @@ class ProductPostTagViewHolderNew(val mainView: View,
     private lateinit var rating: Typography
     private lateinit var label: Label
     private lateinit var soldInfo: Typography
-    private lateinit var freeShipping: ImageUnify
+    private lateinit var freeShipping: ImageView
+    private lateinit var divider: View
+    private lateinit var star: IconUnify
 
     override fun bind(item: ProductPostTagViewModelNew) {
         productLayout = itemView.findViewById(R.id.productLayout)
@@ -44,7 +51,8 @@ class ProductPostTagViewHolderNew(val mainView: View,
         label = itemView.findViewById(R.id.discountLabel)
         soldInfo = itemView.findViewById(R.id.soldInfo)
         freeShipping = itemView.findViewById(R.id.freeShipping)
-        productPrice.text = item.priceFmt
+        divider = itemView.findViewById(R.id.divider)
+        star = itemView.findViewById(R.id.star)
         label.showWithCondition(item.isDiscount)
         productTag.showWithCondition(item.isDiscount)
         if (item.isDiscount) {
@@ -53,10 +61,14 @@ class ProductPostTagViewHolderNew(val mainView: View,
                 text = item.originalPriceFmt
             }
             label.text = item.discountFmt
+            productPrice.text = item.priceDiscountFmt
+
+        } else {
+            productPrice.text = item.priceFmt
         }
         freeShipping.showWithCondition(item.isFreeShipping)
         if (item.isFreeShipping) {
-            freeShipping.setImageUrl(item.freeShippingURL)
+            freeShipping.loadImage(item.freeShippingURL)
         }
         productImage.setImageUrl(item.imgUrl)
         productName.text = item.text
@@ -68,10 +80,13 @@ class ProductPostTagViewHolderNew(val mainView: View,
                 adapterPosition
             )
         )
-        rating.text = item.rating.toString()
+        rating.text = String.format("%.1f", item.rating.toDouble() / RATING_FORMAT)
         val soldInfoText = getString(R.string.feed_common_terjual) + " " + item.totalSold.toString()
         soldInfo.text = soldInfoText
-
+        star.showWithCondition(item.rating != 0)
+        divider.showWithCondition(item.rating != 0 && item.totalSold != 0)
+        rating.showWithCondition(item.rating != 0)
+        soldInfo.showWithCondition(item.totalSold != 0)
         productLayout.setOnClickListener(
             getItemClickNavigationListener(
                 listener,
@@ -81,9 +96,12 @@ class ProductPostTagViewHolderNew(val mainView: View,
             )
         )
     }
-    private fun getItemClickNavigationListener(listener: DynamicPostViewHolder.DynamicPostListener,
-                                               positionInFeed: Int,
-                                               item: FeedXProduct, itemPosition: Int)
+
+    private fun getItemClickNavigationListener(
+        listener: DynamicPostViewHolder.DynamicPostListener,
+        positionInFeed: Int,
+        item: FeedXProduct, itemPosition: Int
+    )
             : View.OnClickListener {
         return View.OnClickListener {
             listener.onPostTagItemBSClick(positionInFeed, item.appLink, item, itemPosition)
@@ -94,19 +112,16 @@ class ProductPostTagViewHolderNew(val mainView: View,
     private fun mappingTracking(trackListPojo: List<Tracking>): MutableList<TrackingViewModel> {
         val trackList = ArrayList<TrackingViewModel>()
         for (trackPojo: Tracking in trackListPojo) {
-            trackList.add(TrackingViewModel(
+            trackList.add(
+                TrackingViewModel(
                     trackPojo.clickURL,
                     trackPojo.viewURL,
                     trackPojo.type,
                     trackPojo.source
-            ))
+                )
+            )
         }
         return trackList
-    }
-
-    private fun onBuyButtonClicked(listener: DynamicPostViewHolder.DynamicPostListener, positionInFeed: Int, itemPojo: PostTagItem, authorType: String) {
-        listener.onPostTagItemBuyClicked(positionInFeed, itemPojo, authorType)
-        listener.onAffiliateTrackClicked(mappingTracking(itemPojo.tracking), true)
     }
 
     companion object {

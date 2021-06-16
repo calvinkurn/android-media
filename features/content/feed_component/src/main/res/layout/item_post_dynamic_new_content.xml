@@ -63,8 +63,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/menu_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             app:icon_name="MENU_KEBAB_HORIZONTAL"
             app:layout_constraintBottom_toBottomOf="@id/shop_image"
@@ -77,9 +77,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_3"
-        android:paddingTop="@dimen/dp_5"
-        android:paddingRight="@dimen/dp_3"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/header"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
@@ -147,15 +146,6 @@
         app:layout_constraintTop_toBottomOf="@id/like_button"
         app:typographyType="body_3"
         tools:text="Disukai oleh iggregory, baseus, dan 1.710 lainnya" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/badge"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/liked_text" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/caption_text"

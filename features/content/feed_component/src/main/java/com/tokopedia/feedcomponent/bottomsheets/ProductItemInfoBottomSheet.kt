@@ -26,8 +26,14 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private lateinit var listener: DynamicPostViewHolder.DynamicPostListener
     private var postId: Int = 0
     var closeClicked: (() -> Unit)? = null
+    var disMissed: (() -> Unit)? = null
+    private var dismissedByClosing = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val contentView = View.inflate(context, R.layout.item_posttag, null)
         setTitle(getString(R.string.content_product_bs_title))
         setChild(contentView)
@@ -50,8 +56,14 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         )
         (rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
         setCloseClickListener {
+            dismissedByClosing = true
             closeClicked?.invoke()
             dismiss()
+        }
+        setOnDismissListener {
+            if (!dismissedByClosing) {
+                disMissed?.invoke()
+            }
         }
     }
 

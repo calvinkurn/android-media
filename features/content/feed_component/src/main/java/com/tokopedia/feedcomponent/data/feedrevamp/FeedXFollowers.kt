@@ -3,14 +3,15 @@ package com.tokopedia.feedcomponent.data.feedrevamp
 import com.google.gson.annotations.SerializedName
 
 data class FeedXFollowers(
-        @SerializedName("isFollowed")
+    @SerializedName("isFollowed")
         var isFollowed: Boolean = false,
-        @SerializedName("label")
+    @SerializedName("label")
         var label: String = "",
-        @SerializedName("count")
+    @SerializedName("count")
         var count: Int = 0,
-        @SerializedName("countFmt")
+    @SerializedName("countFmt")
         var countFmt: String = "",
-        @SerializedName("mods")
+    @SerializedName("mods")
         var mods: List<String> = emptyList(),
+    var transitionFollow: Boolean = false
 )

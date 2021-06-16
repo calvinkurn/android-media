@@ -29,7 +29,6 @@ import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.custom.MentionEditText
 import com.tokopedia.feedcomponent.view.span.MentionSpan
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderNewModel
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentNewModel
@@ -98,15 +97,18 @@ class KolCommentNewCardView : LinearLayout {
     fun setModel(element: KolCommentNewModel, canComment: Boolean) {
         ImageHandler.loadImageCircle2(avatar.context, avatar, element.avatarUrl)
         element.time?.let {
-            time.text = TimeConverter.generateTimeNew(context, it, 1)
+            if (it == context.getString(com.tokopedia.kolcommon.R.string.post_time_just_now))
+                time.text =
+                    context.getString(com.tokopedia.feedcomponent.R.string.post_time_just_now_new)
+            else
+                time.text = TimeConverter.generateTimeNew(context, it)
         }
-        time.text = element.time
-
         avatar.setOnClickListener {
             val profileUrl = element.userUrl
             listener?.onAvatarClicked(
                 if (!profileUrl.isNullOrEmpty()) profileUrl
-                else constructProfileApplink(element.userId ?: "0")
+                else constructProfileApplink(element.userId ?: "0"),
+                element.isShop
             )
         }
 
@@ -157,17 +159,17 @@ class KolCommentNewCardView : LinearLayout {
             append(getCommentText(element))
         }
         comment.text = tagConverter.convertToLinkifyHashtag(
-                SpannableString(MethodChecker.fromHtml(commentText)), colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag, null) }
+            SpannableString(MethodChecker.fromHtml(commentText)), colorLinkHashtag
+        ) { hashtag -> onHashtagClicked(hashtag, element.id ?: "0") }
 
         comment.movementMethod = LinkMovementMethod.getInstance()
     }
 
 
-    private fun onHashtagClicked(hashtag: String, trackingPostModel: TrackingPostModel?) {
+    private fun onHashtagClicked(hashtag: String, id: String) {
         val encodeHashtag = URLEncoder.encode(hashtag)
         RouteManager.route(context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
-        //todo tracking
-        //    listener.onHashtagClicked(hashtag, trackingPostModel)
+        listener?.onHashtagClicked(hashtag, id)
     }
 
 
@@ -194,7 +196,11 @@ class KolCommentNewCardView : LinearLayout {
         )
 
         setOnLongClickListener {
-            val sheet = MenuOptionsBottomSheet.newInstance("Hapus", false)
+            val sheet = MenuOptionsBottomSheet.newInstance(
+                isReportable = true,
+                canUnfollow = false,
+                isDeletable = element.canDeleteComment()
+            )
             sheet.show((context as FragmentActivity).supportFragmentManager, "")
             sheet.onReport = {
                 ReportBottomSheet.newInstance(element.id?.toInt()
@@ -209,7 +215,7 @@ class KolCommentNewCardView : LinearLayout {
                     }
                 }).show((context as FragmentActivity).supportFragmentManager, "")
             }
-            sheet.onDeleteorFollow = {
+            sheet.onDelete = {
                 listener?.onDeleteComment(element.id ?: "0", element.canDeleteComment())
                     ?: false
             }
@@ -232,7 +238,8 @@ class KolCommentNewCardView : LinearLayout {
     }
 
     interface Listener {
-        fun onAvatarClicked(profileUrl: String)
+        fun onHashtagClicked(hashtag: String, id: String)
+        fun onAvatarClicked(profileUrl: String, shop: Boolean)
         fun onMentionedProfileClicked(authorId: String)
         fun onDeleteComment(commentId: String, canDeleteComment: Boolean): Boolean
         fun onTokopediaUrlClicked(url: String)

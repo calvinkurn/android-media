@@ -117,6 +117,7 @@
                     tools:text="4.7" />
 
                 <View
+                    android:id="@+id/divider"
                     android:layout_width="@dimen/dp_1"
                     android:layout_height="@dimen/dp_10"
                     android:layout_gravity="center_vertical"
@@ -134,9 +135,11 @@
                     tools:text="Terjual 200" />
             </LinearLayout>
 
-            <com.tokopedia.unifycomponents.ImageUnify
+            <ImageView
                 android:id="@+id/freeShipping"
-                android:layout_width="67dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitStart"
+                android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_20" />
         </LinearLayout>
 

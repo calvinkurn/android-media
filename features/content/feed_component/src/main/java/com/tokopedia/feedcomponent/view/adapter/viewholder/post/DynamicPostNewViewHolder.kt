@@ -4,7 +4,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder.Companion.PAYLOAD_PLAY_VIDEO
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.widget.PostDynamicViewNew
@@ -16,7 +18,8 @@ open class DynamicPostNewViewHolder(
     itemView: View, private val userSession: UserSessionInterface,
     private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener,
     private val videoListener: VideoViewHolder.VideoViewListener,
-    private val gridItemListener: GridPostAdapter.GridItemListener
+    private val gridItemListener: GridPostAdapter.GridItemListener,
+    private val imagePostListener: ImagePostViewHolder.ImagePostListener
 ) : AbstractViewHolder<DynamicPostUiModel>(itemView) {
 
     private val postDynamicView =
@@ -40,6 +43,7 @@ open class DynamicPostNewViewHolder(
             PAYLOAD_ANIMATE_LIKE -> postDynamicView.bindLike(element.feedXCard)
             PAYLOAD_ANIMATE_FOLLOW -> postDynamicView.bindFollow(element.feedXCard)
             ANIMATE_COUNTER -> postDynamicView.bindItems(element.feedXCard)
+            PAYLOAD_PLAY_VIDEO -> postDynamicView.bindItems(element.feedXCard)
         }
     }
 
@@ -49,11 +53,21 @@ open class DynamicPostNewViewHolder(
             return
         }
 
-        postDynamicView.bindData(dynamicPostListener, gridItemListener,videoListener,adapterPosition, userSession, element.feedXCard)
-        postDynamicView.setMargin(itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
+        postDynamicView.bindData(
+            dynamicPostListener,
+            gridItemListener,
+            videoListener,
+            adapterPosition,
+            userSession,
+            element.feedXCard,
+            imagePostListener
+        )
+        postDynamicView.setMargin(
+            itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
             itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12),
             itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_0),
-            itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12))
+            itemView.context.resources.getDimensionPixelSize(R.dimen.unify_space_12)
+        )
     }
 
 }

@@ -31,7 +31,10 @@ class KolCommentNewViewHolder(
                 )
             }
 
-            override fun onAvatarClicked(profileUrl: String) {
+            override fun onHashtagClicked(hashtag: String, id: String) {
+            }
+
+            override fun onAvatarClicked(profileUrl: String, shop: Boolean) {
                 viewListener.onGoToProfile(profileUrl)
             }
 

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
+    android:focusableInTouchMode="true"
     android:layout_height="wrap_content">
 
     <RelativeLayout
@@ -23,9 +24,11 @@
                 android:layout_marginTop="@dimen/dp_10"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:clipToPadding="false"
+                android:descendantFocusability="blocksDescendants"
                 android:paddingTop="@dimen/dp_8"
                 android:scrollbars="vertical"
                 android:tag="feed_plus_list"
+                android:nestedScrollingEnabled="true"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

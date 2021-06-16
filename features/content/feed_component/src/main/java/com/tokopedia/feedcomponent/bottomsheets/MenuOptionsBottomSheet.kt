@@ -10,22 +10,26 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_menu_options.*
 
 class MenuOptionsBottomSheet : BottomSheetUnify() {
-    private var followText: String = ""
-    private var isRecommendedPost: Boolean = false
     private var isReportable: Boolean = false
+    private var canBeDeleted: Boolean = false
+    private var canBeUnFollow: Boolean = false
     var onReport: (() -> Unit)? = null
-    var onDeleteorFollow: (() -> Unit)? = null
+    var onFollow: (() -> Unit)? = null
+    var onDelete: (() -> Unit)? = null
+    var onDismiss: (() -> Unit)? = null
+    var onClosedClicked: (() -> Unit)? = null
+    private var dismissedByClosing = false
 
     companion object {
         fun newInstance(
-            followText: String,
-            isReportable: Boolean = false,
-            isRecommendedPost: Boolean = false
+            isReportable: Boolean = true,
+            canUnfollow: Boolean = false,
+            isDeletable: Boolean = true
         ): MenuOptionsBottomSheet {
             return MenuOptionsBottomSheet().apply {
-                this.followText = followText
-                this.isRecommendedPost = isRecommendedPost
+                this.canBeUnFollow = canUnfollow
                 this.isReportable = isReportable
+                this.canBeDeleted = isDeletable
             }
         }
     }
@@ -42,17 +46,29 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        not_interested.showWithCondition(isRecommendedPost)
+        delete.showWithCondition(canBeDeleted)
         report.showWithCondition(isReportable)
-        follow.text = followText
+        follow.showWithCondition(canBeUnFollow)
         follow.setOnClickListener {
-            onDeleteorFollow?.invoke()
+            onFollow?.invoke()
             dismiss()
         }
         report.setOnClickListener {
             onReport?.invoke()
             dismiss()
         }
-        not_interested?.setOnClickListener { }
+        delete?.setOnClickListener {
+            onDelete?.invoke()
+            dismiss()
+        }
+        setCloseClickListener {
+            dismissedByClosing = true
+            onClosedClicked?.invoke()
+            dismiss()
+        }
+        setOnDismissListener {
+            if (!dismissedByClosing)
+                onDismiss?.invoke()
+        }
     }
 }

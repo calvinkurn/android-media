@@ -30,11 +30,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
-import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
@@ -209,7 +209,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                             showBottomSheetSellerMigration()
                         } else {
                             hideBottomSheetSellerMigration()
-                            FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
+                            //todo
+    //                        FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
                         }
                     } else {
                         hideBottomSheetSellerMigration()
@@ -508,18 +509,22 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
     }
 
-    override fun onGoToKolComment(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String) {
-
-       //todo
+    override fun onGoToKolComment(
+        rowNumber: Int,
+        id: Int,
+        hasMultipleContent: Boolean,
+        activityType: String,
+        authorType: String
+    ) {
         RouteManager.getIntent(
-                requireContext(),
-                UriUtil.buildUriAppendParam(
-                        ApplinkConstInternalContent.COMMENT,
-                        mapOf(
-                                COMMENT_ARGS_POSITION to rowNumber.toString()
-                        )
-                ),
-                id.toString()
+            requireContext(),
+            UriUtil.buildUriAppendParam(
+                ApplinkConstInternalContent.COMMENT,
+                mapOf(
+                    COMMENT_ARGS_POSITION to rowNumber.toString()
+                )
+            ),
+            id.toString()
         ).run { startActivityForResult(this, KOL_COMMENT_CODE) }
     }
 
@@ -589,8 +594,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onCommentClick(positionInFeed: Int, id: Int) {
-        onGoToKolComment(positionInFeed, id, false, "")
+    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String) {
+        onGoToKolComment(positionInFeed, id, false, "", authorType)
     }
 
     override fun onShareClick(
@@ -663,14 +668,18 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         if (positionInFeed < adapter.dataSize && adapter.data[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
             feedAnalytics.eventImageImpressionPost(
-                    FeedAnalyticTracker.Screen.FEED_SHOP,
-                    trackingPostModel.postId.toString(),
-                    trackingPostModel.activityName,
-                    trackingPostModel.mediaType,
-                    trackingPostModel.mediaUrl,
-                    trackingPostModel.recomId,
-                    positionInFeed)
+                FeedAnalyticTracker.Screen.FEED_SHOP,
+                trackingPostModel.postId.toString(),
+                trackingPostModel.activityName,
+                trackingPostModel.mediaType,
+                trackingPostModel.mediaUrl,
+                trackingPostModel.recomId,
+                positionInFeed
+            )
         }
+    }
+
+    override fun userCarouselImpression(positionInFeed: Int, media: List<FeedXMedia>) {
     }
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
@@ -678,10 +687,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         if (adapter.data[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
             feedAnalytics.eventShopPageClickPost(
-                    trackingPostModel.postId.toString(),
-                    trackingPostModel.activityName,
-                    trackingPostModel.mediaType,
-                    trackingPostModel.mediaUrl,
+                trackingPostModel.postId.toString(),
+                trackingPostModel.activityName,
+                trackingPostModel.mediaType,
+                trackingPostModel.mediaUrl,
                     positionInFeed)
         }
     }

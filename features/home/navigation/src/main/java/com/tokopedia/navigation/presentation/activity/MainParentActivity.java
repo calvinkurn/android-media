@@ -623,7 +623,7 @@ public class MainParentActivity extends BaseActivity implements
         presenter.get().onResume();
 
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
-            reloadPage();
+            //    reloadPage();
         }
         isUserFirstTimeLogin = !userSession.get().isLoggedIn();
 

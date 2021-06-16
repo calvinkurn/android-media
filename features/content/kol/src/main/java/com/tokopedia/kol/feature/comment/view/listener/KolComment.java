@@ -62,6 +62,8 @@ public interface KolComment {
 
         void replyToUser(MentionableUserViewModel user);
 
+        void onHashTagClicked(String hashTag, String id);
+
 
         interface ViewHolder {
             void onGoToProfile(String url);

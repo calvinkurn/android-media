@@ -5,26 +5,44 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.kol.KolComponentInstance
+import com.tokopedia.kol.feature.comment.di.DaggerKolCommentComponent
+import com.tokopedia.kol.feature.comment.di.KolCommentModule
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentNewFragment
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import javax.inject.Inject
 
 /**
  * Deeplink format:
  * tokopedia-android-internal://content/comment-new/{post_id}
  */
 
-class KolCommentNewActivity :BaseSimpleActivity(){
+class KolCommentNewActivity : BaseSimpleActivity() {
     private var kolId: Int = 0
     private var fromApplink = false
+    var postId: String? = ""
+
+    @Inject
+    internal lateinit var feedAnalytics: FeedAnalyticTracker
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
         getDataFromIntent()
         super.onCreate(savedInstanceState)
     }
 
+    private fun initInjector() {
+        DaggerKolCommentComponent.builder()
+            .kolComponent(KolComponentInstance.getKolComponent(application))
+            .kolCommentModule(KolCommentModule(null, null))
+            .build()
+            .inject(this)
+    }
+
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
-        val postId = intent.data?.lastPathSegment
+        postId = intent.data?.lastPathSegment
         if (!postId.isNullOrEmpty()) {
             bundle.putInt(KolCommentActivity.ARGS_ID, postId.toIntOrZero())
         }
@@ -38,7 +56,6 @@ class KolCommentNewActivity :BaseSimpleActivity(){
 
         val colPosition = bundle[ARGS_POSITION_COLUMN]
         if (colPosition is String) bundle.putInt(ARGS_POSITION_COLUMN, colPosition.toInt())
-
         return KolCommentNewFragment.createInstance(bundle)
     }
 
@@ -51,10 +68,17 @@ class KolCommentNewActivity :BaseSimpleActivity(){
         }
     }
 
-    companion object{
+    override fun onBackPressed() {
+        //todo
+        feedAnalytics.clickBackButtonCommentPage(postId ?: "0")
+        super.onBackPressed()
+    }
+
+    companion object {
         private const val ARGS_POSITION = "ARGS_POSITION"
         const val ARGS_ID = "ARGS_ID"
         private const val ARGS_POSITION_COLUMN = "ARGS_POSITION_COLUMN"
+        const val ARGS_AUTHOR_TYPE = "ARGS_AUTHOR_TYPE"
 
         @JvmStatic
         fun getCallingIntent(context: Context, id: Int, rowNumber: Int): Intent {
@@ -65,6 +89,5 @@ class KolCommentNewActivity :BaseSimpleActivity(){
             intent.putExtras(bundle)
             return intent
         }
-
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.post.image
 import android.os.Build
 import android.view.ViewTreeObserver
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
@@ -17,16 +18,16 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
     override var layoutRes = R.layout.item_post_image
 
     override fun bind(element: ImagePostViewModel) {
-        itemView.image.setOnClickListener {
+        itemView.videoPreviewImage.setOnClickListener {
             listener.onImageClick(element.positionInFeed, pagerPosition, element.redirectLink)
             if (!element.trackingList.isEmpty()) {
                 listener.onAffiliateTrackClicked(element.trackingList, true)
             }
         }
-        itemView.image.viewTreeObserver.addOnGlobalLayoutListener(
+        itemView.videoPreviewImage.viewTreeObserver.addOnGlobalLayoutListener(
                 object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
-                        val viewTreeObserver = itemView.image.viewTreeObserver
+                        val viewTreeObserver = itemView.videoPreviewImage.viewTreeObserver
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                             viewTreeObserver.removeOnGlobalLayoutListener(this)
                         } else {
@@ -34,17 +35,19 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
                             viewTreeObserver.removeGlobalOnLayoutListener(this)
                         }
 
-                        itemView.image.maxHeight = itemView.image.width
-                        itemView.image.requestLayout()
+                        itemView.videoPreviewImage.maxHeight = itemView.videoPreviewImage.width
+                        itemView.videoPreviewImage.requestLayout()
                     }
                 }
         )
-        itemView.image.loadImage(element.image)
+        itemView.videoPreviewImage.loadImage(element.image)
         listener.userImagePostImpression(element.positionInFeed, pagerPosition)
     }
 
     interface ImagePostListener {
         fun userImagePostImpression(positionInFeed: Int, contentPosition: Int)
+
+        fun userCarouselImpression(positionInFeed: Int, media: List<FeedXMedia>)
 
         fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
 

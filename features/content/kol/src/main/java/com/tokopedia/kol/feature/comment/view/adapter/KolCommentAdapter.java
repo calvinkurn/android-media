@@ -1,10 +1,11 @@
 package com.tokopedia.kol.feature.comment.view.adapter;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
@@ -62,6 +63,11 @@ public class KolCommentAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
     public void showLoading() {
         list.add(loadingModel);
         notifyItemInserted(list.size());
+    }
+
+    public void clearList() {
+        list.clear();
+        notifyDataSetChanged();
     }
 
     public void removeLoading() {

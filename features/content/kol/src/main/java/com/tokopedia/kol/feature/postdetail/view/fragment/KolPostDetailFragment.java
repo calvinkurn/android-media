@@ -30,6 +30,7 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker;
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia;
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct;
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
@@ -688,7 +689,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onCommentClick(int positionInFeed, int id) {
+    public void onCommentClick(int positionInFeed, int id, @NotNull String authorType) {
         onGoToKolComment(positionInFeed, id);
     }
 
@@ -1015,6 +1016,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onReadMoreClicked(@NotNull String postId) {
+
+    }
+
+    @Override
+    public void userCarouselImpression(int positionInFeed, @NotNull List<FeedXMedia> media) {
 
     }
 }

@@ -1,8 +1,8 @@
 package com.tokopedia.feedcomponent.util
 
-import androidx.annotation.ColorInt
 import android.text.Spannable
 import android.text.SpannableStringBuilder
+import androidx.annotation.ColorInt
 import com.tokopedia.feedcomponent.view.span.MentionSpan
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
 import java.util.regex.Matcher
@@ -28,7 +28,7 @@ object MentionTextHelper {
     private const val ID_NAME_DELIMITER = "|"
 
     private const val ALLOWED_CHARS_REGEX = "[a-zA-Z \\[\\]+`~'\",.|\\{\\}!@#\\$%^&*()\\-_+=\\\\]"
-    private const val TOKENIZER_FULL_EDIT_REGEX = "($MENTION_CHAR$OPENING_MENTION_TAG\\{(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@)?\\}$CLOSING_MENTION_TAG)"
+    private const val TOKENIZER_FULL_EDIT_REGEX = "($MENTION_CHAR$OPENING_MENTION_TAG\\{(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@);?\\}$CLOSING_MENTION_TAG)"
     private const val TOKENIZER_CONTENT_ONLY_REGEX = "(?<=($MENTION_CHAR)?$OPENING_MENTION_TAG\\{)(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@)?(?=\\}$CLOSING_MENTION_TAG)"
 
     private const val READ_FULL_REGEX = "(\\{(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@)?\\})"

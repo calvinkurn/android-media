@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -37,19 +38,19 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/feed_component_dp_0.5"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:background="@color/Unify_N75"
-        android:visibility="gone" />
+        android:background="@color/Unify_N75" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/not_interested"
+        android:id="@+id/delete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/dp_18"
         android:layout_marginBottom="@dimen/dp_18"
-        android:text="@string/feed_component_not_interested"
+        android:text="@string/feed_delete_comment"
         android:textColor="@color/Unify_N700_96"
         android:visibility="gone"
-        app:typographyType="heading_5" />
+        app:typographyType="heading_5"
+        tools:visibility="visible" />
 
 </LinearLayout>

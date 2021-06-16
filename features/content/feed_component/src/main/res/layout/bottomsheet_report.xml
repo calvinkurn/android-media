@@ -131,6 +131,7 @@
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:background="@color/Unify_N75"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/report_subtext1"
             app:layout_constraintTop_toBottomOf="@id/report_subtext3" />
 
@@ -142,6 +143,7 @@
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:text="@string/feed_common_reason_desc_others"
             android:textColor="@color/Unify_N700_96"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/report_subtext4_icon"
             app:layout_constraintStart_toStartOf="@id/report_header"
@@ -152,6 +154,7 @@
             android:id="@+id/report_subtext4_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:icon_name="CHEVRON_RIGHT"
             app:layout_constraintBottom_toBottomOf="@id/report_subtext4"
             app:layout_constraintEnd_toEndOf="@id/report_header"

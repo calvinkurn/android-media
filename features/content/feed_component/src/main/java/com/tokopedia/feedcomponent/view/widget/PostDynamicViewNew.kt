@@ -28,10 +28,13 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
+import com.tokopedia.feedcomponent.util.ContentNetworkListener
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
+import com.tokopedia.feedcomponent.util.util.productThousandFormatted
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
@@ -51,7 +54,6 @@ private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProduct
 private const val SPAN_SIZE_FULL = 6
 private const val SPAN_SIZE_HALF = 3
 private const val SPAN_SIZE_SINGLE = 2
-private const val SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
 
 
 class PostDynamicViewNew @JvmOverloads constructor(
@@ -62,7 +64,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private var shopImage: ImageUnify
     private var shopBadge: ImageUnify
-    private var badge2: ImageUnify
     private var shopName: Typography
     private var shopMenuIcon: IconUnify
     private var carouselView: CarouselUnify
@@ -87,9 +88,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var listener: DynamicPostViewHolder.DynamicPostListener? = null
     private var videoListener: VideoViewHolder.VideoViewListener? = null
     private lateinit var gridPostListener: GridPostAdapter.GridItemListener
+    private lateinit var imagePostListener: ImagePostViewHolder.ImagePostListener
     private var positionInFeed: Int = 0
-    private val NO_VOLUME = 0f
-    private val NORMAL_VOLUME = 1f
+    var isPlaying = false
 
 
     init {
@@ -119,7 +120,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
             addCommentHint = findViewById(R.id.comment_hint)
             gridList = findViewById(R.id.gridList)
             followCount = findViewById(R.id.follow_count)
-            badge2 = findViewById(R.id.badge)
         }
     }
 
@@ -129,12 +129,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
         videoListener: VideoViewHolder.VideoViewListener,
         adapterPosition: Int,
         userSession: UserSessionInterface,
-        feedXCard: FeedXCard
+        feedXCard: FeedXCard,
+        imagePostListener: ImagePostViewHolder.ImagePostListener
     ) {
         this.listener = dynamicPostListener
         this.gridPostListener = gridItemListener
         this.videoListener = videoListener
         this.positionInFeed = adapterPosition
+        this.imagePostListener = imagePostListener
         bindFollow(feedXCard)
         bindItems(feedXCard)
         bindCaption(feedXCard)
@@ -144,7 +146,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.comments,
             userSession.profilePicture,
             userSession.name,
-            feedXCard.id.toIntOrZero()
+            feedXCard.id.toIntOrZero(),
+            feedXCard.author.type,
+            feedXCard.author.id
         )
         shareButton.setOnClickListener {
             val desc = context.getString(R.string.feed_share_default_text)
@@ -168,26 +172,30 @@ class PostDynamicViewNew @JvmOverloads constructor(
         bindHeader(
             feedXCard.id.toIntOrZero(),
             feedXCard.author,
-            feedXCard.followers.isFollowed,
-            feedXCard.followers.count,
-            feedXCard.reportable
+            feedXCard.reportable,
+            feedXCard.followers
         )
     }
 
     private fun bindHeader(
         activityId: Int,
         author: FeedXAuthor,
-        isFollowed: Boolean,
-        count: Int,
-        reportable: Boolean
+        reportable: Boolean,
+        followers: FeedXFollowers
     ) {
-        followCount.text =
-            String.format(
-                context.getString(R.string.feed_header_follow_count_text),
-                count.thousandFormatted(1)
-            )
-        var isFollow = isFollowed
-        followCount.showWithCondition(!isFollow)
+        val isFollowed = followers.isFollowed
+        val count = followers.count
+        if (count >= 100) {
+            followCount.text =
+                String.format(
+                    context.getString(R.string.feed_header_follow_count_text),
+                    count.productThousandFormatted()
+                )
+        } else {
+            followCount.text =
+                context.getString(R.string.feed_header_follow_count_less_text)
+        }
+        followCount.showWithCondition(!isFollowed || followers.transitionFollow)
         shopImage.setImageUrl(author.logoURL)
         shopBadge.setImageUrl(author.badgeURL)
         shopBadge.showWithCondition(author.badgeURL.isNotEmpty())
@@ -195,47 +203,27 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val authorType = if (author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
         val followCta =
             FollowCta(authorID = author.id, authorType = authorType, isFollow = isFollowed)
-        val textToShow = MethodChecker.fromHtml(
-            context.getString(R.string.feed_header_separator) + context.getString(
+        val startIndex = author.name.length + 2
+        var endIndex = startIndex + 7
+
+        val text = if (followers.transitionFollow) {
+            endIndex += 3
+            context.getString(R.string.kol_Action_following_color)
+        } else {
+            context.getString(
                 R.string.feed_component_follow
             )
+        }
+        val textToShow = MethodChecker.fromHtml(
+            context.getString(R.string.feed_header_separator) + text
         )
-        val startIndex = author.name.length + 2
-        val endIndex = startIndex + 7
         val spannableString = SpannableStringBuilder("")
         spannableString.append(author.name)
-        shopName.movementMethod = LinkMovementMethod.getInstance()
-
-        if (!isFollow) {
+        if (!isFollowed || followers.transitionFollow) {
             spannableString.append(" $textToShow")
-            spannableString.setSpan(object : ClickableSpan() {
-                override fun onClick(widget: View) {
-                    shopName.postDelayed({
-                        shopName.text = author.name + " "
-                        shopName.append(MethodChecker.fromHtml(context.getString(R.string.feed_header_separator)))
-                        shopName.append(MethodChecker.fromHtml(context.getString(R.string.kol_Action_following_color)))
-                    }, 1000)
-                    followCount.visible()
-                    listener?.onHeaderActionClick(
-                        positionInFeed, author.id,
-                        authorType, isFollow
-                    )
-                    isFollow = true
-                }
-
-                override fun updateDrawState(ds: TextPaint) {
-                    super.updateDrawState(ds)
-                    ds.isUnderlineText = false
-                    ds.color = MethodChecker.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
-                    )
-                }
-
-            }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
-        spannableString.setSpan(object : ClickableSpan() {
+        val cs: ClickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 listener?.onAvatarClick(
                     positionInFeed,
@@ -254,14 +242,39 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     com.tokopedia.unifyprinciples.R.color.Neutral_N600
                 )
             }
-        }, 0, author.name.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        }
 
+        if (startIndex < spannableString.length && endIndex <= spannableString.length) {
+            spannableString.setSpan(object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    listener?.onHeaderActionClick(
+                        positionInFeed, author.id,
+                        authorType, isFollowed
+                    )
+                }
 
-        if (!isFollow)
-            shopName.text = spannableString
-        else
-            shopName.text = author.name
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = false
+                    if (endIndex == startIndex + 7) {
+                        ds.color = MethodChecker.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        )
+                    } else {
+                        ds.color = MethodChecker.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                        )
+                    }
+                }
 
+            }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        spannableString.setSpan(cs, 0, author.name.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        shopName.text = spannableString
+        shopName.movementMethod = LinkMovementMethod.getInstance()
+        followers.transitionFollow = false
         shopImage.setOnClickListener {
             listener?.onAvatarClick(
                 positionInFeed,
@@ -307,7 +320,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             MethodChecker.fromHtml(
                                 context.getString(
                                     R.string.feed_component_liked_by_text_me,
-                                    (like.count - 1).toString()
+                                    (like.count - 1).productThousandFormatted(1)
                                 )
                             )
                 } else
@@ -315,7 +328,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         MethodChecker.fromHtml(
                             context.getString(
                                 R.string.feed_component_liked_count_text,
-                                like.countFmt
+                                like.count.productThousandFormatted(1)
                             )
                         )
             } else {
@@ -323,7 +336,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     context.getString(
                         R.string.feed_component_liked_by_text,
                         getLikedByText(like.likedBy),
-                        like.countFmt
+                        like.count.productThousandFormatted(1)
                     )
                 )
             }
@@ -358,9 +371,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 authorType = authorType,
                 isFollow = caption.followers.isFollowed
             )
-        badge2.setImageUrl(caption.author.badgeURL)
-        badge2.showWithCondition(caption.author.badgeURL.isNotEmpty())
-        badge2.showWithCondition(caption.text.isNotEmpty())
         captionText.shouldShowWithAction(caption.text.isNotEmpty()) {
             if (caption.text.length > DynamicPostViewHolder.MAX_CHAR ||
                 hasSecondLine(caption.text)
@@ -372,7 +382,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         DynamicPostViewHolder.CAPTION_END
 
                 val captionTxt: String = buildString {
-                    if (caption.author.badgeURL.isNotEmpty()) append(SPACE)
                     append(
                         ("<b>" + caption.author.name + "</b>" + " - ")
                             .plus(caption.text.substring(0, captionEnd))
@@ -392,7 +401,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 captionText.setOnClickListener {
                     listener?.onReadMoreClicked(caption.id)
                     val txt: String = buildString {
-                        if (caption.author.badgeURL.isNotEmpty()) append(SPACE)
                         append(("<b>" + caption.author.name + "</b>" + " - " + caption.text))
                     }
                     captionText.text = tagConverter.convertToLinkifyHashtag(
@@ -407,7 +415,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
             } else {
 
                 val captionTxt: String = buildString {
-                    if (caption.author.badgeURL.isNotEmpty()) append(SPACE)
                     append(
                         ("<b>" + caption.author.name + "</b>" + " - ").plus(
                             caption.text.replace(DynamicPostViewHolder.NEWLINE, " ")
@@ -479,7 +486,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
         comments: FeedXComments,
         profilePicture: String,
         name: String,
-        id: Int
+        id: Int,
+        authorType: Int,
+        authorId: String
     ) {
         seeAllCommentText.showWithCondition(comments.count != 0)
         seeAllCommentText.text =
@@ -509,14 +518,17 @@ class PostDynamicViewNew @JvmOverloads constructor(
         userImage.setImageUrl(profilePicture)
         addCommentHint.hint = context.getString(R.string.feed_component_add_comment, name)
 
+        var authId = ""
+        if (authorType != 1)
+            authId = authorId
         commentButton.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id)
+            listener?.onCommentClick(positionInFeed, id, authId)
         }
         seeAllCommentText.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id)
+            listener?.onCommentClick(positionInFeed, id, authId)
         }
         addCommentHint.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id)
+            listener?.onCommentClick(positionInFeed, id, authId)
         }
     }
 
@@ -541,6 +553,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     pageControl.hide()
                 }
                 media.forEach { feedMedia ->
+                    imagePostListener.userCarouselImpression(positionInFeed, media)
+
                     if (feedMedia.type == TYPE_IMAGE) {
                         val imageItem = View.inflate(context, R.layout.item_post_image_new, null)
                         val param = LinearLayout.LayoutParams(
@@ -562,6 +576,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 )
                             )
                             productTagText.gone()
+                            imagePostListener.userImagePostImpression(
+                                positionInFeed,
+                                pageControl.indicatorCurrentPosition
+                            )
                             productTagText.postDelayed({
                                 if (products.isNotEmpty()) {
                                     productTagText.visible()
@@ -573,8 +591,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 object : GestureDetector.SimpleOnGestureListener() {
                                     override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
                                         listener?.onImageClicked(postId.toString())
-                                        productTag.gone()
-                                        productTagText.visible()
+                                        if (!productTagText.isVisible)
+                                            productTagText.visible()
+                                        else
+                                            productTagText.gone()
                                         return true
                                     }
 
@@ -624,6 +644,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     listener.onTagClicked(postId, products, listener)
                                 }
                             }
+                            productTag?.setOnClickListener {
+                                listener?.let { listener ->
+                                    listener.onTagClicked(postId, products, listener)
+                                }
+                            }
                             setOnTouchListener { v, event ->
                                 gd.onTouchEvent(event)
                                 true
@@ -647,6 +672,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
 
+    private fun canPlayVideo(element: FeedXMedia): Boolean {
+        return element.canPlayVideo && ContentNetworkListener.isWifiEnabled(context)
+    }
+
     private fun setVideoCarouselView(
         feedMedia: FeedXMedia,
         postId: String,
@@ -659,66 +688,102 @@ class PostDynamicViewNew @JvmOverloads constructor(
         )
         videoItem.layoutParams = param
         videoItem.run {
-            image.setImageUrl(feedMedia.coverUrl)
-            image.setOnClickListener {
+            videoPreviewImage.viewTreeObserver.addOnGlobalLayoutListener {
+                object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        val viewTreeObserver = videoPreviewImage.viewTreeObserver
+                        viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        videoPreviewImage.maxHeight = videoPreviewImage.width
+                        videoPreviewImage.requestLayout()
+                    }
+                }
+            }
+
+            videoPreviewImage.setImageUrl(feedMedia.coverUrl)
+            videoPreviewImage.setOnClickListener {
                 playVideo(feedMedia, videoItem)
             }
-            video_tag_text.gone()
-            video_tag_text.postDelayed({
-                if (!products.isEmpty()) {
-                    video_tag_text.visible()
-                }
+            video_tag_text.visible()
+            if (!feedMedia.mediaUrl.contains(VideoViewHolder.STRING_DEFAULT_TRANSCODING)) {
+                setOnClickListener {
+                    if (feedMedia.mediaUrl.isNotEmpty()) {
+                        videoListener?.onVideoPlayerClicked(
+                            positionInFeed,
+                            0,
+                            postId,
+                            feedMedia.mediaUrl
+                        )
+                    }
 
-            }, 3000)
-            volumeIcon?.setOnClickListener {
-                volumeIcon.setImage(IconUnify.VOLUME_UP)
-                //   mp.setVolume(NORMAL_VOLUME,NORMAL_VOLUME)
+                }
+            } else {
+                ic_play?.gone()
             }
-            playVideo(feedMedia, videoItem)
+            video_tag_text?.setOnClickListener {
+                listener?.let { listener ->
+                    listener.onTagClicked(postId.toIntOrZero(), products, listener)
+                }
+            }
+            video_tag_button?.setOnClickListener {
+                listener?.let { listener ->
+                    listener.onTagClicked(postId.toIntOrZero(), products, listener)
+                }
+            }
+            if (canPlayVideo(feedMedia))
+                playVideo(feedMedia, videoItem)
+            else {
+                stopVideo()
+            }
         }
         return (videoItem)
     }
 
+    private fun stopVideo() {
+        if (isPlaying) {
+            layout_video?.stopPlayback()
+            layout_video?.gone()
+            isPlaying = false
+        }
+    }
+
     private fun playVideo(feedMedia: FeedXMedia, videoItem: View) {
         videoItem.run {
-            frame_video.invisible()
-            layout_video.setVideoURI(Uri.parse(feedMedia.mediaUrl))
-            layout_video.setOnPreparedListener(object :
-                MediaPlayer.OnPreparedListener {
-                override fun onPrepared(mp: MediaPlayer) {
-                    context?.let {
-                        val videoSize = Video.resize(it as Activity, mp.videoWidth, mp.videoHeight)
-                        layout_video.setSize(videoSize.videoWidth, videoSize.videoHeight)
-                        layout_video.holder.setFixedSize(
-                            videoSize.videoWidth,
-                            videoSize.videoHeight
-                        )
-                    }
-                    mp.isLooping = true
-                    ic_play.gone()
-                    image.gone()
-                    loader.gone()
-                    mp.setVolume(NO_VOLUME, NO_VOLUME)
-                    mp.setOnInfoListener(object : MediaPlayer.OnInfoListener {
-                        override fun onInfo(
-                            mp: MediaPlayer?,
-                            what: Int,
-                            extra: Int
-                        ): Boolean {
-                            if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                                frame_video.visibility = View.VISIBLE
-                                return true
-                            }
-                            return false
+            if (!isPlaying) {
+                frame_video?.invisible()
+                layout_video?.setVideoURI(Uri.parse(feedMedia.mediaUrl))
+                layout_video?.setOnPreparedListener(object :
+                    MediaPlayer.OnPreparedListener {
+                    override fun onPrepared(mp: MediaPlayer) {
+                        context?.let {
+                            val videoSize =
+                                Video.resize(it as Activity, mp.videoWidth, mp.videoHeight)
+                            layout_video?.setSize(videoSize.videoWidth, videoSize.videoHeight)
+                            layout_video?.holder?.setFixedSize(
+                                videoSize.videoWidth,
+                                videoSize.videoHeight
+                            )
                         }
-                    })
-                    volumeIcon?.setOnClickListener {
-                        volumeIcon.setImage(IconUnify.VOLUME_UP)
-                        mp.setVolume(NORMAL_VOLUME, NORMAL_VOLUME)
+                        mp.isLooping = true
+                        ic_play?.gone()
+                        videoPreviewImage?.gone()
+                        mp.setOnInfoListener(object : MediaPlayer.OnInfoListener {
+                            override fun onInfo(
+                                mp: MediaPlayer?,
+                                what: Int,
+                                extra: Int
+                            ): Boolean {
+                                if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                                    frame_video.visibility = View.VISIBLE
+                                    return true
+                                }
+                                return false
+                            }
+                        })
                     }
-                }
-            })
-            layout_video.start()
+                })
+                layout_video?.start()
+                isPlaying = true
+            }
         }
     }
 
@@ -801,7 +866,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     private fun bindPublishedAt(publishedAt: String, subTitle: String) {
-        val avatarDate = TimeConverter.generateTimeNew(context, publishedAt, 0)
+        val avatarDate = TimeConverter.generateTimeNew(context, publishedAt)
         val spannableString: SpannableString =
             if (subTitle.isNotEmpty()) {
                 SpannableString(
@@ -815,7 +880,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
         timestampText.text = spannableString
     }
-
 
     fun showAnim() {
         carouselView.getChildAt(0)

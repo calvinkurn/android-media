@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,20 +44,19 @@ import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.bottomsheets.MenuOptionsBottomSheet
 import com.tokopedia.feedcomponent.bottomsheets.ProductItemInfoBottomSheet
 import com.tokopedia.feedcomponent.bottomsheets.ReportBottomSheet
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TopAdsHeadlineActivityCounter
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
-import com.tokopedia.feedcomponent.util.FeedScrollListener
+import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.util.util.copy
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder.Companion.ANIMATE_COUNTER
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder.Companion.PAYLOAD_ANIMATE_LIKE
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
@@ -271,6 +269,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         //endregion
 
         //region Kol Comment Param
+        private const val ARGS_AUTHOR_TYPE = "ARGS_AUTHOR_TYPE"
         private const val COMMENT_ARGS_POSITION = "ARGS_POSITION"
         private const val COMMENT_ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT"
         private const val COMMENT_ARGS_POSITION_COLUMN = "ARGS_POSITION_COLUMN"
@@ -610,6 +609,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         )
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
+        recyclerView.isFocusable = false
         swipeToRefresh.setOnRefreshListener(this)
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(activity)
         newFeed.setOnClickListener {
@@ -635,29 +635,23 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                             layoutManager?.findFirstCompletelyVisibleItemPosition()
                                                 ?: 0
                                     }
-//                                    layoutManager?.findLastCompletelyVisibleItemPosition() != -1 -> {
-//                                        position =
-//                                            layoutManager?.findLastCompletelyVisibleItemPosition()
-//                                                ?: 0
-//                                    }
+                                    layoutManager?.findLastCompletelyVisibleItemPosition() != -1 -> {
+                                        position =
+                                            layoutManager?.findLastCompletelyVisibleItemPosition()
+                                                ?: 0
+                                    }
                                 }
 
                                 val item: Visitable<*> = adapter.getlist()[position]
 
-                                if (item is DynamicPostUiModel) {
-                                    //to show timer
-                                    if (item.feedXCard.typename == TYPE_FEED_X_CARD_POST) {
-                                        Log.d(
-                                            "bhoo",
-                                            item.feedXCard.author.name + "  " + item.feedXCard.text
-                                        )
-                                        adapter.notifyItemChanged(
-                                            position,
-                                            ANIMATE_COUNTER
-                                        )
-                                    }
-                                }
-                                FeedScrollListener.onFeedScrolled(recyclerView, adapter.getlist())
+//                                if (item is DynamicPostUiModel) {
+//                                    if (item.feedXCard.typename == TYPE_FEED_X_CARD_POST) {
+//                                        if(item.feedXCard.media.first().type!== TYPE_IMAGE)
+//                                    }
+//                                }
+                                FeedScrollListenerNew.onFeedScrolled(recyclerView,adapter.getList())
+                            //    FeedScrollListener.onFeedScrolled(recyclerView, adapter.getlist())
+
                             }
                         }
                     }
@@ -1008,9 +1002,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onGoToKolComment(
         rowNumber: Int, id: Int, hasMultipleContent: Boolean,
-        activityType: String
+        activityType: String,
+        authorType: String
     ) {
-        RouteManager.getIntent(
+        val intent = RouteManager.getIntent(
             requireContext(),
             UriUtil.buildUriAppendParam(
                 ApplinkConstInternalContent.COMMENT_NEW,
@@ -1019,7 +1014,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
             ),
             id.toString()
-        ).run { startActivityForResult(this, OPEN_KOL_COMMENT) }
+        )
+        intent.putExtra(ARGS_AUTHOR_TYPE, authorType)
+        startActivityForResult(intent, OPEN_KOL_COMMENT)
         trackCardPostElementClick(rowNumber, FeedAnalytics.Element.COMMENT)
     }
 
@@ -1353,14 +1350,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
         if (context != null) {
             feedAnalytics.evenClickMenu(postId.toString())
-            val followText = if (isFollowed) {
-                getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow)
-            } else {
-                getString(com.tokopedia.feedcomponent.R.string.feed_component_follow)
-            }
-            val sheet = MenuOptionsBottomSheet.newInstance(followText, reportable, false)
+            val sheet = MenuOptionsBottomSheet.newInstance(
+                reportable, isFollowed,
+                isDeletable = false
+            )
             sheet.show((context as FragmentActivity).supportFragmentManager, "")
             sheet.onReport = {
+                feedAnalytics.eventClickThreeDotsOption(postId.toString(), "laporkan")
                 if (userSession.isLoggedIn) {
                     context?.let {
                         ReportBottomSheet.newInstance(
@@ -1381,7 +1377,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     onGoToLogin()
                 }
             }
-            sheet.onDeleteorFollow = {
+            sheet.onFollow = {
+                feedAnalytics.eventClickThreeDotsOption(postId.toString(), "unfollow")
                 if (userSession.isLoggedIn)
                     onHeaderActionClick(
                         positionInFeed,
@@ -1389,6 +1386,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         authorType,
                         isFollowed
                     ) else onGoToLogin()
+            }
+            sheet.onDelete = {
+                feedAnalytics.eventClickThreeDotsOption(postId.toString(), "Hapus")
+
+            }
+            sheet.onDismiss = {
+                feedAnalytics.eventClickGreyAreaThreeDots(postId.toString())
+            }
+
+            sheet.onClosedClicked = {
+                feedAnalytics.eventCloseThreeDotBS(postId.toString())
+
             }
         }
     }
@@ -1406,9 +1415,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onCommentClick(positionInFeed: Int, id: Int) {
+    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String) {
         feedAnalytics.eventClickOpenComment(id.toString())
-        onGoToKolComment(positionInFeed, id, false, "")
+        onGoToKolComment(positionInFeed, id, false, "", authorType)
     }
 
     override fun onShareClick(
@@ -1498,6 +1507,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 positionInFeed
             )
         }
+    }
+
+    override fun userCarouselImpression(positionInFeed: Int, media: List<FeedXMedia>) {
+        feedAnalytics.eventImpression(positionInFeed.toString(), media)
     }
 
     override fun onImageClick(
@@ -1654,7 +1667,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         sheet.show(childFragmentManager, products, listener, postId)
         sheet.closeClicked = {
             feedAnalytics.eventClickCloseProductInfoSheet(postId.toString())
-
+        }
+        sheet.disMissed = {
+            feedAnalytics.eventClickGreyArea(postId.toString())
         }
     }
 
@@ -1880,6 +1895,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
             val item = (adapter.getlist()[rowNumber] as DynamicPostUiModel)
             item.feedXCard.followers.isFollowed = !item.feedXCard.followers.isFollowed
+            if (item.feedXCard.followers.isFollowed)
+                item.feedXCard.followers.transitionFollow = true
             if (!item.feedXCard.followers.isFollowed)
                 adapter.notifyItemChanged(
                     rowNumber,
@@ -1991,12 +2008,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
             if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
                 val item = (adapter.getlist()[rowNumber] as DynamicPostUiModel)
                 item.feedXCard.followers.isFollowed = !item.feedXCard.followers.isFollowed
-                if (!item.feedXCard.followers.isFollowed) {
-                    adapter.notifyItemChanged(
-                        rowNumber,
-                        DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
-                    )
-                }
+
+                if (item.feedXCard.followers.isFollowed)
+                    item.feedXCard.followers.transitionFollow = true
+
+                adapter.notifyItemChanged(
+                    rowNumber,
+                    DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
+                )
             }
 
             if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {

@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.util.MentionTextHelper.createValidMentionText
 import com.tokopedia.feedcomponent.view.adapter.mention.MentionableUserAdapter
 import com.tokopedia.feedcomponent.view.adapter.mention.MentionableUserAdapter.MentionAdapterListener
@@ -27,7 +28,8 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.comment.di.DaggerKolCommentComponent
 import com.tokopedia.kol.feature.comment.di.KolCommentModule
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.ARGS_AUTHOR_TYPE
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.ARGS_ID
 import com.tokopedia.kol.feature.comment.view.adapter.KolCommentAdapter
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory
 import com.tokopedia.kol.feature.comment.view.listener.KolComment
@@ -62,6 +64,9 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     private var totalNewComment = 0
     private var commentId = "0"
     private lateinit var globalError: GlobalError
+
+    @Inject
+    internal lateinit var feedAnalytics: FeedAnalyticTracker
 
     @Inject
     lateinit var presenter: KolComment.Presenter
@@ -123,7 +128,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         removeLoading()
         showError(false) {
             presenter.getCommentFirstTime(
-                requireArguments().getInt(KolCommentActivity.ARGS_ID)
+                requireArguments().getInt(ARGS_ID)
             )
         }
     }
@@ -141,17 +146,22 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         adapterPosition: Int
     ): Boolean {
         if (canDeleteComment || isInfluencer()) {
+            deleteComment(adapterPosition)
             var toBeDeleted = true
             view?.let {
+                Toaster.toasterCustomCtaWidth = com.tokopedia.unifyprinciples.R.dimen.unify_space_96
                 Toaster.build(
                     it,
                     getString(R.string.kol_delete_1_comment),
                     3000,
                     Toaster.TYPE_NORMAL,
-                    getString(R.string.kol_delete_comment_ok),
-                    View.OnClickListener {
-                        toBeDeleted = false
-                    }).show()
+                    getString(R.string.kol_delete_comment_ok)
+                ) {
+                    feedAnalytics.clickKembalikanCommentPage(ARGS_ID)
+                    adapter?.clearList()
+                    presenter.getCommentFirstTime(arguments?.getInt(ARGS_ID) ?: 0)
+                    toBeDeleted = false
+                }.show()
                 val coroutineScope = CoroutineScope(Dispatchers.Main)
                 coroutineScope.launch {
                     delay(3000L)
@@ -182,6 +192,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         presenterReport.sendReport(id.toInt(), reasonType, reasonDesc, "comment")
         this.adapterPosition = adapterPosition
         this.commentId = id
+        feedAnalytics.clickReportCommentPage(commentId)
     }
 
     override fun replyToUser(user: MentionableUserViewModel?) {
@@ -206,7 +217,12 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         KeyboardHandler.showSoftKeyboard(activity)
     }
 
-    override fun onGoToProfile(url: String?) {
+    override fun onHashTagClicked(hashTag: String?, id: String?) {
+        feedAnalytics.clickHashTag(hashTag ?: "", id ?: "0")
+    }
+
+    override fun onGoToProfile(url: String) {
+        feedAnalytics.clickShopCommentPage(ARGS_ID)
         openRedirectUrl(url)
     }
 
@@ -230,7 +246,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         }
     }
 
-    override fun openRedirectUrl(url: String?) {
+    override fun openRedirectUrl(url: String) {
         routeUrl(url)
     }
 
@@ -245,12 +261,6 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun onSuccessSendComment(sendKolCommentDomain: SendKolCommentDomain?) {
-//        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-//                KolEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-//                KolEventTracking.Category.FEED_CONTENT_COMMENT_DETAIL,
-//                KolEventTracking.Action.FEED_SUBMIT_COMMENT,
-//                KolEventTracking.EventLabel.FEED_CONTENT_COMMENT_DETAIL_COMMENT
-//        ))
         adapter?.addItem(
             KolCommentNewModel(
                 sendKolCommentDomain?.id, sendKolCommentDomain?.domainUser?.id.toString(),
@@ -295,6 +305,11 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         adapter?.removeLoading()
     }
 
+    private fun deleteComment(adapterPosition: Int) {
+        feedAnalytics.clickDeleteCommentPage(ARGS_ID)
+        adapter?.deleteItem(adapterPosition)
+    }
+
     override fun hideKeyboard() {
     }
 
@@ -328,7 +343,12 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 
     override fun onErrorSendComment(errorMessage: String?) {
         view?.let {
-            Toaster.build(it, getString(R.string.kol_adding_comment_error), Toaster.TYPE_ERROR)
+            Toaster.build(
+                it,
+                getString(R.string.kol_adding_comment_error),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            )
                 .show()
         }
         enableSendComment()
@@ -342,7 +362,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         globalError.visible()
         globalError.setOnClickListener {
             presenter.getCommentFirstTime(
-                requireArguments().getInt(KolCommentActivity.ARGS_ID)
+                requireArguments().getInt(ARGS_ID)
             )
         }
 
@@ -350,7 +370,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             false
         ) {
             presenter.getCommentFirstTime(
-                requireArguments().getInt(KolCommentActivity.ARGS_ID)
+                requireArguments().getInt(ARGS_ID)
             )
         }
     }
@@ -404,15 +424,23 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     private fun prepareView() {
+        userSession?.isLoggedIn?.let { feedAnalytics.openCommentDetailPage(it) }
         adapter = KolCommentAdapter(typeFactory)
+        val authorId = arguments?.getString(ARGS_AUTHOR_TYPE)
         ImageHandler.loadImageCircle2(context, avatarShop, userSession?.profilePicture)
+        if (authorId?.isNotEmpty() == true) {
+            if (authorId == userSession?.shopId) {
+                ImageHandler.loadImageCircle2(context, avatarShop, userSession?.shopAvatar)
+            }
+        }
         listComment?.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         listComment?.adapter = adapter
         sendButton?.setOnClickListener { v: View? ->
+            feedAnalytics.clickSendCommentPage(ARGS_ID)
             if (userSession != null && userSession?.isLoggedIn != false) {
                 presenter.sendComment(
-                    arguments?.getInt(KolCommentActivity.ARGS_ID) ?: 0,
+                    arguments?.getInt(ARGS_ID) ?: 0,
                     kolComment?.getRawText()
                 )
             } else {
@@ -421,7 +449,6 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         }
         mentionAdapter = MentionableUserAdapter(this)
         kolComment?.setAdapter(mentionAdapter)
-
     }
 
     private fun showToastMessage(errorMessage: String) {
@@ -432,12 +459,11 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter.getCommentFirstTime(arguments?.getInt(KolCommentActivity.ARGS_ID) ?: 0)
+        presenter.getCommentFirstTime(arguments?.getInt(ARGS_ID) ?: 0)
     }
 
     override fun shouldGetMentionableUser(keyword: String) {
         presenter.getMentionableUserByKeyword(keyword)
-
     }
 
     override fun onDestroy() {

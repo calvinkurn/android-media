@@ -2,10 +2,19 @@ package com.tokopedia.feedcomponent.analytics.tracker
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.CLICK
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.FORMAT_THREE_PARAM
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE_BOTTOMSHEET
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE_COMMENT
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE_MENU
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.CLICK_FEED
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.CONTENT
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.OPEN_SCREEN
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.PROMO_VIEW
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.MARKETPLACE
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_FEED_EMPTY
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_LOGGED_IN_STATUS
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.getDigits
@@ -47,6 +56,7 @@ class FeedAnalyticTracker
         private const val KEY_CURRENT_SITE_EVENT = "currentSite"
         private const val KEY_EVENT_USER_ID = "userId"
         private const val KEY_SESSION_IRIS = "sessionIris"
+        private const val SGC_IMAGE = "sgc image"
 
     }
 
@@ -84,6 +94,9 @@ class FeedAnalyticTracker
         const val CONTENT_HASHTAG = "content hashtag"
         const val CONTENT_INTEREST_PICK = "content interest pick"
         const val CATEGORY_FEED_TIMELINE = "content feed timeline"
+        const val CATEGORY_FEED_TIMELINE_BOTTOMSHEET = "content feed timeline - bottom sheet"
+        const val CATEGORY_FEED_TIMELINE_COMMENT = "content feed timeline - comment"
+        const val CATEGORY_FEED_TIMELINE_MENU = "content feed timeline - three dots page"
         const val CATEGORY_FEED_TIMELINE_FEED_DETAIL = "content feed timeline - product detail"
     }
 
@@ -118,7 +131,6 @@ class FeedAnalyticTracker
         const val PARAM_ACTION_LOGIN = "login"
         const val PARAM_ACTION_NONLOGIN = "nonlogin"
         const val ACTION_FEED_RECOM_USER = "avatar - %s recommendation - %s"
-        const val ACTION_CLICK_FEED_AVATAR = "click - %s - %s "
         const val ACTION_CLICK_MEDIAPREVIEW_AVATAR = "click - %s - media preview - %s"
         const val ACTION_CLICK_TOPADS_PROMOTED = "click - shop - topads shop recommendation - %s"
         const val FORMAT_TWO_PARAM = "%s - %s"
@@ -228,8 +240,8 @@ class FeedAnalyticTracker
     //    screenshot 21
     fun eventClickFeedProfileRecommendation(targetId: String, targetType: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            Event.CLICK_FEED,
-            Category.CATEGORY_FEED_TIMELINE,
+            CLICK_FEED,
+            CATEGORY_FEED_TIMELINE,
             Action.CLICK,
             String.format(Action.ACTION_FEED_RECOM_USER, targetType, targetId)
         )
@@ -243,9 +255,9 @@ class FeedAnalyticTracker
         activityId: String
     ) {
         val map = mapOf(
-            KEY_EVENT to Event.CLICK_FEED,
-            KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
-            KEY_EVENT_ACTION to String.format(Action.ACTION_CLICK_FEED_AVATAR, "shop", "sgc image"),
+            KEY_EVENT to CLICK_FEED,
+            KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
+            KEY_EVENT_ACTION to String.format(FORMAT_THREE_PARAM, CLICK, "shop", SGC_IMAGE),
             KEY_EVENT_LABEL to String.format(
                 Action.FORMAT_TWO_PARAM,
                 activityId,
@@ -257,17 +269,17 @@ class FeedAnalyticTracker
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
-
     }
 
     fun evenClickMenu(activityId: String) {
         val map = mapOf(
-            KEY_EVENT to Event.CLICK_FEED,
-            KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
+            KEY_EVENT to CLICK_FEED,
+            KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
             KEY_EVENT_ACTION to String.format(
-                Action.ACTION_CLICK_FEED_AVATAR,
+                FORMAT_THREE_PARAM,
+                CLICK,
                 "three dots",
-                "sgc image"
+                SGC_IMAGE
             ),
             KEY_EVENT_LABEL to String.format(
                 Action.FORMAT_TWO_PARAM,
@@ -285,12 +297,13 @@ class FeedAnalyticTracker
 
     fun eventTagClicked(activityId: String) {
         val map = mapOf(
-            KEY_EVENT to Event.CLICK_FEED,
-            KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
+            KEY_EVENT to CLICK_FEED,
+            KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
             KEY_EVENT_ACTION to String.format(
-                Action.ACTION_CLICK_FEED_AVATAR,
+                FORMAT_THREE_PARAM,
+                CLICK,
                 "lihat produk",
-                "sgc image"
+                SGC_IMAGE
             ),
             KEY_EVENT_LABEL to String.format(
                 Action.FORMAT_TWO_PARAM,
@@ -307,12 +320,13 @@ class FeedAnalyticTracker
 
     fun eventImageClicked(activityId: String) {
         val map = mapOf(
-            KEY_EVENT to Event.CLICK_FEED,
-            KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
+            KEY_EVENT to CLICK_FEED,
+            KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
             KEY_EVENT_ACTION to String.format(
-                Action.ACTION_CLICK_FEED_AVATAR,
+                FORMAT_THREE_PARAM,
+                CLICK,
                 "image",
-                "sgc image"
+                SGC_IMAGE
             ),
             KEY_EVENT_LABEL to String.format(
                 Action.FORMAT_TWO_PARAM,
@@ -338,9 +352,10 @@ class FeedAnalyticTracker
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
-                    Action.ACTION_CLICK_FEED_AVATAR,
+                    FORMAT_THREE_PARAM,
+                    CLICK,
                     likeType,
-                    "sgc image"
+                    SGC_IMAGE
                 ),
                 KEY_EVENT_LABEL to String.format(
                     Action.FORMAT_TWO_PARAM,
@@ -350,7 +365,47 @@ class FeedAnalyticTracker
             )
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
 
+    private fun getImpressionList(media: List<FeedXMedia>): Any {
+        val list: MutableList<Map<String, String>> = mutableListOf()
+        var count = 0
+        for (i in media) {
+            count++
+            val map = mapOf(
+                "creative" to i.mediaUrl,
+                "category" to "",
+                "id" to i.id,
+                "list" to "/feed - sgc image",
+                "name" to "/feed - sgc image - image",
+                "position" to "{product horizontal position from $count}",
+            )
+            list.add(map)
+        }
+        return list
+    }
+
+    fun eventImpression(activityId: String, list: List<FeedXMedia>) {
+        var map = getCommonMap(PROMO_VIEW)
+        map = map.plus(
+            mutableMapOf(
+                KEY_EVENT_ACTION to String.format(
+                    FORMAT_THREE_PARAM,
+                    "impression",
+                    "image",
+                    SGC_IMAGE
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    Action.FORMAT_TWO_PARAM,
+                    activityId,
+                    userSessionInterface.shopId
+                ),
+                ECOMMERCE to mapOf(
+                    PROMO_VIEW to getImpressionList(list)
+                ),
+            )
+        ) as MutableMap<String, String>
+        TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
     }
 
     fun eventClickOpenComment(activityId: String) {
@@ -358,9 +413,10 @@ class FeedAnalyticTracker
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
-                    Action.ACTION_CLICK_FEED_AVATAR,
+                    FORMAT_THREE_PARAM,
+                    CLICK,
                     "comment",
-                    "sgc image"
+                    SGC_IMAGE
                 ),
                 KEY_EVENT_LABEL to String.format(
                     Action.FORMAT_TWO_PARAM,
@@ -370,7 +426,6 @@ class FeedAnalyticTracker
             )
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
-
     }
 
     fun eventClickOpenShare(activityId: String) {
@@ -378,9 +433,10 @@ class FeedAnalyticTracker
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
-                    Action.ACTION_CLICK_FEED_AVATAR,
+                    FORMAT_THREE_PARAM,
+                    CLICK,
                     "share",
-                    "sgc image"
+                    SGC_IMAGE
                 ),
                 KEY_EVENT_LABEL to String.format(
                     Action.FORMAT_TWO_PARAM,
@@ -397,9 +453,10 @@ class FeedAnalyticTracker
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
-                    Action.ACTION_CLICK_FEED_AVATAR,
+                    FORMAT_THREE_PARAM,
+                    CLICK,
                     " lihat selengkapnya",
-                    "sgc image"
+                    SGC_IMAGE
                 ),
                 KEY_EVENT_LABEL to String.format(
                     Action.FORMAT_TWO_PARAM,
@@ -416,9 +473,10 @@ class FeedAnalyticTracker
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
-                    Action.ACTION_CLICK_FEED_AVATAR,
+                    FORMAT_THREE_PARAM,
+                    CLICK,
                     " x ",
-                    "sgc image"
+                    SGC_IMAGE
                 ),
                 KEY_EVENT_LABEL to String.format(
                     Action.FORMAT_TWO_PARAM,
@@ -430,33 +488,19 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    /*{"event":"productClick","eventCategory":"content feed timeline - bottom sheet","eventAction":"click - product - sgc image","eventLabel":"{activity_id} - {shop_id} - {product_id}","businessUnit":"content","currentSite":"tokopediamarketplace","ecommerce":{
-    "click":
-    {"actionField":{
-    "list":"/feed - sgc image"
-    },
-    "products":
-    [{"brand":"{product_brand}",
-    "category":"{cat name lv1}",
-    "id":"{product_id}",
-    "list":"/feed - sgc image",
-    "name":"{product_name}",
-    "position":"{product horizontal position from 1}",
-    "price":"{product_price}",
-    "variant":"{product variant}"}]}},"sessionIris":"{session_Iris}","userId":"{user_id}"}*/
-
     fun eventClickBSitem(activityId: String, products: List<FeedXProduct>, position: Int) {
 
         val map = mapOf(
             KEY_EVENT to Event.PRODUCT_CLICK,
-            KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE + "- bottom sheet",
+            KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE + "- bottom sheet",
             KEY_EVENT_ACTION to String.format(
-                Action.ACTION_CLICK_FEED_AVATAR,
+                FORMAT_THREE_PARAM,
+                CLICK,
                 "product",
-                "sgc image"
+                SGC_IMAGE
             ),
             KEY_EVENT_LABEL to String.format(
-                Action.FORMAT_THREE_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
                 userSessionInterface.shopId,
                 products[position].id
@@ -466,7 +510,7 @@ class FeedAnalyticTracker
                     "actionField" to mapOf(
                         "list" to "feed - sgc image"
                     ),
-                    "products" to getProductItem(products[position])
+                    "products" to getProductItem(products)
                 )
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
@@ -475,27 +519,315 @@ class FeedAnalyticTracker
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
-
     }
 
-    private fun getProductItem(feedXProduct: FeedXProduct): Map<String, String> {
-        return mapOf(
-            "brand" to "{product_brand}",
-            "category" to "{cat name lv1}",
-            "id" to "{product_id}",
-            "list" to "/feed - sgc image",
-            "name" to "{product_name}",
-            "position" to "{product horizontal position from 1}",
-            "price" to "{product_price}",
-            "variant" to "{product variant}"
+    fun eventClickGreyArea(activityId: String) {
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET)
+        map = map.plus(
+            mutableMapOf(
+                KEY_EVENT_ACTION to String.format(
+                    FORMAT_THREE_PARAM,
+                    CLICK,
+                    "grey area",
+                    SGC_IMAGE
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    Action.FORMAT_TWO_PARAM,
+                    activityId,
+                    userSessionInterface.shopId
+                )
+            )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    private fun getProductItem(feedXProduct: List<FeedXProduct>): List<Map<String, String>> {
+        val list: MutableList<Map<String, String>> = mutableListOf()
+        for (i in feedXProduct) {
+            val map = mapOf(
+                "brand" to "",
+                "category" to "",
+                "id" to i.id,
+                "list" to "/feed - sgc image",
+                "name" to i.name,
+                "position" to "{product horizontal position from 1}",
+                "price" to i.priceFmt,
+                "variant" to ""
+            )
+            list.add(map)
+        }
+        return list
+    }
+
+    fun eventCloseThreeDotBS(activityId: String) {
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU)
+        map = map.plus(
+            mutableMapOf(
+                KEY_EVENT_ACTION to String.format(
+                    FORMAT_THREE_PARAM,
+                    CLICK,
+                    "x",
+                    SGC_IMAGE
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    Action.FORMAT_TWO_PARAM,
+                    activityId,
+                    userSessionInterface.shopId
+                )
+            )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun eventClickThreeDotsOption(activityId: String, action: String) {
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU)
+        map = map.plus(
+            mutableMapOf(
+                KEY_EVENT_ACTION to String.format(
+                    FORMAT_THREE_PARAM,
+                    CLICK,
+                    "three dots menu",
+                    SGC_IMAGE
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    FORMAT_THREE_PARAM,
+                    activityId,
+                    userSessionInterface.shopId,
+                    action,
+                )
+            )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun eventClickGreyAreaThreeDots(activityId: String) {
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU)
+        map = map.plus(
+            mutableMapOf(
+                KEY_EVENT_ACTION to String.format(
+                    FORMAT_THREE_PARAM,
+                    CLICK,
+                    "grey area",
+                    SGC_IMAGE
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    Action.FORMAT_TWO_PARAM,
+                    activityId,
+                    userSessionInterface.shopId
+                )
+            )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun openCommentDetailPage(loginState: Boolean) {
+        val map = mapOf(
+            KEY_EVENT to OPEN_SCREEN,
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            SCREEN_DIMENSION_IS_LOGGED_IN_STATUS to loginState,
+            KEY_EVENT_SCREEN_NAME to "/feed/comment-detail",
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun clickHashTag(hashTag: String, activityId: String) {
+        val map = mapOf(
+            KEY_EVENT to CLICK_FEED,
+            EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
+            EVENT_ACTION to String.format(
+                FORMAT_THREE_PARAM,
+                CLICK,
+                "hashtag",
+                SGC_IMAGE
+            ),
+            KEY_EVENT_LABEL to String.format(
+                FORMAT_THREE_PARAM,
+                activityId,
+                userSessionInterface.shopId,
+                "#$hashTag"
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
         )
 
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    private fun getCommonMap(): Map<String, String> {
+    fun clickBackButtonCommentPage(actvityId: String) {
+        val map = mapOf(
+            KEY_EVENT to CLICK_FEED,
+            EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
+            EVENT_ACTION to String.format(
+                FORMAT_THREE_PARAM,
+                CLICK,
+                "back",
+                SGC_IMAGE
+            ),
+            KEY_EVENT_LABEL to String.format(
+                Action.FORMAT_TWO_PARAM,
+                actvityId,
+                userSessionInterface.shopId
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun clickShopCommentPage(actvityId: String) {
+        val map = mapOf(
+            KEY_EVENT to CLICK_FEED,
+            EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
+            EVENT_ACTION to String.format(
+                FORMAT_THREE_PARAM,
+                CLICK,
+                "shop",
+                SGC_IMAGE
+            ),
+            KEY_EVENT_LABEL to String.format(
+                Action.FORMAT_TWO_PARAM,
+                actvityId,
+                userSessionInterface.shopId
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun clickCreatorPageCommentPage(actvityId: String) {
+        val map = mapOf(
+            KEY_EVENT to CLICK_FEED,
+            EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
+            EVENT_ACTION to String.format(
+                FORMAT_THREE_PARAM,
+                CLICK,
+                "comment creator",
+                SGC_IMAGE
+            ),
+            KEY_EVENT_LABEL to String.format(
+                Action.FORMAT_TWO_PARAM,
+                actvityId,
+                userSessionInterface.shopId
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun clickReportCommentPage(actvityId: String) {
+        val map = mapOf(
+            KEY_EVENT to CLICK_FEED,
+            EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
+            EVENT_ACTION to String.format(
+                FORMAT_THREE_PARAM,
+                CLICK,
+                "report",
+                SGC_IMAGE
+            ),
+            KEY_EVENT_LABEL to String.format(
+                Action.FORMAT_TWO_PARAM,
+                actvityId,
+                userSessionInterface.shopId
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun clickDeleteCommentPage(actvityId: String) {
+        val map = mapOf(
+            KEY_EVENT to CLICK_FEED,
+            EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
+            EVENT_ACTION to String.format(
+                FORMAT_THREE_PARAM,
+                CLICK,
+                "delete",
+                SGC_IMAGE
+            ),
+            KEY_EVENT_LABEL to String.format(
+                Action.FORMAT_TWO_PARAM,
+                actvityId,
+                userSessionInterface.shopId
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun clickSendCommentPage(actvityId: String) {
+        val map = mapOf(
+            KEY_EVENT to CLICK_FEED,
+            EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
+            EVENT_ACTION to String.format(
+                FORMAT_THREE_PARAM,
+                CLICK,
+                "delete",
+                SGC_IMAGE
+            ),
+            KEY_EVENT_LABEL to String.format(
+                Action.FORMAT_TWO_PARAM,
+                actvityId,
+                userSessionInterface.shopId
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun clickKembalikanCommentPage(actvityId: String) {
+        val map = mapOf(
+            KEY_EVENT to CLICK_FEED,
+            EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_COMMENT,
+            EVENT_ACTION to String.format(
+                FORMAT_THREE_PARAM,
+                CLICK,
+                "kembalikan to undo delete",
+                SGC_IMAGE
+            ),
+            KEY_EVENT_LABEL to String.format(
+                Action.FORMAT_TWO_PARAM,
+                actvityId,
+                userSessionInterface.shopId
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+
+    private fun getCommonMap(category: String = CATEGORY_FEED_TIMELINE): Map<String, String> {
         return mapOf(
-            KEY_EVENT to Event.CLICK_FEED,
-            KEY_EVENT_CATEGORY to Category.CATEGORY_FEED_TIMELINE,
+            KEY_EVENT to CLICK_FEED,
+            KEY_EVENT_CATEGORY to category,
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
             KEY_SESSION_IRIS to getIrisSessionId(),
@@ -507,8 +839,8 @@ class FeedAnalyticTracker
     //    screenshot 31
     fun eventClickMediaPreviewAvatar(targetId: String, targetType: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            Event.CLICK_FEED,
-            Category.CATEGORY_FEED_TIMELINE,
+            CLICK_FEED,
+            CATEGORY_FEED_TIMELINE,
             String.format(
                 Action.ACTION_CLICK_MEDIAPREVIEW_AVATAR, targetType,
                 if (userSessionInterface.isLoggedIn) Action.PARAM_ACTION_LOGIN else Action.PARAM_ACTION_NONLOGIN
@@ -521,7 +853,7 @@ class FeedAnalyticTracker
     //    screenshot 15
     fun eventClickFeedDetailAvatar(activityId: String, shopId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CATEGORY_FEED_TIMELINE_FEED_DETAIL,
             Action.CLICK_FEED_PRODUCT_DETAIL,
             String.format(Action.FORMAT_TWO_PARAM, shopId, activityId)
@@ -532,8 +864,8 @@ class FeedAnalyticTracker
     //    screenshot 7
     fun eventClickTopadsPromoted(shopId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-            Event.CLICK_FEED,
-            Category.CATEGORY_FEED_TIMELINE,
+            CLICK_FEED,
+            CATEGORY_FEED_TIMELINE,
             Action.ACTION_CLICK_TOPADS_PROMOTED,
             shopId
         )
@@ -547,7 +879,7 @@ class FeedAnalyticTracker
      */
     fun eventClickFeedInterestPick(optionName: String) {
         trackGeneralEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_INTEREST_PICK,
             Action.CLICK_INTEREST,
             optionName
@@ -562,7 +894,7 @@ class FeedAnalyticTracker
      */
     fun eventClickFeedInterestPickSeeAll() {
         trackGeneralEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_INTEREST_PICK,
             Action.CLICK_INTEREST_SEE_ALL,
             ""
@@ -577,7 +909,7 @@ class FeedAnalyticTracker
      */
     fun eventClickFeedCheckAccount(countString: String) {
         trackGeneralEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_INTEREST_PICK,
             Action.CLICK_INTEREST_CHECK_ACCOUNT,
             countString
@@ -592,7 +924,7 @@ class FeedAnalyticTracker
      */
     fun eventClickFeedCheckInspiration(countString: String) {
         trackGeneralEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_INTEREST_PICK,
             Action.CLICK_INTEREST_CHECK_INSPIRATION,
             countString
@@ -698,7 +1030,7 @@ class FeedAnalyticTracker
      */
     fun eventClickFollowRecomNameAndImage(activityId: String) {
         trackGeneralEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_INTEREST_PICK,
             Action.CLICK_AVATAR,
             activityId
@@ -713,7 +1045,7 @@ class FeedAnalyticTracker
      */
     fun eventClickFollowShopOrProfile(activityId: String) {
         trackGeneralEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_INTEREST_PICK,
             Action.CLICK_FOLLOW,
             activityId
@@ -728,7 +1060,7 @@ class FeedAnalyticTracker
      */
     fun eventClickUnFollowShopOrProfile(activityId: String) {
         trackGeneralEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_INTEREST_PICK,
             Action.CLICK_UNFOLLOW,
             activityId
@@ -743,7 +1075,7 @@ class FeedAnalyticTracker
      */
     fun eventClickFollowAll() {
         trackGeneralEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_INTEREST_PICK,
             Action.CLICK_FOLLOW_ALL,
             ""
@@ -768,7 +1100,7 @@ class FeedAnalyticTracker
      */
     fun eventMediaDetailClickAvatar(activityId: String) {
         trackGeneralEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_FEED_TIMELINE,
             Action.CLICK_AVATAR,
             activityId
@@ -784,7 +1116,7 @@ class FeedAnalyticTracker
      */
     fun eventMediaDetailClickLihat(activityId: String) {
         trackGeneralEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_FEED_TIMELINE,
             Action.CLICK_SEE,
             activityId
@@ -808,13 +1140,13 @@ class FeedAnalyticTracker
         shopName: String
     ) {
         trackGeneralEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_FEED_TIMELINE,
             Action.CLICK_BUY,
             productId
         )
         trackEnhancedEcommerceEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_FEED_TIMELINE,
             Action.CLICK_BUY,
             productId,
@@ -859,7 +1191,7 @@ class FeedAnalyticTracker
      */
     fun eventTrendingClickMedia(activityId: String) {
         trackGeneralEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_EXPLORE_TRENDING,
             Action.CLICK_MEDIA,
             activityId
@@ -875,7 +1207,7 @@ class FeedAnalyticTracker
      */
     fun eventTrendingClickSeeAll(activityId: String) {
         trackGeneralEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_EXPLORE_TRENDING,
             Action.CLICK_SEE_ALL,
             activityId
@@ -891,7 +1223,7 @@ class FeedAnalyticTracker
      */
     fun eventTrendingClickProfile(activityId: String) {
         trackGeneralEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_EXPLORE_TRENDING,
             Action.CLICK_AVATAR,
             activityId
@@ -915,7 +1247,7 @@ class FeedAnalyticTracker
         hashtag: String
     ) {
         eventClickHashtag(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_FEED_TIMELINE,
             activityId,
             activityName,
@@ -941,7 +1273,7 @@ class FeedAnalyticTracker
         hashtag: String
     ) {
         eventClickHashtag(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.FEED_DETAIL_PAGE,
             activityId,
             activityName,
@@ -981,7 +1313,7 @@ class FeedAnalyticTracker
      */
     fun eventTimelineClickReadMore(activityId: String, activityName: String, mediaType: String) {
         eventClickReadMore(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_FEED_TIMELINE,
             activityId,
             activityName,
@@ -1025,7 +1357,7 @@ class FeedAnalyticTracker
      */
     fun eventShopPageClickReadMore(activityId: String, activityName: String, mediaType: String) {
         eventClickReadMore(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_FEED_SHOP_PAGE,
             activityId,
             activityName,
@@ -1099,14 +1431,14 @@ class FeedAnalyticTracker
         rowNumber: Int
     ) {
         eventClickReadMore(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_FEED_SHOP_PAGE,
             activityId,
             activityName,
             mediaType
         )
         trackEnhancedEcommerceEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_FEED_SHOP_PAGE,
             Action.CLICK,
             String.format("post - %s - %s - %s", activityName, activityId, mediaType),
@@ -1167,7 +1499,7 @@ class FeedAnalyticTracker
      */
     fun eventHashtagPageClickNameAvatar(id: String) {
         trackGeneralEvent(
-            Event.CLICK_FEED,
+            CLICK_FEED,
             Category.CONTENT_HASHTAG,
             Action.CLICK_AVATAR,
             id

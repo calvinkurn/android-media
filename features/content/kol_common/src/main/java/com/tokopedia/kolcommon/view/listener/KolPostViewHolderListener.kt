@@ -21,15 +21,24 @@ interface KolPostViewHolderListener {
 
     fun onUnfollowKolClicked(rowNumber: Int, id: Int)
 
-    fun onLikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
-                         activityType: String)
+    fun onLikeKolClicked(
+        rowNumber: Int, id: Int, hasMultipleContent: Boolean,
+        activityType: String
+    )
 
-    fun onUnlikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
-                           activityType: String)
+    fun onUnlikeKolClicked(
+        rowNumber: Int, id: Int, hasMultipleContent: Boolean,
+        activityType: String
+    )
 
-    fun onGoToKolComment(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
-                         activityType: String)
+    fun onGoToKolComment(
+        rowNumber: Int, id: Int, hasMultipleContent: Boolean,
+        activityType: String,
+        authorType: String
+    )
 
-    fun onEditClicked(hasMultipleContent: Boolean, activityId: String,
-                      activityType: String)
+    fun onEditClicked(
+        hasMultipleContent: Boolean, activityId: String,
+        activityType: String
+    )
 }

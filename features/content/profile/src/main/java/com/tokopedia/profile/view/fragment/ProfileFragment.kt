@@ -46,6 +46,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
@@ -673,17 +674,20 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
     }
 
-    override fun onGoToKolComment(rowNumber: Int, id: Int, hasMultipleContent: Boolean,
-                                  activityType: String) {
+    override fun onGoToKolComment(
+        rowNumber: Int, id: Int, hasMultipleContent: Boolean,
+        activityType: String,
+        authorType: String
+    ) {
         RouteManager.getIntent(
-                requireContext(),
-                UriUtil.buildUriAppendParam(
-                        ApplinkConstInternalContent.COMMENT,
-                        mapOf(
-                                COMMENT_ARGS_POSITION to rowNumber.toString()
-                        )
-                ),
-                id.toString()
+            requireContext(),
+            UriUtil.buildUriAppendParam(
+                ApplinkConstInternalContent.COMMENT,
+                mapOf(
+                    COMMENT_ARGS_POSITION to rowNumber.toString()
+                )
+            ),
+            id.toString()
         ).run { startActivityForResult(this, KOL_COMMENT_CODE) }
         if (isOwner.not()) {
             profileAnalytics.eventClickComment(hasMultipleContent, id.toString(), activityType)
@@ -857,9 +861,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onCommentClick(positionInFeed: Int, id: Int) {
+    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String) {
         profileAnalytics.eventClickComment(isOwner, userId.toString())
-        onGoToKolComment(positionInFeed, id, false, "")
+        onGoToKolComment(positionInFeed, id, false, "", authorType)
     }
 
     override fun onShareClick(
@@ -967,15 +971,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
+    override fun userCarouselImpression(positionInFeed: Int, media: List<FeedXMedia>) {
+    }
+
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
         if (adapter.list[positionInFeed] is DynamicPostViewModel) {
             val model = adapter.list[positionInFeed] as DynamicPostViewModel
             trackCardPostClick(
-                    positionInFeed,
-                    contentPosition,
-                    model.trackingPostModel,
-                    ProfileAnalytics.Element.IMAGE,
+                positionInFeed,
+                contentPosition,
+                model.trackingPostModel,
+                ProfileAnalytics.Element.IMAGE,
                     redirectLink
             )
         }

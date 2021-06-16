@@ -24,7 +24,12 @@ class KolCommentHeaderNewViewHolder(itemView: View, private val viewListener: Ko
             ) {
             }
 
-            override fun onAvatarClicked(profileUrl: String) {
+            override fun onHashtagClicked(hashtag: String, id: String) {
+                viewListener.onHashTagClicked(hashtag, id)
+
+            }
+
+            override fun onAvatarClicked(profileUrl: String, shop: Boolean) {
                 viewListener.openRedirectUrl(profileUrl)
             }
 
