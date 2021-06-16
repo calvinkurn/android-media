@@ -1,85 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/view_recharge_home_product_cards_item_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_lvl1"
-    app:cardCornerRadius="@dimen/spacing_lvl3"
-    app:cardElevation="@dimen/spacing_lvl2">
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="@dimen/layout_lvl9"
-        android:layout_height="wrap_content">
+        android:layout_width="@dimen/recharge_subhome_product_card_width"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_lvl3">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_recharge_home_product_cards_item"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             app:layout_constraintDimensionRatio="H, 2:1"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@color/Unify_N100" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_recharge_home_product_cards_item_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl2"
-            android:layout_marginTop="@dimen/spacing_lvl1"
-            android:layout_marginRight="@dimen/spacing_lvl2"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:maxLines="1"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_recharge_home_product_cards_item"
-            app:typographyType="small" />
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="SKILL ACADEMY" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_recharge_home_product_cards_item_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl2"
-            android:layout_marginTop="@dimen/spacing_lvl1"
-            android:layout_marginRight="@dimen/spacing_lvl2"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginRight="@dimen/spacing_lvl3"
             android:ellipsize="end"
-            android:maxLines="3"
-            android:minHeight="@dimen/product_card_title_min_height"
+            android:lines="2"
+            android:maxLines="2"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_recharge_home_product_cards_item_category"
-            app:typographyType="heading_5" />
+            app:typographyType="body_2"
+            tools:text="Strategi Efektif Untuk Menjual Bisnis Online" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_recharge_home_product_cards_item_price_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl2"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl2"
+            android:layout_marginRight="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:maxLines="1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_recharge_home_product_cards_item_title"
-            app:typographyType="small" />
+            app:typographyType="small"
+            tools:text="Rp300.000" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_recharge_home_product_cards_item_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl2"
-            android:layout_marginRight="@dimen/spacing_lvl2"
-            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_Y500"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_recharge_home_product_cards_item_price_info"
-            app:typographyType="heading_4" />
-
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Rp96.000" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify>

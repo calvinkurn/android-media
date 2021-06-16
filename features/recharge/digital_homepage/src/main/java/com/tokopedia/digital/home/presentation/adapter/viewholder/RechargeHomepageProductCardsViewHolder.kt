@@ -7,10 +7,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardsModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemProductCardsAdapter
-import com.tokopedia.digital.home.presentation.adapter.RechargeItemProductCardsDecorator
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
+import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel.Companion.SECTION_PRODUCT_CARD_ROW_1X1
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.view_recharge_home_product_cards.view.*
@@ -31,13 +30,8 @@ class RechargeHomepageProductCardsViewHolder(itemView: View, val listener: Recha
 
                 rv_recharge_home_product_cards.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
-                val displayMetrics = itemView.context.resources.displayMetrics
-                while (rv_recharge_home_product_cards.itemDecorationCount > 0) rv_recharge_home_product_cards.removeItemDecorationAt(0)
-                rv_recharge_home_product_cards.addItemDecoration(RechargeItemProductCardsDecorator(
-                        PRODUCT_CARDS_SPACE_DP.dpToPx(displayMetrics)
-                ))
-
-                rv_recharge_home_product_cards.adapter = RechargeItemProductCardsAdapter(section.items, listener)
+                rv_recharge_home_product_cards.adapter = RechargeItemProductCardsAdapter(section.items, listener,
+                        section.template == SECTION_PRODUCT_CARD_ROW_1X1)
 
                 tv_recharge_home_product_cards_title.text = section.title
                 addOnImpressionListener(section) {
@@ -54,6 +48,5 @@ class RechargeHomepageProductCardsViewHolder(itemView: View, val listener: Recha
 
     companion object {
         val LAYOUT = R.layout.view_recharge_home_product_cards
-        const val PRODUCT_CARDS_SPACE_DP = 8
     }
 }
