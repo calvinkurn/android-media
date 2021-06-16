@@ -24,6 +24,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -32,6 +33,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
+import com.tokopedia.product.addedit.common.AddEditProductFragment
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISADDING
@@ -73,6 +75,7 @@ import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -203,6 +206,9 @@ class AddEditProductDescriptionFragment:
         // set bg color programatically, to reduce overdraw
         requireActivity().window.decorView.setBackgroundColor(ContextCompat.getColor(
                 requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+
+        // set navigation highlight
+        highlightNavigationButton()
 
         // to check whether current fragment is visible or not
         isFragmentVisible = true
@@ -766,5 +772,26 @@ class AddEditProductDescriptionFragment:
         clipboard.setPrimaryClip(clipData)
         Toaster.build(requireView(), getString(R.string.label_gifting_description_copied_message),
                 Snackbar.LENGTH_LONG).show()
+    }
+
+    private fun highlightNavigationButton() {
+        val btnIndicatorMain: Typography? = activity?.findViewById(R.id.btn_indicator_main)
+        val btnIndicatorDetail: Typography? = activity?.findViewById(R.id.btn_indicator_detail)
+        val btnIndicatorDescription: Typography? = activity?.findViewById(R.id.btn_indicator_description)
+        val btnIndicatorShipment: Typography? = activity?.findViewById(R.id.btn_indicator_shipment)
+
+        activateHighlight(btnIndicatorMain, false)
+        activateHighlight(btnIndicatorDetail, false)
+        activateHighlight(btnIndicatorDescription, true)
+        activateHighlight(btnIndicatorShipment, false)
+    }
+
+    private fun activateHighlight(typography: Typography?, isActive: Boolean) {
+        val backgroundColor = if (isActive) {
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G200)
+        } else {
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        }
+        typography?.setBackgroundColor(backgroundColor)
     }
 }

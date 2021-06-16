@@ -1,6 +1,7 @@
 <resources>
 
     <!-- add edit product screen name -->
+    <string name="product_add_edit_preview">Utama</string>
     <string name="product_add_edit_detail">Detail Produk</string>
     <string name="label_title_add_product">Tambah Produk</string>
     <string name="label_title_edit_product">Ubah Produk</string>

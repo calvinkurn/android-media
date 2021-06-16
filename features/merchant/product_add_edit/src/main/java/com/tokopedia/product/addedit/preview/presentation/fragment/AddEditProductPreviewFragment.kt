@@ -11,8 +11,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -22,7 +20,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -49,6 +46,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_PREVIEW_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.AddEditProductFragment
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_PREVIEW
@@ -146,7 +144,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class AddEditProductPreviewFragment :
-        BaseDaggerFragment(),
+        AddEditProductFragment(),
         ProductPhotoViewHolder.OnPhotoChangeListener,
         AddEditProductPerformanceMonitoringListener {
 
@@ -164,11 +162,6 @@ class AddEditProductPreviewFragment :
     private var isFragmentFirstTimeLoaded = true
     private var isAdminEligible = true
     private var isProductLimitEligible: Boolean = true
-
-    private var toolbar: Toolbar? = null
-
-    // action button
-    private var doneButton: AppCompatTextView? = null
 
     // photo
     private var addEditProductPhotoButton: Typography? = null
@@ -302,15 +295,11 @@ class AddEditProductPreviewFragment :
         // set bg color programatically, to reduce overdraw
         context?.let { activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
-        // activity toolbar
-        toolbar = activity?.findViewById(R.id.toolbar)
-        toolbar?.title = getString(com.tokopedia.product.addedit.R.string.label_title_add_product)
-
         // to check whether current fragment is visible or not
         isFragmentVisible = true
 
-        // action button
-        doneButton = activity?.findViewById(R.id.tv_done)
+        // setup toolbar and action button
+        setupToolbar()
 
         // photos
         productPhotosView = view.findViewById(R.id.rv_product_photos)
@@ -724,6 +713,31 @@ class AddEditProductPreviewFragment :
                 .inject(this)
     }
 
+    private fun setupToolbar() {
+        initializeToolbar()
+        highlightNavigationButton(PageIndicator.INDICATOR_MAIN_PAGE)
+        setNavigationButtonsOnClickListener { page ->
+            // restore to root of navigation component first
+            if (!isFragmentVisible) {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+            when (page) {
+                PageIndicator.INDICATOR_MAIN_PAGE -> {
+                }
+                PageIndicator.INDICATOR_DETAIL_PAGE -> {
+                    val productInputModel = viewModel.productInputModel.value ?: ProductInputModel()
+                    moveToDetailFragment(productInputModel, false)
+                }
+                PageIndicator.INDICATOR_DESCRIPTION_PAGE -> {
+                    moveToDescriptionFragment()
+                }
+                PageIndicator.INDICATOR_SHIPMENT_PAGE -> {
+                    moveToShipmentFragment()
+                }
+            }
+        }
+    }
+
     private fun setupBackPressed() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -876,7 +890,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun displayEditMode() {
-        toolbar?.title = getString(R.string.label_title_edit_product)
+        toolbar?.headerTitle = getString(R.string.label_title_edit_product)
         doneButton?.show()
 
         enablePhotoEdit()
@@ -1228,7 +1242,7 @@ class AddEditProductPreviewFragment :
     private fun showProductPhotoPreview(productInputModel: ProductInputModel) {
         var pictureIndex = 0
         val imageUrlOrPathList = productInputModel.detailInputModel.imageUrlOrPathList.map { urlOrPath ->
-            if (urlOrPath.startsWith(HTTP_PREFIX)) productInputModel.detailInputModel.pictureList[pictureIndex++].urlThumbnail
+            if (urlOrPath.startsWith(HTTP_PREFIX)) productInputModel.detailInputModel.pictureList.getOrNull(pictureIndex++)?.urlThumbnail.orEmpty()
             else urlOrPath
         }
         productPhotoAdapter?.setProductPhotoPaths(imageUrlOrPathList.toMutableList())

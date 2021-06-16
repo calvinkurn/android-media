@@ -8,7 +8,6 @@
         <activity
             android:name=".preview.presentation.activity.AddEditProductPreviewActivity"
             android:label="@string/label_title_add_product"
-            android:screenOrientation="portrait"
             android:configChanges="orientation"
             android:theme="@style/Theme.White">
             <intent-filter>
@@ -26,7 +25,6 @@
         <activity
             android:name=".draft.presentation.activity.AddEditProductDraftActivity"
             android:label = "@string/label_title_draft_product"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
             <intent-filter>
@@ -45,17 +43,14 @@
 
         <activity
             android:name=".variant.presentation.activity.AddEditProductVariantActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".variant.presentation.activity.AddEditProductVariantDetailActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
         <activity
             android:name=".category.presentation.activity.AddEditProductCategoryActivity"
             android:label="@string/label_title_category_picker"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
             <intent-filter>
@@ -72,7 +67,6 @@
 
         <activity
             android:name=".specification.presentation.activity.AddEditProductSpecificationActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
         <service

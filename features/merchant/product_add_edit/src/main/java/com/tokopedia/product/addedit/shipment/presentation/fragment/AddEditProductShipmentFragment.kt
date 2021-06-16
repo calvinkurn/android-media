@@ -10,7 +10,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -27,6 +26,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_SHIPMENT_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.AddEditProductFragment
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISADDING
@@ -74,7 +74,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AddEditProductShipmentFragment:
-        BaseDaggerFragment(),
+        AddEditProductFragment(),
         AddEditProductPerformanceMonitoringListener {
 
     private var mainLayout: ViewGroup? = null
@@ -147,6 +147,9 @@ class AddEditProductShipmentFragment:
         // set bg color programatically, to reduce overdraw
         requireActivity().window.decorView.setBackgroundColor(ContextCompat.getColor(
                 requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+
+        // set navigation highlight
+        highlightNavigationButton(PageIndicator.INDICATOR_SHIPMENT_PAGE)
 
         // to check whether current fragment is visible or not
         isFragmentVisible = true
