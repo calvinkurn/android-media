@@ -59,7 +59,6 @@ import java.lang.IndexOutOfBoundsException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
 class ShopScoreMapper @Inject constructor(private val userSession: UserSessionInterface,
@@ -424,7 +423,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                             "-"
                                         } else {
                                             if (roundNextMinValue.rem(1) == 0.0) {
-                                                roundNextMinValue.roundToInt().toString()
+                                                roundNextMinValue.roundToLong().toString()
                                             } else {
                                                 getNumberFormatted(roundNextMinValue)
                                             }
@@ -437,7 +436,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                     "-"
                                 } else {
                                     if (minValueFormattedPercent.rem(1) == 0.0) {
-                                        minValueFormattedPercent.roundToInt().toString()
+                                        minValueFormattedPercent.roundToLong().toString()
                                     } else {
                                         getNumberFormatted(minValueFormattedPercent)
                                     }
@@ -448,7 +447,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                 val peopleCount = if (roundNextMinValue < 0.0) {
                                     "-"
                                 } else {
-                                    roundNextMinValue.roundToInt()
+                                    roundNextMinValue.roundToLong()
                                 }
                                 Pair("$peopleCount $peopleText", peopleText)
                             }
@@ -456,7 +455,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                 val openSellerAppCount = if (roundNextMinValue < 0.0) {
                                     "-"
                                 } else {
-                                    roundNextMinValue.roundToInt()
+                                    roundNextMinValue.roundToLong()
                                 }
                                 Pair("$openSellerAppCount $dayText", dayText)
                             }
@@ -471,7 +470,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                 ORDER_SUCCESS_RATE_KEY, CHAT_DISCUSSION_SPEED_KEY, PRODUCT_REVIEW_WITH_FOUR_STARS_KEY -> {
                                     val rawValuePercent = shopScoreDetail.rawValue * ONE_HUNDRED_PERCENT
                                     val rawValueFormatted = if (rawValuePercent.rem(1) == 0.0) {
-                                        rawValuePercent.roundToInt().toString()
+                                        rawValuePercent.roundToLong().toString()
                                     } else {
                                         getNumberFormatted(rawValuePercent)
                                     }
@@ -479,14 +478,14 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                                 }
                                 CHAT_DISCUSSION_REPLY_SPEED_KEY, SPEED_SENDING_ORDERS_KEY -> {
                                     val rawValueFormatted = if (shopScoreDetail.rawValue.rem(1) == 0.0) {
-                                        shopScoreDetail.rawValue.roundToInt().toString()
+                                        shopScoreDetail.rawValue.roundToLong().toString()
                                     } else {
                                         getNumberFormatted(shopScoreDetail.rawValue)
                                     }
                                     rawValueFormatted
                                 }
                                 TOTAL_BUYER_KEY, OPEN_TOKOPEDIA_SELLER_KEY -> {
-                                    shopScoreDetail.rawValue.roundToInt().toString()
+                                    shopScoreDetail.rawValue.roundToLong().toString()
                                 }
                                 else -> {
                                     shopScoreDetail.rawValue.toString()
