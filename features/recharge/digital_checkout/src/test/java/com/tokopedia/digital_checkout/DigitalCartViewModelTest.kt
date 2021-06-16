@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.common_digital.atc.DigitalAddToCartUseCase
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -70,9 +69,6 @@ class DigitalCartViewModelTest {
 
     @RelaxedMockK
     lateinit var digitalGetCartUseCase: DigitalGetCartUseCase
-
-    @RelaxedMockK
-    lateinit var digitalAddToCartUseCase: DigitalAddToCartUseCase
 
     @RelaxedMockK
     lateinit var digitalCancelVoucherUseCase: DigitalCancelVoucherUseCase
@@ -184,7 +180,7 @@ class DigitalCartViewModelTest {
     @Test
     fun getCart_onSuccess_NoNeedOtpAndIsSubscribed() {
         //given
-        val dummyResponse = DigitalCartDummyData.getDummyGetCartResponse()
+        val dummyResponse = getDummyGetCartResponse(true)
         coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
             secondArg<(RechargeGetCart.Response) -> Unit>().invoke(RechargeGetCart.Response(dummyResponse))
         }
@@ -233,6 +229,61 @@ class DigitalCartViewModelTest {
         // show correct total price
         assert(digitalCartViewModel.totalPrice.value != null)
         assert(digitalCartViewModel.totalPrice.value == dummyResponse.price + dummyResponse.adminFee)
+    }
+
+    @Test
+    fun getCart_onSuccess_NoNeedOtpAndIsSubscribedNotOpenAmount() {
+        //given
+        val dummyResponse = getDummyGetCartResponse(false)
+        coEvery { digitalGetCartUseCase.execute(any(), any(), any()) } coAnswers {
+            secondArg<(RechargeGetCart.Response) -> Unit>().invoke(RechargeGetCart.Response(dummyResponse))
+        }
+        coEvery { userSession.isLoggedIn } returns true
+
+        //when
+        val categoryId = "1"
+        digitalCartViewModel.getCart(categoryId)
+
+        // then
+        // must show content and show loading
+        assert(digitalCartViewModel.showContentCheckout.value != null)
+        assert(digitalCartViewModel.showContentCheckout.value!!)
+        assert(digitalCartViewModel.showLoading.value != null)
+        assert(!digitalCartViewModel.showLoading.value!!)
+
+        // show mapped cart data
+        val mappedCartInfoData = digitalCartViewModel.cartDigitalInfoData.value
+        assert(mappedCartInfoData != null)
+        assert(mappedCartInfoData!!.mainInfo.getOrNull(0)?.label == dummyResponse.mainnInfo.getOrNull(0)?.label)
+        assert(mappedCartInfoData.mainInfo.getOrNull(0)?.value == dummyResponse.mainnInfo.getOrNull(0)?.value)
+        assert(mappedCartInfoData.additionalInfos.getOrNull(0)?.title == dummyResponse.additionalInfo.getOrNull(0)?.title)
+        assert(mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.label
+                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.label)
+        assert(mappedCartInfoData.additionalInfos.getOrNull(0)?.items?.getOrNull(0)?.value
+                == dummyResponse.additionalInfo.getOrNull(0)?.detail?.getOrNull(0)?.value)
+        assert(mappedCartInfoData.attributes.categoryName == dummyResponse.categoryName)
+        assert(mappedCartInfoData.attributes.operatorName == dummyResponse.operatorName)
+        assert(mappedCartInfoData.attributes.clientNumber == dummyResponse.clientNumber)
+        assert(mappedCartInfoData.attributes.icon == dummyResponse.icon)
+        assert(mappedCartInfoData.attributes.isInstantCheckout == dummyResponse.isInstantCheckout)
+        assert(mappedCartInfoData.attributes.price == dummyResponse.priceText)
+        assert(mappedCartInfoData.attributes.pricePlain == dummyResponse.price)
+        assert(mappedCartInfoData.attributes.isEnableVoucher == dummyResponse.enableVoucher)
+        assert(mappedCartInfoData.attributes.isCouponActive == 1)
+        assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.voucher)
+        assert(!mappedCartInfoData.isNeedOtp)
+        assert(mappedCartInfoData.crossSellingType == dummyResponse.crossSellingType)
+        assert(mappedCartInfoData.crossSellingConfig?.headerTitle == dummyResponse.crossSellingConfig.wordingIsSubscribe.headerTitle)
+        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.transactionType == dummyResponse.fintechProduct.getOrNull(0)?.transactionType)
+        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ==
+                dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)
+        assert(mappedCartInfoData.id == dummyResponse.id)
+        assert(!mappedCartInfoData.attributes.isOpenAmount)
+        assert(mappedCartInfoData.isInstantCheckout == dummyResponse.isInstantCheckout)
+
+        // show correct total price
+        assert(digitalCartViewModel.totalPrice.value != null)
+        assert(digitalCartViewModel.totalPrice.value == dummyResponse.price)
     }
 
     @Test
