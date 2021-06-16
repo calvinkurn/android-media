@@ -324,6 +324,15 @@ abstract class TopchatRoomTest {
         onView(withId(R.id.list_template)).perform(viewAction)
     }
 
+    protected fun clickSrwPreviewExpandCollapse() {
+        onView(
+            allOf(
+                withId(R.id.rv_srw_content_container),
+                isDescendantOfA(withId(R.id.cl_attachment_preview))
+            )
+        ).perform(click())
+    }
+
     protected fun assertLabelOnProductCard(
         recyclerViewId: Int,
         atPosition: Int,
@@ -547,6 +556,12 @@ abstract class TopchatRoomTest {
     protected fun assertKeyboardIsNotVisible() {
         val isKeyboardOpened = isKeyboardOpened()
         assertThat(isKeyboardOpened, `is`(false))
+    }
+
+    protected fun assertChatMenuVisibility(visibilityMatcher: Matcher<in View>) {
+        onView(withId(R.id.fl_chat_menu)).check(
+            matches(visibilityMatcher)
+        )
     }
 
     protected fun isKeyboardOpened(): Boolean {

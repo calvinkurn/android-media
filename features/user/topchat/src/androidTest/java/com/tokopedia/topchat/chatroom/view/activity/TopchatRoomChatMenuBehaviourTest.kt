@@ -28,9 +28,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         clickPlusIconMenu()
 
         // Then
-        onView(withId(R.id.fl_chat_menu)).check(
-                matches(isDisplayed())
-        )
+        assertChatMenuVisibility(isDisplayed())
         onView(withId(R.id.ll_sticker_container)).check(
                 matches(not(isDisplayed()))
         )
@@ -52,9 +50,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         clickPlusIconMenu()
 
         // Then
-        onView(withId(R.id.fl_chat_menu)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatMenuVisibility(not(isDisplayed()))
         onView(withId(R.id.ll_sticker_container)).check(
                 matches(not(isDisplayed()))
         )
@@ -77,9 +73,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
         // Then
         assertKeyboardIsVisible()
-        onView(withId(R.id.fl_chat_menu)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatMenuVisibility(not(isDisplayed()))
         onView(withId(R.id.ll_sticker_container)).check(
                 matches(not(isDisplayed()))
         )
@@ -102,9 +96,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
         // Then
         assertKeyboardIsVisible()
-        onView(withId(R.id.fl_chat_menu)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatMenuVisibility(not(isDisplayed()))
         onView(withId(R.id.ll_sticker_container)).check(
                 matches(not(isDisplayed()))
         )
@@ -127,9 +119,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         clickStickerIconMenu()
 
         // Then
-        onView(withId(R.id.fl_chat_menu)).check(
-                matches(isDisplayed())
-        )
+        assertChatMenuVisibility(isDisplayed())
         onView(withId(R.id.ll_sticker_container)).check(
                 matches(isDisplayed())
         )
@@ -154,9 +144,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
         // Then
         assertKeyboardIsVisible()
-        onView(withId(R.id.fl_chat_menu)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatMenuVisibility(not(isDisplayed()))
         onView(withId(R.id.ll_sticker_container)).check(
                 matches(not(isDisplayed()))
         )
@@ -204,9 +192,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         pressBack()
 
         // Then
-        onView(withId(R.id.fl_chat_menu)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatMenuVisibility(not(isDisplayed()))
         onView(withId(R.id.rv_topchat_attachment_menu)).check(
                 matches(not(isDisplayed()))
         )

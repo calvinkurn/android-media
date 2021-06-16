@@ -751,7 +751,27 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwPreviewCollapsed()
     }
 
-    // TODO: Chat Menu should be hidden when SRW preview expanded
+    @Test
+    fun chat_menu_should_be_hidden_when_SRW_preview_expanded() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // When
+        clickPlusIconMenu()
+        clickSrwPreviewExpandCollapse()
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+        assertSrwPreviewExpanded()
+        assertChatMenuVisibility(not(isDisplayed()))
+    }
+
     // TODO: Chat Sticker should be hidden when SRW preview expanded
     // TODO: SRW bubble should removed when user receive attach different product (compare with productId, product no longer relevant) event from ws seller/himself.
     // TODO: SRW bubble should not be removed when user receive attach same product (compare with productId, product attached still relevant to SRW) event from ws seller/himself.
@@ -790,8 +810,14 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
             putExtra(ApplinkConst.Chat.INVOICE_CODE, "INV/20210506/MPL/1227273793")
             putExtra(ApplinkConst.Chat.INVOICE_TITLE, "Pr0duct T3st1n6 Out3r")
             putExtra(ApplinkConst.Chat.INVOICE_DATE, " 6 May 2021")
-            putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/11/5/adb0973e-48ce-484b-84f4-6653edc3cd6a.jpg")
-            putExtra(ApplinkConst.Chat.INVOICE_URL, "https://www.tokopedia.com/invoice.pl?id=785696850&pdf=Invoice-143252780-6996572-20210506113328-YmJiYmJiYmI2")
+            putExtra(
+                ApplinkConst.Chat.INVOICE_IMAGE_URL,
+                "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/11/5/adb0973e-48ce-484b-84f4-6653edc3cd6a.jpg"
+            )
+            putExtra(
+                ApplinkConst.Chat.INVOICE_URL,
+                "https://www.tokopedia.com/invoice.pl?id=785696850&pdf=Invoice-143252780-6996572-20210506113328-YmJiYmJiYmI2"
+            )
             putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, "700")
             putExtra(ApplinkConst.Chat.INVOICE_STATUS, "Pesanan Selesai")
             putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, "Rp 10.000")
