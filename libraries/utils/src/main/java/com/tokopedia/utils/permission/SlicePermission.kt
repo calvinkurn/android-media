@@ -5,7 +5,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.service.voice.VoiceInteractionService
 import androidx.slice.SliceManager
 import com.tokopedia.logger.ServerLogger
@@ -37,10 +36,10 @@ class SlicePermission {
                             .scheme(ContentResolver.SCHEME_CONTENT)
                             .authority(authority)
                             .build()
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        SliceManager.getInstance(context).grantSlicePermission(assistantPackage, sliceProviderUri)
-                    }
+                    SliceManager.getInstance(context).grantSlicePermission(assistantPackage, sliceProviderUri)
+
                 }
+                provider.release()
             } else {
                 ServerLogger.log(Priority.P2, "SLICE_GRANT_PERMISSION", mapOf("type" to "NULL_PROVIDER"))
             }
