@@ -1,4 +1,4 @@
-package com.tokopedia.power_merchant.subscribe.tracking
+package com.tokopedia.power_merchant.subscribe.analytics.tracking
 
 import com.tokopedia.config.GlobalConfig
 

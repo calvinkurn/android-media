@@ -1,4 +1,4 @@
-package com.tokopedia.power_merchant.subscribe.domain.interactor
+package com.tokopedia.power_merchant.subscribe.domain.usecase
 
 import com.tokopedia.gm.common.data.source.cloud.model.ParamShopInfoByID
 import com.tokopedia.gm.common.domain.interactor.BaseGqlUseCase

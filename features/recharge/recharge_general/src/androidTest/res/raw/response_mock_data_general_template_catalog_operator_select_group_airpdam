@@ -20,6 +20,16 @@
               },
               {
                 "type": "",
+                "id": 2491,
+                "attributes": {
+                  "name": "KAB. ACEH TAMIANG (TIRTA TAMIANG)",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
                 "id": 2490,
                 "attributes": {
                   "name": "KOTA SABANG",
@@ -43,6 +53,26 @@
                 "id": 2488,
                 "attributes": {
                   "name": "KOTA LANGSA (TIRTA KEUMUENENG)",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 190,
+                "attributes": {
+                  "name": "ACEH BARAT",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 187,
+                "attributes": {
+                  "name": "ACEH BESAR",
                   "operator_labels": [],
                   "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
                   "description": ""
@@ -115,6 +145,26 @@
               },
               {
                 "type": "",
+                "id": 39,
+                "attributes": {
+                  "name": "KAB BULELENG (BALI)",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 137,
+                "attributes": {
+                  "name": "KAB KLUNGKUNG",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
                 "id": 82,
                 "attributes": {
                   "name": "PERUMDA Air Minum Tirta Sewakadarma",
@@ -133,6 +183,16 @@
                 "id": 2327,
                 "attributes": {
                   "name": "KOTA PEMATANG SIANTAR (TIRTAULI)",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 2335,
+                "attributes": {
+                  "name": "KAB. KARO (TIRTA MALEM)",
                   "operator_labels": [],
                   "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
                   "description": ""
@@ -173,6 +233,26 @@
                 "id": 2338,
                 "attributes": {
                   "name": "KOTA TANJUNG BALAI (TIRTA KUALO)",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 2237,
+                "attributes": {
+                  "name": "KAB NIAS",
+                  "operator_labels": [],
+                  "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
+                  "description": ""
+                }
+              },
+              {
+                "type": "",
+                "id": 2233,
+                "attributes": {
+                  "name": "KAB KISARAN",
                   "operator_labels": [],
                   "image_url": "https://ecs7.tokopedia.net/img/recharge/operator/tirtadharma.png",
                   "description": ""

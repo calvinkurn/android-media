@@ -1,7 +1,7 @@
 package com.tokopedia.gm.common.domain.interactor
 
 import com.tokopedia.gm.common.data.source.cloud.model.PMGradeBenefitInfoResponse
-import com.tokopedia.gm.common.data.source.local.model.PMCurrentAndNextShopGradeUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMGradeBenefitInfoUiModel
 import com.tokopedia.gm.common.domain.mapper.PMGradeBenefitInfoMapper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -15,46 +15,45 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 10/03/21
  */
 
-class GetPMCurrentAndNextShopGradeUseCase @Inject constructor(
+class GetPMGradeBenefitInfoUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val mapper: PMGradeBenefitInfoMapper
-) : BaseGqlUseCase<PMCurrentAndNextShopGradeUiModel>() {
+) : BaseGqlUseCase<PMGradeBenefitInfoUiModel>() {
 
-    override suspend fun executeOnBackground(): PMCurrentAndNextShopGradeUiModel {
+    override suspend fun executeOnBackground(): PMGradeBenefitInfoUiModel {
         val gqlRequest = GraphqlRequest(QUERY, PMGradeBenefitInfoResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(PMGradeBenefitInfoResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val response = gqlResponse.getData<PMGradeBenefitInfoResponse>()
-            val data = mapper.mapRemoteModelToUiModel(response.data)
-            return PMCurrentAndNextShopGradeUiModel(
-                    nextMonthlyRefreshDate = data.nextMonthlyRefreshDate,
-                    nextQuarterlyCalibrationRefreshDate = data.nextQuarterlyCalibrationRefreshDate,
-                    currentPMGrade = data.currentPMGrade,
-                    currentPMBenefits = data.currentPMBenefits,
-                    nextPMGrade = data.nextPMGrade,
-                    nextPMBenefits = data.nextPMBenefits
-            )
+            return mapper.mapRemoteModelToUiModel(response.data)
         } else {
             throw MessageErrorException(errors.joinToString(" - ") { it.message })
         }
     }
 
     companion object {
+        const val FIELD_CURRENT_PM_GRADE = "current_pm_grade"
+        const val FIELD_CURRENT_BENEFIT_LIST = "current_benefit_list"
+        const val FIELD_NEXT_PM_GRADE = "next_pm_grade"
+        const val FIELD_NEXT_BENEFIT_LIST = "next_benefit_list"
+
         private const val KEY_SHOP_ID = "shop_id"
         private const val KEY_SOURCE = "source"
+        private const val KEY_FIELDS = "fields"
 
-        fun createParams(shopId: String, source: String): RequestParams {
+        fun createParams(shopId: String, source: String, fields: List<String>): RequestParams {
             return RequestParams.create().apply {
                 putLong(KEY_SHOP_ID, shopId.toLongOrZero())
                 putString(KEY_SOURCE, source)
+                putObject(KEY_FIELDS, fields)
             }
         }
 
         private val QUERY = """
-            query goldGetPMGradeBenefitInfo(${'$'}shop_id: Int!, ${'$'}source: String!) {
-              goldGetPMGradeBenefitInfo(shop_id: ${'$'}shop_id, source: ${'$'}source) {
+            query goldGetPMGradeBenefitInfo(${'$'}shop_id: Int!, ${'$'}source: String!, ${'$'}fields: [String]) {
+              goldGetPMGradeBenefitInfo(shop_id: ${'$'}shop_id, source: ${'$'}source, fields: ${'$'}fields) {
                 next_monthly_refresh_date
                 next_quarterly_calibration_refresh_date
                 current_pm_grade {
