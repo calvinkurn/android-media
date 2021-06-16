@@ -15,7 +15,7 @@
     <string name="common_topup_voucher_code_already_copied">Kode voucher telah tersalin</string>
 
     <string name="common_topup_enquiry_default_label">Lanjut</string>
-    <string name="common_topup_enquiry_error">Terjadi kesalahan, silahkan coba beberapa saat lagi</string>
+    <string name="common_topup_enquiry_error">Maaf, belum berhasil lanjut ke Pembayaran. Coba lagi, yuk!</string>
     <string name="common_topup_enquiry_grpc_error_msg">Oops, ada kendala koneksi. Coba lagi, yuk.</string>
 
     <string name="common_topup_checkout_view_total_value_label">Total Pembayaran</string>

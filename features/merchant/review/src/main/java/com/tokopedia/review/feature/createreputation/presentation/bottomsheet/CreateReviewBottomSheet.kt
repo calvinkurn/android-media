@@ -52,6 +52,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -64,7 +65,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         const val GOOD_RATING_THRESHOLD = 3
         const val CREATE_REVIEW_TEXT_AREA_BOTTOM_SHEET_TAG = "CreateReviewTextAreaBottomSheet"
         const val TEMPLATES_ROW_COUNT = 2
-        fun createInstance(rating: Int, productId: Long, reputationId: Long, utmSource: String): CreateReviewBottomSheet {
+        fun createInstance(rating: Int, productId: String, reputationId: String, utmSource: String): CreateReviewBottomSheet {
             return CreateReviewBottomSheet().apply {
                 this.rating = rating
                 this.productId = productId
@@ -97,8 +98,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var thankYouBottomSheet: BottomSheetUnify? = null
 
     private var rating: Int = 0
-    private var productId: Long = 0L
-    private var reputationId: Long = 0L
+    private var productId: String = ""
+    private var reputationId: String = ""
     private var feedbackId: Long = 0L
     private var isEditMode: Boolean = false
     private var utmSource: String = ""
@@ -170,7 +171,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     override fun onExpandButtonClicked(text: String) {
-        CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId.toString())
+        CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId)
         if(isUserEligible()) {
             if (incentiveHelper.isBlank()) incentiveHelper = context?.getString(R.string.review_create_text_area_eligible) ?: ""
         }
@@ -180,7 +181,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     override fun onCollapseButtonClicked(text: String) {
-        CreateReviewTracking.onCollapseTextBoxClicked(getOrderId(), productId.toString())
+        CreateReviewTracking.onCollapseTextBoxClicked(getOrderId(), productId)
         textAreaBottomSheet?.dismiss()
     }
 
@@ -199,7 +200,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     override fun trackWhenHasFocus(textLength: Int) {
-        CreateReviewTracking.reviewOnMessageChangedTracker(getOrderId(), productId.toString(), textLength == 0, isEditMode, feedbackId.toString())
+        CreateReviewTracking.reviewOnMessageChangedTracker(getOrderId(), productId, textLength == 0, isEditMode, feedbackId.toString())
         setHelperText(textLength)
     }
 
@@ -301,7 +302,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         createReviewViewModel.getProductReputation(productId, reputationId)
     }
 
-    private fun getIncentiveOvoData(productId: Long = 0, reputationId: Long = 0) {
+    private fun getIncentiveOvoData(productId: String = "", reputationId: String = "") {
         createReviewViewModel.getProductIncentiveOvo(productId, reputationId)
     }
 
@@ -378,7 +379,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 }
             }
             hideLoading()
-            updateProductId(productData.productID)
+            updateProductId(productData.productIDStr)
             setProductDetail(productData)
             CreateReviewTracking.reviewOnViewTracker(orderID, productId.toString())
         }
@@ -394,15 +395,22 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             hideTemplates()
             incentivesTicker?.apply {
                 setHtmlDescription(it.ticker.subtitle)
-                setOnClickListener { _ ->
-                    if (ovoIncentiveBottomSheet == null) {
-                        ovoIncentiveBottomSheet = context?.let { context -> IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(context, ovoDomain, this@CreateReviewBottomSheet, "", getTncBottomSheetTrackerData()) }
+                setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        if (ovoIncentiveBottomSheet == null) {
+                            ovoIncentiveBottomSheet = context?.let { context -> IncentiveOvoBottomSheetBuilder.getTermsAndConditionsBottomSheet(context, ovoDomain, this@CreateReviewBottomSheet, "", getTncBottomSheetTrackerData()) }
+                        }
+                        ovoIncentiveBottomSheet?.let { bottomSheet ->
+                            activity?.supportFragmentManager?.let { supportFragmentManager -> bottomSheet.show(supportFragmentManager, bottomSheet.tag) }
+                            CreateReviewTracking.eventClickIncentivesTicker(it.subtitle, getReputationId(), getOrderId(), productId.toString(), getUserId())
+                        }
                     }
-                    ovoIncentiveBottomSheet?.let { bottomSheet ->
-                        activity?.supportFragmentManager?.let { supportFragmentManager -> bottomSheet.show(supportFragmentManager, bottomSheet.tag) }
-                        CreateReviewTracking.eventClickIncentivesTicker(it.subtitle, getReputationId(), getOrderId(), productId.toString(), getUserId())
+
+                    override fun onDismiss() {
+                        // No Op
                     }
-                }
+
+                })
                 viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         CreateReviewTracking.eventViewIncentivesTicker(it.subtitle, getReputationId(), getOrderId(), productId.toString(), getUserId())
@@ -630,7 +638,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         }
     }
 
-    private fun updateProductId(productId: Long) {
+    private fun updateProductId(productId: String) {
         this.productId = productId
     }
 
@@ -645,7 +653,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private fun setAnonymousOptionClickListener() {
         anonymousOption?.setOnClickListener {
             if (anonymousOption?.isChecked() == true) {
-                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), isEditMode, feedbackId.toString())
+                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId, isEditMode, feedbackId.toString())
             }
         }
     }
@@ -653,7 +661,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private fun trackRatingChanged(position: Int) {
         CreateReviewTracking.reviewOnRatingChangedTracker(
                 getOrderId(),
-                productId.toString(10),
+                productId,
                 (position).toString(10),
                 true,
                 isEditMode,
@@ -776,7 +784,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun getReputationId(): String {
-        return (createReviewViewModel.getReputationDataForm.value as? Success)?.data?.productrevGetForm?.reputationID.toString()
+        return (createReviewViewModel.getReputationDataForm.value as? Success)?.data?.productrevGetForm?.reputationIDStr ?: ""
     }
 
     private fun getRating(): Int {
@@ -879,7 +887,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
         CreateReviewTracking.reviewOnImageUploadTracker(
                 getOrderId(),
-                productId.toString(10),
+                productId,
                 true,
                 selectedImage.size.toString(10),
                 isEditMode,

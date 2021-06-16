@@ -19,6 +19,7 @@ import com.tokopedia.inbox.fake.di.chat.FakeChatListComponent
 import com.tokopedia.inbox.fake.di.common.DaggerFakeBaseAppComponent
 import com.tokopedia.inbox.fake.di.common.FakeAppModule
 import com.tokopedia.inbox.fake.di.common.FakeBaseAppComponent
+import com.tokopedia.inbox.fake.di.notifcenter.FakeNotificationComponent
 import com.tokopedia.inbox.fake.view.activity.FakeInboxActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -26,7 +27,6 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.filter.ChatFilterV
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import javax.inject.Inject
 
 abstract class InboxTest {
 
@@ -42,15 +42,15 @@ abstract class InboxTest {
         get() = InstrumentationRegistry
                 .getInstrumentation().context.applicationContext
 
-    @Inject
-    protected lateinit var inboxDep: InboxFakeDependency
+    protected var inboxDep = InboxFakeDependency()
 
     @Before
     open fun before() {
         setupGraphqlMockResponse(InboxModelConfig())
         setupDaggerBaseComponent()
         setupInboxDaggerComponent()
-        inboxComponent!!.inject(this)
+        inboxComponent!!.injectMembers(inboxDep)
+        inboxDep.init()
     }
 
     @After
@@ -58,6 +58,7 @@ abstract class InboxTest {
         baseComponent = null
         inboxComponent = null
         chatListComponent = null
+        notifcenterComponent = null
     }
 
     private fun setupDaggerBaseComponent() {
@@ -117,6 +118,7 @@ abstract class InboxTest {
         var baseComponent: FakeBaseAppComponent? = null
         var inboxComponent: FakeInboxComponent? = null
         var chatListComponent: FakeChatListComponent? = null
+        var notifcenterComponent: FakeNotificationComponent? = null
     }
 }
 
