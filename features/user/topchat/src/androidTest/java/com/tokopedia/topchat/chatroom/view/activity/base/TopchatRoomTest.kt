@@ -564,6 +564,12 @@ abstract class TopchatRoomTest {
         )
     }
 
+    protected fun assertChatAttachmentMenuVisibility(visibilityMatcher: Matcher<in View>) {
+        onView(withId(R.id.rv_topchat_attachment_menu)).check(
+            matches(visibilityMatcher)
+        )
+    }
+
     protected fun assertChatStickerMenuVisibility(
         visibilityMatcher: Matcher<in View>
     ) {

@@ -30,9 +30,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         // Then
         assertChatMenuVisibility(isDisplayed())
         assertChatStickerMenuVisibility(not(isDisplayed()))
-        onView(withId(R.id.rv_topchat_attachment_menu)).check(
-                matches(isDisplayed())
-        )
+        assertChatAttachmentMenuVisibility(isDisplayed())
     }
 
     @Test
@@ -50,9 +48,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         // Then
         assertChatMenuVisibility(not(isDisplayed()))
         assertChatStickerMenuVisibility(not(isDisplayed()))
-        onView(withId(R.id.rv_topchat_attachment_menu)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatAttachmentMenuVisibility(not(isDisplayed()))
     }
 
     @Test
@@ -71,9 +67,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         assertKeyboardIsVisible()
         assertChatMenuVisibility(not(isDisplayed()))
         assertChatStickerMenuVisibility(not(isDisplayed()))
-        onView(withId(R.id.rv_topchat_attachment_menu)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatAttachmentMenuVisibility(not(isDisplayed()))
     }
 
     @Test
@@ -92,9 +86,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         assertKeyboardIsVisible()
         assertChatMenuVisibility(not(isDisplayed()))
         assertChatStickerMenuVisibility(not(isDisplayed()))
-        onView(withId(R.id.rv_topchat_attachment_menu)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatAttachmentMenuVisibility(not(isDisplayed()))
     }
 
     @Test
@@ -115,9 +107,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         onView(withId(R.id.ll_sticker_container)).check(
                 matches(isDisplayed())
         )
-        onView(withId(R.id.rv_topchat_attachment_menu)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatAttachmentMenuVisibility(not(isDisplayed()))
     }
 
     @Test
@@ -138,9 +128,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         assertKeyboardIsVisible()
         assertChatMenuVisibility(not(isDisplayed()))
         assertChatStickerMenuVisibility(not(isDisplayed()))
-        onView(withId(R.id.rv_topchat_attachment_menu)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatAttachmentMenuVisibility(not(isDisplayed()))
     }
 
     /**
@@ -161,9 +149,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         clickStickerIconMenu()
 
         // Then
-        onView(withId(R.id.rv_topchat_attachment_menu)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatAttachmentMenuVisibility(not(isDisplayed()))
         onView(withId(R.id.ll_sticker_container)).check(
                 matches(isDisplayed())
         )
@@ -183,9 +169,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
         // Then
         assertChatMenuVisibility(not(isDisplayed()))
-        onView(withId(R.id.rv_topchat_attachment_menu)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatAttachmentMenuVisibility(not(isDisplayed()))
     }
 
     @Test
@@ -200,9 +184,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         clickPlusIconMenu()
 
         // Then
-        onView(withId(R.id.rv_topchat_attachment_menu)).check(
-                matches(isDisplayed())
-        )
+        assertChatAttachmentMenuVisibility(isDisplayed())
         onView(withId(R.id.rv_topchat_attachment_menu)).check(
                 matches(withTotalItem(3))
         )
@@ -220,9 +202,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         clickPlusIconMenu()
 
         // Then
-        onView(withId(R.id.rv_topchat_attachment_menu)).check(
-                matches(isDisplayed())
-        )
+        assertChatAttachmentMenuVisibility(isDisplayed())
         onView(withId(R.id.rv_topchat_attachment_menu)).check(
                 matches(withTotalItem(4))
         )
