@@ -13,14 +13,13 @@ class TypoCorrectionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
 
     fun bindData(productName: Pair<String, String>) {
         itemView.context.apply {
-            val colorBlack = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N400)
-            val alpha = MethodChecker.getColor(this, R.color.colorAlpha)
+            val colorBlack = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N400_44)
 
             chipsTypo.chip_text.text = getString(
                     R.string.label_product_title_validation_typo_correction,
                     productName.first,
                     productName.second,
-                    Integer.toHexString(colorBlack and alpha)
+                    Integer.toHexString(colorBlack)
             ).parseAsHtml()
         }
     }
