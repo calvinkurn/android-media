@@ -52,6 +52,6 @@
     <color name="discovery2_topads_product_light_red">#fa591d</color>
     <color name="discovery2_dark_gray">#666666</color>
     <color name="discovery2_dark_gray_2">#555555</color>
-    <color name="discovery2_5_star">#FFC400</color>
+    <color name="discovery2_dms_5_star">#FFC400</color>
 
 </resources>
