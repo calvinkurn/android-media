@@ -143,7 +143,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
     }
 
     override fun onSuccessSetDelivered(deliveredData: SetDelivered) {
-        if (deliveredData.success == 1) {
+        if (deliveredData.success == SomConsts.SOM_SET_DELIVERED_SUCCESS_CODE) {
             showToaster(getString(R.string.message_set_delivered_success), view, Toaster.TYPE_NORMAL, "")
             dismissBottomSheets()
             shouldRefreshOrderList = true

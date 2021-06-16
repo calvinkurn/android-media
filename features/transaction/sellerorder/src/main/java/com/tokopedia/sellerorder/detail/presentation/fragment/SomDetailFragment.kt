@@ -1442,7 +1442,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     protected open fun onSuccessSetDelivered(deliveredData: SetDelivered) {
-        if (deliveredData.success == 1) {
+        if (deliveredData.success == SomConsts.SOM_SET_DELIVERED_SUCCESS_CODE) {
             activity?.setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(RESULT_SET_DELIVERED, getString(R.string.message_set_delivered_success))
             })
