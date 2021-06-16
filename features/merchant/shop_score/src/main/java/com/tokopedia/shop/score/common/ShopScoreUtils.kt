@@ -21,7 +21,7 @@ import java.util.*
 
 object ShopScoreUtils {
 
-    fun getLevelBarWhite(level: Int): Int {
+    fun getLevelBarWhite(level: Long): Int {
         return when (level) {
             ShopScoreConstant.SHOP_SCORE_LEVEL_ONE -> R.drawable.ic_one_level_white
             ShopScoreConstant.SHOP_SCORE_LEVEL_TWO -> R.drawable.ic_two_level_white
