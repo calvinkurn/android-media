@@ -28,6 +28,7 @@ buildscript {
         }
     }
     dependencies {
+        classpath('io.embrace:embrace-swazzler:4.8.10')
         classpath ('com.android.tools.build:gradle:3.6.4') {
             exclude module: 'proguard-gradle'
         }
