@@ -26,8 +26,7 @@ import com.tokopedia.tokomart.categorylist.domain.mapper.CategoryListMapper
 import com.tokopedia.tokomart.categorylist.presentation.activity.TokoMartCategoryListActivity.Companion.PARAM_WAREHOUSE_ID
 import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListItemUiModel
 import com.tokopedia.tokomart.categorylist.presentation.view.TokoNowCategoryList
-import com.tokopedia.tokomart.categorylist.presentation.viewholder.CategoryListItemViewHolder
-import com.tokopedia.tokomart.categorylist.presentation.viewholder.CategoryListItemViewHolder.CategoryListListener
+import com.tokopedia.tokomart.categorylist.presentation.view.TokoNowCategoryList.CategoryListListener
 import com.tokopedia.tokomart.categorylist.presentation.viewmodel.TokoMartCategoryListViewModel
 import com.tokopedia.tokomart.categorylist.presentation.viewmodel.TokoMartCategoryListViewModel.Companion.ERROR_MAINTENANCE
 import com.tokopedia.tokomart.categorylist.presentation.viewmodel.TokoMartCategoryListViewModel.Companion.ERROR_PAGE_FULL
@@ -41,7 +40,7 @@ import com.tokopedia.usecase.coroutines.Success
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class TokoMartCategoryListBottomSheet : BottomSheetUnify(), CategoryListListener {
+class TokoMartCategoryListBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val ERROR_STATE_NOT_FOUND_IMAGE_URL = "https://images.tokopedia.net/img/error_page_400_category_list.png"
@@ -87,15 +86,6 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify(), CategoryListListener
         analytics.onClickCloseButton()
         super.onDismiss(dialog)
         activity?.finish()
-    }
-
-    override fun onClickCategory(categoryLevelOne:String, categoryLevelTwo: String) {
-        analytics.onClickLevelTwoCategory(categoryLevelOne, categoryLevelTwo)
-        dismiss()
-    }
-
-    override fun onClickAllCategory(categoryLevelOne:String) {
-        analytics.onClickLihatSemuaCategory(categoryLevelOne)
     }
 
     fun show(fm: FragmentManager) {
@@ -162,21 +152,22 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify(), CategoryListListener
             layoutParams.width = iconSize
         }
         accordionCategoryList?.onItemClick = { position, isExpanded ->
-            if(isExpanded) analytics.onExpandLeveOneCategory(categoryList.get(position).name)
-            else analytics.onCollapseLevelOneCategory(categoryList.get(position).name)
+            if (isExpanded) {
+                analytics.onExpandLeveOneCategory(categoryList[position].name)
+            } else {
+                analytics.onCollapseLevelOneCategory(categoryList[position].name)
+            }
         }
     }
 
     private fun createCategoryList(category: CategoryListItemUiModel): TokoNowCategoryList {
-        return TokoNowCategoryList(requireContext(), this, object: CategoryListItemViewHolder.GetCategoryLevelOneListener{
-            override fun getCategoryLevelOneListener(): String {
-                return category.name
-            }
+        return TokoNowCategoryList(requireContext(), analytics, object: CategoryListListener {
+            override fun onClickCategoryItem() = dismiss()
         }).apply {
             val paddingLeft = context?.resources
                 ?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
             setPadding(paddingLeft, 0, 0, 0)
-            setupCategoryList(category.childList)
+            setup(category)
         }
     }
 
