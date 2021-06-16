@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.widget.Toolbar
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
@@ -13,14 +12,13 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
-import com.tokopedia.sellerorder.common.navigator.SomNavigator
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToChangeCourierPage
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToConfirmShippingPage
 import com.tokopedia.sellerorder.common.navigator.SomNavigator.goToRequestPickupPage
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.data.model.SetDelivered
 import com.tokopedia.sellerorder.detail.di.DaggerSomDetailComponent
-import kotlinx.android.synthetic.main.fragment_som_detail.*
+import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 
 class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment() {
 
@@ -54,22 +52,22 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        btn_primary?.isLoading = false
-        if (requestCode == SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                if (data.hasExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP)) {
-                    shouldRefreshOrderList = true
-                    loadDetail()
-                }
-            }
-        } else if (requestCode == SomNavigator.REQUEST_CONFIRM_SHIPPING && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                if (data.hasExtra(SomConsts.RESULT_CONFIRM_SHIPPING)) {
-                    shouldRefreshOrderList = true
-                    loadDetail()
-                }
-            }
+    override fun handleRequestPickUpResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(SomConsts.RESULT_PROCESS_REQ_PICKUP)) {
+            val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(SomConsts.RESULT_PROCESS_REQ_PICKUP)
+            val message = resultProcessReqPickup.listMessage.firstOrNull { it.isNotBlank() }.orEmpty()
+            showCommonToaster(message)
+            shouldRefreshOrderList = true
+            loadDetail()
+        }
+    }
+
+    override fun handleChangeCourierAndConfirmShippingResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(SomConsts.RESULT_CONFIRM_SHIPPING)) {
+            val resultConfirmShippingMsg = data.getStringExtra(SomConsts.RESULT_CONFIRM_SHIPPING).orEmpty()
+            showCommonToaster(resultConfirmShippingMsg)
+            shouldRefreshOrderList = true
+            loadDetail()
         }
     }
 
