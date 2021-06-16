@@ -180,7 +180,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     private fun getStockWord(dataItem: DataItem): StockWording {
         val stockWordData = StockWording(title = "")
-        var stockWordTitleColour = getStockColor(R.color.clr_1e31353b)
+        var stockWordTitleColour = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
         var stockWordTitle = ""
         var stockAvailableCount: String? = ""
         dataItem.let {
@@ -199,7 +199,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
                             customStock <= threshold -> {
                                 stockWordTitle = getStockText(R.string.tersisa)
                                 stockAvailableCount = customStock.toString()
-                                stockWordTitleColour = getStockColor(R.color.clr_ef144a)
+                                stockWordTitleColour = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
                             }
                             else -> {
                                 stockWordTitle = getStockText(R.string.terjual)

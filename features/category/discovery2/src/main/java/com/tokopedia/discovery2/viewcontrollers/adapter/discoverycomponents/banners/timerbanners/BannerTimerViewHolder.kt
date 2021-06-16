@@ -161,18 +161,18 @@ class BannerTimerViewHolder(private val customItemView: View, val fragment: Frag
     private fun getTimerFontColour(componentItem: ComponentsItem?): Int {
         val fontColour = componentItem?.data?.firstOrNull()?.fontColor
         return if (fontColour.isNullOrEmpty()) {
-            MethodChecker.getColor(context, R.color.clr_ff8000)
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
         } else {
-            parsedColor(context, fontColour, R.color.clr_ff8000)
+            parsedColor(context, fontColour, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
         }
     }
 
     private fun getTimerBoxColour(componentItem: ComponentsItem?): Int {
         val boxColor = componentItem?.data?.firstOrNull()?.boxColor
         return if (boxColor.isNullOrEmpty()) {
-            MethodChecker.getColor(context, R.color.white)
+            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         } else {
-            parsedColor(context, boxColor, R.color.white)
+            parsedColor(context, boxColor, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         }
     }
 }

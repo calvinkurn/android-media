@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/Unify_N0">
 
         <ImageView
             android:id="@+id/iv_back"
@@ -30,7 +30,7 @@
             android:maxLines="1"
             android:paddingStart="@dimen/dp_12"
             android:paddingEnd="@dimen/dp_12"
-            android:textColor="@color/clr_f531353b"
+            android:textColor="@color/Unify_N700_96"
             android:text="@string/discovery_tokopedia"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/iv_back"

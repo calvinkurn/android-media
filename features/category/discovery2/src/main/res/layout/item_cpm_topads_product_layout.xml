@@ -34,7 +34,7 @@
         android:ellipsize="end"
         android:lineSpacingExtra="@dimen/sp_2"
         android:maxLines="2"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@id/card_background"
         app:layout_constraintEnd_toEndOf="@id/card_background"
         app:layout_constraintHorizontal_bias="0.0"
@@ -49,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_2"
-        android:textColor="@color/discovery2_topads_product_light_red"
+        android:textColor="@color/Unify_Y500"
         app:layout_constraintLeft_toLeftOf="@id/product_name"
         app:layout_constraintTop_toBottomOf="@id/product_name"
         app:typographyType="small"
@@ -65,7 +65,7 @@
         app:layout_constraintBottom_toBottomOf="@id/card_background"
         app:layout_constraintStart_toStartOf="@id/card_background"
         app:layout_constraintTop_toTopOf="@id/card_background"
-        tools:srcCompat="@color/black_70" />
+        tools:srcCompat="@color/Unify_N700_68" />
 
     <ImageView
         android:layout_width="@dimen/dp_20"

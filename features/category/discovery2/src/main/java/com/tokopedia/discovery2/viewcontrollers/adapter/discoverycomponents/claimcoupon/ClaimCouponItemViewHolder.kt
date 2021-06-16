@@ -89,9 +89,9 @@ class ClaimCouponItemViewHolder(itemView: View, private val fragment: Fragment) 
             status
         claimBtn.isEnabled = status == KLAIM
         if (claimBtn.isEnabled)
-            claimBtn.setTextColor(MethodChecker.getColor(itemView.context, R.color.white))
+            claimBtn.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         else
-            claimBtn.setTextColor(MethodChecker.getColor(itemView.context, R.color.voucher_text_color_disable))
+            claimBtn.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
     }
 
 }

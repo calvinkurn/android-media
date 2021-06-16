@@ -856,7 +856,7 @@ class DiscoveryFragment :
         return try {
             Color.parseColor(textColor)
         } catch (exception: Exception) {
-            ContextCompat.getColor(context, R.color.Green_G500)
+            ContextCompat.getColor(context, R.color.Unify_G500)
         }
     }
 
