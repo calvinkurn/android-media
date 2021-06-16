@@ -38,7 +38,7 @@ import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStore
 import com.tokopedia.officialstore.category.presentation.viewutil.OSChooseAddressWidgetView
 import com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
-import com.tokopedia.officialstore.official.presentation.listener.OSChooseAddressWidgetCallback
+import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -91,6 +91,7 @@ class OfficialHomeContainerFragment
     private var chooseAddressView: OSChooseAddressWidgetView? = null
     private var chooseAddressData = OSChooseAddressData()
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
+    private var selectedCategory: Category? = null
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var tracking: OfficialStoreTracking
@@ -219,7 +220,7 @@ class OfficialHomeContainerFragment
         chooseAddressData.setLocalCacheModel(localCacheModel)
         chooseAddressView?.updateChooseAddressInitializedState(false)
         getChooseAddressWidget()?.updateWidget()
-        fetchOSCategory()
+        updateCurrentFragmentData()
     }
 
     override fun onChooseAddressServerDown() {
@@ -228,6 +229,17 @@ class OfficialHomeContainerFragment
 
     private fun removeChooseAddressWidget() {
         chooseAddressView?.gone()
+    }
+
+    private fun updateCurrentFragmentData() {
+        var currentTabPos: Int = -1
+        selectedCategory?.let {
+            currentTabPos = tabLayout?.getPositionBasedOnCategoryId(it.categoryId) ?: -1
+        }
+        if (currentTabPos != -1) {
+            val currentFragment = tabAdapter.getCurrentFragment(currentTabPos) as? OfficialHomeFragment
+            currentFragment?.forceLoadData()
+        }
     }
 
     private fun fetchOSCategory() {
@@ -252,7 +264,7 @@ class OfficialHomeContainerFragment
         })
     }
 
-    private fun getSelectedCategory(officialStoreCategories: OfficialStoreCategories): Int {
+    private fun getSelectedCategoryId(officialStoreCategories: OfficialStoreCategories): Int {
         officialStoreCategories.categories.forEachIndexed { index, category ->
             if (keyCategory !== "0" && category.categoryId == keyCategory) {
                 return index
@@ -268,8 +280,9 @@ class OfficialHomeContainerFragment
         }
         tabAdapter.notifyDataSetChanged()
         tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories))
-        val categorySelected = getSelectedCategory(officialStoreCategories)
+        val categorySelected = getSelectedCategoryId(officialStoreCategories)
         tabLayout?.getTabAt(categorySelected)?.select()
+        selectedCategory = tabAdapter.categoryList.getOrNull(tabLayout?.getTabAt(categorySelected)?.position.toZeroIfNull())
 
         if(!officialStoreCategories.isCache){
             tabAdapter.categoryList.forEachIndexed { index, category ->
@@ -287,6 +300,7 @@ class OfficialHomeContainerFragment
                 val categoryReselected = tabAdapter.categoryList.getOrNull(tab?.position.toZeroIfNull())
                 chooseAddressView?.forceExpandView(whenWidgetShow = {osDivider.show()})
                 categoryReselected?.let {
+                    selectedCategory = categoryReselected
                     tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
                 }
             }
@@ -297,6 +311,7 @@ class OfficialHomeContainerFragment
                 val categorySelected = tabAdapter.categoryList.getOrNull(tab?.position.toZeroIfNull())
                 chooseAddressView?.forceExpandView(whenWidgetShow = {osDivider.show()})
                 categorySelected?.let {
+                    selectedCategory = categorySelected
                     tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
                 }
             }
