@@ -711,7 +711,26 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwPreviewExpanded()
     }
 
-    // TODO: SRW preview should remain collapsed when user open sticker menu and click open keyboard
+    @Test
+    fun srw_preview_should_remain_collapsed_when_user_open_sticker_menu_and_click_open_keyboard() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // When
+        clickStickerIconMenu()
+        clickStickerIconMenu()
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+        assertSrwPreviewCollapsed()
+    }
+
     // TODO: SRW preview should remain collapsed when user open keyboard and open sticker menu
     // TODO: Chat Menu should be hidden when SRW preview expanded
     // TODO: Chat Sticker should be hidden when SRW preview expanded
