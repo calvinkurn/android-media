@@ -192,15 +192,6 @@ class PlayBroadcastAnalytic(
     }
 
     /**
-     * Click Add Title
-     */
-    fun clickAddTitle() {
-        clickGeneralEvent(
-                action = "add title"
-        )
-    }
-
-    /**
      * View Add Cover Source Bottomsheet
      */
     fun viewAddCoverSourceBottomSheet() {
@@ -374,15 +365,6 @@ class PlayBroadcastAnalytic(
     fun clickStartStreamingOnFinalSetupPage() {
         clickGeneralEvent(
                 action = "mulai live streaming"
-        )
-    }
-
-    /**
-     * Click `Simpan` on Preparation Page Title Edit
-     */
-    fun clickSubmitOnEditTitleBottomSheet() {
-        clickGeneralEvent(
-                action = "simpan"
         )
     }
 
