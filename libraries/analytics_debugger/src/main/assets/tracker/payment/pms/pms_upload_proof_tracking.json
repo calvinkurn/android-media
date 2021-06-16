@@ -1,0 +1,30 @@
+{
+  "readme": "PMS List Click Tracker",
+  "mode": "subset",
+  "query": [
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click pilih gambar",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click pilih gambar lain",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click confirm selesai pilih gambar",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    }
+  ]
+}

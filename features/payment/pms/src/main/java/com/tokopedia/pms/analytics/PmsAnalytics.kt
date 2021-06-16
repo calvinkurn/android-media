@@ -7,7 +7,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class PmsAnalytics @Inject constructor(
-    private val userSession: dagger.Lazy<UserSessionInterface>,
+    userSession: dagger.Lazy<UserSessionInterface>,
 ) {
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
@@ -94,8 +94,8 @@ class PmsAnalytics @Inject constructor(
         const val SCREEN_NAME = "pms page"
         const val EVENT_NAME = "clickPMS"
         const val EVENT_NAME_OPEN_SCREEN = "openScreen"
-        const val ACTION_TAP_THREE_DOTS = "tap three dots"
 
+        const val ACTION_TAP_THREE_DOTS = "tap three dots"
         const val ACTION_CLICK_CANCEL_TRANSACTION = "click batalkan transaksi"
         const val ACTION_CLICK_CONFIRM_CANCEL_TRANSACTION = "click confirm batalkan transaksi"
         const val ACTION_CLICK_CANCEL_ON_TRANSACTION_DETAIL = "click batalkan on detail"

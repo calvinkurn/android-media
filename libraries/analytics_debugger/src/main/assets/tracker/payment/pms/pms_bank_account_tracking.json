@@ -1,0 +1,14 @@
+{
+  "readme": "PMS List Click Tracker",
+  "mode": "subset",
+  "query": [
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click confirm ubah detail rekening",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    }
+  ]
+}

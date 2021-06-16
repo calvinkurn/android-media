@@ -1,0 +1,14 @@
+{
+  "readme": "PMS Klic BCA Click Tracker",
+  "mode": "subset",
+  "query": [
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click confirm ubah user klikbca",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    }
+  ]
+}
