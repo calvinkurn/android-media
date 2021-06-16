@@ -45,10 +45,10 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.NotChangeable
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayCoverSetupViewModel
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.detachableview.detachableView
-import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
@@ -270,6 +270,7 @@ class PlayCoverSetupFragment @Inject constructor(
     }
 
     override fun onTitleAreaHasFocus() {
+        analytic.clickAddTitle()
     }
 
     override fun onViewDestroyed(view: CoverSetupViewComponent) {
