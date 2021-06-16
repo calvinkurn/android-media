@@ -152,10 +152,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
             add(shopLevelRequest)
             add(goldPMShopInfoRequest)
             add(getRecommendationToolsRequest)
-
-            if (!userSession.isShopOfficialStore) {
-                add(goldGetPMPStatusRequest)
-            }
+            add(goldGetPMPStatusRequest)
         }
 
         try {
