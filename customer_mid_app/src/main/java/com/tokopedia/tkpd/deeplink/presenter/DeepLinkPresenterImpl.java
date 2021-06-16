@@ -385,11 +385,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     RouteManager.route(context, applink + "/" + hotelId);
                 }
                 context.finish();
+            }else if(uri.getQueryParameters("allow_override").equals(false)){
+                    prepareOpenWebView(uri);
             } else{
                 String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DASHBOARD);
                 RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, applink));
                 context.finish();
             }
+        }else if(uri.getQueryParameters("allow_override").equals(false)){
+            prepareOpenWebView(uri);
         } else {
             String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DASHBOARD);
             RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, applink));
