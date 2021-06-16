@@ -772,7 +772,28 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertChatMenuVisibility(not(isDisplayed()))
     }
 
-    // TODO: Chat Sticker should be hidden when SRW preview expanded
+    @Test
+    fun chat_sticker_should_be_hidden_when_srw_preview_expanded() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // When
+        clickStickerIconMenu()
+        clickSrwPreviewExpandCollapse()
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+        assertSrwPreviewExpanded()
+        assertChatMenuVisibility(not(isDisplayed()))
+        assertChatStickerMenuVisibility(not(isDisplayed()))
+    }
+
     // TODO: SRW bubble should removed when user receive attach different product (compare with productId, product no longer relevant) event from ws seller/himself.
     // TODO: SRW bubble should not be removed when user receive attach same product (compare with productId, product attached still relevant to SRW) event from ws seller/himself.
     // TODO: SRW bubble should collapsed when user open sticker

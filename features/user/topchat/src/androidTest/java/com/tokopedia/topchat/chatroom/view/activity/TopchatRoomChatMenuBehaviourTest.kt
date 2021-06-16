@@ -29,9 +29,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
         // Then
         assertChatMenuVisibility(isDisplayed())
-        onView(withId(R.id.ll_sticker_container)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatStickerMenuVisibility(not(isDisplayed()))
         onView(withId(R.id.rv_topchat_attachment_menu)).check(
                 matches(isDisplayed())
         )
@@ -51,9 +49,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
 
         // Then
         assertChatMenuVisibility(not(isDisplayed()))
-        onView(withId(R.id.ll_sticker_container)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatStickerMenuVisibility(not(isDisplayed()))
         onView(withId(R.id.rv_topchat_attachment_menu)).check(
                 matches(not(isDisplayed()))
         )
@@ -74,9 +70,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         // Then
         assertKeyboardIsVisible()
         assertChatMenuVisibility(not(isDisplayed()))
-        onView(withId(R.id.ll_sticker_container)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatStickerMenuVisibility(not(isDisplayed()))
         onView(withId(R.id.rv_topchat_attachment_menu)).check(
                 matches(not(isDisplayed()))
         )
@@ -97,9 +91,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         // Then
         assertKeyboardIsVisible()
         assertChatMenuVisibility(not(isDisplayed()))
-        onView(withId(R.id.ll_sticker_container)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatStickerMenuVisibility(not(isDisplayed()))
         onView(withId(R.id.rv_topchat_attachment_menu)).check(
                 matches(not(isDisplayed()))
         )
@@ -145,9 +137,7 @@ class TopchatRoomChatMenuBehaviourTest : TopchatRoomTest() {
         // Then
         assertKeyboardIsVisible()
         assertChatMenuVisibility(not(isDisplayed()))
-        onView(withId(R.id.ll_sticker_container)).check(
-                matches(not(isDisplayed()))
-        )
+        assertChatStickerMenuVisibility(not(isDisplayed()))
         onView(withId(R.id.rv_topchat_attachment_menu)).check(
                 matches(not(isDisplayed()))
         )

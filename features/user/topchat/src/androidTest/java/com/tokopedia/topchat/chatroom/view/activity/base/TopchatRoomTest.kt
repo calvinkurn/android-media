@@ -564,6 +564,14 @@ abstract class TopchatRoomTest {
         )
     }
 
+    protected fun assertChatStickerMenuVisibility(
+        visibilityMatcher: Matcher<in View>
+    ) {
+        onView(withId(R.id.ll_sticker_container)).check(
+            matches(visibilityMatcher)
+        )
+    }
+
     protected fun isKeyboardOpened(): Boolean {
         val rootView = activity.findViewById<View>(R.id.main)
         return isKeyboardOpened(rootView)
@@ -638,9 +646,18 @@ abstract class TopchatRoomTest {
 
     protected fun getImageData(): Intent {
         return Intent().apply {
-            putStringArrayListExtra(PICKER_RESULT_PATHS, arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg"))
-            putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg"))
-            putStringArrayListExtra(RESULT_IMAGES_FED_INTO_IMAGE_PICKER, arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg"))
+            putStringArrayListExtra(
+                PICKER_RESULT_PATHS,
+                arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg")
+            )
+            putStringArrayListExtra(
+                RESULT_PREVIOUS_IMAGE,
+                arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg")
+            )
+            putStringArrayListExtra(
+                RESULT_IMAGES_FED_INTO_IMAGE_PICKER,
+                arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg")
+            )
         }
     }
 
