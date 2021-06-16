@@ -45,7 +45,7 @@ object Const {
         const val BUYER_GIVE_SUGGESTIONS = "https://docs.google.com/forms/d/1g16aH6t8n6k-jMqOZpDK4QVgaxIXNodclNpwhS9KdkU/edit"
         const val PRODUCT_LEARN_MORE = "https://www.tokopedia.com/help/article/apa-itu-wawasan-produk?source=sapp-wawasan-produk"
         const val PRODUCT_GIVE_SUGGESTIONS = "https://docs.google.com/forms/d/1CTCW5iOwIxQcmq4osZS284_E1IsPGPYcwe44yrEK_Cc/edit"
-        const val OPERATIONAL_GIVE_SUGGESTIONS = "https://docs.google.com/forms/d/1CTCW5iOwIxQcmq4osZS284_E1IsPGPYcwe44yrEK_Cc/edit"
-        const val OPERATIONAL_LEARN_MORE = "https://docs.google.com/forms/d/1CTCW5iOwIxQcmq4osZS284_E1IsPGPYcwe44yrEK_Cc/edit"
+        const val OPERATIONAL_GIVE_SUGGESTIONS = "https://docs.google.com/forms/d/1i-bm4ceByIVkYegd52WiSTKWkJ0VQsv4dHWYWMhWH4I"
+        const val OPERATIONAL_LEARN_MORE = "https://www.tokopedia.com/help/article/apa-itu-wawasan-operasional?source=sapp-wawasan-operasional"
     }
 }
