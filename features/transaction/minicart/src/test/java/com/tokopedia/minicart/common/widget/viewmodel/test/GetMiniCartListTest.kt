@@ -51,6 +51,22 @@ class GetMiniCartListTest {
     }
 
     @Test
+    fun `WHEN reload mini cart list success THEN flag isFirstLoad should be false`() {
+        //given
+        val mockResponse = GetMiniCartListDataProvider.provideGetMiniCartListSuccessAllAvailable()
+        coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
+        coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
+            firstArg<(MiniCartData) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.getCartList(isFirstLoad = false)
+
+        //then
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.isFirstLoad == false)
+    }
+
+    @Test
     fun `WHEN first load mini cart list success with all item available THEN bottom sheet title should not be empty`() {
         //given
         val mockResponse = GetMiniCartListDataProvider.provideGetMiniCartListSuccessAllAvailable()
