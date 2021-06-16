@@ -9,7 +9,9 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.idling.CountingIdlingResource
@@ -46,6 +48,7 @@ import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.idling.FragmentTransactionIdle
 import com.tokopedia.topchat.isKeyboardOpened
+import com.tokopedia.topchat.matchers.hasSrwBubble
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
 import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
@@ -278,9 +281,23 @@ abstract class TopchatRoomTest {
             .perform(viewAction)
     }
 
+    protected fun clickAttachInvoiceMenu() {
+        val viewAction = RecyclerViewActions
+            .actionOnItemAtPosition<AttachmentItemViewHolder>(
+                2, click()
+            )
+        onView(withId(R.id.rv_topchat_attachment_menu))
+            .perform(viewAction)
+    }
+
     protected fun clickComposeArea() {
         onView(withId(R.id.new_comment))
             .perform(click())
+    }
+
+    protected fun typeMessage(msg: String) {
+        onView(withId(R.id.new_comment))
+            .perform(typeText(msg))
     }
 
     protected fun clickStickerIconMenu() {
@@ -457,6 +474,10 @@ abstract class TopchatRoomTest {
         assertTemplateChatVisibility(not(isDisplayed()))
         assertSrwPreviewErrorVisibility(not(isDisplayed()))
         assertSrwPreviewLoadingVisibility(not(isDisplayed()))
+    }
+
+    protected fun assertSrwBubbleDoesNotExist() {
+        onView(withId(R.id.recycler_view)).check(matches(not(hasSrwBubble())))
     }
 
     protected fun assertSrwBubbleContentIsVisibleAt(

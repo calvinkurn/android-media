@@ -414,6 +414,10 @@ class TopChatRoomAdapter constructor(
         notifyItemInserted(indexToAdd)
     }
 
+    fun hasSrwBubble(): Boolean {
+        return _srwUiModel.value != null
+    }
+
     fun removeSrwBubble() {
         val srwModel = srwUiModel.value ?: return
         val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return

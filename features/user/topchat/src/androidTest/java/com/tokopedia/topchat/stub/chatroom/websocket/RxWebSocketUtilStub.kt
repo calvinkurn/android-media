@@ -75,6 +75,7 @@ class RxWebSocketUtilStub constructor(
         websocketInfoObservable.onNext(wsInfo)
     }
 
+    // TODO: handle invoice and image attachment
     fun simulateResponseFromRequestQueue(room: GetExistingChatPojo) {
         while (startTimeQueue.peek() != null) {
             val requestMsg = startTimeQueue.remove()

@@ -7,6 +7,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -414,12 +415,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
         inflateTestFragment()
-        intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
-            .respondWith(
-                Instrumentation.ActivityResult(
-                    Activity.RESULT_OK, getAttachProductData(1)
-                )
-            )
 
         // When
         clickSrwPreviewItemAt(0)
@@ -439,12 +434,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
         inflateTestFragment()
-        intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
-            .respondWith(
-                Instrumentation.ActivityResult(
-                    Activity.RESULT_OK, getAttachProductData(1)
-                )
-            )
 
         // When
         clickSrwPreviewItemAt(0)
@@ -468,12 +457,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
         inflateTestFragment()
-        intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
-            .respondWith(
-                Instrumentation.ActivityResult(
-                    Activity.RESULT_OK, getAttachProductData(1)
-                )
-            )
 
         // When
         clickSrwPreviewItemAt(0)
@@ -487,15 +470,33 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwBubbleExpanded(0)
     }
 
-    // TODO: identify why not pointing to `Hari Ini`
-    private fun today(): Long {
-        val stringDate = SendableViewModel.generateStartTime()
-        return RfcDateTimeParser.parseDateString(
-            stringDate, arrayOf(RxWebSocketUtilStub.START_TIME_FORMAT)
-        ).time
+    // TODO: SRW bubble should removed when user request sent invoice
+    @Test
+    fun srw_bubble_should_removed_when_user_request_sent_invoice() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+        intending(anyIntent()).respondWith(getAttachInvoiceResult())
+
+        // When
+        clickSrwPreviewItemAt(0)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        clickPlusIconMenu()
+        clickAttachInvoiceMenu()
+        clickComposeArea()
+        typeMessage("Sending Invoice")
+        clickSendBtn()
+
+        // Then
+        assertSrwBubbleDoesNotExist()
+        assertTemplateChatVisibility(isDisplayed())
     }
 
-    // TODO: SRW bubble should removed when user request sent invoice
     // TODO: SRW bubble should removed when user receive invoice event from ws.
     // TODO: SRW preview should removed when user re-attach preview with invoice
     // TODO: SRW bubble should removed when user return from attach image and request upload image.
@@ -539,6 +540,32 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
     // TODO-Note: What if BE create new ws event to indicate closing of SRW if it's no longer relevant
     // TODO: CTA on left msg - possibly different tasks
+
+
+    private fun getAttachInvoiceResult(): Instrumentation.ActivityResult {
+        val intent = Intent().apply {
+            putExtra(ApplinkConst.Chat.INVOICE_ID, "1")
+            putExtra(ApplinkConst.Chat.INVOICE_CODE, "INV/20210506/MPL/1227273793")
+            putExtra(ApplinkConst.Chat.INVOICE_TITLE, "Pr0duct T3st1n6 Out3r")
+            putExtra(ApplinkConst.Chat.INVOICE_DATE, " 6 May 2021")
+            putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/11/5/adb0973e-48ce-484b-84f4-6653edc3cd6a.jpg")
+            putExtra(ApplinkConst.Chat.INVOICE_URL, "https://www.tokopedia.com/invoice.pl?id=785696850&pdf=Invoice-143252780-6996572-20210506113328-YmJiYmJiYmI2")
+            putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, "700")
+            putExtra(ApplinkConst.Chat.INVOICE_STATUS, "Pesanan Selesai")
+            putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, "Rp 10.000")
+        }
+        return Instrumentation.ActivityResult(
+            Activity.RESULT_OK, intent
+        )
+    }
+
+    // TODO: identify why not pointing to `Hari Ini`
+    private fun today(): Long {
+        val stringDate = SendableViewModel.generateStartTime()
+        return RfcDateTimeParser.parseDateString(
+            stringDate, arrayOf(RxWebSocketUtilStub.START_TIME_FORMAT)
+        ).time
+    }
 
     private fun putProductAttachmentIntent(intent: Intent) {
         val productPreviews = listOf(productPreview)
