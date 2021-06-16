@@ -1190,20 +1190,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun showCommonToaster(message: String) {
-        view?.run {
-            if (this@SomDetailFragment.somToaster?.isShown == true)
-                this@SomDetailFragment.somToaster?.dismiss()
-
-            this@SomDetailFragment.somToaster = Toaster.build(
-                    this,
-                    message,
-                    LENGTH_SHORT,
-                    TYPE_NORMAL)
-            this@SomDetailFragment.somToaster?.show()
-        }
-    }
-
     override fun onDialPhone(strPhoneNo: String) {
         val intent = Intent(Intent.ACTION_DIAL)
         val phone = "tel:$strPhoneNo"
@@ -1230,26 +1216,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         btn_primary?.isLoading = false
-        if (requestCode == SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                if (data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
-                    val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
-                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                        putExtra(RESULT_PROCESS_REQ_PICKUP, resultProcessReqPickup)
-                    })
-                    activity?.finish()
-                }
-            }
-        } else if (requestCode == SomNavigator.REQUEST_CONFIRM_SHIPPING && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                if (data.hasExtra(RESULT_CONFIRM_SHIPPING)) {
-                    val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
-                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                        putExtra(RESULT_CONFIRM_SHIPPING, resultConfirmShippingMsg)
-                    })
-                    activity?.finish()
-                }
-            }
+        if (requestCode == SomNavigator.REQUEST_CONFIRM_REQUEST_PICKUP) {
+            handleRequestPickUpResult(resultCode, data)
+        } else if (requestCode == SomNavigator.REQUEST_CONFIRM_SHIPPING || requestCode == SomNavigator.REQUEST_CHANGE_COURIER) {
+            handleChangeCourierAndConfirmShippingResult(resultCode, data)
         }
     }
 
@@ -1329,6 +1299,20 @@ open class SomDetailFragment : BaseDaggerFragment(),
         showErrorToaster(getString(R.string.som_error_message_server_fault))
     }
 
+    protected fun showCommonToaster(message: String) {
+        view?.run {
+            if (this@SomDetailFragment.somToaster?.isShown == true)
+                this@SomDetailFragment.somToaster?.dismiss()
+
+            this@SomDetailFragment.somToaster = Toaster.build(
+                    this,
+                    message,
+                    LENGTH_SHORT,
+                    TYPE_NORMAL)
+            this@SomDetailFragment.somToaster?.show()
+        }
+    }
+
     protected fun showLoading() {
         progressBarSom?.show()
         rv_detail?.hide()
@@ -1349,6 +1333,26 @@ open class SomDetailFragment : BaseDaggerFragment(),
         containerBtnDetail?.hide()
         setLoadingIndicator(false)
         refreshHandler?.finishRefresh()
+    }
+
+    protected open fun handleRequestPickUpResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
+            val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
+            activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(RESULT_PROCESS_REQ_PICKUP, resultProcessReqPickup)
+            })
+            activity?.finish()
+        }
+    }
+
+    protected open fun handleChangeCourierAndConfirmShippingResult(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(RESULT_CONFIRM_SHIPPING)) {
+            val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
+            activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(RESULT_CONFIRM_SHIPPING, resultConfirmShippingMsg)
+            })
+            activity?.finish()
+        }
     }
 
     private fun showSuccessState() {
