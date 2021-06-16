@@ -794,9 +794,29 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertChatStickerMenuVisibility(not(isDisplayed()))
     }
 
-    // TODO: SRW bubble should removed when user receive attach different product (compare with productId, product no longer relevant) event from ws seller/himself.
-    // TODO: SRW bubble should not be removed when user receive attach same product (compare with productId, product attached still relevant to SRW) event from ws seller/himself.
-    // TODO: SRW bubble should collapsed when user open sticker
+    @Test
+    fun srw_bubble_should_collapsed_when_user_open_sticker() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // When
+        clickSrwPreviewItemAt(0)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        clickStickerIconMenu()
+
+        // Then
+        assertSrwBubbleContentIsVisibleAt(0)
+        assertSrwBubbleCollapsed(0)
+        assertChatMenuVisibility((isDisplayed()))
+        assertChatStickerMenuVisibility((isDisplayed()))
+    }
+
     // TODO: SRW bubble should expanded when user close sticker
     // TODO: SRW bubble should collapsed when user open chat menu
     // TODO: SRW bubble should expanded when user close chat menu
@@ -820,6 +840,8 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     // TODO: SRW bubble should not be added if SRW preview state is error when user send msg/sticker.
     // TODO: SRW bubble should removed when user return from attach image and request upload image.
     // TODO: SRW bubble should removed when user receive voucher event from ws.
+    // TODO: SRW bubble should removed when user receive attach different product (compare with productId, product no longer relevant) event from ws seller/himself.
+    // TODO: SRW bubble should not be removed when user receive attach same product (compare with productId, product attached still relevant to SRW) event from ws seller/himself.
 
     // TODO-Note: What if BE create new ws event to indicate closing of SRW if it's no longer relevant
     // TODO: CTA on left msg - possibly different tasks

@@ -83,6 +83,16 @@ open class BaseBuyerTopchatRoomTest : TopchatRoomTest() {
         ).check(matches(isExpanded()))
     }
 
+    protected fun assertSrwBubbleCollapsed(
+        position: Int
+    ) {
+        onView(
+            withRecyclerView(R.id.recycler_view).atPositionOnView(
+                position, R.id.chat_srw_bubble
+            )
+        ).check(matches(not(isExpanded())))
+    }
+
     protected fun assertSrwPreviewCollapsed() {
         onView(withId(R.id.rv_srw))
             .check(matches(not(isExpanded())))
