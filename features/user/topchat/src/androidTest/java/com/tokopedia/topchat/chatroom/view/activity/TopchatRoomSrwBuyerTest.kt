@@ -470,7 +470,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwBubbleExpanded(0)
     }
 
-    // TODO: SRW bubble should removed when user request sent invoice
     @Test
     fun srw_bubble_should_removed_when_user_request_sent_invoice() {
         // Given
