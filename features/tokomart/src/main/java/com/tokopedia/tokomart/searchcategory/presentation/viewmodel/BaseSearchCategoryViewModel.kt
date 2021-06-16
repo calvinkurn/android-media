@@ -651,17 +651,8 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onViewApplyFilterFromCategoryChooser(chosenCategoryFilter: Option) {
-        filterController.setFilter(
-                option = chosenCategoryFilter,
-                isFilterApplied = true,
-                isCleanUpExistingFilterWithSameKey = chosenCategoryFilter.isCategoryOption
-        )
-
-        refreshQueryParamFromFilterController()
-
         onViewDismissL3FilterPage()
-
-        onViewReloadPage()
+        onViewClickCategoryFilterChip(chosenCategoryFilter, true)
     }
 
     open fun onViewDismissL3FilterPage() {
