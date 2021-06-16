@@ -84,7 +84,8 @@ class HotelSearchMapActivityTest {
         validateHotelSearchPageTracking()
 
         scrollToPropertyCard()
-
+        getCurrentPosition()
+        getRadiusAndMidScreenPoint()
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTIC_VALIDATOR_QUERY_HOTEL_DISCO), hasAllSuccess())
     }
 
