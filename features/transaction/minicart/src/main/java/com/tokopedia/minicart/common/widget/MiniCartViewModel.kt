@@ -207,17 +207,17 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                 totalWeight += visitable.productQty * visitable.productWeight
                 val discountValue = if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice - visitable.productPrice else 0
                 totalDiscount += visitable.productQty * discountValue
-                miniCartListBottomSheetUiModel.value?.let {
-                    it.miniCartWidgetUiModel.totalProductPrice = totalPrice
-                    it.miniCartWidgetUiModel.totalProductCount = totalQty
-                    it.miniCartSummaryTransactionUiModel.qty = totalQty
-                    it.miniCartSummaryTransactionUiModel.totalValue = totalValue
-                    it.miniCartSummaryTransactionUiModel.discountValue = totalDiscount
-                    it.miniCartSummaryTransactionUiModel.paymentTotal = totalPrice
-                    it.isFirstLoad = false
-                    it.needToCalculateAfterLoad = false
-                }
             }
+        }
+        miniCartListBottomSheetUiModel.value?.let {
+            it.miniCartWidgetUiModel.totalProductPrice = totalPrice
+            it.miniCartWidgetUiModel.totalProductCount = totalQty
+            it.miniCartSummaryTransactionUiModel.qty = totalQty
+            it.miniCartSummaryTransactionUiModel.totalValue = totalValue
+            it.miniCartSummaryTransactionUiModel.discountValue = totalDiscount
+            it.miniCartSummaryTransactionUiModel.paymentTotal = totalPrice
+            it.isFirstLoad = false
+            it.needToCalculateAfterLoad = false
         }
 
         validateOverWeight(totalWeight, visitables)
