@@ -14,6 +14,7 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.map
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.error.ClientException
+import com.tokopedia.play.broadcaster.error.PlayErrorCode
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
@@ -91,12 +92,12 @@ class PlayBroadcastPrepareViewModel @Inject constructor(
     private suspend fun doCreateLiveStream(channelId: String) = withContext(dispatcher.io) {
         return@withContext try {
             NetworkResult.Success(createLiveStreamChannelUseCase.apply {
-                val cover = mDataStore.getSetupDataStore().getSelectedCover() ?: throw ClientException("Cover")
+                val cover = mDataStore.getSetupDataStore().getSelectedCover() ?: throw ClientException(PlayErrorCode.Play001)
                 val coverImage =
-                        if (cover.croppedCover !is CoverSetupState.Cropped) throw ClientException("Cover image")
+                        if (cover.croppedCover !is CoverSetupState.Cropped) throw ClientException(PlayErrorCode.Play001)
                         else cover.croppedCover.coverImage
                 val titleModel = mDataStore.getSetupDataStore().getTitle()
-                val title = if (titleModel is PlayTitleUiModel.HasTitle) titleModel.title else throw ClientException("Title")
+                val title = if (titleModel is PlayTitleUiModel.HasTitle) titleModel.title else throw ClientException(PlayErrorCode.Play002)
                 params = CreateLiveStreamChannelUseCase.createParams(
                         channelId = channelId,
                         title = title,

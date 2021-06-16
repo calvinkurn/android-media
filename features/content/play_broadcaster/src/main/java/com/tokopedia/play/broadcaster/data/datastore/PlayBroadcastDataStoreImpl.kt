@@ -6,6 +6,7 @@ import com.tokopedia.play.broadcaster.data.model.SerializableCoverData
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.data.model.SerializableProductData
 import com.tokopedia.play.broadcaster.error.ClientException
+import com.tokopedia.play.broadcaster.error.PlayErrorCode
 import com.tokopedia.play.broadcaster.type.OutOfStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
@@ -35,12 +36,12 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
         requireNotNull(cover)
         val (coverImage, coverSource) = when(val cropState = cover.croppedCover) {
             is CoverSetupState.Cropped -> cropState.coverImage to cropState.coverSource
-            else -> throw ClientException("Cover")
+            else -> throw ClientException(PlayErrorCode.Play001)
         }
 
         val title = when(val title = mSetupDataStore.getTitle()) {
             is PlayTitleUiModel.HasTitle -> title.title
-            else -> throw ClientException("Title")
+            else -> throw ClientException(PlayErrorCode.Play002)
         }
 
         return SerializableHydraSetupData(
