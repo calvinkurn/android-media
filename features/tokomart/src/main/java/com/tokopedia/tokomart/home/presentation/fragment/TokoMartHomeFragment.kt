@@ -414,6 +414,21 @@ class TokoMartHomeFragment: Fragment(),
 
         observe(viewModel.chooseAddress) {
             if (it is Success) {
+                it.data.let { chooseAddressData ->
+                    ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                            context = requireContext(),
+                            addressId = chooseAddressData.data.addressId.toString(),
+                            cityId = chooseAddressData.data.cityId.toString(),
+                            districtId = chooseAddressData.data.districtId.toString(),
+                            lat = chooseAddressData.data.latitude,
+                            long = chooseAddressData.data.longitude,
+                            label = String.format("%s %s", chooseAddressData.data.addressName, chooseAddressData.data.receiverName),
+                            postalCode = chooseAddressData.data.postalCode,
+                            warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
+                            shopId = chooseAddressData.tokonow.shopId.toString()
+                    )
+                }
+                checkIfChooseAddressWidgetDataUpdated()
                 checkStateNotInServiceArea(
                         warehouseId = it.data.tokonow.warehouseId
                 )
@@ -450,14 +465,14 @@ class TokoMartHomeFragment: Fragment(),
                             shopId = localCacheModel?.shop_id.toLongOrZero(),
                             warehouseId = localCacheModel?.warehouse_id.toLongOrZero()
                     )
+                    if (!isChooseAddressWidgetShowed()) {
+                        adapter.removeHomeChooseAddressWidget()
+                    }
                 }
                 isInitialLoad -> {
                     // TO-DO: Lazy Load Data
                     viewModel.getLayoutData(localCacheModel?.warehouse_id.orEmpty())
                 }
-            }
-            if (!isChooseAddressWidgetShowed(isMyShop = userSession.shopId == localCacheModel?.shop_id)) {
-                adapter.removeHomeChooseAddressWidget()
             }
         }
     }
@@ -507,14 +522,14 @@ class TokoMartHomeFragment: Fragment(),
         }
     }
 
-    private fun isChooseAddressWidgetShowed(isMyShop: Boolean): Boolean {
+    private fun isChooseAddressWidgetShowed(): Boolean {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         val isRollOutUser = ChooseAddressUtils.isRollOutUser(context)
         val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
                 HomeChooseAddressWidgetViewHolder.ENABLE_CHOOSE_ADDRESS_WIDGET,
                 true
         )
-        return isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop
+        return isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled
     }
 
     private fun updateCurrentPageLocalCacheModelData() {
