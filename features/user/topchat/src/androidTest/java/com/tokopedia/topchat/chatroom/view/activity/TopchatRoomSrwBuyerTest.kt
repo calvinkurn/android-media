@@ -563,7 +563,31 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertTemplateChatVisibility(isDisplayed())
     }
 
-    // TODO: SRW preview should not be sent when user attach image.
+    @Test
+    fun srw_preview_should_not_be_sent_when_user_attach_image() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData())
+        )
+
+        // When
+        clickPlusIconMenu()
+        clickAttachImageMenu()
+
+        // Then
+        assertSrwBubbleDoesNotExist()
+        assertSrwPreviewContentIsVisible()
+        assertSrwPreviewExpanded()
+        assertTemplateChatVisibility(not(isDisplayed()))
+    }
+
     // TODO: SRW bubble should removed when user receive voucher event from ws.
     // TODO: SRW bubble should removed when user re-attach product (in preview mode).
     // TODO: Template chat should be hidden when SRW bubble exist
