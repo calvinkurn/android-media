@@ -78,9 +78,13 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
 
         configureButtonApplyVisibility(selectedOption.index)
 
-        buttonApply?.setOnClickListener {
-            callback?.onApplyCategory(selectedOption.value)
-        }
+        buttonApply?.setOnClickListener(::onButtonApplyClicked)
+    }
+
+    private fun onButtonApplyClicked(view: View) {
+        val selectedOption = selectedOption ?: return
+
+        callback?.onApplyCategory(selectedOption.value)
     }
 
     fun setResultCountText(resultCount: String) {
