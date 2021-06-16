@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.inboxcommon.RoleType
@@ -22,7 +23,6 @@ import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationTitleUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.notifcenter.domain.*
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -270,9 +270,11 @@ class NotificationViewModel @Inject constructor(
                             RECOM_SOURCE_INBOX_PAGE,
                             emptyList()
                     )
-                    val recommendationWidget = getRecommendationUseCase.createObservable(params)
-                            .toBlocking()
-                            .single()[0]
+                    val recommendationWidget = getRecommendationUseCase
+                        .createObservable(params)
+                        .toBlocking()
+                        .single()
+                        .getOrNull(0) ?: RecommendationWidget()
                     withContext(dispatcher.main) {
                         _recommendations.value = getRecommendationVisitables(
                                 page, recommendationWidget
@@ -280,7 +282,7 @@ class NotificationViewModel @Inject constructor(
                     }
                 },
                 {
-
+                    it.printStackTrace()
                 }
         )
     }

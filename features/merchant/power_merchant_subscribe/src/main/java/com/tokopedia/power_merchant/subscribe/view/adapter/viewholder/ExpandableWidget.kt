@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.tracking.PowerMerchantTracking
+import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.view.adapter.ExpandableAdapterFactory
 import com.tokopedia.power_merchant.subscribe.view.adapter.ExpandableAdapterFactoryImpl
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetExpandableUiModel

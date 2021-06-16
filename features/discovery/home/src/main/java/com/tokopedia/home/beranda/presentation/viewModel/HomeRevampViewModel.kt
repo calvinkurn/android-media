@@ -53,6 +53,7 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
@@ -168,9 +169,9 @@ open class HomeRevampViewModel @Inject constructor(
     val updateNetworkLiveData: LiveData<Result<Any>> get() = _updateNetworkLiveData
     private val _updateNetworkLiveData = MutableLiveData<Result<Any>>()
 
-    val errorEventLiveData: LiveData<Event<String>>
+    val errorEventLiveData: LiveData<Event<Throwable>>
         get() = _errorEventLiveData
-    private val _errorEventLiveData = MutableLiveData<Event<String>>()
+    private val _errorEventLiveData = MutableLiveData<Event<Throwable>>()
 
     val isViewModelInitialized: LiveData<Event<Boolean>>
         get() = _isViewModelInitialized
@@ -435,10 +436,10 @@ open class HomeRevampViewModel @Inject constructor(
                 if(closeChannel.success){
                     deleteWidget(dynamicChannelDataModel, position)
                 } else {
-                    _errorEventLiveData.postValue(Event(""))
+                    _errorEventLiveData.postValue(Event(Throwable()))
                 }
             }){
-                _errorEventLiveData.postValue(Event(it.message ?: ""))
+                _errorEventLiveData.postValue(Event(it))
                 Timber.tag(this::class.java.simpleName).e(it)
             }
         }
@@ -450,11 +451,11 @@ open class HomeRevampViewModel @Inject constructor(
                 if(closeChannel.success){
                     deleteWidget(recommendationListHomeComponentModel, position)
                 } else {
-                    _errorEventLiveData.postValue(Event(""))
+                    _errorEventLiveData.postValue(Event(Throwable()))
                 }
             }){
                 it.printStackTrace()
-                _errorEventLiveData.postValue(Event(it.message ?: ""))
+                _errorEventLiveData.postValue(Event(it))
             }
         }
     }
@@ -546,7 +547,7 @@ open class HomeRevampViewModel @Inject constructor(
             }
         }) {
             homeRateLimit.reset(HOME_LIMITER_KEY)
-            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            _updateNetworkLiveData.postValue(Result.error(it, null))
 
             ServerLogger.log(Priority.P2, "HOME_STATUS",
                     mapOf("type" to "revamp_error_refresh",
@@ -876,7 +877,7 @@ open class HomeRevampViewModel @Inject constructor(
         injectCouponTimeBasedJob = launchCatchError(coroutineContext, {
             _injectCouponTimeBasedResult.value = Result.success(injectCouponTimeBasedUseCase.get().executeOnBackground().data)
         }){
-            _injectCouponTimeBasedResult.postValue(Result.error(it))
+            _injectCouponTimeBasedResult.postValue(Result.error(error = it))
         }
     }
 
@@ -961,10 +962,18 @@ open class HomeRevampViewModel @Inject constructor(
 
     }
 
-    private inline fun <reified T> findWidgetList(actionOnFound: (List<T>) -> Unit) {
-        homeDataModel.list.withIndex().filterIsInstance<T>().let {
-            actionOnFound.invoke(it)
+    private inline fun <reified T> findWidgetList(predicate: (T?) -> Boolean = {true}, actionOnFound: (List<IndexedValue<T>>) -> Unit) {
+        val listFound = mutableListOf<IndexedValue<T>>()
+        homeDataModel.list.withIndex().filter { it.value is T && predicate.invoke(it.value as? T) }.let {
+            it.forEach { indexedValue ->
+                if (indexedValue.value is T) {
+                    (indexedValue as? IndexedValue<T>)?.let { findValue ->
+                        listFound.add(findValue)
+                    }
+                }
+            }
         }
+        actionOnFound.invoke(listFound)
     }
 
     private inline fun <reified T> widgetIsAvailable(predicate: (T) -> Boolean = {true}): Boolean {
@@ -1123,14 +1132,14 @@ open class HomeRevampViewModel @Inject constructor(
                     updateCarouselPlayWidget {
                         it.copy(widgetUiModel = playWidgetTools.get().updateActionReminder(it.widgetUiModel, channelId, reminderType.switch()))
                     }
-                    _playWidgetReminderObservable.postValue(Result.error(Throwable()))
+                    _playWidgetReminderObservable.postValue(Result.error(error = Throwable()))
                 }
             }
         }) { throwable ->
             updateCarouselPlayWidget {
                 it.copy(widgetUiModel = playWidgetTools.get().updateActionReminder(it.widgetUiModel, channelId, reminderType.switch()))
             }
-            _playWidgetReminderObservable.postValue(Result.error(throwable))
+            _playWidgetReminderObservable.postValue(Result.error(error = throwable))
         }
     }
 
@@ -1309,20 +1318,25 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getDisplayTopAdsHeader(){
-        findWidget<FeaturedShopDataModel> { featuredShopDataModel, index ->
-            launchCatchError(coroutineContext, block={
-                getDisplayHeadlineAds.get().createParams(featuredShopDataModel.channelModel.widgetParam)
-                val data = getDisplayHeadlineAds.get().executeOnBackground()
-                if(data.isEmpty()){
-                    deleteWidget(featuredShopDataModel, index)
-                } else {
-                    updateWidget(featuredShopDataModel.copy(
+        findWidgetList<FeaturedShopDataModel> { indexedFeaturedShopModelList ->
+            indexedFeaturedShopModelList.forEach { model ->
+                val featuredShopDataModel = model.value
+                val index = model.index
+
+                launchCatchError(coroutineContext, block={
+                    getDisplayHeadlineAds.get().createParams(featuredShopDataModel.channelModel.widgetParam)
+                    val data = getDisplayHeadlineAds.get().executeOnBackground()
+                    if(data.isEmpty()){
+                        deleteWidget(featuredShopDataModel, index)
+                    } else {
+                        updateWidget(featuredShopDataModel.copy(
                             channelModel = featuredShopDataModel.channelModel.copy(
-                                    channelGrids = mappingTopAdsHeaderToChannelGrid(data)
+                                channelGrids = mappingTopAdsHeaderToChannelGrid(data)
                             )), index)
+                    }
+                }){
+                    deleteWidget(featuredShopDataModel, index)
                 }
-            }){
-                deleteWidget(featuredShopDataModel, index)
             }
         }
     }
@@ -1518,7 +1532,7 @@ open class HomeRevampViewModel @Inject constructor(
                 }
             }
         }) {
-            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            _updateNetworkLiveData.postValue(Result.error(error = it, data = null))
             val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
             ServerLogger.log(Priority.P2, "HOME_STATUS",
                     mapOf("type" to "revamp_error_init_flow",
@@ -1526,7 +1540,7 @@ open class HomeRevampViewModel @Inject constructor(
                             "data" to stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
                     ))
         }.invokeOnCompletion {
-            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            _updateNetworkLiveData.postValue(Result.error(error = Throwable(), data = null))
             val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
             ServerLogger.log(Priority.P2, "HOME_STATUS",
                     mapOf("type" to "revamp_cancelled_init_flow",

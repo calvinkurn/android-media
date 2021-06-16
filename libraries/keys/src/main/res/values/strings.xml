@@ -33,5 +33,7 @@
     <string name="branch_sdk_key_ma" translatable="false">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
     <string name="branch_sdk_key_pro" translatable="false">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
     <string name="branch_sdk_key_sa" translatable="false">key_live_abhHgIh1DQiuPxdBNg9EXepdDugwwkHr</string>
+
+    <string name="thanos_token_key" translatable="false">1MSZfJfD9qhtWAOL0fXimvBBLpRcN6c1TM-AgtqVRbs=</string>
 </resources>
 

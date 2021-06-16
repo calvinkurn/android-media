@@ -22,7 +22,6 @@ class PowerMerchantSettingInfoMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(response: PMSettingInfoModel?): PowerMerchantSettingInfoUiModel {
         return PowerMerchantSettingInfoUiModel(
                 periodeType = response?.periodeType ?: PeriodType.TRANSITION_PERIOD,
-                periodeEndDate = getPeriodEndDateTime(response?.periodEndDateMillis),
                 tickers = response?.tickers?.map {
                     TickerUiModel(
                             title = it.title.orEmpty(),
@@ -32,11 +31,5 @@ class PowerMerchantSettingInfoMapper @Inject constructor() {
                     )
                 }.orEmpty()
         )
-    }
-
-    private fun getPeriodEndDateTime(periodEndDateTime: String?): String {
-        val oldFormat = "yyyy-MM-dd HH:mm:ss"
-        val newFormat = "dd MMMM yyyy"
-        return DateFormatUtils.formatDate(oldFormat, newFormat, periodEndDateTime)
     }
 }

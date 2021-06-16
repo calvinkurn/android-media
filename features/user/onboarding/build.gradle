@@ -43,6 +43,7 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    implementation rootProject.ext.unifyDependencies.coach_mark
 
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

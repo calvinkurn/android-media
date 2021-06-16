@@ -16,12 +16,14 @@ import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.Lego6AutoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.home_component_lego_banner.view.home_component_header_view
 import kotlinx.android.synthetic.main.home_component_lego_banner_six_auto.view.*
+import kotlinx.android.synthetic.main.home_component_lego_banner_six_auto.view.recycleList
 
 /**
  * Created by Devara on 2020-04-28
@@ -46,11 +48,20 @@ class DynamicLegoBannerSixAutoViewHolder(val view: View,
     override fun bind(element: DynamicLegoBannerSixAutoDataModel) {
         isCacheData = element.isCache
         setHeaderComponent(element)
+        setChannelDivider(element)
         setGrids(element)
     }
 
     override fun bind(element: DynamicLegoBannerSixAutoDataModel, payloads: MutableList<Any>) {
         bind(element)
+    }
+
+    private fun setChannelDivider(element: DynamicLegoBannerSixAutoDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
     private fun setGrids(element: DynamicLegoBannerSixAutoDataModel) {
