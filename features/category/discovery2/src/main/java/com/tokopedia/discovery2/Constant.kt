@@ -28,10 +28,6 @@ object Constant {
         const val LIST = "list"
     }
 
-    object StaticFontColor{
-        const val FONT_COLOR =  "#03AC0E"
-    }
-
     object ProductCardModel{
         const val SALE_PRODUCT_STOCK = 100
         const val PRODUCT_STOCK = 0

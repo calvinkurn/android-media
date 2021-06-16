@@ -33,7 +33,6 @@ private const val SOURCE = "discovery"
 private const val REGISTER = "REGISTER"
 private const val UNREGISTER = "UNREGISTER"
 private const val NOTIFY_ME_TEXT = "tertarik"
-private const val DEFAULT_COLOR = "#1e31353b"
 
 class ProductCardItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
@@ -191,11 +190,11 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     }
 
     private fun getStockColor(colorID: Int): String {
-        try {
+        return try {
             application.resources.getString(colorID)
         } catch (exception: Resources.NotFoundException) {
+            application.resources.getString(R.color.discovery2_dms_clr_1e31353b)
         }
-        return DEFAULT_COLOR
     }
 
     fun handleNavigation() {

@@ -53,5 +53,6 @@
     <color name="discovery2_dark_gray">#666666</color>
     <color name="discovery2_dark_gray_2">#555555</color>
     <color name="discovery2_dms_5_star">#FFC400</color>
+    <color name="discovery2_dms_clr_1e31353b">#1e31353b</color>
 
 </resources>

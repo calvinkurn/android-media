@@ -29,7 +29,6 @@ import kotlin.coroutines.CoroutineContext
 private const val REGISTER = "REGISTER"
 private const val UNREGISTER = "UNREGISTER"
 private const val SOURCE = "discovery"
-private const val DEFAULT_COLOR = "#1e31353b"
 
 class MasterProductCardItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
@@ -221,8 +220,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
         return try {
             application.resources.getString(colorID)
         } catch (exception: Resources.NotFoundException) {
-            exception.printStackTrace()
-            return DEFAULT_COLOR
+            application.resources.getString(R.color.discovery2_dms_clr_1e31353b)
         }
     }
 
