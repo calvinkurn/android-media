@@ -588,8 +588,31 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertTemplateChatVisibility(not(isDisplayed()))
     }
 
-    // TODO: SRW bubble should removed when user receive voucher event from ws.
-    // TODO: SRW bubble should removed when user re-attach product (in preview mode).
+    @Test
+    fun srw_bubble_should_removed_when_user_re_attach_product_in_preview_mode() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+        intending(anyIntent()).respondWith(getAttachProductResult(1))
+
+        // When
+        clickSrwPreviewItemAt(0)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+
+        // Then
+        assertSrwBubbleDoesNotExist()
+        assertSrwPreviewContentIsVisible()
+        assertSrwPreviewExpanded()
+        assertTemplateChatVisibility(not(isDisplayed()))
+    }
+
     // TODO: Template chat should be hidden when SRW bubble exist
     // TODO: SRW preview should collapsed when user open sticker
     // TODO: SRW preview should expanded when user close sticker
@@ -624,6 +647,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
     // TODO: SRW bubble should not be added if SRW preview state is error when user send msg/sticker.
     // TODO: SRW bubble should removed when user return from attach image and request upload image.
+    // TODO: SRW bubble should removed when user receive voucher event from ws.
 
     // TODO-Note: What if BE create new ws event to indicate closing of SRW if it's no longer relevant
     // TODO: CTA on left msg - possibly different tasks
@@ -643,6 +667,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         }
         return Instrumentation.ActivityResult(
             Activity.RESULT_OK, intent
+        )
+    }
+
+    private fun getAttachProductResult(totalProduct: Int): Instrumentation.ActivityResult {
+        return Instrumentation.ActivityResult(
+            Activity.RESULT_OK, getAttachProductData(totalProduct)
         )
     }
 
