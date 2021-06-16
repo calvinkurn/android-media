@@ -518,7 +518,27 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertTemplateChatVisibility(isDisplayed())
     }
 
-    // TODO: SRW preview should removed when user re-attach preview with invoice
+    @Test
+    fun srw_preview_should_removed_when_user_re_attach_preview_with_invoice() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+        intending(anyIntent()).respondWith(getAttachInvoiceResult())
+
+        // When
+        clickPlusIconMenu()
+        clickAttachInvoiceMenu()
+
+        // Then
+        assertSrwPreviewContentIsHidden()
+        assertTemplateChatVisibility(isDisplayed())
+    }
+
     // TODO: SRW bubble should removed when user return from attach image and request upload image.
     // TODO: SRW bubble should removed when user receive attach image event from ws.
     // TODO: SRW preview should not be sent when user attach image.
