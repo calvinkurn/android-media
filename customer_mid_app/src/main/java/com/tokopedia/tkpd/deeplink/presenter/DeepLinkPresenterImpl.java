@@ -664,8 +664,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 if (context != null) {
                     if (shopInfo != null && shopInfo.getInfo() != null) {
                         //Add Affiliate string for tracking
+                        String affiliateString = "";
                         String affiliateUUID = "";
                         String layoutTesting = "";
+                        if (!TextUtils.isEmpty(uriData.getQueryParameter("aff"))) {
+                            affiliateString = uriData.getQueryParameter("aff");
+                        }
+
                         if (!TextUtils.isEmpty(uriData.getQueryParameter("aff_unique_id"))) {
                             affiliateUUID = uriData.getQueryParameter("aff_unique_id");
                         }
@@ -678,6 +683,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE,
                                 linkSegment.get(0),
                                 linkSegment.get(1),
+                                affiliateString,
                                 affiliateUUID);
                         productIntent.putExtra("layoutID", layoutTesting);
                         context.startActivity(productIntent);
