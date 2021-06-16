@@ -295,6 +295,6 @@ class GetBuyerOrderDetailMapper @Inject constructor(
     }
 
     private fun composeETA(eta: String): String {
-        return if (eta.startsWith("(") && eta.endsWith(")")) eta else "($eta)"
+        return if (eta.isBlank() || eta.startsWith("(") || eta.endsWith(")")) eta else "($eta)"
     }
 }
