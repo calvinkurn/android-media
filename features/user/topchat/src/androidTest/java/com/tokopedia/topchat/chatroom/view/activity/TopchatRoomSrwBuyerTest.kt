@@ -887,7 +887,28 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertChatMenuVisibility(not((isDisplayed())))
     }
 
-    // TODO: Chat Menu should be hidden when SRW bubble expanded
+    @Test
+    fun chat_menu_should_be_hidden_when_srw_bubble_expanded() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // When
+        clickSrwPreviewItemAt(0)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        clickPlusIconMenu()
+        clickSrwBubbleExpandCollapse(0)
+
+        // Then
+        assertSrwBubbleContentIsVisibleAt(0)
+        assertSrwBubbleExpanded(0)
+        assertChatMenuVisibility(not((isDisplayed())))
+    }
     // TODO: Chat Sticker should be hidden when SRW bubble expanded
     // TODO: SRW bubble should collapsed when user open keyboard
     // TODO: SRW bubble should expanded when user close keyboard

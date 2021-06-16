@@ -333,6 +333,14 @@ abstract class TopchatRoomTest {
         ).perform(click())
     }
 
+    protected fun clickSrwBubbleExpandCollapse(position: Int) {
+        onView(
+            withRecyclerView(R.id.recycler_view).atPositionOnView(
+                position, R.id.rv_srw_content_container
+            )
+        ).perform(click())
+    }
+
     protected fun assertLabelOnProductCard(
         recyclerViewId: Int,
         atPosition: Int,
