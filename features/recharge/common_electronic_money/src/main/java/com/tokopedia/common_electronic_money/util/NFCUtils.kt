@@ -42,5 +42,13 @@ class NFCUtils {
         fun get8Byte(bytes: ByteArray):ByteArray {
             return bytes.sliceArray(0..7)
         }
+
+        @JvmStatic
+        fun crypogramToByteArray(str: String): ByteArray{
+            val frontCryptoGram = str.substring(33, 64)
+            return frontCryptoGram.chunked(2)
+                    .map { it.toInt(16).toByte() }
+                    .toByteArray()
+        }
     }
 }
