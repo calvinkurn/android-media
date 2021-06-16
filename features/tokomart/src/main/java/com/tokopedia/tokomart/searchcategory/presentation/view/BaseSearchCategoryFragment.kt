@@ -655,8 +655,16 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onViewResumed()
     }
 
+    override fun onGoToGlobalSearch() {
+
+    }
+
     override fun onChangeKeywordButtonClick() {
         onSearchBarClick()
+    }
+
+    override fun onRemoveFilterClick(option: Option) {
+        getViewModel().onViewRemoveFilter(option)
     }
 
     override fun onChangeAddressClicked() {
@@ -684,8 +692,4 @@ abstract class BaseSearchCategoryFragment:
     override fun onLocalizingAddressLoginSuccessBottomSheet() { }
 
     override fun onDismissChooseAddressBottomSheet() { }
-
-    override fun onGoToGlobalSearch() {
-
-    }
 }

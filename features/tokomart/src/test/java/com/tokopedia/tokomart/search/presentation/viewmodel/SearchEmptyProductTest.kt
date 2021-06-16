@@ -19,8 +19,18 @@ class SearchEmptyProductTest: SearchTestFixtures(), EmptyProductTestHelper.Callb
         `Given get search first page use case will be successful`(emptyProductModel)
     }
 
+    override fun `Given first page product list will be successful`() {
+        val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
+        `Given get search first page use case will be successful`(searchModel)
+    }
+
     @Test
     fun `empty product list should show empty product view`() {
         emptyProductTestHelper.`empty product list should show empty product view`()
+    }
+
+    @Test
+    fun `empty product list because of filter should show filter list`() {
+        emptyProductTestHelper.`empty product list because of filter should show filter list`()
     }
 }

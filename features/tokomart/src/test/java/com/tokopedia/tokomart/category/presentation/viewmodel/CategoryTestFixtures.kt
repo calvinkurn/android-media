@@ -29,7 +29,7 @@ open class CategoryTestFixtures {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     protected val defaultCategoryL1 = "123"
-    protected val defaultCategoryL2 = "1333"
+    protected val defaultCategoryL2 = ""
     protected val defaultQueryParamMap = mapOf<String, String>()
     protected val getCategoryFirstPageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
     protected val getCategoryLoadMorePageUseCase = mockk<UseCase<CategoryModel>>(relaxed = true)
@@ -58,14 +58,14 @@ open class CategoryTestFixtures {
     }
 
     protected open fun `Given category view model`(
-            categoryIdL1: String = defaultCategoryL1,
-            categoryIdL2: String = defaultCategoryL2,
+            categoryL1: String = defaultCategoryL1,
+            categoryL2: String = defaultCategoryL2,
             queryParamMap: Map<String, String> = defaultQueryParamMap,
     ) {
         categoryViewModel = CategoryViewModel(
                 CoroutineTestDispatchersProvider,
-                categoryIdL1,
-                categoryIdL2,
+                categoryL1,
+                categoryL2,
                 queryParamMap,
                 getCategoryFirstPageUseCase,
                 getCategoryLoadMorePageUseCase,

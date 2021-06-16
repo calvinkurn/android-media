@@ -19,8 +19,18 @@ class CategoryEmptyProductTest: CategoryTestFixtures(), EmptyProductTestHelper.C
         `Given get category first page use case will be successful`(emptyProductModel)
     }
 
+    override fun `Given first page product list will be successful`() {
+        val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
+        `Given get category first page use case will be successful`(categoryModel)
+    }
+
     @Test
     fun `empty product list should show empty product view`() {
         emptyProductTestHelper.`empty product list should show empty product view`()
+    }
+
+    @Test
+    fun `empty product list because of filter should show filter list`() {
+        emptyProductTestHelper.`empty product list because of filter should show filter list`()
     }
 }

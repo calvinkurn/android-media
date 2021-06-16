@@ -318,7 +318,7 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun createVisitableListWithEmptyProduct() {
         visitableList.add(chooseAddressDataView)
-        visitableList.add(EmptyProductDataView())
+        visitableList.add(EmptyProductDataView(filterController.getActiveFilterOptionList()))
     }
 
     private fun createVisitableListWithProduct(
@@ -861,6 +861,10 @@ abstract class BaseSearchCategoryViewModel(
 
     fun onLocalizingAddressSelected() {
         onViewReloadPage()
+    }
+
+    fun onViewRemoveFilter(option: Option) {
+
     }
 
     protected class HeaderDataView(
