@@ -13,9 +13,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ScrollView
 import androidx.appcompat.app.AlertDialog
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -57,6 +55,7 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.utils.animateGone
 import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
+import com.tokopedia.oneclickcheckout.databinding.FragmentOrderSummaryPageBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
@@ -83,13 +82,10 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotE
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoCleared
 import dagger.Lazy
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -122,29 +118,30 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private var orderPreference: OrderPreference? = null
 
-    private val globalError by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
-    private val mainContent by lazy { view?.findViewById<ConstraintLayout>(R.id.main_content) }
-    private val loaderContent by lazy { view?.findViewById<ConstraintLayout>(R.id.loader_content) }
+    private var binding by autoCleared<FragmentOrderSummaryPageBinding>()
 
-    private val layoutNoAddress by lazy { view?.findViewById<ConstraintLayout>(R.id.layout_no_address) }
-    private val iuNoAddress by lazy { view?.findViewById<ImageUnify>(R.id.iu_no_address) }
-    private val descNoAddress by lazy { view?.findViewById<Typography>(R.id.desc_no_address) }
-    private val btnAddNewAddress by lazy { view?.findViewById<UnifyButton>(R.id.btn_occ_add_new_address) }
+    private val globalError by lazy { binding.globalError }
+    private val mainContent by lazy { binding.mainContent }
+    private val loaderContent by lazy { binding.loaderContent }
 
-    private val tickerOsp by lazy { view?.findViewById<Ticker>(R.id.ticker_osp) }
+    private val layoutNoAddress by lazy { binding.layoutNoAddress.root }
+    private val iuNoAddress by lazy { binding.layoutNoAddress.iuNoAddress }
+    private val descNoAddress by lazy { binding.layoutNoAddress.descNoAddress }
+    private val btnAddNewAddress by lazy { binding.layoutNoAddress.btnOccAddNewAddress }
 
-    private val newOnboardingCard by lazy { view?.findViewById<View>(R.id.layout_new_occ_onboarding) }
-    private val ivNewOnboarding by lazy { view?.findViewById<ImageUnify>(R.id.iv_new_occ_onboarding) }
-    private val tvNewOnboardingMessage by lazy { view?.findViewById<Typography>(R.id.tv_new_occ_onboarding_message) }
+    private val tickerOsp by lazy { binding.tickerOsp }
 
-    private val tvHeader2 by lazy { view?.findViewById<Typography>(R.id.tv_header_2) }
-    private val tvHeader3 by lazy { view?.findViewById<Typography>(R.id.tv_header_3) }
+    private val newOnboardingCard by lazy { binding.layoutNewOccOnboarding.root }
+    private val ivNewOnboarding by lazy { binding.layoutNewOccOnboarding.ivNewOccOnboarding }
+    private val tvNewOnboardingMessage by lazy { binding.layoutNewOccOnboarding.tvNewOccOnboardingMessage }
 
-    private val tickerPreferenceInfo by lazy { view?.findViewById<Ticker>(R.id.ticker_preference_info) }
-    private val emptyPreferenceCard by lazy { view?.findViewById<View>(R.id.empty_preference_card) }
-    private val newPreferenceCard by lazy { view?.findViewById<View>(R.id.new_preference_card) }
+    private val tvHeader2 by lazy { binding.tvHeader2 }
+    private val tvHeader3 by lazy { binding.tvHeader3 }
 
-    private val btnPromoCheckout by lazy { view?.findViewById<ButtonPromoCheckoutView>(R.id.btn_promo_checkout) }
+    private val tickerPreferenceInfo by lazy { binding.tickerPreferenceInfo }
+    private val newPreferenceCard by lazy { binding.newPreferenceCard.root }
+
+    private val btnPromoCheckout by lazy { binding.btnPromoCheckout }
 
     private var orderProductCard: OrderProductCard? = null
     private lateinit var newOrderPreferenceCard: NewOrderPreferenceCard
@@ -582,7 +579,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun showLayoutNoAddress() {
         layoutNoAddress?.animateShow()
-        val scrollView = view?.findViewById<ScrollView>(R.id.nested_scroll_view)
+        val scrollView = binding.nestedScrollView
         val height = scrollView?.height ?: 0
         val displayMetrics = context?.resources?.displayMetrics
         val minHeight = if (displayMetrics != null) 420.dpToPx(displayMetrics) else 0
@@ -681,12 +678,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun showNewOnboarding(onboarding: OccMainOnboarding) {
         view?.let {
             it.post {
-                val scrollview = it.findViewById<ScrollView>(R.id.nested_scroll_view)
+                val scrollview = binding.nestedScrollView
                 val coachMarkItems = ArrayList<CoachMark2Item>()
                 for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
                     val newView: View = when (onboarding.coachmarkType) {
                         COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE -> generateNewCoachMarkAnchorForNewBuyerRemoveProfile(it, detailIndexed.index)
-                        else -> it.findViewById(R.id.tv_header_2)
+                        else -> tvHeader2
                     }
                     coachMarkItems.add(CoachMark2Item(newView, detailIndexed.value.title, detailIndexed.value.message, CoachMark2.POSITION_TOP))
                 }
@@ -727,8 +724,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun generateNewCoachMarkAnchorForNewBuyerRemoveProfile(view: View, index: Int): View {
         return when (index) {
-            1 -> view.findViewById(R.id.btn_new_change_address)
-            else -> view.findViewById(R.id.tv_new_header)
+            1 -> binding.newPreferenceCard.btnNewChangeAddress
+            else -> binding.newPreferenceCard.tvNewHeader
         }
     }
 
@@ -742,7 +739,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun showPreferenceCard() {
-        emptyPreferenceCard?.gone()
         newPreferenceCard?.visible()
         orderTotalPaymentCard.setPaymentVisible(true)
         btnPromoCheckout?.visible()

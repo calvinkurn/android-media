@@ -11,12 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/main_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                tools:visibility="gone">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/ticker_osp"
@@ -53,6 +53,11 @@
                 app:typographyWeight="bold" />
 
             <include
+                layout="@layout/card_order_shop"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <include
                 layout="@layout/card_order_product"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content" />
@@ -66,51 +71,51 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/space_note" />
 
-                <com.tokopedia.unifycomponents.ticker.Ticker
-                    android:id="@+id/ticker_preference_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_lvl4"
-                    android:layout_marginTop="@dimen/spacing_lvl4"
-                    android:layout_marginEnd="@dimen/spacing_lvl4"
-                    android:visibility="gone"
-                    app:closeButtonVisibility="gone"
-                    app:descriptionText="Pilihan Utamamu berubah, cek lagi ya"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider_top"
-                    app:tickerShapeType="loose"
-                    app:tickerType="announcement" />
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_preference_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:descriptionText="Pilihan Utamamu berubah, cek lagi ya"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider_top"
+                app:tickerShapeType="loose"
+                app:tickerType="announcement" />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_header_2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_lvl4"
-                    android:layout_marginTop="@dimen/spacing_lvl4"
-                    android:layout_marginEnd="@dimen/spacing_lvl4"
-                    android:textColor="@color/Unify_N700_96"
-                    android:visibility="visible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ticker_preference_info"
-                    app:typographyType="heading_5"
-                    app:typographyWeight="bold" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_header_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:textColor="@color/Unify_N700_96"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ticker_preference_info"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold" />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_header_3"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_lvl4"
-                    android:layout_marginTop="@dimen/dp_4"
-                    android:layout_marginEnd="@dimen/spacing_lvl4"
-                    android:textColor="@color/Unify_N700_96"
-                    android:visibility="visible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_header_2"
-                    app:typographyType="body_3"
-                    app:typographyWeight="reguler" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_header_3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:textColor="@color/Unify_N700_96"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_header_2"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
 
             <include
                 android:id="@+id/new_preference_card"
@@ -124,16 +129,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_header_3" />
 
-            <include
-                android:id="@+id/empty_preference_card"
-                layout="@layout/card_order_empty_preference"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/new_preference_card" />
-
             <View
                 android:id="@+id/divider"
                 android:layout_width="0dp"
@@ -142,7 +137,7 @@
                 android:background="@color/Unify_N75"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/empty_preference_card" />
+                app:layout_constraintTop_toBottomOf="@+id/new_preference_card" />
 
             <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/cb_insurance"
@@ -232,7 +227,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/loader_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            tools:visibility="gone">
 
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/loader_onboarding"
@@ -417,11 +413,11 @@
             android:gravity="center_horizontal"
             android:visibility="gone" />
 
-            <include
-                android:id="@+id/layout_no_address"
-                layout="@layout/layout_occ_no_address"
-                android:visibility="gone" />
+        <include
+            android:id="@+id/layout_no_address"
+            layout="@layout/layout_occ_no_address"
+            android:visibility="gone" />
 
-        </FrameLayout>
+    </FrameLayout>
 
 </ScrollView>
