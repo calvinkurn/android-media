@@ -328,6 +328,7 @@ data class PurchaseItem(
         parcel.writeDouble(productPlanProtection)
         parcel.writeString(bebasOngkirDimension)
         parcel.writeByte(if (isBBIProduct) 1 else 0)
+        parcel.writeString(categoryId)
     }
 
     override fun describeContents(): Int {
