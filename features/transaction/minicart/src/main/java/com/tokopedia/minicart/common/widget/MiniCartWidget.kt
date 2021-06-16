@@ -28,6 +28,7 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.updatecart.Data
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -109,6 +110,9 @@ class MiniCartWidget @JvmOverloads constructor(
     private fun observeGlobalEvent(fragment: Fragment) {
         viewModel?.globalEvent?.observe(fragment.viewLifecycleOwner, {
             when (it.state) {
+                GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
+                    onSuccessDeleteCartItem(it)
+                }
                 GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET -> {
                     onFailedToLoadMiniCartBottomSheet(it, fragment)
                 }
@@ -128,6 +132,29 @@ class MiniCartWidget @JvmOverloads constructor(
                 }
             }
         })
+    }
+
+    private fun onSuccessDeleteCartItem(globalEvent: GlobalEvent) {
+        val data = globalEvent.data as? RemoveFromCartDomainModel
+        // last item should be handled by mini cart widget, since the bottomsheet already dismissed
+        if (data?.isLastItem == false) return
+
+        hideProgressLoading()
+        miniCartListBottomSheet.dismiss()
+        val message = data?.removeFromCartData?.data?.message?.firstOrNull() ?: ""
+        if(message.isNotBlank()) {
+            if (data?.isBulkDelete == true) {
+                showToaster(
+                        message = message,
+                        type = Toaster.TYPE_NORMAL
+                )
+            } else {
+                showToaster(
+                        message = message,
+                        type = Toaster.TYPE_NORMAL
+                )
+            }
+        }
     }
 
     private fun onFailedUpdateCartForCheckout(globalEvent: GlobalEvent, fragment: Fragment) {
@@ -293,7 +320,7 @@ class MiniCartWidget @JvmOverloads constructor(
         }
     }
 
-    override fun showToaster(view: View?, message: String, type: Int, ctaText: String, onClickListener: OnClickListener?) {
+    override fun showToaster(view: View?, message: String, type: Int, ctaText: String, isShowCta: Boolean, onClickListener: OnClickListener?) {
         if (message.isBlank()) return
 
         var toasterViewRoot = view
@@ -301,12 +328,14 @@ class MiniCartWidget @JvmOverloads constructor(
         toasterViewRoot?.let {
             Toaster.toasterCustomBottomHeight = it.resources?.getDimensionPixelSize(R.dimen.dp_72)
                     ?: 0
-            if (ctaText.isNotBlank()) {
+            if (isShowCta && ctaText.isNotBlank()) {
                 var tmpCtaClickListener = OnClickListener { }
                 if (onClickListener != null) {
                     tmpCtaClickListener = onClickListener
                 }
                 Toaster.build(it, message, Toaster.LENGTH_LONG, type, ctaText, tmpCtaClickListener).show()
+            } else {
+                Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
             }
         }
     }

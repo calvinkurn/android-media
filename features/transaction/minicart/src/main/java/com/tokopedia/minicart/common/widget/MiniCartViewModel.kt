@@ -8,10 +8,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
+import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.data.RemoveFromCartUiModel
+import com.tokopedia.minicart.common.domain.data.RemoveFromCartDomainModel
+import com.tokopedia.minicart.common.domain.data.UndoDeleteCartDomainModel
 import com.tokopedia.minicart.common.domain.usecase.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -26,7 +27,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
     : BaseViewModel(executorDispatchers.main) {
 
     companion object {
-        const val TEMPORARY_PARENT_ID_FORMAT = "tmp_"
+        const val TEMPORARY_PARENT_ID_PREFIX = "tmp_"
     }
 
     // Global Data
@@ -83,32 +84,40 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         })
     }
 
-    fun getCartList(isFirstLoad: Boolean = false, needToCalculateAfterLoad: Boolean = true) {
+    fun getCartList(isFirstLoad: Boolean = false) {
         val shopIds = currentShopIds.value ?: emptyList()
         getMiniCartListUseCase.setParams(shopIds)
         getMiniCartListUseCase.execute(
                 onSuccess = {
-                    if (it.data.outOfService.id != "0") {
-                        _globalEvent.value = GlobalEvent(
-                                state = GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET,
-                                data = it
-                        )
-                    } else {
-                        val tmpMiniCartListUiModel = miniCartListUiModelMapper.mapUiModel(it)
-                        tmpMiniCartListUiModel.isFirstLoad = isFirstLoad
-                        tmpMiniCartListUiModel.needToCalculateAfterLoad = needToCalculateAfterLoad
-                        _miniCartListBottomSheetUiModel.value = tmpMiniCartListUiModel
-                    }
+                    onSuccessGetCartList(it, isFirstLoad)
                 },
                 onError = {
-                    if (isFirstLoad) {
-                        _globalEvent.value = GlobalEvent(
-                                state = GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET,
-                                throwable = it
-                        )
-                    }
+                    onErrorGetCartList(isFirstLoad, it)
                 }
         )
+    }
+
+    private fun onSuccessGetCartList(miniCartData: MiniCartData, isFirstLoad: Boolean) {
+        if (isFirstLoad && miniCartData.data.outOfService.id != "0") {
+            _globalEvent.value = GlobalEvent(
+                    state = GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET,
+                    data = miniCartData
+            )
+        } else {
+            val tmpMiniCartListUiModel = miniCartListUiModelMapper.mapUiModel(miniCartData)
+            tmpMiniCartListUiModel.isFirstLoad = isFirstLoad
+            tmpMiniCartListUiModel.needToCalculateAfterLoad = true
+            _miniCartListBottomSheetUiModel.value = tmpMiniCartListUiModel
+        }
+    }
+
+    private fun onErrorGetCartList(isFirstLoad: Boolean, it: Throwable) {
+        if (isFirstLoad) {
+            _globalEvent.value = GlobalEvent(
+                    state = GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET,
+                    throwable = it
+            )
+        }
     }
 
     fun updateProductQty(productId: String, newQty: Int) {
@@ -161,7 +170,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         var tmpParentId = 0
         miniCartProductList.forEach { visitable ->
             if (visitable.parentId == "0") {
-                visitable.parentId = TEMPORARY_PARENT_ID_FORMAT + ++tmpParentId
+                visitable.parentId = TEMPORARY_PARENT_ID_PREFIX + ++tmpParentId
             }
         }
 
@@ -187,7 +196,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         var totalWeight = 0
         visitables.forEach { visitable ->
             if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
-                if (visitable.parentId.contains(TEMPORARY_PARENT_ID_FORMAT)) {
+                if (visitable.parentId.contains(TEMPORARY_PARENT_ID_PREFIX)) {
                     visitable.parentId = "0"
                 }
                 val price = if (visitable.productWholeSalePrice > 0) visitable.productWholeSalePrice else visitable.productPrice
@@ -392,7 +401,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         )
     }
 
-    private fun handleDelete(product: MiniCartProductUiModel, removeFromCartData: RemoveFromCartData) {
+    private fun handleDelete(product: MiniCartProductUiModel, removeFromCartData: com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData) {
         val visitables = miniCartListBottomSheetUiModel.value?.visitables ?: mutableListOf()
         val tmpVisitables = miniCartListBottomSheetUiModel.value?.visitables ?: mutableListOf()
         loop@ for ((index, visitable) in visitables.withIndex()) {
@@ -415,7 +424,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
 
                 _globalEvent.value = GlobalEvent(
                         state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
-                        data = RemoveFromCartUiModel(removeFromCartData = removeFromCartData, isLastItem = isLastItem)
+                        data = RemoveFromCartDomainModel(removeFromCartData = removeFromCartData, isLastItem = isLastItem, isBulkDelete = false)
                 )
                 break@loop
             }
@@ -457,7 +466,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                 onSuccess = {
                     _globalEvent.value = GlobalEvent(
                             state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
-                            data = RemoveFromCartUiModel(removeFromCartData = it, isLastItem = isLastItem)
+                            data = RemoveFromCartDomainModel(removeFromCartData = it, isLastItem = isLastItem, isBulkDelete = true)
                     )
                 },
                 onError = {
@@ -469,14 +478,14 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         )
     }
 
-    fun undoDeleteCartItems() {
+    fun undoDeleteCartItems(isLastItem: Boolean) {
         lastDeletedProductItem?.let {
             undoDeleteCartUseCase.setParams(it.cartId)
             undoDeleteCartUseCase.execute(
                     onSuccess = {
                         _globalEvent.value = GlobalEvent(
                                 state = GlobalEvent.STATE_SUCCESS_UNDO_DELETE_CART_ITEM,
-                                data = it
+                                data = UndoDeleteCartDomainModel(it, isLastItem)
                         )
                     },
                     onError = {
