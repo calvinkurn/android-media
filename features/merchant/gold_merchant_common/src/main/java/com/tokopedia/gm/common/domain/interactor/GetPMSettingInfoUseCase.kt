@@ -4,6 +4,8 @@ import com.tokopedia.gm.common.data.source.cloud.model.GetPowerMerchantSettingIn
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
 import com.tokopedia.gm.common.domain.mapper.PowerMerchantSettingInfoMapper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -44,7 +46,6 @@ class GetPMSettingInfoUseCase @Inject constructor(
            query goldGetPMSettingInfo(${'$'}shopID: Int!, ${'$'}source: String!) {
              goldGetPMSettingInfo(shopID: ${'$'}shopID, source:${'$'}source) {
                period_type
-               period_type_pm_pro
                ticker_list {
                  title
                  text
@@ -59,6 +60,15 @@ class GetPMSettingInfoUseCase @Inject constructor(
                 putLong(KEY_SHOP_ID, shopId.toLongOrZero())
                 putString(KEY_SOURCE, source)
             }
+        }
+
+        fun getCacheStrategy(shouldFromCache: Boolean): GraphqlCacheStrategy {
+            val cacheType = if (shouldFromCache) {
+                CacheType.CACHE_FIRST
+            } else {
+                CacheType.ALWAYS_CLOUD
+            }
+            return GraphqlCacheStrategy.Builder(cacheType).build()
         }
     }
 }

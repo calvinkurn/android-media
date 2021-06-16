@@ -54,4 +54,8 @@ class OfficialHomeContainerAdapter(
         registeredFragment.remove(position)
         super.destroyItem(container, position, `object`)
     }
+
+    fun getCurrentFragment(pos : Int): Fragment? {
+        return registeredFragment.get(pos)
+    }
 }
