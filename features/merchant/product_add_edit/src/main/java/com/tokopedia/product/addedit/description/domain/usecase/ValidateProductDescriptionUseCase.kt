@@ -2,7 +2,7 @@ package com.tokopedia.product.addedit.description.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.product.addedit.common.constant.AddEditProductGqlConstants
+import com.tokopedia.product.addedit.common.constant.ProductValidateV3QueryConstant
 import com.tokopedia.product.addedit.description.domain.model.ValidateProductDescriptionParam
 import com.tokopedia.product.addedit.description.domain.model.ValidateProductDescriptionResponse
 import com.tokopedia.usecase.RequestParams
@@ -19,7 +19,7 @@ class ValidateProductDescriptionUseCase @Inject constructor(
     private val requestParamsObject = ValidateProductDescriptionParam()
 
     init {
-        setGraphqlQuery(AddEditProductGqlConstants.getValidateProductDescriptionQuery())
+        setGraphqlQuery(ProductValidateV3QueryConstant.getValidateProductDescriptionQuery())
         setTypeClass(ValidateProductDescriptionResponse::class.java)
     }
 

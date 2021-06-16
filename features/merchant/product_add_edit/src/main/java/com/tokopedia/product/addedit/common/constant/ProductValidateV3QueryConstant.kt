@@ -1,7 +1,7 @@
 package com.tokopedia.product.addedit.common.constant
 
-object AddEditProductGqlConstants {
-    private val BASE_QUERY_MUTATION_PRODUCT_VALIDATE_V3 = """
+object ProductValidateV3QueryConstant {
+    private val BASE_QUERY = """
             mutation ProductValidateV3(${'$'}input: ProductInputV3!) {
                   ProductValidateV3(input: ${'$'}input) {
                     header {
@@ -29,8 +29,8 @@ object AddEditProductGqlConstants {
                 productName
         """.trimIndent()
 
-    fun getValidateProductDescriptionQuery() = String.format(BASE_QUERY_MUTATION_PRODUCT_VALIDATE_V3, VALIDATE_PRODUCT_DESCRIPTION_REQUEST)
-    fun getValidateProductQuery() = String.format(BASE_QUERY_MUTATION_PRODUCT_VALIDATE_V3, VALIDATE_PRODUCT_REQUEST)
-    fun getValidateProductNameQuery() = String.format(BASE_QUERY_MUTATION_PRODUCT_VALIDATE_V3, VALIDATE_PRODUCT_NAME_REQUEST)
+    fun getValidateProductDescriptionQuery() = String.format(BASE_QUERY, VALIDATE_PRODUCT_DESCRIPTION_REQUEST)
+    fun getValidateProductQuery() = String.format(BASE_QUERY, VALIDATE_PRODUCT_REQUEST)
+    fun getValidateProductNameQuery() = String.format(BASE_QUERY, VALIDATE_PRODUCT_NAME_REQUEST)
 
 }
