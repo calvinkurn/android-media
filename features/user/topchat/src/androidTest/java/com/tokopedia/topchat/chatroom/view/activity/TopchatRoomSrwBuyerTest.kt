@@ -633,7 +633,25 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertTemplateChatVisibility(not(isDisplayed()))
     }
 
-    // TODO: SRW preview should collapsed when user open sticker
+    @Test
+    fun srw_preview_should_collapsed_when_user_open_sticker() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // When
+        clickStickerIconMenu()
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+        assertSrwPreviewCollapsed()
+    }
+
     // TODO: SRW preview should expanded when user close sticker
     // TODO: SRW preview should collapsed when user open chat menu
     // TODO: SRW preview should expanded when user close chat menu
