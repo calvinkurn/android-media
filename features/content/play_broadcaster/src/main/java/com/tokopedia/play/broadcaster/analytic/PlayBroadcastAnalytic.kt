@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.analytic
 
+import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -11,7 +12,10 @@ import com.tokopedia.user.session.UserSessionInterface
  * Save Live to VOD https://mynakama.tokopedia.com/datatracker/product/requestdetail/161
  * Channel Scheduling https://mynakama.tokopedia.com/datatracker/product/requestdetail/247
  */
-class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
+class PlayBroadcastAnalytic(
+        private val userSession: UserSessionInterface,
+        private val contentTaggingAnalytic: PlayBroadcastContentTaggingAnalytic,
+) : PlayBroadcastContentTaggingAnalytic by contentTaggingAnalytic {
 
     /**
      * View Camera and Microphone Permission Page
@@ -724,29 +728,5 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
                 )
         )
-    }
-
-    companion object {
-        private const val KEY_EVENT = "event"
-
-        private const val KEY_EVENT_CATEGORY = "eventCategory"
-        private const val KEY_EVENT_ACTION = "eventAction"
-        private const val KEY_EVENT_LABEL = "eventLabel"
-
-        private const val KEY_USER_ID = "userId"
-        private const val KEY_SHOP_ID = "shopId"
-
-        private const val KEY_BUSINESS_UNIT = "businessUnit"
-        private const val KEY_CURRENT_SITE = "currentSite"
-
-        private const val KEY_TRACK_CURRENT_SITE = "tokopediaseller"
-        private const val KEY_TRACK_BUSINESS_UNIT = "play"
-        private const val KEY_TRACK_CATEGORY = "seller broadcast"
-
-        private const val KEY_TRACK_CLICK_EVENT = "clickSellerBroadcast"
-        private const val KEY_TRACK_VIEW_EVENT = "viewSellerBroadcastIris"
-
-        private const val KEY_TRACK_CLICK = "click"
-        private const val KEY_TRACK_VIEW = "view"
     }
 }

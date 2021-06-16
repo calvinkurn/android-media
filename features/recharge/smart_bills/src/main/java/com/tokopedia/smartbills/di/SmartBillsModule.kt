@@ -2,29 +2,22 @@ package com.tokopedia.smartbills.di
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.common_digital.common.constant.DigitalUrl
+import com.tokopedia.common.network.coroutines.RestRequestInteractor
+import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.NetworkRouter
-import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
-import com.tokopedia.smartbills.data.api.SmartBillsApi
-import com.tokopedia.smartbills.data.api.SmartBillsRepository
-import com.tokopedia.smartbills.data.api.SmartBillsRepositoryImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import okhttp3.OkHttpClient
+import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 
 @Module
 class SmartBillsModule {
@@ -43,33 +36,8 @@ class SmartBillsModule {
 
     @SmartBillsScope
     @Provides
-    internal fun provideOkHttpRetryPolicy(): OkHttpRetryPolicy {
-        return OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy()
-    }
-
-    @SmartBillsScope
-    @Provides
     internal fun provideFingerprintInterceptor(networkRouter: NetworkRouter, userSession: UserSessionInterface): FingerprintInterceptor {
         return FingerprintInterceptor(networkRouter, userSession)
-    }
-
-    @SmartBillsScope
-    @Provides
-    internal fun provideOkHttpClient(fingerprintInterceptor: FingerprintInterceptor,
-                                     httpLoggingInterceptor: HttpLoggingInterceptor,
-                                     digitalInterceptor: DigitalInterceptor,
-                                     chuckerInterceptor: ChuckerInterceptor,
-                                     okHttpRetryPolicy: OkHttpRetryPolicy): OkHttpClient {
-        val builder = OkHttpClient.Builder()
-        return builder
-                .addInterceptor(digitalInterceptor)
-                .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .addInterceptor(chuckerInterceptor)
-                .readTimeout(okHttpRetryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
-                .writeTimeout(okHttpRetryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
-                .connectTimeout(okHttpRetryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-                .build()
     }
 
     @SmartBillsScope
@@ -88,24 +56,6 @@ class SmartBillsModule {
 
     @SmartBillsScope
     @Provides
-    fun provideGqlApiService(gson: Gson, client: OkHttpClient): SmartBillsApi {
-        val retrofitBuilder = Retrofit.Builder()
-                .baseUrl(DigitalUrl.BASE_URL)
-                .addConverterFactory(StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-        retrofitBuilder.client(client)
-        val retrofit = retrofitBuilder.build()
-        return retrofit.create(SmartBillsApi::class.java)
-    }
-
-    @SmartBillsScope
-    @Provides
-    fun provideRepository(rechargeCCApi: SmartBillsApi): SmartBillsRepository {
-        return SmartBillsRepositoryImpl(rechargeCCApi)
-    }
-
-    @SmartBillsScope
-    @Provides
     fun provideAnalytics(): SmartBillsAnalytics {
         return SmartBillsAnalytics()
     }
@@ -114,5 +64,31 @@ class SmartBillsModule {
     @SmartBillsScope
     fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
         return ChuckerInterceptor(context)
+    }
+
+    @Provides
+    @SmartBillsScope
+    fun provideInterceptors(fingerprintInterceptor: FingerprintInterceptor,
+                            httpLoggingInterceptor: HttpLoggingInterceptor,
+                            digitalInterceptor: DigitalInterceptor,
+                            chuckerInterceptor: ChuckerInterceptor): MutableList<Interceptor> {
+        val listInterceptor = mutableListOf<Interceptor>()
+        listInterceptor.add(fingerprintInterceptor)
+        listInterceptor.add(httpLoggingInterceptor)
+        listInterceptor.add(digitalInterceptor)
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            listInterceptor.add(chuckerInterceptor)
+        }
+        return listInterceptor
+    }
+
+    @Provides
+    @SmartBillsScope
+    fun provideRestRepository(interceptors: MutableList<Interceptor>,
+                              @ApplicationContext context: Context): RestRepository {
+        return RestRequestInteractor.getInstance().restRepository.apply {
+            updateInterceptors(interceptors, context)
+        }
     }
 }
