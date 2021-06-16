@@ -31,7 +31,7 @@ object DFWebviewFallbackUrl {
 
     //Travel
     const val TRAVEL_FLIGHT = "https://www.tokopedia.com/flight"
-    const val TRAVEL_HOTEL = "https://www.tokopedia.com/hotel"
+    const val TRAVEL_HOTEL = "https://www.tokopedia.com/hotel?allow_override=false"
 
     // User Profile
     const val USER_PROFILE_SETTINGS = "https://m.tokopedia.com/user/profile/edit"
