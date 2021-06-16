@@ -28,7 +28,11 @@ object DeeplinkMapperTravel {
             }
             deeplink.startsWith(ApplinkConst.HOTEL_DETAIL, true) -> {
                 val uri = Uri.parse(deeplink)
-                ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + uri.lastPathSegment
+                if(uri.lastPathSegment.equals("detail")){
+                    ApplinkConstInternalTravel.HOTEL_DETAIL
+                }else{
+                    ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + uri.lastPathSegment
+                }
             }
             else -> deeplink
         }
