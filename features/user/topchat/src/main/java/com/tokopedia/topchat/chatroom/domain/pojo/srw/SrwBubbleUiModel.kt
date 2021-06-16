@@ -12,6 +12,7 @@ data class SrwBubbleUiModel constructor(
 ) : Visitable<TopChatTypeFactory> {
 
     var isExpanded = true
+    var alreadyInitializeWithSrwPreview = false
 
     val productIds: List<String>
         get() = products
@@ -24,5 +25,12 @@ data class SrwBubbleUiModel constructor(
 
     fun isRelatedTo(productId: String): Boolean {
         return productIds.contains(productId)
+    }
+
+    fun initializeWithSrwPreview() {
+        if (!alreadyInitializeWithSrwPreview) {
+            isExpanded = srwPreviewState.isExpanded
+            alreadyInitializeWithSrwPreview = true
+        }
     }
 }

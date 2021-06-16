@@ -45,7 +45,7 @@ class SrwBubbleViewHolder constructor(
     }
 
     private fun bindPreviousSRWPreviewState(element: SrwBubbleUiModel) {
-        element.isExpanded = element.srwPreviewState.isExpanded
+        element.initializeWithSrwPreview()
     }
 
     private fun bindState(element: SrwBubbleUiModel) {
