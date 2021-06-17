@@ -6,6 +6,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.utils.UrlParamUtils
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.searchbar.data.HintData
@@ -18,7 +20,6 @@ import com.tokopedia.tokomart.search.utils.SearchTracking
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
@@ -134,5 +135,19 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         )
 
         super.onProductClick(productItemDataView)
+    }
+
+    override fun openFilterPage() {
+        SearchTracking.sendOpenFilterPageEvent()
+
+        super.openFilterPage()
+    }
+
+    override fun onApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
+        val paramMap = applySortFilterModel.selectedFilterMapParameter as Map<String?, String>
+        val filterParams = UrlParamUtils.generateUrlParamString(paramMap)
+        SearchTracking.sendApplySortFilterEvent(filterParams)
+
+        super.onApplySortFilter(applySortFilterModel)
     }
 }

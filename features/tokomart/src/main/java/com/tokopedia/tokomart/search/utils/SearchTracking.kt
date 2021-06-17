@@ -1,10 +1,14 @@
 package com.tokopedia.tokomart.search.utils
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.BUSINESSUNIT
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.CURRENTSITE
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
+import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_APPLY_FILTER
+import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_FILTER_OPTION
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_PRODUCT
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.IMPRESSION_PRODUCT
 import com.tokopedia.tokomart.search.utils.SearchTracking.Category.TOKONOW_SEARCH_RESULT
@@ -40,6 +44,8 @@ object SearchTracking {
         const val GENERAL_SEARCH = "general search"
         const val IMPRESSION_PRODUCT = "impression - product"
         const val CLICK_PRODUCT = "click - product"
+        const val CLICK_FILTER_OPTION = "click - filter option"
+        const val CLICK_APPLY_FILTER = "click - apply filter"
     }
 
     object Category {
@@ -103,9 +109,9 @@ object SearchTracking {
                         EVENT_ACTION, TOKONOW_SEARCH_RESULT,
                         EVENT_CATEGORY, CLICK_PRODUCT,
                         EVENT_LABEL, keyword,
+                        BUSINESSUNIT, BUSINESS_UNIT_VALUE,
                         CURRENTSITE, CURRENT_SITE_VALUE,
                         USER_ID, userId,
-                        BUSINESSUNIT, BUSINESS_UNIT_VALUE,
                         ECOMMERCE, DataLayer.mapOf(
                             CLICK, DataLayer.mapOf(
                                 ACTION_FIELD, DataLayer.mapOf(
@@ -114,6 +120,32 @@ object SearchTracking {
                                 )
                             ),
                         )
+                )
+        )
+    }
+    
+    fun sendOpenFilterPageEvent() {
+        sendGeneralEvent(
+                DataLayer.mapOf(
+                    EVENT, EVENT_CLICK_VALUE,
+                    EVENT_ACTION, CLICK_FILTER_OPTION,
+                    EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                    EVENT_LABEL, "",
+                    BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                    CURRENTSITE, CURRENT_SITE_VALUE,
+                )
+        )
+    }
+
+    fun sendApplySortFilterEvent(filterParams: String) {
+        sendGeneralEvent(
+                DataLayer.mapOf(
+                    EVENT, EVENT_CLICK_VALUE,
+                    EVENT_ACTION, CLICK_APPLY_FILTER,
+                    EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                    EVENT_LABEL, filterParams,
+                    BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                    CURRENTSITE, CURRENT_SITE_VALUE,
                 )
         )
     }
