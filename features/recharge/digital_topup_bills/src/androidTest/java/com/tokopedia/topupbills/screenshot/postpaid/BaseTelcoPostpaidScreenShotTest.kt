@@ -138,7 +138,7 @@ class BaseTelcoPostpaidScreenShotTest {
     }
 
     fun take_screenshot_interaction_menu() {
-        Thread.sleep(5000)
+        Thread.sleep(2000)
 
         onView(withId(R.id.action_overflow_menu)).perform(click())
         Thread.sleep(2000)
@@ -152,7 +152,7 @@ class BaseTelcoPostpaidScreenShotTest {
     }
 
     fun take_screenshot_input_number() {
-        Thread.sleep(5000)
+        Thread.sleep(2000)
         onView(withId(R.id.telco_ac_input_number)).perform(click())
         Thread.sleep(2000)
         CommonActions.findViewAndScreenShot(
@@ -161,13 +161,15 @@ class BaseTelcoPostpaidScreenShotTest {
                 "search_number"
         )
 
-        onView(withId(R.id.searchbar_textfield)).perform(typeText(VALID_PHONE_NUMBER), pressImeActionButton())
+        onView(withId(R.id.searchbar_textfield)).perform(typeText(VALID_PHONE_NUMBER))
+        Espresso.closeSoftKeyboard()
         Thread.sleep(2000)
         CommonActions.findViewAndScreenShot(
                 R.id.container_search_number_telco,
                 filePrefix(),
                 "search_number_filled"
         )
+        onView(withId(R.id.searchbar_textfield)).perform(click(), pressImeActionButton())
         Thread.sleep(2000)
         CommonActions.findViewAndScreenShot(
                 R.id.telco_input_number_layout,
@@ -177,7 +179,7 @@ class BaseTelcoPostpaidScreenShotTest {
     }
 
     fun take_screenshot_interaction_promo() {
-        Thread.sleep(5000)
+        Thread.sleep(2000)
         val viewInteraction = onView(AllOf.allOf(
                 allOf(withId(R.id.recycler_view_menu_component), withParent(withId(R.id.layout_widget)),
                         isDisplayed()))).check(matches(isDisplayed()))

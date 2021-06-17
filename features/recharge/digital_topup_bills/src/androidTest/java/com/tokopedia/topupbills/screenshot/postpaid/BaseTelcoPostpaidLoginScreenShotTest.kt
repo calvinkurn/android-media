@@ -81,7 +81,7 @@ class BaseTelcoPostpaidLoginScreenShotTest {
     fun screenshot() {
         stubSearchNumber()
         take_screenshot_visible_screen()
-        
+
     }
 
     fun take_screenshot_visible_screen() {
