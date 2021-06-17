@@ -1208,9 +1208,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     // TODO: SRW should hide broadcast handler if visible
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
 
-    // TODO-Note: What if BE create new ws event to indicate closing of SRW if it's no longer relevant
-    // TODO: CTA on left msg - possibly different tasks
-
 
     private fun getAttachInvoiceResult(): Instrumentation.ActivityResult {
         val intent = Intent().apply {
