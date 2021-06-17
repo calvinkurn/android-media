@@ -313,6 +313,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
+    override fun getIsShouldRemoveWidget(): Boolean = true
+
+    override fun onRemoveWidget(position: Int) {}
+
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
         SellerHomeTracking.sendImpressionCardEvent(model.dataKey,
                 model.data?.state.orEmpty(), model.data?.value ?: "0")
@@ -335,6 +339,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendClickCarouselCtaEvent(dataKey)
     }
 
+    override fun sendCarouselEmptyStateCtaClickEvent(element: CarouselWidgetUiModel) {}
+
     override fun sendDescriptionImpressionEvent(descriptionTitle: String) {
         SellerHomeTracking.sendImpressionDescriptionEvent(descriptionTitle)
     }
@@ -344,11 +350,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun sendLineGraphImpressionEvent(model: LineGraphWidgetUiModel) {
-        SellerHomeTracking.sendImpressionLineGraphEvent(model.dataKey, model.data?.header.orEmpty())
+        SellerHomeTracking.sendImpressionLineGraphEvent(model)
     }
 
     override fun sendLineGraphCtaClickEvent(dataKey: String, chartValue: String) {
         SellerHomeTracking.sendClickLineGraphEvent(dataKey, chartValue)
+    }
+
+    override fun sendLineChartEmptyStateCtaClickEvent(model: LineGraphWidgetUiModel) {
+        SellerHomeTracking.sendClickEmptyCtaLineGraphEvent(model)
     }
 
     override fun sendPosListItemClickEvent(dataKey: String, title: String) {
@@ -652,9 +662,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendPieChartImpressionEvent(model, position)
     }
 
+    override fun sendPieChartEmptyStateCtaClickEvent(model: PieChartWidgetUiModel) {
+        SellerHomeTracking.sendPieChartEmptyStateCtaClickEvent(model)
+    }
+
     override fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {
         val position = adapter.data.indexOf(model)
         SellerHomeTracking.sendBarChartImpressionEvent(model, position)
+    }
+
+    override fun sendBarChartEmptyStateCtaClick(element: BarChartWidgetUiModel) {
+        SellerHomeTracking.sendBarChartEmptyStateCtaClickEvent(element)
     }
 
     override fun sendMultiLineGraphImpressionEvent(element: MultiLineGraphWidgetUiModel) {

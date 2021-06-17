@@ -433,7 +433,7 @@ private fun ProductCardModel.getPdpViewCountSectionHeight(context: Context): Int
 }
 
 private fun ProductCardModel.getStockBarAndLabelSectionHeight(context: Context): Int {
-    return if (stockBarLabel.isNotEmpty()) {
+    return if (isStockBarShown()) {
         val stockBarMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_progressbar_margintop)
         val stockBarHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_progressbar_height)
 
