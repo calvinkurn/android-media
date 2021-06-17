@@ -25,9 +25,9 @@ class SrwBubbleViewHolder constructor(
         )
     }
 
-    enum class State {
-        EXPANDED,
-        COLLAPSED
+    object State {
+        const val EXPANDED = 1
+        const val COLLAPSED = 2
     }
 
     override fun bind(element: SrwBubbleUiModel, payloads: MutableList<Any>) {
