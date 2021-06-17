@@ -281,7 +281,7 @@ class GetOccCartMapper @Inject constructor() {
     private fun mapPaymentWalletDummyData(): OrderPaymentWalletAdditionalData {
         return OrderPaymentWalletAdditionalData(
             WALLET_TYPE_GOPAY, true,
-            activation = OrderPaymentWalletActionData(false, "", "Yay, aktivasi Gopay berhasil. Sekarang kamu bisa bayar pakai Gopay.", "", "Aktivasi di aplikasi Gojek dulu, ya", false, "Sambungkan Gopay"),
+            activation = OrderPaymentWalletActionData(false, "", "Yay, aktivasi Gopay berhasil. Sekarang kamu bisa bayar pakai Gopay.", "", "Aktivasi di aplikasi Gojek dulu, ya", false, "Sambungkan Gopay", ""),
             topUp = OrderPaymentWalletActionData(false, "", "", "", "Limit kamu tidak cukup.")
         )
     }
@@ -291,7 +291,7 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapPaymentWalletActionData(walletData: WalletData): OrderPaymentWalletActionData {
-        return OrderPaymentWalletActionData(walletData.isRequired, walletData.buttonTitle, walletData.successToaster, walletData.errorToaster, walletData.errorMessage, walletData.isHideDigital, walletData.headerTitle)
+        return OrderPaymentWalletActionData(walletData.isRequired, walletData.buttonTitle, walletData.successToaster, walletData.errorToaster, walletData.errorMessage, walletData.isHideDigital, walletData.headerTitle, walletData.urlLink)
     }
 
     private fun mapPaymentOvoCustomerData(data: CustomerData): OrderPaymentOvoCustomerData {
