@@ -360,13 +360,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun isChooseAddressRollenceActive(): Boolean {
-        return ChooseAddressUtils.isRollOutUser(requireContext())
+        return if (context == null) {
+            true
+        } else {
+            ChooseAddressUtils.isRollOutUser(context)
+        }
     }
 
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
         if (isNavRevamp()) {
             ifNavRevamp.invoke()
-        } else if (isNavOld()) {
+        } else {
             ifNavOld.invoke()
         }
     }
@@ -718,6 +722,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             coachMarkIsShowing = true
             val coachMarkItem = ArrayList<CoachMark2Item>()
             coachmark = CoachMark2(it)
+            coachMarkItem.buildHomeCoachmark()
             coachmark?.let {
                 it.setStepListener(object : CoachMark2.OnStepListener {
                     override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
@@ -1761,6 +1766,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         .setLocalCacheModel(localCacheModel)
         )
         chooseAddressWidgetInitialized = false
+        getHomeViewModel().refresh(isFirstInstall = false, forceRefresh = true)
     }
 
     override fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean) {

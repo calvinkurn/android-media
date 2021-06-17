@@ -12,7 +12,7 @@ import com.tokopedia.home.account.presentation.fragment.setting.MediaQualitySett
 class MediaQualitySettingActivity: BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        window.decorView.setBackgroundColor(Color.WHITE)
+        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         super.onCreate(savedInstanceState)
         updateToolbarTitle()
     }

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.notifcenter.data.entity.notification.*
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import java.util.*
@@ -111,6 +112,8 @@ data class NotificationUiModel(
     val shortDescHtml: CharSequence by lazy(LazyThreadSafetyMode.NONE) {
         MethodChecker.fromHtml(shortDescriptionHtml)
     }
+
+    val impressHolder = ImpressHolder()
 
     var options: Options = Options()
     val product: ProductData? get() = productData.getOrNull(0)
