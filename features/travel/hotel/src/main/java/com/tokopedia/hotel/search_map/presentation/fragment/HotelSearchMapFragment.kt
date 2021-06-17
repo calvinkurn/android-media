@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Point
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
@@ -933,16 +932,11 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     fun getMapCenter(latLng: LatLng): LatLng{
         return try{
-            val mapCenterPoint = googleMap.projection.toScreenLocation(googleMap.cameraPosition.target)
-            val pointOffsetFromCenter = googleMap.projection.fromScreenLocation(
-                    Point(
-                            mapCenterPoint.x,
-                            mapCenterPoint.y + resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl5).toInt()
-                    )
-            )
-            val latDelta = pointOffsetFromCenter.latitude - googleMap.cameraPosition.target.latitude
-            val lngDelta = pointOffsetFromCenter.longitude - googleMap.cameraPosition.target.longitude
-            LatLng(latLng.latitude + latDelta, latLng.longitude + lngDelta)
+            val mapCenter: Double = googleMap.cameraPosition.target.latitude
+            val southMap: Double = googleMap.projection.visibleRegion.latLngBounds.southwest.latitude
+            val diff = (mapCenter - southMap) / 4
+            val newLat: Double = latLng.latitude - diff
+            LatLng(newLat, latLng.longitude)
         }catch (t: Throwable) {
             latLng
         }
