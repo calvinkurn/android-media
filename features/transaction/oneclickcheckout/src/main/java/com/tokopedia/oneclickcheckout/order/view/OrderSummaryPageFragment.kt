@@ -942,7 +942,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onOvoActivateClicked(callbackUrl: String) {
-            OvoActivationWebViewBottomSheet(ovoActivationUrl.get(), callbackUrl, object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
+            OvoActivationWebViewBottomSheet(ovoActivationUrl.get(), callbackUrl,
+                getString(R.string.lbl_activate_ovo_now),
+                object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
                 override fun onActivationResult(isSuccess: Boolean) {
                     view?.let {
                         it.post {
@@ -960,16 +962,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onWalletActivateClicked(activationUrl: String, callbackUrl: String) {
-            OvoActivationWebViewBottomSheet(activationUrl, callbackUrl, object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
+            OvoActivationWebViewBottomSheet(activationUrl, callbackUrl,
+                viewModel.getActivationData().headerTitle,
+                object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
                 override fun onActivationResult(isSuccess: Boolean) {
                     view?.let {
                         it.post {
                             source = SOURCE_OTHERS
                             refresh()
                             if (isSuccess) {
-                                Toaster.build(it, viewModel.getActivationSuccessToasterMsg(), actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+                                Toaster.build(it, viewModel.getActivationData().successToaster, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
                             } else {
-                                Toaster.build(it, viewModel.getActivationErrorToasterMsg(), type = Toaster.TYPE_ERROR, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+                                Toaster.build(it, viewModel.getActivationData().errorToaster, type = Toaster.TYPE_ERROR, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
                             }
                         }
                     }

@@ -24,6 +24,7 @@ import timber.log.Timber
 
 class OvoActivationWebViewBottomSheet(private val activationUrl: String,
                                       private val callbackUrl: String,
+                                      private val title: String,
                                       private val listener: OvoActivationWebViewBottomSheetListener) {
 
     private var context: Context? = null
@@ -56,7 +57,7 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
                 showCloseIcon = true
                 showHeader = true
                 clearContentPadding = true
-                setTitle(fragment.getString(R.string.lbl_activate_ovo_now))
+                setTitle(title)
 
                 val child = View.inflate(fragment.context, R.layout.bottom_sheet_web_view, null)
                 setupChild(userSessionInterface, child)

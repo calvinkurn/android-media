@@ -101,8 +101,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return orderPayment.value.walletData.activation.successToaster
     }
 
-    fun getActivationErrorToasterMsg(): String {
-        return orderPayment.value.walletData.activation.errorToaster
+    fun getActivationData(): OrderPaymentWalletActionData {
+        return orderPayment.value.walletData.activation
     }
 
     fun atcOcc(productId: String) {
