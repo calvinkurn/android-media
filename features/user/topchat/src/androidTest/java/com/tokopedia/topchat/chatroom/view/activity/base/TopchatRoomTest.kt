@@ -336,7 +336,7 @@ abstract class TopchatRoomTest {
     protected fun clickSrwBubbleExpandCollapse(position: Int) {
         onView(
             withRecyclerView(R.id.recycler_view).atPositionOnView(
-                position, R.id.rv_srw_content_container
+                position, R.id.tp_srw_container_partial
             )
         ).perform(click())
     }
@@ -622,6 +622,12 @@ abstract class TopchatRoomTest {
                 isDescendantOfA(withId(R.id.cl_attachment_preview))
             )
         ).perform(click())
+    }
+
+    protected fun scrollChatToPosition(position: Int) {
+        onView(withId(R.id.recycler_view)).perform(
+            RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
+        )
     }
 
     protected fun intendingAttachProduct(totalProductAttached: Int) {

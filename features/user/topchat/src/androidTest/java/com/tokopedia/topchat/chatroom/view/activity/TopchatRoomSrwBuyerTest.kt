@@ -1116,7 +1116,30 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwBubbleCollapsed(0)
     }
 
-    // TODO: SRW bubble should maintain state (expand/collapse) if scrolled far top and back at it.
+    @Test
+    fun srw_bubble_should_maintain_state_expand_or_collapse_if_scrolled_far_top_and_back_at_it() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+        intending(anyIntent()).respondWith(getAttachInvoiceResult())
+
+        // When
+        clickSrwPreviewItemAt(0)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        clickSrwBubbleExpandCollapse(0)
+        scrollChatToPosition(10)
+        scrollChatToPosition(0)
+
+        // Then
+        assertSrwBubbleContentIsVisibleAt(0)
+        assertSrwBubbleCollapsed(0)
+    }
+
     // TODO: SRW bubble should still displayed/added when user click send sticker.
     // TODO: SRW bubble should remain collapsed when user send sticker.
     // TODO: SRW bubble should remain collapsed when user send manual text.
