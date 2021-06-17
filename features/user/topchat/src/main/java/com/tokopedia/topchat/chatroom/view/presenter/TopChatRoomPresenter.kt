@@ -261,7 +261,7 @@ open class TopChatRoomPresenter @Inject constructor(
         when (pojo.attachment?.type) {
             AttachmentType.Companion.TYPE_INVOICE_SEND,
             AttachmentType.Companion.TYPE_IMAGE_UPLOAD,
-            AttachmentType.Companion.TYPE_VOUCHER-> view?.removeSrwBubble()
+            AttachmentType.Companion.TYPE_VOUCHER -> view?.removeSrwBubble()
             AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT -> {
                 if (uiModel is ProductAttachmentViewModel) {
                     view?.removeSrwBubble(uiModel.productId)
@@ -398,13 +398,13 @@ open class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    private fun addDummyToService(image: ImageUploadViewModel) {
+    protected open fun addDummyToService(image: ImageUploadViewModel) {
         view?.addDummyMessage(image)
         val uploadImageDummy = UploadImageDummy(messageId = thisMessageId, visitable = image)
         UploadImageChatService.dummyMap.add(uploadImageDummy)
     }
 
-    private fun startUploadImageWithService(image: ImageUploadViewModel) {
+    protected open fun startUploadImageWithService(image: ImageUploadViewModel) {
         UploadImageChatService.enqueueWork(
             view.context,
             ImageUploadMapper.mapToImageUploadServer(image),
@@ -1027,7 +1027,7 @@ open class TopChatRoomPresenter @Inject constructor(
         view?.renderOrderProgress(orderProgressResponse.chatOrderProgress)
     }
 
-    private fun isEnableUploadImageService(): Boolean {
+    protected open fun isEnableUploadImageService(): Boolean {
         return try {
             remoteConfig.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false)
         } catch (ex: Exception) {

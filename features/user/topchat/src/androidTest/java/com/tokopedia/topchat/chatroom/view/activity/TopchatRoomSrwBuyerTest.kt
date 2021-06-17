@@ -1257,9 +1257,33 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwBubbleContentIsVisibleAt(0)
     }
 
+    @Test
+    fun srw_bubble_should_removed_when_user_return_from_attach_image_and_request_upload_image() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData())
+        )
+
+        // When
+        clickSrwPreviewItemAt(0)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        clickPlusIconMenu()
+        clickAttachImageMenu()
+
+        // Then
+        assertSrwBubbleDoesNotExist()
+        assertTemplateChatVisibility(isDisplayed())
+    }
+
     // TODO: SRW should hide broadcast handler if visible
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
-    // TODO: SRW bubble should removed when user return from attach image and request upload image.
     // TODO: SRW bubble should removed when user receive voucher event from ws.
 
 
