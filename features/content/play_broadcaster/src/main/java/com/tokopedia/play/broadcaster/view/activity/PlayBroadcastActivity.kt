@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.SurfaceHolder
 import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
@@ -13,8 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import com.pedro.rtplibrary.view.LightOpenGlView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -41,6 +38,7 @@ import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.view.contract.PlayBaseCoordinator
+import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 import com.tokopedia.play.broadcaster.view.fragment.PlayBeforeLiveFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPrepareFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment
@@ -86,7 +84,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
 
     private lateinit var containerSetup: FrameLayout
     private lateinit var globalErrorView: GlobalError
-    private lateinit var lightOpenGlView: LightOpenGlView
+    private lateinit var surfaceView: SurfaceAspectRatioView
 
     private lateinit var playBroadcastComponent: PlayBroadcastComponent
 
@@ -226,20 +224,17 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     private fun initView() {
         containerSetup = findViewById(R.id.fl_setup)
         globalErrorView = findViewById(R.id.global_error)
-        lightOpenGlView = findViewById(R.id.surface_view)
+        surfaceView = findViewById(R.id.surface_aspect_ratio_view)
     }
 
     private fun setupView() {
-        lightOpenGlView.holder.addCallback(object: SurfaceHolder.Callback{
-            override fun surfaceChanged(surfaceHolder: SurfaceHolder?, p1: Int, p2: Int, p3: Int) {
+        surfaceView.setCallback(object : SurfaceAspectRatioView.Callback{
+            override fun onSurfaceCreated() {
                 startPreview()
             }
 
-            override fun surfaceDestroyed(surfaceHolder: SurfaceHolder?) {
+            override fun onSurfaceDestroyed() {
                 stopPreview()
-            }
-
-            override fun surfaceCreated(surfaceHolder: SurfaceHolder?) {
             }
         })
     }
@@ -357,7 +352,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     private fun isRequiredPermissionGranted() = permissionHelper.isAllPermissionsGranted(permissions)
 
     fun startPreview() {
-        if (permissionHelper.isPermissionGranted(Manifest.permission.CAMERA)) viewModel.startPreview(lightOpenGlView)
+        if (permissionHelper.isPermissionGranted(Manifest.permission.CAMERA)) viewModel.startPreview(surfaceView)
     }
 
     fun stopPreview() {

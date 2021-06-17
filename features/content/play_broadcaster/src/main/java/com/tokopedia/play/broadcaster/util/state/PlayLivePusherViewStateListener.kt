@@ -34,27 +34,23 @@ interface PlayLivePusherViewStateListener : PlayLivePusherMediatorListener {
 
         /**
          * connect failed
-        - Endpoint malformed, should be: rtmp://ip:port/appname/streamname
-        - Handshake failed
-        - description
-        - onStatus $code
-        - authentication rtmp error
+        - can not connect to server
 
-        network poor:
-        - Error send packet, Software caused connection abort
-
-        network loss:
-        - Error configure stream, broadcast.tokopedia.com
+        network poor / loss:
+        - connection failure
 
         system error:
-        - Error preparing stream, This device cant do it
+        - error preparing stream, This device cant do it
+        - Video encoding failure, try to change video resolution
+        - Video capture failure
+        - Audio encoding failure
+        - Audio capture failure
          */
         fun errorStateParser(reason: String): PlayLivePusherErrorType {
             return when {
-                reason.contains("error preparing stream, this device cant do it", true) -> PlayLivePusherErrorType.SystemError
-                reason.contains("error send packet", true) -> PlayLivePusherErrorType.NetworkPoor
-                reason.contains("error configure stream", true) -> PlayLivePusherErrorType.NetworkLoss
-                else -> PlayLivePusherErrorType.ConnectFailed
+                reason.contains("can not connect to server", true) -> PlayLivePusherErrorType.ConnectFailed
+                reason.contains("connection failure", true) -> PlayLivePusherErrorType.NetworkLoss
+                else -> PlayLivePusherErrorType.SystemError
             }
         }
     }

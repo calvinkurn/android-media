@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.os.Handler
 import androidx.lifecycle.*
-import com.pedro.rtplibrary.view.LightOpenGlView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -25,6 +24,7 @@ import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.state.PlayChannelLivePusherStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLivePusherViewStateListener
 import com.tokopedia.play.broadcaster.util.timer.PlayCountDownTimer
+import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherViewState
 import com.tokopedia.play.broadcaster.view.state.PlayTimerState
@@ -312,8 +312,8 @@ class PlayBroadcastViewModel @Inject constructor(
         livePusherMediator.switchCamera()
     }
 
-    fun startPreview(lightOpenGlView: LightOpenGlView) {
-        livePusherMediator.onCameraChanged(lightOpenGlView)
+    fun startPreview(surfaceView: SurfaceAspectRatioView) {
+        livePusherMediator.onCameraChanged(surfaceView)
     }
 
     fun stopPreview() {
@@ -374,7 +374,6 @@ class PlayBroadcastViewModel @Inject constructor(
         playSocket.destroy()
         countDownTimer.stop()
         livePusherMediator.stop()
-        livePusherMediator.stopPreview()
         sendLivePusherState(PlayLivePusherViewState.Stopped(shouldNavigate))
     }
 

@@ -1,8 +1,8 @@
 package com.tokopedia.play.broadcaster.pusher
 
-import com.pedro.rtplibrary.view.LightOpenGlView
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.play.broadcaster.util.state.PlayLivePusherViewStateListener.Companion.errorStateParser
+import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 import com.tokopedia.play.broadcaster.view.state.isNetworkTrouble
 
 
@@ -39,10 +39,10 @@ class PlayLivePusherMediator(
         mListeners.remove(listener)
     }
 
-    fun onCameraChanged(lightOpenGlView: LightOpenGlView) {
+    fun onCameraChanged(surfaceView: SurfaceAspectRatioView) {
         if (livePusher.state.isStopped) return
 
-        livePusher.startPreview(lightOpenGlView)
+        livePusher.startPreview(surfaceView)
         if (livePusher.state.isPaused) {
             if (isReachMaxPauseDuration()) broadcastReachMaxPauseDuration()
             else broadcastShouldContinueLiveStreaming()

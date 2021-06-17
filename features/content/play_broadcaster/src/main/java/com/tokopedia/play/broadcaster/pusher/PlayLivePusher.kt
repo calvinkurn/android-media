@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.pusher
 
 import android.os.Handler
-import android.view.SurfaceView
+import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 
 
 /**
@@ -17,7 +17,7 @@ interface PlayLivePusher {
 
     fun setListener(listener: PlayLivePusherListener)
 
-    fun startPreview(surfaceView: SurfaceView)
+    fun startPreview(surfaceView: SurfaceAspectRatioView)
 
     fun stopPreview()
 

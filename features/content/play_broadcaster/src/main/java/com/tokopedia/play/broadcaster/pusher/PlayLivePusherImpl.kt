@@ -6,7 +6,8 @@ import android.hardware.camera2.CameraManager
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
-import android.view.SurfaceView
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 import com.wmspanel.libstream.*
 import org.json.JSONObject
 
@@ -27,7 +28,9 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
 
     private val mLivePusherConnection: PlayLivePusherConnection = PlayLivePusherConnection()
 
-    private fun createStreamer(surfaceView: SurfaceView) {
+    private val mSize = Streamer.Size(1280, 720) // TODO: find best fit for front & back camera
+
+    private fun createStreamer(surfaceView: SurfaceAspectRatioView) {
         val context = surfaceView.context
         val builder = StreamerGLBuilder()
 
@@ -45,7 +48,7 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
         builder.setCamera2(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
 
         // preview surface
-        builder.setSurface(surfaceView.holder.surface)
+        builder.setSurface(surfaceView.surfaceHolder.surface)
         builder.setSurfaceSize(Streamer.Size(surfaceView.width, surfaceView.height))
 
         val availableCameras =  getAvailableCameras(context)
@@ -56,7 +59,8 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
         builder.setCameraId(cameraId)
 
         builder.setVideoOrientation(StreamerGL.ORIENTATIONS.PORTRAIT)
-        builder.setDisplayRotation(90)
+        builder.setDisplayRotation(0)
+        builder.setFullView(true)
 
         streamer = builder.build()
     }
@@ -70,14 +74,14 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
 
     override fun prepare(config: PlayLivePusherConfig?) {
         mLivePusherConfig = config ?: PlayLivePusherConfig()
-        if (!setup()) broadcastState(PlayLivePusherState.Error("Error preparing stream, This device cant do it"))
+        configureStreamer(mLivePusherConfig)
     }
 
     override fun setListener(listener: PlayLivePusherListener) {
         mLivePusherListener = listener
     }
 
-    override fun startPreview(surfaceView: SurfaceView) {
+    override fun startPreview(surfaceView: SurfaceAspectRatioView) {
         if (streamer == null) createStreamer(surfaceView)
         safeStartPreview()
     }
@@ -123,93 +127,17 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     }
 
     override fun reconnect() {
-        startStream()
+        startStream() // TODO: handling max retry & reconnectDelay
     }
 
     override fun stop() {
         stopStream()
         broadcastState(PlayLivePusherState.Stop)
-    }
-
-//    override fun onAuthErrorRtmp() {
-//        broadcastState(PlayLivePusherState.Error("authentication rtmp error"))
-//    }
-//
-//    override fun onAuthSuccessRtmp() {
-//    }
-//
-//    override fun onConnectionFailedRtmp(reason: String) {
-//        broadcastState(PlayLivePusherState.Error(reason))
-//    }
-//
-//    override fun onConnectionStartedRtmp(rtmpUrl: String) {
-//    }
-//
-//    override fun onConnectionSuccessRtmp() {
-//        val lastState = mLivePusherState
-//        when {
-//            lastState.isError -> broadcastState(PlayLivePusherState.Recovered)
-//            isPushStarted -> broadcastState(PlayLivePusherState.Resumed)
-//            else -> {
-//                broadcastState(PlayLivePusherState.Started)
-//                isPushStarted = true
-//            }
-//        }
-//        configureAdaptiveBitrate()
-//    }
-//
-//    override fun onDisconnectRtmp() {
-//    }
-//
-//    override fun onNewBitrateRtmp(bitrate: Long) {
-//        adaptBitrate(bitrate)
-//    }
-
-    private fun setup(): Boolean { // TODO: change audio, video configuration
-//        val prepareAudio = rtmpCamera.prepareAudio(
-//            mLivePusherConfig.audioBitrate,
-//            mLivePusherConfig.audioSampleRate,
-//            mLivePusherConfig.audioStereo,
-//            mLivePusherConfig.audioEchoCanceler,
-//            mLivePusherConfig.audioNoiseSuppressor
-//        )
-//        val prepareVideo = rtmpCamera.prepareVideo(
-//            rtmpCamera.streamWidth,
-//            rtmpCamera.streamWidth,
-//            mLivePusherConfig.fps,
-//            mLivePusherConfig.videoBitrate,
-//            mLivePusherConfig.videoOrientation
-//        )
-//        rtmpCamera.setReTries(mLivePusherConfig.maxRetry)
-//        return prepareAudio && prepareVideo
-        return true
-    }
-
-    private fun broadcastState(state: PlayLivePusherState) {
-        mLivePusherState = state
-        mLivePusherListener?.onNewLivePusherState(state)
-    }
-
-    private fun getAvailableCameras(context: Context): List<CameraConfig> {
-        val size = Streamer.Size(1280, 720) // TODO: find best fit for front & back camera
-        try {
-            val cameraList = mutableListOf<CameraConfig>()
-            val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
-            val cameraIdList = cameraManager.cameraIdList
-            for (cameraId in cameraIdList) {
-                val camera = CameraConfig().apply {
-                    this.cameraId = cameraId
-                    this.videoSize = size
-                }
-                cameraList.add(camera)
-            }
-        } catch (ignored: CameraAccessException) {
-        }
-        return emptyList()
+        streamer?.release()
     }
 
     override fun getHandler(): Handler {
-        return mHandler ?: throw IllegalStateException("PlayLivePusher is not initialized")
+        return mHandler ?: throw IllegalStateException("PlayLivePusher is not initialized.")
     }
 
     override fun onConnectionStateChanged(
@@ -218,15 +146,75 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
         status: Streamer.STATUS?,
         info: JSONObject?
     ) {
-        // TODO:
+        if (state == null) return
+        if (connectionId != mLivePusherConnection.connectionId) {
+            // ignore already released connection
+            return
+        }
+        val lastState = mLivePusherState
+        when(state) {
+            Streamer.CONNECTION_STATE.IDLE -> broadcastState(PlayLivePusherState.Idle)
+            Streamer.CONNECTION_STATE.INITIALIZED -> broadcastState(PlayLivePusherState.Connecting)
+            Streamer.CONNECTION_STATE.CONNECTED,
+            Streamer.CONNECTION_STATE.SETUP -> {
+                // ignored
+            }
+            Streamer.CONNECTION_STATE.RECORD -> {
+                when {
+                    lastState.isError -> broadcastState(PlayLivePusherState.Recovered)
+                    isPushStarted -> broadcastState(PlayLivePusherState.Resumed)
+                    else -> {
+                        broadcastState(PlayLivePusherState.Started)
+                        isPushStarted = true
+                    }
+                }
+            }
+            Streamer.CONNECTION_STATE.DISCONNECTED -> {
+                if (lastState is PlayLivePusherState.Pause) return // ignore and just call resume()
+                if (status == null) {
+                    broadcastState(PlayLivePusherState.Error("Unknown connection failure"))
+                    return
+                }
+                when(status) {
+                    Streamer.STATUS.CONN_FAIL -> broadcastState(PlayLivePusherState.Error("Can not connect to server"))
+                    Streamer.STATUS.AUTH_FAIL -> broadcastState(PlayLivePusherState.Error("Can not connect to server authentication failure, please check stream credentials."))
+                    Streamer.STATUS.UNKNOWN_FAIL -> {
+                        if (info?.length().orZero() > 0) {
+                            broadcastState(PlayLivePusherState.Error("Unknown connection failure"))
+                        } else {
+                            broadcastState(PlayLivePusherState.Error("Connection failure ${info?.toString()}"))
+                        }
+                    }
+                    Streamer.STATUS.SUCCESS -> {
+                        // ignored
+                    }
+                }
+            }
+        }
     }
 
     override fun onVideoCaptureStateChanged(state: Streamer.CAPTURE_STATE?) {
-        // TODO:
+        if (state == null) return
+        when(state) {
+            Streamer.CAPTURE_STATE.ENCODER_FAIL -> broadcastState(PlayLivePusherState.Error("Video encoding failure, try to change video resolution"))
+            Streamer.CAPTURE_STATE.FAILED -> broadcastState(PlayLivePusherState.Error("Video capture failure"))
+            Streamer.CAPTURE_STATE.STARTED,
+            Streamer.CAPTURE_STATE.STOPPED -> {
+                // ignored
+            }
+        }
     }
 
     override fun onAudioCaptureStateChanged(state: Streamer.CAPTURE_STATE?) {
-        // TODO:
+        if (state == null) return
+        when(state) {
+            Streamer.CAPTURE_STATE.ENCODER_FAIL -> broadcastState(PlayLivePusherState.Error("Audio encoding failure"))
+            Streamer.CAPTURE_STATE.FAILED -> broadcastState(PlayLivePusherState.Error("Audio capture failure"))
+            Streamer.CAPTURE_STATE.STARTED,
+            Streamer.CAPTURE_STATE.STOPPED -> {
+                // ignored
+            }
+        }
     }
 
     override fun onRecordStateChanged(
@@ -243,5 +231,33 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
         method: Streamer.SAVE_METHOD?
     ) {
         // ignored
+    }
+
+    private fun configureStreamer(config: PlayLivePusherConfig) {
+        // TODO: change audio, video configuration
+        // errorMessage: Error preparing stream, This device cant do it
+    }
+
+    private fun broadcastState(state: PlayLivePusherState) {
+        mLivePusherState = state
+        mLivePusherListener?.onNewLivePusherState(state)
+    }
+
+    private fun getAvailableCameras(context: Context): List<CameraConfig> {
+        return try {
+            val cameraList = mutableListOf<CameraConfig>()
+            val cameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+            val cameraIdList = cameraManager.cameraIdList
+            for (cameraId in cameraIdList) {
+                val camera = CameraConfig().apply {
+                    this.cameraId = cameraId
+                    this.videoSize = mSize
+                }
+                cameraList.add(camera)
+            }
+            cameraList
+        } catch (ignored: CameraAccessException) {
+            emptyList()
+        }
     }
 }

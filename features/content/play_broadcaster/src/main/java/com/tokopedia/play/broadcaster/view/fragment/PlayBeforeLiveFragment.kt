@@ -28,6 +28,10 @@ import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.custom.PlayShareFollowerView
 import com.tokopedia.play.broadcaster.view.custom.PlayStartStreamingButton
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.edit.CoverEditFragment
+import com.tokopedia.play.broadcaster.view.fragment.edit.ProductEditFragment
+import com.tokopedia.play.broadcaster.view.fragment.edit.SetupBroadcastScheduleBottomSheet
+import com.tokopedia.play.broadcaster.view.fragment.edit.TitleAndTagsEditBottomSheet
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.partial.BroadcastScheduleViewComponent
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
@@ -37,7 +41,6 @@ import com.tokopedia.play.broadcaster.view.viewmodel.BroadcastScheduleViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play.broadcaster.view.fragment.edit.*
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
@@ -371,8 +374,6 @@ class PlayBeforeLiveFragment @Inject constructor(
 
     private fun handleLivePushError(state: PlayLivePusherViewState.Error) {
         when(state.errorType) {
-            PlayLivePusherErrorType.NetworkPoor -> showToaster(message = getString(R.string.play_live_broadcast_network_poor), type = Toaster.TYPE_ERROR)
-            PlayLivePusherErrorType.NetworkLoss -> showToaster(message = getString(R.string.play_live_broadcast_network_loss), type = Toaster.TYPE_ERROR)
             PlayLivePusherErrorType.ConnectFailed -> showToaster(
                     message = getString(R.string.play_live_broadcast_connect_fail),
                     type = Toaster.TYPE_ERROR,

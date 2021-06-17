@@ -6,27 +6,14 @@
     android:background="@color/play_dms_broadcaster_background"
     >
 
-    <com.pedro.rtplibrary.view.LightOpenGlView
-        android:id="@+id/surface_view"
+    <com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
+        android:id="@+id/surface_aspect_ratio_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:AAEnabled="false"
-        app:aspectRatioMode="fill"
-        app:isFlipHorizontal="false"
-        app:isFlipVertical="false"
-        app:keepAspectRatio="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:numFilters="1" />
-
-<!--    <SurfaceView-->
-<!--        android:id="@+id/surface_view"-->
-<!--        android:layout_width="@dimen/layout_lvl0"-->
-<!--        android:layout_height="@dimen/layout_lvl0"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"/>-->
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
         layout="@layout/layout_play_gradient_background"
