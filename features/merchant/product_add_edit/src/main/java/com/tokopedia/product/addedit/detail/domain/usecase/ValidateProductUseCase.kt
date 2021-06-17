@@ -13,13 +13,33 @@ class ValidateProductUseCase @Inject constructor(
 
     companion object {
         const val PARAM_INPUT = "input"
+        private const val OPERATION_PARAM = "${'$'}input: ProductInputV3!"
+        private const val QUERY_PARAM = "input: ${'$'}input"
+        private val QUERY_REQUEST = """
+            header {
+                messages
+                reason
+                errorCode
+            }
+            isSuccess
+            data {
+                productName
+                sku
+            }
+        """.trimIndent()
+        private val query = String.format(
+                ProductValidateV3QueryConstant.BASE_QUERY,
+                OPERATION_PARAM,
+                QUERY_PARAM,
+                QUERY_REQUEST
+        )
     }
 
     private val requestParams = RequestParams.create()
     private val requestParamsObject = ValidateProductParam()
 
     init {
-        setGraphqlQuery(ProductValidateV3QueryConstant.getValidateProductQuery())
+        setGraphqlQuery(query)
         setTypeClass(ValidateProductResponse::class.java)
     }
 
