@@ -61,7 +61,7 @@ abstract class BaseRechargeGeneralScreenShotTest {
 
     @Test
     fun screenshot() {
-        Thread.sleep(10000)
+        Thread.sleep(8000)
 
         // ss visible screen
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
@@ -116,6 +116,7 @@ abstract class BaseRechargeGeneralScreenShotTest {
 
     private fun instrumentAuthLogin() {
         if (isLogin()) InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        Thread.sleep(2000)
     }
 
     abstract fun run_specific_product_test()
