@@ -39,14 +39,27 @@
             android:layout_marginTop="@dimen/dp_12"
             app:layout_constraintTop_toBottomOf="@id/group_name" />
 
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/biaya_img"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/biaya_pencarian"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_16"
             android:text="@string/topads_dash_biaya_pencarian"
+            android:layout_marginEnd="@dimen/dp_24"
+            app:layout_constraintEnd_toStartOf="@+id/divider2"
             android:textColor="@color/topads_clr_7031353b"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/biaya_img"
             app:layout_constraintTop_toBottomOf="@id/divider"
             app:typographyType="small" />
 
@@ -76,25 +89,105 @@
             app:layout_constraintTop_toBottomOf="@id/biaya_pencarian"
             app:typographyType="small" />
 
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/editpancarianBudget"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_4"
+            app:icon_name="EDIT"
+            app:layout_constraintStart_toEndOf="@id/per_click"
+            app:layout_constraintTop_toBottomOf="@id/biaya_pencarian" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/divider2"
+            android:layout_width="1dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@color/unify_N700_44"
+            app:layout_constraintStart_toEndOf="@+id/editpancarianBudget"
+            app:layout_constraintTop_toBottomOf="@id/divider" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/biaya_rekommendasi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_24"
+            android:text="@string/topads_dash_biaya_rekomendasi"
+            android:textColor="@color/topads_clr_7031353b"
+            app:layout_constraintStart_toEndOf="@+id/divider2"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:typographyType="small" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/budgetPerClick_rekomendasi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:includeFontPadding="false"
+            android:textColor="@color/topads_heading_color"
+            app:layout_constraintStart_toStartOf="@id/biaya_rekommendasi"
+            app:layout_constraintTop_toBottomOf="@id/biaya_rekommendasi"
+            app:typographyType="heading_5"
+            android:text="Rp 800 " />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/per_click_rekomendasi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_2"
+            android:layout_marginLeft="@dimen/dp_2"
+            android:layout_marginTop="@dimen/dp_4"
+            android:gravity="bottom"
+            android:text="@string/topads_dash_perclick"
+            android:textColor="@color/topads_light_shadow"
+            app:layout_constraintStart_toEndOf="@id/budgetPerClick_rekomendasi"
+            app:layout_constraintTop_toBottomOf="@id/biaya_rekommendasi"
+            app:typographyType="small" />
+
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/editRekomendasiBudget"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_4"
+            app:icon_name="EDIT"
+            app:layout_constraintStart_toEndOf="@id/per_click_rekomendasi"
+            app:layout_constraintTop_toBottomOf="@id/biaya_rekommendasi" />
+
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/angarran_img"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginTop="@dimen/dp_16"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/biaya_img" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/anggaran_harian"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/topads_dash_anggaran_harian"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_10"
             android:textColor="@color/topads_clr_7031353b"
-            app:layout_constraintStart_toStartOf="@id/progress_status1"
-            app:layout_constraintTop_toTopOf="@id/biaya_pencarian"
+            app:layout_constraintStart_toEndOf="@+id/angarran_img"
+            app:layout_constraintTop_toBottomOf="@id/budgetPerClick"
             app:typographyType="small" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/progress_status1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginLeft="@dimen/dp_40"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
             android:includeFontPadding="false"
-            app:layout_constraintStart_toEndOf="@id/per_click"
+            app:layout_constraintStart_toEndOf="@+id/angarran_img"
             app:layout_constraintTop_toBottomOf="@id/anggaran_harian"
             app:typographyType="heading_5"
             tools:text="Rp 400" />
@@ -103,12 +196,11 @@
             android:id="@+id/progress_status2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_2"
-            android:layout_marginLeft="@dimen/dp_2"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
             android:gravity="bottom"
             android:textColor="@color/topads_light_shadow"
-            app:layout_constraintStart_toEndOf="@id/progress_status1"
+            app:layout_constraintStart_toEndOf="@+id/progress_status1"
             app:layout_constraintTop_toBottomOf="@id/anggaran_harian"
             app:typographyType="small"
             tools:text=" dari Rp 400.00" />

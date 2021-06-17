@@ -168,6 +168,9 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
                 }
             }
         })
+
+        biaya_img.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_biaya_img))
+        angarran_img.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_angarran_img))
     }
 
     private fun loadData() {

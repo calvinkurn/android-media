@@ -225,7 +225,8 @@
     <string name="topads_dash_date_bulan_ini">Bulan ini</string>
     <string name="topads_dash_search_hint">Cari grup iklan</string>
     <string name="topads_dash_date_custom">Custom</string>
-    <string name="topads_dash_biaya_pencarian">Biaya Pencarian</string>
+    <string name="topads_dash_biaya_pencarian">Biaya Iklan Pencarian</string>
+    <string name="topads_dash_biaya_rekomendasi">Biaya Iklan Rekomendasi</string>
     <string name="topads_dash_anggaran_harian">Anggaran harian</string>
     <string name="topads_dash_custom_date_desc">Pilih Tanggal</string>
     <string name="topads_dash_klik">/klik</string>
