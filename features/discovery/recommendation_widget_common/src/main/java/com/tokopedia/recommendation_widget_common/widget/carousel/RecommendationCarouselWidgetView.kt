@@ -121,6 +121,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     private fun setData(carouselData: RecommendationCarouselData) {
         val cardList = mutableListOf<Visitable<*>>()
+        var seeMoreCard: RecomCarouselSeeMoreDataModel? = null
         carouselData.recommendationData.recommendationBanner?.let {
             if (it.imageUrl.isNotEmpty()) {
                 cardList.add(RecomCarouselBannerDataModel(
@@ -129,10 +130,15 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                         bannerImage = it.imageUrl,
                         listener = this))
             }
+            if (it.applink.isNotEmpty()) {
+                seeMoreCard = RecomCarouselSeeMoreDataModel(applink = it.applink)
+            }
         }
         val productDataList = carouselData.recommendationData.recommendationItemList.toRecomCarouselItems(listener = this)
         cardList.addAll(productDataList)
-        cardList.add(RecomCarouselSeeMoreDataModel())
+        seeMoreCard?.let {
+            cardList.add(it)
+        }
         adapter = RecommendationCarouselAdapter(cardList, typeFactory)
 
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
