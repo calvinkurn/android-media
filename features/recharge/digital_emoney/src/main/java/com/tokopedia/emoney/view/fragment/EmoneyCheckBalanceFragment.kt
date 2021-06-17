@@ -187,6 +187,10 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             showError(it)
         })
 
+        tapcashBalanceViewModel.tapcashInquiry.observe(this, Observer {
+            showCardLastBalance(it)
+        })
+
     }
 
     protected open fun processBrizzi(intent: Intent) {

@@ -2,18 +2,22 @@ package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
 import android.util.Log
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.util.NFCUtils
 import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.crypogramToByteArray
+import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.stringToByteArray
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
 import com.tokopedia.emoney.data.AttributesTapcash
 import com.tokopedia.emoney.data.BalanceTapcash
-import com.tokopedia.emoney.util.DummyTapcash
+import com.tokopedia.emoney.util.TapcashObjectMapper.mapTapcashtoEmoney
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
 
@@ -23,6 +27,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
 
     val issuerId = SingleLiveEvent<Int>()
     val errorCardMessage = SingleLiveEvent<String>()
+    val tapcashInquiry = SingleLiveEvent<EmoneyInquiry>()
 
     private lateinit var isoDep: IsoDep
 
@@ -30,16 +35,8 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         //do something with tagFromIntent
         if (isoDep != null) {
             run {
-                try {// todo getRandom
-                    //val terminalRandomNumber = stringToByteArray(getRandomString())
-                        val terminalRandomNumber = byteArrayOf(0x33.toByte(),
-                                0x33.toByte(),
-                                0x30.toByte(),
-                                0x41.toByte(),
-                                0x42.toByte(),
-                                0x41.toByte(),
-                                0x35.toByte(),
-                                0x31.toByte())
+                try {
+                    val terminalRandomNumber = stringToByteArray(getRandomString())
                     this.isoDep = isoDep
                     isoDep.connect()
                     isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC // 5 sec time out
@@ -83,16 +80,16 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
             var mapParam = HashMap<String, Any>()
             mapParam.put(CARD_DATA, cardData)
 
-//            val data = withContext(dispatcher) {
-//                val graphqlRequest = GraphqlRequest(balanceRawQuery, BalanceTapcash::class.java, mapParam)
-//                graphqlRepository.getReseponse(listOf(graphqlRequest))
-//            }.getSuccessData<BalanceTapcash>()
+            val data = withContext(dispatcher) {
+                val graphqlRequest = GraphqlRequest(balanceRawQuery, BalanceTapcash::class.java, mapParam)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<BalanceTapcash>()
 
-            val data = Gson().fromJson(DummyTapcash.dummyTapcash, BalanceTapcash::class.java)
+            //val data = Gson().fromJson(DummyTapcash.dummyTapcash, BalanceTapcash::class.java)
             if (data.rechargeUpdateBalance.attributes.cryptogram.isNotEmpty()) {
                 writeBalance(data.rechargeUpdateBalance.attributes, terminalRandomNumber)
             } else {
-                errorCardMessage.postValue("Saldo anda "+ data.rechargeUpdateBalance.attributes.amount)
+                tapcashInquiry.postValue(mapTapcashtoEmoney(data))
             }
         }){
             errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
@@ -103,13 +100,13 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         val command = writeBalanceRequest(attributesTapcash.cryptogram, terminalRandomNumber)
         val commandString = NFCUtils.toHex(command)
         Log.d("TAPCASH_REQUESTDATA", commandString)
-        val writeResult = isoDep.transceive(writeBalanceRequest(attributesTapcash.cryptogram, terminalRandomNumber))
+        val writeResult = isoDep.transceive(command)
         val writeResultString = NFCUtils.toHex(writeResult)
         Log.d("TAPCASH_RESULTDATA", writeResultString)
         if (isCommandFailed(writeResult)) {
-            errorCardMessage.postValue("Success ${attributesTapcash.amount}")
-        } else {
             errorCardMessage.postValue("Error")
+        } else {
+            errorCardMessage.postValue("Success ${attributesTapcash.amount}")
         }
     }
 
@@ -130,8 +127,8 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
      */
     private fun isCommandFailed(byteArray: ByteArray): Boolean {
         val len: Int = byteArray.size
-        return ((byteArray[len - 2].compareTo(0x90.toByte())) > 0) &&
-                (byteArray[len - 1].compareTo(0x00.toByte()) == 0)
+        return ((byteArray[len - 2].compareTo(0x90.toByte())) != 0) ||
+                (byteArray[len - 1].compareTo(0x00.toByte()) != 0)
     }
 
     /**
@@ -143,7 +140,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     }
 
     /**
-     * this method should return 184 char, this card data mapped by this method
+     * this method should return 184 char, card data mapped by this method
      */
     private fun getCardData(securePurse: String,
                             terminalRandomNumber: String,

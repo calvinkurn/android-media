@@ -45,7 +45,7 @@ class NFCUtils {
 
         @JvmStatic
         fun crypogramToByteArray(str: String): ByteArray{
-            val frontCryptoGram = str.substring(33, 64)
+            val frontCryptoGram = str.substring(0, 32)
             return frontCryptoGram.chunked(2)
                     .map { it.toInt(16).toByte() }
                     .toByteArray()
