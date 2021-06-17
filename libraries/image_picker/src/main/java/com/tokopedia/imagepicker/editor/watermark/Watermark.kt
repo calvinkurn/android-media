@@ -7,6 +7,7 @@ import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkImage
 import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkText
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapUtils
 
+
 data class Watermark(
     var context: Context,
     var backgroundImg: Bitmap? = null,
@@ -16,17 +17,78 @@ data class Watermark(
     var watermarkTexts: List<WatermarkText>,
     var outputImage: Bitmap? = null,
     var canvasBitmap: Bitmap? = null,
-    var isTitleMode: Boolean
+    var isTitleMode: Boolean,
+    var isCombine: Boolean
 ) {
 
     init {
         canvasBitmap = backgroundImg
         outputImage = backgroundImg
 
-        createWatermarkImage(watermarkImg)
-        createWatermarkImages(watermarkBitmaps)
-        createWatermarkText(watermarkText)
-        createWatermarkTexts(watermarkTexts)
+        if (!isCombine) {
+            createWatermarkImage(watermarkImg)
+            createWatermarkImages(watermarkBitmaps)
+            createWatermarkText(watermarkText)
+            createWatermarkTexts(watermarkTexts)
+        } else {
+            createWatermarkImageAndText(watermarkImg, watermarkText)
+        }
+    }
+
+    private fun createWatermarkImageAndText(watermarkImg: WatermarkImage?, watermarkText: WatermarkText?) {
+        if (backgroundImg == null || watermarkImg == null || watermarkText == null) {
+            return
+        }
+
+        val watermarkPaint = Paint()
+        watermarkPaint.alpha = watermarkImg.alpha
+
+        val newBitmap = Bitmap.createBitmap(
+            backgroundImg!!.width,
+            backgroundImg!!.height,
+            backgroundImg!!.config
+        )
+
+        val watermarkCanvas = Canvas(newBitmap)
+
+        canvasBitmap?.let {
+            watermarkCanvas.drawBitmap(it, 0f, 0f, null)
+        }
+
+        val logoBitmap = BitmapUtils.resizeBitmap(
+            watermarkImg.image,
+            watermarkImg.size.toFloat(),
+            backgroundImg
+        )
+
+        val textBitmap = BitmapUtils.textAsBitmap(context, watermarkText)
+
+        var scaledWatermarkBitmap = combineImages(logoBitmap, textBitmap)
+
+        scaledWatermarkBitmap = adjustPhotoRotation(
+            scaledWatermarkBitmap,
+            watermarkImg.position.rotation.toInt()
+        )
+
+        if (isTitleMode) {
+            watermarkPaint.shader = BitmapShader(
+                scaledWatermarkBitmap,
+                Shader.TileMode.REPEAT,
+                Shader.TileMode.REPEAT
+            )
+            val bitmapShaderRect = watermarkCanvas.clipBounds
+            watermarkCanvas.drawRect(bitmapShaderRect, watermarkPaint)
+        } else {
+            watermarkCanvas.drawBitmap(
+                scaledWatermarkBitmap,
+                (watermarkImg.position.positionX * backgroundImg!!.width).toFloat(),
+                (watermarkImg.position.positionY * backgroundImg!!.height).toFloat(),
+                watermarkPaint
+            )
+        }
+
+        canvasBitmap = newBitmap
+        outputImage = newBitmap
     }
 
     private fun createWatermarkImage(watermarkImg: WatermarkImage?) {
@@ -157,6 +219,30 @@ data class Watermark(
         )
 
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+    private fun combineImages(
+        c: Bitmap,
+        s: Bitmap
+    ): Bitmap {
+        val cs: Bitmap?
+        val width: Int
+        val height: Int
+
+        if (c.width > s.width) {
+            width = c.width + s.width
+            height = c.height
+        } else {
+            width = s.width + s.width
+            height = c.height
+        }
+
+        cs = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val comboImage = Canvas(cs)
+        comboImage.drawBitmap(c, 0f, 0f, null)
+        comboImage.drawBitmap(s, c.width.toFloat(), 0f, null)
+
+        return cs
     }
 
 }

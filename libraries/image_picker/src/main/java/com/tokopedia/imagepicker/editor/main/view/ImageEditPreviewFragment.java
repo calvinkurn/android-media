@@ -272,22 +272,22 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         WatermarkBuilder watermarkBuilder = WatermarkBuilder
                 .create(requireContext(), bitmap)
                 .setTileMode(true);
+        /*
+         * get user info,
+         * the main purpose is to enable user info watermark by
+         * set the user info as user name if the user is buyer.
+         * */
+        String userInfo;
+
+        if (userSession.hasShop()) {
+            userInfo = userSession.getShopName();
+        } else {
+            userInfo = userSession.getName();
+        }
 
         if (watermarkType == Constant.TYPE_WATERMARK_TOPED) {
-            imageEditPreviewPresenter.setTokopediaWatermark(watermarkBuilder);
+            imageEditPreviewPresenter.setTokopediaWatermark(userInfo, watermarkBuilder);
         } else if (watermarkType == Constant.TYPE_WATERMARK_USER_INFO) {
-            /*
-            * get user info,
-            * the main purpose is to enable user info watermark by
-            * set the user info as user name if the user is buyer.
-            * */
-            String userInfo;
-
-            if (userSession.hasShop()) {
-                userInfo = userSession.getShopName();
-            } else {
-                userInfo = userSession.getName();
-            }
 
             imageEditPreviewPresenter.setUserInfoNameWatermark(userInfo, watermarkBuilder);
         }

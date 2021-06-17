@@ -297,11 +297,20 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         addToComposite(subscription);
     }
 
-    public void setTokopediaWatermark(WatermarkBuilder watermarkBuilder) {
+    public void setTokopediaWatermark(String userInfoName, WatermarkBuilder watermarkBuilder) {
         Bitmap tokopediaBitmap = BitmapFactory.decodeResource(
                 getView().getContext().getResources(),
                 R.drawable.ic_tokopedia_text
         );
+
+        WatermarkText watermarkText = new WatermarkText()
+                .contentText(" " + userInfoName + " ")
+                .positionX(0.5)
+                .positionY(0.5)
+                .rotation(45)
+                .textAlpha(150)
+                .textSize(20)
+                .textColor(Color.WHITE);
 
         WatermarkImage watermarkImage = new WatermarkImage()
                 .setImageBitmap(tokopediaBitmap)
@@ -314,7 +323,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         Subscription subscription = Observable.just(watermarkBuilder)
                 .flatMap((Func1<WatermarkBuilder, Observable<Bitmap>>) builder -> {
                     return Observable.just(builder
-                            .loadWatermarkImage(watermarkImage)
+                            .loadWatermarkImageAndText(watermarkImage, watermarkText)
                             .getWatermark()
                             .getOutputImage()
                     );

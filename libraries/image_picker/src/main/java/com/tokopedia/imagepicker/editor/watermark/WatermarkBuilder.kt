@@ -17,6 +17,7 @@ open class WatermarkBuilder {
     private var context: Context
     private var backgroundImg: Bitmap? = null
     private var isTitleMode: Boolean = false
+    private var isCombine: Boolean = false
     private var resizeBackgroundImg: Boolean
     private var watermarkImage: WatermarkImage? = null
     private var watermarkText: WatermarkText? = null
@@ -101,6 +102,13 @@ open class WatermarkBuilder {
         this.watermarkImage = watermarkImage
     }
 
+    fun loadWatermarkImageAndText(image: WatermarkImage, text: WatermarkText) = apply {
+        this.isCombine = true
+
+        this.watermarkImage = image
+        this.watermarkText = text
+    }
+
     fun loadWatermarkImages(watermarkImages: List<WatermarkImage>) = apply {
         this.watermarkBitmaps = watermarkImages
     }
@@ -129,7 +137,8 @@ open class WatermarkBuilder {
             watermarkBitmaps = watermarkBitmaps,
             watermarkText = watermarkText,
             watermarkTexts = watermarkTexts,
-            isTitleMode = isTitleMode
+            isTitleMode = isTitleMode,
+            isCombine = isCombine
         )
     }
 
