@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.R
+import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.view.custom.MaximumHeightRecyclerView
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
@@ -132,15 +133,7 @@ class PortraitChatListHeightManager(
     private fun getKey(videoOrientation: VideoOrientation, maxTop: Int?, hasQuickReply: Boolean?)
             = ChatHeightMapKey(videoOrientation, maxTop, hasQuickReply)
 
-    private suspend inline fun measureWithTimeout(
-            timeout: Long = MEASURE_TIMEOUT_IN_MS,
-            crossinline measureFn: suspend () -> Unit
-    ) = withTimeout(timeout) {
-            measureFn()
-    }
-
     companion object {
-        private const val MEASURE_TIMEOUT_IN_MS: Long = 500
         private const val CONSISTENCY_THRESHOLD = 7
     }
 }

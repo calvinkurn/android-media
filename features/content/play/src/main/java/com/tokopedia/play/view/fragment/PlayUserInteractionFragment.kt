@@ -32,6 +32,7 @@ import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
@@ -544,10 +545,10 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun handleVideoHorizontalTopBounds() {
         scope.launch {
             val toolbarMeasure = asyncCatchError(block = {
-                toolbarView.rootView.awaitMeasured()
+                measureWithTimeout { toolbarView.rootView.awaitMeasured() }
              }, onError = {})
             val statsInfoMeasure = asyncCatchError(block = {
-                statsInfoView.rootView.awaitMeasured()
+                measureWithTimeout { statsInfoView.rootView.awaitMeasured() }
             }, onError = {})
 
             awaitAll(toolbarMeasure, statsInfoMeasure)
