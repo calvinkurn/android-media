@@ -61,7 +61,6 @@ object SellerMenuList {
                 SettingTitleUiModel(sectionTitle, R.dimen.spacing_lvl4),
                 SellerMenuItemUiModel(
                         context.getString(R.string.setting_menu_review),
-                        R.drawable.ic_star_setting,
                         type = MenuItemType.REVIEW,
                         eventActionSuffix = SettingTrackingConstant.REVIEW,
                         iconUnify = IconUnify.STAR) {

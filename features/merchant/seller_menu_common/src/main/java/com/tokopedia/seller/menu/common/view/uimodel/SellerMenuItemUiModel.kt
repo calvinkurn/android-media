@@ -6,7 +6,6 @@ package com.tokopedia.seller.menu.common.view.uimodel
 
 data class SellerMenuItemUiModel(
         override val title: String = "",
-        override val drawableReference: Int? = null,
         val clickApplink: String? = null,
         val eventActionSuffix: String = "",
         val settingTypeInfix: String = "",
@@ -15,4 +14,4 @@ data class SellerMenuItemUiModel(
         override val iconUnify: Int? = null,
         override var notificationCount: Int = 0,
         override val clickAction: () -> Unit = {}
-) : MenuItemUiModel(title, drawableReference, clickApplink, eventActionSuffix, settingTypeInfix, trackingAlias, iconUnify, notificationCount, false, clickAction)
+) : MenuItemUiModel(title, clickApplink, eventActionSuffix, settingTypeInfix, trackingAlias, iconUnify, notificationCount, false, clickAction)
