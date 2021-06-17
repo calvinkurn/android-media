@@ -7,7 +7,7 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
 import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
@@ -57,7 +57,7 @@ class BuyerOrderDetailStickyActionButton(
     }
 
     private fun shouldFinishPrimaryActionButtonImmediately(buttonKey: String): Boolean {
-        return buttonKey != BuyerOrderDetailConst.ACTION_BUTTON_KEY_BUY_AGAIN
+        return buttonKey != BuyerOrderDetailActionButtonKey.BUY_AGAIN
     }
 
     private fun createSecondaryActionButtonClickListener(): View.OnClickListener {

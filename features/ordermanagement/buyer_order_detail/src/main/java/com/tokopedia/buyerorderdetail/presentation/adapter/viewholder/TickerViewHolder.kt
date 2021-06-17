@@ -3,9 +3,8 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
-import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
-import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
+import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -36,7 +35,7 @@ class TickerViewHolder(
 
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
         navigator.openWebView(linkUrl.toString())
-        if (element?.actionKey == BuyerOrderDetailConst.TICKER_KEY_SHIPPING_INFO) {
+        if (element?.actionKey == BuyerOrderDetailMiscConstant.TICKER_KEY_SHIPPING_INFO) {
             listener.onClickShipmentInfoTnC()
         }
     }

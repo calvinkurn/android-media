@@ -10,7 +10,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.performance.BuyerOrderDetailLoadMonitoring
-import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCommonIntentParamKey
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentParamKey
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailModule
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
@@ -24,9 +25,9 @@ class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOrderDe
                 cartString: String,
                 orderId: String,
                 paymentId: String) = Intent(context, BuyerOrderDetailActivity::class.java).apply {
-            putExtra(BuyerOrderDetailConst.PARAM_CART_STRING, cartString)
-            putExtra(BuyerOrderDetailConst.PARAM_ORDER_ID, orderId)
-            putExtra(BuyerOrderDetailConst.PARAM_PAYMENT_ID, paymentId)
+            putExtra(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, cartString)
+            putExtra(BuyerOrderDetailCommonIntentParamKey.ORDER_ID, orderId)
+            putExtra(BuyerOrderDetailIntentParamKey.PARAM_PAYMENT_ID, paymentId)
         }
     }
 

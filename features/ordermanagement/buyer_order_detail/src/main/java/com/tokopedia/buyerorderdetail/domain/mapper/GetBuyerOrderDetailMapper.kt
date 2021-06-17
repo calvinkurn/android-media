@@ -1,10 +1,10 @@
 package com.tokopedia.buyerorderdetail.domain.mapper
 
-import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerType
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.model.*
-import java.lang.Math.random
 import java.lang.StringBuilder
 import javax.inject.Inject
 
@@ -61,7 +61,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 dropShipperInfoUiModel = mapDropShipperInfoUiModel(dropship),
                 headerUiModel = mapPlainHeader(resourceProvider.getShipmentInfoSectionHeader()),
                 receiverAddressInfoUiModel = mapReceiverAddressInfoUiModel(shipment.receiver),
-                ticker = mapTicker(shipment.shippingInfo, BuyerOrderDetailConst.TICKER_KEY_SHIPPING_INFO)
+                ticker = mapTicker(shipment.shippingInfo, BuyerOrderDetailMiscConstant.TICKER_KEY_SHIPPING_INFO)
         )
     }
 
@@ -206,7 +206,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 actionText = "",
                 actionUrl = "",
                 description = cashbackInfo,
-                type = BuyerOrderDetailConst.TICKER_TYPE_INFO
+                type = BuyerOrderDetailTickerType.INFO
         )
     }
 

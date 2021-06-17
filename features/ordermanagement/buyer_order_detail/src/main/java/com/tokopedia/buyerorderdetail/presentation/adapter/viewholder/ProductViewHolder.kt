@@ -9,8 +9,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
-import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
-import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
+import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
@@ -107,8 +107,8 @@ class ProductViewHolder(
     private fun onActionButtonClicked() {
         element?.let {
             when (it.button.key) {
-                BuyerOrderDetailConst.ACTION_BUTTON_KEY_BUY_AGAIN -> addToCart()
-                BuyerOrderDetailConst.ACTION_BUTTON_KEY_SEE_SIMILAR_PRODUCTS -> seeSimilarProducts()
+                BuyerOrderDetailActionButtonKey.BUY_AGAIN -> addToCart()
+                BuyerOrderDetailActionButtonKey.SEE_SIMILAR_PRODUCTS -> seeSimilarProducts()
             }
         }
     }

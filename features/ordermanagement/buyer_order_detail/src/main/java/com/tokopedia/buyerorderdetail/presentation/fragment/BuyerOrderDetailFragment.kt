@@ -21,8 +21,8 @@ import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.performance.BuyerOrderDetailLoadMonitoring
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
-import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
-import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.common.constants.*
+import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
@@ -184,8 +184,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         activity?.overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_left_in_medium, com.tokopedia.resources.common.R.anim.slide_right_out_medium)
         when (requestCode) {
-            BuyerOrderDetailConst.REQUEST_CODE_REQUEST_CANCEL_ORDER -> handleRequestCancelResult(resultCode, data)
-            BuyerOrderDetailConst.REQUEST_CODE_CREATE_RESOLUTION -> handleComplaintResult()
+            BuyerOrderDetailIntentCode.REQUEST_CODE_REQUEST_CANCEL_ORDER -> handleRequestCancelResult(resultCode, data)
+            BuyerOrderDetailIntentCode.REQUEST_CODE_CREATE_RESOLUTION -> handleComplaintResult()
         }
     }
 
@@ -194,7 +194,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         viewModel.buyerOrderDetailResult.value?.let {
             if (it is Success) {
                 cacheManager.put(SAVED_INSTANCE_STATE_CACHE_MANAGER_KEY, it.data)
-                outState.putString(BuyerOrderDetailConst.PARAM_CACHE_ID, cacheManager.id)
+                outState.putString(BuyerOrderDetailCommonIntentParamKey.CACHE_ID, cacheManager.id)
             }
         }
     }
@@ -211,11 +211,11 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun getCartId(): String {
-        return activity?.intent?.extras?.getString(BuyerOrderDetailConst.PARAM_CART_STRING, "") ?: ""
+        return activity?.intent?.extras?.getString(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, "") ?: ""
     }
 
     private fun restoreFragmentState(savedInstanceState: Bundle) {
-        val cacheManagerId = savedInstanceState.getString(BuyerOrderDetailConst.PARAM_CACHE_ID).orEmpty()
+        val cacheManagerId = savedInstanceState.getString(BuyerOrderDetailCommonIntentParamKey.CACHE_ID).orEmpty()
         cacheManager.id = cacheManagerId
         val savedBuyerOrderDetailData = cacheManager.get<BuyerOrderDetailUiModel>(SAVED_INSTANCE_STATE_CACHE_MANAGER_KEY, BuyerOrderDetailUiModel::class.java)
         if (savedBuyerOrderDetailData != null) {
@@ -295,9 +295,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun loadBuyerOrderDetail() {
-        val orderId = arguments?.getString(BuyerOrderDetailConst.PARAM_ORDER_ID, "").orEmpty()
-        val paymentId = arguments?.getString(BuyerOrderDetailConst.PARAM_PAYMENT_ID, "").orEmpty()
-        val cart = arguments?.getString(BuyerOrderDetailConst.PARAM_CART_STRING, "").orEmpty()
+        val orderId = arguments?.getString(BuyerOrderDetailCommonIntentParamKey.ORDER_ID, "").orEmpty()
+        val paymentId = arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_PAYMENT_ID, "").orEmpty()
+        val cart = arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, "").orEmpty()
         viewModel.getBuyerOrderDetail(orderId, paymentId, cart)
     }
 
@@ -352,8 +352,8 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun containsAskSellerButton(actionButtonsUiModel: ActionButtonsUiModel): Boolean {
-        return actionButtonsUiModel.primaryActionButton.key == BuyerOrderDetailConst.ACTION_BUTTON_KEY_ASK_SELLER ||
-                actionButtonsUiModel.secondaryActionButtons.any { it.key == BuyerOrderDetailConst.ACTION_BUTTON_KEY_ASK_SELLER }
+        return actionButtonsUiModel.primaryActionButton.key == BuyerOrderDetailActionButtonKey.ASK_SELLER ||
+                actionButtonsUiModel.secondaryActionButtons.any { it.key == BuyerOrderDetailActionButtonKey.ASK_SELLER }
     }
 
     private fun onSuccessReceiveConfirmation(data: FinishOrderResponse.Data.FinishOrderBuyer) {
@@ -466,15 +466,15 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun handleRequestCancelResult(resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_CODE_INSTANT_CANCEL_BUYER_REQUEST) {
-            val resultMessage = data?.getStringExtra(BuyerOrderDetailConst.RESULT_MSG_INSTANT_CANCEL).orEmpty()
-            val result = data?.getIntExtra(BuyerOrderDetailConst.RESULT_CODE_INSTANT_CANCEL, 1) ?: 1
+            val resultMessage = data?.getStringExtra(BuyerOrderDetailMiscConstant.RESULT_MSG_INSTANT_CANCEL).orEmpty()
+            val result = data?.getIntExtra(BuyerOrderDetailMiscConstant.RESULT_CODE_INSTANT_CANCEL, 1) ?: 1
             if (result == 1) {
                 if (resultMessage.isNotBlank()) {
                     showCommonToaster(resultMessage)
                 }
             } else if (result == 3) {
-                val popupTitle = data?.getStringExtra(BuyerOrderDetailConst.RESULT_POPUP_TITLE_INSTANT_CANCEL).orEmpty()
-                val popupBody = data?.getStringExtra(BuyerOrderDetailConst.RESULT_POPUP_BODY_INSTANT_CANCEL).orEmpty()
+                val popupTitle = data?.getStringExtra(BuyerOrderDetailMiscConstant.RESULT_POPUP_TITLE_INSTANT_CANCEL).orEmpty()
+                val popupBody = data?.getStringExtra(BuyerOrderDetailMiscConstant.RESULT_POPUP_BODY_INSTANT_CANCEL).orEmpty()
                 if (popupTitle.isNotBlank() && popupBody.isNotBlank()) {
                     context?.let { context ->
                         requestCancelResultDialog.apply {

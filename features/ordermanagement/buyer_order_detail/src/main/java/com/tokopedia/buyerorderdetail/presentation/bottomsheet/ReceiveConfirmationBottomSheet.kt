@@ -6,8 +6,9 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTrackerConstant
-import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
-import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonType
+import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
@@ -64,16 +65,16 @@ class ReceiveConfirmationBottomSheet(
     }
 
     private fun List<ActionButtonsUiModel.ActionButton.PopUp.PopUpButton>.getPrimaryActionButton(): ActionButtonsUiModel.ActionButton.PopUp.PopUpButton? {
-        return find { it.type == BuyerOrderDetailConst.BUTTON_TYPE_PRIMARY }
+        return find { it.type == BuyerOrderDetailActionButtonType.PRIMARY }
     }
 
     private fun List<ActionButtonsUiModel.ActionButton.PopUp.PopUpButton>.getSecondaryActionButton(): ActionButtonsUiModel.ActionButton.PopUp.PopUpButton? {
-        return find { it.type == BuyerOrderDetailConst.BUTTON_TYPE_SECONDARY }
+        return find { it.type == BuyerOrderDetailActionButtonType.SECONDARY }
     }
 
     private fun onPrimaryButtonClicked() {
         actionButton.popUp.actionButton.getPrimaryActionButton()?.let {
-            if (it.key == BuyerOrderDetailConst.ACTION_BUTTON_KEY_BACK || it.key.isBlank()) {
+            if (it.key == BuyerOrderDetailActionButtonKey.BACK || it.key.isBlank()) {
                 dismiss()
             } else {
                 disableDismiss()
@@ -84,7 +85,7 @@ class ReceiveConfirmationBottomSheet(
 
     private fun onSecondaryButtonClicked() {
         actionButton.popUp.actionButton.getSecondaryActionButton()?.let {
-            if (it.key == BuyerOrderDetailConst.ACTION_BUTTON_KEY_BACK || it.key.isBlank()) {
+            if (it.key == BuyerOrderDetailActionButtonKey.BACK || it.key.isBlank()) {
                 dismiss()
             } else {
                 disableDismiss()
@@ -107,11 +108,11 @@ class ReceiveConfirmationBottomSheet(
 
     private fun onPopUpActionButtonClicked(button: ActionButtonsUiModel.ActionButton.PopUp.PopUpButton) {
         val buttonName = when (button.key) {
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER -> {
+            BuyerOrderDetailActionButtonKey.FINISH_ORDER -> {
                 onDoReceiveConfirmationActionButtonClicked()
                 BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER_CONFIRMATION_CONFIRM_FINISH_ORDER
             }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> {
+            BuyerOrderDetailActionButtonKey.REQUEST_COMPLAINT -> {
                 onComplaintActionButtonClicked(button.uri)
                 BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER_CONFIRMATION_REQUEST_COMPLAINT
             }

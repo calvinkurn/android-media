@@ -2,8 +2,8 @@ package com.tokopedia.buyerorderdetail.presentation.helper
 
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTrackerConstant
-import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
-import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
+import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickListener
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
@@ -21,40 +21,40 @@ class BuyerOrderDetailStickyActionButtonHandler(
 ) : ActionButtonClickListener {
     override fun onActionButtonClicked(isFromPrimaryButton: Boolean, button: ActionButtonsUiModel.ActionButton) {
         val buttonName = when (button.key) {
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_ASK_SELLER -> {
+            BuyerOrderDetailActionButtonKey.ASK_SELLER -> {
                 onAskSellerActionButtonClicked()
                 BuyerOrderDetailTrackerConstant.BUTTON_NAME_CHAT_SELLER
             }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_REQUEST_CANCEL -> {
+            BuyerOrderDetailActionButtonKey.REQUEST_CANCEL -> {
                 onRequestCancelActionButtonClicked(button)
                 BuyerOrderDetailTrackerConstant.BUTTON_NAME_CANCEL_ORDER
             }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_TRACK_SHIPMENT -> {
+            BuyerOrderDetailActionButtonKey.TRACK_SHIPMENT -> {
                 onTrackShipmentActionButtonClicked(button)
                 BuyerOrderDetailTrackerConstant.BUTTON_NAME_TRACK_ORDER
             }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> {
+            BuyerOrderDetailActionButtonKey.REQUEST_COMPLAINT -> {
                 onComplaintActionButtonClicked(button.url)
                 BuyerOrderDetailTrackerConstant.BUTTON_NAME_COMPLAINT_ORDER
             }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_VIEW_COMPLAINT -> {
+            BuyerOrderDetailActionButtonKey.VIEW_COMPLAINT -> {
                 onViewComplaintActionButtonClicked(button.url)
                 if (isFromPrimaryButton) "" else BuyerOrderDetailTrackerConstant.BUTTON_NAME_VIEW_COMPLAINT_ORDER
             }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER, BuyerOrderDetailConst.ACTION_BUTTON_KEY_RECEIVE_CONFIRMATION -> {
+            BuyerOrderDetailActionButtonKey.FINISH_ORDER, BuyerOrderDetailActionButtonKey.RECEIVE_CONFIRMATION -> {
                 onReceiveConfirmationActionButtonClicked(button)
                 BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER
             }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_HELP -> {
+            BuyerOrderDetailActionButtonKey.HELP -> {
                 onHelpActionButtonClicked(button)
                 BuyerOrderDetailTrackerConstant.BUTTON_NAME_HELP
             }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_BUY_AGAIN -> {
+            BuyerOrderDetailActionButtonKey.BUY_AGAIN -> {
                 onBuyAgainAllProductButtonClicked()
                 trackBuyAgainProduct(viewModel.getProducts())
                 ""
             }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_GIVE_REVIEW -> {
+            BuyerOrderDetailActionButtonKey.GIVE_REVIEW -> {
                 onGiveReviewActionButtonClicked(button.url)
                 BuyerOrderDetailTrackerConstant.BUTTON_NAME_REVIEW_ORDER
             }

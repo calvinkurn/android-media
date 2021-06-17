@@ -10,16 +10,11 @@ import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerType
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 
 object Utils {
-
-    private const val STRING_TICKER_TYPE_ANNOUNCEMENT = "announcement"
-    private const val STRING_TICKER_TYPE_ERROR = "error"
-    private const val STRING_TICKER_TYPE_INFO = "info"
-    private const val STRING_TICKER_TYPE_WARNING = "warning"
-
     private const val STRING_BUTTON_TYPE_ALTERNATE = "alternate"
     private const val STRING_BUTTON_TYPE_MAIN = "main"
     private const val STRING_BUTTON_TYPE_TRANSACTION = "transaction"
@@ -51,10 +46,10 @@ object Utils {
 
     fun mapTickerType(typeString: String): Int {
         return when (typeString) {
-            STRING_TICKER_TYPE_ANNOUNCEMENT -> Ticker.TYPE_ANNOUNCEMENT
-            STRING_TICKER_TYPE_ERROR -> Ticker.TYPE_ERROR
-            STRING_TICKER_TYPE_INFO -> Ticker.TYPE_INFORMATION
-            STRING_TICKER_TYPE_WARNING -> Ticker.TYPE_WARNING
+            BuyerOrderDetailTickerType.ANNOUNCEMENT -> Ticker.TYPE_ANNOUNCEMENT
+            BuyerOrderDetailTickerType.ERROR -> Ticker.TYPE_ERROR
+            BuyerOrderDetailTickerType.INFO -> Ticker.TYPE_INFORMATION
+            BuyerOrderDetailTickerType.WARNING -> Ticker.TYPE_WARNING
             else -> Ticker.TYPE_INFORMATION
         }
     }

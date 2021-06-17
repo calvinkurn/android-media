@@ -2,8 +2,8 @@ package com.tokopedia.buyerorderdetail.presentation.dialog
 
 import android.content.Context
 import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
-import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
+import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.url.TokopediaUrl
 
@@ -34,7 +34,7 @@ class RequestCancelResultDialog(
     }
 
     private fun goToTokopediaCareWebview() {
-        navigator.openWebView(TokopediaUrl.getInstance().MOBILEWEB + BuyerOrderDetailConst.PATH_TOKOPEDIA_CARE)
+        navigator.openWebView(TokopediaUrl.getInstance().MOBILEWEB + BuyerOrderDetailMiscConstant.PATH_TOKOPEDIA_CARE)
     }
 
     fun show(context: Context) {

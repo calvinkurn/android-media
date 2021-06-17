@@ -1,16 +1,19 @@
-package com.tokopedia.buyerorderdetail.common
+package com.tokopedia.buyerorderdetail.common.utils
 
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import androidx.fragment.app.Fragment
-import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCommonIntentParamKey
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentCode
+import com.tokopedia.buyerorderdetail.common.constants.BuyerRequestCancellationIntentParamKey
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
@@ -46,9 +49,9 @@ class BuyerOrderDetailNavigator(
 
     private fun createProductPayload(it: ProductListUiModel.ProductUiModel): JsonObject {
         return JsonObject().apply {
-            addProperty(BuyerOrderDetailConst.PARAM_PRODUCT_LIST_TITLE, it.productName)
-            addProperty(BuyerOrderDetailConst.PARAM_PRODUCT_LIST_PRICE, it.priceText)
-            addProperty(BuyerOrderDetailConst.PARAM_PRODUCT_LIST_IMAGE_URL, it.productThumbnailUrl)
+            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_TITLE, it.productName)
+            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_PRICE, it.priceText)
+            addProperty(BuyerRequestCancellationIntentParamKey.PRODUCT_LIST_IMAGE_URL, it.productThumbnailUrl)
         }
     }
 
@@ -60,9 +63,9 @@ class BuyerOrderDetailNavigator(
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalOrder.INVOICE)?.apply {
             putExtra(KEY_URL, url)
             putExtra(INVOICE_REF_NUM, invoiceNum)
-            putExtra(KEY_ORDER_CATEGORY, BuyerOrderDetailConst.CATEGORY_MARKETPLACE)
+            putExtra(KEY_ORDER_CATEGORY, BuyerOrderDetailMiscConstant.CATEGORY_MARKETPLACE)
         }
-        fragment.startActivityForResult(intent, BuyerOrderDetailConst.REQUEST_CODE_IGNORED)
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()
     }
 
@@ -70,7 +73,7 @@ class BuyerOrderDetailNavigator(
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalOrder.TRACK, "")
                 .putExtra(ApplinkConstInternalOrder.EXTRA_ORDER_ID, orderId)
                 .putExtra(ApplinkConstInternalOrder.EXTRA_USER_MODE, 1)
-        fragment.startActivityForResult(intent, BuyerOrderDetailConst.REQUEST_CODE_IGNORED)
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()
     }
 
@@ -80,13 +83,13 @@ class BuyerOrderDetailNavigator(
                 .build()
                 .toString()
         val intent = RouteManager.getIntent(activity, appLink, orderId)
-        fragment.startActivityForResult(intent, BuyerOrderDetailConst.REQUEST_CODE_IGNORED)
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()
     }
 
     fun goToShopPage(shopId: String) {
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.SHOP_PAGE, shopId)
-        fragment.startActivityForResult(intent, BuyerOrderDetailConst.REQUEST_CODE_IGNORED)
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()
     }
 
@@ -94,7 +97,7 @@ class BuyerOrderDetailNavigator(
         val appLinkSnapShot = "${ApplinkConst.SNAPSHOT_ORDER}/$orderId/$orderDetailId"
         val intent = RouteManager.getIntent(activity, appLinkSnapShot)
         intent.putExtra(ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM, false)
-        fragment.startActivityForResult(intent, BuyerOrderDetailConst.REQUEST_CODE_IGNORED)
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()
     }
 
@@ -102,7 +105,7 @@ class BuyerOrderDetailNavigator(
         val intent = Intent(Intent.ACTION_DIAL).apply {
             data = composeCallIntentData(phoneNumber)
         }
-        fragment.startActivityForResult(intent, BuyerOrderDetailConst.REQUEST_CODE_IGNORED)
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()
     }
 
@@ -114,20 +117,20 @@ class BuyerOrderDetailNavigator(
         if (buyerOrderDetailData is Success) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE)
             val payload: Map<String, Any> = mapOf(
-                    BuyerOrderDetailConst.PARAM_SHOP_NAME to buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopName,
-                    BuyerOrderDetailConst.PARAM_INVOICE to buyerOrderDetailData.data.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice,
-                    BuyerOrderDetailConst.PARAM_JSON_LIST_PRODUCT to createProductListPayload(buyerOrderDetailData.data.productListUiModel.productList),
-                    BuyerOrderDetailConst.PARAM_ORDER_ID to buyerOrderDetailData.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
-                    BuyerOrderDetailConst.PARAM_IS_CANCEL_ALREADY_REQUESTED to false,
-                    BuyerOrderDetailConst.PARAM_TITLE_CANCEL_REQUESTED to button.popUp.title,
-                    BuyerOrderDetailConst.PARAM_BODY_CANCEL_REQUESTED to button.popUp.body,
-                    BuyerOrderDetailConst.PARAM_SHOP_ID to buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopId
+                    BuyerRequestCancellationIntentParamKey.SHOP_NAME to buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopName,
+                    BuyerRequestCancellationIntentParamKey.INVOICE to buyerOrderDetailData.data.orderStatusUiModel.orderStatusInfoUiModel.invoice.invoice,
+                    BuyerRequestCancellationIntentParamKey.JSON_LIST_PRODUCT to createProductListPayload(buyerOrderDetailData.data.productListUiModel.productList),
+                    BuyerOrderDetailCommonIntentParamKey.ORDER_ID to buyerOrderDetailData.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
+                    BuyerRequestCancellationIntentParamKey.IS_CANCEL_ALREADY_REQUESTED to false,
+                    BuyerRequestCancellationIntentParamKey.TITLE_CANCEL_REQUESTED to button.popUp.title,
+                    BuyerRequestCancellationIntentParamKey.BODY_CANCEL_REQUESTED to button.popUp.body,
+                    BuyerRequestCancellationIntentParamKey.SHOP_ID to buyerOrderDetailData.data.productListUiModel.productListHeaderUiModel.shopId
             )
             val cacheId = cacheManager.generateUniqueRandomNumber()
             cacheManager.put(cacheId, payload)
-            intent.putExtra(BuyerOrderDetailConst.PARAM_CACHE_ID, cacheId)
-            intent.putExtra(BuyerOrderDetailConst.PARAM_CACHE_MANAGER_ID, cacheManager.id)
-            fragment.startActivityForResult(intent, BuyerOrderDetailConst.REQUEST_CODE_REQUEST_CANCEL_ORDER)
+            intent.putExtra(BuyerOrderDetailCommonIntentParamKey.CACHE_ID, cacheId)
+            intent.putExtra(BuyerOrderDetailCommonIntentParamKey.CACHE_MANAGER_ID, cacheManager.id)
+            fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_REQUEST_CANCEL_ORDER)
             applyTransition()
         }
     }
@@ -144,13 +147,13 @@ class BuyerOrderDetailNavigator(
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, buyerOrderDetailData.orderStatusUiModel.orderStatusHeaderUiModel.orderStatus)
         intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, buyerOrderDetailData.paymentInfoUiModel.paymentGrandTotal.value)
         intent.putExtra(ApplinkConst.Chat.SOURCE, ApplinkConst.Chat.SOURCE_ASK_SELLER)
-        fragment.startActivityForResult(intent, BuyerOrderDetailConst.REQUEST_CODE_IGNORED)
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()
     }
 
     fun goToCreateResolution(url: String) {
         val intent: Intent = RouteManager.getIntent(fragment.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
-        fragment.startActivityForResult(intent, BuyerOrderDetailConst.REQUEST_CODE_CREATE_RESOLUTION)
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_CREATE_RESOLUTION)
         applyTransition()
     }
 
@@ -159,14 +162,14 @@ class BuyerOrderDetailNavigator(
             openWebView(appLink)
         } else {
             val intent: Intent = RouteManager.getIntent(activity, appLink)
-            fragment.startActivityForResult(intent, BuyerOrderDetailConst.REQUEST_CODE_IGNORED)
+            fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
             applyTransition()
         }
     }
 
     fun openWebView(url: String) {
         val intent: Intent = RouteManager.getIntent(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
-        fragment.startActivityForResult(intent, BuyerOrderDetailConst.REQUEST_CODE_IGNORED)
+        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()
     }
 }

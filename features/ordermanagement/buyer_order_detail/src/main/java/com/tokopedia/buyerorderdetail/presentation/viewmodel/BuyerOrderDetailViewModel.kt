@@ -7,7 +7,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
-import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailConst
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderStatusCode
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
@@ -27,7 +28,7 @@ import javax.inject.Named
 
 class BuyerOrderDetailViewModel @Inject constructor(
         coroutineDispatchers: CoroutineDispatchers,
-        @Named(BuyerOrderDetailConst.DAGGER_ATC_QUERY_NAME)
+        @Named(BuyerOrderDetailMiscConstant.DAGGER_ATC_QUERY_NAME)
         private val atcMultiQuery: dagger.Lazy<String>,
         private val userSession: dagger.Lazy<UserSessionInterface>,
         private val getBuyerOrderDetailUseCase: dagger.Lazy<GetBuyerOrderDetailUseCase>,
@@ -57,7 +58,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     private fun getFinishOrderActionStatus(): String {
         val statusId = getOrderStatusId()
-        return if (statusId.matches(Regex("\\d+")) && statusId.toInt() < BuyerOrderDetailConst.STATUS_CODE_ORDER_DELIVERED) BuyerOrderDetailConst.ACTION_FINISH_ORDER else ""
+        return if (statusId.matches(Regex("\\d+")) && statusId.toInt() < BuyerOrderDetailOrderStatusCode.ORDER_DELIVERED) BuyerOrderDetailMiscConstant.ACTION_FINISH_ORDER else ""
     }
 
     private fun ProductListUiModel.ProductUiModel.mapToAddToCartParam(): AddToCartMultiParam {
