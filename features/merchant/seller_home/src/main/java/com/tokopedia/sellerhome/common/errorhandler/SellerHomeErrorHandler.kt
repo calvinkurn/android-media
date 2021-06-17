@@ -9,12 +9,12 @@ import com.tokopedia.sellerhome.common.exception.SellerHomeException
 object SellerHomeErrorHandler {
 
     internal const val WIDGET_TYPE_KEY = "widget_type"
+    internal const val LAYOUT_ID_KEY = "layout_id"
 
     private const val ERROR_TAG = "SELLER_HOME_ERROR"
 
     // Scalyr Error Keys
     private const val ERROR_TYPE_KEY = "error_type"
-    private const val LAYOUT_ID_KEY = "layout_id"
     private const val DEVICE_ID_KEY = "device_id"
     private const val MESSAGE_KEY = "message"
     private const val STACKTRACE_KEY = "stacktrace"
@@ -29,14 +29,13 @@ object SellerHomeErrorHandler {
     fun logException(throwable: Throwable,
                      message: String,
                      errorType: String = "",
-                     layoutId: String = "",
                      deviceId: String = "",
                      extras: String = "") {
 
         logExceptionToCrashlytics(throwable, message)
 
         if (errorType.isNotBlank()) {
-            logExceptionToScalyr(throwable, errorType, layoutId, deviceId, extras)
+            logExceptionToScalyr(throwable, errorType, deviceId, extras)
         }
     }
 
@@ -58,20 +57,17 @@ object SellerHomeErrorHandler {
 
     private fun logExceptionToScalyr(throwable: Throwable,
                                      errorType: String,
-                                     layoutId: String,
                                      deviceId: String,
                                      extras: String) {
-        ServerLogger.log(Priority.P2, ERROR_TAG, getSellerHomeErrorMessageMap(throwable, errorType, layoutId, deviceId, extras))
+        ServerLogger.log(Priority.P2, ERROR_TAG, getSellerHomeErrorMessageMap(throwable, errorType, deviceId, extras))
     }
 
     private fun getSellerHomeErrorMessageMap(throwable: Throwable,
                                              errorType: String,
-                                             layoutId: String,
                                              deviceId: String,
                                              extras: String): Map<String, String> {
         return mutableMapOf(
                 ERROR_TYPE_KEY to errorType,
-                LAYOUT_ID_KEY to layoutId,
                 DEVICE_ID_KEY to deviceId,
                 MESSAGE_KEY to throwable.localizedMessage.orEmpty(),
                 STACKTRACE_KEY to throwable.stackTrace.toString(),
