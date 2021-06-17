@@ -13,7 +13,7 @@ interface MiniCartListBottomSheetListener {
 
     fun onBottomSheetFailedUpdateCartForCheckout(toasterAnchorView: View, fragmentManager: FragmentManager, globalEvent: GlobalEvent)
 
-    fun showToaster(view: View? = null, message: String, type: Int, ctaText: String = "Oke", onClickListener: View.OnClickListener? = null)
+    fun showToaster(view: View? = null, message: String, type: Int, ctaText: String = "Oke", isShowCta: Boolean = true, onClickListener: View.OnClickListener? = null)
 
     fun showProgressLoading()
 
