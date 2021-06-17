@@ -50,6 +50,9 @@ class ProductRecomWidgetViewHolder (
     }
 
     override fun onSeeAllBannerClicked(data: RecommendationCarouselData, applink: String) {
+        view.context?.run {
+            RouteManager.route(this, applink)
+        }
     }
 
     override fun onRecomChannelImpressed(data: RecommendationCarouselData) {
@@ -95,6 +98,9 @@ class ProductRecomWidgetViewHolder (
     }
 
     override fun onRecomBannerClicked(data: RecommendationCarouselData, applink: String, adapterPosition: Int) {
+        view.context?.run {
+            RouteManager.route(this, applink)
+        }
     }
 
     private fun getComponentTrackData(element: ProductRecomWidgetDataModel?) = ComponentTrackDataModel(element?.type
