@@ -122,11 +122,13 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private fun setData(carouselData: RecommendationCarouselData) {
         val cardList = mutableListOf<Visitable<*>>()
         carouselData.recommendationData.recommendationBanner?.let {
-            cardList.add(RecomCarouselBannerDataModel(
-                    applink = it.applink,
-                    bannerBackgorundColor = it.backgroudColor,
-                    bannerImage = it.imageUrl,
-                    listener = this))
+            if (it.imageUrl.isNotEmpty()) {
+                cardList.add(RecomCarouselBannerDataModel(
+                        applink = it.applink,
+                        bannerBackgorundColor = it.backgroudColor,
+                        bannerImage = it.imageUrl,
+                        listener = this))
+            }
         }
         val productDataList = carouselData.recommendationData.recommendationItemList.toRecomCarouselItems(listener = this)
         cardList.addAll(productDataList)

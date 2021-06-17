@@ -24,8 +24,8 @@ class RecomCarouselBannerViewHolder(view: View,
         element.bannerImage?.let{
             bannerImage.loadImage(it)
         }
-        element.bannerBackgorundColor?.let {
-            container.setBackgroundColor(Color.parseColor(it))
+        if (element.bannerBackgorundColor.isNotEmpty()) {
+            container.setBackgroundColor(Color.parseColor(element.bannerBackgorundColor))
         }
         bannerImage.setOnClickListener {
             element.listener?.onSeeMoreCardClicked(applink = element.applink, data = data)
