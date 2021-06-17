@@ -1001,6 +1001,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         presenter.getAutoComplete(districtName)
     }
 
+    override fun onChooseZipcode(districtAddress: Address?, zipCode: String) {
+        //no-op
+    }
+
     override fun moveMap(latitude: Double, longitude: Double) {
         currentLat = latitude
         currentLong = longitude

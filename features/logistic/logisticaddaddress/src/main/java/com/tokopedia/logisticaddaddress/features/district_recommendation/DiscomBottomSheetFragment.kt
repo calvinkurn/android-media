@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -7,6 +8,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -72,6 +74,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
     private var isLogisticLabel: Boolean = true
     private var isAnaRevamp: Boolean = true
     private var staticDimen8dp: Int? = 0
+    private var districtAddressData: Address? = null
 
     private var binding by autoCleared<BottomsheetDistrictRecommendationBinding>()
 
@@ -112,7 +115,6 @@ class DiscomBottomSheetFragment : BottomSheets(),
         chipsLayoutManagerZipCode = ChipsLayoutManager.newBuilder(view.context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                .setScrollingEnabled(true)
                 .build()
 
         ViewCompat.setLayoutDirection(binding.rvChips, ViewCompat.LAYOUT_DIRECTION_LTR)
@@ -129,6 +131,8 @@ class DiscomBottomSheetFragment : BottomSheets(),
         listDistrictAdapter = DiscomNewAdapter(this)
         listDistrictAdapterRevamp = DiscomAdapterRevamp(this)
 
+        binding.llZipCode.visibility = View.GONE
+        binding.bottomChoooseZipcode.visibility = View.GONE
         if (isAnaRevamp) {
             binding.rvListDistrict.apply {
                 layoutManager = mLayoutManager
@@ -307,10 +311,26 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     fun getDistrict(data: Address) {
+        districtAddressData = data
         binding.llZipCode.visibility = View.VISIBLE
+        binding.bottomChoooseZipcode.visibility = View.VISIBLE
+        binding.layoutSearch.visibility = View.GONE
+        binding.mapSearchDivider1.visibility = View.GONE
+        binding.tvDescInputDistrict.visibility = View.GONE
+        binding.llListDistrict.visibility = View.GONE
+        binding.llPopularCity.visibility = View.GONE
+
+        binding.btnChooseZipcode.isEnabled = false
         binding.cardAddress.addressDistrict.text = "${data?.districtName}, ${data?.cityName}, ${data?.provinceName}"
         binding.etKodepos.textFieldInput.apply {
+            setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    openSoftKeyboard()
+                    showZipCodes(data)
+                }
+            }
             setOnClickListener {
+                openSoftKeyboard()
                 showZipCodes(data)
             }
         }
@@ -333,8 +353,15 @@ class DiscomBottomSheetFragment : BottomSheets(),
         }
     }
 
+    private fun openSoftKeyboard() {
+        binding.etKodepos?.textFieldInput?.let {
+            (it.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
+        }
+    }
+
     interface ActionListener {
         fun onGetDistrict(districtAddress: Address)
+        fun onChooseZipcode(districtAddress: Address?, zipCode: String)
     }
 
     companion object {
@@ -356,6 +383,11 @@ class DiscomBottomSheetFragment : BottomSheets(),
         binding.rvKodeposChips.visibility = View.GONE
         binding.etKodepos.textFieldInput.run {
             setText(zipCode)
+            binding.btnChooseZipcode.isEnabled = true
+        }
+        binding.btnChooseZipcode.setOnClickListener {
+            actionListener.onChooseZipcode(districtAddressData, zipCode)
+            dismiss()
         }
     }
 

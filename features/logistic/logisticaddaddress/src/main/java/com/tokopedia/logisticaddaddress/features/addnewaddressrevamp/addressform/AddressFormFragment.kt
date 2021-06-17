@@ -59,6 +59,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private var saveDataModel: SaveAddressDataModel? = null
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
+    private var currentDistrictName: String  = ""
     private var labelAlamatList: Array<String> = emptyArray()
     private var staticDimen8dp: Int? = 0
     private var isPositiveFlow: Boolean = true
@@ -218,7 +219,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 }
 
                 cardAddressNegative.root.setOnClickListener {
-                    goToPinpointPage()
+                    checkKotaKecamatan()
                 }
 
                 formAddressNegative.etKotaKecamatan.textFieldInput.apply {
@@ -384,11 +385,20 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         }
     }
 
+    private fun checkKotaKecamatan() {
+        if (binding.formAddressNegative.etKotaKecamatan.textFieldInput.text.toString().isEmpty()) {
+            showDistrictRecommendationBottomSheet()
+        } else {
+            goToPinpointPage()
+        }
+    }
+
     private fun goToPinpointPage() {
         val bundle = Bundle()
         saveDataModel?.latitude?.toDouble()?.let { bundle.putDouble(AddAddressConstant.EXTRA_LATITUDE, it) }
         saveDataModel?.longitude?.toDouble()?.let { bundle.putDouble(AddAddressConstant.EXTRA_LONGITUDE, it) }
         bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, false)
+        bundle.putString(EXTRA_DISTRICT_NAME, currentDistrictName)
         startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, 1998)
     }
 
@@ -567,11 +577,17 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun setSaveAddressDataModel() {
-        saveDataModel?.address1 = "${binding.formAddress.etAlamat.textFieldInput.text} (${binding.formAddress.etCourierNote.textFieldInput.text})"
         saveDataModel?.address2 = "$currentLat,$currentLong"
-        saveDataModel?.addressName =  binding.formAddress.etLabel.textFieldInput.text.toString()
         saveDataModel?.receiverName = binding.formAccount.etNamaPenerima.textFieldInput.text.toString()
         saveDataModel?.phone = binding.formAccount.etNomorHp.textFieldInput.text.toString()
+        if (isPositiveFlow) {
+            saveDataModel?.address1 = "${binding.formAddress.etAlamat.textFieldInput.text} (${binding.formAddress.etCourierNote.textFieldInput.text})"
+            saveDataModel?.addressName =  binding.formAddress.etLabel.textFieldInput.text.toString()
+        } else {
+            saveDataModel?.address1 = "${binding.formAddressNegative.etAlamat.textFieldInput.text} (${binding.formAddressNegative.etCourierNote.textFieldInput.text})"
+            saveDataModel?.addressName =  binding.formAddressNegative.etLabel.textFieldInput.text.toString()
+        }
+
 
         if (userSession.name.isNotEmpty() && userSession.name.contains(toppers, ignoreCase = true)) {
             saveDataModel?.applyNameAsNewUserFullname = true
@@ -621,6 +637,14 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     override fun onGetDistrict(districtAddress: Address) {
        districtRecommendationBottomSheetFragment.getDistrict(districtAddress)
+    }
+
+    override fun onChooseZipcode(districtAddress: Address?, zipCode: String) {
+        val kotaKecamatanText = "${districtAddress?.districtName}, ${districtAddress?.cityName} $zipCode"
+        currentDistrictName = districtAddress?.districtName.toString()
+        binding.formAddressNegative.etKotaKecamatan.textFieldInput.run {
+            setText(kotaKecamatanText)
+        }
     }
 
 }

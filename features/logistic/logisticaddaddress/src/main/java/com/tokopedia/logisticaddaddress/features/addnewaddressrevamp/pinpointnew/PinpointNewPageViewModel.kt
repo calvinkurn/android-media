@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
+import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
+import com.tokopedia.logisticCommon.data.response.KeroMapsAutocomplete
 import com.tokopedia.logisticCommon.data.response.KeroPlacesGetDistrict
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.model.get_district.GetDistrictResponse
@@ -30,6 +32,10 @@ class PinpointNewPageViewModel @Inject constructor(private val repo: KeroReposit
     val districtLocation: LiveData<Result<GetDistrictDataUiModel>>
         get() = _districtLocation
 
+    private val _autoCompleteData = MutableLiveData<Result<AutoCompleteResponse>>()
+    val autoCompleteData: LiveData<Result<AutoCompleteResponse>>
+        get() = _autoCompleteData
+
     fun getDistrictData(lat: Double, long: Double) {
         val param = "$lat,$long"
         viewModelScope.launch {
@@ -50,6 +56,17 @@ class PinpointNewPageViewModel @Inject constructor(private val repo: KeroReposit
             }
             catch (e: Throwable) {
                 _districtLocation.value = Fail(e)
+            }
+        }
+    }
+
+    fun getAutoComplete(query: String) {
+        viewModelScope.launch {
+            try {
+                val autoComplete = repo.getAutoComplete(query)
+                _autoCompleteData.value = Success(autoComplete)
+            } catch (e: Throwable) {
+                _autoCompleteData.value = Fail(e)
             }
         }
     }

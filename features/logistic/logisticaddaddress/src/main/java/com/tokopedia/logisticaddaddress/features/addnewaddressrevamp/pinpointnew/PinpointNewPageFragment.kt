@@ -88,6 +88,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
     private var currentPlaceId: String? = ""
+    private var currentDistrictName: String? = ""
     private var zipCodes: MutableList<String>? = null
     private var bottomSheetInfo: BottomSheetUnify? = null
     private var bottomSheetLocUndefined: BottomSheetUnify? = null
@@ -231,13 +232,18 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             currentLong = it.getDouble(EXTRA_LONGITUDE)
             saveAddressDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
             isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
+            currentDistrictName = it.getString(EXTRA_DISTRICT_NAME)
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
         }
 
         if (!currentPlaceId.isNullOrEmpty()) {
             currentPlaceId?.let { viewModel.getDistrictLocation(it) }
         } else {
-            viewModel.getDistrictData(currentLat, currentLong)
+            if (isPositiveFlow) {
+                viewModel.getDistrictData(currentLat, currentLong)
+            } else {
+                currentDistrictName?.let { viewModel.getAutoComplete(it) }
+            }
         }
     }
 
@@ -280,6 +286,14 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 }
             }
         })
+
+        viewModel.autoCompleteData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    viewModel.getDistrictLocation(it.data.keroMapsAutocomplete.AData.predictions[0].placeId)
+                }
+            }
+        })
     }
 
     private fun showLoading() {
@@ -316,7 +330,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun onSuccessPlaceGetDistrict(data: GetDistrictDataUiModel) {
-        if (data.postalCode.isEmpty() || data.districtId == 0) {
+        if (data.postalCode.isEmpty() && data.districtId == 0) {
             currentLat = data.latitude.toDouble()
             currentLong = data.longitude.toDouble()
             moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
@@ -670,6 +684,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     putDouble(EXTRA_LATITUDE, extra.getDouble(EXTRA_LATITUDE))
                     putDouble(EXTRA_LONGITUDE, extra.getDouble(EXTRA_LONGITUDE))
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
+                    putString(EXTRA_DISTRICT_NAME, extra.getString(EXTRA_DISTRICT_NAME))
                 }
             }
         }
