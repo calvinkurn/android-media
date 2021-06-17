@@ -998,7 +998,28 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwBubbleCollapsed(0)
     }
 
-    // TODO: SRW bubble should remain collapsed when user open keyboard and open sticker menu
+    @Test
+    fun srw_bubble_should_remain_collapsed_when_user_open_keyboard_and_open_sticker_menu() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // When
+        clickSrwPreviewItemAt(0)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        clickComposeArea()
+        clickStickerIconMenu()
+
+        // Then
+        assertSrwBubbleContentIsVisibleAt(0)
+        assertSrwBubbleCollapsed(0)
+    }
+
     // TODO: SRW Bubble should collapsed when preview attachment is visible other than product
     // TODO: SRW Bubble should expanded when preview attachment is not visible
     // TODO: SRW Bubble should remain collapsed when invoice preview visible and user toggle chat menu on then off
