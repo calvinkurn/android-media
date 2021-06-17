@@ -119,6 +119,7 @@ fun verifyProductItemDataViewList(
         assertThat(actualProductDataView.originalPrice, shouldBe(expectedProduct.originalPrice))
         assertThat(actualProductDataView.parentId, shouldBe(expectedProduct.parentId))
         assertThat(actualProductDataView.shop.id, shouldBe(expectedProduct.shop.id))
+        assertThat(actualProductDataView.shop.name, shouldBe(expectedProduct.shop.name))
         assertThat(actualProductDataView.ratingAverage, shouldBe(expectedProduct.ratingAverage))
         assertThat(actualProductDataView.sourceEngine, shouldBe(expectedProduct.sourceEngine))
         assertThat(actualProductDataView.boosterList, shouldBe(expectedProduct.boosterList))

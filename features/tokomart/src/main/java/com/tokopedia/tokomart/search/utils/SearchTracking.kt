@@ -7,14 +7,18 @@ import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MI
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
+import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_ADD_QUANTITY
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_APPLY_FILTER
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_CATEGORY_FILTER
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_FILTER_OPTION
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_FUZZY_KEYWORDS_REPLACE
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_PRODUCT
+import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_REMOVE_QUANTITY
+import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_TAMBAH_KE_KERANJANG
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.IMPRESSION_PRODUCT
 import com.tokopedia.tokomart.search.utils.SearchTracking.Category.TOKONOW_SEARCH_RESULT
 import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.ACTION_FIELD
+import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.ADD
 import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.CLICK
 import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.CURRENCYCODE
 import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.ECOMMERCE
@@ -22,6 +26,7 @@ import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.IDR
 import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.IMPRESSIONS
 import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.LIST
 import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.PRODUCTS
+import com.tokopedia.tokomart.search.utils.SearchTracking.Event.ADD_TO_CART
 import com.tokopedia.tokomart.search.utils.SearchTracking.Event.PRODUCT_CLICK
 import com.tokopedia.tokomart.search.utils.SearchTracking.Event.PRODUCT_VIEW
 import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
@@ -40,6 +45,7 @@ object SearchTracking {
     object Event {
         const val PRODUCT_VIEW = "productView"
         const val PRODUCT_CLICK = "productClick"
+        const val ADD_TO_CART = "addToCart"
     }
 
     object Action {
@@ -50,6 +56,9 @@ object SearchTracking {
         const val CLICK_APPLY_FILTER = "click - apply filter"
         const val CLICK_CATEGORY_FILTER = "click - category filter"
         const val CLICK_FUZZY_KEYWORDS_REPLACE = "click - fuzzy keywords - replace"
+        const val CLICK_TAMBAH_KE_KERANJANG = "click - tambah ke keranjang"
+        const val CLICK_ADD_QUANTITY = "click - add quantity"
+        const val CLICK_REMOVE_QUANTITY = "click - remove quantity"
     }
 
     object Category {
@@ -66,9 +75,12 @@ object SearchTracking {
         const val ACTION_FIELD = "actionField"
         const val LIST = "list"
         const val PRODUCTS = "products"
+        const val ADD = "add"
     }
 
     object Misc {
+        const val NONE_OTHER = "none / other"
+        const val TOKO_NOW = "toko now"
         const val USER_ID = "userId"
         const val HASIL_PENCARIAN_DI_TOKONOW = "Hasil pencarian di TokoNOW!"
         const val LOCAL_SEARCH = "local_search"
@@ -177,6 +189,54 @@ object SearchTracking {
                     BUSINESSUNIT, BUSINESS_UNIT_VALUE,
                     CURRENTSITE, CURRENT_SITE_VALUE,
                 )
+        )
+    }
+
+    fun sendAddToCartEvent(
+            dataLayer: Any,
+            keyword: String,
+            userId: String,
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                EVENT, ADD_TO_CART,
+                EVENT_ACTION, CLICK_TAMBAH_KE_KERANJANG,
+                EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                EVENT_LABEL, keyword,
+                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                CURRENTSITE, CURRENT_SITE_VALUE,
+                USER_ID, userId,
+                ECOMMERCE, DataLayer.mapOf(
+                    ADD, DataLayer.mapOf(PRODUCTS, DataLayer.listOf(dataLayer)),
+                    CURRENCYCODE, IDR,
+                ),
+            )
+        )
+    }
+
+    fun sendIncreaseQtyEvent(keyword: String, productId: String) {
+        sendGeneralEvent(
+            DataLayer.mapOf(
+                EVENT, EVENT_CLICK_VALUE,
+                EVENT_ACTION, CLICK_ADD_QUANTITY,
+                EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                EVENT_LABEL, "$keyword - $productId",
+                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                CURRENTSITE, CURRENT_SITE_VALUE,
+            )
+        )
+    }
+
+    fun sendDecreaseQtyEvent(keyword: String, productId: String) {
+        sendGeneralEvent(
+            DataLayer.mapOf(
+                EVENT, EVENT_CLICK_VALUE,
+                EVENT_ACTION, CLICK_REMOVE_QUANTITY,
+                EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                EVENT_LABEL, "$keyword - $productId",
+                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                CURRENTSITE, CURRENT_SITE_VALUE,
+            )
         )
     }
 }

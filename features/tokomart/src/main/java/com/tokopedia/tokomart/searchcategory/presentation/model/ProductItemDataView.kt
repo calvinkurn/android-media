@@ -5,6 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
 import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.LOCAL_SEARCH
+import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.NONE_OTHER
+import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
+import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.TOKO_NOW
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 
@@ -36,27 +39,52 @@ data class ProductItemDataView(
 
     data class Shop(
             val id: String = "",
+            val name: String = "",
     )
 
-    fun getAsObjectDataLayer(
+    private fun getAsObjectDataLayerMap(
             filterSortValue: String,
             pageId: String,
-    ): Any {
+    ): MutableMap<String, Any> {
         return DataLayer.mapOf(
-                "brand", "none / other",
-                "category", "none / other",
+                "brand", NONE_OTHER,
+                "category", NONE_OTHER,
                 "dimension100", sourceEngine,
                 "dimension61", filterSortValue,
-                "dimension81", "toko now",
+                "dimension81", TOKO_NOW,
                 "dimension90", getDimension90(pageId),
                 "dimension96", boosterList,
                 "id", id,
-                "list", "/tokonow - searchproduct - organic",
+                "dimension40", TOKONOW_SEARCH_PRODUCT_ORGANIC,
                 "name", name,
-                "position", "{position}",
                 "price", priceInt,
-                "variant", "none / other"
+                "variant", NONE_OTHER,
         )
+    }
+
+    fun getAsImpressionClickObjectDataLayer(
+            filterSortValue: String,
+            pageId: String,
+    ): Any {
+        return getAsObjectDataLayerMap(filterSortValue, pageId).also {
+            it.putAll(DataLayer.mapOf(
+                    "position", position,
+            ))
+        }
+    }
+
+    fun getAsATCObjectDataLayer(
+            filterSortValue: String,
+            pageId: String,
+            quantity: Int,
+    ): Any {
+        return getAsObjectDataLayerMap(filterSortValue, pageId).also {
+            it.putAll(DataLayer.mapOf(
+                    "quantity", quantity,
+                    "shop_id", shop.id,
+                    "shop_name", shop.name,
+            ))
+        }
     }
 
     private fun getDimension90(pageId: String) =

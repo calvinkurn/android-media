@@ -69,6 +69,9 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         super.observeViewModel()
 
         getViewModel().generalSearchEventLiveData.observe(this::sendTrackingGeneralEvent)
+        getViewModel().addToCartTrackingLiveData.observe(this::sendAddToCartTrackingEvent)
+        getViewModel().increaseQtyTrackingLiveData.observe(this::sendIncreaseQtyTrackingEvent)
+        getViewModel().decreaseQtyTrackingLiveData.observe(this::sendDecreaseQtyTrackingEvent)
     }
 
     private fun sendTrackingGeneralEvent(dataLayer: Map<String, Any>) {
@@ -114,25 +117,33 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
 
         SearchTracking.sendProductImpressionEvent(
                 trackingQueue,
-                listOf(getProductItemAsObjectDataLayer(productItemDataView)),
+                listOf(getProductItemAsImpressionClickObjectDataLayer(productItemDataView)),
                 getViewModel().query,
-                userSession.userId,
+                getUserId(),
         )
     }
 
-    private fun getProductItemAsObjectDataLayer(productItemDataView: ProductItemDataView): Any {
+    private fun getUserId(): String {
+        val userId = userSession.userId ?: ""
+
+        return if (userId.isEmpty()) "0" else userId
+    }
+
+    private fun getProductItemAsImpressionClickObjectDataLayer(
+            productItemDataView: ProductItemDataView
+    ): Any {
         val queryParam = searchViewModel.queryParam
         val pageId = queryParam[SearchApiConst.SRP_PAGE_ID] ?: ""
         val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
 
-        return productItemDataView.getAsObjectDataLayer(sortFilterParams, pageId)
+        return productItemDataView.getAsImpressionClickObjectDataLayer(sortFilterParams, pageId)
     }
 
     override fun onProductClick(productItemDataView: ProductItemDataView) {
         SearchTracking.sendProductClickEvent(
-                getProductItemAsObjectDataLayer(productItemDataView),
+                getProductItemAsImpressionClickObjectDataLayer(productItemDataView),
                 getViewModel().query,
-                userSession.userId,
+                getUserId(),
         )
 
         super.onProductClick(productItemDataView)
@@ -156,5 +167,26 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         SearchTracking.sendApplyCategoryL2FilterEvent(option.name)
 
         super.onCategoryFilterChipClick(option, isSelected)
+    }
+
+    private fun sendAddToCartTrackingEvent(atcData: Pair<Int, ProductItemDataView>) {
+        val quantity = atcData.first
+        val productItemDataView = atcData.second
+
+        val queryParam = searchViewModel.queryParam
+        val pageId = queryParam[SearchApiConst.SRP_PAGE_ID] ?: ""
+        val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
+
+        val atcDataLayer = productItemDataView.getAsATCObjectDataLayer(sortFilterParams, pageId, quantity)
+
+        SearchTracking.sendAddToCartEvent(atcDataLayer, getViewModel().query, getUserId())
+    }
+
+    private fun sendIncreaseQtyTrackingEvent(productId: String) {
+        SearchTracking.sendIncreaseQtyEvent(searchViewModel.query, productId)
+    }
+
+    private fun sendDecreaseQtyTrackingEvent(productId: String) {
+        SearchTracking.sendDecreaseQtyEvent(searchViewModel.query, productId)
     }
 }

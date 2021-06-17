@@ -114,6 +114,8 @@
           "countReview": 259,
           "originalPrice": "",
           "discountPercentage": 0,
+          "source_engine": "sourceEngine",
+          "boosterList": "boosterList",
           "shop": {
             "id": 3102419,
             "name": "Maxi phone cell",
