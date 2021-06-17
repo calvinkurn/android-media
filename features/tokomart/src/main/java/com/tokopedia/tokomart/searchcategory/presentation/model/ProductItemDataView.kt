@@ -20,6 +20,9 @@ data class ProductItemDataView(
         val labelGroupVariantDataViewList: List<LabelGroupVariantDataView> = listOf(),
 ): Visitable<BaseSearchCategoryTypeFactory> {
 
+    val discountPercentageString
+        get() = if (discountPercentage > 0) "$discountPercentage%" else ""
+
     override fun type(typeFactory: BaseSearchCategoryTypeFactory?) =
             typeFactory?.type(this) ?: 0
 
