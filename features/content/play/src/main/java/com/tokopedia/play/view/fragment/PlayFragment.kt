@@ -41,7 +41,6 @@ import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.FragmentBottomSheetViewComponent
@@ -57,7 +56,6 @@ import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -419,8 +417,8 @@ class PlayFragment @Inject constructor(
     }
 
     private fun observePinned() {
-        playViewModel.observablePinned.observe(viewLifecycleOwner, DistinctObserver {
-            if (it is PlayPinnedUiModel.PinnedProduct) fragmentBottomSheetView.safeInit()
+        playViewModel.observablePinnedProduct.observe(viewLifecycleOwner, DistinctObserver {
+            fragmentBottomSheetView.safeInit()
         })
     }
 

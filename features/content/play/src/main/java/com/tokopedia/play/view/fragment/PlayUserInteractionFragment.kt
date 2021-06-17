@@ -9,7 +9,6 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.*
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -42,8 +41,10 @@ import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayFullscreenManager
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
+import com.tokopedia.play.view.custom.PlayInteractionConstraintLayout
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapKey
+import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapValue
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatListHeightManager
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.PlayChatListHeightManager
 import com.tokopedia.play.view.measurement.bounds.provider.videobounds.PlayVideoBoundsProvider
@@ -65,7 +66,6 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitMeasured
-import com.tokopedia.play_common.util.extension.changeConstraint
 import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -75,6 +75,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 /**
@@ -165,7 +166,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private var dynamicLayoutManager: DynamicLayoutManager? = null
     private var chatListHeightManager: ChatListHeightManager? = null
 
-    private val chatListHeightMap = mutableMapOf<ChatHeightMapKey, Float>()
+    private val chatListHeightMap = mutableMapOf<ChatHeightMapKey, ChatHeightMapValue>()
 
     private var mMaxTopChatMode: Int? = null
     private var toasterBottomMargin = 0
@@ -520,7 +521,8 @@ class PlayUserInteractionFragment @Inject constructor(
         observeTotalViews()
         observeNewChat()
         observeChatList()
-        observePinned()
+        observePinnedMessage()
+        observePinnedProduct()
         observeCartInfo()
         observeBottomInsetsState()
         observeStatusInfo()
@@ -647,13 +649,18 @@ class PlayUserInteractionFragment @Inject constructor(
         })
     }
 
-    private fun observePinned() {
-        playViewModel.observablePinned.observe(viewLifecycleOwner, Observer {
+    private fun observePinnedMessage() {
+        playViewModel.observablePinnedMessage.observe(viewLifecycleOwner) {
             pinnedViewOnStateChanged(pinnedModel = it)
-            productFeaturedViewOnStateChanged(pinnedModel = it)
-            quickReplyViewOnStateChanged(pinnedModel = it)
+            quickReplyViewOnStateChanged(pinnedMessage = it)
+        }
+    }
 
-        })
+    private fun observePinnedProduct() {
+        playViewModel.observablePinnedProduct.observe(viewLifecycleOwner) {
+            productFeaturedViewOnStateChanged(pinnedModel = it)
+            quickReplyViewOnStateChanged(pinnedProduct = it)
+        }
     }
 
     private fun observeLoggedInInteractionEvent() {
@@ -1139,7 +1146,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun pinnedViewOnStateChanged(
-            pinnedModel: PlayPinnedUiModel? = playViewModel.observablePinned.value,
+            pinnedModel: PinnedMessageUiModel? = playViewModel.observablePinnedMessage.value,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
     ) {
@@ -1148,24 +1155,16 @@ class PlayUserInteractionFragment @Inject constructor(
             return
         }
 
-        when (pinnedModel) {
-            is PlayPinnedUiModel.PinnedMessage -> {
-                pinnedView?.setPinnedMessage(pinnedModel)
-
-                if (!bottomInsets.isAnyShown) pinnedView?.show()
-                else pinnedView?.hide()
-            }
-            is PlayPinnedUiModel.PinnedProduct -> {
-                pinnedView?.hide()
-            }
-            PlayPinnedUiModel.NoPinned -> {
-                pinnedView?.hide()
-            }
-        }
+        if (pinnedModel != null) {
+            pinnedView?.setPinnedMessage(pinnedModel)
+            if (pinnedModel.shouldShow && !bottomInsets.isAnyShown) pinnedView?.show()
+//            if (!bottomInsets.isAnyShown) pinnedView?.show()
+            else pinnedView?.hide()
+        } else pinnedView?.hide()
     }
 
     private fun productFeaturedViewOnStateChanged(
-            pinnedModel: PlayPinnedUiModel? = playViewModel.observablePinned.value,
+            pinnedModel: PinnedProductUiModel? = playViewModel.observablePinnedProduct.value,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
     ) {
@@ -1175,24 +1174,19 @@ class PlayUserInteractionFragment @Inject constructor(
             return
         }
 
-        when (pinnedModel) {
-            is PlayPinnedUiModel.PinnedProduct -> {
-                if (pinnedModel.productTags is PlayProductTagsUiModel.Complete) {
-                    pinnedVoucherView?.setVoucher(pinnedModel.productTags.voucherList)
-                    productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList, pinnedModel.productTags.basicInfo.maxFeaturedProducts)
-                }
+        if (pinnedModel != null && pinnedModel.productTags is PlayProductTagsUiModel.Complete) {
+            pinnedVoucherView?.setVoucher(pinnedModel.productTags.voucherList)
+            productFeaturedView?.setFeaturedProducts(pinnedModel.productTags.productList, pinnedModel.productTags.basicInfo.maxFeaturedProducts)
+        }
 
-                if (!bottomInsets.isAnyShown) {
-                    pinnedVoucherView?.showIfNotEmpty()
-                    productFeaturedView?.showIfNotEmpty()
-                } else {
-                    pinnedVoucherView?.hide()
-                    productFeaturedView?.hide()
-                }
-            } else -> {
-                pinnedVoucherView?.hide()
-                productFeaturedView?.hide()
-            }
+        if (!bottomInsets.isAnyShown) {
+            pinnedVoucherView?.showIfNotEmpty()
+            productFeaturedView?.showIfNotEmpty()
+
+            scope.launch { invalidateChatListBounds() }
+        } else {
+            pinnedVoucherView?.hide()
+            productFeaturedView?.hide()
         }
     }
 
@@ -1249,7 +1243,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun quickReplyViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
-            pinnedModel: PlayPinnedUiModel? = playViewModel.observablePinned.value
+            pinnedMessage: PinnedMessageUiModel? = playViewModel.observablePinnedMessage.value,
+            pinnedProduct: PinnedProductUiModel? = playViewModel.observablePinnedProduct.value,
     ) {
         if (channelType.isLive &&
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
@@ -1259,25 +1254,25 @@ class PlayUserInteractionFragment @Inject constructor(
         } else quickReplyView?.hide()
 
         val quickReplyViewId = quickReplyView?.id ?: return
-        when (pinnedModel) {
-            is PlayPinnedUiModel.PinnedProduct -> {
-                val pinnedVoucherViewId = pinnedVoucherView?.id
-                if (pinnedVoucherViewId != null) {
-                    view?.changeConstraint {
-                        connect(quickReplyViewId, ConstraintSet.BOTTOM, R.id.view_topmost_like, ConstraintSet.TOP)
-                    }
-                }
-            }
-            is PlayPinnedUiModel.PinnedMessage -> {
-                val sendChatViewId = sendChatView?.id
-                if (sendChatViewId != null) {
-                    view?.changeConstraint {
-                        connect(quickReplyViewId, ConstraintSet.BOTTOM, sendChatViewId, ConstraintSet.TOP)
-                    }
-                }
-            }
-            else -> {}
-        }
+//        when (pinnedModel) {
+//            is PlayPinnedUiModel.PinnedProduct -> {
+//                val pinnedVoucherViewId = pinnedVoucherView?.id
+//                if (pinnedVoucherViewId != null) {
+//                    view?.changeConstraint {
+//                        connect(quickReplyViewId, ConstraintSet.BOTTOM, R.id.view_topmost_like, ConstraintSet.TOP)
+//                    }
+//                }
+//            }
+//            is PlayPinnedUiModel.PinnedMessage -> {
+//                val sendChatViewId = sendChatView?.id
+//                if (sendChatViewId != null) {
+//                    view?.changeConstraint {
+//                        connect(quickReplyViewId, ConstraintSet.BOTTOM, sendChatViewId, ConstraintSet.TOP)
+//                    }
+//                }
+//            }
+//            else -> {}
+//        }
     }
 
     private fun immersiveBoxViewOnStateChanged(

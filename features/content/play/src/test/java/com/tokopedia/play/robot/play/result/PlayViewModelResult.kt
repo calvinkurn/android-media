@@ -39,7 +39,7 @@ class PlayViewModelRobotResult(
         get() = PlayChannelInfoResult(viewModel.observableChannelInfo.getOrAwaitValue())
 
     val pinnedResult: PlayPinnedResult
-        get() = PlayPinnedResult(viewModel.observablePinned.getOrAwaitValue())
+        get() = PlayPinnedResult(viewModel.observablePinnedMessage.getOrAwaitValue())
 
     val statusInfoResult: PlayStatusInfoResult
         get() = PlayStatusInfoResult(viewModel.observableStatusInfo.getOrAwaitValue())

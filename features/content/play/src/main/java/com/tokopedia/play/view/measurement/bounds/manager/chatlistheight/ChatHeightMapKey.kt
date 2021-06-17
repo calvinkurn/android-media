@@ -10,3 +10,8 @@ data class ChatHeightMapKey(
         val maxTop: Int?,
         val hasQuickReply: Boolean?
 )
+
+data class ChatHeightMapValue(
+        val height: Float,
+        val consistency: Int
+)

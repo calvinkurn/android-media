@@ -11,7 +11,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 class PlayChatListHeightManager(
         private val container: ViewGroup,
         private val dataSource: ScreenOrientationDataSource,
-        private val chatListHeightMap: MutableMap<ChatHeightMapKey, Float>
+        private val chatListHeightMap: MutableMap<ChatHeightMapKey, ChatHeightMapValue>
 ) : ChatListHeightManager {
 
     private lateinit var portraitChatListHeightManager: ChatListHeightManager
