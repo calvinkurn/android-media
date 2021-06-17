@@ -20,10 +20,8 @@ class ShopNoteDetailActivity : BaseSimpleActivity() {
         shopId = intent.getStringExtra(ShopParamConstant.EXTRA_SHOP_ID)
         shopNoteId = intent.getStringExtra(ShopParamConstant.EXTRA_SHOP_NOTE_ID)
         super.onCreate(savedInstanceState)
+        window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-        toolbar.background = ColorDrawable(
-                MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        )
     }
 
     override fun getNewFragment(): Fragment? {

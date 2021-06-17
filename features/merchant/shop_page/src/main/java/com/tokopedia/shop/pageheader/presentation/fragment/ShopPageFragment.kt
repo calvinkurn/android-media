@@ -318,9 +318,6 @@ class ShopPageFragment :
     }
 
     private fun initViews(view: View) {
-        context?.let {
-            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        }
         errorTextView = view.findViewById(com.tokopedia.abstraction.R.id.message_retry)
         errorButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry)
         shopPageHeaderContentConstraintLayout = view.findViewById(R.id.shop_page_header_content)
