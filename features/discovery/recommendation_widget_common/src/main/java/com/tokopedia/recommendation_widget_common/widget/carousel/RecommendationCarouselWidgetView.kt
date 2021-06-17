@@ -104,7 +104,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         widgetListener?.onRecomBannerClicked(data = carouselData, applink = applink, adapterPosition = adapterPosition)
     }
 
-    override fun onBannerCardImpressed(data: RecommendationWidget, applink: String) {
+    override fun onBannerCardImpressed(data: RecommendationWidget) {
         widgetListener?.onRecomBannerImpressed(data = carouselData, adapterPosition = adapterPosition)
     }
 
