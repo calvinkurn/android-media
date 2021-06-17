@@ -89,6 +89,7 @@ abstract class BaseSearchCategoryViewModel(
     protected var totalFetchedData = 0
     protected var nextPage = 1
     protected var chooseAddressData: LocalCacheModel? = null
+    protected var currentProductPosition: Int = 1
     private var cartItemsNonVariant: List<MiniCartItem>? = null
     private var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
 
@@ -287,6 +288,7 @@ abstract class BaseSearchCategoryViewModel(
         totalData = headerDataView.aceSearchProductHeader.totalData
         totalFetchedData += contentDataView.aceSearchProductData.productList.size
         autoCompleteApplink = contentDataView.aceSearchProductData.autocompleteApplink
+        currentProductPosition = 1
 
         val isEmptyProductList = contentDataView.aceSearchProductData.productList.isEmpty()
 
@@ -446,9 +448,9 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun createContentVisitableList(contentDataView: ContentDataView) =
-            contentDataView.aceSearchProductData.productList.map(::mapToProductItemDataView)
+            contentDataView.aceSearchProductData.productList.mapIndexed(::mapToProductItemDataView)
 
-    protected open fun mapToProductItemDataView(product: Product): ProductItemDataView {
+    protected open fun mapToProductItemDataView(index: Int, product: Product): ProductItemDataView {
         return ProductItemDataView(
                 id = product.id,
                 imageUrl300 = product.imageUrl300,
@@ -479,7 +481,10 @@ abstract class BaseSearchCategoryViewModel(
                             typeVariant = labelGroupVariant.typeVariant,
                             hexColor = labelGroupVariant.hexColor,
                     )
-                }
+                },
+                sourceEngine = product.sourceEngine,
+                boosterList = product.boosterList,
+                position = currentProductPosition++,
         )
     }
 

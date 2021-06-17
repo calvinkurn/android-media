@@ -6,6 +6,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.tokomart.search.di.SearchComponent
@@ -14,8 +15,10 @@ import com.tokopedia.tokomart.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokomart.search.presentation.typefactory.SearchTypeFactoryImpl
 import com.tokopedia.tokomart.search.presentation.viewmodel.SearchViewModel
 import com.tokopedia.tokomart.search.utils.SearchTracking
+import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
@@ -102,5 +105,20 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         val applinkToSearchResult = "${ApplinkConstInternalDiscovery.SEARCH_RESULT}?$queryParams"
 
         RouteManager.route(context, applinkToSearchResult)
+    }
+
+    override fun onProductImpressed(productItemDataView: ProductItemDataView) {
+        val trackingQueue = trackingQueue ?: return
+
+        val queryParam = searchViewModel.queryParam
+        val pageId = queryParam[SearchApiConst.SRP_PAGE_ID] ?: ""
+        val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
+
+        SearchTracking.sendProductImpressionEvent(
+                trackingQueue,
+                listOf(productItemDataView.getAsObjectDataLayer(sortFilterParams, pageId)),
+                getViewModel().query,
+                userSession.userId,
+        )
     }
 }

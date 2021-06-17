@@ -67,6 +67,8 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
             stock
             ratingAverage
             minOrder
+            source_engine
+            boosterList
             shop {
               id
             }

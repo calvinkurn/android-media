@@ -75,7 +75,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         val expectedProductList = searchModel.searchProduct.data.productList
         val actualProductItemDataViewList = visitableList.filterIsInstance<ProductItemDataView>()
 
-        verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList)
+        verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList, 1)
     }
 
     private fun `Then assert get first page success interactions`(searchModel: SearchModel) {

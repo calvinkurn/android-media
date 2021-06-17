@@ -3,6 +3,7 @@ package com.tokopedia.tokomart.searchcategory.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokomart.R
@@ -42,6 +43,12 @@ class ProductItemViewHolder(
                         nonVariant = element.nonVariantATC?.mapToNonVariant(),
                 )
         )
+
+        productCard?.setImageProductViewHintListener(element, object: ViewHintListener {
+            override fun onViewHint() {
+                productItemListener.onProductImpressed(element)
+            }
+        })
 
         productCard?.setOnClickListener {
             productItemListener.onProductClick(element)

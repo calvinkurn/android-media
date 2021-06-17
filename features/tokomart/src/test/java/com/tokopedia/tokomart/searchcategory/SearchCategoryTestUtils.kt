@@ -102,11 +102,13 @@ fun Visitable<*>.assertProductCountDataView(productCountText: String) {
 fun verifyProductItemDataViewList(
         expectedProductList: List<Product>,
         actualProductItemDataViewList: List<ProductItemDataView>,
+        startPosition: Int,
 ) {
     assertThat(actualProductItemDataViewList.size, shouldBe(expectedProductList.size))
 
     expectedProductList.forEachIndexed { productIndex, expectedProduct ->
         val actualProductDataView = actualProductItemDataViewList[productIndex]
+        val expectedPosition = productIndex + startPosition
 
         assertThat(actualProductDataView.id, shouldBe(expectedProduct.id))
         assertThat(actualProductDataView.imageUrl300, shouldBe(expectedProduct.imageUrl300))
@@ -118,6 +120,9 @@ fun verifyProductItemDataViewList(
         assertThat(actualProductDataView.parentId, shouldBe(expectedProduct.parentId))
         assertThat(actualProductDataView.shop.id, shouldBe(expectedProduct.shop.id))
         assertThat(actualProductDataView.ratingAverage, shouldBe(expectedProduct.ratingAverage))
+        assertThat(actualProductDataView.sourceEngine, shouldBe(expectedProduct.sourceEngine))
+        assertThat(actualProductDataView.boosterList, shouldBe(expectedProduct.boosterList))
+        assertThat(actualProductDataView.position, shouldBe(expectedPosition))
         assertATCConfiguration(actualProductDataView, expectedProduct)
         assertLabelGroupDataView(
                 actualProductDataView.labelGroupDataViewList,

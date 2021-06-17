@@ -88,9 +88,12 @@ import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
@@ -112,10 +115,14 @@ abstract class BaseSearchCategoryFragment:
         protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
     }
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     protected var searchCategoryAdapter: SearchCategoryAdapter? = null
     protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
     protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
     protected var categoryChooserBottomSheet: CategoryChooserBottomSheet? = null
+    protected var trackingQueue: TrackingQueue? = null
 
     protected var container: ConstraintLayout? = null
     protected var navToolbar: NavToolbar? = null
@@ -141,6 +148,12 @@ abstract class BaseSearchCategoryFragment:
 
             return height + padding
         }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        context?.let { trackingQueue = TrackingQueue(it) }
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -672,6 +685,12 @@ abstract class BaseSearchCategoryFragment:
         constraintSet.connect(outOfServiceView.id, TOP, navToolbar.id, BOTTOM)
 
         constraintSet.applyTo(container)
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        trackingQueue?.sendAll()
     }
 
     override fun onResume() {
