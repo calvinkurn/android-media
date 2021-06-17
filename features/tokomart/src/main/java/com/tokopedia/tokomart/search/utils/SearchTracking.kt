@@ -10,6 +10,7 @@ import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VA
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_APPLY_FILTER
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_CATEGORY_FILTER
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_FILTER_OPTION
+import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_FUZZY_KEYWORDS_REPLACE
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_PRODUCT
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.IMPRESSION_PRODUCT
 import com.tokopedia.tokomart.search.utils.SearchTracking.Category.TOKONOW_SEARCH_RESULT
@@ -48,6 +49,7 @@ object SearchTracking {
         const val CLICK_FILTER_OPTION = "click - filter option"
         const val CLICK_APPLY_FILTER = "click - apply filter"
         const val CLICK_CATEGORY_FILTER = "click - category filter"
+        const val CLICK_FUZZY_KEYWORDS_REPLACE = "click - fuzzy keywords - replace"
     }
 
     object Category {
@@ -159,6 +161,19 @@ object SearchTracking {
                     EVENT_ACTION, CLICK_CATEGORY_FILTER,
                     EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
                     EVENT_LABEL, categoryName,
+                    BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                    CURRENTSITE, CURRENT_SITE_VALUE,
+                )
+        )
+    }
+
+    fun sendSuggestionClickEvent(originalKeyword: String, fuzzyKeyword: String, ) {
+        sendGeneralEvent(
+                DataLayer.mapOf(
+                    EVENT, EVENT_CLICK_VALUE,
+                    EVENT_ACTION, CLICK_FUZZY_KEYWORDS_REPLACE,
+                    EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                    EVENT_LABEL, "$originalKeyword - $fuzzyKeyword",
                     BUSINESSUNIT, BUSINESS_UNIT_VALUE,
                     CURRENTSITE, CURRENT_SITE_VALUE,
                 )

@@ -94,9 +94,9 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     override fun onSuggestionClicked(suggestionDataView: SuggestionDataView) {
         val context = context ?: return
 
-        val applink = ApplinkConstInternalTokopediaNow.SEARCH + "?" +
-                suggestionDataView.query
+        SearchTracking.sendSuggestionClickEvent(getViewModel().query, suggestionDataView.suggestion)
 
+        val applink = ApplinkConstInternalTokopediaNow.SEARCH + "?" + suggestionDataView.query
         RouteManager.route(context, applink)
     }
 
