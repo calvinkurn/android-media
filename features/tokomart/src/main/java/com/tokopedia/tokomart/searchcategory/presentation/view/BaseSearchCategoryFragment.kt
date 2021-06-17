@@ -584,15 +584,29 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun showSuccessATCMessage(message: String?) {
-        showToaster(message, Toaster.TYPE_NORMAL)
+        showToaster(message, Toaster.TYPE_NORMAL, getString(R.string.tokomart_lihat)) {
+            RouteManager.route(context, ApplinkConst.CART)
+        }
     }
 
-    protected open fun showToaster(message: String?, toasterType: Int) {
+    protected open fun showToaster(
+            message: String?,
+            toasterType: Int,
+            actionText: String = "",
+            clickListener: (View) -> Unit = { },
+    ) {
         val view = view ?: return
         message ?: return
         if (message.isEmpty()) return
 
-        Toaster.build(view, message, Toaster.LENGTH_LONG, toasterType).show()
+        Toaster.build(
+                view,
+                message,
+                Toaster.LENGTH_LONG,
+                toasterType,
+                actionText,
+                clickListener,
+        ).show()
     }
 
     protected open fun showErrorATCMessage(message: String?) {
