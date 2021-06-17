@@ -2035,9 +2035,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun goToAtcVariant() {
-
         context?.let {
             if (viewModel.getDynamicProductInfoP1 != null) {
+                DynamicProductDetailTracking.Click.onSingleVariantClicked(
+                        viewModel.getDynamicProductInfoP1,
+                        pdpUiUpdater?.productSingleVariant,
+                        viewModel.variantData,
+                        getComponentPositionBeforeUpdate(pdpUiUpdater?.productSingleVariant))
+
                 val boData = viewModel.getBebasOngkirDataByProductId()
 
                 AtcVariantHelper.pdpToAtcVariant(
@@ -2834,6 +2839,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem) {
+        if (!viewModel.isUserSessionActive) {
+            doLoginWhenUserClickButton()
+            return
+        }
+
+        if (openShipmentBottomSheetWhenError()) return
+
         viewModel.updateQuantity(quantity, miniCart)
     }
 
@@ -2900,6 +2912,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     ?: false
 
             if (isVariant && viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true) {
+                DynamicProductDetailTracking.Click.eventClickAtcAndBuyGoToVariant(buttonAction, viewModel.getDynamicProductInfoP1?.basic?.productID
+                        ?: "")
                 goToAtcVariant()
                 return@let
             }

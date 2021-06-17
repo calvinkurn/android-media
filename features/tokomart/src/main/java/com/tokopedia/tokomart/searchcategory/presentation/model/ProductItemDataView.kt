@@ -28,6 +28,9 @@ data class ProductItemDataView(
         val position: Int = 0,
 ): Visitable<BaseSearchCategoryTypeFactory>, ImpressHolder() {
 
+    val discountPercentageString
+        get() = if (discountPercentage > 0) "$discountPercentage%" else ""
+
     override fun type(typeFactory: BaseSearchCategoryTypeFactory?) =
             typeFactory?.type(this) ?: 0
 

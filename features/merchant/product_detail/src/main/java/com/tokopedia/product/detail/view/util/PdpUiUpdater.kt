@@ -179,7 +179,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 miniSocialProofStockMap?.run {
                     rating = it.basic.stats.rating
                     ratingCount = it.basic.stats.countReview.toIntOrZero()
-                    stock = it.basic.totalStockFmt.toIntOrZero()
+                    stock = it.basic.totalStockFmt
                     paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toIntOrZero()
                 }
             }
