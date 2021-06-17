@@ -1,0 +1,183 @@
+
+[
+  {
+    "data": {
+      "paymentList": {
+        "last_cursor": "",
+        "has_next_page": false,
+        "payment_list": [
+          {
+            "transaction_id": "11855452",
+            "transaction_date": "10 May 2021",
+            "transaction_expire": "10 May 2021, 19:39 WIB",
+            "transaction_expire_unix": 1620726840,
+            "merchant_code": "tokopedia",
+            "payment_amount": 511662,
+            "invoice_url": "https://pay-staging.tokopedia.com/v2/payment/detail?merchant_code\u003dtokopedia\u0026profile_code\u003dTKPD_APPS\u0026signature\u003d1628064a807b34db2d13ef4a6077f3a49e71b0a1\u0026transaction_id\u003d11855452",
+            "product_name": "Tokopedia",
+            "product_img": "https://ecs7.tokopedia.net/img/toppay/product/marketplace.png",
+            "gateway_name": "Kartu Kredit",
+            "gateway_img": "https://ecs7.tokopedia.net/img/toppay/payment-logo/cc.png",
+            "payment_code": "",
+            "is_va": false,
+            "is_klikbca": false,
+            "bank_img": "",
+            "user_bank_account": {
+              "acc_no": "",
+              "acc_name": "",
+              "bank_id": 0
+            },
+            "dest_bank_account": {
+              "acc_no": "",
+              "acc_name": "",
+              "bank_id": 0
+            },
+            "show_upload_button": false,
+            "show_edit_transfer_button": false,
+            "show_edit_klikbca_button": false,
+            "show_cancel_button": true,
+            "show_help_page": false,
+            "ticker_message": "Menunggu verifikasi",
+            "app_link": ""
+          },
+          {
+            "transaction_id": "11855433",
+            "transaction_date": "10 May 2021",
+            "transaction_expire": "12 May 2021, 19:18 WIB",
+            "transaction_expire_unix": 1620726820,
+            "merchant_code": "tokopedia",
+            "payment_amount": 11100,
+            "invoice_url": "https://pay-staging.tokopedia.com/v2/payment/detail?merchant_code\u003dtokopedia\u0026profile_code\u003dTKPD_APPS\u0026signature\u003dabc2dbd6de6a025edcf12b8d11e42e812237613f\u0026transaction_id\u003d11855433",
+            "product_name": "Tokopedia",
+            "product_img": "https://ecs7.tokopedia.net/img/toppay/product/marketplace.png",
+            "gateway_name": "KlikBCA",
+            "gateway_img": "https://ecs7.tokopedia.net/img/toppay/payment-logo/bca-klikbca.png",
+            "payment_code": "test1234",
+            "is_va": false,
+            "is_klikbca": true,
+            "bank_img": "",
+            "user_bank_account": {
+              "acc_no": "",
+              "acc_name": "",
+              "bank_id": 0
+            },
+            "dest_bank_account": {
+              "acc_no": "",
+              "acc_name": "",
+              "bank_id": 0
+            },
+            "show_upload_button": false,
+            "show_edit_transfer_button": false,
+            "show_edit_klikbca_button": true,
+            "show_cancel_button": true,
+            "show_help_page": true,
+            "ticker_message": "Bayar sebelum 12 May 2021, 19:18 WIB",
+            "app_link": "tokopedia://howtopay?deadline\u003dRabu%2C+12+May+2021%2C+19%3A18+WIB\u0026gateway_code\u003dBCAKLIKBCA\u0026gateway_logo\u003dhttps%3A%2F%2Fecs7.tokopedia.net%2Fimg%2Ftoppay%2Fpayment-logo%2Fbca-klikbca.png\u0026gateway_name\u003dKlikBCA\u0026payment_code\u003dtest1234\u0026payment_type\u003dKLIKBCA\u0026total_amount\u003d11.100\u0026transaction_id\u003d11855433"
+          },
+          {
+            "transaction_id": "11855421",
+            "transaction_date": "10 May 2021",
+            "transaction_expire": "12 May 2021, 19:08 WIB",
+            "transaction_expire_unix": 1620726820,
+            "merchant_code": "tokopedia",
+            "payment_amount": 11421,
+            "invoice_url": "https://pay-staging.tokopedia.com/v2/payment/detail?merchant_code\u003dtokopedia\u0026profile_code\u003dTKPD_APPS\u0026signature\u003d9984fd01526aadbde5fd7af53ae0f98239b0a7ca\u0026transaction_id\u003d11855421",
+            "product_name": "Tokopedia",
+            "product_img": "https://ecs7.tokopedia.net/img/toppay/product/marketplace.png",
+            "gateway_name": "Transfer Bank",
+            "gateway_img": "https://ecs7.tokopedia.net/img/toppay",
+            "payment_code": "rachelkur2020",
+            "is_va": false,
+            "is_klikbca": false,
+            "bank_img": "https://ecs7.tokopedia.net/img/icon-bca.png",
+            "user_bank_account": {
+              "acc_no": "5645645646546",
+              "acc_name": "Gerry Wijaya",
+              "bank_id": 1
+            },
+            "dest_bank_account": {
+              "acc_no": "372 309 8781",
+              "acc_name": "PT. Tokopedia ",
+              "bank_id": 1
+            },
+            "show_upload_button": true,
+            "show_edit_transfer_button": true,
+            "show_edit_klikbca_button": false,
+            "show_cancel_button": true,
+            "show_help_page": true,
+            "ticker_message": "Bayar sebelum 12 May 2021, 19:08 WIB",
+            "app_link": "tokopedia://howtopay?bank_info\u003dKedoya+Permai\u0026bank_logo\u003dhttps%3A%2F%2Fecs7.tokopedia.net%2Fimg%2Ficon-bca.png\u0026bank_name\u003dPT.+Tokopedia+\u0026bank_num\u003d372+309+8781\u0026deadline\u003dRabu%2C+12+May+2021%2C+19%3A08+WIB\u0026gateway_code\u003dMANUALTRANSFER\u0026gateway_logo\u003dhttps%3A%2F%2Fecs7.tokopedia.net%2Fimg%2Ftoppay\u0026gateway_name\u003dTransfer+Bank\u0026payment_code\u003d\u0026payment_type\u003dTRANSFER\u0026total_amount\u003d11.421\u0026transaction_id\u003d11855421"
+          },
+          {
+            "transaction_id": "11855338",
+            "transaction_date": "10 May 2021",
+            "transaction_expire": "12 May 2021, 16:47 WIB",
+            "transaction_expire_unix": 1620726810,
+            "merchant_code": "tokopedia",
+            "payment_amount": 193000,
+            "invoice_url": "https://pay-staging.tokopedia.com/v2/payment/detail?merchant_code\u003dtokopedia\u0026profile_code\u003dTKPD_APPS\u0026signature\u003d18d53cefa6f204aed2a521f4398ef934277b3c46\u0026transaction_id\u003d11855338",
+            "product_name": "Tokopedia",
+            "product_img": "https://ecs7.tokopedia.net/img/toppay/product/marketplace.png",
+            "gateway_name": "Virtual Account CIMB",
+            "gateway_img": "https://ecs7.tokopedia.net/img/toppay/payment-logo/cimb-va.png",
+            "payment_code": "644908118805559",
+            "is_va": true,
+            "is_klikbca": false,
+            "bank_img": "",
+            "user_bank_account": {
+              "acc_no": "",
+              "acc_name": "",
+              "bank_id": 0
+            },
+            "dest_bank_account": {
+              "acc_no": "",
+              "acc_name": "",
+              "bank_id": 0
+            },
+            "show_upload_button": false,
+            "show_edit_transfer_button": false,
+            "show_edit_klikbca_button": false,
+            "show_cancel_button": true,
+            "show_help_page": true,
+            "ticker_message": "Bayar sebelum 12 May 2021, 16:47 WIB",
+            "app_link": "tokopedia://howtopay?deadline\u003dRabu%2C+12+May+2021%2C+16%3A47+WIB\u0026gateway_code\u003dCIMBVA\u0026gateway_logo\u003dhttps%3A%2F%2Fecs7.tokopedia.net%2Fimg%2Ftoppay%2Fpayment-logo%2Fcimb-va.png\u0026gateway_name\u003dVirtual+Account+CIMB\u0026payment_code\u003d644908118805559\u0026payment_type\u003dVA\u0026total_amount\u003d204.100\u0026transaction_id\u003d11855338"
+          },
+          {
+            "transaction_id": "11855335",
+            "transaction_date": "10 May 2021",
+            "transaction_expire": "12 May 2021, 16:38 WIB",
+            "transaction_expire_unix": 1620726800,
+            "merchant_code": "tokopedia",
+            "payment_amount": 11100,
+            "invoice_url": "https://pay-staging.tokopedia.com/v2/payment/detail?merchant_code\u003dtokopedia\u0026profile_code\u003dTKPD_APPS\u0026signature\u003d095cc2f09f026923e5238db37344d3130c6bb65a\u0026transaction_id\u003d11855335",
+            "product_name": "Tokopedia",
+            "product_img": "https://ecs7.tokopedia.net/img/toppay/product/marketplace.png",
+            "gateway_name": "Virtual Account CIMB",
+            "gateway_img": "https://ecs7.tokopedia.net/img/toppay/payment-logo/cimb-va.png",
+            "payment_code": "644908118805559",
+            "is_va": true,
+            "is_klikbca": false,
+            "bank_img": "",
+            "user_bank_account": {
+              "acc_no": "",
+              "acc_name": "",
+              "bank_id": 0
+            },
+            "dest_bank_account": {
+              "acc_no": "",
+              "acc_name": "",
+              "bank_id": 0
+            },
+            "show_upload_button": false,
+            "show_edit_transfer_button": false,
+            "show_edit_klikbca_button": false,
+            "show_cancel_button": true,
+            "show_help_page": true,
+            "ticker_message": "Bayar sebelum 12 May 2021, 16:38 WIB",
+            "app_link": "tokopedia://howtopay?deadline\u003dRabu%2C+12+May+2021%2C+16%3A38+WIB\u0026gateway_code\u003dCIMBVA\u0026gateway_logo\u003dhttps%3A%2F%2Fecs7.tokopedia.net%2Fimg%2Ftoppay%2Fpayment-logo%2Fcimb-va.png\u0026gateway_name\u003dVirtual+Account+CIMB\u0026payment_code\u003d644908118805559\u0026payment_type\u003dVA\u0026total_amount\u003d204.100\u0026transaction_id\u003d11855335"
+          }
+        ]
+      }
+    }
+  }
+]

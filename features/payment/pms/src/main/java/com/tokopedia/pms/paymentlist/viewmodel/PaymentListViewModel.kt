@@ -3,6 +3,7 @@ package com.tokopedia.pms.paymentlist.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.pms.analytics.PmsIdlingResource
 import com.tokopedia.pms.paymentlist.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.pms.paymentlist.domain.data.*
 import com.tokopedia.pms.paymentlist.domain.usecase.*
@@ -32,6 +33,7 @@ class PaymentListViewModel @Inject constructor(
 
 
     fun getPaymentListCount() {
+        PmsIdlingResource.increment()
         getPaymentListCountUseCase.cancelJobs()
         _paymentListResultLiveData.postValue(LoadingState)
         getPaymentListCountUseCase.getPaymentCount(
@@ -105,6 +107,7 @@ class PaymentListViewModel @Inject constructor(
     }
 
     private fun showCombinedPaymentList(list: ArrayList<BasePaymentModel>) {
+        PmsIdlingResource.decrement()
         _paymentListResultLiveData.postValue(Success(list))
     }
 
