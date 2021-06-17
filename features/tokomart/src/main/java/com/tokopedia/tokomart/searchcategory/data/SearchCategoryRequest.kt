@@ -45,6 +45,8 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
         header {
           totalData
           totalDataText
+          responseCode
+          keywordProcess
         }
         data {
           suggestion {
