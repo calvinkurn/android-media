@@ -65,7 +65,7 @@ import javax.inject.Inject
  */
 class PlayVideoFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
-        dispatchers: CoroutineDispatchers,
+        private val dispatchers: CoroutineDispatchers,
         private val pipAnalytic: PlayPiPAnalytic,
         private val analytic: PlayAnalytic,
         private val pipSessionStorage: PiPSessionStorage
@@ -334,7 +334,9 @@ class PlayVideoFragment @Inject constructor(
 
     private fun removePiP() {
         pipAdapter.removeByKey(FLOATING_WINDOW_KEY)
-        videoViewOnStateChanged()
+        scope.launch(dispatchers.main) {
+            videoViewOnStateChanged()
+        }
     }
 
     //region observe

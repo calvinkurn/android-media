@@ -7,7 +7,6 @@ import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoLoadingUiM
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoUiModel
 
 interface OtherMenuTypeFactory {
-
     fun type(shopInfoUiModel: ShopInfoUiModel): Int
     fun type(shopInfoLoadingUiModel: ShopInfoLoadingUiModel): Int
     fun type(shopInfoErrorUiModel: ShopInfoErrorUiModel): Int

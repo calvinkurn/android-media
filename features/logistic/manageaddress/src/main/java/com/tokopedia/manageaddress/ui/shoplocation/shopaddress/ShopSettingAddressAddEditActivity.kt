@@ -10,8 +10,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.manageaddress.R
-import com.tokopedia.manageaddress.di.shoplocation.DaggerShopLocationComponent
-import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
+import com.tokopedia.manageaddress.di.DaggerShopLocationComponent
+import com.tokopedia.manageaddress.di.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
 import com.tokopedia.shop.settings.address.view.ShopSettingAddressAddEditFragment
 

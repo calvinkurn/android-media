@@ -42,7 +42,7 @@ internal class SearchProductThreeDotsOptionsTest : ProductListPresenterTestFixtu
 
     private fun `Given AB Test will return full options variant`() {
         every {
-            productListView.abTestRemoteConfig.getString(AB_TEST_KEY_THREE_DOTS_SEARCH)
+            productListView.abTestRemoteConfig?.getString(AB_TEST_KEY_THREE_DOTS_SEARCH)
         } returns AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS
     }
 
@@ -147,7 +147,7 @@ internal class SearchProductThreeDotsOptionsTest : ProductListPresenterTestFixtu
 
     private fun `Given AB Test will return control variant`() {
         every {
-            productListView.abTestRemoteConfig.getString(AB_TEST_KEY_THREE_DOTS_SEARCH)
+            productListView.abTestRemoteConfig?.getString(AB_TEST_KEY_THREE_DOTS_SEARCH)
         } returns ""
     }
 

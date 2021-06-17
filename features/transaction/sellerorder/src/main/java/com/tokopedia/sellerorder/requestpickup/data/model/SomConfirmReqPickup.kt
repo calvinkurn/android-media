@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.requestpickup.data.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -44,7 +43,11 @@ data class SomConfirmReqPickup (
 
                             @SerializedName("notes")
                             @Expose
-                            val notes: Notes = Notes()) : Parcelable {
+                            val notes: Notes = Notes(),
+
+                            @SerializedName("schedule_time_day")
+                            @Expose
+                            val schedule_time: ScheduleTime = ScheduleTime()) : Parcelable {
 
                             @Parcelize
                             data class PickupLocation(
@@ -69,7 +72,11 @@ data class SomConfirmReqPickup (
 
                                     @SerializedName("shippers")
                                     @Expose
-                                    val listShippers: List<Shipper> = listOf()) : Parcelable {
+                                    val listShippers: List<Shipper> = listOf(),
+
+                                    @SerializedName("orchestra_partner")
+                                    @Expose
+                                    val orchestraPartner: String = "") : Parcelable {
 
                                 @Parcelize
                                 data class Shipper(
@@ -107,6 +114,26 @@ data class SomConfirmReqPickup (
                                     @SerializedName("list")
                                     @Expose
                                     val listNotes: List<String> = listOf()) : Parcelable
+
+                            @Parcelize
+                            data class ScheduleTime(
+                                    @SerializedName("today")
+                                    val today: List<ScheduleResponse> = listOf(),
+                                    @SerializedName("tomorrow")
+                                    val tomorrow: List<ScheduleResponse> = listOf()
+                            ) : Parcelable {
+
+                                @Parcelize
+                                data class ScheduleResponse(
+                                        @SerializedName("key")
+                                        val key: String = "",
+                                        @SerializedName("start")
+                                        val start: String = "",
+                                        @SerializedName("end")
+                                        val end : String = ""
+                                ): Parcelable
+
+                            }
                     }
                 }
         }

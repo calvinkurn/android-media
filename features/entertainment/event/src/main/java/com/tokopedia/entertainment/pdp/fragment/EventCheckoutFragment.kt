@@ -349,7 +349,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
             )
         }
 
-        eventPDPTracking.onViewCheckoutPage(pdp, metadata.itemMap)
+        eventPDPTracking.onViewCheckoutPage(pdp, metadata.itemMap, userSessionInterface.userId)
     }
 
     private fun renderAdditionalItem(pdp: ProductDetailData) {
@@ -440,7 +440,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                         }
                         else -> {
                             progressDialog.show()
-                            eventPDPTracking.onClickCheckoutButton(productDetailData, metadata.itemMap)
+                            eventPDPTracking.onClickCheckoutButton(productDetailData, metadata.itemMap, userSessionInterface.userId)
                             metadata = getPassengerMetaData(metadata, forms, listAdditionalItem, eventCheckoutAdditionalDataPackage,
                                     it.getString(R.string.ent_checkout_data_nullable_form))
                             if(gatewayCode.isNullOrEmpty()) {

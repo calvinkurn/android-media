@@ -49,12 +49,13 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
             if (fintechProduct.info.title.isNotEmpty()) {
                 widgetMyBills.setTitle(fintechProduct.info.title)
                 widgetMyBills.setDescription(fintechProduct.info.subtitle)
-                widgetMyBills.hasMoreInfo(true)
+                widgetMyBills.hasMoreInfo(fintechProduct.info.urlLink.isNotEmpty() ||
+                        fintechProduct.info.tooltipText.isNotEmpty())
 
                 widgetMyBills.setAdditionalImage(fintechProduct.info.iconUrl)
                 if (fintechProduct.info.iconUrl.isNotEmpty()) {
                     listener.onTebusMurahImpression(fintechProduct, position)
-                }
+                } else listener.onCrossellImpression(fintechProduct, position)
 
                 widgetMyBills.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
                     override fun onMoreInfoClicked() {
@@ -65,7 +66,7 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
                         if (fintechProduct.info.iconUrl.isNotEmpty()) {
                             listener.onTebusMurahChecked(fintechProduct, position, isChecked)
                         } else {
-                            listener.onFintechProductChecked(fintechProduct, isChecked)
+                            listener.onFintechProductChecked(fintechProduct, isChecked, position)
                         }
                     }
                 }
@@ -87,7 +88,8 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
 interface MyBillsActionListener {
     fun onSubscriptionChecked(subscription: CartDigitalInfoData.CrossSellingConfig, isChecked: Boolean)
     fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int)
+    fun onCrossellImpression(fintechProduct: FintechProduct, position: Int)
     fun onTebusMurahChecked(fintechProduct: FintechProduct, position: Int, isChecked: Boolean)
-    fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean)
+    fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean, position: Int)
     fun onFintechMoreInfoChecked(info: FintechProduct.FintechProductInfo)
 }

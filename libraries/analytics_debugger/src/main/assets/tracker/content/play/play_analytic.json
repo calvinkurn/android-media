@@ -10,8 +10,9 @@
       "appsflyerId": ".*",
       "shopId": ".*",
       "screenName": "/group-chat-room/\\d+/vod|live",
-      "userId": ".+",
-      "sessionIris": ".*"
+      "userId": ".*",
+      "sessionIris": ".*",
+      "theme": ".*"
     },
     {
       "businessUnit": "play",

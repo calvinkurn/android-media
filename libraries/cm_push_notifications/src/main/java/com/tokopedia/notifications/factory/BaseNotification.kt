@@ -144,7 +144,7 @@ abstract class BaseNotification internal constructor(
 
     private val drawableLargeIcon: Int
         get() = if (GlobalConfig.isSellerApp())
-            com.tokopedia.resources.common.R.mipmap.ic_launcher_sellerapp_ramadhan
+            com.tokopedia.resources.common.R.mipmap.ic_launcher_sellerapp
         else
             com.tokopedia.resources.common.R.mipmap.ic_launcher_customerapp
     internal val bitmapLargeIcon: Bitmap

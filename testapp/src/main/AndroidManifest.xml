@@ -40,6 +40,18 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.tokopedia.tkpd.provider"
+            android:grantUriPermissions="true"
+            android:exported="false"
+            tools:replace="android:authorities">bg_button_enable.xml
+            <meta-data
+                tools:replace="android:resource"
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
     </application>
 
 </manifest>

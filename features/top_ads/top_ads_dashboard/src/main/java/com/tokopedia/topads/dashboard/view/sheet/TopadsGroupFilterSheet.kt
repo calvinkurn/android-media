@@ -25,7 +25,6 @@ private const val SELECTED_STATUS_3 = 3;
 private const val CLICK_TERAPKAN = "click - terapkan"
 
 class TopadsGroupFilterSheet : BottomSheetUnify() {
-    private var dialog: BottomSheetDialog? = null
     var onSubmitClick: (() -> Unit)? = null
     private var filterCount = 0
     private var selectedStatus = SELECTED_STATUS_0
@@ -92,7 +91,7 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
             onSubmitClick?.invoke()
             dismiss()
         }
-        
+
     }
 
     fun getFilterCount(): Int {
@@ -100,14 +99,12 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
     }
 
     fun removeStatusFilter() {
-        dialog.let {
-            view?.status?.visibility = View.GONE
-            view?.status_title?.visibility = View.GONE
-        }
+        view?.status?.visibility = View.GONE
+        view?.status_title?.visibility = View.GONE
     }
 
     fun getSelectedSortId(): String {
-        return when (dialog?.sortFilter?.checkedRadioButtonId) {
+        return when (view?.sortFilter?.checkedRadioButtonId) {
             R.id.filter1 -> list[0]
             R.id.filter2 -> list[1]
             R.id.filter3 -> list[2]

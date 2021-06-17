@@ -593,7 +593,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     break
                 }
             }
-            ShippingCourierOccBottomSheet().showBottomSheet(fragment, true, list, object : ShippingCourierOccBottomSheetListener {
+            ShippingCourierOccBottomSheet().showBottomSheet(fragment, list, object : ShippingCourierOccBottomSheetListener {
                 override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
                     listener.onCourierChange(shippingCourierViewModel)
                 }
@@ -623,7 +623,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
                 }
             }
-            ShippingDurationOccBottomSheet().showBottomSheet(fragment, true, list, object : ShippingDurationOccBottomSheetListener {
+            ShippingDurationOccBottomSheet().showBottomSheet(fragment, list, object : ShippingDurationOccBottomSheetListener {
                 override fun onDurationChosen(serviceData: ServiceData, selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
                     listener.onDurationChange(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
                 }

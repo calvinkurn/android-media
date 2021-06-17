@@ -43,9 +43,18 @@ class CatalogPreferredProductsBottomSheet : BottomSheetUnify() {
 
     }
 
+    fun setCatalogUrl(catalogUrl: String) {
+        childFragmentManager.fragments.firstOrNull()?.let { topFragment ->
+            if(topFragment is CatalogDetailProductListingFragment && catalogUrl.isNotEmpty()){
+                topFragment.viewModel.catalogUrl = catalogUrl
+            }
+        }
+    }
+
     companion object {
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
         private const val ARG_EXTRA_CATALOG_URL = "ARG_EXTRA_CATALOG_URL"
+        const val PREFFERED_PRODUCT_BOTTOMSHEET_TAG = "PREFFERED_PRODUCT_BOTTOMSHEET_TAG"
 
         fun newInstance(catalogId : String, catalogUrl : String?): CatalogPreferredProductsBottomSheet {
             return CatalogPreferredProductsBottomSheet().apply {

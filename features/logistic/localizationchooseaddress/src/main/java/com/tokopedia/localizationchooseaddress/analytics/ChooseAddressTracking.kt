@@ -16,7 +16,7 @@ object ChooseAddressTracking : BaseTrackerConst() {
     private const val CLICK_WIDGET_CHOOSE_ADDRESS_TRIBE = "click widget choose address"
     private const val CLICK_ALLOW_LOCATION = "click ok allow location"
     private const val CLICK_DONT_ALLOW_LOCATION = "click dont allow location"
-    private const val CLICK_AVAILABLE_ADDRESS_CARD = "click available adddress card"
+    private const val CLICK_AVAILABLE_ADDRESS_CARD = "click available address card"
     private const val CLICK_CEK_ALAMAT_LAINNYA = "click cek alamat lainnya"
     private const val IMPRESS_ADDRESS_LIST = "impress address list"
     private const val CLICK_BUTTON_PILIH_ALAMAT = "click button pilih alamat"
@@ -27,18 +27,18 @@ object ChooseAddressTracking : BaseTrackerConst() {
     private const val CLICK_PILIH_KOTA_ATAU_KECAMATAN = "click pilih kota atau kecamatan"
     private const val CLICK_CHIPS_KOTA_POPULER = "clik chips kota populer"
     private const val CLICK_FIELD_SEARCH = "click field search"
-    private const val CLICK_SUGGESTION_FROM_DROPDOWN = "click sugesstion from the dropdown"
+    private const val CLICK_SUGGESTION_FROM_DROPDOWN = "click suggestion from the dropdown"
     private const val CLICK_GUNAKAN_LOKASI_INI = "click gunakan lokasi ini"
     private const val CLICK_CLOSE = "click x"
 
     private const val BUSINESS_UNIT_LOGISTIC = "logistics & fulfillment"
 
-    fun onClickWidget(source: String, userId: String) {
+    fun onClickWidget(source: String, userId: String, eventLabel: String) {
         getTracker().sendGeneralEvent(BaseTrackerBuilder()
                 .appendEvent(CLICK_ADDRESS)
                 .appendEventCategory(WIDGET_CHOOSE_ADDRESS)
                 .appendEventAction("$CLICK_WIDGET_CHOOSE_ADDRESS_TRIBE $source")
-                .appendEventLabel("")
+                .appendEventLabel(eventLabel)
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)

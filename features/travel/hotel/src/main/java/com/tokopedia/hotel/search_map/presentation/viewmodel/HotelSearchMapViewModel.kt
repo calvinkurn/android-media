@@ -132,7 +132,7 @@ class HotelSearchMapViewModel @Inject constructor(
     }
 
     fun addFilter(filterV2: List<ParamFilterV2>, notifyUi: Boolean = true) {
-        liveSelectedFilter.postValue(Pair(filterV2.filter { it.values.isNotEmpty() }.toMutableList(), notifyUi))
+        liveSelectedFilter.value = Pair(filterV2.filter { it.values.isNotEmpty() }.toMutableList(), notifyUi)
     }
 
     fun addFilter(quickFilters: List<QuickFilter>, sortFilterItems: ArrayList<SortFilterItem>) {

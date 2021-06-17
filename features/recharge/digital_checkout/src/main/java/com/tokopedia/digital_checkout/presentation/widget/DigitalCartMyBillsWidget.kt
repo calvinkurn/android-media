@@ -41,7 +41,12 @@ class DigitalCartMyBillsWidget @JvmOverloads constructor(@NotNull context: Conte
     }
 
     fun setDescription(description: String) {
-        tvCheckoutMyBillsDescription.text = MethodChecker.fromHtml(description)
+        if (description.isNotEmpty()) {
+            tvCheckoutMyBillsDescription.text = MethodChecker.fromHtml(description)
+            tvCheckoutMyBillsDescription.show()
+        } else {
+            tvCheckoutMyBillsDescription.hide()
+        }
     }
 
     fun setChecked(isChecked: Boolean) {
@@ -62,7 +67,11 @@ class DigitalCartMyBillsWidget @JvmOverloads constructor(@NotNull context: Conte
         if (imageUrl.isNotEmpty()) {
             ivAdditionalFintechImage.loadImage(imageUrl)
             ivAdditionalFintechImage.show()
-        } else ivAdditionalFintechImage.hide()
+            bgAdditionalFintechImage.show()
+        } else {
+            ivAdditionalFintechImage.hide()
+            bgAdditionalFintechImage.hide()
+        }
     }
 
     interface ActionListener {

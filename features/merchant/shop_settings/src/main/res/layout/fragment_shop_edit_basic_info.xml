@@ -84,7 +84,6 @@
                 android:paddingRight="@dimen/spacing_lvl3"
                 android:visibility="gone"
                 app:descriptionText="@string/ticker_warning_can_only_change_shopname_once"
-                app:tckv_content_text_size="@dimen/dp_12"
                 app:tickerShapeType="loose"
                 app:tickerType="warning"
                 tools:visibility="visible" />

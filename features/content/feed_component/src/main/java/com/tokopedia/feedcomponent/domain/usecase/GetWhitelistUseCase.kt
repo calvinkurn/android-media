@@ -34,6 +34,17 @@ constructor(@ApplicationContext private val context: Context) : GraphqlUseCase()
         )
     }
 
+    fun setCacheStrategy(isAuthorEmpty:Boolean){
+        val expiryTime = if(!isAuthorEmpty)
+            GraphqlConstant.ExpiryTimes.MINUTE_1.`val`()
+        else
+            GraphqlConstant.ExpiryTimes.WEEK.`val`()
+        this.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
+            .setExpiryTime(expiryTime)
+            .setSessionIncluded(true)
+            .build())
+    }
+
     fun getRequest(variables: HashMap<String, Any>): GraphqlRequest {
         return GraphqlRequest(
                 GraphqlHelper.loadRawString(context.resources, R.raw.query_whitelist),

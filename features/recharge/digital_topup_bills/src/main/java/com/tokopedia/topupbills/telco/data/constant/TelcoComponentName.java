@@ -21,5 +21,5 @@ public @interface TelcoComponentName {
     String PRODUCT_PAKET_DATA = "Paket Data";
     String PRODUCT_PASCABAYAR = "Pascabayar";
     String PROMO = "Promo";
-    String RECENTS = "Recents";
+    String RECENTS = "Transaksi Terakhir";
 }

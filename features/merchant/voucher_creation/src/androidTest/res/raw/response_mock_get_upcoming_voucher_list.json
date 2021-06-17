@@ -1,0 +1,41 @@
+[
+  {
+    "data": {
+      "MerchantPromotionGetMVList": {
+        "data": {
+          "paging": {
+            "per_page": 10,
+            "page": 1,
+            "has_prev": false,
+            "has_next": false
+          },
+          "vouchers": [
+            {
+              "voucher_id": 3275544,
+              "voucher_name": "isi nama voucher",
+              "voucher_type": 3,
+              "voucher_type_formatted": "Cashback",
+              "voucher_image": "https://ecs7.tokopedia.net/img/attachment/2021/5/7/128068031/128068031_18101b26-3b14-4a05-9f8c-2438c836c971.jpg",
+              "voucher_image_square": "https://ecs7.tokopedia.net/img/attachment/2021/5/7/128068031/128068031_9fae571d-b757-4ef9-a6be-7a81abbc0548.jpg",
+              "voucher_status": 1,
+              "voucher_discount_type_formatted": "idr",
+              "voucher_discount_amt": 20000,
+              "voucher_discount_amt_formatted": "20rb",
+              "voucher_discount_amt_max": 20000,
+              "voucher_minimum_amt": 287500,
+              "voucher_quota": 15,
+              "confirmed_global_quota": 0,
+              "booked_global_quota": 0,
+              "voucher_start_time": "2021-05-07T05:30:00Z",
+              "voucher_finish_time": "2021-05-14T02:30:00Z",
+              "voucher_code": "YDPSIW623S",
+              "create_time": "2021-05-07T02:12:42Z",
+              "update_time": "2021-05-07T02:12:42Z",
+              "is_public": 1
+            }
+          ]
+        }
+      }
+    }
+  }
+]

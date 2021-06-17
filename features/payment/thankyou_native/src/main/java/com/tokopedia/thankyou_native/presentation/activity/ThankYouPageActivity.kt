@@ -2,6 +2,7 @@ package com.tokopedia.thankyou_native.presentation.activity
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -35,6 +36,7 @@ import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCal
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import java.lang.ref.WeakReference
 import javax.inject.Inject
+import com.tokopedia.config.GlobalConfig
 
 var idlingResource: TkpdIdlingResource? = null
 
@@ -69,12 +71,21 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setSecureWindowFlag()
         updateTitle("")
         component.inject(this)
         sendOpenScreenEvent(intent.data)
         idlingResource = TkpdIdlingResourceProvider.provideIdlingResource("Purchase")
         idlingResource?.increment()
     }
+
+
+    private fun setSecureWindowFlag() {
+        if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
+            runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
+        }
+    }
+
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
 
@@ -247,6 +258,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     private fun initializeGlobalNav(title: String) {
         globalNabToolbar?.apply {
+            this@ThankYouPageActivity.lifecycle.addObserver(this)
             setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
             setIcon(IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {})
             setupSearchbar(listOf(HintData(GLOBAL_NAV_HINT)))

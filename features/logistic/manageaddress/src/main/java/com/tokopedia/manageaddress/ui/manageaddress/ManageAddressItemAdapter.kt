@@ -103,10 +103,8 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
                     cardSelected = selectedPos == layoutPosition
                 }
                 cardAddress.hasCheckIcon = cardSelected
-                cardAddress.setPadding(0, 0, 16.toPx(), 0)
                 if (cardSelected) {
                     cardAddress.cardType = CardUnify.TYPE_BORDER_ACTIVE
-                    cardAddress.setPadding(0, 0, 10.toPx(), 0)
                 } else {
                     cardAddress.cardType = CardUnify.TYPE_BORDER
                 }

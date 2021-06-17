@@ -13,6 +13,7 @@ import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.DEFAULT_SHOP_INF
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_CLOSE_INFO_QUERY_NAME
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_INFO_CORE_AND_ASSETS_QUERY_NAME
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_INFO_FAVORITE_QUERY_NAME
+import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_INFO_FOR_SHOP_SETTINGS_INFO
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_INFO_HEADER_CONTENT_DATA_QUERY_NAME
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.SHOP_TOP_CONTENT_QUERY_NAME
 import com.tokopedia.shop.common.constant.GqlQueryConstant
@@ -86,6 +87,15 @@ class ShopCommonModule {
         return getShopInfoQuery(
                 GqlQueryConstant.SHOP_INFO_FOR_CORE_AND_ASSETS_REQUEST_QUERY_STRING,
                 SHOP_INFO_CORE_AND_ASSETS_QUERY_NAME
+        )
+    }
+
+    @Provides
+    @Named(SHOP_INFO_FOR_SHOP_SETTINGS_INFO)
+    fun provideGqlQueryShopInfoForShopSettingsInfo(@ApplicationContext context: Context?): String {
+        return getShopInfoQuery(
+                GqlQueryConstant.SHOP_INFO_FOR_SHOP_SETTINGS_INFO_REQUEST_QUERY_STRING,
+                SHOP_INFO_FOR_SHOP_SETTINGS_INFO
         )
     }
 
@@ -216,6 +226,13 @@ class ShopCommonModule {
     @Provides
     fun provideGqlGetShopInfoUseCaseCoreAndAssets(graphqlUseCase: MultiRequestGraphqlUseCase?,
                                                   @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS) gqlQuery: String?): GQLGetShopInfoUseCase {
+        return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
+    }
+
+    @GqlGetShopInfoUseCaseShopSettingsInfoQualifier
+    @Provides
+    fun provideGqlGetShopInfoShopSettingsInfo(graphqlUseCase: MultiRequestGraphqlUseCase?,
+                                                  @Named(GQLQueryNamedConstant.SHOP_INFO_FOR_SHOP_SETTINGS_INFO) gqlQuery: String?): GQLGetShopInfoUseCase {
         return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
     }
 

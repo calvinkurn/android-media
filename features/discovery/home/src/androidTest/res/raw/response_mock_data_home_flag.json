@@ -1,0 +1,30 @@
+[
+  {
+    "data": {
+      "homeFlag": {
+        "event_time": "",
+        "flags": [
+          {
+            "is_active": false,
+            "name": "has_recom_nav_button"
+          },
+          {
+            "is_active": false,
+            "name": "dynamic_icon_wrap"
+          },
+          {
+            "is_active": true,
+            "name": "has_tokopoints",
+            "integer_value":2
+          },
+          {
+            "is_active": false,
+            "name": "is_autorefresh"
+          }
+        ],
+        "server_time": 1611223212
+      },
+      "status": "request_denied"
+    }
+  }
+]

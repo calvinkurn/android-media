@@ -3,10 +3,9 @@ package com.tokopedia.applink.home
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.*
 import com.tokopedia.applink.startsWithPattern
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
@@ -23,6 +22,9 @@ object DeeplinkMapperHome {
     const val TAB_POSITION_RECOM = 5
 
     fun getRegisteredNavigationHome(deeplink: String): String {
+        if (GlobalConfig.isSellerApp()) {
+            return ApplinkConstInternalSellerapp.SELLER_HOME
+        }
         val uri = Uri.parse(deeplink)
 
         // tokopedia://home
@@ -43,9 +45,6 @@ object DeeplinkMapperHome {
         else if (deeplink.startsWith(ApplinkConst.HOME_RECOMMENDATION) && uri.pathSegments.size == 1)
             return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION,
                     mapOf(EXTRA_TAB_POSITION to TAB_POSITION_RECOM, EXTRA_RECOMMEND_LIST to true))
-
-
-
         return deeplink
     }
 
@@ -57,15 +56,22 @@ object DeeplinkMapperHome {
             return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
         else if (deeplink.startsWith(ApplinkConst.OFFICIAL_STORES) && uri.pathSegments.isEmpty())
             return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
-        else if (deeplink.startsWithPattern(ApplinkConst.OFFICIAL_STORE_CATEGORY) && uri.pathSegments.size == 1)
-        {
+        else if (deeplink.startsWith(ApplinkConst.BRAND_LIST)) {
+            return getBrandlistInternal(deeplink)
+        } else if (deeplink.startsWithPattern(ApplinkConst.OFFICIAL_STORE_CATEGORY) && uri.pathSegments.size == 1) {
             val params = UriUtil.destructureUriToMap(ApplinkConst.OFFICIAL_STORE_CATEGORY, Uri.parse(deeplink), true)
-            params.put(EXTRA_TAB_POSITION, TAB_POSITION_OS)
-
-            return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params)
+            params[EXTRA_TAB_POSITION] = TAB_POSITION_OS
+            return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params.toMap())
         }
-
         return deeplink
+    }
+
+    private fun getBrandlistInternal(deeplink: String): String {
+        val parsedUri = Uri.parse(deeplink)
+        val segments = parsedUri.pathSegments
+
+        val categoryId = if (segments.size > 1) segments.last() else "0"
+        return UriUtil.buildUri(ApplinkConstInternalMechant.BRANDLIST, categoryId)
     }
 
     fun getRegisteredNavigationHomeFeed(): String {
@@ -74,12 +80,12 @@ object DeeplinkMapperHome {
 
     fun getRegisteredNavigationHomeContentExplore(deeplink: String): String {
         val params = UriUtil.destructureUriToMap(ApplinkConst.CONTENT_EXPLORE, Uri.parse(deeplink), true)
-        params.put(EXTRA_TAB_POSITION, TAB_POSITION_FEED)
+        params[EXTRA_TAB_POSITION] = TAB_POSITION_FEED
 
-        return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params)
+        return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params.toMap())
     }
 
-    fun getRegisteredExplore(deeplink: String): String{
+    fun getRegisteredExplore(deeplink: String): String {
         val uri = Uri.parse(deeplink)
         return when {
             uri.pathSegments.size > 0 -> ApplinkConsInternalHome.EXPLORE + uri.path
@@ -88,25 +94,21 @@ object DeeplinkMapperHome {
     }
 
     fun getRegisteredInboxNavigation(deeplink: String): String {
+        return if (useNewInbox()) {
+            ApplinkConstInternalMarketplace.INBOX
+        } else {
+            ApplinkConsInternalHome.HOME_INBOX
+        }
+    }
+
+    fun useNewInbox(): Boolean {
         val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 AbTestPlatform.KEY_AB_INBOX_REVAMP, AbTestPlatform.VARIANT_OLD_INBOX
         ) == AbTestPlatform.VARIANT_NEW_INBOX
         val useNewNav = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 AbTestPlatform.NAVIGATION_EXP_TOP_NAV, AbTestPlatform.NAVIGATION_VARIANT_OLD
         ) == AbTestPlatform.NAVIGATION_VARIANT_REVAMP
-        return if (useNewInbox && useNewNav) {
-            getRegisteredNavigationInbox(deeplink)
-        } else {
-            ApplinkConsInternalHome.HOME_INBOX
-        }
+        return useNewInbox && useNewNav
     }
 
-    private fun getRegisteredNavigationInbox(deeplink: String): String {
-        var applinkInternal = ApplinkConstInternalMarketplace.INBOX
-        val query = Uri.parse(deeplink).query ?: ""
-        if (query.isNotEmpty()) {
-            applinkInternal = "$applinkInternal?$query"
-        }
-        return applinkInternal
-    }
 }

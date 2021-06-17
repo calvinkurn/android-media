@@ -23,11 +23,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
 import com.tokopedia.kotlin.util.getParamString
+import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addname.AddNameRegisterPhoneAnalytics
 import com.tokopedia.profilecompletion.addname.di.DaggerAddNameComponent
 import com.tokopedia.profilecompletion.addname.listener.AddNameListener
 import com.tokopedia.profilecompletion.addname.presenter.AddNamePresenter
+import com.tokopedia.profilecompletion.common.ColorUtils
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -85,9 +87,9 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ColorUtils.setBackgroundColor(context, activity)
         phoneNumber =  getParamString(ApplinkConstInternalGlobal.PARAM_PHONE, arguments, savedInstanceState, "")
         uuid =  getParamString(ApplinkConstInternalGlobal.PARAM_UUID, arguments, savedInstanceState, "")
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -247,7 +249,7 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
 
     override fun onSuccessRegister(registerInfo: RegisterInfo) {
         userSession.clearToken()
-        userSession.setToken(registerInfo.accessToken, "Bearer", registerInfo.refreshToken)
+        userSession.setToken(registerInfo.accessToken, "Bearer", EncoderDecoder.Encrypt(registerInfo.refreshToken, userSession.refreshTokenIV))
 
         activity?.run {
             dismissLoading()

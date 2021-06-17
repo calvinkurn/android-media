@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.manageaddress.R
-import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
+import com.tokopedia.manageaddress.di.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
 import com.tokopedia.shop.settings.address.presenter.ShopSettingAddressAddEditPresenter
 import com.tokopedia.shop.settings.address.view.listener.ShopSettingAddressAddEditView

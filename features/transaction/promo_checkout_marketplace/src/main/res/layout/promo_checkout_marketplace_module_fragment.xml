@@ -34,8 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/container_action_bottom"
-            android:layout_below="@+id/app_bar_layout"
-            android:background="@color/Unify_N50">
+            android:layout_below="@+id/app_bar_layout">
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swipe_refresh_layout"
@@ -70,6 +69,7 @@
                         android:id="@+id/section_image_promo_list_header"
                         android:layout_width="@dimen/dp_24"
                         android:layout_height="@dimen/dp_24"
+                        android:contentDescription="@string/content_description_image_coupon_sub_section"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -103,6 +103,7 @@
                         android:id="@+id/section_image_chevron"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:contentDescription="@string/content_description_image_arrow_coupon_sub_section"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
