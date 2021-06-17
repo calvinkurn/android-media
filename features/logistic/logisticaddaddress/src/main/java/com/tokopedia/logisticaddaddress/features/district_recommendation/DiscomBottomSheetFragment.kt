@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,12 +23,15 @@ import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistrictRecommend
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
+import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.ZipCodeChipsAdapter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomAdapterRevamp
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomNewAdapter
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoCleared
+import kotlinx.android.synthetic.main.form_add_new_address_mismatch_data_item.*
 import rx.Emitter
 import rx.Observable
 import rx.Subscription
@@ -43,11 +48,14 @@ class DiscomBottomSheetFragment : BottomSheets(),
         PopularCityAdapter.ActionListener,
         DiscomContract.View,
         DiscomNewAdapter.ActionListener,
-        DiscomAdapterRevamp.ActionListener {
+        DiscomAdapterRevamp.ActionListener,
+        ZipCodeChipsAdapter.ActionListener {
 
     private lateinit var popularCityAdapter: PopularCityAdapter
     private lateinit var listDistrictAdapter: DiscomNewAdapter
     private lateinit var listDistrictAdapterRevamp: DiscomAdapterRevamp
+    private lateinit var zipCodeChipsAdapter: ZipCodeChipsAdapter
+    private lateinit var chipsLayoutManagerZipCode: ChipsLayoutManager
     private var isLoading: Boolean = false
     private var input: String = ""
     private val mLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -63,6 +71,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
     private var isAnaRevamp: Boolean = true
+    private var staticDimen8dp: Int? = 0
 
     private var binding by autoCleared<BottomsheetDistrictRecommendationBinding>()
 
@@ -96,6 +105,14 @@ class DiscomBottomSheetFragment : BottomSheets(),
         val chipsLayoutManager = ChipsLayoutManager.newBuilder(view.context)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
+
+        zipCodeChipsAdapter = ZipCodeChipsAdapter(context, this)
+
+        chipsLayoutManagerZipCode = ChipsLayoutManager.newBuilder(view.context)
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .setScrollingEnabled(true)
                 .build()
 
         ViewCompat.setLayoutDirection(binding.rvChips, ViewCompat.LAYOUT_DIRECTION_LTR)
@@ -255,6 +272,17 @@ class DiscomBottomSheetFragment : BottomSheets(),
         }
     }
 
+    override fun onDistrictItemRevampClicked(districtModel: Address) {
+        context?.let {
+            districtModel.run {
+                actionListener.onGetDistrict(districtModel)
+                AddNewAddressAnalytics.eventClickSuggestionKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
+                setupRvZipCodeChips()
+                getDistrict(districtModel)
+            }
+        }
+    }
+
     private fun watchTextRx(view: EditText): Observable<String> {
         return Observable
                 .create({ emitter: Emitter<String> ->
@@ -278,6 +306,33 @@ class DiscomBottomSheetFragment : BottomSheets(),
         mCompositeSubs.add(this)
     }
 
+    fun getDistrict(data: Address) {
+        binding.llZipCode.visibility = View.VISIBLE
+        binding.cardAddress.addressDistrict.text = "${data?.districtName}, ${data?.cityName}, ${data?.provinceName}"
+        binding.etKodepos.textFieldInput.apply {
+            setOnClickListener {
+                showZipCodes(data)
+            }
+        }
+    }
+
+    private fun setupRvZipCodeChips() {
+        binding.rvKodeposChips.apply {
+            staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
+            layoutManager = chipsLayoutManagerZipCode
+            adapter = zipCodeChipsAdapter
+        }
+    }
+
+    private fun showZipCodes(data: Address) {
+        ViewCompat.setLayoutDirection(binding.rvKodeposChips, ViewCompat.LAYOUT_DIRECTION_LTR)
+        data.zipCodes?.let {
+            binding.rvKodeposChips.visibility = View.VISIBLE
+            zipCodeChipsAdapter.zipCodes = it.toMutableList()
+            zipCodeChipsAdapter.notifyDataSetChanged()
+        }
+    }
+
     interface ActionListener {
         fun onGetDistrict(districtAddress: Address)
     }
@@ -296,4 +351,12 @@ class DiscomBottomSheetFragment : BottomSheets(),
             }
         }
     }
+
+    override fun onZipCodeClicked(zipCode: String) {
+        binding.rvKodeposChips.visibility = View.GONE
+        binding.etKodepos.textFieldInput.run {
+            setText(zipCode)
+        }
+    }
+
 }

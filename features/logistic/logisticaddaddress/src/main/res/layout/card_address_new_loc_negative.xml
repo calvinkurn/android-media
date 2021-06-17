@@ -33,9 +33,21 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/ic_location"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_arrow"
             android:textColor="@color/light_N700_68"
             app:typographyType="body_3" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/btn_arrow"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/unify_space_24"
+            app:layout_constraintTop_toTopOf="@id/address_district"
+            app:layout_constraintBottom_toBottomOf="@id/address_district"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:icon_name="CHEVRON_RIGHT"
+            tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

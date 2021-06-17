@@ -72,6 +72,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private lateinit var labelAlamatChipsLayoutManager: ChipsLayoutManager
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
+    private lateinit var districtRecommendationBottomSheetFragment: DiscomBottomSheetFragment
 
     private var binding by autoCleared<FragmentAddressFormBinding>()
 
@@ -376,8 +377,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun showDistrictRecommendationBottomSheet() {
-        val districtRecommendationBottomSheetFragment =
-                DiscomBottomSheetFragment.newInstance(isLogisticLabel, true)
+        districtRecommendationBottomSheetFragment = DiscomBottomSheetFragment.newInstance(isLogisticLabel, true)
         districtRecommendationBottomSheetFragment.setActionListener(this)
         childFragmentManager?.run {
             districtRecommendationBottomSheetFragment.show(this, "")
@@ -620,7 +620,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     override fun onGetDistrict(districtAddress: Address) {
-       //no-op
+       districtRecommendationBottomSheetFragment.getDistrict(districtAddress)
     }
 
 }

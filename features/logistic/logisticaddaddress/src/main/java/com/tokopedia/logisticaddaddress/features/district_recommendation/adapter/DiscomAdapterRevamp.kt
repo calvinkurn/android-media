@@ -40,7 +40,7 @@ class DiscomAdapterRevamp(private var listener: ActionListener): RecyclerView.Ad
 
 
     interface ActionListener {
-        fun onDistrictItemClicked(districtModel: Address)
+        fun onDistrictItemRevampClicked(districtModel: Address)
     }
 
     inner class DiscomAdapterViewHolder (binding: ItemDistrictRecommendationRevampBinding, private val listener: ActionListener): RecyclerView.ViewHolder(binding.root) {
@@ -53,7 +53,7 @@ class DiscomAdapterRevamp(private var listener: ActionListener): RecyclerView.Ad
 
                 tvDistrictName.text = districtSelected
                 tvDistrictName.setOnClickListener {
-                    listener.onDistrictItemClicked(data)
+                    listener.onDistrictItemRevampClicked(data)
                 }
             }
         }
