@@ -61,7 +61,7 @@ object SellerHomeErrorHandler {
                                      layoutId: String,
                                      deviceId: String,
                                      extras: String) {
-        ServerLogger.log(Priority.P1, ERROR_TAG, getSellerHomeErrorMessageMap(throwable, errorType, layoutId, deviceId, extras))
+        ServerLogger.log(Priority.P2, ERROR_TAG, getSellerHomeErrorMessageMap(throwable, errorType, layoutId, deviceId, extras))
     }
 
     private fun getSellerHomeErrorMessageMap(throwable: Throwable,
