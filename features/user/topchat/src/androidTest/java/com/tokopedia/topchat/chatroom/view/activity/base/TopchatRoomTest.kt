@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
@@ -22,6 +21,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT
+import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
@@ -738,10 +738,9 @@ fun ChatSmartReplyQuestionResponse.hasQuestion(
 fun WebSocketResponse.changeTimeStampTo(
     timeMillis: Long
 ): WebSocketResponse {
-    Log.d("CHECK_SDF", jsonObject.toString())
     val date = Date(timeMillis)
     val startTime = SimpleDateFormat(START_TIME_FORMAT).format(date)
-    val msg = jsonObject?.get("message")?.asJsonObject
+    val msg = jsonObject?.getAsJsonObject("message")
     msg?.apply {
         addProperty("timestamp", startTime)
         addProperty("timestamp_fmt", startTime)
@@ -751,6 +750,33 @@ fun WebSocketResponse.changeTimeStampTo(
     jsonObject?.apply {
         addProperty("start_time", startTime)
     }
-    Log.d("CHECK_SDF", jsonObject.toString())
+    return this
+}
+
+fun WebSocketResponse.changeProductIdTo(
+    productId: String
+): WebSocketResponse {
+    val attrs = jsonObject?.getAsJsonObject("attachment")
+        ?.getAsJsonObject("attributes")
+    attrs?.apply {
+        addProperty("product_id", productId)
+    }
+    return this
+}
+
+fun WebSocketResponse.matchProductWith(
+    productPreview: ProductPreview
+): WebSocketResponse {
+    val attrs = jsonObject?.getAsJsonObject("attachment")
+        ?.getAsJsonObject("attributes")
+    val attrProductProfile = attrs?.getAsJsonObject("product_profile")
+    attrs?.apply {
+        addProperty("product_id", productPreview.id)
+    }
+    attrProductProfile?.apply {
+        addProperty("image_url", productPreview.imageUrl)
+        addProperty("name", productPreview.name)
+        addProperty("price", productPreview.price)
+    }
     return this
 }

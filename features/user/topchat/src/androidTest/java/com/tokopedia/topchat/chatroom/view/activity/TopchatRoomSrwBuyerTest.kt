@@ -20,6 +20,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.changeTimeStampTo
 import com.tokopedia.topchat.chatroom.view.activity.base.hasQuestion
+import com.tokopedia.topchat.chatroom.view.activity.base.matchProductWith
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.utils.time.RfcDateTimeParser
@@ -31,11 +32,13 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
     lateinit var productPreview: ProductPreview
 
+    private val DEFAULT_PRODUCT_ID = "1111"
+
     @Before
     override fun before() {
         super.before()
         productPreview = ProductPreview(
-            "1111",
+            DEFAULT_PRODUCT_ID,
             ProductPreviewAttribute.productThumbnail,
             ProductPreviewAttribute.productName,
             "Rp 23.000.000",
@@ -1226,7 +1229,34 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertTemplateChatVisibility(isDisplayed())
     }
 
-    // TODO: SRW bubble should not be removed when user receive attach same product (compare with productId, product attached still relevant to SRW) event from ws seller/himself.
+    /**
+     * (compare with productId, product no longer relevant) event from ws seller/himself.
+     */
+    @Test
+    fun srw_bubble_should_not_be_removed_when_user_receive_attach_same_product() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // When
+        clickSrwPreviewItemAt(0)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        websocket.simulateResponse(
+            wsSellerProductResponse
+                .changeTimeStampTo(today())
+                .matchProductWith(productPreview)
+        )
+        websocket.simulateResponse(wsSellerResponseText.changeTimeStampTo(today()))
+
+        // Then
+        assertSrwBubbleContentIsVisibleAt(0)
+    }
+
     // TODO: SRW should hide broadcast handler if visible
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
     // TODO: SRW bubble should removed when user return from attach image and request upload image.
