@@ -60,12 +60,12 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private lateinit var otpData: OtpData
-    private lateinit var adapter: VerificationMethodAdapter
+    protected lateinit var otpData: OtpData
+    protected lateinit var adapter: VerificationMethodAdapter
 
-    private var isMoreThanOneMethod: Boolean = true
+    protected var isMoreThanOneMethod: Boolean = true
 
-    private val viewmodel by lazy {
+    protected val viewmodel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(VerificationViewModel::class.java)
     }
 
@@ -125,7 +125,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         }
     }
 
-    private fun setMethodListAdapter() {
+    open fun setMethodListAdapter() {
         adapter = VerificationMethodAdapter.createInstance(object : VerificationMethodAdapter.ClickListener {
             override fun onModeListClick(modeList: ModeListData, position: Int) {
                 analytics.trackClickMethodOtpButton(otpData.otpType, modeList.modeText)

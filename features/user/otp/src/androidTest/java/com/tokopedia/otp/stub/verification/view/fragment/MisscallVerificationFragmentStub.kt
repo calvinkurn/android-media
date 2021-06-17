@@ -6,16 +6,12 @@ import com.tokopedia.otp.verification.view.fragment.MisscallVerificationFragment
 
 class MisscallVerificationFragmentStub : MisscallVerificationFragment() {
 
-    lateinit var keyboardStateIdling: CountingIdlingResource
-
     companion object {
         fun createInstance(
-                bundle: Bundle,
-                keyboardStateIdling: CountingIdlingResource
+                bundle: Bundle
         ): MisscallVerificationFragmentStub {
             return MisscallVerificationFragmentStub().apply {
                 arguments = bundle
-                this.keyboardStateIdling = keyboardStateIdling
             }
         }
     }

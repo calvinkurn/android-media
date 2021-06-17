@@ -6,16 +6,12 @@ import com.tokopedia.otp.verification.view.fragment.WhatsappVerificationFragment
 
 class WhatsappVerificationFragmentStub : WhatsappVerificationFragment() {
 
-    lateinit var keyboardStateIdling: CountingIdlingResource
-
     companion object {
         fun createInstance(
-                bundle: Bundle,
-                keyboardStateIdling: CountingIdlingResource
+                bundle: Bundle
         ): WhatsappVerificationFragmentStub {
             return WhatsappVerificationFragmentStub().apply {
                 arguments = bundle
-                this.keyboardStateIdling = keyboardStateIdling
             }
         }
     }

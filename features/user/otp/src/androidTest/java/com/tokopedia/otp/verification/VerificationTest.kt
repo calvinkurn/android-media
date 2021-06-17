@@ -5,30 +5,34 @@ import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.otp.AndroidFileUtil
+import com.tokopedia.otp.R
 import com.tokopedia.otp.idling.FragmentTransactionIdle
 import com.tokopedia.otp.stub.common.di.OtpComponentStub
+import com.tokopedia.otp.stub.common.di.OtpComponentStubBuilder
 import com.tokopedia.otp.stub.verification.domain.usecase.*
 import com.tokopedia.otp.stub.verification.view.activity.VerificationActivityStub
 import com.tokopedia.otp.verification.domain.data.OtpRequestPojo
 import com.tokopedia.otp.verification.domain.data.OtpValidatePojo
+import com.tokopedia.otp.verification.domain.pojo.ModeListData
+import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListPojo
-import com.tokopedia.otp.R
-import com.tokopedia.otp.stub.common.di.OtpComponentStubBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import javax.inject.Inject
+import javax.inject.Named
 
 abstract class VerificationTest {
 
@@ -37,6 +41,59 @@ abstract class VerificationTest {
             VerificationActivityStub::class.java, false, false
     )
 
+    @Inject
+    protected lateinit var getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FAStub
+    @Inject
+    protected lateinit var getVerificationMethodUseCase: GetVerificationMethodUseCaseStub
+    @Inject
+    protected lateinit var otpValidateUseCase2FA: OtpValidateUseCase2FAStub
+    @Inject
+    protected lateinit var otpValidateUseCase: OtpValidateUseCaseStub
+    @Inject
+    protected lateinit var sendOtp2FAUseCase: SendOtp2FAUseCaseStub
+    @Inject
+    protected lateinit var sendOtpUseCase: SendOtpUseCaseStub
+    @Inject
+    @Named("OtpMethodSuccess")
+    protected lateinit var smsVerificationMethodSuccess: OtpModeListPojo
+    @Inject
+    @Named("OtpMethodFailed")
+    protected lateinit var smsVerificationMethodFailed: OtpModeListPojo
+    @Inject
+    @Named("OtpMethod2FASuccess")
+    protected lateinit var smsVerificationMethod2FASuccess: OtpModeListPojo
+    @Inject
+    @Named("OtpMethod2FAFailed")
+    protected lateinit var smsVerificationMethod2FAFailed: OtpModeListPojo
+    @Inject
+    @Named("OtpValidateSuccess")
+    protected lateinit var smsValidateVerificationMethodSuccess: OtpValidatePojo
+    @Inject
+    @Named("OtpValidateFailed")
+    protected lateinit var smsValidateVerificationMethodFailed: OtpValidatePojo
+    @Inject
+    @Named("OtpValidate2FASuccess")
+    protected lateinit var smsValidateVerificationMethod2FASuccess: OtpValidatePojo
+    @Inject
+    @Named("OtpValidate2FAFailed")
+    protected lateinit var smsValidateVerificationMethod2FAFailed: OtpValidatePojo
+    @Inject
+    @Named("SendOtpSuccess")
+    protected lateinit var sendSmsVerificationMethodSuccess: OtpRequestPojo
+    @Inject
+    @Named("SendOtpFailed")
+    protected lateinit var sendSmsVerificationMethodFailed: OtpRequestPojo
+    @Inject
+    @Named("SendOtp2FASuccess")
+    protected lateinit var sendSmsVerificationMethod2FASuccess: OtpRequestPojo
+    @Inject
+    @Named("SendOtp2FAFailed")
+    protected lateinit var sendSmsVerificationMethod2FAFailed: OtpRequestPojo
+
+    protected open lateinit var activity: VerificationActivityStub
+    protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
+    protected lateinit var otpComponent: OtpComponentStub
+
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     protected val applicationContext: Context
         get() = InstrumentationRegistry
@@ -44,128 +101,23 @@ abstract class VerificationTest {
 
     protected val gtmLogDbSource = GtmLogDBSource(context)
 
-    @Inject
-    protected lateinit var getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FAStub
-
-    @Inject
-    protected lateinit var getVerificationMethodUseCase: GetVerificationMethodUseCaseStub
-
-    @Inject
-    protected lateinit var otpValidateUseCase2FA: OtpValidateUseCase2FAStub
-
-    @Inject
-    protected lateinit var otpValidateUseCase: OtpValidateUseCaseStub
-
-    @Inject
-    protected lateinit var sendOtp2FAUseCase: SendOtp2FAUseCaseStub
-
-    @Inject
-    protected lateinit var sendOtpUseCase: SendOtpUseCaseStub
-
-    protected open lateinit var activity: VerificationActivityStub
-    protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
-    protected open var keyboardStateIdling: CountingIdlingResource = CountingIdlingResource(
-            "Verification-Keyboard"
-    )
-
-    protected var smsVerificationMethodSuccess = OtpModeListPojo()
-    protected var smsVerificationMethodFailed = OtpModeListPojo()
-    protected var smsVerificationMethod2FASuccess = OtpModeListPojo()
-    protected var smsVerificationMethod2FAFailed = OtpModeListPojo()
-    protected var smsValidateVerificationMethodSuccess = OtpValidatePojo()
-    protected var smsValidateVerificationMethodFailed = OtpValidatePojo()
-    protected var smsValidateVerificationMethod2FASuccess = OtpValidatePojo()
-    protected var smsValidateVerificationMethod2FAFailed = OtpValidatePojo()
-    protected var sendSmsVerificationMethodSuccess = OtpRequestPojo()
-    protected var sendSmsVerificationMethodFailed = OtpRequestPojo()
-    protected var sendSmsVerificationMethod2FASuccess = OtpRequestPojo()
-    protected var sendSmsVerificationMethod2FAFailed = OtpRequestPojo()
-
-    protected lateinit var otpComponentStub: OtpComponentStub
-
+    @ExperimentalCoroutinesApi
     @Before
     open fun before() {
-        setupResponse()
-        otpComponentStub = OtpComponentStubBuilder.getComponent(applicationContext, context)
-        otpComponentStub.inject(this)
-        setupSuccessResponses()
-        IdlingRegistry.getInstance().register(keyboardStateIdling)
+        Dispatchers.setMain(TestCoroutineDispatcher())
+        otpComponent = OtpComponentStubBuilder.getComponent(applicationContext, context)
+        otpComponent.inject(this)
         gtmLogDbSource.deleteAll().subscribe()
     }
 
     @After
     open fun tearDown() {
-        IdlingRegistry.getInstance().unregister(keyboardStateIdling)
         activityTestRule.finishActivity()
     }
 
-    protected open fun setupResponse() {
-        smsVerificationMethodSuccess = AndroidFileUtil.parse(
-                "get_verification_method_success.json",
-                OtpModeListPojo::class.java
-        )
-        smsVerificationMethodFailed = AndroidFileUtil.parse(
-                "get_verification_method_failed.json",
-                OtpModeListPojo::class.java
-        )
-        smsVerificationMethod2FASuccess = AndroidFileUtil.parse(
-                "get_verification_method_2FA_success.json",
-                OtpModeListPojo::class.java
-        )
-        smsVerificationMethod2FAFailed = AndroidFileUtil.parse(
-                "get_verification_method_2FA_failed.json",
-                OtpModeListPojo::class.java
-        )
-        smsValidateVerificationMethodSuccess = AndroidFileUtil.parse(
-                "otp_validate_success.json",
-                OtpValidatePojo::class.java
-        )
-        smsValidateVerificationMethodFailed = AndroidFileUtil.parse(
-                "otp_validate_failed.json",
-                OtpValidatePojo::class.java
-        )
-        smsValidateVerificationMethod2FASuccess = AndroidFileUtil.parse(
-                "otp_validate_2FA_success.json",
-                OtpValidatePojo::class.java
-        )
-        smsValidateVerificationMethod2FAFailed = AndroidFileUtil.parse(
-                "otp_validate_2FA_failed.json",
-                OtpValidatePojo::class.java
-        )
-        sendSmsVerificationMethodSuccess = AndroidFileUtil.parse(
-                "send_otp_success.json",
-                OtpRequestPojo::class.java
-        )
-        sendSmsVerificationMethodFailed = AndroidFileUtil.parse(
-                "send_otp_failed.json",
-                OtpRequestPojo::class.java
-        )
-        sendSmsVerificationMethod2FASuccess = AndroidFileUtil.parse(
-                "send_otp_2FA_success.json",
-                OtpRequestPojo::class.java
-        )
-        sendSmsVerificationMethod2FAFailed = AndroidFileUtil.parse(
-                "send_otp_2FA_failed.json",
-                OtpRequestPojo::class.java
-        )
-    }
-
-    protected fun setupSuccessResponses() {
-        setupSmsVerificationMethod2FAResponse(true)
-        setupSmsVerificationMethodResponse(true)
-        setupSmsValidateVerificationMethod2FAResponse(true)
-        setupSmsValidateVerificationMethodResponse(true)
-        setupSendSmsVerificationMethod2FAResponse(true)
-        setupSendSmsVerificationMethodResponse(true)
-    }
-
-    protected fun setupFailedResponses() {
-        setupSmsVerificationMethod2FAResponse(false)
-        setupSmsVerificationMethodResponse(false)
-        setupSmsValidateVerificationMethod2FAResponse(false)
-        setupSmsValidateVerificationMethodResponse(false)
-        setupSendSmsVerificationMethod2FAResponse(false)
-        setupSendSmsVerificationMethodResponse(false)
+    fun runTest(test: () -> Unit) {
+        launchDefaultFragment()
+        test.invoke()
     }
 
     protected fun setupSmsVerificationMethod2FAResponse(isSuccess: Boolean) {
@@ -192,21 +144,7 @@ abstract class VerificationTest {
         sendOtpUseCase.response = if (isSuccess) sendSmsVerificationMethodSuccess else sendSmsVerificationMethodFailed
     }
 
-    protected fun inflateTestFragment() {
-        activity.setupTestFragment(otpComponentStub, keyboardStateIdling)
-        waitForFragmentResumed()
-    }
-
-    protected fun waitForFragmentResumed() {
-        IdlingRegistry.getInstance().register(fragmentTransactionIdling)
-        onView(withId(R.id.base_view))
-                .check(ViewAssertions.matches(isDisplayed()))
-        IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
-    }
-
     protected fun setupVerificationActivity(
-            sourcePage: String? = null,
-            isSellerApp: Boolean = false,
             intentModifier: (Intent) -> Unit = {}
     ) {
         val intent = Intent().apply {
@@ -216,8 +154,8 @@ abstract class VerificationTest {
             putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
             putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
             putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
-            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, sourcePage)
         }
+
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
@@ -225,8 +163,24 @@ abstract class VerificationTest {
                 activity.supportFragmentManager,
                 VerificationActivityStub.TAG
         )
-        if (isSellerApp) {
-            GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
+    }
+
+    protected fun launchDefaultFragment() {
+        setupVerificationActivity {
+            it.putExtras(Intent(context, VerificationActivityStub::class.java))
         }
+        inflateTestFragment()
+    }
+
+    protected fun inflateTestFragment() {
+        activity.setupTestFragment(otpComponent)
+        waitForFragmentResumed()
+    }
+
+    protected fun waitForFragmentResumed() {
+        IdlingRegistry.getInstance().register(fragmentTransactionIdling)
+        onView(withId(R.id.parent_container))
+                .check(ViewAssertions.matches(isDisplayed()))
+        IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
     }
 }

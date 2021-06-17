@@ -14,10 +14,10 @@ import dagger.Component
             OtpModule::class,
             OtpViewModelModule::class,
             OtpFakeUseCaseModule::class,
+            OtpResponseModule::class
         ],
         dependencies = [FakeBaseAppComponent::class]
 )
 interface OtpComponentStub : OtpComponent {
     fun inject(verificationTest: VerificationTest)
-    fun inject(verificationActivityStub: VerificationActivityStub)
 }

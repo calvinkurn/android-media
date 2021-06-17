@@ -40,12 +40,20 @@ open class VerificationActivity : BaseOtpActivity() {
     var otpData = OtpData()
     private var isLoginRegisterFlow = false
 
-    override fun getNewFragment(): Fragment? = null
+    override fun getTagFragment(): String = TAG
+
+    override fun getNewFragment(): Fragment {
+        setupParams()
+        return createVerificationMethodFragment(createBundle())
+    }
+
+    protected open fun createVerificationMethodFragment(bundle: Bundle): Fragment {
+        return VerificationMethodFragment.createInstance(bundle)
+    }
 
     override fun setupFragment(savedInstance: Bundle?) {
         component.inject(this)
-        setupParams()
-        goToVerificationMethodPage()
+        super.setupFragment(savedInstance)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -161,6 +169,8 @@ open class VerificationActivity : BaseOtpActivity() {
     }
 
     companion object {
+        val TAG = VerificationActivity::class.java.name
+
         private const val BACK_STACK_ROOT_TAG = "root_fragment"
 
         const val TAG_OTP_MODE = "otpMode"

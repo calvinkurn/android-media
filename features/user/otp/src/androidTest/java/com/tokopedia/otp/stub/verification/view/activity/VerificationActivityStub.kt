@@ -1,10 +1,9 @@
 package com.tokopedia.otp.stub.verification.view.activity
 
 import android.os.Bundle
-import androidx.test.espresso.idling.CountingIdlingResource
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.otp.common.di.OtpComponent
-import com.tokopedia.otp.common.di.OtpComponentBuilder
 import com.tokopedia.otp.stub.common.UserSessionStub
 import com.tokopedia.otp.stub.common.di.OtpComponentStub
 import com.tokopedia.otp.stub.common.di.OtpComponentStubBuilder
@@ -13,22 +12,15 @@ import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
-import com.tokopedia.otp.verification.view.fragment.*
+import com.tokopedia.otp.verification.view.fragment.VerificationFragment
 
 class VerificationActivityStub : VerificationActivity() {
 
     lateinit var otpComponentStub: OtpComponentStub
-    lateinit var keyboardStateIdling: CountingIdlingResource
 
+    override fun getTagFragment(): String = TAG
 
-    override fun inflateFragment() {
-        // Don't inflate fragment immediately
-    }
-
-    override fun setupFragment(savedInstance: Bundle?) {
-        userSession = UserSessionStub(this)
-        setupParams()
-    }
+    override fun inflateFragment() { }
 
     override fun initializeOtpComponent(): OtpComponent =
             OtpComponentStubBuilder.getComponent(application as BaseMainApplication, this).also {
@@ -36,51 +28,45 @@ class VerificationActivityStub : VerificationActivity() {
             }
 
     fun setupTestFragment(
-            otpComponentStub: OtpComponentStub,
-            keyboardStateIdling: CountingIdlingResource
+            otpComponentStub: OtpComponentStub
     ) {
         this.otpComponentStub = otpComponentStub
-        this.keyboardStateIdling = keyboardStateIdling
-        newFragment?.let {
-            supportFragmentManager.beginTransaction()
-                .replace(parentViewResourceID, it, TAG)
-                .commit()
-        }
+        doFragmentTransaction(newFragment, TAG, true)
     }
 
     override fun goToVerificationMethodPage() {
-        val fragment = VerificationMethodFragmentStub.createInstance(createBundle(), keyboardStateIdling)
+        val fragment = VerificationMethodFragmentStub.createInstance(createBundle())
         doFragmentTransaction(fragment, TAG_OTP_MODE, true)
     }
 
     override fun generateVerificationFragment(modeListData: ModeListData, bundle: Bundle): VerificationFragment {
         return when (modeListData.modeText) {
             OtpConstant.OtpMode.EMAIL -> {
-                EmailVerificationFragmentStub.createInstance(bundle, keyboardStateIdling)
+                EmailVerificationFragmentStub.createInstance(bundle)
             }
             OtpConstant.OtpMode.SMS -> {
-                SmsVerificationFragmentStub.createInstance(bundle, keyboardStateIdling)
+                SmsVerificationFragmentStub.createInstance(bundle)
             }
             OtpConstant.OtpMode.WA -> {
-                WhatsappVerificationFragmentStub.createInstance(bundle, keyboardStateIdling)
+                WhatsappVerificationFragmentStub.createInstance(bundle)
             }
             OtpConstant.OtpMode.GOOGLE_AUTH -> {
-                GoogleAuthVerificationFragmentStub.createInstance(bundle, keyboardStateIdling)
+                GoogleAuthVerificationFragmentStub.createInstance(bundle)
             }
             OtpConstant.OtpMode.PIN -> {
-                PinVerificationFragmentStub.createInstance(bundle, keyboardStateIdling)
+                PinVerificationFragmentStub.createInstance(bundle)
             }
             OtpConstant.OtpMode.MISCALL -> {
-                MisscallVerificationFragmentStub.createInstance(bundle, keyboardStateIdling)
+                MisscallVerificationFragmentStub.createInstance(bundle)
             }
             else -> {
-                VerificationFragmentStub.createInstance(bundle, keyboardStateIdling)
+                VerificationFragmentStub.createInstance(bundle)
             }
         }
     }
 
     override fun goToOnboardingMiscallPage(modeListData: ModeListData) {
-        val fragment = OnboardingMiscallFragmentStub.createInstance(createBundle(modeListData), keyboardStateIdling)
+        val fragment = OnboardingMiscallFragmentStub.createInstance(createBundle(modeListData))
         doFragmentTransaction(fragment, TAG_OTP_MISCALL, false)
     }
 
@@ -89,15 +75,15 @@ class VerificationActivityStub : VerificationActivity() {
         val bundle = Bundle().apply {
             putParcelable(OtpConstant.OTP_DATA_EXTRA, otpData)
         }
-        val fragment = VerificationMethodFragmentStub.createInstance(bundle, keyboardStateIdling)
+        val fragment = VerificationMethodFragmentStub.createInstance(bundle)
         doFragmentTransaction(fragment, TAG_OTP_VALIDATOR, false)
     }
 
-    override fun getTagFragment(): String {
-        return TAG
+    override fun createVerificationMethodFragment(bundle: Bundle): Fragment {
+        return VerificationMethodFragmentStub.createInstance(bundle)
     }
 
     companion object {
-        const val TAG = "verification-tag"
+        val TAG = VerificationActivityStub::class.java.name
     }
 }

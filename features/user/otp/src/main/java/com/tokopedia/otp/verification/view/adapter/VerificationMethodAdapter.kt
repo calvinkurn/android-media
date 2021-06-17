@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.item_verification_method.view.*
  */
 
 open class VerificationMethodAdapter(
-        private var listData: MutableList<ModeListData>,
+        var listData: MutableList<ModeListData>,
         private val listener: ClickListener
 ) : RecyclerView.Adapter<VerificationMethodAdapter.ViewHolder>() {
 

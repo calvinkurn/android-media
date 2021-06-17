@@ -6,16 +6,12 @@ import com.tokopedia.otp.verification.view.fragment.EmailVerificationFragment
 
 class EmailVerificationFragmentStub : EmailVerificationFragment() {
 
-    lateinit var keyboardStateIdling: CountingIdlingResource
-
     companion object {
         fun createInstance(
-                bundle: Bundle,
-                keyboardStateIdling: CountingIdlingResource
+                bundle: Bundle
         ): EmailVerificationFragmentStub {
             return EmailVerificationFragmentStub().apply {
                 arguments = bundle
-                this.keyboardStateIdling = keyboardStateIdling
             }
         }
     }

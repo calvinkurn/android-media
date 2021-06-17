@@ -6,16 +6,12 @@ import com.tokopedia.otp.verification.view.fragment.OnboardingMiscallFragment
 
 class OnboardingMiscallFragmentStub : OnboardingMiscallFragment() {
 
-    lateinit var keyboardStateIdling: CountingIdlingResource
-
     companion object {
         fun createInstance(
-                bundle: Bundle,
-                keyboardStateIdling: CountingIdlingResource
+                bundle: Bundle
         ): OnboardingMiscallFragmentStub {
             return OnboardingMiscallFragmentStub().apply {
                 arguments = bundle
-                this.keyboardStateIdling = keyboardStateIdling
             }
         }
     }

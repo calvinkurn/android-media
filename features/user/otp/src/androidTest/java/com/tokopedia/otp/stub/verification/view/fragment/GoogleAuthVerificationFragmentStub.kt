@@ -6,16 +6,12 @@ import com.tokopedia.otp.verification.view.fragment.GoogleAuthVerificationFragme
 
 class GoogleAuthVerificationFragmentStub : GoogleAuthVerificationFragment() {
 
-    lateinit var keyboardStateIdling: CountingIdlingResource
-
     companion object {
         fun createInstance(
-                bundle: Bundle,
-                keyboardStateIdling: CountingIdlingResource
+                bundle: Bundle
         ): GoogleAuthVerificationFragmentStub {
             return GoogleAuthVerificationFragmentStub().apply {
                 arguments = bundle
-                this.keyboardStateIdling = keyboardStateIdling
             }
         }
     }

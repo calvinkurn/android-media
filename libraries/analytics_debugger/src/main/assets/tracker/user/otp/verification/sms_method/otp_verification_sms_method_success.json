@@ -3,40 +3,33 @@
   "mode": "subset",
   "query": [
     {
-      "networkSpeed": "{{.+}}",
-      "clientId": "{{.+}}",
-      "isLoggedInStatus": "{{.+}}",
-      "appsflyerId": "{{.+}}",
-      "shopId": "{{.*}}",
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": ".+",
+      "appsflyerId": ".+",
+      "shopId": ".*",
       "screenName": "change method",
       "event": "openScreen",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.+}}"
+      "userId": ".*",
+      "sessionIris": ".+"
     },
     {
       "event": "clickOtp",
       "eventCategory": "choose otp page",
       "eventAction": "click on otp method",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "eventLabel": ".*",
+      "sessionIris": ".*"
     },
     {
-      "networkSpeed": "{{.+}}",
-      "clientId": "{{.+}}",
-      "isLoggedInStatus": "{{.+}}",
-      "appsflyerId": "{{.+}}",
-      "shopId": "{{.*}}",
-      "screenName": "Input OTP {{.+}}",
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": ".+",
+      "appsflyerId": ".+",
+      "shopId": ".*",
+      "screenName": "Input OTP .+",
       "event": "openScreen",
-      "userId": "{{.*}}",
-      "sessionIris": "{{.+}}"
-    },
-    {
-      "event": "clickConfirm",
-      "eventCategory": "input otp page",
-      "eventAction": "click on verifikasi",
-      "eventLabel": "{{.*}}",
-      "sessionIris": "{{.*}}"
+      "userId": ".*",
+      "sessionIris": ".+"
     }
   ]
 }

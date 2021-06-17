@@ -3,7 +3,7 @@
     "success": true,
     "message": "OTP Mode Found",
     "errorMessage": "",
-    "otpDigit": 4,
+    "otpDigit": 6,
     "linkType": 0,
     "modeLists": [
       {
@@ -17,7 +17,7 @@
         "popUpHeader": "",
         "popUpBody": "",
         "countdown": true,
-        "otpDigit": 4
+        "otpDigit": 6
       }
     ]
   }

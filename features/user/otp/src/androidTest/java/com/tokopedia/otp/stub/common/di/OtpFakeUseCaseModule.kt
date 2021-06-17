@@ -4,9 +4,13 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.otp.common.di.OtpScope
 import com.tokopedia.otp.stub.verification.domain.usecase.*
+import com.tokopedia.otp.verification.domain.data.OtpRequestPojo
+import com.tokopedia.otp.verification.domain.data.OtpValidatePojo
+import com.tokopedia.otp.verification.domain.pojo.OtpModeListPojo
 import com.tokopedia.otp.verification.domain.usecase.*
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 
 @Module
 class OtpFakeUseCaseModule {
@@ -15,8 +19,13 @@ class OtpFakeUseCaseModule {
     @OtpScope
     fun provideGetVerificationMethodUseCase2FAStub(
             graphqlRepository: GraphqlRepository,
-            dispatcher: CoroutineDispatchers
-    ): GetVerificationMethodUseCase2FAStub = GetVerificationMethodUseCase2FAStub(graphqlRepository, dispatcher)
+            dispatcher: CoroutineDispatchers,
+            @Named("OtpMethod2FASuccess") otpModeListPojo: OtpModeListPojo
+    ): GetVerificationMethodUseCase2FAStub {
+        val usecase = GetVerificationMethodUseCase2FAStub(graphqlRepository, dispatcher)
+        usecase.response = otpModeListPojo
+        return usecase
+    }
 
     @Provides
     @OtpScope
@@ -28,8 +37,13 @@ class OtpFakeUseCaseModule {
     @OtpScope
     fun provideGetVerificationMethodUseCaseStub(
             graphqlRepository: GraphqlRepository,
-            dispatcher: CoroutineDispatchers
-    ): GetVerificationMethodUseCaseStub = GetVerificationMethodUseCaseStub(graphqlRepository, dispatcher)
+            dispatcher: CoroutineDispatchers,
+            @Named("OtpMethodSuccess") otpModeListPojo: OtpModeListPojo
+    ): GetVerificationMethodUseCaseStub {
+        val usecase = GetVerificationMethodUseCaseStub(graphqlRepository, dispatcher)
+        usecase.response = otpModeListPojo
+        return usecase
+    }
 
     @Provides
     @OtpScope
@@ -41,8 +55,13 @@ class OtpFakeUseCaseModule {
     @OtpScope
     fun provideOtpValidateUseCase2FAStub(
             graphqlRepository: GraphqlRepository,
-            dispatcher: CoroutineDispatchers
-    ): OtpValidateUseCase2FAStub = OtpValidateUseCase2FAStub(graphqlRepository, dispatcher)
+            dispatcher: CoroutineDispatchers,
+            @Named("OtpValidate2FASuccess") otpValidatePojo: OtpValidatePojo
+    ): OtpValidateUseCase2FAStub {
+        val usecase = OtpValidateUseCase2FAStub(graphqlRepository, dispatcher)
+        usecase.response = otpValidatePojo
+        return usecase
+    }
 
     @Provides
     @OtpScope
@@ -54,8 +73,13 @@ class OtpFakeUseCaseModule {
     @OtpScope
     fun provideOtpValidateUseCaseStub(
             graphqlRepository: GraphqlRepository,
-            dispatcher: CoroutineDispatchers
-    ): OtpValidateUseCaseStub = OtpValidateUseCaseStub(graphqlRepository, dispatcher)
+            dispatcher: CoroutineDispatchers,
+            @Named("OtpValidateSuccess") otpValidatePojo: OtpValidatePojo
+    ): OtpValidateUseCaseStub {
+        val usecase = OtpValidateUseCaseStub(graphqlRepository, dispatcher)
+        usecase.response = otpValidatePojo
+        return usecase
+    }
 
     @Provides
     @OtpScope
@@ -67,8 +91,13 @@ class OtpFakeUseCaseModule {
     @OtpScope
     fun provideSendOtp2FAUseCaseStub(
             graphqlRepository: GraphqlRepository,
-            dispatcher: CoroutineDispatchers
-    ): SendOtp2FAUseCaseStub = SendOtp2FAUseCaseStub(graphqlRepository, dispatcher)
+            dispatcher: CoroutineDispatchers,
+            @Named("SendOtp2FASuccess") otpRequestPojo: OtpRequestPojo
+    ): SendOtp2FAUseCaseStub {
+        val usecase = SendOtp2FAUseCaseStub(graphqlRepository, dispatcher)
+        usecase.response = otpRequestPojo
+        return usecase
+    }
 
     @Provides
     @OtpScope
@@ -80,8 +109,13 @@ class OtpFakeUseCaseModule {
     @OtpScope
     fun provideSendOtpUseCaseStub(
             graphqlRepository: GraphqlRepository,
-            dispatcher: CoroutineDispatchers
-    ): SendOtpUseCaseStub = SendOtpUseCaseStub(graphqlRepository, dispatcher)
+            dispatcher: CoroutineDispatchers,
+            @Named("SendOtpSuccess") otpRequestPojo: OtpRequestPojo
+    ): SendOtpUseCaseStub {
+        val usecase = SendOtpUseCaseStub(graphqlRepository, dispatcher)
+        usecase.response = otpRequestPojo
+        return usecase
+    }
 
     @Provides
     @OtpScope

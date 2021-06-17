@@ -6,16 +6,12 @@ import com.tokopedia.otp.verification.view.fragment.PinVerificationFragment
 
 class PinVerificationFragmentStub : PinVerificationFragment() {
 
-    lateinit var keyboardStateIdling: CountingIdlingResource
-
     companion object {
         fun createInstance(
-                bundle: Bundle,
-                keyboardStateIdling: CountingIdlingResource
+                bundle: Bundle
         ): PinVerificationFragmentStub {
             return PinVerificationFragmentStub().apply {
                 arguments = bundle
-                this.keyboardStateIdling = keyboardStateIdling
             }
         }
     }
