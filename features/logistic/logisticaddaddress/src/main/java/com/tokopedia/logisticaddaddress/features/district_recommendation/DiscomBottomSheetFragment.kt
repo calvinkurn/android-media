@@ -361,7 +361,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
 
     interface ActionListener {
         fun onGetDistrict(districtAddress: Address)
-        fun onChooseZipcode(districtAddress: Address?, zipCode: String)
+        fun onChooseZipcode(districtAddress: Address, zipCode: String)
     }
 
     companion object {
@@ -386,7 +386,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
             binding.btnChooseZipcode.isEnabled = true
         }
         binding.btnChooseZipcode.setOnClickListener {
-            actionListener.onChooseZipcode(districtAddressData, zipCode)
+            districtAddressData?.let { data -> actionListener.onChooseZipcode(data, zipCode) }
             dismiss()
         }
     }

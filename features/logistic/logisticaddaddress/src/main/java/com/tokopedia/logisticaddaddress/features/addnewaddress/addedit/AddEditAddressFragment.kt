@@ -1001,7 +1001,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         presenter.getAutoComplete(districtName)
     }
 
-    override fun onChooseZipcode(districtAddress: Address?, zipCode: String) {
+    override fun onChooseZipcode(districtAddress: Address, zipCode: String) {
         //no-op
     }
 

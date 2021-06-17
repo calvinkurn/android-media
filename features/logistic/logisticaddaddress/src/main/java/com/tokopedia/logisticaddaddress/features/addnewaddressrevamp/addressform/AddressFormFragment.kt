@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.response.DistrictItem
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentAddressFormBinding
@@ -69,6 +70,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private var isLogisticLabel: Boolean = true
     private var validated: Boolean = true
     private val toppers: String = "Toppers"
+    private var currentKotaKecamatan: String = ""
 
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private lateinit var labelAlamatChipsLayoutManager: ChipsLayoutManager
@@ -125,7 +127,15 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             val phoneNumberOnly = removeSpecialChars(contact?.contactNumber.toString())
             binding.formAccount.etNomorHp.textFieldInput.setText(phoneNumberOnly)
         } else if (requestCode == 1998 && resultCode == Activity.RESULT_OK) {
-            //Result from pinpoint Page Negative
+            saveDataModel = data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
+
+            binding.formAddressNegative.etKotaKecamatan.textFieldInput.setText(currentKotaKecamatan)
+            binding.cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
+            binding.cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
+            saveDataModel?.let {
+                currentLat = it.latitude.toDouble()
+                currentLong = it.longitude.toDouble()
+            }
         }
     }
 
@@ -639,12 +649,20 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
        districtRecommendationBottomSheetFragment.getDistrict(districtAddress)
     }
 
-    override fun onChooseZipcode(districtAddress: Address?, zipCode: String) {
+    override fun onChooseZipcode(districtAddress: Address, zipCode: String) {
         val kotaKecamatanText = "${districtAddress?.districtName}, ${districtAddress?.cityName} $zipCode"
         currentDistrictName = districtAddress?.districtName.toString()
         binding.formAddressNegative.etKotaKecamatan.textFieldInput.run {
             setText(kotaKecamatanText)
+            currentKotaKecamatan = kotaKecamatanText
         }
+
+        val selectedDistrict = "${districtAddress?.provinceName}, ${districtAddress?.cityName}, ${districtAddress?.districtName}"
+        saveDataModel?.selectedDistrict = selectedDistrict
+        saveDataModel?.cityId = districtAddress.cityId
+        saveDataModel?.provinceId = districtAddress.provinceId
+        saveDataModel?.districtId = districtAddress.districtId
+        saveDataModel?.zipCodes = districtAddress.zipCodes
     }
 
 }
