@@ -1020,7 +1020,29 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwBubbleCollapsed(0)
     }
 
-    // TODO: SRW Bubble should collapsed when preview attachment is visible other than product
+    @Test
+    fun srw_Bubble_should_collapsed_when_preview_attachment_is_visible_other_than_product() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+        intending(anyIntent()).respondWith(getAttachInvoiceResult())
+
+        // When
+        clickSrwPreviewItemAt(0)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        clickPlusIconMenu()
+        clickAttachInvoiceMenu()
+
+        // Then
+        assertSrwBubbleContentIsVisibleAt(0)
+        assertSrwBubbleCollapsed(0)
+    }
+
     // TODO: SRW Bubble should expanded when preview attachment is not visible
     // TODO: SRW Bubble should remain collapsed when invoice preview visible and user toggle chat menu on then off
     // TODO: SRW bubble should maintain state (expand/collapse) if scrolled far top and back at it.
