@@ -1180,13 +1180,33 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwBubbleCollapsed(0)
     }
 
-    // TODO: SRW should hide broadcast handler if visible
-    // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
-    // TODO: SRW bubble should not be added if SRW preview state is error when user send msg/sticker.
+    @Test
+    fun srw_bubble_should_not_be_added_if_srw_preview_state_is_error_when_user_send_msg_sticker() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.isError = true
+        inflateTestFragment()
+
+        // When
+        clickComposeArea()
+        typeMessage("Test Send Message")
+        clickSendBtn()
+
+        // Then
+        assertSrwBubbleDoesNotExist()
+        assertTemplateChatVisibility(isDisplayed())
+    }
+
     // TODO: SRW bubble should removed when user return from attach image and request upload image.
     // TODO: SRW bubble should removed when user receive voucher event from ws.
     // TODO: SRW bubble should removed when user receive attach different product (compare with productId, product no longer relevant) event from ws seller/himself.
     // TODO: SRW bubble should not be removed when user receive attach same product (compare with productId, product attached still relevant to SRW) event from ws seller/himself.
+    // TODO: SRW should hide broadcast handler if visible
+    // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
 
     // TODO-Note: What if BE create new ws event to indicate closing of SRW if it's no longer relevant
     // TODO: CTA on left msg - possibly different tasks
