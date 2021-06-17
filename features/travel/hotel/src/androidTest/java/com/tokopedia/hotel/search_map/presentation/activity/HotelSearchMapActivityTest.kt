@@ -3,6 +3,7 @@ package com.tokopedia.hotel.search_map.presentation.activity
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
@@ -14,9 +15,11 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
@@ -71,21 +74,32 @@ class HotelSearchMapActivityTest {
 
     @Test
     fun validateSearchMapPageTracking() {
+        val bottomSheetLayout = activityRule.activity.findViewById<ConstraintLayout>(R.id.hotel_search_map_bottom_sheet)
+        val bottomSheet =  BottomSheetBehavior.from<ConstraintLayout>(bottomSheetLayout)
+
+        uiDevice.findObject(
+                UiSelector().description("MAP READY")
+        ).waitForExists(10000)
+
         clickCoachMark()
         clickQuickFilterChips()
         clickOnSortAndFilter()
-        clickOnChangeDestination()
-        actionViewFullMap()
-        actionCloseMap()
 
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-
-        clickHotelFromHorizontalItems()
-        validateHotelSearchPageTracking()
-
-        scrollToPropertyCard()
+        //full map
+        activityRule.runOnUiThread {
+            bottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED)
+        }
         getCurrentPosition()
-        getRadiusAndMidScreenPoint()
+        scrollToPropertyCard()
+        clickHotelFromHorizontalItems()
+
+        //full srp list
+        activityRule.runOnUiThread {
+            bottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED)
+        }
+        validateHotelSearchPageTracking()
+        clickOnChangeDestination()
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTIC_VALIDATOR_QUERY_HOTEL_DISCO), hasAllSuccess())
     }
 
@@ -111,14 +125,13 @@ class HotelSearchMapActivityTest {
     private fun validateHotelSearchPageTracking() {
         Thread.sleep(2000)
         assert(getHotelResultCount() > 1)
-        actionCloseMap()
 
         Thread.sleep(2000)
         if (getHotelResultCount() > 0) {
             Espresso.onView(ViewMatchers.withId(R.id.rvVerticalPropertiesHotelSearchMap)).perform(RecyclerViewActions
                     .actionOnItemAtPosition<SearchPropertyViewHolder>(0, ViewActions.click()))
         }
-
+        Espresso.onView(isRoot()).perform(ViewActions.pressBack())
         Thread.sleep(2000)
     }
 
@@ -154,36 +167,9 @@ class HotelSearchMapActivityTest {
         Espresso.onView(ViewMatchers.withId(R.id.btn_hotel_homepage_search)).perform(ViewActions.click())
     }
 
-    private fun actionViewFullMap() {
-        Thread.sleep(2000)
-
-        Espresso.onView(ViewMatchers.withId(R.id.topHotelSearchMapListKnob))
-                .perform(ViewActions.swipeDown())
-        Espresso.onView(ViewMatchers.withId(R.id.topHotelSearchMapListKnob))
-                .perform(ViewActions.swipeDown())
-
-        Thread.sleep(2000)
-    }
-
-    private fun actionCloseMap() {
-        Thread.sleep(2000)
-
-        try {
-            Espresso.onView(ViewMatchers.withId(R.id.topHotelSearchMapListKnob))
-                    .perform(ViewActions.swipeUp())
-            Espresso.onView(ViewMatchers.withId(R.id.topHotelSearchMapListKnob))
-                    .perform(ViewActions.swipeUp())
-        } catch (t: Throwable) {
-            // do nothing, the knob is not visible anymore
-        }
-
-        Thread.sleep(2000)
-    }
-
     private fun clickHotelFromHorizontalItems() {
         Thread.sleep(2000)
         assert(getHotelResultCount() > 1)
-        actionViewFullMap()
 
         Thread.sleep(2000)
         if (getHotelResultCount() > 0) {
@@ -191,6 +177,7 @@ class HotelSearchMapActivityTest {
                     .actionOnItemAtPosition<HotelSearchMapItemViewHolder>(0, ViewActions.click()))
         }
 
+        Espresso.onView(isRoot()).perform(ViewActions.pressBack())
         Thread.sleep(2000)
     }
 
@@ -215,7 +202,6 @@ class HotelSearchMapActivityTest {
     private fun scrollToPropertyCard(){
         Thread.sleep(2000)
         assert(getPropertyResultCount() > 1)
-        actionCloseMap()
 
         Thread.sleep(2000)
         if (getPropertyResultCount() > 0) {
@@ -235,11 +221,16 @@ class HotelSearchMapActivityTest {
 
     /**Get user current position*/
     private fun getCurrentPosition() {
+        Thread.sleep(2000)
         Espresso.onView(ViewMatchers.withId(R.id.ivGetLocationHotelSearchMap)).perform(ViewActions.click())
     }
 
     /**Get user radius and screen mid point*/
     private fun getRadiusAndMidScreenPoint() {
+        Thread.sleep(2000)
+        //to make user interact with maps to make maps appear
+        Espresso.onView(ViewMatchers.withId(R.id.mapHotelSearchMap)).perform(ViewActions.swipeUp())
+        Thread.sleep(2000)
         Espresso.onView(ViewMatchers.withId(R.id.btnGetRadiusHotelSearchMap)).perform(ViewActions.click())
     }
 
