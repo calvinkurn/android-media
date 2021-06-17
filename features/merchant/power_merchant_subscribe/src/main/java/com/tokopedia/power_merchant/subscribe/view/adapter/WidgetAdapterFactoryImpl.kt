@@ -53,7 +53,7 @@ class WidgetAdapterFactoryImpl(
             PMDeactivateWidget.RES_LAYOUT -> PMDeactivateWidget(parent, widgetListener)
             UpgradePmProWidget.RES_LAYOUT -> UpgradePmProWidget(parent, widgetListener)
             ExpandableWidget.RES_LAYOUT -> ExpandableWidget(parent, widgetListener, powerMerchantTracking)
-            ShopGradeWidget.RES_LAYOUT -> ShopGradeWidget(parent, powerMerchantTracking)
+            ShopGradeWidget.RES_LAYOUT -> ShopGradeWidget(parent, widgetListener, powerMerchantTracking)
             PotentialWidget.RES_LAYOUT -> PotentialWidget(parent)
             SingleCtaWidget.RES_LAYOUT -> SingleCtaWidget(parent)
             DividerWidget.RES_LAYOUT -> DividerWidget(parent)
