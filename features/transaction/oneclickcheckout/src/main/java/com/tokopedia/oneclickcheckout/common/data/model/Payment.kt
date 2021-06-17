@@ -48,7 +48,7 @@ data class Payment(
         @SerializedName("specific_gateway_campaign_only_type")
         val specificGatewayCampaignOnlyType: Int = 0,
         @SerializedName("wallet_additional_data")
-        val walletAdditionalData: WalletAdditionalData= WalletAdditionalData()
+        val walletAdditionalData: WalletAdditionalData = WalletAdditionalData()
 )
 
 data class PaymentErrorMessage(
@@ -165,5 +165,7 @@ data class WalletData(
         @SerializedName("is_hide_digital")
         val isHideDigital: Boolean = false,
         @SerializedName("header_title")
-        val headerTitle: String = ""
+        val headerTitle: String = "",
+        @SerializedName("url_link")
+        val urlLink: String = ""
 )
