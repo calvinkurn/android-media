@@ -571,7 +571,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
     ) {
         var id = product.parentId
-        if (id == "0") {
+        if (id == ProductAttachmentViewModel.NO_PRODUCT_ID) {
             id = product.productId
         }
         val intent = RouteManager.getIntent(
