@@ -211,8 +211,16 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
 
     private fun mapToHeaderShopPerformance(shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?, shopAge: Long): HeaderShopPerformanceUiModel {
         val headerShopPerformanceUiModel = HeaderShopPerformanceUiModel()
+        val shopScore = shopScoreLevelResponse?.shopScore ?: -1
+        val shopLevel = shopScoreLevelResponse?.shopLevel ?: -1
         with(headerShopPerformanceUiModel) {
             when {
+                shopScore < 0 || shopLevel < 0 -> {
+                    titleHeaderShopService = context?.getString(R.string.title_performance_below)
+                            ?: ""
+                    descHeaderShopService = context?.getString(R.string.desc_performance_below)
+                            ?: ""
+                }
                 shopAge < SHOP_AGE_SIXTY -> {
                     titleHeaderShopService = context?.getString(R.string.title_new_seller_level_0)
                             ?: ""
@@ -224,29 +232,27 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                             ?: ""
                 }
                 shopAge in SHOP_AGE_SIXTY..COUNT_DAYS_NEW_SELLER -> {
-                    shopScoreLevelResponse?.let {
-                        when {
-                            it.shopScore < SHOP_SCORE_SIXTY -> {
-                                titleHeaderShopService = context?.getString(R.string.title_tenure_new_seller_score_under_60)
-                                        ?: ""
-                            }
-                            it.shopScore in SHOP_SCORE_SIXTY..SHOP_SCORE_SEVENTY_NINE -> {
-                                titleHeaderShopService = context?.getString(R.string.title_tenure_new_seller_score_between_60_to_79)
-                                        ?: ""
-                            }
-                            it.shopScore >= SHOP_SCORE_EIGHTY -> {
-                                titleHeaderShopService = context?.getString(R.string.title_tenure_new_seller_score_more_80)
-                                        ?: ""
-                            }
+                    when {
+                        shopScore < SHOP_SCORE_SIXTY -> {
+                            titleHeaderShopService = context?.getString(R.string.title_tenure_new_seller_score_under_60)
+                                    ?: ""
                         }
-                        descHeaderShopService = context?.getString(R.string.desc_tenure_new_seller)
-                                ?: ""
+                        shopScore in SHOP_SCORE_SIXTY..SHOP_SCORE_SEVENTY_NINE -> {
+                            titleHeaderShopService = context?.getString(R.string.title_tenure_new_seller_score_between_60_to_79)
+                                    ?: ""
+                        }
+                        shopScore >= SHOP_SCORE_EIGHTY -> {
+                            titleHeaderShopService = context?.getString(R.string.title_tenure_new_seller_score_more_80)
+                                    ?: ""
+                        }
                     }
+                    descHeaderShopService = context?.getString(R.string.desc_tenure_new_seller)
+                            ?: ""
                 }
                 else -> {
-                    when (shopScoreLevelResponse?.shopScore) {
+                    when (shopScore) {
                         in SHOP_SCORE_SIXTY..SHOP_SCORE_SIXTY_NINE -> {
-                            when (shopScoreLevelResponse?.shopLevel) {
+                            when (shopLevel) {
                                 SHOP_SCORE_LEVEL_ONE -> {
                                     titleHeaderShopService = context?.getString(R.string.title_keep_up_level_1)
                                             ?: ""
@@ -274,7 +280,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                             }
                         }
                         in SHOP_SCORE_SEVENTY..SHOP_SCORE_SEVENTY_NINE -> {
-                            when (shopScoreLevelResponse?.shopLevel) {
+                            when (shopLevel) {
                                 SHOP_SCORE_LEVEL_ONE -> {
                                     titleHeaderShopService = context?.getString(R.string.title_good_level_1)
                                             ?: ""
@@ -302,7 +308,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                             }
                         }
                         in SHOP_SCORE_EIGHTY..SHOP_SCORE_EIGHTY_NINE -> {
-                            when (shopScoreLevelResponse?.shopLevel) {
+                            when (shopLevel) {
                                 SHOP_SCORE_LEVEL_ONE -> {
                                     titleHeaderShopService = context?.getString(R.string.title_great_level_1)
                                             ?: ""
@@ -330,7 +336,7 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
                             }
                         }
                         in SHOP_SCORE_NINETY..SHOP_SCORE_ONE_HUNDRED -> {
-                            when (shopScoreLevelResponse?.shopLevel) {
+                            when (shopLevel) {
                                 SHOP_SCORE_LEVEL_ONE -> {
                                     titleHeaderShopService = context?.getString(R.string.title_perfect_level_1)
                                             ?: ""
@@ -374,21 +380,18 @@ class ShopScoreMapper @Inject constructor(private val userSession: UserSessionIn
             }
             this.shopAge = shopAge
             this.shopLevel =
-                    shopScoreLevelResponse?.shopLevel?.let {
-                        if (it < 0) {
-                            "-"
-                        } else {
-                            it.toString()
-                        }
-                    } ?: "-"
+                    if (shopLevel < 0) {
+                        "-"
+                    } else {
+                        shopLevel.toString()
+                    }
+
             this.shopScore =
-                    shopScoreLevelResponse?.shopScore?.let {
-                        if (it < 0) {
-                            "-"
-                        } else {
-                            it.toString()
-                        }
-                    } ?: "-"
+                    if (shopScore < 0) {
+                        "-"
+                    } else {
+                        shopScore.toString()
+                    }
 
             this.scorePenalty = shopScoreLevelResponse?.shopScoreDetail?.find { it.identifier == PENALTY_IDENTIFIER }?.rawValue?.roundToLong().orZero()
         }
