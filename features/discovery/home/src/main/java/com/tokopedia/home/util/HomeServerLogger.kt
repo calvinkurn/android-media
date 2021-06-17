@@ -10,12 +10,22 @@ import java.net.UnknownHostException
 
 object HomeServerLogger {
 
-    private const val DISCOVERY_HOME_STATUS_ERROR_TAG = "HOME_STATUS"
+    private const val HOME_STATUS_ERROR_TAG = "HOME_STATUS"
 
-    fun logWarning(type: String?, throwable: Throwable?) {
+    const val TYPE_CANCELLED_INIT_FLOW = "revamp_cancelled_init_flow"
+    const val TYPE_REVAMP_ERROR_INIT_FLOW = "revamp_error_init_flow"
+    const val TYPE_REVAMP_ERROR_REFRESH = "revamp_error_refresh"
+    const val TYPE_REVAMP_EMPTY_UPDATE = "revamp_empty_update"
+
+    fun logWarning(
+        type: String?,
+        throwable: Throwable?,
+        reason: String = "",
+        data: String = ""
+    ) {
         if (type == null || throwable == null || isExceptionExcluded(throwable)) return
 
-        timberLogWarning(type, ExceptionUtils.getStackTrace(throwable))
+        timberLogWarning(type, ExceptionUtils.getStackTrace(throwable), reason, data)
     }
 
     private fun isExceptionExcluded(throwable: Throwable): Boolean {
@@ -27,7 +37,12 @@ object HomeServerLogger {
         return false
     }
 
-    private fun timberLogWarning(type: String, stackTrace: String) {
-        ServerLogger.log(Priority.P2, DISCOVERY_HOME_STATUS_ERROR_TAG, mapOf("type" to type, "error" to stackTrace))
+    private fun timberLogWarning(type: String, stackTrace: String, reason: String, data: String) {
+        ServerLogger.log(Priority.P2, HOME_STATUS_ERROR_TAG, mapOf(
+            "type" to type,
+            "error" to stackTrace,
+            "reason" to reason,
+            "data" to data
+        ))
     }
 }

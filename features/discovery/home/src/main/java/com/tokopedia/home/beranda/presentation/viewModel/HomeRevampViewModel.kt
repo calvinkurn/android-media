@@ -44,6 +44,10 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmer
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.util.HomeServerLogger
+import com.tokopedia.home.util.HomeServerLogger.TYPE_CANCELLED_INIT_FLOW
+import com.tokopedia.home.util.HomeServerLogger.TYPE_REVAMP_EMPTY_UPDATE
+import com.tokopedia.home.util.HomeServerLogger.TYPE_REVAMP_ERROR_INIT_FLOW
+import com.tokopedia.home.util.HomeServerLogger.TYPE_REVAMP_ERROR_REFRESH
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelShop
@@ -52,8 +56,6 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -536,7 +538,8 @@ open class HomeRevampViewModel @Inject constructor(
         onRefreshState = true
         if (getHomeDataJob?.isActive == true) return
         getHomeDataJob = launchCatchError(coroutineContext, block = {
-            throw MessageErrorException("Error by D.F.A")
+            throw MessageErrorException("Error by D.F.A v2 !!")
+
             homeUseCase.get().updateHomeData().collect {
                 _updateNetworkLiveData.postValue(it)
                 if (it.status === Result.Status.ERROR_PAGINATION) {
@@ -550,7 +553,13 @@ open class HomeRevampViewModel @Inject constructor(
         }) {
             homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.postValue(Result.error(it, null))
-            HomeServerLogger.logWarning("revamp_error_refresh", it)
+
+            HomeServerLogger.logWarning(
+                type = TYPE_REVAMP_ERROR_REFRESH,
+                throwable = it,
+                reason = (it.message ?: "").take(ConstantKey.HomeTimber.MAX_LIMIT),
+                data = Log.getStackTraceString(it).take(ConstantKey.HomeTimber.MAX_LIMIT)
+            )
         }
     }
 
@@ -1506,7 +1515,12 @@ open class HomeRevampViewModel @Inject constructor(
                                 "isFirstPage:" + homeNewDataModel.isFirstPage.toString() + ";" +
                                 "isCache:" + homeNewDataModel.isCache.toString()
 
-                        HomeServerLogger.logWarning("revamp_empty_update", MessageErrorException(error))
+                        HomeServerLogger.logWarning(
+                            type = TYPE_REVAMP_EMPTY_UPDATE,
+                            throwable = MessageErrorException(error),
+                            reason = error,
+                            data = error
+                        )
                     }
                     updateHomeData(homeNewDataModel)
 
@@ -1530,10 +1544,22 @@ open class HomeRevampViewModel @Inject constructor(
             }
         }) {
             _updateNetworkLiveData.postValue(Result.error(error = it, data = null))
-            HomeServerLogger.logWarning("revamp_error_init_flow", it)
+            val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
+            HomeServerLogger.logWarning(
+                type = TYPE_REVAMP_ERROR_INIT_FLOW,
+                throwable = it,
+                reason = (it.message ?: "".take(ConstantKey.HomeTimber.MAX_LIMIT)),
+                data = stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
+            )
         }.invokeOnCompletion {
             _updateNetworkLiveData.postValue(Result.error(error = Throwable(), data = null))
-            HomeServerLogger.logWarning("revamp_cancelled_init_flow", it)
+            val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
+            HomeServerLogger.logWarning(
+                type = TYPE_CANCELLED_INIT_FLOW,
+                throwable = it,
+                reason = (it?.message ?: "No error propagated").take(ConstantKey.HomeTimber.MAX_LIMIT),
+                data = stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
+            )
             homeFlowDataCancelled = true
         }
     }
