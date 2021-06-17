@@ -3,13 +3,11 @@ package com.tokopedia.tokomart.searchcategory.presentation.model
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
-import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.LOCAL_SEARCH
 import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.NONE_OTHER
 import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
 import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.TOKO_NOW
+import com.tokopedia.tokomart.search.utils.SearchTracking.getDimension90
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
-import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 
 data class ProductItemDataView(
         val id: String = "",
@@ -86,7 +84,4 @@ data class ProductItemDataView(
             ))
         }
     }
-
-    private fun getDimension90(pageId: String) =
-            "$HASIL_PENCARIAN_DI_TOKONOW.$TOKONOW.$LOCAL_SEARCH.$pageId"
 }

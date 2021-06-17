@@ -1,7 +1,8 @@
 package com.tokopedia.tokomart.search.utils
 
 import com.google.android.gms.tagmanager.DataLayer
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.BUSINESSUNIT
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.CURRENTSITE
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
@@ -9,12 +10,15 @@ import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VA
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_ADD_QUANTITY
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_APPLY_FILTER
+import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_BANNER
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_CATEGORY_FILTER
+import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_CHOOSE_VARIANT_ON_PRODUCT_CARD
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_FILTER_OPTION
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_FUZZY_KEYWORDS_REPLACE
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_PRODUCT
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_REMOVE_QUANTITY
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_TAMBAH_KE_KERANJANG
+import com.tokopedia.tokomart.search.utils.SearchTracking.Action.IMPRESSION_BANNER
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.IMPRESSION_PRODUCT
 import com.tokopedia.tokomart.search.utils.SearchTracking.Category.TOKONOW_SEARCH_RESULT
 import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.ACTION_FIELD
@@ -26,13 +30,16 @@ import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.IDR
 import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.IMPRESSIONS
 import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.LIST
 import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.PRODUCTS
+import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.PROMOTIONS
+import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.PROMO_CLICK
 import com.tokopedia.tokomart.search.utils.SearchTracking.Event.ADD_TO_CART
 import com.tokopedia.tokomart.search.utils.SearchTracking.Event.PRODUCT_CLICK
 import com.tokopedia.tokomart.search.utils.SearchTracking.Event.PRODUCT_VIEW
+import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.HOME_AND_BROWSE
 import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
 import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.USER_ID
+import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
@@ -46,6 +53,8 @@ object SearchTracking {
         const val PRODUCT_VIEW = "productView"
         const val PRODUCT_CLICK = "productClick"
         const val ADD_TO_CART = "addToCart"
+        const val PROMO_VIEW = "promoView"
+        const val PROMO_CLICK = "promoClick"
     }
 
     object Action {
@@ -59,6 +68,9 @@ object SearchTracking {
         const val CLICK_TAMBAH_KE_KERANJANG = "click - tambah ke keranjang"
         const val CLICK_ADD_QUANTITY = "click - add quantity"
         const val CLICK_REMOVE_QUANTITY = "click - remove quantity"
+        const val CLICK_CHOOSE_VARIANT_ON_PRODUCT_CARD = "click - choose variant on product card"
+        const val IMPRESSION_BANNER = "impression - banner"
+        const val CLICK_BANNER = "click - banner"
     }
 
     object Category {
@@ -76,6 +88,9 @@ object SearchTracking {
         const val LIST = "list"
         const val PRODUCTS = "products"
         const val ADD = "add"
+        const val PROMO_VIEW = "promoView"
+        const val PROMO_CLICK = "promoClick"
+        const val PROMOTIONS = "promotions"
     }
 
     object Misc {
@@ -85,7 +100,11 @@ object SearchTracking {
         const val HASIL_PENCARIAN_DI_TOKONOW = "Hasil pencarian di TokoNOW!"
         const val LOCAL_SEARCH = "local_search"
         const val TOKONOW_SEARCH_PRODUCT_ORGANIC = "/tokonow - searchproduct - organic"
+        const val HOME_AND_BROWSE = "home & browse"
     }
+
+    fun getDimension90(pageId: String) =
+            "${Misc.HASIL_PENCARIAN_DI_TOKONOW}.$TOKONOW.${Misc.LOCAL_SEARCH}.$pageId"
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
@@ -99,8 +118,8 @@ object SearchTracking {
     ) {
         val map = DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
-                EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
                 EVENT_ACTION, IMPRESSION_PRODUCT,
+                EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
                 EVENT_LABEL, keyword,
                 BUSINESSUNIT, BUSINESS_UNIT_VALUE,
                 CURRENTSITE, CURRENT_SITE_VALUE,
@@ -122,8 +141,8 @@ object SearchTracking {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT, PRODUCT_CLICK,
-                        EVENT_ACTION, TOKONOW_SEARCH_RESULT,
-                        EVENT_CATEGORY, CLICK_PRODUCT,
+                        EVENT_ACTION, CLICK_PRODUCT,
+                        EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
                         EVENT_LABEL, keyword,
                         BUSINESSUNIT, BUSINESS_UNIT_VALUE,
                         CURRENTSITE, CURRENT_SITE_VALUE,
@@ -236,6 +255,101 @@ object SearchTracking {
                 EVENT_LABEL, "$keyword - $productId",
                 BUSINESSUNIT, BUSINESS_UNIT_VALUE,
                 CURRENTSITE, CURRENT_SITE_VALUE,
+            )
+        )
+    }
+
+    fun sendChooseVariantEvent(keyword: String, productId: String) {
+        sendGeneralEvent(
+            DataLayer.mapOf(
+                EVENT, EVENT_CLICK_VALUE,
+                EVENT_ACTION, CLICK_CHOOSE_VARIANT_ON_PRODUCT_CARD,
+                EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                EVENT_LABEL, "$keyword - $productId",
+                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                CURRENTSITE, CURRENT_SITE_VALUE,
+            )
+        )
+    }
+
+    fun sendBannerImpressionEvent(
+            channelModel: ChannelModel,
+            keyword: String,
+            userId: String,
+            sortFilterParams: String,
+            pageId: String,
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                EVENT, Event.PROMO_VIEW,
+                EVENT_ACTION, IMPRESSION_BANNER,
+                EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                EVENT_LABEL, keyword,
+                BUSINESSUNIT, HOME_AND_BROWSE,
+                CURRENTSITE, CURRENT_SITE_VALUE,
+                USER_ID, userId,
+                ECOMMERCE, DataLayer.mapOf(
+                    ECommerce.PROMO_VIEW, DataLayer.mapOf(
+                        PROMOTIONS, channelModel.getAsObjectDataLayer(sortFilterParams, pageId)
+                    ),
+                )
+            )
+        )
+    }
+
+    private fun ChannelModel.getAsObjectDataLayer(sortFilterParam: String, pageId: String): List<Any> {
+        return channelGrids.mapIndexed { index, channelGrid ->
+            getChannelGridAsObjectDataLayer(this, channelGrid, sortFilterParam, pageId, index)
+        }
+    }
+
+    private fun getChannelGridAsObjectDataLayer(
+            channelModel: ChannelModel,
+            channelGrid: ChannelGrid,
+            sortFilterParam: String,
+            pageId: String,
+            position: Int,
+    ): Any {
+        val channelModelId = channelModel.id ?: ""
+        val channelGridId = channelGrid.id
+        val persoType = channelModel.trackingAttributionModel.persoType
+        val categoryId = channelModel.trackingAttributionModel.categoryId
+        val id = channelModelId + "_" + channelGridId + "_" + persoType + "_" + categoryId
+
+        val promoName = channelModel.trackingAttributionModel.promoName
+        val name = "/tokonow - search - $promoName"
+
+        return DataLayer.mapOf(
+                "id", id,
+                "name", name,
+                "creative", channelGrid.id,
+                "position", position,
+                "dimension61", sortFilterParam,
+                "dimension90", getDimension90(pageId)
+        )
+    }
+
+    fun sendBannerClickEvent(
+            channelModel: ChannelModel,
+            keyword: String,
+            userId: String,
+            sortFilterParams: String,
+            pageId: String,
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                EVENT, Event.PROMO_CLICK,
+                EVENT_ACTION, CLICK_BANNER,
+                EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                EVENT_LABEL, keyword,
+                BUSINESSUNIT, HOME_AND_BROWSE,
+                CURRENTSITE, CURRENT_SITE_VALUE,
+                USER_ID, userId,
+                ECOMMERCE, DataLayer.mapOf(
+                    PROMO_CLICK, DataLayer.mapOf(
+                        PROMOTIONS, channelModel.getAsObjectDataLayer(sortFilterParams, pageId)
+                    ),
+                )
             )
         )
     }

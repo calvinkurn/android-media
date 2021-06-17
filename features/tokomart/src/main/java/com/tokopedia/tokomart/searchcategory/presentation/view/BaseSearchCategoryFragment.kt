@@ -475,7 +475,7 @@ abstract class BaseSearchCategoryFragment:
         )
     }
 
-    override fun onBannerClick(applink: String) {
+    override fun onBannerClick(channelModel: ChannelModel, applink: String) {
         RouteManager.route(context, applink)
     }
 

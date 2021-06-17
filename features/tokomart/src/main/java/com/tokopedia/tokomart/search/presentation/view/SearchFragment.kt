@@ -10,6 +10,7 @@ import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.tokomart.search.di.SearchComponent
@@ -188,5 +189,43 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
 
     private fun sendDecreaseQtyTrackingEvent(productId: String) {
         SearchTracking.sendDecreaseQtyEvent(searchViewModel.query, productId)
+    }
+
+    override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
+        SearchTracking.sendChooseVariantEvent(searchViewModel.query, productItemDataView.id)
+
+        super.onProductChooseVariantClicked(productItemDataView)
+    }
+
+    override fun onBannerClick(channelModel: ChannelModel, applink: String) {
+        val queryParam = searchViewModel.queryParam
+        val pageId = queryParam[SearchApiConst.SRP_PAGE_ID] ?: ""
+        val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
+
+        SearchTracking.sendBannerClickEvent(
+                channelModel,
+                getViewModel().query,
+                getUserId(),
+                sortFilterParams,
+                pageId,
+        )
+
+        super.onBannerClick(channelModel, applink)
+    }
+
+    override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {
+        val queryParam = searchViewModel.queryParam
+        val pageId = queryParam[SearchApiConst.SRP_PAGE_ID] ?: ""
+        val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
+
+        SearchTracking.sendBannerImpressionEvent(
+                channelModel,
+                getViewModel().query,
+                getUserId(),
+                sortFilterParams,
+                pageId,
+        )
+
+        super.onBannerImpressed(channelModel, position)
     }
 }
