@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.common.errorhandler
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.gson.Gson
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.sellerhome.BuildConfig
@@ -30,7 +31,7 @@ object SellerHomeErrorHandler {
                      message: String,
                      errorType: String = "",
                      deviceId: String = "",
-                     extras: String = "") {
+                     extras: Map<String, Any> = mapOf()) {
 
         logExceptionToCrashlytics(throwable, message)
 
@@ -58,20 +59,21 @@ object SellerHomeErrorHandler {
     private fun logExceptionToScalyr(throwable: Throwable,
                                      errorType: String,
                                      deviceId: String,
-                                     extras: String) {
+                                     extras: Map<String, Any>) {
         ServerLogger.log(Priority.P2, ERROR_TAG, getSellerHomeErrorMessageMap(throwable, errorType, deviceId, extras))
     }
 
     private fun getSellerHomeErrorMessageMap(throwable: Throwable,
                                              errorType: String,
                                              deviceId: String,
-                                             extras: String): Map<String, String> {
+                                             extras: Map<String, Any>): Map<String, String> {
+        val stringExtras = Gson().toJson(extras)
         return mutableMapOf(
                 ERROR_TYPE_KEY to errorType,
                 DEVICE_ID_KEY to deviceId,
                 MESSAGE_KEY to throwable.localizedMessage.orEmpty(),
                 STACKTRACE_KEY to throwable.stackTraceToString(),
-                EXTRAS_KEY to extras
+                EXTRAS_KEY to stringExtras
         )
     }
 

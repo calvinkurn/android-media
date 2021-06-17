@@ -1154,15 +1154,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val layoutId = adapter.data.mapNotNull {
             if (it.widgetType == widgetType) it.id else null
         }.joinToString(", ")
-        val widgetTypeExtras = mapOf(
+        val widgetErrorExtraMap = mapOf(
                 SellerHomeErrorHandler.WIDGET_TYPE_KEY to widgetType,
-                SellerHomeErrorHandler.LAYOUT_ID_KEY to layoutId).toString()
+                SellerHomeErrorHandler.LAYOUT_ID_KEY to layoutId)
         SellerHomeErrorHandler.logException(
                 throwable = this,
                 message = "$ERROR_WIDGET $widgetType",
                 errorType = SellerHomeErrorHandler.ErrorType.ERROR_WIDGET,
                 deviceId = userSession.deviceId.orEmpty(),
-                extras = widgetTypeExtras)
+                extras = widgetErrorExtraMap)
 
         updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
         showErrorToaster()
