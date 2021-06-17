@@ -1,6 +1,9 @@
 package com.tokopedia.product.detail.data.util
 
+import android.content.Context
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.linker.LinkerConstants
@@ -1310,6 +1313,20 @@ object DynamicProductDetailTracking {
             )
 
             TrackApp.getInstance().gtm.sendGeneralEvent(mapOfData)
+        }
+
+        fun eventAffiliateLinkClickIris(context: Context, affiliateUniqueId: String, uuid: String, recordId: String, irisSessionId: String, userId: String?, productId: String?) {
+            val irisAnalytics = IrisAnalytics(context)
+            val values = HashMap<String, Any>()
+            values["created_time"] = DateFormatUtils.getFormattedDate(System.currentTimeMillis(), "yyyy-MM-dd'T'HH:mm:ssZ")
+            values["environment"] = "android"
+            values["tracker_id"] = uuid
+            values["iris_session_id"] = irisSessionId
+            values["user_id"] = userId ?: ""
+            values["affiliate_uuid"] = affiliateUniqueId
+            values["product_id"] = productId ?: ""
+            values["record_id"] = recordId
+            irisAnalytics.saveEvent(values)
         }
     }
 
