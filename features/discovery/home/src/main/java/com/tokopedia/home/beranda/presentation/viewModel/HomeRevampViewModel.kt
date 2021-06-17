@@ -538,8 +538,6 @@ open class HomeRevampViewModel @Inject constructor(
         onRefreshState = true
         if (getHomeDataJob?.isActive == true) return
         getHomeDataJob = launchCatchError(coroutineContext, block = {
-            throw MessageErrorException("Error by D.F.A v2 !!")
-
             homeUseCase.get().updateHomeData().collect {
                 _updateNetworkLiveData.postValue(it)
                 if (it.status === Result.Status.ERROR_PAGINATION) {
