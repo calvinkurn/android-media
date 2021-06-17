@@ -63,7 +63,6 @@ class PlayViewModel @Inject constructor(
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
-        private val playSocket: PlaySocket,
         private val playSocketToModelMapper: PlaySocketToModelMapper,
         private val playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
