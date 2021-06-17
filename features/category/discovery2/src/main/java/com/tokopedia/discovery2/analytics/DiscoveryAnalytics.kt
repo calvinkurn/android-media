@@ -302,13 +302,13 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     }
 
 
-    override fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?) {
+    override fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?, positionInPage: Int) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-//                KEY_ID to "0_${if (shopId.isEmpty()) 0 else shopId}_$channelId",
-//                KEY_NAME to "$pagePath - $pageType - ",
-//                KEY_CREATIVE to " - $isAutoPlay",
-//                KEY_POSITION to "$channelPositionInList - "
+                KEY_ID to "",
+                KEY_NAME to "$pagePath - $pageType - ${positionInPage + 1} - $TDN_BANNER_COMPONENT",
+                KEY_CREATIVE to (componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING),
+                KEY_POSITION to "1"
         ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                 EVENT_PROMO_VIEW to mapOf(
@@ -323,13 +323,13 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
-    override fun trackTDNBannerClick(componentsItem: ComponentsItem, userID: String?) {
+    override fun trackTDNBannerClick(componentsItem: ComponentsItem, userID: String?, positionInPage: Int) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-//                KEY_ID to componentsItem.id,
-//                KEY_NAME to "$pagePath - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$BANNER",
-//                KEY_CREATIVE to EMPTY_STRING,
-//                KEY_POSITION to "$channelPositionInList - "
+                KEY_ID to "",
+                KEY_NAME to "$pagePath - $pageType - ${positionInPage + 1} - $TDN_BANNER_COMPONENT",
+                KEY_CREATIVE to (componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING),
+                KEY_POSITION to "1"
         ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                 EVENT_PROMO_CLICK to mapOf(

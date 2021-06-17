@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -18,6 +19,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.user.session.UserSession
 
 class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner), TopAdsImageVieWApiResponseListener, TopAdsImageViewClickListener, TopAdsImageViewImpressionListener {
     private val tdnImageView: TopAdsImageView? = itemView.findViewById(R.id.tdn_view)
@@ -39,14 +41,22 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         if (lifecycleOwner != null) {
-            viewModel.componentLiveData.observe(lifecycleOwner, {
-//                TODO::CHANGE SOURCE ID FOR IMAGE_DATA = 5
-                addCardHeader(it)
-                if (shouldHitService)
-                    tdnImageView?.getImageData("5", 1, 3, depId = it.data?.firstOrNull()?.depID
-                            ?: "")
-            })
+            itemView.context?.let { context ->
+                if (UserSession(context).isLoggedIn) {
+                    viewModel.componentLiveData.observe(lifecycleOwner, {
+//                TODO::CHANGE SOURCE ID FOR IMAGE_DATA = 13
+                        if (shouldHitService) {
+                            addCardHeader(it)
+                            tdnImageView?.getImageData("5", 1, 3, depId = it.data?.firstOrNull()?.depID
+                                    ?: "")
+                        }
+                    })
+                } else {
+                    handleError()
+                }
+            }
         }
+
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
@@ -58,10 +68,6 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
 
     private fun addCardHeader(componentsItem: ComponentsItem?) {
         mHeaderView?.removeAllViews()
-        checkHeaderVisibility(componentsItem)
-    }
-
-    private fun checkHeaderVisibility(componentsItem: ComponentsItem?) {
         componentsItem?.data?.firstOrNull()?.let {
             if (!it.title.isNullOrEmpty() || !it.subtitle.isNullOrEmpty()) {
                 mHeaderView?.addView(CustomViewCreator.getCustomViewObject(itemView.context,
@@ -71,7 +77,6 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
     }
 
     private fun handleError() {
-        shouldHitService = false
         mHeaderView?.run {
             if (childCount > 0)
                 removeAllViews()
@@ -87,19 +92,22 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
             shimmerView?.hide()
             tdnImageView?.show()
             tdnImageView?.loadImage(imageDataList[0])
-        } else
+        } else {
+            shouldHitService = false
             handleError()
+        }
     }
 
     override fun onError(t: Throwable) {
+        shouldHitService = false
         handleError()
     }
 
     override fun onTopAdsImageViewClicked(applink: String?) {
-//        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerClick(viewModel.components, UserSession(fragment.context).userId)
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerClick(viewModel.components, UserSession(fragment.context).userId, viewModel.position)
     }
 
     override fun onTopAdsImageViewImpression(viewUrl: String) {
-//        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerImpression(viewModel.components, UserSession(fragment.context).userId)
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerImpression(viewModel.components, UserSession(fragment.context).userId, viewModel.position)
     }
 }
