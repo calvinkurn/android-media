@@ -8,6 +8,7 @@ import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VA
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_APPLY_FILTER
+import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_CATEGORY_FILTER
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_FILTER_OPTION
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_PRODUCT
 import com.tokopedia.tokomart.search.utils.SearchTracking.Action.IMPRESSION_PRODUCT
@@ -46,6 +47,7 @@ object SearchTracking {
         const val CLICK_PRODUCT = "click - product"
         const val CLICK_FILTER_OPTION = "click - filter option"
         const val CLICK_APPLY_FILTER = "click - apply filter"
+        const val CLICK_CATEGORY_FILTER = "click - category filter"
     }
 
     object Category {
@@ -144,6 +146,19 @@ object SearchTracking {
                     EVENT_ACTION, CLICK_APPLY_FILTER,
                     EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
                     EVENT_LABEL, filterParams,
+                    BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                    CURRENTSITE, CURRENT_SITE_VALUE,
+                )
+        )
+    }
+
+    fun sendApplyCategoryL2FilterEvent(categoryName: String) {
+        sendGeneralEvent(
+                DataLayer.mapOf(
+                    EVENT, EVENT_CLICK_VALUE,
+                    EVENT_ACTION, CLICK_CATEGORY_FILTER,
+                    EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                    EVENT_LABEL, categoryName,
                     BUSINESSUNIT, BUSINESS_UNIT_VALUE,
                     CURRENTSITE, CURRENT_SITE_VALUE,
                 )

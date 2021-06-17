@@ -8,6 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.searchbar.data.HintData
@@ -149,5 +150,11 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         SearchTracking.sendApplySortFilterEvent(filterParams)
 
         super.onApplySortFilter(applySortFilterModel)
+    }
+
+    override fun onCategoryFilterChipClick(option: Option, isSelected: Boolean) {
+        SearchTracking.sendApplyCategoryL2FilterEvent(option.name)
+
+        super.onCategoryFilterChipClick(option, isSelected)
     }
 }
