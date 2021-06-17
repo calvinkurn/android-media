@@ -30,9 +30,7 @@ class PMProStatusInfoBottomSheet : BaseBottomSheet() {
 
     override fun getChildResLayout(): Int = R.layout.bottom_sheet_pm_pro_status_info
 
-    override fun setupView() = childView?.run {
-
-    }
+    override fun setupView() = childView?.run {}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
