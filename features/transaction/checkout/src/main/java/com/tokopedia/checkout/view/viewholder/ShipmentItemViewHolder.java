@@ -10,6 +10,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.TypedValue;
 import android.view.View;
@@ -943,6 +944,29 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutStateHasErrorShipping.setVisibility(View.GONE);
         layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
 
+        if (selectedCourierItemData.getEtaErrorCode() == 0 && !selectedCourierItemData.getEtaText().isEmpty()) {
+            labelSingleShippingEta.setText(selectedCourierItemData.getEtaText());
+        } else {
+            labelSingleShippingEta.setText(R.string.estimasi_tidak_tersedia);
+        }
+
+        if (selectedCourierItemData.isErrorPinpoint()) {
+            // pinpoint
+            labelSelectedSingleShippingTitle.setText(selectedCourierItemData.getName());
+            labelSelectedSingleShippingOriginalPrice.setVisibility(View.GONE);
+            labelSelectedSingleShippingDiscountedPrice.setVisibility(View.GONE);
+            String pinpointErrorMessage = "Atur pinpoint alamat untuk melanjutkan transaksi. ";
+            String pinpointErrorAction = "Atur sekarang";
+            SpannableString spannableString = new SpannableString(pinpointErrorMessage + pinpointErrorAction);
+            spannableString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500_96)), pinpointErrorMessage.length(), spannableString.length(), SpannableString.SPAN_INCLUSIVE_EXCLUSIVE);
+            labelSingleShippingMessage.setText(spannableString);
+            labelSingleShippingMessage.setVisibility(View.VISIBLE);
+
+            layoutStateHasSelectedSingleShipping.setOnClickListener(v -> mActionListener.onClickSetPinpoint(getAdapterPosition()));
+            layoutStateHasSelectedSingleShipping.setVisibility(View.VISIBLE);
+            return;
+        }
+
         String discountedPrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(selectedCourierItemData.getDiscountedRate(), false));
         if (selectedCourierItemData.getDiscountedRate() == 0 && shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
             labelSelectedSingleShippingTitle.setText(selectedCourierItemData.getName() + " (" + discountedPrice + ")");
@@ -963,12 +987,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             labelSelectedSingleShippingDiscountedPrice.setVisibility(View.GONE);
         }
 
-        if (selectedCourierItemData.getEtaErrorCode() == 0 && !selectedCourierItemData.getEtaText().isEmpty()) {
-            labelSingleShippingEta.setText(selectedCourierItemData.getEtaText());
-        } else {
-            labelSingleShippingEta.setText(R.string.estimasi_tidak_tersedia);
-        }
-
         if (selectedCourierItemData.getLogPromoDesc() != null && !selectedCourierItemData.getLogPromoDesc().isEmpty()) {
             labelSingleShippingMessage.setText(MethodChecker.fromHtml(selectedCourierItemData.getLogPromoDesc()));
             labelSingleShippingMessage.setVisibility(View.VISIBLE);
@@ -980,6 +998,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             labelSingleShippingMessage.setVisibility(View.GONE);
         }
 
+        layoutStateHasSelectedSingleShipping.setOnClickListener(v -> {
+            /* noop */
+        });
         layoutStateHasSelectedSingleShipping.setVisibility(View.VISIBLE);
     }
 
