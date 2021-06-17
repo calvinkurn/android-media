@@ -2,9 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants"
     android:paddingBottom="@dimen/dp_8">
 
     <RadioGroup
@@ -51,12 +52,12 @@
         android:layout_width="88dp"
         android:layout_height="48dp"
         app:text_field_label_static="true"
-        app:text_field_placeholder="Pilih Jam"
-        app:text_field_label="Buka"
+        app:text_field_placeholder="@string/shop_operational_hour_choose"
+        app:text_field_label="@string/label_open"
         app:layout_constraintTop_toBottomOf="@id/ops_hour_options"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="@dimen/dp_18"
-        android:layout_marginStart="@dimen/dp_18"
+        android:layout_marginStart="@dimen/dp_32"
         />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -76,12 +77,35 @@
         android:layout_width="88dp"
         android:layout_height="48dp"
         app:text_field_label_static="true"
-        app:text_field_placeholder="Pilih Jam"
-        app:text_field_label="Tutup"
+        app:text_field_placeholder="@string/shop_operational_hour_choose"
+        app:text_field_label="@string/label_close"
         android:layout_marginTop="@dimen/dp_18"
         android:layout_marginStart="@dimen/dp_24"
         app:layout_constraintTop_toBottomOf="@id/ops_hour_options"
         app:layout_constraintLeft_toRightOf="@id/ops_hour_connector"
+        />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_copy_hours"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_field_start_time_ops_hour"
+        app:icon_name="COPY"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_4"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_copy_to_all_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/ic_copy_hours"
+        app:layout_constraintTop_toTopOf="@id/ic_copy_hours"
+        app:typographyType="body_3"
+        android:text="@string/shop_operational_hour_copy_to_all_day_text"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_2"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

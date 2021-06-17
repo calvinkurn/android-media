@@ -43,6 +43,9 @@
     <string name="shop_operational_hour_title_holiday">Atur jadwal toko libur</string>
     <string name="shop_operational_hour_desc_holiday">Pembeli tidak dapat membeli produkmu selama tokomu libur. Pastikan pesanan yang sudah masuk tetap diproses, ya. Waktu mulai libur mengikuti zona WIB.</string>
     <string name="shop_operational_hour_desc_set_hour">Pembeli akan diinformasikan kalau pesanan yang masuk saat toko tutup akan diproses keesokan hari dan tidak mengurangi skor tokomu.</string>
+    <string name="shop_operational_hour_desc_ticker_holiday">Saat libur pembeli tidak dapat membeli produk di\ntokomu.</string>
+    <string name="shop_operational_hour_copy_to_all_day_text">Jadikan setiap hari</string>
+    <string name="shop_operational_hour_copy_to_all_day_text_desc">Klik Simpan agar jam buka-tutup tokomu sama setiap hari, ya.</string>
     <string name="shop_operational_hour_24_hours">Buka 24 Jam</string>
     <string name="shop_operational_hour_holiday">Libur</string>
     <string name="shop_operational_hour_choose">Pilih Jam</string>
@@ -61,6 +64,8 @@
     <string name="shop_operational_hour_ticker_description_auto_chat">Balas chat pembeli secara otomatis ketika tokomu tidak beroperasi. Atur di Sini</string>
     <string name="shop_operational_hour_list_button_add_holiday_text">Tambah Jadwal Libur</string>
     <string name="shop_operational_hour_set_holiday_schedule_title">Jadwal Toko Libur</string>
+    <string name="shop_operational_hour_set_holiday_schedule_success">Jadwal libur berhasil ditambahkan</string>
+    <string name="shop_operational_hour_set_holiday_schedule_failed">Oops, jadwal tidak tersimpan. Cek koneksi dan ulangi lagi, ya.</string>
     <string name="shop_operational_hour_set_holiday_schedule_dialog_title">Simpan jadwal libur tokomu?</string>
     <string name="shop_operational_hour_delete_holiday_schedule_dialog_title">Hapus jadwal libur toko?</string>
     <string name="shop_operational_hour_abort_shop_holiday_dialog_title">Siap buka toko sekarang?</string>

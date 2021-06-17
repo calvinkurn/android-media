@@ -1,5 +1,6 @@
 package com.tokopedia.shop.settings.basicinfo.view.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
@@ -62,6 +63,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         val ACTION_BOTTOMSHEET_LAYOUT = R.layout.bottomsheet_shop_edit_holiday
 
         private const val NO_HOLIDAY_DATE = "0"
+        private const val REQUEST_CODE_SET_OPS_HOUR = 100
     }
 
     @Inject
@@ -125,6 +127,18 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         observeLiveData()
         showLoader()
         getInitialData()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_SET_OPS_HOUR && resultCode == Activity.RESULT_OK) {
+            showLoader()
+            getInitialData()
+        }
+        else {
+            isNeedToShowToaster = true
+            setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_set_holiday_schedule_failed)
+            setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
+        }
     }
 
     override fun getScreenName(): String {
@@ -217,9 +231,10 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private fun initListener() {
         // set click listener for icon edit ops hour
         icEditOpsHour?.setOnClickListener {
-            activity?.run {
-                startActivity(Intent(this, ShopSettingsSetOperationalHoursActivity::class.java))
-            }
+            startActivityForResult(
+                    Intent(context, ShopSettingsSetOperationalHoursActivity::class.java),
+                    REQUEST_CODE_SET_OPS_HOUR
+            )
         }
 
         // set click listener for button add holiday schedule
@@ -238,7 +253,12 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     }
 
     private fun setupToolbar() {
-        headerOpsHour?.addRightIcon(R.drawable.ic_ops_hour_help)
+        headerOpsHour?.apply {
+            addRightIcon(R.drawable.ic_ops_hour_help)
+            setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
+        }
     }
 
     private fun setBackgroundColor() {
@@ -257,7 +277,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 hideLoader()
                 val opsHourListUiModel = result.data
                 val holidayInfo = opsHourListUiModel.closeInfo
-                val statusInfo = opsHourListUiModel.statusInfo
 
                 // should show upcoming holiday section if available
                 isShouldShowHolidaySchedule = holidayInfo.closeDetail.startDate != NO_HOLIDAY_DATE && holidayInfo.closeDetail.endDate != NO_HOLIDAY_DATE
@@ -291,11 +310,11 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         // observe set shop close info
         observe(shopSettingsOperationalHoursViewModel.shopInfoCloseSchedule) { result ->
             if (result is Success) {
-                setShopHolidayScheduleStatusMessage = "Jadwal libur berhasil ditambahkan"
+                setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_set_holiday_schedule_success)
                 setShopHolidayScheduleStatusType = Toaster.TYPE_NORMAL
             }
             if (result is Fail) {
-                setShopHolidayScheduleStatusMessage = "Oops, jadwal tidak tersimpan. Cek koneksi dan ulangi lagi, ya."
+                setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_set_holiday_schedule_failed)
                 setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
             }
             getInitialData()
@@ -586,7 +605,8 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                     holidayBottomSheet?.dismiss()
                     showLoader()
                     setShopHolidaySchedule(startDate, endDate)
-                }
+                },
+                secondaryCTAListener = {}
         )?.show()
     }
 
@@ -601,7 +621,8 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                     actionBottomSheet?.dismiss()
                     showLoader()
                     deleteShopHolidaySchedule()
-                }
+                },
+                secondaryCTAListener = {}
         )?.show()
     }
 
@@ -615,6 +636,9 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 primaryCTAListener = {
                     showLoader()
                     deleteShopHolidaySchedule()
+                },
+                secondaryCTAListener = {
+                    shopIsOnHolidaySwitcher?.isChecked = true
                 }
         )?.show()
     }
@@ -625,6 +649,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
             ctaPrimaryText: String,
             ctaSecondaryText: String,
             primaryCTAListener: () -> Unit,
+            secondaryCTAListener: () -> Unit
     ): DialogUnify? {
         return context?.let { ctx ->
             DialogUnify(ctx, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
@@ -637,6 +662,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                     primaryCTAListener()
                 }
                 setSecondaryCTAClickListener {
+                    secondaryCTAListener()
                     dismiss()
                 }
             }

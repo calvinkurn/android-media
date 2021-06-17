@@ -180,40 +180,52 @@
                 android:layout_marginTop="@dimen/dp_18"
                 />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_title_shop_ops_hour"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_18"
-                android:layout_marginTop="@dimen/dp_18"
-                android:text="@string/shop_operational_hour_title_set_hour"
-                app:typographyType="heading_5"
-                />
-
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/ic_edit_ops_hour"
-                app:icon_name="EDIT"
-                app:icon_color_light_enable="@color/Unify_N700"
-                app:icon_enable_state="true"
-                android:visibility="gone"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/tv_title_shop_ops_hour"
-                android:layout_marginEnd="@dimen/dp_18"
-                />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_desc_shop_ops_hour"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_18"
-                android:layout_marginEnd="@dimen/dp_18"
-                android:layout_marginTop="@dimen/dp_16"
-                android:text="@string/shop_operational_hour_desc_set_hour"
-                app:typographyType="body_3"
-                android:textColor="@color/Unify_N700_68"
-                />
+                android:layout_height="wrap_content">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_title_shop_ops_hour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_18"
+                    android:layout_marginTop="@dimen/dp_18"
+                    android:text="@string/shop_operational_hour_title_set_hour"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:typographyType="heading_5"
+                    />
+
+                <com.tokopedia.iconunify.IconUnify
+                    android:id="@+id/ic_edit_ops_hour"
+                    app:icon_name="EDIT"
+                    app:icon_color_light_enable="@color/Unify_N700"
+                    app:icon_enable_state="true"
+                    android:visibility="visible"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="@dimen/dp_18"
+                    android:layout_marginEnd="@dimen/dp_18"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_desc_shop_ops_hour"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_18"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:text="@string/shop_operational_hour_desc_set_hour"
+                    app:typographyType="body_3"
+                    android:textColor="@color/Unify_N700_68"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_title_shop_ops_hour"
+                    app:layout_constraintEnd_toStartOf="@id/ic_edit_ops_hour"
+                    />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_ops_hour_list"
