@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.domain.entity.UserShopInfoResponse
 import com.tokopedia.seller.menu.common.errorhandler.SellerMenuErrorHandler
+import com.tokopedia.seller.menu.common.exception.SellerMenuException
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
@@ -111,8 +112,8 @@ class UserShopInfoMapper @Inject constructor(private val userSession: UserSessio
         }
     }
 
-    private fun messageShopTypeErrorCrashlytics(pmTier: Int, shopGrade: Int?): Throwable {
+    private fun messageShopTypeErrorCrashlytics(pmTier: Int, shopGrade: Int?): SellerMenuException {
         val message = "Shop Id: ${userSession.shopId} | PM Tier: $pmTier | Shop grade: $shopGrade"
-        return Throwable(message)
+        return SellerMenuException(message)
     }
 }
