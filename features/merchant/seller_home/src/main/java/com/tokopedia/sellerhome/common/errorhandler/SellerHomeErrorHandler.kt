@@ -74,7 +74,7 @@ object SellerHomeErrorHandler {
                 LAYOUT_ID_KEY to layoutId,
                 DEVICE_ID_KEY to deviceId,
                 MESSAGE_KEY to throwable.localizedMessage.orEmpty(),
-                STACKTRACE_KEY to throwable.stackTrace.toString().take(50),
+                STACKTRACE_KEY to throwable.stackTrace.toString(),
                 EXTRAS_KEY to extras
         )
     }
