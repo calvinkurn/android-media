@@ -68,6 +68,7 @@ abstract class BaseRechargeGeneralScreenShotTest {
             takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, generatePrefix(), "visible_screen_pdp")
         }
 
+        Thread.sleep(2000)
         // ss full layout
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val test = mActivityRule.activity.findViewById<SwipeToRefresh>(R.id.recharge_general_swipe_refresh_layout)
@@ -75,6 +76,7 @@ abstract class BaseRechargeGeneralScreenShotTest {
         }
 
         // ss operator select
+        Thread.sleep(2000)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val operatorView = mActivityRule.activity.findViewById<TopupBillsInputFieldWidget>(R.id.operator_select)
             takeScreenShotVisibleViewInScreen(operatorView, generatePrefix(), "operator_select")
