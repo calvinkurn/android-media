@@ -1140,10 +1140,28 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwBubbleCollapsed(0)
     }
 
-    // TODO: SRW bubble should still displayed/added when user click send sticker.
-    // TODO: SRW bubble should remain collapsed when user send sticker.
+    @Test
+    fun srw_bubble_should_still_displayed_or_added_when_user_click_send_sticker() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+        intending(anyIntent()).respondWith(getAttachInvoiceResult())
+
+        // When
+        clickStickerIconMenu()
+        clickStickerAtPosition(0)
+
+        // Then
+        assertSrwBubbleContentIsVisibleAt(0)
+        assertSrwBubbleCollapsed(0)
+    }
+
     // TODO: SRW bubble should remain collapsed when user send manual text.
-    // TODO: SRW bubble should collapsed when user send sticker instead of click SRW preview question.
     // TODO: SRW Bubble should displayed when user send manually typed msg instead of click SRW preview question
     // TODO: SRW should hide broadcast handler if visible
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)

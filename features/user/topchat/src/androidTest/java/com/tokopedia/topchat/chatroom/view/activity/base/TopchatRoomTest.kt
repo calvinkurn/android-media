@@ -613,6 +613,16 @@ abstract class TopchatRoomTest {
         onView(withId(R.id.rv_attachment_preview)).perform(viewAction)
     }
 
+    protected fun clickStickerAtPosition(position: Int) {
+        val viewAction = RecyclerViewActions
+            .actionOnItemAtPosition<TopchatProductAttachmentViewHolder>(
+                position,
+                ClickChildViewWithIdAction()
+                    .clickChildViewWithId(R.id.iv_sticker)
+            )
+        onView(withId(R.id.rv_sticker)).perform(viewAction)
+    }
+
     protected fun clickSrwPreviewItemAt(position: Int) {
         onView(
             Matchers.allOf(
