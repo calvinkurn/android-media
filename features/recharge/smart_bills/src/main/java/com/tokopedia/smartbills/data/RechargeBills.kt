@@ -7,7 +7,10 @@ import com.tokopedia.common.topupbills.data.RechargeField
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 
 data class RechargeBills(
-        @SerializedName("Flag")
+        @SerializedName("UUID")
+        @Expose
+        val uuid: String = "",
+        @SerializedName("flag")
         @Expose
         val flag: Boolean = false,
         @SerializedName("index")
@@ -74,8 +77,11 @@ data class RechargeBills(
         @SerializedName("DueDateLabel")
         @Expose
         var dueDateLabel: DueUrgency = DueUrgency(),
+        @SerializedName("sections")
+        @Expose
+        var section: Section = Section(),
 
-): Visitable<SmartBillsAdapterFactory> {
+        ): RechargeBillsModel() {
         override fun type(typeFactory: SmartBillsAdapterFactory): Int {
                 return typeFactory.type(this)
         }
