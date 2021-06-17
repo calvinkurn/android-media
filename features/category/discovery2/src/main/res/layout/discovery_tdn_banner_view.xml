@@ -14,7 +14,9 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_140"
+        android:layout_height="0dp"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintDimensionRatio="3:1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header_view"
