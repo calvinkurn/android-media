@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -122,50 +121,36 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
 
     private fun getStatisticPages(isWhiteListed: Boolean): List<StatisticPageUiModel> {
-        adjustHeaderConfig(isWhiteListed)
-        supportActionBar?.title = getString(R.string.stc_statistic)
         return if (isWhiteListed) {
-            tabStatistic.visible()
-            listOf(
-                    StatisticPageHelper.getShopStatistic(this, userSession),
-                    StatisticPageHelper.getProductStatistic(this, userSession),
-                    StatisticPageHelper.getOperationalStatistic(this, userSession),
-                    StatisticPageHelper.getBuyerStatistic(this, userSession)
-            )
+            getWhiteListedPages()
         } else {
-            tabStatistic.gone()
-            listOf(
-                    StatisticPageHelper.getShopStatistic(this, userSession),
-                    StatisticPageHelper.getProductStatistic(this, userSession),
-                    StatisticPageHelper.getOperationalStatistic(this, userSession)
-            )
+            getNonWhiteListedPages()
         }
     }
 
-    private fun adjustHeaderConfig(isWhiteListed: Boolean) {
-        val lParams = headerStcStatistic.layoutParams as? LinearLayout.LayoutParams
-        if (isWhiteListed) {
-            supportActionBar?.title = getString(R.string.stc_statistic)
-            tabStatistic.visible()
+    private fun getWhiteListedPages(): List<StatisticPageUiModel> {
+        return listOf(
+                StatisticPageHelper.getShopStatistic(this, userSession),
+                StatisticPageHelper.getProductStatistic(this, userSession),
+                StatisticPageHelper.getOperationalStatistic(this, userSession),
+                StatisticPageHelper.getBuyerStatistic(this, userSession)
+        )
+    }
 
-            val marginBottom = resources.getDimension(R.dimen.dimen_stc_minus2dp)
-            lParams?.setMargins(0, 0, 0, marginBottom.toInt())
-        } else {
-            supportActionBar?.title = getString(R.string.stc_shop_statistic)
-            tabStatistic.gone()
-
-            lParams?.setMargins(0, 0, 0, 0)
-        }
-
-        headerStcStatistic.requestLayout()
+    private fun getNonWhiteListedPages(): List<StatisticPageUiModel> {
+        return listOf(
+                StatisticPageHelper.getShopStatistic(this, userSession),
+                StatisticPageHelper.getProductStatistic(this, userSession),
+                StatisticPageHelper.getBuyerStatistic(this, userSession)
+        )
     }
 
     private fun setupView() {
         setSupportActionBar(headerStcStatistic)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = getString(R.string.stc_statistic)
 
         tabStatistic.tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
-        tabStatistic.customTabMode = TabLayout.MODE_AUTO
         tabStatistic.tabLayout.setOnTabSelectedListener {
             val tabIndex = tabStatistic.tabLayout.selectedTabPosition
             val title = viewPagerAdapter?.titles?.getOrNull(tabIndex).orEmpty()
@@ -211,8 +196,10 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
         viewPagerAdapter?.let { adapter ->
             if (adapter.titles.isNotEmpty()) {
+                tabStatistic.visible()
                 tabStatistic.tabLayout.removeAllTabs()
             }
+            setTabMode(adapter.titles.size)
             adapter.titles.forEach { title ->
                 val tab = tabStatistic.addNewTab(title)
                 sendTabImpressionEvent(tab.view, title)
@@ -227,6 +214,15 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         }
 
         showCoachMark(coachMarkItems)
+    }
+
+    private fun setTabMode(numberOfTabs: Int) {
+        val tabLimit = 3
+        if (numberOfTabs <= tabLimit) {
+            tabStatistic.customTabMode = TabLayout.MODE_FIXED
+        } else {
+            tabStatistic.customTabMode = TabLayout.MODE_SCROLLABLE
+        }
     }
 
     private fun showCoachMark(coachMarkItems: List<CoachMark2Item>) {
