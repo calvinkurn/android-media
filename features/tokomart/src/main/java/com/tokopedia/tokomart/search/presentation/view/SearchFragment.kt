@@ -46,10 +46,6 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         }
     }
 
-    override fun createNavToolbarIconBuilder() = IconBuilder()
-            .addCart()
-            .addGlobalNav()
-
     override fun getNavToolbarHint() =
             listOf(HintData(searchViewModel.query, searchViewModel.query))
 

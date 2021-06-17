@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
+import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -58,6 +59,14 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.BUSINESSUNIT
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.CURRENTSITE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_ACTION_CLICK_SEARCH_BAR_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CATEGORY_TOP_NAV_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
 import com.tokopedia.tokomart.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
@@ -73,6 +82,12 @@ import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.TrackAppUtils.EVENT
+import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
+import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
+import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
@@ -228,10 +243,9 @@ abstract class BaseSearchCategoryFragment:
         stickyView?.setMargin(0.toDp(), top, 0.toDp(), 0.toDp())
     }
 
-    protected abstract fun createNavToolbarIconBuilder(): IconBuilder
-
-    protected fun IconBuilder.addShare(): IconBuilder = this
-            .addIcon(ID_SHARE, disableRouteManager = false, disableDefaultGtmTracker = false) { }
+    protected open fun createNavToolbarIconBuilder() = IconBuilder()
+            .addCart()
+            .addGlobalNav()
 
     protected fun IconBuilder.addCart(): IconBuilder = this
             .addIcon(ID_CART, disableRouteManager = false, disableDefaultGtmTracker = false) { }
@@ -249,6 +263,17 @@ abstract class BaseSearchCategoryFragment:
             listOf(HintData("", ""))
 
     protected open fun onSearchBarClick(hint: String = "") {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_CLICK_VALUE,
+                        EVENT_ACTION, EVENT_ACTION_CLICK_SEARCH_BAR_VALUE,
+                        EVENT_CATEGORY, EVENT_CATEGORY_TOP_NAV_VALUE,
+                        EVENT_LABEL, hint,
+                        BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                        CURRENTSITE, CURRENT_SITE_VALUE,
+                )
+        )
+
         val autoCompleteApplink = getAutoCompleteApplink()
         val params = getModifiedAutoCompleteQueryParam(autoCompleteApplink)
         val finalApplink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" +

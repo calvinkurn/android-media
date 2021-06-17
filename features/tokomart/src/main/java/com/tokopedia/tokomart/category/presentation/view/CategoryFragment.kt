@@ -43,11 +43,6 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
         }
     }
 
-    override fun createNavToolbarIconBuilder() = IconBuilder()
-            .addShare()
-            .addCart()
-            .addGlobalNav()
-
     override fun getBaseAutoCompleteApplink() =
             super.getBaseAutoCompleteApplink() + "?" +
                     "${SearchApiConst.NAVSOURCE}=$TOKONOW_DIRECTORY"
