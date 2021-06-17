@@ -4,12 +4,10 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.thankyou_native.GQL_DIGITAL_RECOMMENDATION
 import com.tokopedia.thankyou_native.data.mapper.DigitalThankPage
-import com.tokopedia.thankyou_native.data.mapper.MARKET_PLACE
 import com.tokopedia.thankyou_native.data.mapper.MarketPlaceThankPage
 import com.tokopedia.thankyou_native.data.mapper.ThankPageType
 import com.tokopedia.thankyou_native.recommendationdigital.model.RechargeRecommendationDigiPersoItem
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationDigiPersoResponse
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import javax.inject.Named
 
