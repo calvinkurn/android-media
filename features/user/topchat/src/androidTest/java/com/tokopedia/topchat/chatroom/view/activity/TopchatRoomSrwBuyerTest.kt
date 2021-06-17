@@ -1126,7 +1126,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
         inflateTestFragment()
-        intending(anyIntent()).respondWith(getAttachInvoiceResult())
 
         // When
         clickSrwPreviewItemAt(0)
@@ -1150,7 +1149,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
         inflateTestFragment()
-        intending(anyIntent()).respondWith(getAttachInvoiceResult())
 
         // When
         clickStickerIconMenu()
@@ -1161,8 +1159,27 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwBubbleCollapsed(0)
     }
 
-    // TODO: SRW bubble should remain collapsed when user send manual text.
-    // TODO: SRW Bubble should displayed when user send manually typed msg instead of click SRW preview question
+    @Test
+    fun srw_Bubble_should_displayed_when_user_send_manually_typed_msg_instead_of_click_srw_preview_question() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // When
+        clickComposeArea()
+        typeMessage("Test Send Message")
+        clickSendBtn()
+
+        // Then
+        assertSrwBubbleContentIsVisibleAt(0)
+        assertSrwBubbleCollapsed(0)
+    }
+
     // TODO: SRW should hide broadcast handler if visible
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
     // TODO: SRW bubble should not be added if SRW preview state is error when user send msg/sticker.
