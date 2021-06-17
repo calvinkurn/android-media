@@ -72,8 +72,8 @@ object SellerHomeErrorHandler {
                 ERROR_TYPE_KEY to errorType,
                 DEVICE_ID_KEY to deviceId,
                 MESSAGE_KEY to throwable.localizedMessage.orEmpty(),
-                STACKTRACE_KEY to throwable.stackTraceToString(),
-                EXTRAS_KEY to stringExtras
+                EXTRAS_KEY to stringExtras,
+                STACKTRACE_KEY to throwable.stackTraceToString()
         )
     }
 
