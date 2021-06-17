@@ -75,6 +75,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private var bottomSheetLocUndefined: BottomSheetUnify? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var hasRequestedLocation: Boolean = false
+    /*to differentiate bottomsheet device location or tokopedia access location*/
+    private var isDeviceLocation: Boolean = true
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -204,12 +206,18 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         //loading dsb
         binding.rlSearchCurrentLocation.setOnClickListener {
             AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
-            if (allPermissionsGranted()) {
-                hasRequestedLocation = true
-                getLocation()
+            if (AddNewAddressUtils.isGpsEnabled(context)) {
+                if (allPermissionsGranted()) {
+                    hasRequestedLocation = true
+                    getLocation()
+                } else {
+                    hasRequestedLocation = false
+                    isDeviceLocation = false
+                    showBottomSheetLocUndefined()
+                }
             } else {
-                hasRequestedLocation = false
-                requestPermissionLocation()
+                isDeviceLocation = true
+                showBottomSheetLocUndefined()
             }
         }
     }
@@ -240,7 +248,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             tvInfoLocUndefined.text = "Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu."
             btnActivateLocation.setOnClickListener {
                 AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiSearch(userSession.userId)
-                goToSettingLocationPage()
+                if (isDeviceLocation) goToSettingLocationPage()
+                else requestPermissionLocation()
             }
         }
     }
@@ -355,6 +364,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
             }
         } else {
+            isDeviceLocation = true
             showBottomSheetLocUndefined()
         }
     }

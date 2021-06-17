@@ -95,7 +95,10 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var saveAddressDataModel: SaveAddressDataModel? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var hasRequestedLocation: Boolean = false
+    /*to differentiate positive flow or negative flow*/
     private var isPositiveFlow: Boolean = true
+    /*to differentiate bottomsheet device location or tokopedia access location*/
+    private var isDeviceLocation: Boolean = true
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
@@ -267,6 +270,14 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 is Success -> {
                     onSuccessPlaceGetDistrict(it.data)
                 }
+
+                is Fail -> {
+                    val msg = it.throwable.message.toString()
+                    when {
+                        msg.contains(FOREIGN_COUNTRY_MESSAGE) -> showOutOfReachBottomSheet()
+                        else -> showNotFoundLocation()
+                    }
+                }
             }
         })
     }
@@ -387,12 +398,18 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             chipsCurrentLoc.chipImageResource = context?.let { getIconUnifyDrawable(it, IconUnify.TARGET) }
             chipsCurrentLoc.setOnClickListener {
                 AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
-                if (allPermissionsGranted()) {
-                    hasRequestedLocation = true
-                    getLocation()
+                if (AddNewAddressUtils.isGpsEnabled(context)) {
+                    if (allPermissionsGranted()) {
+                        hasRequestedLocation = true
+                        getLocation()
+                    } else {
+                        hasRequestedLocation = false
+                        isDeviceLocation = false
+                        showBottomSheetLocUndefined()
+                    }
                 } else {
-                    hasRequestedLocation = false
-                    requestPermissionLocation()
+                    isDeviceLocation = true
+                    showBottomSheetLocUndefined()
                 }
             }
 
@@ -432,6 +449,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
             }
         } else {
+            isDeviceLocation = true
             showBottomSheetLocUndefined()
         }
     }
@@ -462,7 +480,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             tvInfoLocUndefined.text = "Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu."
             btnActivateLocation.setOnClickListener {
                 AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiPinpoint(userSession.userId)
-                goToSettingLocationPage()
+                if (isDeviceLocation) goToSettingLocationPage()
+                else requestPermissionLocation()
             }
         }
     }
@@ -587,13 +606,13 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun showOutOfReachBottomSheet() {
         showInvalidBottomSheet()
-        updateInvalidBottomSheetData(1)
+        updateInvalidBottomSheetData(BOTTOMSHEET_OUT_OF_INDO)
     }
 
 
     private fun showNotFoundLocation() {
         showInvalidBottomSheet()
-        updateInvalidBottomSheetData(2)
+        updateInvalidBottomSheetData(BOTTOMSHEET_NOT_FOUND_LOC)
     }
 
     private fun updateInvalidBottomSheetData(type: Int) {
@@ -642,6 +661,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
         const val LOCATION_NOT_FOUND_MESSAGE = "Lokasi gagal ditemukan"
         const val BOTTOMSHEET_OUT_OF_INDO = 1
+        const val BOTTOMSHEET_NOT_FOUND_LOC = 2
 
         fun newInstance(extra: Bundle): PinpointNewPageFragment {
             return PinpointNewPageFragment().apply {

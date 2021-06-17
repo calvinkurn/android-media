@@ -29,6 +29,7 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.response.DistrictItem
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
+import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentAddressFormBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
@@ -39,6 +40,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant
 import com.tokopedia.logisticaddaddress.utils.AddEditAddressUtil
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -52,6 +54,8 @@ import javax.inject.Inject
 class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.ActionListener,
         DiscomBottomSheetFragment.ActionListener {
 
+
+    private var bottomSheetInfoPenerima: BottomSheetUnify? = null
     private var saveDataModel: SaveAddressDataModel? = null
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
@@ -63,9 +67,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     /*To differentiate flow from logistic or not*/
     private var isLogisticLabel: Boolean = true
     private var validated: Boolean = true
+    private val toppers: String = "Toppers"
+
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private lateinit var labelAlamatChipsLayoutManager: ChipsLayoutManager
-
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
     private var binding by autoCleared<FragmentAddressFormBinding>()
@@ -115,10 +120,15 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             if (contactURI != null) {
                 contact = context?.let { AddEditAddressUtil.convertContactUriToData(it.contentResolver, contactURI) }
             }
-            binding.formAccount.etNomorHp.textFieldInput.setText(contact?.contactNumber)
+            val phoneNumberOnly = removeSpecialChars(contact?.contactNumber.toString())
+            binding.formAccount.etNomorHp.textFieldInput.setText(phoneNumberOnly)
         } else if (requestCode == 1998 && resultCode == Activity.RESULT_OK) {
-
+            //Result from pinpoint Page Negative
         }
+    }
+
+    private fun removeSpecialChars(s: String): String {
+        return s.replace("[^A-Za-z0-9 ]".toRegex(), "").replace(" ","")
     }
 
     private fun prepareData() {
@@ -170,10 +180,20 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         staticDimen8dp = context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
 
         binding.run {
-            formAccount.etNamaPenerima.textFieldInput.setText(userSession.name)
+            if (userSession.name.isNotEmpty() && !userSession.name.contains(toppers, ignoreCase = true)) {
+                formAccount.etNamaPenerima.textFieldInput.setText(userSession.name)
+                formAccount.etNamaPenerima.textFieldWrapper.error = ""
+                formAccount.infoNameLayout.visibility = View.GONE
+            }
+            formAccount.etNamaPenerima.textFieldInput.addTextChangedListener(setWrapperWatcher(formAccount.etNamaPenerima.textFieldWrapper, null))
+            formAccount.etNomorHp.textFieldInput.setText(userSession.phoneNumber)
             formAccount.etNomorHp.setFirstIcon(R.drawable.ic_contact_black)
             formAccount.etNomorHp.getFirstIcon().setOnClickListener {
                 onNavigateToContact()
+            }
+            formAccount.etNomorHp.textFieldInput.addTextChangedListener(setWrapperWatcherPhone(formAccount.etNomorHp.textFieldWrapper, getString(R.string.validate_no_ponsel_less_char)))
+            formAccount.btnInfo.setOnClickListener {
+                showBottomSheetInfoPenerima()
             }
         }
 
@@ -210,7 +230,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                         showDistrictRecommendationBottomSheet()
                     }
                 }
-
+                formAddressNegative.etLabel.textFieldInput.setText("Rumah")
+                formAddressNegative.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddressNegative.etLabel.textFieldWrapper, null))
+                formAddressNegative.etAlamat.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddressNegative.etAlamat.textFieldWrapper, null))
             }
         } else {
             setOnTouchLabelAddress(ANA_POSITIVE)
@@ -227,10 +249,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 formAddress.etLabel.textFieldInput.setText("Rumah")
                 formAddress.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etLabel.textFieldWrapper, null))
                 formAddress.etAlamat.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etAlamat.textFieldWrapper, null))
-
-                formAccount.etNamaPenerima.textFieldInput.addTextChangedListener(setWrapperWatcher(formAccount.etNamaPenerima.textFieldWrapper, null))
-                formAccount.etNomorHp.textFieldInput.setText(userSession.phoneNumber)
-                formAccount.etNomorHp.textFieldInput.addTextChangedListener(setWrapperWatcherPhone(formAccount.etNomorHp.textFieldWrapper, getString(R.string.validate_no_ponsel_less_char)))
             }
         }
 
@@ -241,31 +259,70 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         }
     }
 
+    private fun showBottomSheetInfoPenerima() {
+        bottomSheetInfoPenerima = BottomSheetUnify()
+        val viewBinding = BottomsheetLocationUnmatchedBinding.inflate(LayoutInflater.from(context), null, false)
+        setupBottomShetInfoPenerima(viewBinding)
+
+        bottomSheetInfoPenerima?.apply {
+            setCloseClickListener { dismiss() }
+            setChild(viewBinding.root)
+            setOnDismissListener { dismiss() }
+        }
+
+        childFragmentManager.let {
+            bottomSheetInfoPenerima?.show(it, "")
+        }
+    }
+
+    private fun setupBottomShetInfoPenerima(viewBinding: BottomsheetLocationUnmatchedBinding) {
+        viewBinding.run {
+            tvInfoCourier.text = getString(R.string.tv_title_nama_penerima_bottomsheet)
+            tvInfoCourierDetail.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_desc_nama_penerima_bottomsheet)).spannedString }
+            btnClose.setOnClickListener {
+                bottomSheetInfoPenerima?.dismiss()
+            }
+        }
+    }
+
     private fun validateForm(): Boolean {
         validated = true
         binding.run {
-            if (formAddress.etLabel.textFieldInput.text.toString().isEmpty()) {
-                validated = false
-                setWrapperError(formAddress.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
+            if (isPositiveFlow) {
+                if (formAddress.etLabel.textFieldInput.text.toString().isEmpty() || formAddress.etLabel.textFieldInput.text.toString() == " ") {
+                    validated = false
+                    setWrapperError(formAddress.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
+                }
+
+                if (formAddress.etAlamat.textFieldInput.text.toString().isEmpty() || formAddress.etAlamat.textFieldInput.text.toString() == " ") {
+                    validated = false
+                    setWrapperError(formAddress.etAlamat.textFieldWrapper, getString(R.string.tv_error_field))
+                }
+            } else {
+                if (formAddressNegative.etLabel.textFieldInput.text.toString().isEmpty() || formAddressNegative.etLabel.textFieldInput.text.toString() == " ") {
+                    validated = false
+                    setWrapperError(formAddressNegative.etLabel.textFieldWrapper, getString(R.string.tv_error_field))
+                }
+
+                if (formAddressNegative.etAlamat.textFieldInput.text.toString().isEmpty() || formAddressNegative.etAlamat.textFieldInput.text.toString() == " ") {
+                    validated = false
+                    setWrapperError(formAddressNegative.etAlamat.textFieldWrapper, getString(R.string.tv_error_field))
+                }
             }
 
-            if (formAddress.etAlamat.textFieldInput.text.toString().isEmpty()) {
-                validated = false
-                setWrapperError(formAddress.etAlamat.textFieldWrapper, getString(R.string.tv_error_field))
-            }
-
-            if (formAccount.etNamaPenerima.textFieldInput.text.toString().isEmpty()) {
+            if (formAccount.etNamaPenerima.textFieldInput.text.toString().isEmpty() || formAccount.etNamaPenerima.textFieldInput.text.toString() == " ") {
                 validated = false
                 setWrapperError(formAccount.etNamaPenerima.textFieldWrapper, getString(R.string.tv_error_field))
             }
 
-            if (formAccount.etNomorHp.textFieldInput.text.toString().isEmpty()) {
+            if (formAccount.etNomorHp.textFieldInput.text.toString().isEmpty()  || formAccount.etNomorHp.textFieldInput.text.toString() == " ") {
                 validated = false
                 setWrapperError(formAccount.etNomorHp.textFieldWrapper, getString(R.string.tv_error_field))
             }
         }
         return validated
     }
+
 
     private fun setWrapperWatcher(wrapper: TextInputLayout, text: String?): TextWatcher {
         return object : TextWatcher {
@@ -277,7 +334,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 if (s.isNotEmpty()) {
                     setWrapperError(wrapper, text)
                 } else {
-                    setWrapperError(wrapper, null)
+                    setWrapperError(wrapper, getString(R.string.tv_error_field))
                 }
             }
 
@@ -403,9 +460,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
                 override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                     if (s.contains("0")) {
-                           filters = arrayOf(InputFilter.LengthFilter(15))
+                           filters = arrayOf(InputFilter.LengthFilter(14))
                     } else {
-                        filters = arrayOf(InputFilter.LengthFilter(16))
+                        filters = arrayOf(InputFilter.LengthFilter(15))
                     }
                 }
 
@@ -515,6 +572,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         saveDataModel?.addressName =  binding.formAddress.etLabel.textFieldInput.text.toString()
         saveDataModel?.receiverName = binding.formAccount.etNamaPenerima.textFieldInput.text.toString()
         saveDataModel?.phone = binding.formAccount.etNomorHp.textFieldInput.text.toString()
+
+        if (userSession.name.isNotEmpty() && userSession.name.contains(toppers, ignoreCase = true)) {
+            saveDataModel?.applyNameAsNewUserFullname = true
+        }
     }
 
     private fun onSuccessAddAddress() {
@@ -542,11 +603,20 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     override fun onLabelAlamatChipClicked(labelAlamat: String) {
-        binding.formAddress.rvLabelAlamatChips.visibility = View.GONE
-        binding.formAddress.etLabel.textFieldInput.run {
-            setText(labelAlamat)
-            setSelection(binding.formAddress.etLabel.textFieldInput.text.length)
+        if (isPositiveFlow) {
+            binding.formAddress.rvLabelAlamatChips.visibility = View.GONE
+            binding.formAddress.etLabel.textFieldInput.run {
+                setText(labelAlamat)
+                setSelection(binding.formAddress.etLabel.textFieldInput.text.length)
+            }
+        } else {
+            binding.formAddressNegative.rvLabelAlamatChips.visibility = View.GONE
+            binding.formAddressNegative.etLabel.textFieldInput.run {
+                setText(labelAlamat)
+                setSelection(binding.formAddressNegative.etLabel.textFieldInput.text.length)
+            }
         }
+
     }
 
     override fun onGetDistrict(districtAddress: Address) {

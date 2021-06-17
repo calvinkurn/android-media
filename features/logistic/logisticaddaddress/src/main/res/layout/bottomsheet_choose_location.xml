@@ -123,7 +123,8 @@
             android:layout_marginStart="@dimen/dp_50"
             android:layout_marginEnd="@dimen/dp_50"
             app:typographyType="heading_2"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center"
+            android:textAlignment="center"
             app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -132,6 +133,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_8"
             android:gravity="center"
+            android:textColor="@color/light_N700_68"
             app:typographyType="body_2" />
 
         <com.tokopedia.unifycomponents.UnifyButton
