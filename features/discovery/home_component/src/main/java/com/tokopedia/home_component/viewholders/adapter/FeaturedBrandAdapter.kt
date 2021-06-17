@@ -68,11 +68,16 @@ class FeaturedBrandAdapter(
 
 
         fun bind(item: Lego4AutoItem, parentPosition: Int, listener: FeaturedBrandListener?, channelModel: ChannelModel, isCacheData: Boolean) {
-            itemImage.loadImageRounded(item.grid.productImageUrl, 10f)
+            itemImage.loadImageRounded(item.grid.productImageUrl, 12f)
             if (item.grid.imageUrl.isNotEmpty()) {
-                itemLogo.loadImageRounded(item.grid.imageUrl, 10f)
+                itemLogo.loadImageRounded(item.grid.imageUrl, 12f)
             }
-            itemDesc.text = constructBoldFont(item.grid.benefit.type, item.grid.benefit.value)
+            if (item.grid.benefit.type.isNotEmpty()) {
+                itemDesc.text = constructBoldFont(item.grid.benefit.type, item.grid.benefit.value)
+            } else {
+                itemDesc.text = item.grid.benefit.value
+                itemDesc.setTypeface(null, Typeface.BOLD)
+            }
             if (item.grid.textColor.isNotEmpty()) {
                 itemDesc.setTextColor(Color.parseColor(item.grid.textColor))
             }

@@ -41,7 +41,7 @@
         android:layout_marginBottom="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
-        app:cardCornerRadius="@dimen/dp_10"
+        app:cardCornerRadius="@dimen/dp_8"
         app:cardBackgroundColor="@color/transparent"
         app:cardElevation="0dp"
         app:layout_constraintWidth_default="percent"
