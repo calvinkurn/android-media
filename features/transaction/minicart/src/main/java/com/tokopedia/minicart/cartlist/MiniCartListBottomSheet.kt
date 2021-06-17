@@ -170,7 +170,6 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                 showProgressLoading()
                 viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
             }
-            it.enableAmountChevron(true)
             validateTotalAmountView()
             setTotalAmountLoading(true)
         }
@@ -392,7 +391,6 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                 context.startActivity(intent)
             }
             this.chatIcon?.setImageDrawable(chatIcon)
-            totalAmount?.enableAmountChevron(true)
             totalAmount?.amountChevronView?.setOnClickListener(miniCartChevronClickListener)
         }
     }
