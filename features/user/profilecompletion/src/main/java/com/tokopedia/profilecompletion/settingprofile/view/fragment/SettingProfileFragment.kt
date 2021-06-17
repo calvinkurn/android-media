@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -551,13 +552,16 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun goToChangeEmail() {
-        val url = Uri.parse(TokopediaUrl.getInstance().MOBILEWEB).buildUpon().apply {
+//        val url = Uri.parse(TokopediaUrl.getInstance().MOBILEWEB).buildUpon().apply {
+        val url = Uri.parse("https://135-staging-feature.tokopedia.com/").buildUpon().apply {
             appendPath(UrlSettingProfileConst.USER_PATH_URL)
             appendPath(UrlSettingProfileConst.PROFILE_PATH_URL)
             appendPath(UrlSettingProfileConst.EMAIL_PATH_URL)
+            appendQueryParameter(ProfileSettingWebViewActivity.KEY_IS_FROM_APP, "true")
             appendQueryParameter(ProfileSettingWebViewActivity.KEY_QUERY_PARAM, ProfileSettingWebViewActivity.VALUE_QUERY_PARAM)
         }.build().toString()
 
+        Log.d("URL Change Email", url)
         val intent = ProfileSettingWebViewActivity.createIntent(requireContext(), url)
         startActivityForResult(intent, REQUEST_CODE_CHANGE_EMAIL)
     }
