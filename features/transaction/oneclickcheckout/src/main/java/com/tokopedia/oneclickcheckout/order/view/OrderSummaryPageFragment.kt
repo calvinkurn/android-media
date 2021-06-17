@@ -942,7 +942,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onOvoActivateClicked(callbackUrl: String) {
-            // TODO : GOPAY ACTIVATION ACTION
             OvoActivationWebViewBottomSheet(ovoActivationUrl.get(), callbackUrl, object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
                 override fun onActivationResult(isSuccess: Boolean) {
                     view?.let {
@@ -954,6 +953,24 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             }
                             source = SOURCE_OTHERS
                             refresh()
+                        }
+                    }
+                }
+            }).show(this@OrderSummaryPageFragment, userSession.get())
+        }
+
+        override fun onWalletActivateClicked(activationUrl: String, callbackUrl: String) {
+            OvoActivationWebViewBottomSheet(activationUrl, callbackUrl, object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
+                override fun onActivationResult(isSuccess: Boolean) {
+                    view?.let {
+                        it.post {
+                            source = SOURCE_OTHERS
+                            refresh()
+                            if (isSuccess) {
+                                Toaster.build(it, viewModel.getActivationSuccessToasterMsg(), actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+                            } else {
+                                Toaster.build(it, viewModel.getActivationErrorToasterMsg(), type = Toaster.TYPE_ERROR, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+                            }
                         }
                     }
                 }

@@ -210,9 +210,7 @@ class GetOccCartMapper @Inject constructor() {
                 payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
                 mapPaymentCreditCard(payment, data), mapPaymentErrorMessage(payment.errorMessage), mapPaymentRevampErrorMessage(payment.occRevampErrorMessage), data.errorTicker,
                 payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign, mapPaymentOvoData(payment.ovoAdditionalData, data), null,
-                null, payment.bid, 2, mapPaymentWalletDummyData())
-            // TODO : unremark & delete dummy data
-            // mapPaymentWalletData(payment.walletAdditionalData))
+                null, payment.bid, 2, mapPaymentWalletData(payment.walletAdditionalData, data.paymentAdditionalData.callbackUrl))
     }
 
     private fun mapPaymentErrorMessage(errorMessage: PaymentErrorMessage): OrderPaymentErrorMessage {
@@ -269,20 +267,12 @@ class GetOccCartMapper @Inject constructor() {
         )
     }
 
-    private fun mapPaymentWalletData(walletAdditionalData: WalletAdditionalData): OrderPaymentWalletAdditionalData {
+    private fun mapPaymentWalletData(walletAdditionalData: WalletAdditionalData, callbackUrl: String): OrderPaymentWalletAdditionalData {
         return OrderPaymentWalletAdditionalData(
-            walletAdditionalData.walletType, walletAdditionalData.enableWalletAmountValidation,
+            walletAdditionalData.walletType, walletAdditionalData.enableWalletAmountValidation, callbackUrl,
             activation = mapPaymentWalletActionData(walletAdditionalData.activation),
             topUp = mapPaymentWalletActionData(walletAdditionalData.topUp),
             phoneNumber = mapPaymentWalletActionData(walletAdditionalData.phoneNumberRegistered)
-        )
-    }
-
-    private fun mapPaymentWalletDummyData(): OrderPaymentWalletAdditionalData {
-        return OrderPaymentWalletAdditionalData(
-            WALLET_TYPE_GOPAY, true,
-            activation = OrderPaymentWalletActionData(false, "", "Yay, aktivasi Gopay berhasil. Sekarang kamu bisa bayar pakai Gopay.", "", "Aktivasi di aplikasi Gojek dulu, ya", false, "Sambungkan Gopay", ""),
-            topUp = OrderPaymentWalletActionData(false, "", "", "", "Limit kamu tidak cukup.")
         )
     }
 

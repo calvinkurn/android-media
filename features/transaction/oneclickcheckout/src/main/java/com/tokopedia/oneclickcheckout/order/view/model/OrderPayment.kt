@@ -139,6 +139,7 @@ data class OrderPaymentOvoAdditionalData(
 data class OrderPaymentWalletAdditionalData(
     val walletType: Int = 0,
     val enableWalletAmountValidation: Boolean = false,
+    val callbackUrl: String = "",
     val activation: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
     val topUp: OrderPaymentWalletActionData = OrderPaymentWalletActionData(),
     val phoneNumber: OrderPaymentWalletActionData = OrderPaymentWalletActionData()
@@ -185,7 +186,8 @@ data class OrderPaymentWalletErrorData(
         val buttonTitle: String = "",
         val type: Int = 0,
         val callbackUrl: String = "",
-        val isHideDigital: Int = 0
+        val isHideDigital: Int = 0,
+        val isOvo: Boolean = false
 ) {
     companion object {
         const val TYPE_ACTIVATION = 1

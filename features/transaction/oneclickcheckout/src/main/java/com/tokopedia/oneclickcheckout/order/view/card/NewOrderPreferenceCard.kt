@@ -381,7 +381,11 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                             if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_TOP_UP) {
                                 listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
                             } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
-                                listener.onOvoActivateClicked(payment.walletErrorData.callbackUrl)
+                                if (payment.walletErrorData.isOvo) {
+                                    listener.onOvoActivateClicked(payment.walletErrorData.callbackUrl)
+                                } else {
+                                    listener.onWalletActivateClicked(payment.walletData.activation.urlLink, payment.walletData.callbackUrl)
+                                }
                             }
                         }
                         tvPaymentOvoErrorAction?.text = button
@@ -398,7 +402,11 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                             if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_TOP_UP) {
                                 listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
                             } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
-                                listener.onOvoActivateClicked(payment.walletErrorData.callbackUrl)
+                                if (payment.walletErrorData.isOvo) {
+                                    listener.onOvoActivateClicked(payment.walletErrorData.callbackUrl)
+                                } else {
+                                    listener.onWalletActivateClicked(payment.walletData.activation.urlLink, payment.walletData.callbackUrl)
+                                }
                             }
                         }
                         tvPaymentErrorMessage?.text = span
@@ -685,6 +693,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData)
 
         fun onOvoActivateClicked(callbackUrl: String)
+
+        fun onWalletActivateClicked(activationUrl: String, callbackUrl: String)
 
         fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData)
     }
