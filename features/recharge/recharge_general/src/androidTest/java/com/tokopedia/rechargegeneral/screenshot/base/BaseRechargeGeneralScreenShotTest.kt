@@ -10,6 +10,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
+import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.presentation.activity.RechargeGeneralActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
@@ -30,12 +31,15 @@ import java.lang.StringBuilder
 
 abstract class BaseRechargeGeneralScreenShotTest {
 
+    private val graphqlCacheManager = GraphqlCacheManager()
+
     @get:Rule
     var mActivityRule = ActivityTestRule(RechargeGeneralActivity::class.java, false, false)
 
     @Before
     fun stubAllExternalIntents() {
         Intents.init()
+        graphqlCacheManager.deleteAll()
         setupDarkModeTest(forceDarkMode())
         setupGraphqlMockResponse(getMockConfig())
 
