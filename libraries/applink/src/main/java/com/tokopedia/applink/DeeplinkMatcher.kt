@@ -93,6 +93,7 @@ class DeeplinkMatcher {
         add(Pattern(EQ, 3, mapOf(1 to "campaign")) to ETALASE)
         add(Pattern(EQ, 4, mapOf(0 to "payment", 1 to "thank-you")) to NATIVE_THANK_YOU)
         add(Pattern(EQ, 2, mapOf(0 to "settings", 1 to "power-merchant", )) to POWER_MERCHANT)
+        add(Pattern(EQ, 2, mapOf(0 to "myshop", 1 to "power-merchant", )) to POWER_MERCHANT)
         add(Pattern(EQ, 1, null) to SHOP)
         add(Pattern(EQ, 2, null) to PRODUCT)
     }
