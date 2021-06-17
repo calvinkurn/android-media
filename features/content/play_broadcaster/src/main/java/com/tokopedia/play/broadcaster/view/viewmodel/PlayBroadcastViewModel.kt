@@ -143,7 +143,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private val channelLivePusherStateListener = object : PlayChannelLivePusherStateListener {
         override fun onChannelStateChanged(channelStatusType: PlayChannelStatusType) {
-            updateChannelStatus(channelStatusType)
+            updateChannelStatus(channelStatusType) // TODO: throw error
         }
     }
 

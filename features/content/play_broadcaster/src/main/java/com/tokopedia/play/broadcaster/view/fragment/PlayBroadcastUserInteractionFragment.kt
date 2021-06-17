@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -371,17 +370,22 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun handleLivePushError(state: PlayLivePusherViewState.Error) {
         when(state.errorType) {
-            PlayLivePusherErrorType.NetworkPoor -> showToaster(message = getString(R.string.play_live_broadcast_network_poor), type = Toaster.TYPE_ERROR)
+            PlayLivePusherErrorType.NetworkPoor -> showToaster(
+                message = buildErrorMessage(getString(R.string.play_live_broadcast_network_poor), state.reason),
+                type = Toaster.TYPE_ERROR
+            )
             PlayLivePusherErrorType.NetworkLoss -> errorLiveNetworkLossView.show()
-            PlayLivePusherErrorType.ConnectFailed -> showToaster(
-                    message = getString(R.string.play_live_broadcast_connect_fail),
+            PlayLivePusherErrorType.ConnectFailed -> {
+                showToaster(
+                    message = buildErrorMessage(getString(R.string.play_live_broadcast_connect_fail), state.reason),
                     type = Toaster.TYPE_ERROR,
                     duration = Toaster.LENGTH_INDEFINITE,
                     actionLabel = getString(R.string.play_broadcast_try_again),
                     actionListener = { parentViewModel.reconnectLiveStream() }
-            )
+                )
+            }
             PlayLivePusherErrorType.SystemError -> showToaster(
-                message = getString(R.string.play_dialog_unsupported_device_desc),
+                message = buildErrorMessage(getString(R.string.play_dialog_unsupported_device_desc), state.reason),
                 type = Toaster.TYPE_ERROR,
                 duration = Toaster.LENGTH_INDEFINITE,
                 actionLabel = getString(R.string.play_ok),
@@ -389,17 +393,21 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             )
         }
         analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.title, state.reason)
-        if (GlobalConfig.DEBUG) {
-            Toast.makeText(
-                requireContext(),
-                "reason: ${state.reason} \n\n(Important! this message only appears in debug mode)",
-                Toast.LENGTH_LONG
-            ).show()
-        }
     }
 
     private fun showLoading(isLoading: Boolean) {
         loadingView.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun buildErrorMessage(default: String, reason: String): String {
+        val errorMessage = StringBuilder().append(default)
+        if (GlobalConfig.DEBUG) {
+            errorMessage.append("\n\n")
+            errorMessage.append("reason: $reason")
+            errorMessage.append("\n")
+            errorMessage.append("(Important! this message only appears in debug mode)")
+        }
+        return errorMessage.toString()
     }
 
     //region observe

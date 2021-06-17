@@ -1,18 +1,17 @@
 package com.tokopedia.play.broadcaster.pusher
 
+import com.wmspanel.libstream.Streamer
+
 
 /**
  * Created by mzennis on 03/06/21.
  */
 data class PlayLivePusherConfig(
-    val fps: Int = 30,
-    val videoBitrate: Int = 900 * 1024,
-    val videoOrientation: Int = 90,
-    val audioBitrate: Int = 64 * 1024,
-    val audioSampleRate: Int = 32000,
-    val audioStereo: Boolean = true,
-    val audioEchoCanceler: Boolean = false,
-    val audioNoiseSuppressor: Boolean = false,
-    val maxRetry: Int = 15,
-    val reconnectDelay: Long = 3000
-)
+    val videoWidth: Int = 1280,
+    val videoHeight: Int = 720,
+    val fps: Float = 30.0f,
+    val videoBitrate: Int = 900 * 1000, // Kbps -> bps
+) {
+
+    fun getVideoSize() = Streamer.Size(videoHeight, videoWidth)
+}
