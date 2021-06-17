@@ -31,6 +31,9 @@ import com.tokopedia.buyerorderdetail.common.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
+import com.tokopedia.buyerorderdetail.presentation.BuyerOrderDetailBottomSheetManager
+import com.tokopedia.buyerorderdetail.presentation.BuyerOrderDetailStickyActionButton
+import com.tokopedia.buyerorderdetail.presentation.BuyerOrderDetailStickyActionButtonHandler
 import com.tokopedia.buyerorderdetail.presentation.activity.BuyerOrderDetailActivity
 import com.tokopedia.buyerorderdetail.presentation.adapter.ActionButtonClickListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.BuyerOrderDetailAdapter
@@ -65,7 +68,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.ProductViewListener, ActionButtonClickListener, TickerViewHolder.TickerViewHolderListener {
+class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.ProductViewListener, TickerViewHolder.TickerViewHolderListener {
 
     companion object {
         @JvmStatic
@@ -89,26 +92,17 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private var bottomSheetReceiveConfirmation: ReceiveConfirmationBottomSheet? = null
-
-    private var containerActionButtons: CardView? = null
     private var containerBuyerOrderDetail: ConstraintLayout? = null
     private var swipeRefreshBuyerOrderDetail: SwipeRefreshLayout? = null
     private var rvBuyerOrderDetail: RecyclerView? = null
-    private var btnBuyerOrderDetailPrimaryActions: UnifyButton? = null
     private var actionButtonWrapper: ConstraintLayout? = null
     private var toolbarBuyerOrderDetail: HeaderUnify? = null
     private var globalErrorBuyerOrderDetail: GlobalError? = null
     private var emptyStateBuyerOrderDetail: EmptyStateUnify? = null
-    private var btnBuyerOrderDetailSecondaryActions: UnifyImageButton? = null
     private var loaderBuyerOrderDetail: LoaderUnify? = null
 
     private val viewModel: BuyerOrderDetailViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(BuyerOrderDetailViewModel::class.java)
-    }
-
-    private val actionButtonAnimator by lazy {
-        BuyerOrderDetailActionButtonAnimator(containerActionButtons, containerBuyerOrderDetail)
     }
     private val contentVisibilityAnimator by lazy {
         BuyerOrderDetailContentAnimator(swipeRefreshBuyerOrderDetail, rvBuyerOrderDetail)
@@ -122,20 +116,20 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
     }
-    private val secondaryActionButtonBottomSheet: SecondaryActionButtonBottomSheet by lazy {
-        SecondaryActionButtonBottomSheet(requireContext(), this)
-    }
-    private val primaryActionButtonClickListener: View.OnClickListener by lazy {
-        createPrimaryActionButtonClickListener()
-    }
-    private val secondaryActionButtonClickListener: View.OnClickListener by lazy {
-        createSecondaryActionButtonClickListener()
-    }
     private val requestCancelResultDialog: RequestCancelResultDialog by lazy {
         RequestCancelResultDialog(navigator)
     }
     private val navigator: BuyerOrderDetailNavigator by lazy {
-        BuyerOrderDetailNavigator(requireActivity())
+        BuyerOrderDetailNavigator(requireActivity(), this)
+    }
+    private val bottomSheetManager: BuyerOrderDetailBottomSheetManager by lazy {
+        BuyerOrderDetailBottomSheetManager(requireContext(), childFragmentManager)
+    }
+    private val stickyActionButtonHandler: BuyerOrderDetailStickyActionButtonHandler by lazy {
+        BuyerOrderDetailStickyActionButtonHandler(bottomSheetManager, cacheManager, getCartId(), navigator, viewModel)
+    }
+    private val stickyActionButton: BuyerOrderDetailStickyActionButton by lazy {
+        BuyerOrderDetailStickyActionButton(bottomSheetManager, stickyActionButtonHandler, viewModel, view)
     }
 
     // show this chat icon only if there's no `Tanya Penjual` button on the sticky button
@@ -217,69 +211,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         }
     }
 
-    override fun onActionButtonClicked(isFromPrimaryButton: Boolean, button: ActionButtonsUiModel.ActionButton) {
-        val buttonName = when (button.key) {
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_ASK_SELLER -> {
-                onAskSellerActionButtonClicked()
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_CHAT_SELLER
-            }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_REQUEST_CANCEL -> {
-                onRequestCancelActionButtonClicked(button)
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_CANCEL_ORDER
-            }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_TRACK_SHIPMENT -> {
-                onTrackShipmentActionButtonClicked(button)
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_TRACK_ORDER
-            }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> {
-                onComplaintActionButtonClicked(button.url)
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_COMPLAINT_ORDER
-            }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_VIEW_COMPLAINT -> {
-                onViewComplaintActionButtonClicked(button.url)
-                if (isFromPrimaryButton) "" else BuyerOrderDetailTrackerConstant.BUTTON_NAME_VIEW_COMPLAINT_ORDER
-            }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER, BuyerOrderDetailConst.ACTION_BUTTON_KEY_RECEIVE_CONFIRMATION -> {
-                onReceiveConfirmationActionButtonClicked(button)
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER
-            }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_HELP -> {
-                onHelpActionButtonClicked(button)
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_HELP
-            }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_BUY_AGAIN -> {
-                onBuyAgainAllProductButtonClicked()
-                trackBuyAgainProduct(viewModel.getProducts())
-                ""
-            }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_GIVE_REVIEW -> {
-                onGiveReviewActionButtonClicked(button.url)
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_REVIEW_ORDER
-            }
-            else -> ""
-        }
-        if (buttonName.isNotBlank()) {
-            trackClickActionButton(isFromPrimaryButton, buttonName)
-        }
-    }
-
-    override fun onPopUpActionButtonClicked(button: ActionButtonsUiModel.ActionButton.PopUp.PopUpButton) {
-        val buttonName = when (button.key) {
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_FINISH_ORDER -> {
-                onDoReceiveConfirmationActionButtonClicked()
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER_CONFIRMATION_CONFIRM_FINISH_ORDER
-            }
-            BuyerOrderDetailConst.ACTION_BUTTON_KEY_COMPLAINT -> {
-                onComplaintActionButtonClicked(button.uri)
-                BuyerOrderDetailTrackerConstant.BUTTON_NAME_FINISH_ORDER_CONFIRMATION_REQUEST_COMPLAINT
-            }
-            else -> ""
-        }
-        if (buttonName.isNotBlank()) {
-            trackClickActionButtonFromReceiveConfirmation(buttonName)
-        }
-    }
-
     override fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel) {
         val productCopy = product.copy(isProcessing = true)
         adapter.updateItem(product, productCopy)
@@ -293,12 +224,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
 
     private fun getCartId(): String {
         return activity?.intent?.extras?.getString(BuyerOrderDetailConst.PARAM_CART_STRING, "") ?: ""
-    }
-
-    private fun onSecondaryActionButtonClicked() {
-        val secondaryActionButtons = viewModel.getSecondaryActionButtons()
-        secondaryActionButtonBottomSheet.setSecondaryActionButtons(secondaryActionButtons)
-        secondaryActionButtonBottomSheet.show(childFragmentManager)
     }
 
     private fun restoreFragmentState(savedInstanceState: Bundle) {
@@ -317,66 +242,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         loadBuyerOrderDetail()
     }
 
-    private fun onAskSellerActionButtonClicked() {
-        viewModel.buyerOrderDetailResult.value?.let {
-            if (it is Success) {
-                navigator.goToAskSeller(it.data)
-            }
-        }
-    }
-
-    private fun onRequestCancelActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
-        navigator.goToRequestCancellationPage(this, viewModel.buyerOrderDetailResult.value, button, cacheManager)
-    }
-
-    private fun onTrackShipmentActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
-        viewModel.buyerOrderDetailResult.value?.let {
-            if (it is Success) {
-                navigator.goToTrackShipmentPage(
-                        it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
-                        button.url)
-            }
-        }
-    }
-
-    private fun onComplaintActionButtonClicked(complaintUrl: String) {
-        navigator.goToCreateResolution(this, complaintUrl)
-        bottomSheetReceiveConfirmation?.finishLoading()
-    }
-
-    private fun onViewComplaintActionButtonClicked(url: String) {
-        navigator.openAppLink(url)
-        viewModel.buyerOrderDetailResult.value.let {
-            if (it is Success) {
-                BuyerOrderDetailTracker.eventClickSeeComplaint(
-                        it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId,
-                        it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId
-                )
-            }
-        }
-    }
-
-    private fun onReceiveConfirmationActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
-        showReceiveConfirmationBottomSheet(button)
-    }
-
-    private fun onDoReceiveConfirmationActionButtonClicked() {
-        viewModel.finishOrder()
-    }
-
-    private fun onHelpActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
-        navigator.openWebView(button.url)
-    }
-
-    private fun onBuyAgainAllProductButtonClicked() {
-        btnBuyerOrderDetailPrimaryActions?.isLoading = true
-        viewModel.addMultipleToCart()
-    }
-
-    private fun onGiveReviewActionButtonClicked(url: String) {
-        navigator.openAppLink(url)
-    }
-
     private fun setupViews() {
         bindViews()
         containerBuyerOrderDetail?.layoutTransition?.apply {
@@ -393,16 +258,13 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun bindViews() {
-        containerActionButtons = view?.findViewById(R.id.containerActionButtons)
         containerBuyerOrderDetail = view?.findViewById(R.id.containerBuyerOrderDetail)
         swipeRefreshBuyerOrderDetail = view?.findViewById(R.id.swipeRefreshBuyerOrderDetail)
         rvBuyerOrderDetail = view?.findViewById(R.id.rvBuyerOrderDetail)
-        btnBuyerOrderDetailPrimaryActions = view?.findViewById(R.id.btnBuyerOrderDetailPrimaryActions)
         actionButtonWrapper = view?.findViewById(R.id.actionButtonWrapper)
         toolbarBuyerOrderDetail = view?.findViewById(R.id.toolbarBuyerOrderDetail)
         globalErrorBuyerOrderDetail = view?.findViewById(R.id.globalErrorBuyerOrderDetail)
         emptyStateBuyerOrderDetail = view?.findViewById(R.id.emptyStateBuyerOrderDetail)
-        btnBuyerOrderDetailSecondaryActions = view?.findViewById(R.id.btnBuyerOrderDetailSecondaryActions)
         loaderBuyerOrderDetail = view?.findViewById(R.id.loaderBuyerOrderDetail)
     }
 
@@ -465,7 +327,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun observeReceiveConfirmation() {
-        viewModel.finishOrderResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.finishOrderResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> onSuccessReceiveConfirmation(result.data)
                 is Fail -> onFailedReceiveConfirmation(result.throwable)
@@ -474,7 +336,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun observeAddSingleToCart() {
-        viewModel.singleAtcResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.singleAtcResult.observe(viewLifecycleOwner, { result ->
             when (val requestResult = result.second) {
                 is Success -> onSuccessAddToCart(requestResult.data)
                 is Fail -> onFailedAddToCart(requestResult.throwable)
@@ -484,17 +346,17 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun observeAddMultipleToCart() {
-        viewModel.multiAtcResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.multiAtcResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> onSuccessAddToCart(result.data)
                 is Fail -> onFailedAddToCart(result.throwable)
             }
-            btnBuyerOrderDetailPrimaryActions?.isLoading = false
+            stickyActionButton.finishPrimaryActionButtonLoading()
         })
     }
 
     private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
-        setupActionButtons(data.actionButtonsUiModel)
+        stickyActionButton.setupActionButtons(data.actionButtonsUiModel)
         setupToolbarChatIcon(containsAskSellerButton(data.actionButtonsUiModel))
         adapter.updateItems(data)
         contentVisibilityAnimator.showContent()
@@ -507,16 +369,15 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun onSuccessReceiveConfirmation(data: FinishOrderResponse.Data.FinishOrderBuyer) {
-        bottomSheetReceiveConfirmation?.finishLoading()
-        bottomSheetReceiveConfirmation?.dismiss()
-        secondaryActionButtonBottomSheet.dismiss()
+        bottomSheetManager.finishReceiveConfirmationBottomSheetLoading()
+        bottomSheetManager.dismissBottomSheets()
         showCommonToaster(data.message.firstOrNull().orEmpty())
         swipeRefreshBuyerOrderDetail?.isRefreshing = true
         loadBuyerOrderDetail()
     }
 
     private fun onFailedReceiveConfirmation(throwable: Throwable) {
-        bottomSheetReceiveConfirmation?.finishLoading()
+        bottomSheetManager.finishReceiveConfirmationBottomSheetLoading()
         throwable.showErrorToaster()
     }
 
@@ -567,16 +428,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         visible()
     }
 
-    private fun setupActionButtons(actionButtonsUiModel: ActionButtonsUiModel) {
-        if (actionButtonsUiModel.primaryActionButton.key.isNotBlank()) {
-            setupPrimaryButton(actionButtonsUiModel.primaryActionButton, actionButtonsUiModel.secondaryActionButtons.size)
-            setupSecondaryButton(actionButtonsUiModel.secondaryActionButtons)
-            actionButtonAnimator.showActionButtons()
-        } else {
-            actionButtonAnimator.hideActionButtons()
-        }
-    }
-
     private fun setupToolbarChatIcon(containAskSellerButton: Boolean) {
         if (containAskSellerButton) {
             toolbarBuyerOrderDetail?.apply {
@@ -590,71 +441,12 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         }
     }
 
-    private fun setupPrimaryButton(primaryActionButton: ActionButtonsUiModel.ActionButton, secondaryActionButtonCount: Int) {
-        btnBuyerOrderDetailPrimaryActions?.apply {
-            val layoutParamsCopy = layoutParams as ViewGroup.MarginLayoutParams
-            layoutParamsCopy.marginStart = if (secondaryActionButtonCount == 0) 0 else getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
-            layoutParams = layoutParamsCopy
-            text = primaryActionButton.label
-            buttonVariant = Utils.mapButtonVariant(primaryActionButton.variant)
-            buttonType = Utils.mapButtonType(primaryActionButton.type)
-            setOnClickListener(primaryActionButtonClickListener)
-            show()
-        }
-    }
-
-    private fun setupSecondaryButton(secondaryActionButtons: List<ActionButtonsUiModel.ActionButton>) {
-        if (secondaryActionButtons.isNotEmpty()) {
-            btnBuyerOrderDetailSecondaryActions?.apply {
-                background = GradientDrawable().apply {
-                    shape = GradientDrawable.RECTANGLE
-                    setColor(ContextCompat.getColor(context, android.R.color.transparent))
-                    cornerRadius = resources.getDimension(com.tokopedia.unifycomponents.R.dimen.button_corner_radius)
-                    setStroke(resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.button_stroke_width), ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.buttonunify_alternate_stroke_color))
-                }
-                setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.buttonunify_alternate_stroke_color))
-                setOnClickListener(secondaryActionButtonClickListener)
-                show()
-            }
-        } else {
-            btnBuyerOrderDetailSecondaryActions?.gone()
-        }
-    }
-
-    private fun createPrimaryActionButtonClickListener(): View.OnClickListener {
-        return View.OnClickListener {
-            viewModel.buyerOrderDetailResult.value?.let {
-                if (it is Success) {
-                    onActionButtonClicked(true, it.data.actionButtonsUiModel.primaryActionButton)
-                }
-            }
-        }
-    }
-
-    private fun createSecondaryActionButtonClickListener(): View.OnClickListener {
-        return View.OnClickListener {
-            onSecondaryActionButtonClicked()
-        }
-    }
-
     private fun showLoadIndicator() {
         loaderBuyerOrderDetail?.show()
     }
 
     private fun hideLoadIndicator() {
         loaderBuyerOrderDetail?.gone()
-    }
-
-    private fun showReceiveConfirmationBottomSheet(button: ActionButtonsUiModel.ActionButton) {
-        val bottomSheetReceiveConfirmation = bottomSheetReceiveConfirmation?.apply {
-            reInit(button)
-        } ?: createReceiveConfirmationBottomSheet(button)
-        this.bottomSheetReceiveConfirmation = bottomSheetReceiveConfirmation
-        bottomSheetReceiveConfirmation.show(childFragmentManager)
-    }
-
-    private fun createReceiveConfirmationBottomSheet(button: ActionButtonsUiModel.ActionButton): ReceiveConfirmationBottomSheet {
-        return ReceiveConfirmationBottomSheet(requireContext(), button, this)
     }
 
     private fun showCommonToaster(message: String, actionText: String = "", onActionClicked: () -> Unit = {}) {
@@ -684,11 +476,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         showErrorToaster(errorMessage)
     }
 
-    private fun dismissBottomSheets() {
-        secondaryActionButtonBottomSheet.dismiss()
-        bottomSheetReceiveConfirmation?.dismiss()
-    }
-
     private fun handleRequestCancelResult(resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_CODE_INSTANT_CANCEL_BUYER_REQUEST) {
             val resultMessage = data?.getStringExtra(BuyerOrderDetailConst.RESULT_MSG_INSTANT_CANCEL).orEmpty()
@@ -716,7 +503,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         } else if (resultCode == RESULT_CODE_CANCEL_ORDER_DISABLE) {
             loadBuyerOrderDetail()
         }
-        dismissBottomSheets()
+        bottomSheetManager.finishReceiveConfirmationBottomSheetLoading()
     }
 
     private fun handleComplaintResult() {
@@ -726,29 +513,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     private fun stopLoadTimeMonitoring() {
         rvBuyerOrderDetail?.post {
             buyerOrderDetailLoadMonitoring?.stopRenderPerformanceMonitoring()
-        }
-    }
-
-    private fun trackClickActionButton(fromPrimaryButton: Boolean, buttonName: String) {
-        viewModel.buyerOrderDetailResult.value?.let {
-            if (it is Success) {
-                BuyerOrderDetailTracker.eventClickActionButton(
-                        isPrimaryButton = fromPrimaryButton,
-                        buttonName = buttonName,
-                        orderId = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
-                        orderStatusCode = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId)
-            }
-        }
-    }
-
-    private fun trackClickActionButtonFromReceiveConfirmation(buttonName: String) {
-        viewModel.buyerOrderDetailResult.value?.let {
-            if (it is Success) {
-                BuyerOrderDetailTracker.eventClickActionButtonFromReceiveConfirmation(
-                        buttonName = buttonName,
-                        orderId = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
-                        orderStatusCode = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId)
-            }
         }
     }
 
