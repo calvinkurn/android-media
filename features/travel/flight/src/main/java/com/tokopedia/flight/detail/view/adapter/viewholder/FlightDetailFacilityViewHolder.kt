@@ -90,9 +90,11 @@ class FlightDetailFacilityViewHolder(itemView: View) : AbstractViewHolder<Flight
         }
 
         fun addData(infos: List<FlightDetailRouteInfoModel>?) {
-            infoList.clear()
-            infoList.addAll(infos!!)
-            notifyDataSetChanged()
+            infos?.let {
+                infoList.clear()
+                infoList.addAll(it)
+                notifyDataSetChanged()
+            }
         }
 
     }
@@ -115,9 +117,11 @@ class FlightDetailFacilityViewHolder(itemView: View) : AbstractViewHolder<Flight
         }
 
         fun addData(amenities: List<Amenity>?) {
-            amenityList.clear()
-            amenityList.addAll(amenities!!)
-            notifyDataSetChanged()
+            amenities?.let {
+                amenityList.clear()
+                amenityList.addAll(it)
+                notifyDataSetChanged()
+            }
         }
 
     }

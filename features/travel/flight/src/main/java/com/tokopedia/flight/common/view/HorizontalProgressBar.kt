@@ -23,9 +23,9 @@ class HorizontalProgressBar @JvmOverloads constructor(context: Context, attrs: A
 
     fun setProgress(progress: Int) {
         if (Build.VERSION.SDK_INT >= 24) {
-            progressBar!!.setProgress(progress, true)
+            progressBar?.setProgress(progress, true)
         } else {
-            progressBar!!.progress = progress
+            progressBar?.progress = progress
         }
     }
 }

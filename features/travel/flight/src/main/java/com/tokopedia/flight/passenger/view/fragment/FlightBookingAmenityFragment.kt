@@ -61,7 +61,9 @@ class FlightBookingAmenityFragment : BaseListFragment<FlightBookingAmenityModel,
     }
 
     override fun loadData(page: Int) {
-        renderList(flightBookingAmenityViewModels!!)
+        flightBookingAmenityViewModels?.let {
+            renderList(it)
+        }
     }
 
     override fun getAdapterTypeFactory(): FlightAmenityAdapterTypeFactory {

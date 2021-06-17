@@ -29,7 +29,7 @@ class FlightAuthInterceptor @Inject constructor(@ApplicationContext context: Con
     }
 
     override fun getHeaderMap(path: String?, strParam: String?, method: String?, authKey: String?, contentTypeHeader: String?): MutableMap<String, String> {
-        val newPath = path?.replace("/travel", "") ?: ""
+        val newPath = path?.replace(TRAVEL, "") ?: ""
         this.authKey = AuthUtil.KEY.KEY_WSV4
         return AuthUtil.generateHeadersWithXUserId(newPath, strParam, method, this.authKey,
                 contentTypeHeader, userSession.userId, userSession.deviceId, userSession)
@@ -70,6 +70,7 @@ class FlightAuthInterceptor @Inject constructor(@ApplicationContext context: Con
     companion object {
         private const val PARAM_CONTENT_ENCODING = "Content-Encoding"
         private const val KEY_ZIP_ENCODING = "gzip"
+        private const val TRAVEL = "/travel"
     }
 
 }
