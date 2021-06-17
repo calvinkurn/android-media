@@ -330,11 +330,11 @@ open class TopChatRoomPresenter @Inject constructor(
         getTemplateChatRoomUseCase.execute(
             GetTemplateChatRoomUseCase.generateParam(isSeller),
             object : Subscriber<GetTemplateUiModel>() {
-                override fun onNext(t: GetTemplateUiModel?) {
+                override fun onNext(templateUiModel: GetTemplateUiModel?) {
                     val templateList = arrayListOf<Visitable<Any>>()
-                    t?.let {
-                        if (t.isEnabled) {
-                            t.listTemplate?.let {
+                    if (templateUiModel != null) {
+                        if (templateUiModel.isEnabled) {
+                            templateUiModel.listTemplate?.let {
                                 templateList.addAll(it)
                             }
                         }
