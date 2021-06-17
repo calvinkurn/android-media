@@ -76,6 +76,7 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
                 "position", position.toString(),
                 "dimension61", if (filterSortParams.isEmpty()) "none / other" else filterSortParams,
                 "dimension79", shopID,
+                "dimension81", getDimension81(),
                 "dimension83", getFreeOngkirDataLayer(),
                 "dimension87", "search result",
                 "dimension88", "search - product",
@@ -84,6 +85,11 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
                 "dimension99", System.currentTimeMillis(),
                 "dimension100", sourceEngine
         )
+    }
+
+    private fun getDimension81(): String {
+        val shopType = badgesList?.find { it.isShown && it.imageUrl.isNotEmpty() && it.title.isNotEmpty() }
+        return shopType?.title ?: "regular merchant"
     }
 
     private fun getFreeOngkirDataLayer(): String {
