@@ -12,6 +12,7 @@ data class SellerMenuItemUiModel(
         val settingTypeInfix: String = "",
         override val trackingAlias: String? = null,
         val type: String,
+        override val iconUnify: Int? = null,
         override var notificationCount: Int = 0,
         override val clickAction: () -> Unit = {}
-) : MenuItemUiModel(title, drawableReference, clickApplink, eventActionSuffix, settingTypeInfix, trackingAlias, null, notificationCount, false, clickAction)
+) : MenuItemUiModel(title, drawableReference, clickApplink, eventActionSuffix, settingTypeInfix, trackingAlias, iconUnify, notificationCount, false, clickAction)
