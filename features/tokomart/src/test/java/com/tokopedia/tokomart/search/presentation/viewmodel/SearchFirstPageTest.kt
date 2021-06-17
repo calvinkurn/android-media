@@ -104,17 +104,4 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert has next page value`(true)
         `Then assert get first page success interactions`(searchModel)
     }
-
-    @Test
-    fun `test first page should get warehouse id if shop id is empty`() {
-        val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
-
-        `Given choose address data`(ChooseAddressConstant.emptyAddress)
-        `Given search view model`()
-        `Given get search first page use case will be successful`(searchModel)
-
-        `When view created`()
-
-        
-    }
 }
