@@ -10,6 +10,7 @@ import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.review.feature.reading.data.ProductTopic
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterChipsListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
+import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -54,35 +55,27 @@ class ReadReviewHeader : BaseCustomView {
         if (availableFilters.withAttachment) {
             filter.add(SortFilterItem(context.getString(R.string.review_reading_filter_with_attachment), ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_SMALL).apply {
                 this.listener = {
-                    doActionIfNotActive { listener.onFilterWithAttachmentClicked(false) }
+                    listener.onFilterWithAttachmentClicked()
                     toggleSelected()
                 }
             })
         }
         if (availableFilters.rating) {
-            filter.add(getSortFilterItem(context.getString(R.string.review_reading_filter_all_ratings)) { listener.onFilterWithRatingClicked(false) })
+            filter.add(getSortFilterItem(context.getString(R.string.review_reading_filter_all_ratings)) { listener.onFilterWithRatingClicked() })
         }
         if (availableFilters.topics) {
-            filter.add(getSortFilterItem(context.getString(R.string.review_reading_filter_all_topics)) { listener.onFilterWithTopicClicked(topics, false) })
+            filter.add(getSortFilterItem(context.getString(R.string.review_reading_filter_all_topics)) { listener.onFilterWithTopicClicked(topics) })
         }
-        filter.add(getSortFilterItem(context.getString(R.string.review_reading_sort_most_helpful)) { listener.onSortClicked() })
+        val sortOption = getSortFilterItem(context.getString(R.string.review_reading_sort_most_helpful))
+        sortOption.listener = { listener.onSortClicked(sortOption.title.toString()) }
+        filter.add(sortOption)
         return filter
     }
 
-    private fun getSortFilterItem(text: String, action: () -> Unit): SortFilterItem {
+    private fun getSortFilterItem(text: String, action: () -> Unit = {}): SortFilterItem {
         return SortFilterItem(text, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_SMALL).apply {
-            listener = {
-                doActionIfNotActive(action)
-            }
-            chevronListener = {
-                doActionIfNotActive(action)
-            }
-        }
-    }
-
-    private fun SortFilterItem.doActionIfNotActive(action: () -> Unit) {
-        if (this.type == ChipsUnify.TYPE_NORMAL) {
-            action.invoke()
+            listener = { action.invoke() }
+            chevronListener = { action.invoke() }
         }
     }
 
@@ -104,5 +97,12 @@ class ReadReviewHeader : BaseCustomView {
 
     fun updateFilter() {
 
+    }
+
+    fun updateSelectedSort(selectedSort: String) {
+        sortFilter?.chipItems?.lastOrNull()?.apply {
+            title = selectedSort
+            type = if(selectedSort == SortTypeConstants.MOST_HELPFUL_COPY) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
+        }
     }
 }

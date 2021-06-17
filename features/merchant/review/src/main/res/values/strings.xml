@@ -378,5 +378,6 @@
     <string name="review_reading_show_response">Lihat Balasan</string>
     <string name="review_reading_seller_label">Penjual</string>
     <string name="review_reading_hide_response">Tutup Balasan</string>
+    <string name="review_reading_empty_review">Tidak ada ulasan</string>
 
 </resources>

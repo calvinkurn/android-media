@@ -78,14 +78,14 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
     }
 
     private fun showReportOptionWithCondition(isReportable: Boolean, reviewId: String, shopId: String) {
-        reportOption?.let {
+        reportOption?.apply {
             if (isReportable) {
-                it.show()
-                it.setOnClickListener {
+                show()
+                setOnClickListener {
                     readReviewItemListener.onThreeDotsClicked(reviewId, shopId)
                 }
             } else {
-                it.hide()
+                hide()
             }
         }
     }
@@ -98,10 +98,14 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
 
     private fun setReview(message: String) {
         if (message.isEmpty()) {
-            reviewMessage?.hide()
+            reviewMessage?.apply {
+                text = getString(R.string.review_reading_empty_review)
+                isEnabled = false
+            }
             return
         }
         reviewMessage?.apply {
+            isEnabled = true
             val formattingResult = reviewDescFormatter(message)
             maxLines = MAX_LINES_REVIEW
             text = formattingResult.first

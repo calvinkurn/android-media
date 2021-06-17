@@ -12,6 +12,7 @@ import com.tokopedia.unifyprinciples.Typography
 class ReadReviewReportBottomSheet : BottomSheetUnify() {
 
     companion object {
+        const val TAG = "ReadReviewReportBottomSheet Tag"
         fun newInstance(reviewId: String, shopId: String, listener: ReadReviewReportBottomSheetListener): ReadReviewReportBottomSheet {
             return ReadReviewReportBottomSheet().apply {
                 this.reviewId = reviewId
@@ -44,7 +45,10 @@ class ReadReviewReportBottomSheet : BottomSheetUnify() {
     }
 
     private fun setClickListener() {
-        reportOption?.setOnClickListener { listener?.onReportOptionClicked(reviewId, shopId) }
+        reportOption?.setOnClickListener {
+            dismiss()
+            listener?.onReportOptionClicked(reviewId, shopId)
+        }
     }
 
 }

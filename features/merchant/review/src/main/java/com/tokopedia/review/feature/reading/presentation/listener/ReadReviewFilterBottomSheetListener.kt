@@ -4,4 +4,5 @@ import com.tokopedia.unifycomponents.list.ListItemUnify
 
 interface ReadReviewFilterBottomSheetListener {
     fun onFilterSubmitted(selectedFilter: List<ListItemUnify>)
+    fun onSortSubmitted(selectedSort: ListItemUnify)
 }

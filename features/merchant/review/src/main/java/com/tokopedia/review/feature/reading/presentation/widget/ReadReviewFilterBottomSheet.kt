@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterBottomSheetListener
-import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterType
+import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -16,12 +16,14 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val TAG = "ReadReviewFilterBottomSheet Tag"
-        fun newInstance(title: String, filterList: ArrayList<ListItemUnify>, readReviewFilterBottomSheetListener: ReadReviewFilterBottomSheetListener, sortFilterType: SortFilterType): ReadReviewFilterBottomSheet {
+        fun newInstance(title: String, filterList: ArrayList<ListItemUnify>, readReviewFilterBottomSheetListener: ReadReviewFilterBottomSheetListener, sortFilterBottomSheetType: SortFilterBottomSheetType, selectedFilter: List<String> = listOf(), selectedSort: String = ""): ReadReviewFilterBottomSheet {
             return ReadReviewFilterBottomSheet().apply {
                 setTitle(title)
                 this.filterData = filterList
                 this.listener = readReviewFilterBottomSheetListener
-                this.sortFilterType = sortFilterType
+                this.sortFilterBottomSheetType = sortFilterBottomSheetType
+                this.selectedFilter = selectedFilter
+                this.selectedSort = selectedSort
             }
         }
     }
@@ -31,7 +33,9 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
 
     private var filterData: ArrayList<ListItemUnify> = arrayListOf()
     private var listener: ReadReviewFilterBottomSheetListener? = null
-    private var sortFilterType: SortFilterType? = null
+    private var sortFilterBottomSheetType: SortFilterBottomSheetType? = null
+    private var selectedFilter: List<String> = listOf()
+    private var selectedSort: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = View.inflate(context, R.layout.bottomsheet_read_review_filter, null)
@@ -45,6 +49,13 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
         setListUnifyData()
         setSubmitButton()
         setResetButton()
+        listUnify?.onLoadFinish {
+            if(isSortMode()) {
+                setSelectedSort()
+            } else {
+                setSelectedFilter()
+            }
+        }
     }
 
     private fun bindViews(view: View) {
@@ -55,8 +66,8 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
     private fun setListUnifyData() {
         listUnify?.apply {
             setData(filterData)
-            setOnItemClickListener { parent, view, position, id ->
-                if (sortFilterType is SortFilterType.Sort) {
+            setOnItemClickListener { _, _, position, _ ->
+                if (isSortMode()) {
                     (listUnify?.adapter?.getItem(position) as? ListItemUnify)?.listRightRadiobtn?.toggle()
                     clearOtherItems(position)
                 } else {
@@ -69,8 +80,25 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
     private fun setSubmitButton() {
         submitButton?.setOnClickListener {
             dismiss()
-            listener?.onFilterSubmitted(getSelectedFilters())
+            if (isSortMode()) {
+                listener?.onSortSubmitted(getSelectedSort())
+            } else {
+                listener?.onFilterSubmitted(getSelectedFilters())
+            }
         }
+    }
+
+    private fun setSelectedSort() {
+        if(selectedSort.isBlank()) return
+        filterData.forEachIndexed { index, listItemUnify ->
+            if (listItemUnify.listTitleText == selectedSort) {
+                (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightRadiobtn?.isChecked = true
+            }
+        }
+    }
+
+    private fun setSelectedFilter() {
+
     }
 
     private fun clearOtherItems(position: Int) {
@@ -83,30 +111,35 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
 
     private fun getSelectedFilters(): List<ListItemUnify> {
         val selectedFilters = mutableListOf<ListItemUnify>()
-        if (sortFilterType is SortFilterType.Sort) {
-            filterData.forEachIndexed { index, listItemUnify ->
-                if ((listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightRadiobtn?.isChecked == true) {
-                    selectedFilters.add(listItemUnify)
-                }
-            }
-        } else {
-            filterData.forEachIndexed { index, listItemUnify ->
-                if ((listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightCheckbox?.isChecked == true) {
-                    selectedFilters.add(listItemUnify)
-                }
+        filterData.forEachIndexed { index, listItemUnify ->
+            if ((listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightCheckbox?.isChecked == true) {
+                selectedFilters.add(listItemUnify)
             }
         }
         return selectedFilters
     }
 
+    private fun getSelectedSort(): ListItemUnify {
+        filterData.forEachIndexed { index, listItemUnify ->
+            if ((listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightRadiobtn?.isChecked == true) {
+                return listItemUnify
+            }
+        }
+        return ListItemUnify()
+    }
+
     private fun setResetButton() {
-        if (sortFilterType is SortFilterType.Sort) return
+        if (isSortMode()) return
         setAction(getString(R.string.review_reading_reset_filter)) { resetFilters() }
     }
 
     private fun resetFilters() {
-        filterData.forEachIndexed { index, listItemUnify ->
+        filterData.forEachIndexed { index, _ ->
             (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightCheckbox?.isChecked = false
         }
+    }
+
+    private fun isSortMode(): Boolean {
+        return sortFilterBottomSheetType is SortFilterBottomSheetType.SortBottomSheet
     }
 }

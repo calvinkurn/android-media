@@ -30,7 +30,7 @@ import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilt
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterChipsListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewReportBottomSheetListener
-import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterType
+import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
 import com.tokopedia.review.feature.reading.presentation.viewmodel.ReadReviewViewModel
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewFilterBottomSheet
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
@@ -105,7 +105,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onThreeDotsClicked(reviewId: String, shopId: String) {
-        ReadReviewReportBottomSheet.newInstance(reviewId, shopId, this)
+        activity?.supportFragmentManager?.let { ReadReviewReportBottomSheet.newInstance(reviewId, shopId, this).show(it, ReadReviewReportBottomSheet.TAG) }
     }
 
     override fun onLikeButtonClicked(reviewId: String, shopId: String, likeStatus: Int) {
@@ -119,31 +119,37 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         activity?.supportFragmentManager?.let { statisticsBottomSheet?.show(it, ReadReviewStatisticsBottomSheet.READ_REVIEW_STATISTICS_BOTTOM_SHEET_TAG) }
     }
 
-    override fun onFilterWithAttachmentClicked(isActive: Boolean) {
+    override fun onFilterWithAttachmentClicked() {
         // update list based on filter
     }
 
-    override fun onFilterWithTopicClicked(topics: List<ProductTopic>, isActive: Boolean) {
+    override fun onFilterWithTopicClicked(topics: List<ProductTopic>) {
         val filterOptions = readReviewFilterFactory.getTopicFilters(topics)
-        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_topic_filter_title), filterOptions, this, SortFilterType.TopicFilter).show(it, ReadReviewFilterBottomSheet.TAG) }
+        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_topic_filter_title), filterOptions, this, SortFilterBottomSheetType.TopicFilterBottomSheet).show(it, ReadReviewFilterBottomSheet.TAG) }
     }
 
-    override fun onFilterWithRatingClicked(isActive: Boolean) {
+    override fun onFilterWithRatingClicked() {
         val filterOptions = readReviewFilterFactory.getRatingFilters((MAX_RATING downTo MIN_RATING).map { it.toString() })
-        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_rating_filter_title), filterOptions, this, SortFilterType.RatingFilter).show(it, ReadReviewFilterBottomSheet.TAG) }
+        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_rating_filter_title), filterOptions, this, SortFilterBottomSheetType.RatingFilterBottomSheet).show(it, ReadReviewFilterBottomSheet.TAG) }
     }
 
     override fun onFilterSubmitted(selectedFilter: List<ListItemUnify>) {
-        // update list based on filter
+
+    }
+
+    override fun onSortSubmitted(selectedSort: ListItemUnify) {
+        clearAllData()
+        reviewHeader?.updateSelectedSort(selectedSort.listTitleText)
+        viewModel.setSort(selectedSort.listTitleText)
     }
 
     override fun onReportOptionClicked(reviewId: String, shopId: String) {
         goToReportReview(reviewId, shopId)
     }
 
-    override fun onSortClicked() {
+    override fun onSortClicked(chipTitle: String) {
         val filterOptions = readReviewFilterFactory.getSortOptions(listOf(getString(R.string.review_reading_sort_most_helpful), getString(R.string.review_reading_sort_latest), getString(R.string.review_reading_sort_highest_rating), getString(R.string.review_reading_sort_lowest_rating)))
-        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_sort_title), filterOptions, this, SortFilterType.Sort).show(it, ReadReviewFilterBottomSheet.TAG) }
+        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_sort_title), filterOptions, this, SortFilterBottomSheetType.SortBottomSheet, listOf(), chipTitle).show(it, ReadReviewFilterBottomSheet.TAG) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

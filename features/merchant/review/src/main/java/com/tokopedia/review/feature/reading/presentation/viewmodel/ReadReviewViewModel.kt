@@ -11,6 +11,7 @@ import com.tokopedia.review.feature.reading.domain.usecase.GetProductRatingAndTo
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductReviewListUseCase
 import com.tokopedia.review.feature.reading.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
+import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
 import com.tokopedia.review.feature.reading.utils.ReadReviewUtils
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -25,7 +26,7 @@ class ReadReviewViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
-        const val INITIAL_PAGE = 0
+        const val INITIAL_PAGE = 1
     }
 
     private val _ratingAndTopics = MediatorLiveData<Result<ProductrevGetProductRatingAndTopic>>()
@@ -42,6 +43,8 @@ class ReadReviewViewModel @Inject constructor(
 
     private val currentPage = MutableLiveData<Int>()
     private var productId: MutableLiveData<String> = MutableLiveData()
+    private var sort: String = SortTypeConstants.MOST_HELPFUL_PARAM
+    private var filter: String = ""
 
     init {
         _ratingAndTopics.addSource(productId) {
@@ -84,9 +87,19 @@ class ReadReviewViewModel @Inject constructor(
         }
     }
 
+    fun setFilter(filter: String) {
+
+        resetPage()
+    }
+
+    fun setSort(selectedSort: String) {
+        this.sort = mapSortOptionToSortParam(selectedSort)
+        resetPage()
+    }
+
     private fun getProductReviews(page: Int) {
         launchCatchError(block = {
-            getProductReviewListUseCase.setParams(productId.value ?: "", page)
+            getProductReviewListUseCase.setParams(productId.value ?: "", page, sort, filter)
             val data = getProductReviewListUseCase.executeOnBackground()
             _productReviews.postValue(Success(data.productrevGetProductReviewList))
         }) {
@@ -106,5 +119,14 @@ class ReadReviewViewModel @Inject constructor(
 
     private fun resetPage() {
         setPage(INITIAL_PAGE)
+    }
+
+    private fun mapSortOptionToSortParam(sort: String): String {
+        return when (sort) {
+            SortTypeConstants.HIGHEST_RATING_COPY -> SortTypeConstants.HIGHEST_RATING_PARAM
+            SortTypeConstants.LOWEST_RATING_COPY -> SortTypeConstants.LOWEST_RATING_PARAM
+            SortTypeConstants.LATEST_COPY -> SortTypeConstants.LATEST_PARAM
+            else -> SortTypeConstants.MOST_HELPFUL_PARAM
+        }
     }
 }
