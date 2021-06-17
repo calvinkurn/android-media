@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.DataAddAddress
+import com.tokopedia.logisticCommon.data.response.DefaultAddressData
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.model.add_address.AddAddressResponse
@@ -27,6 +28,10 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository,
     val saveAddress: LiveData<Result<DataAddAddress>>
         get() = _saveAddress
 
+    private val _defaultAddress = MutableLiveData<Result<DefaultAddressData>>()
+    val defaultAddress: LiveData<Result<DefaultAddressData>>
+        get() = _defaultAddress
+
     fun getDistrictDetail(districtId: String) {
         viewModelScope.launch {
             try {
@@ -34,6 +39,17 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository,
                 _districtDetail.value = Success(districtDetail.keroDistrictDetails)
             } catch (e: Throwable) {
                 _districtDetail.value = Fail(e)
+            }
+        }
+    }
+
+    fun getDefaultAddress(source: String) {
+        viewModelScope.launch {
+            try {
+                val defaultAddress = repo.getDefaultAddress(source)
+                _defaultAddress.value = Success(defaultAddress.response.data)
+            } catch (e: Throwable) {
+                _defaultAddress.value = Fail(e)
             }
         }
     }

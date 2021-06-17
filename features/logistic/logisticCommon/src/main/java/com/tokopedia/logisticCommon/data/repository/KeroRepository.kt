@@ -27,6 +27,13 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
         return gql.getResponse(request)
     }
 
+    suspend fun getDefaultAddress(source: String): GetDefaultAddressResponse {
+        val param = mapOf("source" to source)
+        val request = GraphqlRequest(KeroLogisticQuery.kero_addr_get_default,
+                GetDefaultAddressResponse::class.java, param)
+        return gql.getResponse(request)
+    }
+
     suspend fun getAddress(): AddressResponse {
         val param = mapOf(
                 "input" to mapOf(

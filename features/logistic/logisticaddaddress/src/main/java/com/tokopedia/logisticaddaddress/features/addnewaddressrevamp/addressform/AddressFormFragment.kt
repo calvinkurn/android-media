@@ -144,6 +144,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun prepareData() {
+        viewModel.getDefaultAddress("address")
         if (isPositiveFlow) {
             viewModel.getDistrictDetail(saveDataModel?.districtId.toString())
         } else {
@@ -176,6 +177,18 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 is Fail -> {
                     val msg = it.throwable.message.toString()
                     view?.let { view -> Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                }
+            }
+        })
+
+        viewModel.defaultAddress.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.addressId != 0) {
+                        binding.layoutCbDefaultLoc.visibility = View.VISIBLE
+                    } else {
+                        binding.layoutCbDefaultLoc.visibility = View.GONE
+                    }
                 }
             }
         })
