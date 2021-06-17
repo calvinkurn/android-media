@@ -110,15 +110,29 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     override fun onProductImpressed(productItemDataView: ProductItemDataView) {
         val trackingQueue = trackingQueue ?: return
 
+        SearchTracking.sendProductImpressionEvent(
+                trackingQueue,
+                listOf(getProductItemAsObjectDataLayer(productItemDataView)),
+                getViewModel().query,
+                userSession.userId,
+        )
+    }
+
+    private fun getProductItemAsObjectDataLayer(productItemDataView: ProductItemDataView): Any {
         val queryParam = searchViewModel.queryParam
         val pageId = queryParam[SearchApiConst.SRP_PAGE_ID] ?: ""
         val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
 
-        SearchTracking.sendProductImpressionEvent(
-                trackingQueue,
-                listOf(productItemDataView.getAsObjectDataLayer(sortFilterParams, pageId)),
+        return productItemDataView.getAsObjectDataLayer(sortFilterParams, pageId)
+    }
+
+    override fun onProductClick(productItemDataView: ProductItemDataView) {
+        SearchTracking.sendProductClickEvent(
+                getProductItemAsObjectDataLayer(productItemDataView),
                 getViewModel().query,
                 userSession.userId,
         )
+
+        super.onProductClick(productItemDataView)
     }
 }
