@@ -8,7 +8,7 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductMiniSocialProofStockDataModel(
         val type: String = "",
         val name: String = "",
-        var stock: Int = 0,
+        var stock: String = "",
         var rating: Float? = 0F,
         var ratingCount: Int = 0,
         var viewCount: Int = 0,
@@ -65,7 +65,8 @@ data class ProductMiniSocialProofStockDataModel(
     }
 
     fun shouldShowSingleViewSocialProof(): Boolean {
-        return ratingCount == 0 && buyerPhotosCount == 0 && stock == 0
+        return ratingCount == 0 && buyerPhotosCount == 0 &&
+                (stock.isBlank() || stock == "0")
     }
 
     fun setSocialProofData() {
@@ -96,10 +97,10 @@ data class ProductMiniSocialProofStockDataModel(
     }
 
     private fun appendStockAtFirst(builder: MutableList<ProductMiniSocialProofItemDataModel>) {
-        if (stock == 0) return
+        if (stock.isBlank() || stock == "0") return
         builder.add(0, ProductMiniSocialProofItemDataModel(
                 STOCK,
-                stock.productThousandFormatted(),
+                stock,
                 ProductMiniSocialProofItemType.ProductMiniSocialProofTextDivider
         ))
     }
