@@ -46,6 +46,7 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_pm_subsription.*
 import javax.inject.Inject
@@ -436,7 +437,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     }
 
     private fun initPerformanceMonitoring() {
-        if (userSession.isLoggedIn) {
+        if (UserSession(this).isLoggedIn) {
             performanceMonitoring = PMPerformanceMonitoring()
             performanceMonitoring?.initPerformanceMonitoring()
         }
