@@ -38,7 +38,7 @@ object SellerSettingsList {
                 type = MenuItemType.NOTES),
             SellerMenuItemUiModel(
                 context.getString(R.string.setting_menu_shop_working_hours),
-                clickApplink = ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE,
+                clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS,
                 settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                 type = MenuItemType.SCHEDULE),
             DividerUiModel(DividerType.THIN_INDENTED),

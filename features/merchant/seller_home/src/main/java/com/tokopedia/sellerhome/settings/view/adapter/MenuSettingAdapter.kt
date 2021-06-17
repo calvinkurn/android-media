@@ -113,7 +113,7 @@ class MenuSettingAdapter(private val context: Context?,
                             context?.getString(R.string.setting_menu_shop_working_hours).orEmpty(),
                             settingTypeInfix = SettingTrackingConstant.SHOP_SETTING,
                             clickAction = {
-                                goToApplinkWhenAccessAuthorized(settingAccess.isInfoAccessAuthorized, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+                                goToApplinkWhenAccessAuthorized(settingAccess.isInfoAccessAuthorized, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
                             }),
                     DividerUiModel(DividerType.THIN_INDENTED),
                     IndentedSettingTitleUiModel(context?.getString(R.string.setting_menu_location_and_shipment).orEmpty()),
