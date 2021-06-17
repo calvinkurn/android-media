@@ -366,6 +366,7 @@ class MiniCartWidget @JvmOverloads constructor(
     * This will trigger widget to update the UI with provided data
     * */
     fun updateData(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        setTotalAmountLoading(true)
         viewModel?.updateMiniCartSimplifiedData(miniCartSimplifiedData)
     }
 
