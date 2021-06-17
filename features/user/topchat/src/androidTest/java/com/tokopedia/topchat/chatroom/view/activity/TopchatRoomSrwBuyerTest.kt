@@ -1068,6 +1068,30 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
+    fun srw_Bubble_should_remain_collapsed_when_invoice_preview_visible_and_user_toggle_chat_menu_on() {
+        // Given
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+        intending(anyIntent()).respondWith(getAttachInvoiceResult())
+
+        // When
+        clickSrwPreviewItemAt(0)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+        clickPlusIconMenu()
+        clickAttachInvoiceMenu()
+        clickPlusIconMenu()
+
+        // Then
+        assertSrwBubbleContentIsVisibleAt(0)
+        assertSrwBubbleCollapsed(0)
+    }
+
+    @Test
     fun srw_Bubble_should_remain_collapsed_when_invoice_preview_visible_and_user_toggle_chat_menu_on_then_off() {
         // Given
         setupChatRoomActivity {
@@ -1092,7 +1116,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwBubbleCollapsed(0)
     }
 
-    // TODO: SRW Bubble should remain collapsed when invoice preview visible and user toggle chat menu on
     // TODO: SRW bubble should maintain state (expand/collapse) if scrolled far top and back at it.
     // TODO: SRW bubble should still displayed/added when user click send sticker.
     // TODO: SRW bubble should remain collapsed when user send sticker.
