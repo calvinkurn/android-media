@@ -195,6 +195,7 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
                         isPushStarted = true
                     }
                 }
+                configureMirrorFrontCamera()
             }
             Streamer.CONNECTION_STATE.DISCONNECTED -> {
                 if (lastState is PlayLivePusherState.Pause) return // ignore and just call resume()
@@ -267,6 +268,10 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     private fun configureStreamer(config: PlayLivePusherConfig) {
         // TODO: change audio, video configuration
         // errorMessage: Error preparing stream, This device cant do it
+    }
+
+    private fun configureMirrorFrontCamera() {
+        streamer?.setFrontMirror(false, false)
     }
 
     private fun broadcastState(state: PlayLivePusherState) {
