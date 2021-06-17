@@ -15,22 +15,12 @@ class ValidateProductNameUseCase @Inject constructor(
         const val PARAM_INPUT = "input"
         private const val OPERATION_PARAM = "${'$'}input: ProductInputV3!"
         private const val QUERY_PARAM = "input: ${'$'}input"
-        private val QUERY_REQUEST = """
-            header {
-                messages
-                reason
-                errorCode
-            }
-            isSuccess
-            data {
-                productName
-            }
-        """.trimIndent()
+        private const val QUERY_DATA_REQUEST = "productName"
         private val query = String.format(
                 ProductValidateV3QueryConstant.BASE_QUERY,
                 OPERATION_PARAM,
                 QUERY_PARAM,
-                QUERY_REQUEST
+                QUERY_DATA_REQUEST
         )
     }
 
