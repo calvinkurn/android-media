@@ -5,9 +5,9 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.review.common.data.ProductrevReviewAttachment
 
 data class ProductrevFeedbackHistoryReview(
-        @SerializedName("feedbackID")
+        @SerializedName("feedbackIDStr")
         @Expose
-        val feedbackId: Int = 0,
+        val feedbackId: String = "",
         @SerializedName("userName")
         @Expose
         val userName: String = "",

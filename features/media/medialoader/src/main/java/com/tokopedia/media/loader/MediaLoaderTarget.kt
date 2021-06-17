@@ -35,13 +35,7 @@ object MediaLoaderTarget {
                 // url builder
                 val source = Loader.urlBuilder(properties.data.toString())
 
-                /*
-                * only track the performance monitoring for a new domain,
-                * which is already using CDN services, 'images.tokopedia.net'.
-                * */
-                if (properties.isTrackable) {
-                    tracker = PerformanceTracker.preRender(source, context)
-                }
+                tracker = PerformanceTracker.preRender(source, context)
 
                 val request = bitmap.build(
                         context = context,

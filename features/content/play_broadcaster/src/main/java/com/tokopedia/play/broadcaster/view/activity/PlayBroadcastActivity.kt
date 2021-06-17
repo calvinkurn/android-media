@@ -11,6 +11,7 @@ import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.alivc.live.pusher.SurfaceStatus
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -106,8 +107,6 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     private val permissionHelper by lazy { PermissionHelperImpl(this) }
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
-
-    private lateinit var loadingFragment: LoadingDialogFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -212,7 +211,7 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
     private fun setFragmentFactory() {
@@ -437,18 +436,27 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
     }
 
     private fun getLoadingFragment(): LoadingDialogFragment {
-        if (!::loadingFragment.isInitialized) {
+        val loadingFragment = getAddedLoadingDialog()
+        return if (loadingFragment == null) {
             val setupClass = LoadingDialogFragment::class.java
             val fragmentFactory = supportFragmentManager.fragmentFactory
-            loadingFragment = fragmentFactory.instantiate(this.classLoader, setupClass.name) as LoadingDialogFragment
-        }
-        return loadingFragment
+            fragmentFactory.instantiate(this.classLoader, setupClass.name) as LoadingDialogFragment
+        } else loadingFragment
+    }
+
+    private fun isLoadingDialogVisible(): Boolean {
+        val loadingDialog = getAddedLoadingDialog()
+        return loadingDialog != null && loadingDialog.isVisible
+    }
+
+    private fun getAddedLoadingDialog(): LoadingDialogFragment? {
+        return LoadingDialogFragment.get(supportFragmentManager)
     }
 
     private fun showLoading(isLoading: Boolean) {
-        if (isLoading && !getLoadingFragment().isVisible) {
+        if (isLoading && !isLoadingDialogVisible()) {
             getLoadingFragment().show(supportFragmentManager)
-        } else if (getLoadingFragment().isVisible) {
+        } else if (isLoadingDialogVisible()) {
             getLoadingFragment().dismiss()
         }
     }
