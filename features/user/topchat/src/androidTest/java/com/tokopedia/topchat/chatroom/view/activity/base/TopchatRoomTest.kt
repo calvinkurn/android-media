@@ -45,6 +45,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingRespon
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
+import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
@@ -164,6 +165,7 @@ abstract class TopchatRoomTest {
             .build()
         chatComponentStub.inject(this)
         setupDefaultResponseWhenFirstOpenChatRoom()
+        UploadImageChatService.dummyMap.clear()
         IdlingRegistry.getInstance().register(keyboardStateIdling)
     }
 
