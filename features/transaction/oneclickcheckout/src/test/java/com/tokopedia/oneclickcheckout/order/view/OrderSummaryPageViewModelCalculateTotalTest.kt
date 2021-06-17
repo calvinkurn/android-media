@@ -244,7 +244,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, null), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
-                ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, message = errorMessage, type = OrderPaymentOvoErrorData.TYPE_MISSING_PHONE)
+                walletErrorData = OrderPaymentWalletErrorData(isBlockingError = false, message = errorMessage, type = OrderPaymentWalletErrorData.TYPE_MISSING_PHONE)
         ), orderSummaryPageViewModel.orderPayment.value)
     }
 
@@ -268,7 +268,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
-                ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, message = errorMessage, type = OrderPaymentOvoErrorData.TYPE_MISSING_PHONE)
+                walletErrorData = OrderPaymentWalletErrorData(isBlockingError = false, message = errorMessage, type = OrderPaymentWalletErrorData.TYPE_MISSING_PHONE)
         ), orderSummaryPageViewModel.orderPayment.value)
     }
 
@@ -294,7 +294,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, null), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
-                ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, buttonTitle = buttonTitle, type = OrderPaymentOvoErrorData.TYPE_ACTIVATION, callbackUrl = callbackUrl)
+                walletErrorData = OrderPaymentWalletErrorData(isBlockingError = false, buttonTitle = buttonTitle, type = OrderPaymentWalletErrorData.TYPE_ACTIVATION, callbackUrl = callbackUrl)
         ), orderSummaryPageViewModel.orderPayment.value)
     }
 
@@ -319,7 +319,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
-                ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = false, buttonTitle = buttonTitle, type = OrderPaymentOvoErrorData.TYPE_ACTIVATION, callbackUrl = callbackUrl)
+                walletErrorData = OrderPaymentWalletErrorData(isBlockingError = false, buttonTitle = buttonTitle, type = OrderPaymentWalletErrorData.TYPE_ACTIVATION, callbackUrl = callbackUrl)
         ), orderSummaryPageViewModel.orderPayment.value)
     }
 
@@ -347,7 +347,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.NORMAL, OccButtonType.CHOOSE_PAYMENT, null), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
-                ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, buttonTitle = buttonTitle, message = errorMessage, type = OrderPaymentOvoErrorData.TYPE_TOP_UP, callbackUrl = callbackUrl, isHideDigital = isHideDigital)
+                walletErrorData = OrderPaymentWalletErrorData(isBlockingError = true, buttonTitle = buttonTitle, message = errorMessage, type = OrderPaymentWalletErrorData.TYPE_TOP_UP, callbackUrl = callbackUrl, isHideDigital = isHideDigital)
         ), orderSummaryPageViewModel.orderPayment.value)
     }
 
@@ -373,7 +373,7 @@ class OrderSummaryPageViewModelCalculateTotalTest : BaseOrderSummaryPageViewMode
         assertEquals(OrderTotal(OrderCost(1500.0, 1000.0, 500.0), OccButtonState.DISABLE, OccButtonType.PAY, null), orderSummaryPageViewModel.orderTotal.value)
         assertEquals(orderPayment.copy(
                 isCalculationError = true,
-                ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = true, buttonTitle = buttonTitle, message = errorMessage, type = OrderPaymentOvoErrorData.TYPE_TOP_UP, callbackUrl = callbackUrl, isHideDigital = isHideDigital)
+                walletErrorData = OrderPaymentWalletErrorData(isBlockingError = true, buttonTitle = buttonTitle, message = errorMessage, type = OrderPaymentWalletErrorData.TYPE_TOP_UP, callbackUrl = callbackUrl, isHideDigital = isHideDigital)
         ), orderSummaryPageViewModel.orderPayment.value)
     }
 
