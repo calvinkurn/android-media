@@ -170,10 +170,10 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             return@setOnEditorActionListener false
         }
         setGroupNameWatcher()
-        setDailyBIdgetWatcher()
+        setDailyBudgetWatcher()
     }
 
-    private fun setDailyBIdgetWatcher() {
+    private fun setDailyBudgetWatcher() {
         daily_budget?.textFieldInput?.addTextChangedListener(object :
             NumberTextWatcher(daily_budget.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
