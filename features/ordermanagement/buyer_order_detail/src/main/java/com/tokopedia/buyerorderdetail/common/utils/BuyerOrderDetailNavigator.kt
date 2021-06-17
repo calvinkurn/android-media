@@ -157,19 +157,23 @@ class BuyerOrderDetailNavigator(
         applyTransition()
     }
 
-    fun openAppLink(appLink: String) {
+    fun openAppLink(appLink: String, shouldRefreshWhenBack: Boolean) {
         if (appLink.startsWith(PREFIX_HTTP)) {
-            openWebView(appLink)
+            openWebView(appLink, shouldRefreshWhenBack)
         } else {
             val intent: Intent = RouteManager.getIntent(activity, appLink)
-            fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
+            val requestCode = if (shouldRefreshWhenBack) BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY
+            else BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
+            fragment.startActivityForResult(intent, requestCode)
             applyTransition()
         }
     }
 
-    fun openWebView(url: String) {
+    fun openWebView(url: String, shouldRefreshWhenBack: Boolean) {
         val intent: Intent = RouteManager.getIntent(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
-        fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
+        val requestCode = if (shouldRefreshWhenBack) BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY
+        else BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED
+        fragment.startActivityForResult(intent, requestCode)
         applyTransition()
     }
 }

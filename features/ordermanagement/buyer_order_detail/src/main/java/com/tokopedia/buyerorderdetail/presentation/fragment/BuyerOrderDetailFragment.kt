@@ -186,6 +186,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         when (requestCode) {
             BuyerOrderDetailIntentCode.REQUEST_CODE_REQUEST_CANCEL_ORDER -> handleRequestCancelResult(resultCode, data)
             BuyerOrderDetailIntentCode.REQUEST_CODE_CREATE_RESOLUTION -> handleComplaintResult()
+            BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY -> handleResultRefreshOnly()
         }
     }
 
@@ -373,7 +374,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         val msg = StringUtils.convertListToStringDelimiter(data.atcMulti.buyAgainData.message, ",")
         if (data.atcMulti.buyAgainData.success == 1) {
             showCommonToaster(msg, getString(R.string.label_see)) {
-                navigator.openAppLink(ApplinkConst.CART)
+                navigator.openAppLink(ApplinkConst.CART, false)
             }
         } else {
             showErrorToaster(msg)
@@ -495,6 +496,12 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun handleComplaintResult() {
+        swipeRefreshBuyerOrderDetail?.isRefreshing = true
+        loadBuyerOrderDetail()
+    }
+
+    private fun handleResultRefreshOnly() {
+        swipeRefreshBuyerOrderDetail?.isRefreshing = true
         loadBuyerOrderDetail()
     }
 

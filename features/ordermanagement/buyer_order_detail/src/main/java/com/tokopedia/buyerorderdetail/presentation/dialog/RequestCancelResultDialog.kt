@@ -34,7 +34,7 @@ class RequestCancelResultDialog(
     }
 
     private fun goToTokopediaCareWebview() {
-        navigator.openWebView(TokopediaUrl.getInstance().MOBILEWEB + BuyerOrderDetailMiscConstant.PATH_TOKOPEDIA_CARE)
+        navigator.openWebView(TokopediaUrl.getInstance().MOBILEWEB + BuyerOrderDetailMiscConstant.PATH_TOKOPEDIA_CARE, false)
     }
 
     fun show(context: Context) {

@@ -121,7 +121,7 @@ class ProductViewHolder(
 
     private fun seeSimilarProducts() {
         element?.let {
-            navigator.openAppLink(it.button.url)
+            navigator.openAppLink(it.button.url, false)
             BuyerOrderDetailTracker.eventClickSimilarProduct(it.orderStatusId, it.orderId)
         }
     }

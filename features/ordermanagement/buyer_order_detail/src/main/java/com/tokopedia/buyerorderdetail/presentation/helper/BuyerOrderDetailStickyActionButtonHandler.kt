@@ -92,7 +92,7 @@ class BuyerOrderDetailStickyActionButtonHandler(
     }
 
     private fun onViewComplaintActionButtonClicked(url: String) {
-        navigator.openAppLink(url)
+        navigator.openAppLink(url, false)
         viewModel.buyerOrderDetailResult.value.let {
             if (it is Success) {
                 BuyerOrderDetailTracker.eventClickSeeComplaint(
@@ -108,7 +108,7 @@ class BuyerOrderDetailStickyActionButtonHandler(
     }
 
     private fun onHelpActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
-        navigator.openWebView(button.url)
+        navigator.openWebView(button.url, false)
     }
 
     private fun onBuyAgainAllProductButtonClicked() {
@@ -116,7 +116,7 @@ class BuyerOrderDetailStickyActionButtonHandler(
     }
 
     private fun onGiveReviewActionButtonClicked(url: String) {
-        navigator.openAppLink(url)
+        navigator.openAppLink(url, true)
     }
 
     private fun trackBuyAgainProduct(products: List<ProductListUiModel.ProductUiModel>) {
