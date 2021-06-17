@@ -1,7 +1,9 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 
+import android.util.DisplayMetrics
 import android.view.View
+import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
