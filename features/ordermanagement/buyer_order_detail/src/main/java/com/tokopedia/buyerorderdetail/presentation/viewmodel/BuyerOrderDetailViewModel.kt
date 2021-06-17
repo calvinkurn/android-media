@@ -9,6 +9,7 @@ import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderStatusCode
+import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
@@ -33,13 +34,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
         private val userSession: dagger.Lazy<UserSessionInterface>,
         private val getBuyerOrderDetailUseCase: dagger.Lazy<GetBuyerOrderDetailUseCase>,
         private val finishOrderUseCase: dagger.Lazy<FinishOrderUseCase>,
-        private val atcUseCase: dagger.Lazy<AddToCartMultiUseCase>
+        private val atcUseCase: dagger.Lazy<AddToCartMultiUseCase>,
+        private val resourceProvider: dagger.Lazy<ResourceProvider>
 ) : BaseViewModel(coroutineDispatchers.io) {
-
-    companion object {
-        private const val ERROR_MESSAGE_NO_PRODUCT = "Tidak ada produk yang dapat ditambahkan ke keranjang!"
-    }
-
     private val _buyerOrderDetailResult: MutableLiveData<Result<BuyerOrderDetailUiModel>> = MutableLiveData()
     val buyerOrderDetailResult: LiveData<Result<BuyerOrderDetailUiModel>>
         get() = _buyerOrderDetailResult
@@ -112,7 +109,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
                 })
                 _multiAtcResult.postValue(atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), params))
             } else {
-                _multiAtcResult.postValue(Fail(MessageErrorException(ERROR_MESSAGE_NO_PRODUCT)))
+                _multiAtcResult.postValue(Fail(MessageErrorException(resourceProvider.get().getErrorMessageNoProduct())))
             }
         }, onError = {
             _multiAtcResult.postValue(Fail(it))

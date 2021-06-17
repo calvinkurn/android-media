@@ -26,4 +26,8 @@ class ResourceProvider @Inject constructor(@ApplicationContext private val conte
     fun getPaymentInfoSectionHeader(): String {
         return getString(R.string.header_section_payment_into).orEmpty()
     }
+
+    fun getErrorMessageNoProduct(): String {
+        return getString(R.string.buyer_order_detail_error_message_no_product).orEmpty()
+    }
 }
