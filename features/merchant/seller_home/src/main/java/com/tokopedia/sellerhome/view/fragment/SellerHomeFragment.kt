@@ -1149,7 +1149,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         // Log error to crashlytics and scalyr.
         // We define layoutId value as joined list of error layout id. Ex: (100, 150)
-        // The extras will be defined as widget type as JSON object. Ex: ({"widget_type": "lineGraph"})
+        // The extras will be defined as widget type + layout id as JSON object.
+        // Ex: ({"widget_type": "lineGraph", "layout_id": "100, 150"})
         val layoutId = adapter.data.mapNotNull {
             if (it.widgetType == widgetType) it.id else null
         }.joinToString(", ")
