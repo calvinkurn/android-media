@@ -3,10 +3,6 @@ package com.tokopedia.cart.domain.model.cartlist
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
-/**
- * @author anggaprasetiyo on 18/01/18.
- */
-
 @Parcelize
 data class CartItemData(
         var originData: OriginData? = null,
@@ -64,13 +60,9 @@ data class CartItemData(
             var shopName: String? = null,
             var shopCity: String? = null,
             var shopId: String? = null,
-            var shopType: String? = null,
-            var isOfficialStore: Boolean = false,
-            var isGoldMerchant: Boolean = false,
+            var shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
             var isWishlisted: Boolean = false,
             var originalQty: Int = 0,
-            var goldMerchantLogoUrl: String? = null,
-            var officialStoreLogoUrl: String? = null,
             var preOrderInfo: String? = null,
             var cartString: String? = null,
             var isCheckboxState: Boolean = false,

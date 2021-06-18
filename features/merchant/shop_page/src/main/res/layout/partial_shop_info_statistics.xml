@@ -7,8 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingBottom="@dimen/dp_8"
-    android:paddingTop="@dimen/dp_16"
-    android:id="@+id/shopInfoStatistics">
+    android:paddingTop="@dimen/dp_16">
 
     <com.tokopedia.unifyprinciples.Typography style="@style/TextView.Title.Bold"
         android:text="@string/shop_info_label_statistic"

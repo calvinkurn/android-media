@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -24,7 +25,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var lblCodAvailableEta: Label = itemView.findViewById(R.id.lbl_cod_available_eta)
     private var imgLogo: ImageView = itemView.findViewById(R.id.img_logo)
     private var flImageContainer: FrameLayout = itemView.findViewById(R.id.fl_image_container)
-    private var imgCheck: ImageView = itemView.findViewById(R.id.img_check)
+    private var imgCheck: IconUnify = itemView.findViewById(R.id.img_check)
 
     companion object {
         @JvmStatic

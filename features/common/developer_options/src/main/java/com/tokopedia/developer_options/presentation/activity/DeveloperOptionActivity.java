@@ -47,6 +47,7 @@ import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.coachmark.CoachMark2;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.R;
 import com.tokopedia.developer_options.ab_test_rollence.AbTestRollenceConfigFragmentActivity;
@@ -102,6 +103,10 @@ public class DeveloperOptionActivity extends BaseActivity {
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
 
+    private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
+    private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
+    private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
+
     private String CACHE_FREE_RETURN = "CACHE_FREE_RETURN";
     private String API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49";
 
@@ -144,6 +149,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private CheckBox toggleFpmNotif;
     private CheckBox toggleFpmAutoLogFile;
     private CheckBox toggleSellerAppReview;
+    private CheckBox toggleLeakCanary;
 
     private AppCompatEditText ipGroupChat;
     private View saveIpGroupChat;
@@ -214,25 +220,14 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private void handleCoachmarkUri(Uri uri) {
         if (uri.getLastPathSegment().startsWith(URI_COACHMARK_DISABLE)) {
-            //soon will be replaced with global coachmark disable provided by unify team
+            CoachMark2.Companion.setCoachmmarkShowAllowed(false);
+
             SharedPreferences sharedPrefs = getSharedPreferences(
                     KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE);
             sharedPrefs.edit().putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false)
                     .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1, false)
                     .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, false)
                     .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true).apply();
-
-
-            SharedPreferences homePref = getSharedPreferences(
-                    PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE);
-            homePref.edit().putBoolean(PREF_KEY_HOME_COACHMARK_NAV, true)
-                    .putBoolean(PREF_KEY_HOME_COACHMARK_INBOX, true)
-                    .putBoolean(PREF_KEY_HOME_COACHMARK_BALANCE, true).apply();
-
-
-            SharedPreferences chooseAddressPref = getSharedPreferences(
-                    PREFERENCE_NAME, Context.MODE_PRIVATE);
-            chooseAddressPref.edit().putBoolean(EXTRA_IS_COACHMARK, false).apply();
         }
         finish();
     }
@@ -278,6 +273,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleFpmNotif = findViewById(R.id.toggle_fpm_notif);
         toggleFpmAutoLogFile = findViewById(R.id.toggle_fpm_auto_file_log);
         toggleSellerAppReview = findViewById(R.id.toggle_seller_app_review);
+        toggleLeakCanary = findViewById(R.id.toggle_leak_canary);
 
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
@@ -325,6 +321,9 @@ public class DeveloperOptionActivity extends BaseActivity {
         Button alwaysNewHome = findViewById(R.id.buttonAlwaysNewHome);
         Button alwaysOldBalanceWidget = findViewById(R.id.buttonAlwaysOldBalanceWidget);
         Button alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
+
+        setupNewInboxAbButton();
+        setupNewNotifcenterAbButton();
 
         TextInputEditText inputRollenceKey = findViewById(R.id.input_rollence_key);
         TextInputEditText inputRollenceVariant = findViewById(R.id.input_rollence_variant);
@@ -428,6 +427,54 @@ public class DeveloperOptionActivity extends BaseActivity {
                     Toast.makeText(DeveloperOptionActivity.this, "Rollence Key Applied", Toast.LENGTH_SHORT).show();
                 }
             }
+        });
+    }
+
+    private void setupNewInboxAbButton() {
+        Button oldInboxBtn = findViewById(R.id.btn_always_old_inbox);
+        Button newInboxBtn = findViewById(R.id.btn_always_new_inbox);
+
+        oldInboxBtn.setOnClickListener(v -> {
+            RemoteConfigInstance.getInstance()
+                    .getABTestPlatform()
+                    .setString(
+                            AbTestPlatform.KEY_AB_INBOX_REVAMP,
+                            AbTestPlatform.VARIANT_OLD_INBOX
+                    );
+            Toast.makeText(DeveloperOptionActivity.this, "Inbox: Old", Toast.LENGTH_SHORT).show();
+        });
+        newInboxBtn.setOnClickListener(v -> {
+            RemoteConfigInstance.getInstance()
+                    .getABTestPlatform()
+                    .setString(
+                            AbTestPlatform.KEY_AB_INBOX_REVAMP,
+                            AbTestPlatform.VARIANT_NEW_INBOX
+                    );
+            Toast.makeText(DeveloperOptionActivity.this, "Inbox: New", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void setupNewNotifcenterAbButton() {
+        Button oldInboxBtn = findViewById(R.id.btn_always_old_notifcenter);
+        Button newInboxBtn = findViewById(R.id.btn_always_new_notifcenter);
+
+        oldInboxBtn.setOnClickListener(v -> {
+            RemoteConfigInstance.getInstance()
+                    .getABTestPlatform()
+                    .setString(
+                            AbTestPlatform.KEY_NEW_NOTFICENTER,
+                            AbTestPlatform.VARIANT_OLD_NOTFICENTER
+                    );
+            Toast.makeText(DeveloperOptionActivity.this, "Notifcenter: Old", Toast.LENGTH_SHORT).show();
+        });
+        newInboxBtn.setOnClickListener(v -> {
+            RemoteConfigInstance.getInstance()
+                    .getABTestPlatform()
+                    .setString(
+                            AbTestPlatform.KEY_NEW_NOTFICENTER,
+                            AbTestPlatform.VARIANT_NEW_NOTFICENTER
+                    );
+            Toast.makeText(DeveloperOptionActivity.this, "Notifcenter: New", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -697,6 +744,16 @@ public class DeveloperOptionActivity extends BaseActivity {
             new FakeResponseActivityProvider().startActivity(this);
         });
 
+        toggleLeakCanary.setVisibility(GlobalConfig.isSellerApp() ? View.GONE : View.VISIBLE);
+        toggleLeakCanary.setChecked(getLeakCanaryToggleValue());
+        toggleLeakCanary.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).edit().putBoolean(LEAK_CANARY_TOGGLE_KEY, isChecked).apply();
+            Toast.makeText(DeveloperOptionActivity.this, "Please Restart the App", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private boolean getLeakCanaryToggleValue() {
+        return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, LEAK_CANARY_DEFAULT_TOGGLE);
     }
 
     public Object getOrNull(String[] list, int index) {

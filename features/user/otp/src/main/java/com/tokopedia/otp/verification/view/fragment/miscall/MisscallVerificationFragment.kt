@@ -27,6 +27,7 @@ import com.tokopedia.otp.verification.view.fragment.VerificationFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
@@ -45,6 +46,11 @@ class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastR
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        context?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                registerIncomingPhoneCall(it)
+            }
+        }
         sendOtp()
     }
 
@@ -228,16 +234,21 @@ class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastR
         autoFillPhoneNumber(phoneNumber)
     }
 
-    private fun registerIncomingPhoneCall(it: Context) {
-        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
+    private fun registerIncomingPhoneCall(context: Context) {
+        if (phoneCallBroadcastReceiver.isRegistered) {
+            return
+        }
+
+        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
         val disableAutoReadMissCall = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_DISABLE_AUTOREAD_MISSCALL, false)
         if (disableAutoReadMissCall) {
             return
         }
-        if (permissionCheckerHelper.hasPermission(it, getPermissions())) {
-            phoneCallBroadcastReceiver.registerReceiver(it, this)
+
+        if (permissionCheckerHelper.hasPermission(context, getPermissions())) {
+            phoneCallBroadcastReceiver.registerReceiver(context, this)
         } else {
-            sendLogTracker("PhoneCallBroadcastReceiver not registered; permission=${permissionCheckerHelper.hasPermission(it, getPermissions())}")
+            sendLogTracker("PhoneCallBroadcastReceiver not registered; permission=${permissionCheckerHelper.hasPermission(context, getPermissions())}")
         }
     }
 

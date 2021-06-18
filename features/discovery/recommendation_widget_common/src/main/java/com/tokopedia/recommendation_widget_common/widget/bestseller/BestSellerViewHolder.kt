@@ -31,13 +31,15 @@ import kotlinx.android.synthetic.main.best_seller_view_holder.view.*
  * Created by Lukas on 05/11/20.
  */
 class BestSellerViewHolder (view: View, private val listener: RecommendationWidgetListener): AbstractViewHolder<BestSellerDataModel>(view), AnnotationChipListener, RecommendationCarouselListener{
+
+    private val minChipsToShow = 1
+
     private var recommendationTypeFactory = RecommendationCarouselTypeFactoryImpl(this)
 
     private var annotationChipAdapter: AnnotationChipFilterAdapter = AnnotationChipFilterAdapter(this)
     private var recommendationAdapter: RecommendationCarouselAdapter = RecommendationCarouselAdapter(recommendationTypeFactory)
 
     private var bestSellerDataModel: BestSellerDataModel? = null
-
     init {
         view.hide()
     }
@@ -86,7 +88,7 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
     }
 
     private fun initFilterChip(element: BestSellerDataModel){
-        itemView.best_seller_chip_filter_recyclerview.shouldShowWithAction(element.filterChip.isNotEmpty()){
+        itemView.best_seller_chip_filter_recyclerview.shouldShowWithAction(element.filterChip.size > minChipsToShow){
             if (itemView.best_seller_chip_filter_recyclerview?.adapter == null) {
                 itemView.best_seller_chip_filter_recyclerview?.adapter = annotationChipAdapter
             }
@@ -143,9 +145,10 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
                         )
                     }
             )
-            listener.onBestSellerFilterClick(annotationChip.copy(isActivated = !annotationChip.isActivated), it, adapterPosition)
+            listener.onBestSellerFilterClick(annotationChip.copy(isActivated = !annotationChip.isActivated), it, adapterPosition, position)
             itemView.best_seller_loading_recommendation.show()
             itemView.best_seller_recommendation_recycler_view.hide()
+            bestSellerDataModel?.chipsPosition = (position+1)
         }
     }
 

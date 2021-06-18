@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -67,6 +68,7 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PreOrder;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
@@ -75,12 +77,12 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.Shippi
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
+import com.tokopedia.logisticcart.shipping.model.PreOrderModel;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
@@ -130,6 +132,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -161,6 +164,8 @@ import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.P
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CHOSEN_ADDRESS;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_FINISH_ERROR;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_ERROR;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.PAGE_CHECKOUT;
 
 /**
@@ -206,8 +211,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
     @Inject
-    TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
-    @Inject
     CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
     @Inject
     CornerAnalytics mTrackerCorner;
@@ -229,6 +232,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     ShipmentButtonPaymentModel savedShipmentButtonPaymentModel;
     LastApplyUiModel savedLastApplyData;
 
+    private boolean hasClearPromoBeforeCheckout = false;
     private boolean hasRunningApiCall = false;
     private ArrayList<String> bboPromoCodes = new ArrayList<>();
 
@@ -375,6 +379,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setBackground();
         if (savedInstanceState == null || savedShipmentCartItemModelList == null) {
             shipmentPresenter.processInitialLoadCheckoutPage(
                     false, isOneClickShipment(), isTradeIn(), true,
@@ -393,6 +398,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.setLastApplyData(savedLastApplyData);
             renderCheckoutPage(true, false, isOneClickShipment());
             swipeToRefresh.setEnabled(false);
+        }
+    }
+
+    private void setBackground() {
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.getWindow().getDecorView().setBackgroundColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N50));
         }
     }
 
@@ -775,6 +787,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPayment.PAYMENT_CHECKOUT);
         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
+        intent.putExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, hasClearPromoBeforeCheckout);
         startActivityForResult(intent, PaymentConstant.REQUEST_CODE);
     }
 
@@ -805,34 +818,30 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (getActivity() != null) {
             com.tokopedia.checkout.domain.model.checkout.MessageData messageData =
                     priceValidationData.getMessage();
-            if (messageData != null) {
-                DialogUnify priceValidationDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
-                priceValidationDialog.setTitle(messageData.getTitle());
-                priceValidationDialog.setDescription(messageData.getDesc());
-                priceValidationDialog.setPrimaryCTAText(messageData.getAction());
-                priceValidationDialog.setPrimaryCTAClickListener(() -> {
-                    shipmentPresenter.processInitialLoadCheckoutPage(
-                            true, isOneClickShipment(), isTradeIn(), true,
-                            true, null, getDeviceId(), getCheckoutLeasingId()
-                    );
-                    priceValidationDialog.dismiss();
-                    return Unit.INSTANCE;
-                });
+            DialogUnify priceValidationDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
+            priceValidationDialog.setTitle(messageData.getTitle());
+            priceValidationDialog.setDescription(messageData.getDesc());
+            priceValidationDialog.setPrimaryCTAText(messageData.getAction());
+            priceValidationDialog.setPrimaryCTAClickListener(() -> {
+                shipmentPresenter.processInitialLoadCheckoutPage(
+                        true, isOneClickShipment(), isTradeIn(), true,
+                        true, null, getDeviceId(), getCheckoutLeasingId()
+                );
+                priceValidationDialog.dismiss();
+                return Unit.INSTANCE;
+            });
 
-                priceValidationDialog.show();
+            priceValidationDialog.show();
 
-                StringBuilder eventLabelBuilder = new StringBuilder();
-                TrackerData trackerData = priceValidationData.getTrackerData();
-                if (trackerData != null) {
-                    eventLabelBuilder.append(trackerData.getProductChangesType());
-                    eventLabelBuilder.append(" - ");
-                    eventLabelBuilder.append(trackerData.getCampaignType());
-                    eventLabelBuilder.append(" - ");
-                    eventLabelBuilder.append(TextUtils.join(",", trackerData.getProductIds()));
-                }
+            StringBuilder eventLabelBuilder = new StringBuilder();
+            TrackerData trackerData = priceValidationData.getTrackerData();
+            eventLabelBuilder.append(trackerData.getProductChangesType());
+            eventLabelBuilder.append(" - ");
+            eventLabelBuilder.append(trackerData.getCampaignType());
+            eventLabelBuilder.append(" - ");
+            eventLabelBuilder.append(TextUtils.join(",", trackerData.getProductIds()));
 
-                checkoutAnalyticsCourierSelection.eventViewPopupPriceIncrease(eventLabelBuilder.toString());
-            }
+            checkoutAnalyticsCourierSelection.eventViewPopupPriceIncrease(eventLabelBuilder.toString());
         }
     }
 
@@ -1078,7 +1087,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         super.onActivityResult(requestCode, resultCode, data);
         hideLoading();
         if (requestCode == PaymentConstant.REQUEST_CODE) {
-            onResultFromPayment(resultCode);
+            onResultFromPayment(resultCode, data);
         } else if (requestCode == LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY) {
             onResultFromAddNewAddress(resultCode, data);
         } else if (requestCode == CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS) {
@@ -1113,64 +1122,69 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onResultFromPromo(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            shipmentPresenter.setCouponStateChanged(true);
-            ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_DATA_RESULT);
-            if (validateUsePromoRevampUiModel != null) {
-                String messageInfo = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getErrorDetailUiModel().getMessage();
-                if (messageInfo.length() > 0) {
-                    showToastNormal(messageInfo);
-                }
-                shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel);
-                updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), false);
-            }
-
-            ValidateUsePromoRequest validateUsePromoRequest = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_LAST_VALIDATE_USE_REQUEST);
-            if (validateUsePromoRequest != null) {
-                boolean stillHasPromo = false;
-                for (String promoGlobalCode : validateUsePromoRequest.getCodes()) {
-                    if (promoGlobalCode.length() > 0) {
-                        stillHasPromo = true;
-                        break;
+            if (data.getStringExtra(ARGS_PROMO_ERROR) != null
+                    && Objects.equals(data.getStringExtra(ARGS_PROMO_ERROR), ARGS_FINISH_ERROR) && getActivity() != null) {
+                getActivity().finish();
+            } else {
+                shipmentPresenter.setCouponStateChanged(true);
+                ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_DATA_RESULT);
+                if (validateUsePromoRevampUiModel != null) {
+                    String messageInfo = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getErrorDetailUiModel().getMessage();
+                    if (messageInfo.length() > 0) {
+                        showToastNormal(messageInfo);
                     }
+                    shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel);
+                    updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), false);
                 }
 
-                if (!stillHasPromo) {
-                    for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                        for (String promoMerchantCode : ordersItem.getCodes()) {
-                            if (promoMerchantCode.length() > 0) {
-                                stillHasPromo = true;
-                                break;
+                ValidateUsePromoRequest validateUsePromoRequest = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_LAST_VALIDATE_USE_REQUEST);
+                if (validateUsePromoRequest != null) {
+                    boolean stillHasPromo = false;
+                    for (String promoGlobalCode : validateUsePromoRequest.getCodes()) {
+                        if (promoGlobalCode.length() > 0) {
+                            stillHasPromo = true;
+                            break;
+                        }
+                    }
+
+                    if (!stillHasPromo) {
+                        for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                            for (String promoMerchantCode : ordersItem.getCodes()) {
+                                if (promoMerchantCode.length() > 0) {
+                                    stillHasPromo = true;
+                                    break;
+                                }
                             }
                         }
                     }
+
+                    shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
+                    if (!stillHasPromo) {
+                        doResetButtonPromoCheckout();
+                    }
                 }
 
-                shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
-                if (!stillHasPromo) {
-                    doResetButtonPromoCheckout();
+                ClearPromoUiModel clearPromoUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CLEAR_PROMO_RESULT);
+                if (clearPromoUiModel != null) {
+                    PromoUiModel promoUiModel = new PromoUiModel();
+                    promoUiModel.setTitleDescription(clearPromoUiModel.getSuccessDataModel().getDefaultEmptyPromoMessage());
+
+                    TickerAnnouncementHolderData tickerAnnouncementHolderData = shipmentPresenter.getTickerAnnouncementHolderData();
+                    if (tickerAnnouncementHolderData != null && !TextUtils.isEmpty(clearPromoUiModel.getSuccessDataModel().getTickerMessage())) {
+                        tickerAnnouncementHolderData.setMessage(clearPromoUiModel.getSuccessDataModel().getTickerMessage());
+                        updateTickerAnnouncementMessage();
+                    }
+
+                    doUpdateButtonPromoCheckout(promoUiModel);
+                    shipmentPresenter.setValidateUsePromoRevampUiModel(null);
+                    shipmentAdapter.checkHasSelectAllCourier(false, -1, "");
                 }
-            }
 
-            ClearPromoUiModel clearPromoUiModel = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_CLEAR_PROMO_RESULT);
-            if (clearPromoUiModel != null) {
-                PromoUiModel promoUiModel = new PromoUiModel();
-                promoUiModel.setTitleDescription(clearPromoUiModel.getSuccessDataModel().getDefaultEmptyPromoMessage());
-
-                TickerAnnouncementHolderData tickerAnnouncementHolderData = shipmentPresenter.getTickerAnnouncementHolderData();
-                if (tickerAnnouncementHolderData != null && !TextUtils.isEmpty(clearPromoUiModel.getSuccessDataModel().getTickerMessage())) {
-                    tickerAnnouncementHolderData.setMessage(clearPromoUiModel.getSuccessDataModel().getTickerMessage());
-                    updateTickerAnnouncementMessage();
+                boolean requiredToReloadRatesForMvcCourier = data.getBooleanExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false);
+                ArrayList<String> appliedMvcCartStrings = data.getStringArrayListExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_APPLIED_MVC_CART_STRINGS);
+                if (requiredToReloadRatesForMvcCourier) {
+                    reloadCourierForMvc(appliedMvcCartStrings);
                 }
-
-                doUpdateButtonPromoCheckout(promoUiModel);
-                shipmentPresenter.setValidateUsePromoRevampUiModel(null);
-                shipmentAdapter.checkHasSelectAllCourier(false, -1, "");
-            }
-
-            boolean requiredToReloadRatesForMvcCourier = data.getBooleanExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false);
-            ArrayList<String> appliedMvcCartStrings = data.getStringArrayListExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_APPLIED_MVC_CART_STRINGS);
-            if (requiredToReloadRatesForMvcCourier) {
-                reloadCourierForMvc(appliedMvcCartStrings);
             }
         }
     }
@@ -1196,12 +1210,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    private void onResultFromPayment(int resultCode) {
-        if (getActivity() != null) {
-            if (resultCode != PaymentConstant.PAYMENT_CANCELLED && resultCode != PaymentConstant.PAYMENT_FAILED) {
-                getActivity().setResult(PaymentConstant.PAYMENT_SUCCESS);
-                getActivity().finish();
-            }
+    private void onResultFromPayment(int resultCode, Intent data) {
+        switch (resultCode) {
+            case PaymentConstant.PAYMENT_FAILED:
+            case PaymentConstant.PAYMENT_CANCELLED:
+                if (data != null && data.getBooleanExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, false)) {
+                    shipmentPresenter.processInitialLoadCheckoutPage(
+                            true, isOneClickShipment(), isTradeIn(), true,
+                            false, null, getDeviceId(), getCheckoutLeasingId()
+                    );
+                }
+                break;
+            default:
+                Activity activity = getActivity();
+                if (activity != null) activity.finish();
+                break;
         }
     }
 
@@ -1557,18 +1580,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
                                     if (shipmentCartItemModel.getCartString().equals(voucherOrdersItemUiModel.getUniqueId())) {
                                         notEligiblePromoHolderdata.setShopName(shipmentCartItemModel.getShopName());
-                                        if (shipmentCartItemModel.isOfficialStore()) {
-                                            notEligiblePromoHolderdata.setIconType(NotEligiblePromoHolderdata.getTYPE_ICON_OFFICIAL_STORE());
-                                        } else if (shipmentCartItemModel.isGoldMerchant()) {
-                                            notEligiblePromoHolderdata.setIconType(NotEligiblePromoHolderdata.getTYPE_ICON_POWER_MERCHANT());
-                                        }
+                                        notEligiblePromoHolderdata.setShopBadge(shipmentCartItemModel.getShopTypeInfoData().getShopBadge());
                                         break;
                                     }
                                 }
 
                                 if (i <= 0) {
                                     notEligiblePromoHolderdata.setShowShopSection(true);
-                                } else if (voucherOrdersItemUiModels.get(i - 1).getUniqueId() != null && voucherOrdersItemUiModel.getUniqueId() != null && voucherOrdersItemUiModels.get(i - 1).getUniqueId().equals(voucherOrdersItemUiModel.getUniqueId())) {
+                                } else if (voucherOrdersItemUiModels.get(i - 1).getUniqueId().length() > 0 && voucherOrdersItemUiModel.getUniqueId().length() > 0 && voucherOrdersItemUiModels.get(i - 1).getUniqueId().equals(voucherOrdersItemUiModel.getUniqueId())) {
                                     notEligiblePromoHolderdata.setShowShopSection(false);
                                 } else {
                                     notEligiblePromoHolderdata.setShowShopSection(true);
@@ -1581,8 +1600,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
 
                 if (notEligiblePromoHolderdataList.size() > 0) {
+                    hasClearPromoBeforeCheckout = true;
                     shipmentPresenter.cancelNotEligiblePromo(notEligiblePromoHolderdataList);
                 } else {
+                    hasClearPromoBeforeCheckout = false;
                     doCheckout();
                 }
             } else {
@@ -1643,7 +1664,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void doCheckout() {
         shipmentPresenter.processSaveShipmentState();
         shipmentPresenter.processCheckout(isOneClickShipment(), isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId());
-
     }
 
     @Override
@@ -2170,14 +2190,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void updateCourierBottomsheetHasNoData(int cartPosition, ShipmentCartItemModel shipmentCartItemModel) {
         if (shippingCourierBottomsheet != null) {
-            shippingCourierBottomsheet.setShippingCourierViewModels(null, cartPosition, shipmentCartItemModel);
+            shippingCourierBottomsheet.setShippingCourierViewModels(null, cartPosition, shipmentCartItemModel, null);
         }
     }
 
     @Override
-    public void updateCourierBottomssheetHasData(List<ShippingCourierUiModel> shippingCourierUiModels, int cartPosition, ShipmentCartItemModel shipmentCartItemModel) {
+    public void updateCourierBottomssheetHasData(List<ShippingCourierUiModel> shippingCourierUiModels, int cartPosition, ShipmentCartItemModel shipmentCartItemModel, PreOrderModel preOrderModel) {
         if (shippingCourierBottomsheet != null) {
-            shippingCourierBottomsheet.setShippingCourierViewModels(shippingCourierUiModels, cartPosition, shipmentCartItemModel);
+            shippingCourierBottomsheet.setShippingCourierViewModels(shippingCourierUiModels, cartPosition, shipmentCartItemModel, preOrderModel);
         }
     }
 

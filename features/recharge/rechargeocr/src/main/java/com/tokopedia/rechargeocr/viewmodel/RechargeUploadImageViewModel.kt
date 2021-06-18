@@ -1,5 +1,6 @@
 package com.tokopedia.rechargeocr.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -8,6 +9,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.rechargeocr.RechargeCameraUtil
 import com.tokopedia.rechargeocr.data.RechargeOcrResponse
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -17,8 +21,9 @@ class RechargeUploadImageViewModel @Inject constructor(private val rechargeUploa
                                                        private val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    val resultDataOcr = MutableLiveData<String>()
-    val errorActionOcr = MutableLiveData<String>()
+    private val _resultDataOcr = MutableLiveData<Result<String>>()
+    val resultDataOcr: LiveData<Result<String>>
+        get() = _resultDataOcr
 
     fun uploadImageRecharge(pathFile: String, rawQuery: String) {
         launchCatchError(block = {
@@ -40,9 +45,9 @@ class RechargeUploadImageViewModel @Inject constructor(private val rechargeUploa
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<RechargeOcrResponse>()
 
-            resultDataOcr.postValue(dataOcr.rechargeOcr.result)
+            _resultDataOcr.postValue(Success(dataOcr.rechargeOcr.result))
         }) {
-            errorActionOcr.postValue(it.message)
+            _resultDataOcr.postValue(Fail(it))
         }
     }
 

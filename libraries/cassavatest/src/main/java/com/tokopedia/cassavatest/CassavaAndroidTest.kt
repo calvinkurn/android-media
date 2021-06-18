@@ -6,7 +6,6 @@ import com.google.gson.GsonBuilder
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaRepository
 import com.tokopedia.analyticsdebugger.cassava.data.CassavaSource
 import com.tokopedia.analyticsdebugger.cassava.data.api.CassavaApi
-import com.tokopedia.analyticsdebugger.cassava.data.api.CassavaUrl
 import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultData
 import com.tokopedia.analyticsdebugger.cassava.data.request.ValidationResultRequest
 import com.tokopedia.analyticsdebugger.cassava.domain.QueryListUseCase
@@ -27,17 +26,30 @@ import rx.schedulers.Schedulers
 fun deleteCassavaDb(context: Context) =
         TkpdAnalyticsDatabase.getInstance(context).gtmLogDao().deleteAll()
 
+/**
+ * This function is used to run analytics validation query with/without thanos
+ *
+ * @param gtmLogDBSource GTM Log from Local Database
+ * @param queryId the value will be either thanos query id or local json file path
+ * @param isFromNetwork if True, will use thanos regex validation, if false will use local regex validation
+ * @param shouldSendResult if True, will send validation result to Thanos API.
+ *                         Default is True, can be False for development purpose
+ *
+ * @return the list of Validator
+ */
 @Deprecated("Consider using Cassava Test Rule")
 fun getAnalyticsWithQuery(gtmLogDBSource: GtmLogDBSource,
                           queryId: String,
-                          isFromNetwork: Boolean): List<Validator> {
+                          isFromNetwork: Boolean,
+                          shouldSendResult: Boolean = true): List<Validator> {
     val cassavaQuery = getQuery(InstrumentationRegistry.getInstrumentation().context, queryId, isFromNetwork)
     val validators = cassavaQuery.query.map { it.toDefaultValidator() }
     val validationResult = ValidatorEngine(gtmLogDBSource)
             .computeRx(validators, cassavaQuery.mode.value)
             .toBlocking()
             .first()
-    if (isFromNetwork) sendTestResult(queryId, validationResult)
+    if (isFromNetwork && shouldSendResult)
+        sendTestResult(queryId, validationResult)
     return validationResult
 }
 
@@ -83,7 +95,8 @@ internal fun sendTestResult(journeyId: String, testResult: List<Validator>) {
                 journeyId,
                 ValidationResultRequest(
                         version = "",
-                        token = CassavaUrl.TOKEN,
+                        token = InstrumentationRegistry.getInstrumentation().context
+                                .getString(com.tokopedia.keys.R.string.thanos_token_key),
                         data = testResult.map {
                             ValidationResultData(
                                     dataLayerId = it.id,

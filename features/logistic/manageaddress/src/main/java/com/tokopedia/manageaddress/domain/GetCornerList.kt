@@ -35,7 +35,7 @@ open class GetCornerList
                 showCorner = isCorner, whitelistChosenAddress = true, previousState = prevState,
                 localStateChosenAddressId = localChosenAddrId)
         val param = mapOf<String, Any>(PARAM_CORNER_USECASE to request)
-        val gqlQuery = GraphqlHelper.loadRawString(context.resources, com.tokopedia.purchase_platform.common.R.raw.address_corner)
+        val gqlQuery = GraphqlHelper.loadRawString(context.resources, com.tokopedia.logisticCommon.R.raw.address_corner)
         val gqlRequest = GraphqlRequest(gqlQuery, GetPeopleAddressResponse::class.java, param)
 
         graphqlUseCase.clearRequest()

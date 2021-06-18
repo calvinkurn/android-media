@@ -14,13 +14,11 @@ import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -63,12 +61,12 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -191,17 +189,13 @@ class DiscoveryFragment :
         chooseAddressWidget = view.findViewById(R.id.choose_address_widget)
         chooseAddressWidgetDivider = view.findViewById(R.id.divider_view)
         chooseAddressWidget?.bindChooseAddress(this)
-        context?.let {
-            if (ChooseAddressUtils.isRollOutUser(it)) {
-                fetchUserLatestAddressData()
-            }
-        }
     }
 
     private fun initToolbar(view: View) {
         showOldToolbar = !RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
         val oldToolbar: Toolbar = view.findViewById(R.id.oldToolbar)
         navToolbar = view.findViewById(R.id.navToolbar)
+        viewLifecycleOwner.lifecycle.addObserver(navToolbar)
         if (showOldToolbar) {
             oldToolbar.visibility = View.VISIBLE
             navToolbar.visibility = View.GONE
@@ -255,7 +249,7 @@ class DiscoveryFragment :
                     shouldShowChooseAddressWidget = false
                     scrollDist = 0
                 } else if (scrollDist < -MINIMUM) {
-                    if (discoveryViewModel.getAddressVisibilityValue() && ChooseAddressUtils.isRollOutUser(context)) {
+                    if (discoveryViewModel.getAddressVisibilityValue()) {
                         chooseAddressWidget?.show()
                         chooseAddressWidgetDivider?.show()
                         shouldShowChooseAddressWidget = true
@@ -269,6 +263,7 @@ class DiscoveryFragment :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
+        discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
         setAdapter()
@@ -300,16 +295,19 @@ class DiscoveryFragment :
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
                         if (listComponent.isNullOrEmpty()) {
+                            discoveryAdapter.addDataList(ArrayList())
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
                             scrollToPinnedComponent(listComponent)
                         }
                     }
+                    hideGlobalError()
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
                 }
                 is Fail -> {
                     mProgressBar.hide()
+                    setPageErrorState(it)
                 }
             }
             mSwipeRefreshLayout.isRefreshing = false
@@ -335,6 +333,7 @@ class DiscoveryFragment :
                     setToolBarPageInfoOnSuccess(it.data)
                 }
                 is Fail -> {
+                    discoveryAdapter.addDataList(ArrayList())
                     setToolBarPageInfoOnFail()
                     setPageErrorState(it)
                 }
@@ -366,7 +365,7 @@ class DiscoveryFragment :
 
         discoveryViewModel.checkAddressVisibility().observe(viewLifecycleOwner, { widgetVisibilityStatus ->
             context?.let {
-                if (widgetVisibilityStatus && ChooseAddressUtils.isRollOutUser(it)) {
+                if (widgetVisibilityStatus) {
                     if(shouldShowChooseAddressWidget) {
                         chooseAddressWidget?.show()
                         chooseAddressWidgetDivider?.show()
@@ -455,7 +454,7 @@ class DiscoveryFragment :
                                 .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
                                 .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
                 )
-                navToolbar.setBadgeCounter(IconList.ID_CART, getCartCounter())
+                navToolbar.updateNotification()
             }
         } else {
             if (showOldToolbar) {
@@ -518,13 +517,7 @@ class DiscoveryFragment :
                         .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
                         .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
         )
-        navToolbar.setBadgeCounter(IconList.ID_CART, getCartCounter())
-    }
-
-    private fun getCartCounter(): Int {
-        return (context?.let {
-            LocalCacheHandler(context, Utils.CART_CACHE_NAME).getInt(Utils.CART_TOTAL_CACHE_KEY, 0)
-        }).orZero()
+        navToolbar.updateNotification()
     }
 
     private fun setupSearchBar(data: PageInfo?) {
@@ -584,6 +577,10 @@ class DiscoveryFragment :
             globalError.hide()
             showLoadingWithRefresh()
         }
+    }
+
+    private fun hideGlobalError(){
+        globalError.hide()
     }
 
     private fun fetchDiscoveryPageData() {
@@ -669,6 +666,12 @@ class DiscoveryFragment :
         startActivityForResult(intent, OPEN_PLAY_CHANNEL)
     }
 
+    fun refreshCarouselData(componentPosition: Int = -1) {
+        if (componentPosition >= 0) {
+            discoveryAdapter.getViewModelAtPosition(componentPosition)?.refreshProductCarouselError()
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
@@ -679,7 +682,14 @@ class DiscoveryFragment :
         }
         when (requestCode) {
             LOGIN_REQUEST_CODE -> {
-                discoveryBaseViewModel?.loggedInCallback()
+                if (resultCode == Activity.RESULT_OK) {
+                    if(this.componentPosition != null && this.componentPosition!! >= 0) {
+                        discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
+                        discoveryBaseViewModel?.loggedInCallback()
+                    }else{
+                        discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
+                    }
+                }
             }
             MOBILE_VERIFICATION_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -690,6 +700,7 @@ class DiscoveryFragment :
             }
             PAGE_REFRESH_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK) {
+                    discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
                     refreshPage()
                 }
             }
@@ -778,7 +789,7 @@ class DiscoveryFragment :
             }
         })
         context?.let {
-            if (ChooseAddressUtils.isRollOutUser(it) && discoveryViewModel.getAddressVisibilityValue()) {
+            if (discoveryViewModel.getAddressVisibilityValue()) {
                 updateChooseAddressWidget()
                 checkAddressUpdate()
             }
@@ -854,13 +865,7 @@ class DiscoveryFragment :
     }
 
     override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
-        if (isRollOutUser && discoveryViewModel.getAddressVisibilityValue()) {
-            chooseAddressWidget?.show()
-            chooseAddressWidgetDivider?.show()
-        } else {
-            chooseAddressWidget?.hide()
-            chooseAddressWidgetDivider?.hide()
-        }
+
     }
 
     override fun getLocalizingAddressHostFragment(): Fragment {
@@ -868,11 +873,11 @@ class DiscoveryFragment :
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_SOURCE
+        return analytics.getHostSource()
     }
 
     override fun getLocalizingAddressHostSourceTrackingData(): String {
-        return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
+        return analytics.getHostTrackingSource()
     }
 
     override fun onLocalizingAddressLoginSuccess() {
@@ -880,6 +885,10 @@ class DiscoveryFragment :
 
     override fun onLocalizingAddressUpdatedFromBackground() {
 
+    }
+
+    override fun getEventLabelHostPage(): String {
+        return analytics.getEventLabel()
     }
 
     private fun fetchUserLatestAddressData() {

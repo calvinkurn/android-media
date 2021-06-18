@@ -265,6 +265,7 @@ class SearchActivity: BaseActivity(),
 
     private fun setSearchNavigationToolbar() {
         searchNavigationToolbar?.let {
+            this.getLifecycle().addObserver(it)
             it.bringToFront()
             it.setToolbarPageName(SearchConstant.SEARCH_RESULT_PAGE)
             it.setIcon(

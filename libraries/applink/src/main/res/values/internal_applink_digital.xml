@@ -26,6 +26,7 @@
     <string name="path_emoney" translatable="false">/smartcard/emoney</string>
     <string name="path_brizzi" translatable="false">/smartcard/brizzi</string>
     <string name="title_digital_emoney">Uang Elektronik</string>
+    <string name="path_electronicmoney" translatable="false">/electronicmoney</string>
 
     <string name="path_camera_ocr" translatable="false">/ocr</string>
 

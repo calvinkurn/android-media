@@ -16,6 +16,7 @@ import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Job
 import javax.inject.Inject
 
 /**
@@ -54,8 +55,11 @@ class SomDetailViewModel @Inject constructor(
     val somDetailChatEligibility: LiveData<Result<Pair<Boolean, Boolean>>>
         get() = _somDetailChatEligibility
 
+    private var loadDetailJob: Job? = null
+
     fun loadDetailOrder(orderId: String) {
-        launchCatchError(block = {
+        loadDetailJob?.cancel()
+        loadDetailJob = launchCatchError(block = {
             val dynamicPriceParam = SomDynamicPriceRequest(order_id = orderId.toLongOrZero())
             somGetOrderDetailUseCase.setParamDynamicPrice(dynamicPriceParam)
             val somGetOrderDetail = somGetOrderDetailUseCase.execute(orderId)

@@ -104,23 +104,23 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
     private fun setupObserver(){
         viewState.observe(this, Observer {
             var text = context.getString(R.string.info_touch_fp)
-            var textColor = ContextCompat.getColor(context, R.color.body_text_color)
+            var textColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
             when (it) {
                 STATE_DEFAULT -> {
                     text = context.getString(R.string.info_touch_fp)
-                    textColor = ContextCompat.getColor(context, R.color.body_text_color)
+                    textColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
                 }
                 STATE_SUCCESS -> {
                     text = context.getString(R.string.fp_verified)
-                    textColor = ContextCompat.getColor(context, R.color.green_500)
+                    textColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                 }
                 STATE_INVALID -> {
                     text = context.getString(R.string.error_fp_retry)
-                    textColor = ContextCompat.getColor(context, R.color.body_text_error_color)
+                    textColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
                 }
                 STATE_ERROR -> {
                     text = context.getString(R.string.error_default_fp)
-                    textColor = ContextCompat.getColor(context, R.color.body_text_error_color)
+                    textColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
                 }
                 STATE_LOADING -> showProgressBar()
             }

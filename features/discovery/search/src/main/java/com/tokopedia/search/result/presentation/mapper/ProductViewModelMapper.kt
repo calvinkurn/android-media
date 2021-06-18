@@ -113,6 +113,8 @@ class ProductViewModelMapper {
             position: Int,
             alternativeKeyword: String
     ): BroadMatchItemDataView {
+        val isOrganicAds = otherRelatedProduct.isOrganicAds()
+
         return BroadMatchItemDataView(
                 otherRelatedProduct.id,
                 otherRelatedProduct.name,
@@ -127,12 +129,13 @@ class ProductViewModelMapper {
                 otherRelatedProduct.isWishlisted,
                 position,
                 alternativeKeyword,
-                otherRelatedProduct.isOrganicAds(),
+                isOrganicAds,
                 otherRelatedProduct.ads.productViewUrl,
                 otherRelatedProduct.ads.productClickUrl,
                 otherRelatedProduct.ads.productWishlistUrl,
                 otherRelatedProduct.ratingAverage,
                 otherRelatedProduct.labelGroupList.mapToLabelGroupDataViewList(),
+                BroadMatchProduct(isOrganicAds),
         )
     }
 

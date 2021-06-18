@@ -26,6 +26,7 @@ import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : CoroutineScope {
@@ -255,12 +256,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         if (orderShop.shopBadge.isNotEmpty()) {
             ivShop?.setImageUrl(orderShop.shopBadge)
             ivShop?.visible()
-            val shopType = if (orderShop.isOfficial == 1) {
-                view.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_official_store)
-            } else {
-                view.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_shop_type_power_merchant)
-            }
-            ivShop?.contentDescription = view.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopType)
+            ivShop?.contentDescription = view.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, orderShop.shopTypeName.toLowerCase(Locale.ROOT))
         } else {
             ivShop?.gone()
         }

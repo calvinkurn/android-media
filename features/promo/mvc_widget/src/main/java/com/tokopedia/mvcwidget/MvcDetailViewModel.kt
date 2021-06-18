@@ -5,6 +5,7 @@ import com.tokopedia.mvcwidget.usecases.CatalogMVCListUseCase
 import com.tokopedia.mvcwidget.usecases.FollowShopUseCase
 import com.tokopedia.mvcwidget.usecases.MembershipRegisterUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Named
@@ -18,9 +19,9 @@ class MvcDetailViewModel @Inject constructor(@Named(IO) workerDispatcher: Corout
                                              val followUseCase: FollowShopUseCase
 ) : BaseViewModel(workerDispatcher) {
 
-    val listLiveData = SingleLiveData<LiveDataResult<TokopointsCatalogMVCListResponse>>()
-    val membershipLiveData = SingleLiveData<LiveDataResult<String>>()
-    val followLiveData = SingleLiveData<LiveDataResult<String>>()
+    val listLiveData = SingleLiveEvent<LiveDataResult<TokopointsCatalogMVCListResponse>>()
+    val membershipLiveData = SingleLiveEvent<LiveDataResult<String>>()
+    val followLiveData = SingleLiveEvent<LiveDataResult<String>>()
     var membershipCardID: String? = null
     var shopId: String = ""
     var membershipRegistrationSuccessMessage = ""

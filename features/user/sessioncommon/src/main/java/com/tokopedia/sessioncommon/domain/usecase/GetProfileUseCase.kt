@@ -15,11 +15,10 @@ import javax.inject.Inject
  * @author by nisie on 12/06/19.
  */
 
-class GetProfileUseCase @Inject constructor(val resources: Resources,
-                                            private val graphqlUseCase: GraphqlUseCase
+open class GetProfileUseCase @Inject constructor(val resources: Resources, val graphqlUseCase: GraphqlUseCase
 ) {
 
-    fun execute(subscriber: Subscriber<GraphqlResponse>) {
+    open fun execute(subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(resources, R.raw.query_profile)
         val graphqlRequest = GraphqlRequest(query,
                 ProfilePojo::class.java, RequestParams.create().parameters)

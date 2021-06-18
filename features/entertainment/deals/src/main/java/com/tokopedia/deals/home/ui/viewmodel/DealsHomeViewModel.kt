@@ -8,6 +8,7 @@ import com.tokopedia.deals.common.domain.GetNearestLocationUseCase
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.deals.home.data.DealsEventHome
 import com.tokopedia.deals.home.data.EventHomeLayout
 import com.tokopedia.deals.home.domain.GetEventHomeBrandPopularUseCase
 import com.tokopedia.deals.home.domain.GetEventHomeLayoutUseCase
@@ -36,6 +37,8 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     val observableEventHomeLayout: LiveData<Result<List<DealsBaseItemDataView>>>
         get() = _observableEventHomeLayout
 
+    var mutableTickerData = DealsEventHome.TickerHome()
+
     init {
         _observableEventHomeLayout.postValue(Success(GetInitialHomeLayoutModelUseCase.requestEmptyViewModels()))
     }
@@ -48,7 +51,7 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                 val brands = getBrandPopular(location)
                 val location = getNearestLocation(location)
 
-                val homeLayout = dealsHomeMapper.mapLayoutToBaseItemViewModel(eventHomeLayouts, brands, location)
+                val homeLayout = dealsHomeMapper.mapLayoutToBaseItemViewModel(eventHomeLayouts, brands, location, mutableTickerData)
                 _observableEventHomeLayout.postValue(Success(homeLayout))
             } catch (t: Throwable) {
                 _observableEventHomeLayout.postValue(Fail(t))
@@ -61,6 +64,7 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             val data = getEventHomeLayoutUseCase.apply {
                 useParams(GetEventHomeLayoutUseCase.createParams(location.coordinates, location.locType.name))
             }.executeOnBackground()
+            setTickerData(data.response.ticker)
             return data.response.layout
         } catch (t: Throwable) {
             throw t
@@ -94,6 +98,10 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         } catch (t: Throwable) {
             emptyList()
         }
+    }
+
+    private fun setTickerData(tickerData: DealsEventHome.TickerHome){
+        mutableTickerData = tickerData
     }
 
     companion object {

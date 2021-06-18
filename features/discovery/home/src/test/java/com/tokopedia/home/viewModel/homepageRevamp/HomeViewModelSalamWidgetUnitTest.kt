@@ -63,13 +63,8 @@ class HomeViewModelSalamWidgetUnitTest {
         homeViewModel = createHomeViewModel(getSalamWidgetUseCase = getSalamWidgetUseCase, declineSalamWidgetUseCase = declineSalamWidgetUseCase, getHomeUseCase = getHomeUseCase)
         homeViewModel.getSalamWidget()
 
-        // Expect the salam data available
-        homeViewModel.salamWidgetLiveData.observeOnce {
-            assert(it.peekContent().salamWidget.mainText.isNotEmpty() && it.peekContent().salamWidget.mainText.equals(salamWidget.salamWidget.mainText))
-        }
-
         // Salam valid and submited to live data home
-        homeViewModel.insertSalamWidget(salamWidget)
+//        homeViewModel.insertSalamWidget(salamWidget)
 
         // Expect the reminder salam available in home live data
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->
@@ -124,21 +119,6 @@ class HomeViewModelSalamWidgetUnitTest {
 
     @Test
     fun `Salam Widget Available`(){
-        val salamDataModel = ReminderWidgetModel(source=ReminderEnum.SALAM)
-        val salamWidget = SalamWidget(
-                SalamWidgetData(
-                        "tokopedia://salam",
-                        "test",
-                        "Silahkan Bayar Sekarang",
-                        1,
-                        "tokopedia.com/image.png",
-                        "tokopedia://link",
-                        "Main Text",
-                        "Sub Text",
-                        "Judul"
-                )
-        )
-
         val reminderWidget = ReminderWidget("1",
                 listOf(
                         ReminderData(
@@ -156,6 +136,10 @@ class HomeViewModelSalamWidgetUnitTest {
                 )
         )
 
+        val salamDataModel = ReminderWidgetModel(
+                data = reminderWidget,
+                source=ReminderEnum.SALAM)
+
         // Add SalamWidget to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
@@ -165,7 +149,6 @@ class HomeViewModelSalamWidgetUnitTest {
 
         // insert salam to home data
         homeViewModel = createHomeViewModel(getSalamWidgetUseCase = getSalamWidgetUseCase, declineSalamWidgetUseCase = declineSalamWidgetUseCase, getHomeUseCase = getHomeUseCase)
-        homeViewModel.insertSalamWidget(salamWidget)
 
         // salam data available in home data
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->
@@ -175,27 +158,6 @@ class HomeViewModelSalamWidgetUnitTest {
         }
     }
 
-    @Test
-    fun `SalamWidget Not Available`(){
-        val salamDataModel = ReminderWidgetModel(source=ReminderEnum.SALAM)
-        val salamWidget = SalamWidget()
-
-        // Add SalamWidget to HomeDataModel
-        getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(salamDataModel)
-                )
-        )
-
-        // insert null salam to home data
-        homeViewModel = createHomeViewModel(getSalamWidgetUseCase = getSalamWidgetUseCase, declineSalamWidgetUseCase = declineSalamWidgetUseCase, getHomeUseCase = getHomeUseCase)
-        homeViewModel.insertSalamWidget(salamWidget)
-
-        // Expect the reminder salam not available in home live data
-        homeViewModel.homeLiveData.observeOnce {
-            assert(it.list.find {it::class.java == salamDataModel::class.java} == null)
-        }
-    }
     @Test
     fun `SalamWidget Not Available and remove it`(){
         val salamDataModel = ReminderWidgetModel(source=ReminderEnum.SALAM)
@@ -210,7 +172,7 @@ class HomeViewModelSalamWidgetUnitTest {
 
         // insert null salam to home data
         homeViewModel = createHomeViewModel(getSalamWidgetUseCase = getSalamWidgetUseCase, declineSalamWidgetUseCase = declineSalamWidgetUseCase, getHomeUseCase = getHomeUseCase)
-        homeViewModel.insertSalamWidget(salamWidget)
+//        homeViewModel.insertSalamWidget(salamWidget)
 
         // Expect the reminder salam not available in home live data
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->

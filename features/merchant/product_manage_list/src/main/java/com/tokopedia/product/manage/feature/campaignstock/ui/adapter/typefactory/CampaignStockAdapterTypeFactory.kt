@@ -12,7 +12,9 @@ class CampaignStockAdapterTypeFactory(private val onAccordionStateChange: (Int) 
                                       private val onTotalStockChanged: (Int) -> Unit = {},
                                       private val onActiveStockChanged: (Boolean) -> Unit = {},
                                       private val onVariantStockChanged: (productId: String, stock: Int) -> Unit = { _,_ -> },
-                                      private val onVariantStatusChanged: (productId: String, status: ProductStatus) -> Unit = { _,_ -> }): BaseAdapterTypeFactory(), CampaignStockTypeFactory {
+                                      private val onVariantStatusChanged: (productId: String, status: ProductStatus) -> Unit = { _,_ -> },
+                                      private val source: String = ""
+): BaseAdapterTypeFactory(), CampaignStockTypeFactory {
 
     override fun type(model: ActiveProductSwitchUiModel): Int = ActiveProductSwitchViewHolder.LAYOUT_RES
 
@@ -30,7 +32,8 @@ class CampaignStockAdapterTypeFactory(private val onAccordionStateChange: (Int) 
         return when(type) {
             ActiveProductSwitchViewHolder.LAYOUT_RES -> ActiveProductSwitchViewHolder(parent, onActiveStockChanged)
             TotalStockEditorViewHolder.LAYOUT_RES -> TotalStockEditorViewHolder(parent, onTotalStockChanged)
-            SellableStockProductViewHolder.LAYOUT_RES -> SellableStockProductViewHolder(parent, onVariantStockChanged, onVariantStatusChanged)
+            SellableStockProductViewHolder.LAYOUT_RES -> SellableStockProductViewHolder(
+                    parent, onVariantStockChanged, onVariantStatusChanged, source)
             ReservedEventInfoViewHolder.LAYOUT_RES -> ReservedEventInfoViewHolder(parent, onAccordionStateChange)
             ReservedStockRedirectionViewHolder.LAYOUT_RES -> ReservedStockRedirectionViewHolder(parent)
             CampaignStockTickerViewHolder.LAYOUT -> CampaignStockTickerViewHolder(parent)

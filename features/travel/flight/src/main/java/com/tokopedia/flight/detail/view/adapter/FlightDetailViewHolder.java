@@ -17,7 +17,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel;
-import com.tokopedia.flight.searchV4.presentation.util.FlightSearchCache;
+import com.tokopedia.flight.search.presentation.util.FlightSearchCache;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -113,7 +113,7 @@ public class FlightDetailViewHolder extends AbstractViewHolder<FlightDetailRoute
         }
 
         if (route.getStopOver() > 0) {
-            if (route.getStopOverDetail() != null) {
+            if (route.getStopOverDetail().size() > 0) {
                 stopOverTextView.setVisibility(View.VISIBLE);
                 if (route.getStopOverDetail().size() < route.getStopOver()) {
                     stopOverTextView.setText(String.format(getString(R.string.flight_detail_total_stop_over_label), route.getStopOver()));

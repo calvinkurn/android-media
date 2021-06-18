@@ -22,7 +22,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.baselist.R;
 import com.tokopedia.unifycomponents.Toaster;
 

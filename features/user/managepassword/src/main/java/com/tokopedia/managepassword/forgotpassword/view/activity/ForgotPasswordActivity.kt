@@ -109,11 +109,7 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
     }
 
     private fun gotoWebView(url: String) {
-        val intent = if (userSession.isLoggedIn) {
-            ManagePasswordWebViewActivity.createIntent(this, url, false)
-        } else {
-            ManagePasswordWebViewActivity.createIntent(this, url)
-        }
+        val intent = ManagePasswordWebViewActivity.createIntent(this, url)
         startActivityForResult(intent, REQUEST_CODE_WEB_VIEW)
     }
 

@@ -20,7 +20,6 @@ import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.repository.HomeRevampRepository
 import com.tokopedia.home.beranda.data.repository.HomeRevampRepositoryImpl
 import com.tokopedia.home.beranda.di.HomeScope
-import com.tokopedia.home.util.HomeCommandProcessor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.smart_recycler_helper.SmartExecutors
@@ -100,9 +99,4 @@ class HomeModule {
     fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
         return LocalCacheHandler(context, CacheUtil.KEY_POPUP_INTRO_OVO_CACHE)
     }
-
-    @HomeScope
-    @Provides
-    fun provideHomeProcessor(homeDispatcher: CoroutineDispatchers): HomeCommandProcessor = HomeCommandProcessor(homeDispatcher.io)
-
 }

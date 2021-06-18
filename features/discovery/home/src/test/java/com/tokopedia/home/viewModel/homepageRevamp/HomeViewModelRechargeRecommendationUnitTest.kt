@@ -71,36 +71,6 @@ class HomeViewModelRechargeRecommendationUnitTest{
     }
 
     @Test
-    fun `Recharge Recommendation Not Available`(){
-        val rechargeDataModel = ReminderWidgetModel(source=ReminderEnum.RECHARGE)
-        val rechargeRecommendation = RechargeRecommendation(
-                "",
-                listOf()
-        )
-
-        // Add Recharge Recommendation to HomeDataModel
-        getHomeUseCase.givenGetHomeDataReturn(
-                HomeDataModel(
-                        list = listOf(rechargeDataModel)
-                )
-        )
-
-        homeViewModel = createHomeViewModel(
-                getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
-                getHomeUseCase = getHomeUseCase,
-                declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
-        )
-
-        // insert null recharge to home data
-        homeViewModel.insertRechargeRecommendation(rechargeRecommendation)
-
-        // Expect the reminder recharge not available in home live data
-        homeViewModel.homeLiveData.observeOnce { homeDataModel ->
-            assert(homeDataModel.list.find{ it::class.java == rechargeDataModel::class.java } == null)
-        }
-
-    }
-    @Test
     fun `Remove recharge recommendation`(){
         val rechargeDataModel = ReminderWidgetModel(source=ReminderEnum.RECHARGE)
         val rechargeRecommendation = RechargeRecommendation(
@@ -121,9 +91,6 @@ class HomeViewModelRechargeRecommendationUnitTest{
                 declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
         )
 
-        // insert null recharge to home data
-        homeViewModel.insertRechargeRecommendation(rechargeRecommendation)
-
         // Expect the reminder recharge not available in home live data
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->
             assert(homeDataModel.list.find{ it::class.java == rechargeDataModel::class.java } == null)
@@ -133,24 +100,6 @@ class HomeViewModelRechargeRecommendationUnitTest{
 
     @Test
     fun `Recharge Recommendation Available`(){
-        val rechargeDataModel = ReminderWidgetModel(source=ReminderEnum.RECHARGE)
-        val rechargeRecommendation = RechargeRecommendation(
-                "1",
-                listOf(
-                        RechargeRecommendationData(
-                                "1",
-                                "Main Text",
-                                "Sub Text",
-                                "tokopedia://recharge",
-                                "tokopedia://link",
-                                "tokopedia.com/image.png",
-                                "Judul",
-                                "",
-                                " Silahkan Bayar Sekarang"
-                        )
-                )
-        )
-
         val reminderWidget = ReminderWidget("1",
                 listOf(
                         ReminderData(
@@ -168,6 +117,10 @@ class HomeViewModelRechargeRecommendationUnitTest{
                 )
         )
 
+        val rechargeDataModel = ReminderWidgetModel(
+                data = reminderWidget,
+                source=ReminderEnum.RECHARGE)
+
         // Add Recharge Recommendation to HomeDataModel
         getHomeUseCase.givenGetHomeDataReturn(
                 HomeDataModel(
@@ -180,9 +133,6 @@ class HomeViewModelRechargeRecommendationUnitTest{
                 getHomeUseCase = getHomeUseCase,
                 declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
         )
-
-        // insert recharge to home data
-        homeViewModel.insertRechargeRecommendation(rechargeRecommendation)
 
         // recharge data available in home data
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->
@@ -288,20 +238,10 @@ class HomeViewModelRechargeRecommendationUnitTest{
         // viewmodel load recharge data
         homeViewModel.getRechargeRecommendation()
 
-        // Expect the recharge data available
-        homeViewModel.rechargeRecommendationLiveData.observeOnce {
-            assert(it.peekContent().UUID.isNotEmpty() && it.peekContent().UUID.equals(rechargeRecommendation.UUID))
-        }
-
-        // Recharge valid and submited to live data home
-        homeViewModel.insertRechargeRecommendation(rechargeRecommendation)
-
         // Expect the reminder recharge available in home live data
         homeViewModel.homeLiveData.observeOnce { homeDataModel ->
             assert((homeDataModel.list.find { it::class.java == rechargeDataModel::class.java } as? ReminderWidgetModel)?.source == ReminderEnum.RECHARGE)
         }
-
     }
-
 }
 

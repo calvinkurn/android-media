@@ -28,6 +28,9 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cate
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips.NavigationChipsItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.DefaultComponentViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannedview.BannedViewViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorybestseller.CategoryBestSellerViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorybestseller.CategoryBestSellerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips.NavigationChipsViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips.NavigationChipsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewHolder
@@ -89,6 +92,9 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.toko
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YouTubeViewViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YoutubeViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
 
 class DiscoveryHomeFactory {
 
@@ -171,6 +177,11 @@ class DiscoveryHomeFactory {
             //Play Widget
             initializeComponent(ComponentsList.DiscoPlayWidgetView, ::DiscoveryPlayWidgetViewHolder, ::DiscoveryPlayWidgetViewModel)
 
+            initializeComponent(ComponentsList.CarouselErrorLoad, ::CarouselErrorLoadViewHolder, ::CarouselErrorLoadViewModel)
+            initializeComponent(ComponentsList.ProductListErrorLoad, ::ErrorLoadViewHolder, ::ErrorLoadViewModel)
+
+            //Category Best Seller
+            initializeComponent(ComponentsList.CategoryBestSeller, ::CategoryBestSellerViewHolder, ::CategoryBestSellerViewModel)
 
         }
 

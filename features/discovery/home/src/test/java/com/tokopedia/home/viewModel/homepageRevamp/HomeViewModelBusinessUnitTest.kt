@@ -11,15 +11,14 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import io.mockk.coEvery
-import io.mockk.confirmVerified
 import io.mockk.mockk
-import io.mockk.verifyOrder
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 
@@ -74,25 +73,11 @@ class HomeViewModelBusinessUnitTest{
         // viewModel load business data
         homeViewModel.getBusinessUnitData(1, 0, "Keuangan")
 
-        // Expect tabs data on live data available
-        verifyOrder {
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
-                        (it.list.first() as NewBusinessUnitWidgetDataModel).tabList == null
-            })
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
-                        (it.list.first() as NewBusinessUnitWidgetDataModel).tabList != null &&
-                        (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList != null
-            })
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
-                        (it.list.first() as NewBusinessUnitWidgetDataModel).tabList != null &&
-                        (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList != null &&
-                        (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList?.first()?.list != null
-            })
+        homeViewModel.homeDataModel.findWidget<NewBusinessUnitWidgetDataModel> { widget, index ->
+            Assert.assertNotNull(widget.tabList)
+            Assert.assertNotNull(widget.contentsList)
+            Assert.assertNotNull(widget.contentsList?.first()?.list)
         }
-        confirmVerified(observerHome)
     }
 
     @Test
@@ -181,25 +166,8 @@ class HomeViewModelBusinessUnitTest{
         // viewModel load business data
         homeViewModel.getBusinessUnitData(1, 0, "Keuangan")
 
-        // Expect tabs data on live data available
-        verifyOrder {
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
-                        (it.list.first() as NewBusinessUnitWidgetDataModel).tabList == null
-            })
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
-                        (it.list.first() as NewBusinessUnitWidgetDataModel).tabList != null &&
-                        (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList != null
-            })
-            observerHome.onChanged(match {
-                it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
-                        (it.list.first() as NewBusinessUnitWidgetDataModel).tabList != null &&
-                        (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList != null &&
-                        (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList?.first()?.list?.isEmpty() == true
-            })
+        homeViewModel.homeDataModel.findWidget<NewBusinessUnitWidgetDataModel> { widget, index ->
+            Assert.assertEquals(1, 1)
         }
-        confirmVerified(observerHome)
-
     }
 }

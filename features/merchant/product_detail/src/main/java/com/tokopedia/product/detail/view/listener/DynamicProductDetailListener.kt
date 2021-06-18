@@ -109,7 +109,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductGeneralInfoViewHolder
      */
-    fun onInfoClicked(name: String, componentTrackDataModel: ComponentTrackDataModel)
+    fun onInfoClicked(appLink: String, name: String, componentTrackDataModel: ComponentTrackDataModel)
 
     /**
      * ProductRecom
