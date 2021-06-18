@@ -1,27 +1,24 @@
 package com.tokopedia.saldodetails.viewholder
 
 import android.content.Context
-import androidx.annotation.LayoutRes
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.saldodetails.response.model.DepositHistoryList
-
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
+import kotlin.math.abs
 
-class SaldoTransactionViewHolder(itemView: View) : AbstractViewHolder<DepositHistoryList>(itemView) {
+class SaldoTransactionViewHolder(itemView: View) :
+    AbstractViewHolder<DepositHistoryList>(itemView) {
     private val dateTV: TextView
     private val note: TextView
     private val nominal: TextView
     private val heading: TextView
-    private val imageView: ImageView
+    private val imageView: ImageUnify
     private val context: Context? = itemView.context
 
     init {
@@ -45,26 +42,33 @@ class SaldoTransactionViewHolder(itemView: View) : AbstractViewHolder<DepositHis
         } catch (e: ParseException) {
         }
 
-        dateTV.text = String.format(context!!.resources.getString(com.tokopedia.saldodetails.R.string.sp_date_time_view), strDate)
+        dateTV.text = String.format(
+            context!!.resources.getString(com.tokopedia.saldodetails.R.string.sp_date_time_view),
+            strDate
+        )
         note.text = element.note
         heading.text = element.typeDescription
-        ImageHandler.LoadImage(imageView, element.imageURL)
+        if (!element.imageURL.isNullOrEmpty())
+            imageView.urlSrc = element.imageURL ?: ""
+
         if (element.amount > 0) {
             if (context != null) {
-                nominal.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.tkpd_light_green))
+                nominal.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G700))
                 nominal.text = String.format(
-                        context.resources.getString(com.tokopedia.saldodetails.R.string.sp_positive_saldo_balance),
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(element.amount, false))
+                    context.resources.getString(com.tokopedia.saldodetails.R.string.sp_positive_saldo_balance),
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(element.amount, false)
+                )
             } else {
                 nominal.text = element.amount.toString()
             }
 
         } else {
             if (context != null) {
-                nominal.setTextColor(context.resources.getColor(com.tokopedia.design.R.color.tkpd_prod_price))
+                nominal.setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y600))
                 nominal.text = String.format(
-                        context.resources.getString(com.tokopedia.saldodetails.R.string.sp_negative_saldo_balance),
-                        CurrencyFormatUtil.convertPriceValueToIdrFormat(Math.abs(element.amount), false))
+                    context.resources.getString(com.tokopedia.saldodetails.R.string.sp_negative_saldo_balance),
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(abs(element.amount), false)
+                )
             } else {
                 nominal.text = element.amount.toString()
             }

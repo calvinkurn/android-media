@@ -38,19 +38,6 @@ class PMGradeBenefitInfoMapper @Inject constructor() {
         return null
     }
 
-    private fun getPMPotentialGrade(potentialPmGrade: PotentialPmGradeModel?): PMPotentialGradeUiModel? {
-        potentialPmGrade?.let {
-            return PMPotentialGradeUiModel(
-                    shopLevelCurrent = it.shopLevelCurrent.orZero(),
-                    shopScoreCurrent = it.shopScoreCurrent.orZero(),
-                    gradeName = it.gradeName.orEmpty(),
-                    imgBadgeUrl = it.imgBadgeUrl.orEmpty(),
-                    backgroundUrl = it.backgroundUrl
-            )
-        }
-        return null
-    }
-
     private fun getNextPMGrade(nextPmGrade: NextPMGradeModel?): PMNextGradeUiModel? {
         nextPmGrade?.let {
             return PMNextGradeUiModel(

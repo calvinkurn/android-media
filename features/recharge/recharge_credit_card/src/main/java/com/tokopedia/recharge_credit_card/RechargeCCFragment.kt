@@ -349,9 +349,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
             }
             REQUEST_CODE_LOGIN -> {
                 if (userSession.isLoggedIn) {
-                    checkoutPassDataState?.let {
-                        navigateToCart(it)
-                    }
+                    submitCreditCard(categoryId, operatorIdSelected,
+                            productIdSelected, cc_widget_client_number.getClientNumber())
                 }
             }
 

@@ -1,8 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.helper
 
-import android.graphics.drawable.ColorDrawable
-import androidx.core.content.ContextCompat
-import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.kotlin.extensions.view.gone
@@ -15,19 +12,6 @@ object HomeChannelWidgetUtil {
         dividerTop: DividerUnify?,
         dividerBottom: DividerUnify?
     ) {
-//        dividerBottom?.let {
-//            it.background =
-//                ColorDrawable(
-//                    ContextCompat.getColor(it.context, R.color.Blue_B500)
-//                )
-//        }
-//
-//        dividerTop?.let {
-//            it.background =
-//                ColorDrawable(
-//                    ContextCompat.getColor(it.context, R.color.Unify_G500_96)
-//                )
-//        }
         when(channelModel?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
                 dividerTop?.gone()

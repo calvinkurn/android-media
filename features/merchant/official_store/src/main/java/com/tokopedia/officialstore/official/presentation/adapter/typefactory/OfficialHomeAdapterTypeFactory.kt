@@ -7,10 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
-import com.tokopedia.home_component.listener.DynamicLegoBannerListener
-import com.tokopedia.home_component.listener.HomeComponentListener
-import com.tokopedia.home_component.listener.MixLeftComponentListener
-import com.tokopedia.home_component.listener.MixTopComponentListener
+import com.tokopedia.home_component.listener.*
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.visitable.*
@@ -26,6 +23,7 @@ class OfficialHomeAdapterTypeFactory(
         private val legoBannerListener: DynamicLegoBannerListener,
         private val mixLeftComponentListener: MixLeftComponentListener,
         private val mixTopComponentListener: MixTopComponentListener,
+        private val featuredBrandListener: FeaturedBrandListener,
         private val recycledViewPool: RecyclerView.RecycledViewPool? = null
 ) : OfficialHomeTypeFactory, BaseAdapterTypeFactory() {
 
@@ -119,6 +117,10 @@ class OfficialHomeAdapterTypeFactory(
         return -1
     }
 
+    override fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int {
+        return FeaturedBrandViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when (type) {
             OfficialLoadingContentViewHolder.LAYOUT -> OfficialLoadingContentViewHolder(view)
@@ -142,6 +144,10 @@ class OfficialHomeAdapterTypeFactory(
             DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(
                     view, legoBannerListener, homeComponentListener
             )
+            FeaturedBrandViewHolder.LAYOUT -> FeaturedBrandViewHolder(
+                    itemView = view,
+                    homeComponentListener = homeComponentListener,
+                    featuredBrandListener = featuredBrandListener )
             //deprecated - exist for remote config
             DynamicChannelLegoViewHolder.LAYOUT -> DynamicChannelLegoViewHolder(view, dcEventHandler)
             else -> super.createViewHolder(view, type)
