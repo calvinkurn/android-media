@@ -412,6 +412,7 @@ class TopChatRoomAdapter constructor(
         val indexToAdd = getOffsetSafely()
         visitables.add(indexToAdd, item)
         notifyItemInserted(indexToAdd)
+        updateSrwTopMargin()
     }
 
     fun hasSrwBubble(): Boolean {
@@ -455,14 +456,14 @@ class TopChatRoomAdapter constructor(
         val srwModel = srwUiModel.value ?: return
         val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return
         srwModel.isExpanded = false
-        notifyItemChanged(srwModelPosition, SrwBubbleViewHolder.State.COLLAPSED)
+        notifyItemChanged(srwModelPosition, SrwBubbleViewHolder.Signal.COLLAPSED)
     }
 
     fun expandSrwBubble() {
         val srwModel = srwUiModel.value ?: return
         val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return
         srwModel.isExpanded = true
-        notifyItemChanged(srwModelPosition, SrwBubbleViewHolder.State.EXPANDED)
+        notifyItemChanged(srwModelPosition, SrwBubbleViewHolder.Signal.EXPANDED)
     }
 
     private fun getUpToDateSrwUiModelPosition(
@@ -482,6 +483,12 @@ class TopChatRoomAdapter constructor(
         } else {
             offset
         }
+    }
+
+    private fun updateSrwTopMargin() {
+        val srwModel = srwUiModel.value ?: return
+        val srwModelPosition = getUpToDateSrwUiModelPosition(srwModel) ?: return
+        notifyItemChanged(srwModelPosition, SrwBubbleViewHolder.Signal.UPDATE_TOP_MARGIN)
     }
 
     private fun postResetReviewState(lastKnownPosition: Int, review: ReviewUiModel) {
