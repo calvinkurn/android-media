@@ -8,4 +8,6 @@ interface PlayBroadcastContentTaggingAnalytic {
     fun selectRecommendedTags(selectedTags: Set<String>)
 
     fun proceedFromContentTagging()
+
+    fun clickTitleInputArea()
 }
