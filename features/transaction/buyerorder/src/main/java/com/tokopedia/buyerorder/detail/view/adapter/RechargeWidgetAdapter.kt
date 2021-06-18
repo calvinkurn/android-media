@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorder.detail.view.adapter
 
+import android.graphics.Color
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import android.util.SparseBooleanArray
@@ -24,6 +25,7 @@ class RechargeWidgetAdapter(private val recommendationItems: List<Recommendation
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): RechargeWidgetViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.layout_order_detail_widget, parent, false)
+        view.setBackgroundColor(Color.TRANSPARENT)
         return RechargeWidgetViewHolder(view)
     }
 
