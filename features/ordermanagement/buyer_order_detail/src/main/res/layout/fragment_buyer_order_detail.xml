@@ -66,7 +66,7 @@
         android:id="@+id/containerActionButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/buyer_order_detail_window_color"
+        app:cardBackgroundColor="@color/buyer_order_detail_dms_window_color"
         app:cardCornerRadius="@dimen/layout_lvl0"
         app:cardElevation="@dimen/spacing_lvl3"
         app:layout_constraintTop_toBottomOf="parent">

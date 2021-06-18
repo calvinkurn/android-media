@@ -54,7 +54,7 @@ class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOrderDe
     }
 
     private fun setupWindowColor() {
-        window.decorView.setBackgroundColor(ContextCompat.getColor(this, R.color.buyer_order_detail_window_color))
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, R.color.buyer_order_detail_dms_window_color))
     }
 
     override fun onBackPressed() {

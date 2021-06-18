@@ -46,8 +46,7 @@
         app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailCourierValue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvBuyerOrderDetailCourierValue"
-        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailCourierValue"
-        app:srcCompat="@drawable/ic_free_shipment" />
+        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailCourierValue" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBuyerOrderDetailArrivalEstimationValue"
