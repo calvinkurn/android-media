@@ -155,7 +155,17 @@
             "promo_code": "COMMON50"
           }
         ],
-        "tickers": [],
+        "tickers": [
+           {
+             "ID": 137,
+             "Name": "Proteksi Tagihan",
+             "Content": "Air mati? Pakai Proteksi Tagihan, bisa klaim hingga 500rb.",
+             "Type": "info",
+             "Environment": "all",
+             "ActionText": "",
+             "ActionLink": ""
+           }
+         ],
         "banners": [],
         "express_checkout": false
       }
