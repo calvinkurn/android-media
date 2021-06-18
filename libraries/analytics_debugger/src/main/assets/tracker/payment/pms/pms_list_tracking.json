@@ -2,12 +2,68 @@
   "readme": "PMS List Click Tracker",
   "mode": "subset",
   "query": [
-
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "",
+      "eventAction": "",
+      "event": "openScreen",
+      "eventLabel": ".*: \\d{1,}",
+      "isLoggedInStatus": "true|false"
+    },
     {
       "sessionIris": ".*",
       "userId": ".*",
       "eventCategory": "pms page",
-      "eventAction": "click ubah bukti pembayaran",
+      "eventAction": "tap three dots",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click batalkan transaksi",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click confirm batalkan transaksi",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click batalkan on detail",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click detail on detail",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click payment waiting card",
+      "event": "clickPMS",
+      "eventLabel": ".*: single|combine"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click lihat cara bayar",
       "event": "clickPMS",
       "eventLabel": ".*"
     }

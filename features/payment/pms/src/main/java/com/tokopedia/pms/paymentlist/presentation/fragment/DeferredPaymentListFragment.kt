@@ -262,7 +262,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         }
     }
 
-    fun sendEventToAnalytics(event: PmsEvents) = activity?.let {
+    private fun sendEventToAnalytics(event: PmsEvents) = activity?.let {
         (it as PaymentListActivity).sendEventToAnalytics(event)
     }
 

@@ -64,6 +64,7 @@ class PaymentListViewModel @Inject constructor(
 
     fun getCancelPaymentDetail(transactionId: String, merchantCode: String, productName: String?) {
         cancelPaymentDetailUseCase.cancelJobs()
+        PmsIdlingResource.increment()
         cancelPaymentDetailUseCase.getCancelDetail(
             ::onCancelPaymentDetailSuccess,
             ::onCancelDetailError,
@@ -112,6 +113,7 @@ class PaymentListViewModel @Inject constructor(
     }
 
     private fun onCancelPaymentDetailSuccess(cancelDetail: CancelDetailWrapper) {
+        PmsIdlingResource.decrement()
         _cancelPaymentDetailLiveData.postValue(Success(cancelDetail))
     }
 
@@ -121,11 +123,15 @@ class PaymentListViewModel @Inject constructor(
         } ?: run { paymentCancelFailed(NullPointerException()) }
     }
 
-    private fun onPaymentListError(throwable: Throwable) =
+    private fun onPaymentListError(throwable: Throwable) {
+        PmsIdlingResource.decrement()
         _paymentListResultLiveData.postValue(Fail(throwable))
+    }
 
-    private fun onCancelDetailError(throwable: Throwable) =
+    private fun onCancelDetailError(throwable: Throwable) {
+        PmsIdlingResource.decrement()
         _cancelPaymentDetailLiveData.postValue(Fail(throwable))
+    }
 
     private fun paymentCancelFailed(throwable: Throwable) =
         _cancelPaymentLiveData.postValue(Fail(throwable))
