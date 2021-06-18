@@ -61,6 +61,7 @@ dependencies {
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.layanan)
+    implementation project(rootProject.ext.features.withdraw)
 
     //Content
     implementation project(rootProject.ext.features.playBroadcaster)

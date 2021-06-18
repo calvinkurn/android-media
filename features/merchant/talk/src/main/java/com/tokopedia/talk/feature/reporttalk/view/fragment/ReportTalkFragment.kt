@@ -1,36 +1,39 @@
 package com.tokopedia.talk.feature.reporttalk.view.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.talk.BuildConfig
 import com.tokopedia.talk.R
+import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reporttalk.analytics.TalkAnalytics
 import com.tokopedia.talk.feature.reporttalk.di.DaggerReportTalkComponent
 import com.tokopedia.talk.feature.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk.feature.reporttalk.view.adapter.ReportTalkAdapter
-import com.tokopedia.talk.feature.reporttalk.view.listener.ReportTalkContract
-import com.tokopedia.talk.feature.reporttalk.view.presenter.ReportTalkPresenter
 import com.tokopedia.talk.feature.reporttalk.view.uimodel.TalkReportOptionUiModel
+import com.tokopedia.talk.feature.reporttalk.view.viewmodel.ReportTalkViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_report_talk.*
 import javax.inject.Inject
 
 /**
  * @author by nisie on 8/30/18.
  */
-class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, ReportTalkAdapter.OnOptionClickListener {
+class ReportTalkFragment : BaseDaggerFragment(), ReportTalkAdapter.OnOptionClickListener {
 
     companion object {
         fun newInstance(bundle: Bundle): ReportTalkFragment {
@@ -41,7 +44,7 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
     }
 
     @Inject
-    lateinit var presenter: ReportTalkPresenter
+    lateinit var viewModel: ReportTalkViewModel
 
     @Inject
     lateinit var analytics: TalkAnalytics
@@ -49,8 +52,6 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
     lateinit var reportTalkAdapter: ReportTalkAdapter
 
     var talkId: String = ""
-    var shopId: String = ""
-    var productId: String = ""
     var commentId: String = ""
 
     override fun getScreenName(): String {
@@ -62,7 +63,6 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
                 .talkComponent(getComponent(TalkComponent::class.java))
                 .build()
         reportTalkComponent.inject(this)
-        presenter.attachView(this)
 
     }
 
@@ -82,19 +82,16 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
         super.onViewCreated(view, savedInstanceState)
         initData(savedInstanceState)
         setupView()
+        observeLiveDatas()
     }
 
     private fun initData(savedInstanceState: Bundle?) {
         savedInstanceState?.run {
             talkId = savedInstanceState.getString(ReportTalkActivity.EXTRA_TALK_ID, "")
-            shopId = savedInstanceState.getString(ReportTalkActivity.EXTRA_SHOP_ID, "")
-            productId = savedInstanceState.getString(ReportTalkActivity.EXTRA_PRODUCT_ID, "")
             commentId = savedInstanceState.getString(ReportTalkActivity.EXTRA_COMMENT_ID, "")
 
         } ?: arguments?.run {
             talkId = getString(ReportTalkActivity.EXTRA_TALK_ID, "")
-            shopId = getString(ReportTalkActivity.EXTRA_SHOP_ID, "")
-            productId = getString(ReportTalkActivity.EXTRA_PRODUCT_ID, "")
             commentId = getString(ReportTalkActivity.EXTRA_COMMENT_ID, "")
 
         } ?: activity?.run {
@@ -125,10 +122,7 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
         optionRv.adapter = reportTalkAdapter
 
         sendButton.setOnClickListener {
-
-            reportTalk(talkId, shopId, productId, commentId, reason.text.toString(),
-                    reportTalkAdapter.getSelectedOption())
-
+            reportTalk(talkId, commentId, reason.text.toString(), reportTalkAdapter.getSelectedOption())
         }
 
         reason.addTextChangedListener(object : TextWatcher {
@@ -165,58 +159,55 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
     private fun checkEnableSendButton() {
         reason.text?.let {
             if (reportTalkAdapter.getItem(2).isChecked && it.isBlank()) {
-                disableSendButton(sendButton.context)
+                disableSendButton()
             } else {
-                enableSendButton(sendButton.context)
+                enableSendButton()
             }
         }
     }
 
-    private fun disableSendButton(context: Context) {
+    private fun disableSendButton() {
         sendButton.isEnabled = false
-        sendButton.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_20))
-        MethodChecker.setBackground(sendButton, MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable.bg_button_disabled))
     }
 
-    private fun enableSendButton(context: Context) {
+    private fun enableSendButton() {
         sendButton.isEnabled = true
-        sendButton.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        MethodChecker.setBackground(sendButton, MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable
-                .bg_button_green))
     }
 
 
-    override fun showLoadingFull() {
+    private fun showLoadingFull() {
         progressBar.visibility = View.VISIBLE
         mainView.visibility = View.GONE
         sendButton.visibility = View.GONE
     }
 
-    override fun hideLoadingFull() {
+    private fun hideLoadingFull() {
         progressBar.visibility = View.GONE
         mainView.visibility = View.VISIBLE
         sendButton.visibility = View.VISIBLE
     }
 
-    override fun onErrorReportTalk(errorMessage: String) {
-        NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
-            reportTalk(talkId, shopId, productId, commentId, reason.text.toString(),
+    private fun onErrorReportTalk(throwable: Throwable) {
+        logToCrashlytics(throwable)
+        val message = ErrorHandler.getErrorMessage(context, throwable)
+        NetworkErrorHelper.createSnackbarWithAction(activity, message) {
+            reportTalk(talkId, commentId, reason.text.toString(),
                     reportTalkAdapter.getSelectedOption())
         }.showRetrySnackbar()
     }
 
-    private fun reportTalk(talkId: String, shopId: String, productId: String, commentId: String,
+    private fun reportTalk(talkId: String, commentId: String,
                            otherReason: String, selectedOption: TalkReportOptionUiModel) {
 
         if (commentId.isBlank()) {
-            presenter.reportTalk(talkId, shopId, productId, otherReason, selectedOption)
+            viewModel.reportTalk(talkId, otherReason, selectedOption.position)
         } else {
-            presenter.reportCommentTalk(talkId, shopId, productId, commentId, otherReason,
-                    selectedOption)
+            viewModel.reportComment(commentId, otherReason, selectedOption.position)
         }
+        showLoadingFull()
     }
 
-    override fun onSuccessReportTalk() {
+    private fun onSuccessReportTalk() {
         activity?.run {
             val intent = Intent()
             val bundle = Bundle()
@@ -229,15 +220,8 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(ReportTalkActivity.EXTRA_PRODUCT_ID, productId)
-        outState.putString(ReportTalkActivity.EXTRA_SHOP_ID, shopId)
         outState.putString(ReportTalkActivity.EXTRA_TALK_ID, talkId)
         outState.putString(ReportTalkActivity.EXTRA_COMMENT_ID, commentId)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detachView()
     }
 
     override fun onDestroyView() {
@@ -245,6 +229,31 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
             KeyboardHandler.DropKeyboard(this, reason)
         }
         super.onDestroyView()
+    }
+
+    private fun observeLiveDatas() {
+        viewModel.reportCommentResult.observe(viewLifecycleOwner, Observer {
+            hideLoadingFull()
+            when(it) {
+                is Success -> onSuccessReportTalk()
+                is Fail -> onErrorReportTalk(it.throwable)
+            }
+        })
+        viewModel.reportTalkResult.observe(viewLifecycleOwner, Observer {
+            hideLoadingFull()
+            when(it) {
+                is Success -> onSuccessReportTalk()
+                is Fail -> onErrorReportTalk(it.throwable)
+            }
+        })
+    }
+
+    private fun logToCrashlytics(throwable: Throwable) {
+        if (!BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(throwable)
+        } else {
+            throwable.printStackTrace()
+        }
     }
 
 }

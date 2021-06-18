@@ -103,15 +103,15 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         getPendingReviewData(page)
     }
 
-    override fun trackCardClicked(reputationId: Long, productId: Long, isEligible: Boolean) {
+    override fun trackCardClicked(reputationId: String, productId: String, isEligible: Boolean) {
         ReviewPendingTracking.eventClickCard(reputationId, productId, viewModel.getUserId(), isEligible, source)
     }
 
-    override fun trackStarsClicked(reputationId: Long, productId: Long, rating: Int, isEligible: Boolean) {
+    override fun trackStarsClicked(reputationId: String, productId: String, rating: Int, isEligible: Boolean) {
         ReviewPendingTracking.eventClickRatingStar(reputationId, productId, rating, viewModel.getUserId(), isEligible, source)
     }
 
-    override fun onStarsClicked(reputationId: Long, productId: Long, rating: Int, inboxReviewId: Long, seen: Boolean) {
+    override fun onStarsClicked(reputationId: String, productId: String, rating: Int, inboxReviewId: String, seen: Boolean) {
         if (!seen) {
             viewModel.markAsSeen(inboxReviewId)
             containerListener?.decreaseReviewUnreviewedCounter()
@@ -431,10 +431,10 @@ class ReviewPendingFragment : BaseListFragment<ReviewPendingUiModel, ReviewPendi
         renderList(reviewData, hasNextPage)
     }
 
-    private fun goToCreateReviewActivity(reputationId: Long, productId: Long, rating: Int, inboxId: String) {
+    private fun goToCreateReviewActivity(reputationId: String, productId: String, rating: Int, inboxId: String) {
         context?.let {
             val intent = RouteManager.getIntent(it,
-                    Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId.toString(), productId.toString()))
+                    Uri.parse(UriUtil.buildUri(ApplinkConstInternalMarketplace.CREATE_REVIEW, reputationId, productId))
                             .buildUpon()
                             .appendQueryParameter(CreateReviewActivity.PARAM_RATING, rating.toString())
                             .build()

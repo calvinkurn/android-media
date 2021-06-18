@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.util.preference.PermissionSharedPreference
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.activity.PlayCoverCameraActivity
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 
@@ -40,6 +41,8 @@ interface PlayBroadcastComponent {
     fun inject(activity: PlayCoverCameraActivity)
 
     fun analytic(): PlayBroadcastAnalytic
+
+    fun contentTaggingAnalytic(): PlayBroadcastContentTaggingAnalytic
 
     fun mapper(): PlayBroadcastMapper
 
