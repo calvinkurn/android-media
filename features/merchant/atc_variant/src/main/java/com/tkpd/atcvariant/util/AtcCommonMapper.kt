@@ -210,6 +210,7 @@ object AtcCommonMapper {
                         productId = selectedChild?.productId ?: "",
                         quantity = selectedQuantity,
                         minOrder = selectedChild?.getFinalMinOrder() ?: 0,
+                        maxOrder = selectedChild?.getFinalMaxOrder() ?: 0,
                         shouldShowView = isTokoNow && selectedChild?.isBuyable == true)
         ).also {
             idCounter += 1
@@ -242,6 +243,7 @@ object AtcCommonMapper {
                     it.copy(productId = selectedVariantChild?.productId ?: "",
                             quantity = selectedQuantity,
                             minOrder = selectedVariantChild?.getFinalMinOrder() ?: 0,
+                            maxOrder = selectedVariantChild?.getFinalMaxOrder() ?: 0,
                             shouldShowView = isTokoNow && selectedVariantChild?.isBuyable == true)
                 }
                 is VariantHeaderDataModel -> {

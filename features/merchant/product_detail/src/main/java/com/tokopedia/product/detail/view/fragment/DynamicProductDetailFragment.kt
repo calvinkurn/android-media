@@ -1420,6 +1420,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     hasTopAdsActive = hasTopAds(),
                     isVariant = it.data.variant.isVariant,
                     cartTypeData = cartTypeData,
+                    maxQuantity = it.basic.maxOrder,
                     miniCartItem = miniCartItem)
         }
         showOrHideButton()

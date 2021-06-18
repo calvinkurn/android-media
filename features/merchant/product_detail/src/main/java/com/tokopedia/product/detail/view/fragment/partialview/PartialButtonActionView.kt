@@ -38,6 +38,7 @@ class PartialButtonActionView private constructor(val view: View,
     private var miniCartItem: MiniCartItem? = null
     private var isVariant: Boolean = false
     private var minQuantity: Int = 0
+    private var maxQuantity: Int = 0
     private var textWatchers: TextWatcher? = null
     private var localQuantity: Int = 0
 
@@ -62,6 +63,7 @@ class PartialButtonActionView private constructor(val view: View,
                    hasTopAdsActive: Boolean,
                    isVariant: Boolean,
                    minQuantity: Int = 1,
+                   maxQuantity: Int = 1,
                    cartTypeData: CartTypeData? = null,
                    miniCartItem: MiniCartItem? = null) {
 
@@ -74,6 +76,7 @@ class PartialButtonActionView private constructor(val view: View,
         this.miniCartItem = miniCartItem
         this.isVariant = isVariant
         this.minQuantity = minQuantity
+        this.maxQuantity = maxQuantity
         renderButton()
     }
 
@@ -146,6 +149,7 @@ class PartialButtonActionView private constructor(val view: View,
         btn_add_to_cart?.hide()
         qtyButtonPdp?.run {
             minValue = minQuantity
+            maxValue = maxQuantity
             setValue(localQuantity)
 
             if (textWatchers != null) {

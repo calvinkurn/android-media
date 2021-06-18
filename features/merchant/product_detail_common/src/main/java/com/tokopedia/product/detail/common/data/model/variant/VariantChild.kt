@@ -85,6 +85,8 @@ data class VariantChild(
     fun getFinalMinOrder(): Int = if (campaign?.isActive == true) campaign.minOrder
             ?: 0 else stock?.minimumOrder?.toIntOrNull() ?: 0
 
+    fun getFinalMaxOrder(): Int = stock?.maximumOrder?.toIntOrNull() ?: 0
+
     fun getVariantFinalStock(): Int {
         return if (campaign?.isActive == true) campaign.stock ?: 0 else stock?.stock ?: 0
     }
@@ -162,7 +164,11 @@ data class VariantStock(
 
         @SerializedName("minimumOrder")
         @Expose
-        val minimumOrder: String? = ""
+        val minimumOrder: String? = "",
+
+        @SerializedName("maximumOrder")
+        @Expose
+        val maximumOrder: String? = ""
 )
 
 data class VariantCampaign(
