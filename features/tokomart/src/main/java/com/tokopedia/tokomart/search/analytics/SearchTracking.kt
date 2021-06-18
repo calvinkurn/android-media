@@ -2,6 +2,7 @@ package com.tokopedia.tokomart.search.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.BUSINESSUNIT
@@ -12,6 +13,7 @@ import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VA
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CATEGORY_TOP_NAV_VALUE
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_ADD_QUANTITY
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_APPLY_CATEGORY_FILTER
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_APPLY_FILTER
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_BANNER
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_CATEGORY_FILTER
@@ -70,10 +72,11 @@ object SearchTracking {
         const val CLICK_CHOOSE_VARIANT_ON_PRODUCT_CARD = "click - choose variant on product card"
         const val IMPRESSION_BANNER = "impression - banner"
         const val CLICK_BANNER = "click - banner"
+        const val CLICK_APPLY_CATEGORY_FILTER = "click - apply category filter"
     }
 
     object Category {
-        const val TOKONOW_TOP_NAV = "tokonow - top nav"
+        const val TOKONOW_TOP_NAV = "tokonow - top nCLICK_CATEGORY_FILTERav"
         const val TOKONOW_SEARCH_RESULT = "tokonow - search result"
     }
 
@@ -230,6 +233,19 @@ object SearchTracking {
                     EVENT_LABEL, categoryName,
                     BUSINESSUNIT, BUSINESS_UNIT_VALUE,
                     CURRENTSITE, CURRENT_SITE_VALUE,
+                )
+        )
+    }
+
+    fun sendApplyCategoryL3FilterEvent(categoryFilterParam: String) {
+        sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_CLICK_VALUE,
+                        EVENT_ACTION, CLICK_APPLY_CATEGORY_FILTER,
+                        EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                        EVENT_LABEL, categoryFilterParam,
+                        BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                        CURRENTSITE, CURRENT_SITE_VALUE,
                 )
         )
     }

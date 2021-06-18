@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
@@ -144,5 +146,23 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
 
     override fun sendTrackingQuickFilter(quickFilterTracking: Pair<Option, Boolean>) {
         CategoryTracking.sendQuickFilterClickEvent(getViewModel().categoryL1)
+    }
+
+    override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        CategoryTracking.sendApplySortFilterEvent(getViewModel().categoryL1)
+
+        super.onApplySortFilter(applySortFilterModel)
+    }
+
+    override fun openCategoryChooserFilterPage(filter: Filter) {
+        CategoryTracking.sendOpenCategoryL3FilterEvent(getViewModel().categoryL1)
+
+        super.openCategoryChooserFilterPage(filter)
+    }
+
+    override fun onApplyCategory(selectedOption: Option) {
+        CategoryTracking.sendApplyCategoryL3FilterEvent(getViewModel().categoryL1, selectedOption.value)
+
+        super.onApplyCategory(selectedOption)
     }
 }

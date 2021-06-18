@@ -10,6 +10,8 @@ import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
+import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.searchbar.data.HintData
@@ -89,7 +91,7 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         val quantity = atcData.first
         val productItemDataView = atcData.second
 
-        val queryParam = searchViewModel.queryParam
+        val queryParam = getQueryParamWithoutExcludes()
         val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
 
         SearchTracking.sendAddToCartEvent(
@@ -146,7 +148,7 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     override fun onProductImpressed(productItemDataView: ProductItemDataView) {
         val trackingQueue = trackingQueue ?: return
 
-        val queryParam = searchViewModel.queryParam
+        val queryParam = getQueryParamWithoutExcludes()
         val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
 
         SearchTracking.sendProductImpressionEvent(
@@ -158,8 +160,12 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         )
     }
 
+    private fun getQueryParamWithoutExcludes(): Map<String, String> {
+        return FilterHelper.createParamsWithoutExcludes(searchViewModel.queryParam)
+    }
+
     override fun onProductClick(productItemDataView: ProductItemDataView) {
-        val queryParam = searchViewModel.queryParam
+        val queryParam = getQueryParamWithoutExcludes()
         val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
 
         SearchTracking.sendProductClickEvent(
@@ -179,8 +185,10 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     }
 
     override fun onApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
-        val paramMap = applySortFilterModel.selectedFilterMapParameter as Map<String?, String>
-        val filterParams = UrlParamUtils.generateUrlParamString(paramMap)
+        val filterParamMap = applySortFilterModel.selectedFilterMapParameter
+        val paramMapWithoutExclude =
+                FilterHelper.createParamsWithoutExcludes(filterParamMap) as Map<String?, String>
+        val filterParams = UrlParamUtils.generateUrlParamString(paramMapWithoutExclude)
         SearchTracking.sendApplySortFilterEvent(filterParams)
 
         super.onApplySortFilter(applySortFilterModel)
@@ -199,7 +207,7 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     }
 
     override fun onBannerClick(channelModel: ChannelModel, applink: String) {
-        val queryParam = searchViewModel.queryParam
+        val queryParam = getQueryParamWithoutExcludes()
         val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
 
         SearchTracking.sendBannerClickEvent(
@@ -213,7 +221,7 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     }
 
     override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {
-        val queryParam = searchViewModel.queryParam
+        val queryParam = getQueryParamWithoutExcludes()
         val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
 
         SearchTracking.sendBannerImpressionEvent(
@@ -231,5 +239,14 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
                 quickFilterTracking.first,
                 quickFilterTracking.second
         )
+    }
+
+    override fun onApplyCategory(selectedOption: Option) {
+        val filterParam = selectedOption.key.removePrefix(OptionHelper.EXCLUDE_PREFIX) +
+                "=" +
+                selectedOption.value
+        SearchTracking.sendApplyCategoryL3FilterEvent(filterParam)
+
+        super.onApplyCategory(selectedOption)
     }
 }

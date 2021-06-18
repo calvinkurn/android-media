@@ -523,14 +523,14 @@ abstract class BaseSearchCategoryFragment:
         sortFilterBottomSheet?.setResultCountText(productCountText)
     }
 
-    private fun configureL3BottomSheet(filter: Filter?) {
+    protected open fun configureL3BottomSheet(filter: Filter?) {
         if (filter != null)
             openCategoryChooserFilterPage(filter)
         else
             dismissCategoryChooserFilterPage()
     }
 
-    private fun openCategoryChooserFilterPage(filter: Filter) {
+    protected open fun openCategoryChooserFilterPage(filter: Filter) {
         if (categoryChooserBottomSheet != null) return
 
         categoryChooserBottomSheet = CategoryChooserBottomSheet()
@@ -545,7 +545,7 @@ abstract class BaseSearchCategoryFragment:
         )
     }
 
-    private fun dismissCategoryChooserFilterPage() {
+    protected open fun dismissCategoryChooserFilterPage() {
         categoryChooserBottomSheet?.dismiss()
         categoryChooserBottomSheet = null
     }

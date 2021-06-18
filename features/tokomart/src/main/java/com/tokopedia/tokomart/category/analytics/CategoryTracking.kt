@@ -3,8 +3,11 @@ package com.tokopedia.tokomart.category.analytics
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.APPLY_CATEGORY_FILTER
+import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_APPLY_FILTER
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_BANNER
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_CART_BUTTON_TOP_NAV
+import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_CATEGORY_FILTER
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_FILTER
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_LEVEL_2_FILTER_WIDGET
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_LIHAT_CATEGORY_LAINNYA
@@ -67,6 +70,9 @@ object CategoryTracking {
         const val CLICK_LIHAT_CATEGORY_LAINNYA = "click lihat kategori lainnya"
         const val CLICK_FILTER = "click filter"
         const val CLICK_QUICK_FILTER = "click quick filter"
+        const val CLICK_APPLY_FILTER = "click apply filter"
+        const val CLICK_CATEGORY_FILTER = "click category filter"
+        const val APPLY_CATEGORY_FILTER = "apply category filter"
     }
 
     object Category {
@@ -289,6 +295,39 @@ object CategoryTracking {
                 EVENT_ACTION, CLICK_QUICK_FILTER,
                 EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                 EVENT_LABEL, categoryId,
+                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                CURRENTSITE, CURRENT_SITE_VALUE,
+        ))
+    }
+
+    fun sendApplySortFilterEvent(categoryId: String) {
+        sendGeneralEvent(DataLayer.mapOf(
+                EVENT, EVENT_CLICK_VALUE,
+                EVENT_ACTION, CLICK_APPLY_FILTER,
+                EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
+                EVENT_LABEL, categoryId,
+                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                CURRENTSITE, CURRENT_SITE_VALUE,
+        ))
+    }
+
+    fun sendOpenCategoryL3FilterEvent(categoryId: String) {
+        sendGeneralEvent(DataLayer.mapOf(
+                EVENT, EVENT_CLICK_VALUE,
+                EVENT_ACTION, CLICK_CATEGORY_FILTER,
+                EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
+                EVENT_LABEL, categoryId,
+                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                CURRENTSITE, CURRENT_SITE_VALUE,
+        ))
+    }
+
+    fun sendApplyCategoryL3FilterEvent(categoryId: String, filterCategoryId: String) {
+        sendGeneralEvent(DataLayer.mapOf(
+                EVENT, EVENT_CLICK_VALUE,
+                EVENT_ACTION, APPLY_CATEGORY_FILTER,
+                EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
+                EVENT_LABEL, "$categoryId - $filterCategoryId",
                 BUSINESSUNIT, BUSINESS_UNIT_VALUE,
                 CURRENTSITE, CURRENT_SITE_VALUE,
         ))
