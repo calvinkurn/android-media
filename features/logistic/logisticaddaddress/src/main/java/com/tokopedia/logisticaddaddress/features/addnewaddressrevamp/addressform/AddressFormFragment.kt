@@ -431,6 +431,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         saveDataModel?.longitude?.toDouble()?.let { bundle.putDouble(AddAddressConstant.EXTRA_LONGITUDE, it) }
         bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, false)
         bundle.putString(EXTRA_DISTRICT_NAME, currentDistrictName)
+        if (!isPositiveFlow) bundle.putBoolean(EXTRA_IS_POLYGON, true)
         startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, 1998)
     }
 

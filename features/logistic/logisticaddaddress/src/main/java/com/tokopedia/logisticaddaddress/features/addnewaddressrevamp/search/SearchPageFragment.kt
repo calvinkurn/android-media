@@ -35,6 +35,7 @@ import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentSearchAddressBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
@@ -166,6 +167,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             AddNewAddressRevampAnalytics.onClickIsiAlamatManualSearch(userSession.userId)
             Intent(context, AddressFormActivity::class.java).apply {
                 putExtra(EXTRA_IS_POSITIVE_FLOW, false)
+                putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
                 startActivityForResult(this, 1599)
             }
         }

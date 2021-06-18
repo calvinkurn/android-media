@@ -26,6 +26,7 @@ import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.gms.tasks.OnFailureListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -61,6 +62,7 @@ import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.IMAGE_OUTSIDE_INDONESIA
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -99,6 +101,9 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var hasRequestedLocation: Boolean = false
     /*to differentiate positive flow or negative flow*/
     private var isPositiveFlow: Boolean = true
+    private var districtId: Int? = null
+
+    private var isPolygon: Boolean = false
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
@@ -175,6 +180,10 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
         moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
 
+        if (isPolygon) {
+            districtId?.let { viewModel.getDistrictBoundaries(it) }
+        }
+
         this.googleMap?.setOnCameraMoveStartedListener { _ ->
             showLoading()
         }
@@ -232,6 +241,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             saveAddressDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
             isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
             currentDistrictName = it.getString(EXTRA_DISTRICT_NAME)
+            districtId = saveAddressDataModel?.districtId
+            isPolygon = it.getBoolean(EXTRA_IS_POLYGON, false)
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
         }
 
@@ -293,6 +304,20 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 }
             }
         })
+
+        viewModel.districtBoundary.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    showBoundaries(it.data.geometry.listCoordinates)
+                }
+            }
+        })
+    }
+
+    private fun showBoundaries(boundaries: List<LatLng>) {
+        this.googleMap?.addPolygon(PolygonOptions()
+                .addAll(boundaries)
+                .strokeWidth(3F))
     }
 
     private fun showLoading() {
@@ -608,6 +633,16 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private fun updateAfterOnSuccessAutofill(data: Data) {
         showDistrictBottomSheet()
 
+        if (isPolygon) {
+            if (data.districtId != districtId) {
+                view?.let { view -> Toaster.build(view, "Pastikan pinpoint sesuai kota & kecamatan pilihanmu.", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+            } else {
+                val saveAddress = saveAddressMapper.map(data, zipCodes)
+                viewModel.setAddress(saveAddress)
+                updateGetDistrictBottomSheet(saveAddress)
+            }
+        }
+
         val saveAddress = saveAddressMapper.map(data, zipCodes)
         viewModel.setAddress(saveAddress)
         updateGetDistrictBottomSheet(saveAddress)
@@ -689,6 +724,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     putDouble(EXTRA_LONGITUDE, extra.getDouble(EXTRA_LONGITUDE))
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                     putString(EXTRA_DISTRICT_NAME, extra.getString(EXTRA_DISTRICT_NAME))
+                    putBoolean(EXTRA_IS_POLYGON, extra.getBoolean(EXTRA_IS_POLYGON))
                 }
             }
         }

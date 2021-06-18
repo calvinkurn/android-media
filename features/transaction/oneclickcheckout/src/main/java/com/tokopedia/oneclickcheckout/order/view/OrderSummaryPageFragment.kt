@@ -43,6 +43,7 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
@@ -605,10 +606,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         iuNoAddress?.setImageUrl(NO_ADDRESS_IMAGE)
         descNoAddress?.text = getString(R.string.occ_lbl_desc_no_address)
         btnAddNewAddress?.setOnClickListener {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
-                putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
-                putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
-            }, REQUEST_CODE_ADD_NEW_ADDRESS)
+            if (LogisticCommonUtil.isRollOutUserANARevamp()) {
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
+                    putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
+                    putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
+                }, REQUEST_CODE_ADD_NEW_ADDRESS)
+            } else {
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+                    putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
+                    putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
+                }, REQUEST_CODE_ADD_NEW_ADDRESS)
+            }
+
         }
     }
 

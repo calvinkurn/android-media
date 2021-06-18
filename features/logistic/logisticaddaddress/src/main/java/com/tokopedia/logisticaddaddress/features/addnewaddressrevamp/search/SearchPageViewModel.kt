@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteMapper
@@ -16,6 +17,8 @@ import javax.inject.Inject
 
 class SearchPageViewModel @Inject constructor(private val repo: KeroRepository,
                                               private val autoCompleteMapper: AutoCompleteMapper) : ViewModel() {
+
+    private var saveAddressDataModel = SaveAddressDataModel()
 
     private val _autoCompleteList = MutableLiveData<Result<Place>>()
     val autoCompleteList: LiveData<Result<Place>>
@@ -31,5 +34,9 @@ class SearchPageViewModel @Inject constructor(private val repo: KeroRepository,
 
     private val onErrorAutoComplete = CoroutineExceptionHandler { _, e ->
         _autoCompleteList.value = Fail(e)
+    }
+
+    fun getAddress() : SaveAddressDataModel {
+        return this.saveAddressDataModel
     }
 }
