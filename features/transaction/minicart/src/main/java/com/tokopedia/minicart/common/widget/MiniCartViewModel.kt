@@ -20,7 +20,7 @@ import com.tokopedia.minicart.common.domain.usecase.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-class MiniCartViewModel @Inject constructor(private val executorDispatchers: CoroutineDispatchers,
+class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispatchers,
                                             private val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
                                             private val getMiniCartListUseCase: GetMiniCartListUseCase,
                                             private val deleteCartUseCase: DeleteCartUseCase,
@@ -241,8 +241,8 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
     }
 
     fun undoDeleteCartItem(isLastItem: Boolean) {
-        lastDeletedProductItem?.let {
-            undoDeleteCartUseCase.setParams(it.cartId)
+        lastDeletedProductItem?.let { minicartProductUiModel ->
+            undoDeleteCartUseCase.setParams(minicartProductUiModel.cartId)
             undoDeleteCartUseCase.execute(
                     onSuccess = {
                         onSuccessUndoDeleteCartItem(it, isLastItem)
@@ -363,28 +363,28 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
     fun toggleUnavailableItemsAccordion() {
         val visitables = miniCartListBottomSheetUiModel.value?.visitables?.toMutableList()
                 ?: mutableListOf()
-        var accordionUiModel: MiniCartAccordionUiModel? = null
+        var miniCartAccordionUiModel: MiniCartAccordionUiModel? = null
         var indexAccordionUiModel: Int = -1
         loop@ for ((index, visitable) in visitables.withIndex()) {
             if (visitable is MiniCartAccordionUiModel) {
-                accordionUiModel = visitable
+                miniCartAccordionUiModel = visitable
                 indexAccordionUiModel = index
                 break@loop
             }
         }
 
-        accordionUiModel?.let {
-            if (it.isCollapsed) {
-                expandUnavailableItems(visitables, it, indexAccordionUiModel)
+        miniCartAccordionUiModel?.let { accordionUiModel ->
+            if (accordionUiModel.isCollapsed) {
+                expandUnavailableItems(visitables, accordionUiModel, indexAccordionUiModel)
             } else {
-                collapseUnavailableItems(visitables, it, indexAccordionUiModel)
+                collapseUnavailableItems(visitables, accordionUiModel, indexAccordionUiModel)
             }
         }
     }
 
     private fun collapseUnavailableItems(visitables: MutableList<Visitable<*>>, accordionUiModel: MiniCartAccordionUiModel, indexAccordionUiModel: Int) {
         val tmpUnavailableProducts = mutableListOf<Visitable<*>>()
-        visitables.forEachIndexed { index, visitable ->
+        visitables.forEach { visitable ->
             if (visitable is MiniCartUnavailableReasonUiModel || (visitable is MiniCartProductUiModel && visitable.isProductDisabled)) {
                 tmpUnavailableProducts.add(visitable)
             }

@@ -39,7 +39,7 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: MiniCartListDecoration,
+class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecoration: MiniCartListDecoration,
                                                   var summaryTransactionBottomSheet: SummaryTransactionBottomSheet,
                                                   var analytics: MiniCartAnalytics)
     : MiniCartListActionListener {
@@ -159,8 +159,8 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
         totalAmount?.let {
             miniCartChevronClickListener = View.OnClickListener {
                 analytics.eventClickChevronToShowSummaryTransaction()
-                viewModel?.miniCartListBottomSheetUiModel?.value?.miniCartSummaryTransactionUiModel?.let {
-                    summaryTransactionBottomSheet.show(it, fragmentManager, context)
+                viewModel?.miniCartListBottomSheetUiModel?.value?.miniCartSummaryTransactionUiModel?.let { miniCartSummaryTransaction ->
+                    summaryTransactionBottomSheet.show(miniCartSummaryTransaction, fragmentManager, context)
                 }
             }
             it.amountChevronView.setOnClickListener(miniCartChevronClickListener)
@@ -279,10 +279,8 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
             hideProgressLoading()
             setTotalAmountLoading(true)
             viewModel.getCartList()
-            bottomSheet?.context?.let { context ->
-                bottomsheetContainer?.let { view ->
-                    bottomSheetListener?.onBottomSheetFailedUpdateCartForCheckout(view, fragmentManager, globalEvent)
-                }
+            bottomsheetContainer?.let { view ->
+                bottomSheetListener?.onBottomSheetFailedUpdateCartForCheckout(view, fragmentManager, globalEvent)
             }
         }
     }
@@ -456,7 +454,8 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
 
     override fun onBulkDeleteUnavailableItems() {
         analytics.eventClickDeleteAllUnavailableProduct()
-        val unavailableProducts = viewModel?.miniCartListBottomSheetUiModel?.value?.getUnavailableProduct() ?: emptyList()
+        val unavailableProducts = viewModel?.miniCartListBottomSheetUiModel?.value?.getUnavailableProduct()
+                ?: emptyList()
         bottomSheet?.context?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(it.getString(R.string.mini_cart_label_dialog_title_delete_unavailable_multiple_item, unavailableProducts.size))
