@@ -28,6 +28,10 @@ interface SuggestionContract {
 
         fun trackEventClickGlobalKeyword(eventLabel: String, userId: String)
 
+        fun trackTokoNowEventClickKeyword(eventLabel: String)
+
+        fun trackTokoNowEventClickCurated(eventLabel: String)
+
         fun dropKeyBoard()
 
         fun route(applink: String, searchParameter: Map<String, String>)

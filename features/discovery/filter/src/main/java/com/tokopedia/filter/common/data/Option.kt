@@ -33,7 +33,7 @@ class Option(@SerializedName("name")
 
              @SerializedName(value = "total_data", alternate = ["totalData"])
              @Expose
-             private var totalData: String = "",
+             var totalData: String = "",
 
              @SerializedName(value = "val_min", alternate = ["valMin"])
              @Expose

@@ -17,7 +17,8 @@ data class BaseItemInitialStateSearch(
         val featureId: String = "",
         val header: String = "",
         val discountPercentage: String = "",
-        val originalPrice: String = ""
+        val originalPrice: String = "",
+        val position: Int = 0
 ) {
     fun hasSlashedPrice(): Boolean {
         return discountPercentage.isNotEmpty() && originalPrice.isNotEmpty()

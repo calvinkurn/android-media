@@ -7,6 +7,7 @@ import java.util.ArrayList
 
 fun InitialStateData.convertPopularSearchToVisitableList(): MutableList<Visitable<*>> {
     val childList = ArrayList<BaseItemInitialStateSearch>()
+    var position = 1
     for (item in this.items) {
         val model = BaseItemInitialStateSearch(
                 template = item.template,
@@ -22,9 +23,11 @@ fun InitialStateData.convertPopularSearchToVisitableList(): MutableList<Visitabl
                 shortcutImage = item.shortcutImage,
                 productId = item.itemId,
                 featureId = this.featureId,
-                header = this.header
+                header = this.header,
+                position = position
         )
         childList.add(model)
+        position++
     }
     return arrayListOf(PopularSearchDataView(this.featureId, childList))
 }

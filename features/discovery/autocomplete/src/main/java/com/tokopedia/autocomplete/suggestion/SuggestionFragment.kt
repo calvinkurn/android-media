@@ -222,4 +222,12 @@ class SuggestionFragment :
                 ChooseAddressConstant.emptyAddress
             }
         } ?: ChooseAddressConstant.emptyAddress
+
+    override fun trackTokoNowEventClickCurated(eventLabel: String) {
+        AutocompleteTracking.eventClickTokoNowCurated(eventLabel)
+    }
+
+    override fun trackTokoNowEventClickKeyword(eventLabel: String) {
+        AutocompleteTracking.eventClickTokoNowKeyword(eventLabel)
+    }
 }
