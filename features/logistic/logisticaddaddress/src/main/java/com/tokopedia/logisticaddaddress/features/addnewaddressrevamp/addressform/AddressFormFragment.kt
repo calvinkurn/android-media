@@ -73,6 +73,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private var validated: Boolean = true
     private val toppers: String = "Toppers"
     private var currentKotaKecamatan: String = ""
+    private var isLatitudeNotEmpty: Boolean? = false
+    private var isLongitudeNotEmpty: Boolean? = false
 
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private lateinit var labelAlamatChipsLayoutManager: ChipsLayoutManager
@@ -106,8 +108,15 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         super.onCreate(savedInstanceState)
         arguments?.let {
             saveDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
-            currentLat = saveDataModel?.latitude?.toDouble() ?: 0.0
-            currentLong = saveDataModel?.longitude?.toDouble() ?: 0.0
+            isLatitudeNotEmpty = saveDataModel?.latitude?.isNotEmpty()
+            isLatitudeNotEmpty?.let {
+                if (it) currentLat = saveDataModel?.latitude?.toDouble() ?: 0.0
+            }
+
+            isLongitudeNotEmpty = saveDataModel?.longitude?.isNotEmpty()
+            isLongitudeNotEmpty?.let {
+                if (it) currentLong = saveDataModel?.longitude?.toDouble() ?: 0.0
+            }
             isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
         }
         permissionCheckerHelper = PermissionCheckerHelper()
@@ -427,10 +436,11 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun goToPinpointPage() {
         val bundle = Bundle()
-        saveDataModel?.latitude?.toDouble()?.let { bundle.putDouble(AddAddressConstant.EXTRA_LATITUDE, it) }
-        saveDataModel?.longitude?.toDouble()?.let { bundle.putDouble(AddAddressConstant.EXTRA_LONGITUDE, it) }
+        bundle.putDouble(AddAddressConstant.EXTRA_LATITUDE, currentLat)
+        bundle.putDouble(AddAddressConstant.EXTRA_LONGITUDE, currentLong)
         bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, false)
         bundle.putString(EXTRA_DISTRICT_NAME, currentDistrictName)
+        bundle.putParcelable(EXTRA_SAVE_DATA_UI_MODEL, saveDataModel)
         if (!isPositiveFlow) bundle.putBoolean(EXTRA_IS_POLYGON, true)
         startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, 1998)
     }
@@ -671,7 +681,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun doSaveAddress() {
         setSaveAddressDataModel()
-        saveDataModel?.let { viewModel.saveAddress(it) }
+        saveDataModel?.let {
+            viewModel.saveAddress(it)
+        }
     }
 
     private fun setSaveAddressDataModel() {
@@ -753,6 +765,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         saveDataModel?.provinceId = districtAddress.provinceId
         saveDataModel?.districtId = districtAddress.districtId
         saveDataModel?.zipCodes = districtAddress.zipCodes
+        saveDataModel?.postalCode = zipCode
 
         if (isPinpoint) goToPinpointPage()
     }
