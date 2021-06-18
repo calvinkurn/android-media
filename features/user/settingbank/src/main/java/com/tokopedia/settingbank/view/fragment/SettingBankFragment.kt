@@ -340,6 +340,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun openDeleteConfirmationPopUp(bankAccount: BankAccount) {
         context?.let { context ->
+            deleteBankAccount = bankAccount
             val description = context.getString(R.string.sbank_delete_bank_confirm,
                     bankAccount.bankName, bankAccount.accNumber, bankAccount.accName)
             DialogUnify(context = context, actionType = DialogUnify.HORIZONTAL_ACTION,
