@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.BestSellerInfoDataModel
@@ -37,9 +36,12 @@ class BestSellerInfoViewHolder(val view: View, private val listener: DynamicProd
             listener.onImpressComponent(getComponentTrackData(element))
         }
 
-        val bestSellerInfoContentText = view.findViewById<Typography>(R.id.best_seller_info_content)
-        bestSellerInfoContentText.text =
-            MethodChecker.fromHtml(element.bestSellerInfoContent?.content)
+        val bestSellerInfoTitleText = view.findViewById<Typography>(R.id.best_seller_info_title)
+        val bestSellerInfoDescriptionText = view.findViewById<Typography>(R.id.best_seller_info_description)
+
+        bestSellerInfoTitleText.text = element.bestSellerInfoContent?.linkText
+        bestSellerInfoDescriptionText.text = element.bestSellerInfoContent?.content
+
         view.setOnClickListener {
             element.bestSellerInfoContent?.applink?.let {
                 listener.goToApplink(it)
