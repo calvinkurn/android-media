@@ -117,9 +117,6 @@ class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastR
                                 OtpConstant.OtpType.REGISTER_EMAIL -> {
                                     analytics.trackClickResendRegisterEmailOtpButton()
                                 }
-                                else -> {
-                                    analytics.trackClickResendOtpButton(otpData.otpType)
-                                }
                             }
 
                             sendOtp()
@@ -146,7 +143,7 @@ class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastR
                     object : ClickableSpan() {
                         override fun onClick(view: View) {
                             viewModel.done = true
-                            analytics.trackClickUseOtherMethod(otpData.otpType)
+                            analytics.trackClickUseOtherMethod(otpData, modeListData)
                             (activity as VerificationActivity).goToVerificationMethodPage()
                         }
 
