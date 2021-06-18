@@ -26,6 +26,7 @@ import com.tokopedia.tokomart.search.analytics.SearchTracking.Category.TOKONOW_S
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Misc.LOCAL_SEARCH
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ACTION_FIELD
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ADD
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.CLICK
@@ -43,6 +44,7 @@ import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingCon
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Event.PROMO_VIEW
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.HOME_AND_BROWSE
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.USER_ID
+import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.EVENT
@@ -103,7 +105,9 @@ object SearchTracking {
 
     fun sendProductImpressionEvent(
             trackingQueue: TrackingQueue,
-            list: List<Any>,
+            productItemDataView: ProductItemDataView,
+            filterSortValue: String,
+            pageId: String,
             keyword: String,
             userId: String,
     ) {
@@ -117,36 +121,73 @@ object SearchTracking {
                 USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
                     CURRENCYCODE, IDR,
-                    IMPRESSIONS, DataLayer.listOf(*list.toTypedArray())
+                    IMPRESSIONS, DataLayer.listOf(
+                        productItemDataView.getAsImpressionClickObjectDataLayer(filterSortValue, pageId)
+                    )
                 )
         ) as HashMap<String, Any>
 
         trackingQueue.putEETracking(map)
     }
 
+    private fun ProductItemDataView.getAsObjectDataLayerMap(
+            filterSortValue: String,
+            pageId: String,
+    ): MutableMap<String, Any> {
+        return DataLayer.mapOf(
+                "brand", SearchCategoryTrackingConst.Misc.NONE_OTHER,
+                "category", SearchCategoryTrackingConst.Misc.NONE_OTHER,
+                "dimension100", sourceEngine,
+                "dimension61", filterSortValue,
+                "dimension81", SearchCategoryTrackingConst.Misc.TOKO_NOW,
+                "dimension90", getDimension90(pageId),
+                "dimension96", boosterList,
+                "id", id,
+                "dimension40", TOKONOW_SEARCH_PRODUCT_ORGANIC,
+                "name", name,
+                "price", priceInt,
+                "variant", SearchCategoryTrackingConst.Misc.NONE_OTHER,
+        )
+    }
+
+    private fun ProductItemDataView.getAsImpressionClickObjectDataLayer(
+            filterSortValue: String,
+            pageId: String,
+    ): Any {
+        return getAsObjectDataLayerMap(filterSortValue, pageId).also {
+            it.putAll(DataLayer.mapOf(
+                    "position", position,
+            ))
+        }
+    }
+
     fun sendProductClickEvent(
-            dataLayer: Any,
+            productItemDataView: ProductItemDataView,
             keyword: String,
             userId: String,
+            filterSortValue: String,
+            pageId: String,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        EVENT, PRODUCT_CLICK,
-                        EVENT_ACTION, CLICK_PRODUCT,
-                        EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
-                        EVENT_LABEL, keyword,
-                        BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                        CURRENTSITE, CURRENT_SITE_VALUE,
-                        USER_ID, userId,
-                        ECOMMERCE, DataLayer.mapOf(
-                            CLICK, DataLayer.mapOf(
-                                ACTION_FIELD, DataLayer.mapOf(
-                                    LIST, TOKONOW_SEARCH_PRODUCT_ORGANIC,
-                                    PRODUCTS, DataLayer.listOf(dataLayer)
-                                )
-                            ),
+            DataLayer.mapOf(
+                EVENT, PRODUCT_CLICK,
+                EVENT_ACTION, CLICK_PRODUCT,
+                EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                EVENT_LABEL, keyword,
+                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                CURRENTSITE, CURRENT_SITE_VALUE,
+                USER_ID, userId,
+                ECOMMERCE, DataLayer.mapOf(
+                    CLICK, DataLayer.mapOf(
+                        ACTION_FIELD, DataLayer.mapOf(
+                            LIST, TOKONOW_SEARCH_PRODUCT_ORGANIC,
+                            PRODUCTS, DataLayer.listOf(
+                                productItemDataView.getAsImpressionClickObjectDataLayer(filterSortValue, pageId)
+                            )
                         )
+                    ),
                 )
+            )
         )
     }
     
@@ -203,9 +244,12 @@ object SearchTracking {
     }
 
     fun sendAddToCartEvent(
-            dataLayer: Any,
+            productItemDataView: ProductItemDataView,
             keyword: String,
             userId: String,
+            sortFilterParams: String,
+            pageId: String,
+            quantity: Int,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
@@ -217,11 +261,29 @@ object SearchTracking {
                 CURRENTSITE, CURRENT_SITE_VALUE,
                 USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
-                    ADD, DataLayer.mapOf(PRODUCTS, DataLayer.listOf(dataLayer)),
+                    ADD, DataLayer.mapOf(
+                        PRODUCTS, DataLayer.listOf(
+                            productItemDataView.getAsATCObjectDataLayer(sortFilterParams, pageId, quantity)
+                        )
+                    ),
                     CURRENCYCODE, IDR,
                 ),
             )
         )
+    }
+
+    private fun ProductItemDataView.getAsATCObjectDataLayer(
+            filterSortValue: String,
+            pageId: String,
+            quantity: Int,
+    ): Any {
+        return getAsObjectDataLayerMap(filterSortValue, pageId).also {
+            it.putAll(DataLayer.mapOf(
+                    "quantity", quantity,
+                    "shop_id", shop.id,
+                    "shop_name", shop.name,
+            ))
+        }
     }
 
     fun sendIncreaseQtyEvent(keyword: String, productId: String) {

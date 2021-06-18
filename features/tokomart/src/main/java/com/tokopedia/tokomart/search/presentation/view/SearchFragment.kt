@@ -93,9 +93,14 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         val pageId = queryParam[SearchApiConst.SRP_PAGE_ID] ?: ""
         val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
 
-        val atcDataLayer = productItemDataView.getAsATCObjectDataLayer(sortFilterParams, pageId, quantity)
-
-        SearchTracking.sendAddToCartEvent(atcDataLayer, getViewModel().query, getUserId())
+        SearchTracking.sendAddToCartEvent(
+                productItemDataView,
+                getViewModel().query,
+                getUserId(),
+                sortFilterParams,
+                pageId,
+                quantity,
+        )
     }
 
     private fun sendIncreaseQtyTrackingEvent(productId: String) {
@@ -143,29 +148,31 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     override fun onProductImpressed(productItemDataView: ProductItemDataView) {
         val trackingQueue = trackingQueue ?: return
 
-        SearchTracking.sendProductImpressionEvent(
-                trackingQueue,
-                listOf(getProductItemAsImpressionClickObjectDataLayer(productItemDataView)),
-                getViewModel().query,
-                getUserId(),
-        )
-    }
-
-    private fun getProductItemAsImpressionClickObjectDataLayer(
-            productItemDataView: ProductItemDataView
-    ): Any {
         val queryParam = searchViewModel.queryParam
         val pageId = queryParam[SearchApiConst.SRP_PAGE_ID] ?: ""
         val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
 
-        return productItemDataView.getAsImpressionClickObjectDataLayer(sortFilterParams, pageId)
+        SearchTracking.sendProductImpressionEvent(
+                trackingQueue,
+                productItemDataView,
+                getViewModel().query,
+                getUserId(),
+                sortFilterParams,
+                pageId,
+        )
     }
 
     override fun onProductClick(productItemDataView: ProductItemDataView) {
+        val queryParam = searchViewModel.queryParam
+        val pageId = queryParam[SearchApiConst.SRP_PAGE_ID] ?: ""
+        val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
+
         SearchTracking.sendProductClickEvent(
-                getProductItemAsImpressionClickObjectDataLayer(productItemDataView),
+                productItemDataView,
                 getViewModel().query,
                 getUserId(),
+                sortFilterParams,
+                pageId,
         )
 
         super.onProductClick(productItemDataView)

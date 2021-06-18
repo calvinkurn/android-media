@@ -89,7 +89,24 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
     }
 
     override fun onProductImpressed(productItemDataView: ProductItemDataView) {
+        val trackingQueue = trackingQueue ?: return
 
+        CategoryTracking.sendProductImpressionEvent(
+                trackingQueue,
+                productItemDataView,
+                getViewModel().categoryL1,
+                getUserId(),
+        )
+    }
+
+    override fun onProductClick(productItemDataView: ProductItemDataView) {
+        CategoryTracking.sendProductClickEvent(
+                productItemDataView,
+                getViewModel().categoryL1,
+                getUserId(),
+        )
+
+        super.onProductClick(productItemDataView)
     }
 
     override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {
@@ -102,5 +119,11 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
         CategoryTracking.sendBannerClickEvent(channelModel, getViewModel().categoryL1, getUserId())
 
         super.onBannerClick(channelModel, applink)
+    }
+
+    override fun onSeeAllCategoryClicked() {
+        CategoryTracking.sendAllCategoryClickEvent(getViewModel().categoryL1)
+
+        super.onSeeAllCategoryClicked()
     }
 }
