@@ -3,10 +3,10 @@ package com.tokopedia.tokomart.searchcategory.presentation.model
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.NONE_OTHER
-import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
-import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.TOKO_NOW
-import com.tokopedia.tokomart.search.utils.SearchTracking.getDimension90
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.NONE_OTHER
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKO_NOW
+import com.tokopedia.tokomart.search.analytics.SearchTracking.getDimension90
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 
 data class ProductItemDataView(

@@ -261,7 +261,19 @@ abstract class BaseSearchCategoryFragment:
             .addGlobalNav()
 
     protected fun IconBuilder.addCart(): IconBuilder = this
-            .addIcon(ID_CART, disableRouteManager = false, disableDefaultGtmTracker = false) { }
+            .addIcon(
+                    iconId = ID_CART,
+                    disableRouteManager = false,
+                    disableDefaultGtmTracker = disableDefaultCartTracker,
+                    onClick = ::onNavToolbarCartClicked,
+            )
+
+    protected open val disableDefaultCartTracker
+        get() = false
+
+    protected open fun onNavToolbarCartClicked() {
+
+    }
 
     protected fun IconBuilder.addGlobalNav(): IconBuilder =
             if (getViewModel().hasGlobalMenu)
@@ -276,17 +288,6 @@ abstract class BaseSearchCategoryFragment:
             listOf(HintData("", ""))
 
     protected open fun onSearchBarClick(hint: String = "") {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(
-                        EVENT, EVENT_CLICK_VALUE,
-                        EVENT_ACTION, EVENT_ACTION_CLICK_SEARCH_BAR_VALUE,
-                        EVENT_CATEGORY, EVENT_CATEGORY_TOP_NAV_VALUE,
-                        EVENT_LABEL, hint,
-                        BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                        CURRENTSITE, CURRENT_SITE_VALUE,
-                )
-        )
-
         val autoCompleteApplink = getAutoCompleteApplink()
         val params = getModifiedAutoCompleteQueryParam(autoCompleteApplink)
         val finalApplink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" +

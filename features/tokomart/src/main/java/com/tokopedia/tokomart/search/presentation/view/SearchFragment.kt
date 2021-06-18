@@ -18,7 +18,7 @@ import com.tokopedia.tokomart.search.presentation.listener.SuggestionListener
 import com.tokopedia.tokomart.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokomart.search.presentation.typefactory.SearchTypeFactoryImpl
 import com.tokopedia.tokomart.search.presentation.viewmodel.SearchViewModel
-import com.tokopedia.tokomart.search.utils.SearchTracking
+import com.tokopedia.tokomart.search.analytics.SearchTracking
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
@@ -55,6 +55,12 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     override fun getNavToolbarHint() =
             listOf(HintData(searchViewModel.query, searchViewModel.query))
 
+    override fun onSearchBarClick(hint: String) {
+        SearchTracking.sendSearchBarClickEvent(hint)
+
+        super.onSearchBarClick(hint)
+    }
+
     override fun getBaseAutoCompleteApplink() =
             super.getBaseAutoCompleteApplink() + "?" +
                     "${SearchApiConst.Q}=${searchViewModel.query}" + "&" +
@@ -77,6 +83,27 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
 
     private fun sendTrackingGeneralEvent(dataLayer: Map<String, Any>) {
         SearchTracking.sendGeneralEvent(dataLayer)
+    }
+
+    private fun sendAddToCartTrackingEvent(atcData: Pair<Int, ProductItemDataView>) {
+        val quantity = atcData.first
+        val productItemDataView = atcData.second
+
+        val queryParam = searchViewModel.queryParam
+        val pageId = queryParam[SearchApiConst.SRP_PAGE_ID] ?: ""
+        val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
+
+        val atcDataLayer = productItemDataView.getAsATCObjectDataLayer(sortFilterParams, pageId, quantity)
+
+        SearchTracking.sendAddToCartEvent(atcDataLayer, getViewModel().query, getUserId())
+    }
+
+    private fun sendIncreaseQtyTrackingEvent(productId: String) {
+        SearchTracking.sendIncreaseQtyEvent(searchViewModel.query, productId)
+    }
+
+    private fun sendDecreaseQtyTrackingEvent(productId: String) {
+        SearchTracking.sendDecreaseQtyEvent(searchViewModel.query, productId)
     }
 
     override fun createTypeFactory() = SearchTypeFactoryImpl(
@@ -168,27 +195,6 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         SearchTracking.sendApplyCategoryL2FilterEvent(option.name)
 
         super.onCategoryFilterChipClick(option, isSelected)
-    }
-
-    private fun sendAddToCartTrackingEvent(atcData: Pair<Int, ProductItemDataView>) {
-        val quantity = atcData.first
-        val productItemDataView = atcData.second
-
-        val queryParam = searchViewModel.queryParam
-        val pageId = queryParam[SearchApiConst.SRP_PAGE_ID] ?: ""
-        val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
-
-        val atcDataLayer = productItemDataView.getAsATCObjectDataLayer(sortFilterParams, pageId, quantity)
-
-        SearchTracking.sendAddToCartEvent(atcDataLayer, getViewModel().query, getUserId())
-    }
-
-    private fun sendIncreaseQtyTrackingEvent(productId: String) {
-        SearchTracking.sendIncreaseQtyEvent(searchViewModel.query, productId)
-    }
-
-    private fun sendDecreaseQtyTrackingEvent(productId: String) {
-        SearchTracking.sendDecreaseQtyEvent(searchViewModel.query, productId)
     }
 
     override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {

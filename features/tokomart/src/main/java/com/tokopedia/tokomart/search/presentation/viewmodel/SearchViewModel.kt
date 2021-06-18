@@ -19,9 +19,9 @@ import com.tokopedia.tokomart.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokomart.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_QUERY_PARAM_MAP
-import com.tokopedia.tokomart.search.utils.SearchTracking.Action.GENERAL_SEARCH
-import com.tokopedia.tokomart.search.utils.SearchTracking.Category.TOKONOW_TOP_NAV
-import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.GENERAL_SEARCH
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Category.TOKONOW_TOP_NAV
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView

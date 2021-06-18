@@ -1,4 +1,4 @@
-package com.tokopedia.tokomart.search.utils
+package com.tokopedia.tokomart.search.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.home_component.model.ChannelGrid
@@ -7,37 +7,42 @@ import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MI
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.CURRENTSITE
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_ACTION_CLICK_SEARCH_BAR_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CATEGORY_TOP_NAV_VALUE
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
-import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_ADD_QUANTITY
-import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_APPLY_FILTER
-import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_BANNER
-import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_CATEGORY_FILTER
-import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_CHOOSE_VARIANT_ON_PRODUCT_CARD
-import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_FILTER_OPTION
-import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_FUZZY_KEYWORDS_REPLACE
-import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_PRODUCT
-import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_REMOVE_QUANTITY
-import com.tokopedia.tokomart.search.utils.SearchTracking.Action.CLICK_TAMBAH_KE_KERANJANG
-import com.tokopedia.tokomart.search.utils.SearchTracking.Action.IMPRESSION_BANNER
-import com.tokopedia.tokomart.search.utils.SearchTracking.Action.IMPRESSION_PRODUCT
-import com.tokopedia.tokomart.search.utils.SearchTracking.Category.TOKONOW_SEARCH_RESULT
-import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.ACTION_FIELD
-import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.ADD
-import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.CLICK
-import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.CURRENCYCODE
-import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.ECOMMERCE
-import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.IDR
-import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.IMPRESSIONS
-import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.LIST
-import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.PRODUCTS
-import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.PROMOTIONS
-import com.tokopedia.tokomart.search.utils.SearchTracking.ECommerce.PROMO_CLICK
-import com.tokopedia.tokomart.search.utils.SearchTracking.Event.ADD_TO_CART
-import com.tokopedia.tokomart.search.utils.SearchTracking.Event.PRODUCT_CLICK
-import com.tokopedia.tokomart.search.utils.SearchTracking.Event.PRODUCT_VIEW
-import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.HOME_AND_BROWSE
-import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
-import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.USER_ID
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_ADD_QUANTITY
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_APPLY_FILTER
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_BANNER
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_CATEGORY_FILTER
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_CHOOSE_VARIANT_ON_PRODUCT_CARD
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_FILTER_OPTION
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_FUZZY_KEYWORDS_REPLACE
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_PRODUCT
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_REMOVE_QUANTITY
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_TAMBAH_KE_KERANJANG
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.IMPRESSION_BANNER
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.IMPRESSION_PRODUCT
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Category.TOKONOW_SEARCH_RESULT
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Misc.LOCAL_SEARCH
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ACTION_FIELD
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ADD
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.CLICK
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.CURRENCYCODE
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ECOMMERCE
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.IDR
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.IMPRESSIONS
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.LIST
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.PRODUCTS
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.PROMOTIONS
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Event.ADD_TO_CART
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Event.PRODUCT_CLICK
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Event.PRODUCT_VIEW
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Event.PROMO_CLICK
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Event.PROMO_VIEW
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.HOME_AND_BROWSE
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.USER_ID
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.EVENT
@@ -48,14 +53,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
 
 object SearchTracking {
-
-    object Event {
-        const val PRODUCT_VIEW = "productView"
-        const val PRODUCT_CLICK = "productClick"
-        const val ADD_TO_CART = "addToCart"
-        const val PROMO_VIEW = "promoView"
-        const val PROMO_CLICK = "promoClick"
-    }
 
     object Action {
         const val GENERAL_SEARCH = "general search"
@@ -78,36 +75,30 @@ object SearchTracking {
         const val TOKONOW_SEARCH_RESULT = "tokonow - search result"
     }
 
-    object ECommerce {
-        const val ECOMMERCE = "ecommerce"
-        const val CURRENCYCODE = "currencyCode"
-        const val IDR = "IDR"
-        const val IMPRESSIONS = "impressions"
-        const val CLICK = "click"
-        const val ACTION_FIELD = "actionField"
-        const val LIST = "list"
-        const val PRODUCTS = "products"
-        const val ADD = "add"
-        const val PROMO_VIEW = "promoView"
-        const val PROMO_CLICK = "promoClick"
-        const val PROMOTIONS = "promotions"
-    }
-
     object Misc {
-        const val NONE_OTHER = "none / other"
-        const val TOKO_NOW = "toko now"
-        const val USER_ID = "userId"
         const val HASIL_PENCARIAN_DI_TOKONOW = "Hasil pencarian di TokoNOW!"
         const val LOCAL_SEARCH = "local_search"
         const val TOKONOW_SEARCH_PRODUCT_ORGANIC = "/tokonow - searchproduct - organic"
-        const val HOME_AND_BROWSE = "home & browse"
     }
 
     fun getDimension90(pageId: String) =
-            "${Misc.HASIL_PENCARIAN_DI_TOKONOW}.$TOKONOW.${Misc.LOCAL_SEARCH}.$pageId"
+            "${HASIL_PENCARIAN_DI_TOKONOW}.$TOKONOW.${LOCAL_SEARCH}.$pageId"
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
+    }
+
+    fun sendSearchBarClickEvent(keyword: String) {
+        sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_CLICK_VALUE,
+                        EVENT_ACTION, EVENT_ACTION_CLICK_SEARCH_BAR_VALUE,
+                        EVENT_CATEGORY, EVENT_CATEGORY_TOP_NAV_VALUE,
+                        EVENT_LABEL, keyword,
+                        BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                        CURRENTSITE, CURRENT_SITE_VALUE,
+                )
+        )
     }
 
     fun sendProductImpressionEvent(
@@ -281,7 +272,7 @@ object SearchTracking {
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
-                EVENT, Event.PROMO_VIEW,
+                EVENT, PROMO_VIEW,
                 EVENT_ACTION, IMPRESSION_BANNER,
                 EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
                 EVENT_LABEL, keyword,
@@ -289,7 +280,7 @@ object SearchTracking {
                 CURRENTSITE, CURRENT_SITE_VALUE,
                 USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
-                    ECommerce.PROMO_VIEW, DataLayer.mapOf(
+                    PROMO_VIEW, DataLayer.mapOf(
                         PROMOTIONS, channelModel.getAsObjectDataLayer(sortFilterParams, pageId)
                     ),
                 )
@@ -310,7 +301,7 @@ object SearchTracking {
             pageId: String,
             position: Int,
     ): Any {
-        val channelModelId = channelModel.id ?: ""
+        val channelModelId = channelModel.id
         val channelGridId = channelGrid.id
         val persoType = channelModel.trackingAttributionModel.persoType
         val categoryId = channelModel.trackingAttributionModel.categoryId
@@ -338,7 +329,7 @@ object SearchTracking {
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
-                EVENT, Event.PROMO_CLICK,
+                EVENT, PROMO_CLICK,
                 EVENT_ACTION, CLICK_BANNER,
                 EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
                 EVENT_LABEL, keyword,

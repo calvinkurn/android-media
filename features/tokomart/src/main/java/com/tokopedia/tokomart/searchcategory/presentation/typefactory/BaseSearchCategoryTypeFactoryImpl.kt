@@ -22,7 +22,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataV
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.CategoryFilterViewHolder
-import com.tokopedia.tokomart.searchcategory.presentation.viewholder.ChooseAddressViewHolder
+import com.tokopedia.tokomart.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.EmptyProductViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.LoadingMoreViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.viewholder.ProductCountViewHolder
@@ -40,7 +40,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
         protected val emptyProductListener: EmptyProductListener,
 ): BaseAdapterTypeFactory(), BaseSearchCategoryTypeFactory {
 
-    override fun type(chooseAddressDataView: ChooseAddressDataView) = ChooseAddressViewHolder.LAYOUT
+    override fun type(chooseAddressDataView: ChooseAddressDataView) = BaseChooseAddressViewHolder.LAYOUT
 
     override fun type(bannerDataView: BannerDataView) = BannerViewHolder.LAYOUT
 
@@ -61,7 +61,6 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             ProductItemViewHolder.LAYOUT -> ProductItemViewHolder(view, productItemListener)
-            ChooseAddressViewHolder.LAYOUT -> ChooseAddressViewHolder(view, chooseAddressListener)
             BannerViewHolder.LAYOUT -> BannerViewHolder(view, bannerListener)
             TitleViewHolder.LAYOUT -> TitleViewHolder(view, titleListener)
             CategoryFilterViewHolder.LAYOUT -> CategoryFilterViewHolder(view, categoryFilterListener)

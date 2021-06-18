@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.tokomart.category.analytics.CategoryTracking
 import com.tokopedia.tokomart.category.di.CategoryComponent
 import com.tokopedia.tokomart.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
@@ -44,9 +44,22 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
         }
     }
 
+    override fun onSearchBarClick(hint: String) {
+        CategoryTracking.sendSearchBarClickEvent(getViewModel().categoryL1)
+
+        super.onSearchBarClick(hint)
+    }
+
     override fun getBaseAutoCompleteApplink() =
             super.getBaseAutoCompleteApplink() + "?" +
                     "${SearchApiConst.NAVSOURCE}=$TOKONOW_DIRECTORY"
+
+    override val disableDefaultCartTracker: Boolean
+        get() = true
+
+    override fun onNavToolbarCartClicked() {
+        CategoryTracking.sendCartClickEvent(getViewModel().categoryL1)
+    }
 
     override fun getScreenName() = ""
 

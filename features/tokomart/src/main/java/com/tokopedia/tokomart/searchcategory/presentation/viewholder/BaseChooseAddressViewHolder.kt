@@ -10,7 +10,7 @@ import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
 
-class ChooseAddressViewHolder(
+abstract class BaseChooseAddressViewHolder(
         itemView: View,
         chooseAddressListener: ChooseAddressListener
 ): AbstractViewHolder<ChooseAddressDataView>(itemView) {
@@ -18,11 +18,11 @@ class ChooseAddressViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokomart_search_category_choose_address
-
-        private const val SOURCE = "search page"
     }
 
     private var chooseAddressWidget: ChooseAddressWidget? = null
+
+    protected abstract val trackingSource: String
 
     init {
         chooseAddressWidget = itemView.findViewById(R.id.tokomartSearchCategoryChooseAddress)
@@ -45,7 +45,7 @@ class ChooseAddressViewHolder(
 
             override fun getLocalizingAddressHostSourceData() = SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
 
-            override fun getLocalizingAddressHostSourceTrackingData() = SOURCE
+            override fun getLocalizingAddressHostSourceTrackingData() = trackingSource
 
             override fun onLocalizingAddressLoginSuccess() { }
         })
