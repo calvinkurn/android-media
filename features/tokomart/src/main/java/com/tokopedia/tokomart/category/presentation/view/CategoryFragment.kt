@@ -86,6 +86,8 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
         get() = MiniCartAnalytics.Page.CATEGORY_PAGE
 
     override fun onAisleClick(categoryAisleItemDataView: CategoryAisleItemDataView) {
+        CategoryTracking.sendAisleClickEvent(getViewModel().categoryL1, categoryAisleItemDataView.id)
+
         RouteManager.route(context, categoryAisleItemDataView.applink)
     }
 

@@ -132,6 +132,7 @@ class CategoryViewModel @Inject constructor (
 
     private fun createAisleItem(navigationItem: NavigationItem?): CategoryAisleItemDataView {
         return CategoryAisleItemDataView(
+                id = navigationItem?.id ?: "",
                 name = navigationItem?.name ?: "",
                 imgUrl = navigationItem?.imageUrl ?: "",
                 applink = navigationItem?.applinks ?: "",

@@ -6,6 +6,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_BANNER
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_CART_BUTTON_TOP_NAV
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_LEVEL_2_FILTER_WIDGET
+import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_LIHAT_CATEGORY_LAINNYA
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_PRODUCT
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_SEARCH_BAR
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_SEMUA_KATEGORI
@@ -61,6 +62,7 @@ object CategoryTracking {
         const val IMPRESSION_PRODUCT = "impression product"
         const val CLICK_PRODUCT = "click product"
         const val CLICK_LEVEL_2_FILTER_WIDGET = "click level 2 filter widget"
+        const val CLICK_LIHAT_CATEGORY_LAINNYA = "click lihat kategori lainnya"
     }
 
     object Category {
@@ -246,12 +248,23 @@ object CategoryTracking {
 
     fun sendApplyCategoryL2FilterEvent(categoryId: String, filterCategoryId: String) {
         sendGeneralEvent(DataLayer.mapOf(
-                EVENT, EVENT_CLICK_VALUE,
-                EVENT_ACTION, CLICK_LEVEL_2_FILTER_WIDGET,
-                EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
-                EVENT_LABEL, "$categoryId - $filterCategoryId",
-                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                CURRENTSITE, CURRENT_SITE_VALUE,
+            EVENT, EVENT_CLICK_VALUE,
+            EVENT_ACTION, CLICK_LEVEL_2_FILTER_WIDGET,
+            EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
+            EVENT_LABEL, "$categoryId - $filterCategoryId",
+            BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+            CURRENTSITE, CURRENT_SITE_VALUE,
+        ))
+    }
+
+    fun sendAisleClickEvent(categoryId: String, aisleCategoryId: String) {
+        sendGeneralEvent(DataLayer.mapOf(
+            EVENT, EVENT_CLICK_VALUE,
+            EVENT_ACTION, CLICK_LIHAT_CATEGORY_LAINNYA,
+            EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
+            EVENT_LABEL, "$categoryId - $aisleCategoryId",
+            BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+            CURRENTSITE, CURRENT_SITE_VALUE,
         ))
     }
 }
