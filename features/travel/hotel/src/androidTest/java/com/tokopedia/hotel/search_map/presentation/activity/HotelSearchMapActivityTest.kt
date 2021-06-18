@@ -81,9 +81,10 @@ class HotelSearchMapActivityTest {
                 UiSelector().description("MAP READY")
         ).waitForExists(10000)
 
-        clickCoachMark()
         clickQuickFilterChips()
         clickOnSortAndFilter()
+
+        Thread.sleep(3000)
 
         //full map
         activityRule.runOnUiThread {
@@ -93,6 +94,8 @@ class HotelSearchMapActivityTest {
         scrollToPropertyCard()
         clickHotelFromHorizontalItems()
 
+        Thread.sleep(3000)
+
         //full srp list
         activityRule.runOnUiThread {
             bottomSheet.setState(BottomSheetBehavior.STATE_EXPANDED)
@@ -101,25 +104,6 @@ class HotelSearchMapActivityTest {
         clickOnChangeDestination()
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTIC_VALIDATOR_QUERY_HOTEL_DISCO), hasAllSuccess())
-    }
-
-    private fun clickCoachMark() {
-        Thread.sleep(2000)
-
-        try {
-            // if coachmark show, it will have 3 items
-            Espresso.onView(ViewMatchers.withText("Lanjut"))
-                    .inRoot(RootMatchers.isPlatformPopup())
-                    .perform(ViewActions.click())
-            Espresso.onView(ViewMatchers.withText("Lanjut"))
-                    .inRoot(RootMatchers.isPlatformPopup())
-                    .perform(ViewActions.click())
-            Espresso.onView(ViewMatchers.withText("Mengerti"))
-                    .inRoot(RootMatchers.isPlatformPopup())
-                    .perform(ViewActions.click())
-        } catch (t: Throwable) {
-            // do nothing because no more coachmark shown
-        }
     }
 
     private fun validateHotelSearchPageTracking() {
@@ -176,7 +160,6 @@ class HotelSearchMapActivityTest {
             Espresso.onView(ViewMatchers.withId(R.id.rvHorizontalPropertiesHotelSearchMap)).perform(RecyclerViewActions
                     .actionOnItemAtPosition<HotelSearchMapItemViewHolder>(0, ViewActions.click()))
         }
-
         Espresso.onView(isRoot()).perform(ViewActions.pressBack())
         Thread.sleep(2000)
     }
