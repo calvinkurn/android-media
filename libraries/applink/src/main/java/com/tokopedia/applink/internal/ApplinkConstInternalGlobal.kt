@@ -469,5 +469,6 @@ object ApplinkConstInternalGlobal {
 
     // TelephonyActivity
     // tokopedia-android-internal://global/telephony-masking
-    const val TELEPHONY_MASKING = "$INTERNAL_GLOBAL/telephony-masking"
+    const val TELEPHONY_MASKING = "$INTERNAL_GLOBAL/telephony-masking?redirect={path}"
+    const val PARAM_REDIRECT_PATH = "redirect"
 }

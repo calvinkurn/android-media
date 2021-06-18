@@ -15,4 +15,6 @@ object TelephonyMaskingConst {
 
     const val PREFERENCE_NAME = "CACHE_TELEPHONY_MASKING"
     const val KEY_LOCAL_NUMBERS = "KEY_LOCAL_NUMBERS_TELEPHONY"
+
+    const val REDIRECT_WEB = "https://www.tokopedia.com/"
 }

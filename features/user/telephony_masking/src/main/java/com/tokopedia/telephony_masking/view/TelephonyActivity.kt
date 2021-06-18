@@ -6,6 +6,9 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.telephony_masking.analytic.TelephonyAnalytics
@@ -15,7 +18,7 @@ import com.tokopedia.user.session.UserSession
 
 /**
  * How to use:
- * RouteManager.getIntent(this, ApplinkConst.TELEPHONY_MASKING), use startActivityForResult
+ * RouteManager.getIntent(this, [ApplinkConst.TELEPHONY_MASKING]), use startActivityForResult
  * Check the result code in [TelephonyMaskingConst] for other results beside OK and Canceled
  */
 class TelephonyActivity: BaseSimpleActivity() {
@@ -24,6 +27,7 @@ class TelephonyActivity: BaseSimpleActivity() {
     private var remoteConfig: RemoteConfig? = null
     private var sharedPreference: SharedPreferences? = null
     private var numbers: String = ""
+    private var redirectPath: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +35,7 @@ class TelephonyActivity: BaseSimpleActivity() {
         sharedPreference = getSharedPreferences(
                 TelephonyMaskingConst.PREFERENCE_NAME, Context.MODE_PRIVATE)
         numbers = getNumbers()
+        redirectPath = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_PATH)
         if(isNumbersInLocalCache()) {
             onContactAlreadyExist()
         } else {
@@ -90,12 +95,14 @@ class TelephonyActivity: BaseSimpleActivity() {
     private fun onClickNantiSaja() {
         telephonyAnalytics?.eventNantiSaja()
         setResult(TelephonyMaskingConst.RESULT_SKIP)
+        redirect()
         finish()
     }
 
     private fun onClickClose() {
         telephonyAnalytics?.eventClose()
         setResult(RESULT_CANCELED)
+        redirect()
         finish()
     }
 
@@ -117,8 +124,25 @@ class TelephonyActivity: BaseSimpleActivity() {
                 RESULT_OK -> onSaveContact()
                 RESULT_CANCELED -> setResult(TelephonyMaskingConst.RESULT_NOT_SAVED)
             }
+            if(!redirectPath.isNullOrEmpty()) {
+                redirect()
+            }
             finish()
         }
+    }
+
+    private fun isWebViewPage(): Boolean {
+        return redirectPath?.startsWith(TelephonyMaskingConst.REDIRECT_WEB) == true
+    }
+
+    private fun redirect() {
+        try {
+            if(isWebViewPage()) {
+                val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.WEBVIEW, redirectPath)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                startActivity(intent)
+            }
+        } catch (ignored: Throwable) {}
     }
 
     override fun getNewFragment(): Fragment? = null
