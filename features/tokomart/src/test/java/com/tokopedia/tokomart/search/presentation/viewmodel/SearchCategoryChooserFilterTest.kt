@@ -4,7 +4,6 @@ import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.CategoryChooserFilterTestHelper
 import com.tokopedia.tokomart.searchcategory.jsonToObject
 import com.tokopedia.usecase.RequestParams
-import io.mockk.CapturingSlot
 import io.mockk.verify
 import org.junit.Test
 
@@ -19,7 +18,6 @@ class SearchCategoryChooserFilterTest: SearchTestFixtures(), CategoryChooserFilt
 
         categoryChooserFilterPageTestHelper = CategoryChooserFilterTestHelper(
                 searchViewModel,
-                getProductCountUseCase,
                 this,
         )
     }
@@ -40,20 +38,6 @@ class SearchCategoryChooserFilterTest: SearchTestFixtures(), CategoryChooserFilt
     @Test
     fun `test category chooser cannot be spammed`() {
         categoryChooserFilterPageTestHelper.`test category chooser cannot be spammed`()
-    }
-
-    @Test
-    fun `test get filter count success from category chooser`() {
-        val mandatoryParams = createMandatoryTokonowQueryParams()
-
-        categoryChooserFilterPageTestHelper.`test get filter count success from category chooser`(mandatoryParams)
-    }
-
-    @Test
-    fun `test get filter count failed from category chooser`() {
-        val mandatoryParams = createMandatoryTokonowQueryParams()
-
-        categoryChooserFilterPageTestHelper.`test get filter count failed from category chooser`(mandatoryParams)
     }
 
     @Test
