@@ -412,6 +412,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().isContentLoadingLiveData.observe(this::updateContentVisibility)
         getViewModel().isOutOfServiceLiveData.observe(this::updateOutOfServiceVisibility)
         getViewModel().quickFilterTrackingLiveData.observe(this::sendTrackingQuickFilter)
+        getViewModel().addToCartTrackingLiveData.observe(this::sendAddToCartTrackingEvent)
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -689,6 +690,8 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected abstract fun sendTrackingQuickFilter(quickFilterTracking: Pair<Option, Boolean>)
+
+    protected abstract fun sendAddToCartTrackingEvent(atcData: Triple<Int, String, ProductItemDataView>)
 
     override fun onPause() {
         super.onPause()

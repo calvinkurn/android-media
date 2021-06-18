@@ -40,12 +40,13 @@ class AddToCartNonVariantTestHelper(
     fun `test add to cart success`() {
         val addToCartQty = 10
         val errorMessage = arrayListOf("Success nih", "1 barang berhasil ditambahkan ke keranjang!")
+        val cartId = "12345"
         val addToCartSuccessModel = AddToCartDataModel(
                 errorMessage = errorMessage,
                 status = AddToCartDataModel.STATUS_OK,
                 data = DataModel(
                         success = 1,
-                        cartId = "12345",
+                        cartId = cartId,
                         message = arrayListOf(),
                         quantity = addToCartQty,
                 ),
@@ -66,7 +67,7 @@ class AddToCartNonVariantTestHelper(
         )
         `Then assert product item quantity`(productItemDataViewToATC, addToCartQty)
         `Then verify mini cart is refreshed`()
-        `Then verify add to cart tracking is called`(addToCartQty, productItemDataViewToATC)
+        `Then verify add to cart tracking is called`(addToCartQty, cartId, productItemDataViewToATC)
     }
 
     private fun `Given view already created`() {
@@ -128,12 +129,15 @@ class AddToCartNonVariantTestHelper(
 
     private fun `Then verify add to cart tracking is called`(
             quantity: Int,
+            cartId: String,
             productItem: ProductItemDataView,
     ) {
         val addToCartEvent = baseViewModel.addToCartTrackingLiveData.value!!
 
-        assertThat(addToCartEvent.first, shouldBe(quantity))
-        assertThat(addToCartEvent.second, shouldBe(productItem))
+        val (actualQuantity, actualCartId, actualProductItem) = addToCartEvent
+        assertThat(actualQuantity, shouldBe(quantity))
+        assertThat(actualCartId, shouldBe(cartId))
+        assertThat(actualProductItem, shouldBe(productItem))
     }
 
     fun `test add to cart failed`() {

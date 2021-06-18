@@ -148,8 +148,8 @@ abstract class BaseSearchCategoryViewModel(
     val isOutOfServiceLiveData: LiveData<Boolean> = isOutOfServiceMutableLiveData
 
     protected val addToCartTrackingMutableLiveData =
-            SingleLiveEvent<Pair<Int, ProductItemDataView>>()
-    val addToCartTrackingLiveData: LiveData<Pair<Int, ProductItemDataView>> =
+            SingleLiveEvent<Triple<Int, String, ProductItemDataView>>()
+    val addToCartTrackingLiveData: LiveData<Triple<Int, String, ProductItemDataView>> =
             addToCartTrackingMutableLiveData
 
     protected val decreaseQtyTrackingMutableLiveData = SingleLiveEvent<String>()
@@ -826,7 +826,7 @@ abstract class BaseSearchCategoryViewModel(
 
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
-            sendAddToCartTracking(quantity, productItem)
+            sendAddToCartTracking(quantity, it.data.cartId, productItem)
             onAddToCartSuccess(
                     productItem,
                     it.data.quantity,
@@ -837,8 +837,8 @@ abstract class BaseSearchCategoryViewModel(
         })
     }
 
-    private fun sendAddToCartTracking(quantity: Int, productItem: ProductItemDataView) {
-        addToCartTrackingMutableLiveData.value = Pair(quantity, productItem)
+    private fun sendAddToCartTracking(quantity: Int, cartId: String, productItem: ProductItemDataView) {
+        addToCartTrackingMutableLiveData.value = Triple(quantity, cartId, productItem)
     }
 
     private fun onAddToCartSuccess(

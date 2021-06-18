@@ -165,4 +165,16 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
 
         super.onApplyCategory(selectedOption)
     }
+
+    override fun sendAddToCartTrackingEvent(atcData: Triple<Int, String, ProductItemDataView>) {
+        val (quantity, cartId, productItemDataView) = atcData
+
+        CategoryTracking.sendAddToCartEvent(
+                productItemDataView,
+                getViewModel().categoryL1,
+                getUserId(),
+                quantity,
+                cartId,
+        )
+    }
 }

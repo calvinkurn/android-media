@@ -78,7 +78,6 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         super.observeViewModel()
 
         getViewModel().generalSearchEventLiveData.observe(this::sendTrackingGeneralEvent)
-        getViewModel().addToCartTrackingLiveData.observe(this::sendAddToCartTrackingEvent)
         getViewModel().increaseQtyTrackingLiveData.observe(this::sendIncreaseQtyTrackingEvent)
         getViewModel().decreaseQtyTrackingLiveData.observe(this::sendDecreaseQtyTrackingEvent)
     }
@@ -87,9 +86,8 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         SearchTracking.sendGeneralEvent(dataLayer)
     }
 
-    private fun sendAddToCartTrackingEvent(atcData: Pair<Int, ProductItemDataView>) {
-        val quantity = atcData.first
-        val productItemDataView = atcData.second
+    override fun sendAddToCartTrackingEvent(atcData: Triple<Int, String, ProductItemDataView>) {
+        val (quantity, _, productItemDataView) = atcData
 
         val queryParam = getQueryParamWithoutExcludes()
         val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)

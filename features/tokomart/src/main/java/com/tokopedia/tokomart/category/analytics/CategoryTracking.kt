@@ -27,7 +27,9 @@ import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MI
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ACTION_FIELD
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ADD
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.CLICK
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.CURRENCYCODE
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ECOMMERCE
@@ -42,6 +44,7 @@ import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingCon
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Event.PROMO_VIEW
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.HOME_AND_BROWSE
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.NONE_OTHER
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKO_NOW
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.USER_ID
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.track.TrackApp
@@ -50,7 +53,7 @@ import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import java.util.HashMap
+import java.util.*
 
 object CategoryTracking {
 
@@ -73,6 +76,7 @@ object CategoryTracking {
         const val CLICK_APPLY_FILTER = "click apply filter"
         const val CLICK_CATEGORY_FILTER = "click category filter"
         const val APPLY_CATEGORY_FILTER = "apply category filter"
+        const val ADD_TO_CART = "add to cart"
     }
 
     object Category {
@@ -331,5 +335,54 @@ object CategoryTracking {
                 BUSINESSUNIT, BUSINESS_UNIT_VALUE,
                 CURRENTSITE, CURRENT_SITE_VALUE,
         ))
+    }
+
+    fun sendAddToCartEvent(
+            productItemDataView: ProductItemDataView,
+            categoryId: String,
+            userId: String,
+            quantity: Int,
+            cartId: String,
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                EVENT, SearchCategoryTrackingConst.Event.ADD_TO_CART,
+                EVENT_ACTION, Action.ADD_TO_CART,
+                EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
+                EVENT_LABEL, categoryId,
+                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                CURRENTSITE, CURRENT_SITE_VALUE,
+                USER_ID, userId,
+                ECOMMERCE, DataLayer.mapOf(
+                    ADD, DataLayer.mapOf(
+                        PRODUCTS, DataLayer.listOf(
+                            productItemDataView.getAsATCObjectDataLayer(categoryId, cartId, quantity)
+                        )
+                    ),
+                    CURRENCYCODE, IDR,
+                ),
+            )
+        )
+    }
+
+    private fun ProductItemDataView.getAsATCObjectDataLayer(
+            categoryId: String,
+            cartId: String,
+            quantity: Int,
+    ): Any {
+        return DataLayer.mapOf(
+                "brand", NONE_OTHER,
+                "category", NONE_OTHER,
+                "category_id", categoryId,
+                "dimension45", cartId,
+                "id", id,
+                "name", name,
+                "price", priceInt,
+                "quantity", quantity,
+                "shop_id", shop.id,
+                "shop_name", shop.name,
+                "shop_type", TOKO_NOW,
+                "variant", NONE_OTHER
+        )
     }
 }
