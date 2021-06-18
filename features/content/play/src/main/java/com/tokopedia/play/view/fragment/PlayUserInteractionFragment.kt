@@ -9,6 +9,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.*
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -18,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
@@ -32,6 +34,7 @@ import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -68,6 +71,7 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitMeasured
 import com.tokopedia.play_common.util.extension.dismissToaster
+import com.tokopedia.play_common.util.extension.globalVisibleRect
 import com.tokopedia.play_common.util.extension.recreateView
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
@@ -124,6 +128,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
+
+    private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -573,6 +579,8 @@ class PlayUserInteractionFragment @Inject constructor(
             videoSettingsViewOnStateChanged(videoOrientation = meta.videoStream.orientation)
             gradientBackgroundViewOnStateChanged(videoOrientation = meta.videoStream.orientation)
             pipViewOnStateChanged(videoPlayer = meta.videoPlayer)
+            pinnedViewOnStateChanged(videoPlayer = meta.videoPlayer)
+            quickReplyViewOnStateChanged(videoPlayer = meta.videoPlayer)
 
             changeLayoutBasedOnVideoType(meta.videoPlayer, playViewModel.channelType)
             if (meta.videoPlayer is PlayVideoPlayerUiModel.General.Complete) videoControlView.setPlayer(meta.videoPlayer.exoPlayer)
@@ -599,6 +607,8 @@ class PlayUserInteractionFragment @Inject constructor(
             videoControlViewOnStateChanged(channelType = it.channelType)
             sendChatViewOnStateChanged(channelType = it.channelType)
             chatListViewOnStateChanged(channelType = it.channelType)
+            pinnedViewOnStateChanged(channelType = it.channelType)
+            quickReplyViewOnStateChanged(channelType = it.channelType)
         })
     }
 
@@ -653,14 +663,12 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observePinnedMessage() {
         playViewModel.observablePinnedMessage.observe(viewLifecycleOwner) {
             pinnedViewOnStateChanged(pinnedModel = it)
-            quickReplyViewOnStateChanged(pinnedMessage = it)
         }
     }
 
     private fun observePinnedProduct() {
         playViewModel.observablePinnedProduct.observe(viewLifecycleOwner) {
             productFeaturedViewOnStateChanged(pinnedModel = it)
-            quickReplyViewOnStateChanged(pinnedProduct = it)
         }
     }
 
@@ -1149,6 +1157,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun pinnedViewOnStateChanged(
             pinnedModel: PinnedMessageUiModel? = playViewModel.observablePinnedMessage.value,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
+            channelType: PlayChannelType = playViewModel.channelType,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned,
     ) {
         if (isFreezeOrBanned) {
@@ -1158,10 +1168,22 @@ class PlayUserInteractionFragment @Inject constructor(
 
         if (pinnedModel != null) {
             pinnedView?.setPinnedMessage(pinnedModel)
-            if (pinnedModel.shouldShow && !bottomInsets.isAnyShown) pinnedView?.show()
-//            if (!bottomInsets.isAnyShown) pinnedView?.show()
+//            if (pinnedModel.shouldShow && !bottomInsets.isAnyShown) pinnedView?.show()
+            if (!bottomInsets.isAnyShown) pinnedView?.show()
             else pinnedView?.hide()
         } else pinnedView?.hide()
+
+        val pinnedMessageId = pinnedView?.id ?: return
+        if (videoPlayer.isYouTube && channelType.isVod) {
+            view?.changeConstraint {
+                connect(pinnedMessageId, ConstraintSet.BOTTOM, likeView.id, ConstraintSet.BOTTOM, 0)
+            }
+        } else {
+            val pinnedVoucherId = pinnedVoucherView?.id ?: return
+            view?.changeConstraint {
+                connect(pinnedMessageId, ConstraintSet.BOTTOM, pinnedVoucherId, ConstraintSet.TOP, offset8)
+            }
+        }
     }
 
     private fun productFeaturedViewOnStateChanged(
@@ -1244,8 +1266,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun quickReplyViewOnStateChanged(
             channelType: PlayChannelType = playViewModel.channelType,
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
-            pinnedMessage: PinnedMessageUiModel? = playViewModel.observablePinnedMessage.value,
-            pinnedProduct: PinnedProductUiModel? = playViewModel.observablePinnedProduct.value,
+            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
     ) {
         if (channelType.isLive &&
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
@@ -1255,25 +1276,20 @@ class PlayUserInteractionFragment @Inject constructor(
         } else quickReplyView?.hide()
 
         val quickReplyViewId = quickReplyView?.id ?: return
-//        when (pinnedModel) {
-//            is PlayPinnedUiModel.PinnedProduct -> {
-//                val pinnedVoucherViewId = pinnedVoucherView?.id
-//                if (pinnedVoucherViewId != null) {
-//                    view?.changeConstraint {
-//                        connect(quickReplyViewId, ConstraintSet.BOTTOM, R.id.view_topmost_like, ConstraintSet.TOP)
-//                    }
-//                }
-//            }
-//            is PlayPinnedUiModel.PinnedMessage -> {
-//                val sendChatViewId = sendChatView?.id
-//                if (sendChatViewId != null) {
-//                    view?.changeConstraint {
-//                        connect(quickReplyViewId, ConstraintSet.BOTTOM, sendChatViewId, ConstraintSet.TOP)
-//                    }
-//                }
-//            }
-//            else -> {}
-//        }
+        if (videoPlayer.isYouTube && channelType.isVod) {
+            view?.changeConstraint {
+                connect(
+                        quickReplyViewId,
+                        ConstraintSet.BOTTOM,
+                        R.id.barrier_pinned_like,
+                        ConstraintSet.TOP
+                )
+            }
+        } else {
+            view?.changeConstraint {
+                connect(quickReplyViewId, ConstraintSet.BOTTOM, R.id.view_topmost_like, ConstraintSet.TOP)
+            }
+        }
     }
 
     private fun immersiveBoxViewOnStateChanged(
