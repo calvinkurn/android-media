@@ -702,7 +702,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         val saveModel = viewModel.getAddress()
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(AddressFormFragment.EXTRA_ADDRESS_NEW, saveModel)
+                putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
             })
             finish()
         }
