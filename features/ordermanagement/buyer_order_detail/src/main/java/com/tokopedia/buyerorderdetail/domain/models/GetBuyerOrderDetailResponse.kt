@@ -160,13 +160,13 @@ data class GetBuyerOrderDetailResponse(
                     @SerializedName("category")
                     val category: String = "",
                     @SerializedName("category_id")
-                    val categoryId: Int = 0,
+                    val categoryId: String = "0",
                     @SerializedName("notes")
                     val notes: String = "",
                     @SerializedName("order_detail_id")
                     val orderDetailId: String = "0",
                     @SerializedName("price")
-                    val price: String = "0",
+                    val price: Double = 0.0,
                     @SerializedName("price_text")
                     val priceText: String = "",
                     @SerializedName("product_id")

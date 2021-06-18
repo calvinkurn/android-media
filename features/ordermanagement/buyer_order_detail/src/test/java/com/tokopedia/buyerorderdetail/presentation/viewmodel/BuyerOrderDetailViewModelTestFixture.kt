@@ -66,11 +66,11 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                     url = ""
             ),
             category = "Pakaian Atas",
-            categoryId = 10,
+            categoryId = "10",
             orderDetailId = "20531238",
             orderStatusId = "220",
             orderId = "166835036",
-            price = "500000",
+            price = 500000.0,
             priceText = "Rp500.000",
             productId = "2147819914",
             productName = "Hengpong jadul",

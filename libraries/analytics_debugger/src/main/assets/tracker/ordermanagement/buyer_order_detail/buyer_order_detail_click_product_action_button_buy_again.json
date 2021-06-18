@@ -11,14 +11,14 @@
       "currentSite": "tokopediamarketplace",
       "items": [
         {
-          "category_id": "\\d{1,}\\.\\d{1,}",
+          "category_id": "\\d{1,}",
           "dimension45": ".*",
           "item_brand": ".*",
           "item_category": ".{1,}",
           "item_id": "\\d{1,}",
           "item_name": ".{1,}",
           "item_variant": ".*",
-          "price": "\\d{1,}",
+          "price": "\\d{1,}.\\d{1,}",
           "quantity": "\\d{1,}\\.\\d{1,}",
           "shop_id": "\\d{1,}",
           "shop_name": ".{1,}",

@@ -25,11 +25,11 @@ data class ProductListUiModel(
     data class ProductUiModel(
             val button: ActionButtonsUiModel.ActionButton,
             val category: String,
-            val categoryId: Int,
+            val categoryId: String,
             val orderDetailId: String,
             val orderId: String,
             val orderStatusId: String,
-            val price: String,
+            val price: Double,
             val priceText: String,
             val productId: String,
             val productName: String,
