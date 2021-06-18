@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
+import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.usecases.FinishOrderUseCase
 import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailUseCase
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
@@ -22,6 +23,9 @@ import org.junit.Rule
 abstract class BuyerOrderDetailViewModelTestFixture {
 
     private val coroutineDispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
+
+    @RelaxedMockK
+    lateinit var resourceProvider: ResourceProvider
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -47,7 +51,6 @@ abstract class BuyerOrderDetailViewModelTestFixture {
     val shopId = "10002"
     val shopName = "Test Toko"
     val shopType = 10
-    val rupiahCurrencyCode = "Rp"
 
     val product = ProductListUiModel.ProductUiModel(
             button = ActionButtonsUiModel.ActionButton(
@@ -98,7 +101,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                 userSession = { userSession },
                 getBuyerOrderDetailUseCase = { getBuyerOrderDetailUseCase },
                 finishOrderUseCase = { finishOrderUseCase },
-                atcUseCase = { atcUseCase }
+                atcUseCase = { atcUseCase },
+                resourceProvider = { resourceProvider }
         )
 
         every { userSession.userId } returns userId
