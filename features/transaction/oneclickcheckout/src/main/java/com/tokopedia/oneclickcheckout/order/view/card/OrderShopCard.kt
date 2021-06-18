@@ -11,28 +11,28 @@ class OrderShopCard(private val view: CardOrderShopBinding, private val orderSum
 
     private lateinit var shop: OrderShop
 
-    fun setShop(orderShop: OrderShop) {
+    fun setShop(orderShop: OrderShop, freeOngkirImg: String, freeOngkirExtra: Boolean) {
         view.apply {
-            tvShopName?.text = orderShop.shopName
+            tvShopName.text = orderShop.shopName
             if (orderShop.shopBadge.isNotEmpty()) {
-                ivShop?.setImageUrl(orderShop.shopBadge)
-                ivShop?.visible()
-                ivShop?.contentDescription = root.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, orderShop.shopTypeName.toLowerCase(Locale.ROOT))
+                ivShop.setImageUrl(orderShop.shopBadge)
+                ivShop.visible()
+                ivShop.contentDescription = root.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, orderShop.shopTypeName.toLowerCase(Locale.ROOT))
             } else {
-                ivShop?.gone()
+                ivShop.gone()
             }
             if (orderShop.cityName.isNotEmpty()) {
                 if (orderShop.isFulfillment && orderShop.fulfillmentBadgeUrl.isNotEmpty()) {
-                    iuImageFulfill?.setImageUrl(orderShop.fulfillmentBadgeUrl)
-                    iuImageFulfill?.visible()
+                    iuImageFulfill.setImageUrl(orderShop.fulfillmentBadgeUrl)
+                    iuImageFulfill.visible()
                 } else {
-                    iuImageFulfill?.gone()
+                    iuImageFulfill.gone()
                 }
-                tvShopLocation?.text = orderShop.cityName
-                tvShopLocation?.visible()
+                tvShopLocation.text = orderShop.cityName
+                tvShopLocation.visible()
             } else {
-                tvShopLocation?.gone()
-                iuImageFulfill?.gone()
+                tvShopLocation.gone()
+                iuImageFulfill.gone()
             }
             val error = orderShop.errors.firstOrNull()
             if (error?.isNotEmpty() == true) {
@@ -43,22 +43,22 @@ class OrderShopCard(private val view: CardOrderShopBinding, private val orderSum
             }
 
             // TODO: 16/06/21 free ongkir image
-//        if (product.freeOngkirImg.isNotEmpty()) {
-//            iuFreeShipping?.let {
-//                it.setImageUrl(product.freeOngkirImg)
-//                it.visible()
-//            }
-//            val contentDescriptionStringResource = if (product.isFreeOngkirExtra) {
-//                com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
-//            } else {
-//                com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
-//            }
-//            iuFreeShipping?.contentDescription = view.context.getString(contentDescriptionStringResource)
-//            separatorFreeShipping?.visible()
-//        } else {
-//            iuFreeShipping?.gone()
-//            separatorFreeShipping?.gone()
-//        }
+            if (freeOngkirImg.isNotEmpty()) {
+                iuFreeShipping.let {
+                    it.setImageUrl(freeOngkirImg)
+                    it.visible()
+                }
+                val contentDescriptionStringResource = if (freeOngkirExtra) {
+                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
+                } else {
+                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
+                }
+                iuFreeShipping.contentDescription = view.root.context.getString(contentDescriptionStringResource)
+                separatorFreeShipping.visible()
+            } else {
+                iuFreeShipping.gone()
+                separatorFreeShipping.gone()
+            }
         }
         this.shop = orderShop
     }

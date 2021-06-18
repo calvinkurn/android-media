@@ -278,7 +278,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     view?.also { _ ->
                         orderProductCard?.setProduct(viewModel.orderProduct)
                         orderProductCard?.setShop(viewModel.orderShop)
-                        orderShopCard?.setShop(viewModel.orderShop)
+                        orderShopCard?.setShop(viewModel.orderShop, viewModel.orderProduct.freeOngkirImg, viewModel.orderProduct.isFreeOngkirExtra)
                         orderProductCard?.initView()
                         showMessage(it.data)
                         if (it.data.preference.address.addressId > 0 &&
@@ -300,7 +300,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         if (orderProductCard?.isProductInitialized() == false) {
                             orderProductCard?.setProduct(viewModel.orderProduct)
                             orderProductCard?.setShop(viewModel.orderShop)
-                            orderShopCard?.setShop(viewModel.orderShop)
+                            orderShopCard?.setShop(viewModel.orderShop, viewModel.orderProduct.freeOngkirImg, viewModel.orderProduct.isFreeOngkirExtra)
                             orderProductCard?.initView()
                             showMessage(it.data)
                             if (it.data.preference.address.addressId > 0 &&
