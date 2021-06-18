@@ -3,6 +3,7 @@ package com.tokopedia.minicart.common.widget.viewmodel.test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.usecase.*
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
@@ -231,5 +232,102 @@ class CalculationTest {
     }
 
     // Test overweight case
+    @Test
+    fun `WHEN change quantity and calculate product got weight exceed limit and have no ticker warning overweight THEN ticker warning overweight should be added to list`(){
+        //given
+        val productId = "1920796612"
+        val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModels)
+
+        //when
+        viewModel.updateProductQty(productId, 10)
+        viewModel.calculateProduct()
+
+        //then
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartTickerWarningUiModel() != null)
+    }
+
+    @Test
+    fun `WHEN change quantity and calculate product got weight exceed limit THEN ticker warning overweight should contain over weight value`(){
+        //given
+        val productId = "1920796612"
+        val overWeight = "0.2"
+        val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModels)
+
+        //when
+        viewModel.updateProductQty(productId, 10)
+        viewModel.calculateProduct()
+
+        //then
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartTickerWarningUiModel()?.warningMessage?.contains(overWeight) == true)
+    }
+
+    @Test
+    fun `WHEN change quantity and calculate product got no weight exceed limit THEN ticker warning overweight should be removed`(){
+        //given
+        val productId = "1920796612"
+        val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModels)
+
+        //when
+        viewModel.updateProductQty(productId, 10)
+        viewModel.calculateProduct()
+        viewModel.updateProductQty(productId, 1)
+        viewModel.calculateProduct()
+
+        //then
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartTickerWarningUiModel() == null)
+    }
+
+    @Test
+    fun `WHEN already overweight and change quantity still overweight THEN ticker warning overweight should be updated`(){
+        //given
+        val productId = "1920796612"
+        val overWeight = "1.2"
+        val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModels)
+
+        //when
+        viewModel.updateProductQty(productId, 10)
+        viewModel.calculateProduct()
+        viewModel.updateProductQty(productId, 20)
+        viewModel.calculateProduct()
+
+        //then
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartTickerWarningUiModel()?.warningMessage?.contains(overWeight) == true)
+    }
+
+    @Test
+    fun `WHEN mini cart has no unavailable product and change quantity got overweight THEN ticker warning overweight should be on first index`(){
+        //given
+        val productId = "1920796612"
+        val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModels)
+
+        //when
+        viewModel.updateProductQty(productId, 10)
+        viewModel.calculateProduct()
+
+        //then
+        val miniCartTickerWarningUiModel = viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartTickerWarningUiModel() ?: MiniCartTickerWarningUiModel()
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.visitables?.indexOf(miniCartTickerWarningUiModel) == 0)
+    }
+
+    @Test
+    fun `WHEN mini cart has unavailable product and change quantity got overweight THEN ticker warning overweight should be on second index`(){
+        //given
+        val productId = "1920796612"
+        val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAvailableAndUnavailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModels)
+
+        //when
+        viewModel.updateProductQty(productId, 10)
+        viewModel.calculateProduct()
+
+        //then
+        val miniCartTickerWarningUiModel = viewModel.miniCartListBottomSheetUiModel.value?.getMiniCartTickerWarningUiModel() ?: MiniCartTickerWarningUiModel()
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.visitables?.indexOf(miniCartTickerWarningUiModel) == 1)
+    }
 
 }

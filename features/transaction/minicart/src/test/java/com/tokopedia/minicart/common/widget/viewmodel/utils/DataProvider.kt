@@ -20,6 +20,11 @@ object DataProvider {
         return json.miniCart
     }
 
+    fun provideGetMiniCartListSuccessAvailableAndUnavailable(): MiniCartData {
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_available_and_unavailable"), MiniCartGqlResponse::class.java)
+        return json.miniCart
+    }
+
     fun provideGetMiniCartListSuccessAllUnavailable(): MiniCartData {
         val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_all_unavailable"), MiniCartGqlResponse::class.java)
         return json.miniCart
@@ -47,6 +52,11 @@ object DataProvider {
 
     fun provideMiniCartListUiModelAllAvailable(): MiniCartListUiModel {
         val miniCartData = provideGetMiniCartListSuccessAllAvailable()
+        return miniCartListUiModelMapper.mapUiModel(miniCartData)
+    }
+
+    fun provideMiniCartListUiModelAvailableAndUnavailable(): MiniCartListUiModel {
+        val miniCartData = provideGetMiniCartListSuccessAvailableAndUnavailable()
         return miniCartListUiModelMapper.mapUiModel(miniCartData)
     }
 
