@@ -1318,6 +1318,7 @@ object DynamicProductDetailTracking {
         fun eventAffiliateLinkClickIris(context: Context, affiliateUniqueId: String, uuid: String, recordId: String, irisSessionId: String, userId: String?, productId: String?) {
             val irisAnalytics = IrisAnalytics(context)
             val values = HashMap<String, Any>()
+            values["event"] = "link_click"
             values["created_time"] = DateFormatUtils.getFormattedDate(System.currentTimeMillis(), "yyyy-MM-dd'T'HH:mm:ssZ")
             values["environment"] = "android"
             values["tracker_id"] = uuid

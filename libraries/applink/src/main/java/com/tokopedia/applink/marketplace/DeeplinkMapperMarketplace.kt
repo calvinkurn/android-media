@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.ADD_PATH
+import com.tokopedia.applink.ApplinkConst.AFFILIATE_UNIQUE_ID
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -36,7 +37,7 @@ object DeeplinkMapperMarketplace {
     fun getTokopediaInternalProduct(uri:Uri, idList: List<String>?):String {
         return if (uri.pathSegments[0] == ADD_PATH) {
             ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
-        } else if (uri.queryParameterNames.contains("aff_unique_id")){
+        } else if (uri.queryParameterNames.contains(AFFILIATE_UNIQUE_ID)){
             UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE_UUID, idList?.getOrNull(0), uri.getQueryParameter("aff_unique_id"))
         } else {
             UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, idList?.getOrNull(0))
