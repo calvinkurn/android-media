@@ -216,7 +216,8 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
 
     override fun onSuggestionItemClicked(item: BaseSuggestionDataView) {
         trackSuggestionItemWithUrl(item.urlTracker)
-        trackEventItemClicked(item)
+        if (isTokoNow()) trackTokoNowEventItemClicked(item)
+        else trackEventItemClicked(item)
 
         view?.dropKeyBoard()
         view?.route(item.applink, searchParameter)
@@ -249,6 +250,27 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         override fun onError(e: Throwable?) {
 
         }
+    }
+
+    private fun trackTokoNowEventItemClicked(item: BaseSuggestionDataView) {
+        when(item.type) {
+            TYPE_KEYWORD -> {
+                view?.trackTokoNowEventClickKeyword(getTokoNowKeywordEventLabelForTracking(item))
+            }
+            TYPE_CURATED -> {
+                view?.trackTokoNowEventClickCurated(getCuratedEventLabelForTracking(item))
+            }
+        }
+    }
+
+    private fun getTokoNowKeywordEventLabelForTracking(item: BaseSuggestionDataView): String {
+        return String.format(
+                "keyword: %s - value: %s - po: %s - page: %s",
+                item.title,
+                item.searchTerm,
+                item.position,
+                item.applink
+        )
     }
 
     private fun trackEventItemClicked(item: BaseSuggestionDataView) {

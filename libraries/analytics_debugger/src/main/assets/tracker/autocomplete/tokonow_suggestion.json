@@ -1,21 +1,21 @@
 {
-  "readme": "TokoNow Autocomplete Initial State Tracking",
+  "readme": "TokoNow Autocomplete Suggestion Tracking",
   "mode": "exact",
   "query" : [
     {
       "event": "clickTokoNow",
-      "eventAction": "click - popular search - initial state",
+      "eventAction": "click - product autocomplete - autocomplete",
       "eventCategory": "tokonow - top nav",
-      "eventLabel": "value: .+ - po: .+ - page: .+",
+      "eventLabel": "keyword: .+ - value: .+ - po: .+ - page: .+",
       "businessUnit": "search",
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".+"
     },
     {
       "event": "clickTokoNow",
-      "eventAction": "click - refresh popular search - initial state",
+      "eventAction": "click - campaign autocomplete - autocomplete",
       "eventCategory": "tokonow - top nav",
-      "eventLabel": "",
+      "eventLabel": "keyword: .+ - product: .+ - po: .+ - page: .+",
       "businessUnit": "search",
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".+"
