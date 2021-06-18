@@ -316,7 +316,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                 }
             } else {
                 val updatedTickerWarning = tickerWarning.deepCopy()
-                updatedTickerWarning.warningMessage = warningWording.replace("{{weight}}", overWeight.toString() + " ")
+                updatedTickerWarning.warningMessage = warningWording.replace("{{weight}}", "$overWeight ")
                 visitables[tickerWarningIndex] = updatedTickerWarning
             }
         } else {

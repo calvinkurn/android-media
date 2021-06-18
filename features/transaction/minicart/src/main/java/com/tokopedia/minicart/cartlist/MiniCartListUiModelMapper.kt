@@ -247,7 +247,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
     fun mapTickerWarningUiModel(overWeight: Float, warningWording: String): MiniCartTickerWarningUiModel {
         return MiniCartTickerWarningUiModel().apply {
-            warningMessage = warningWording.replace("{{weight}}", overWeight.toString())
+            warningMessage = warningWording.replace("{{weight}}", "$overWeight ")
         }
     }
 
