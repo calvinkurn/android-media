@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -34,6 +35,7 @@ import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import java.net.SocketTimeoutException
@@ -403,6 +405,14 @@ class MiniCartWidget @JvmOverloads constructor(
             imageChevronUnavailable?.gone()
         }
         setTotalAmountLoading(false)
+        setAmountViewLayoutParams()
+    }
+
+    private fun setAmountViewLayoutParams() {
+        val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        lp.weight = 0f
+        lp.setMargins(0, 0, 4.toPx(), 0)
+        totalAmount?.amountView?.layoutParams = lp
     }
 
     private fun setTotalAmountLoading(isLoading: Boolean) {

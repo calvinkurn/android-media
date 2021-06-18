@@ -2,6 +2,7 @@ package com.tokopedia.minicart.common.widget.viewmodel.test
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.*
@@ -321,6 +322,24 @@ class GetMiniCartListSimplifiedTest {
 
         //then
         assert(viewModel.miniCartSimplifiedData.value?.miniCartWidgetData?.unavailableItemsCount == 0)
+    }
+
+    @Test
+    fun `WHEN fetch last widget state error THEN isShowMiniCartWidget should be false`() {
+        //given
+        val errorMessage = "Error Message"
+        val exception = ResponseErrorException(errorMessage)
+        val shopId = listOf("123")
+        coEvery { getMiniCartListSimplifiedUseCase.setParams(any()) } just Runs
+        coEvery { getMiniCartListSimplifiedUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(exception)
+        }
+
+        //when
+        viewModel.getLatestWidgetState(shopId)
+
+        //then
+        assert(viewModel.miniCartSimplifiedData.value?.isShowMiniCartWidget == false)
     }
 
 }

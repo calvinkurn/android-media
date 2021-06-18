@@ -14,4 +14,9 @@ object GetMiniCartListDataProvider {
         return json.miniCart
     }
 
+    fun provideGetMiniCartListSuccessOutOfService(): MiniCartData {
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_out_of_service"), MiniCartGqlResponse::class.java)
+        return json.miniCart
+    }
+
 }
