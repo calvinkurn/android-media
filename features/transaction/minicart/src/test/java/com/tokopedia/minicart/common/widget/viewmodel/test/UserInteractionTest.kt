@@ -5,9 +5,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.common.domain.usecase.*
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
-import com.tokopedia.minicart.common.widget.viewmodel.dataprovider.UserInteractionDataProvider
+import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import io.mockk.*
+import io.mockk.mockk
+import io.mockk.spyk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -38,9 +39,9 @@ class UserInteractionTest {
         //given
         val productId = "1920796612"
         val newQty = 5
-        val miniCartListUiModel = UserInteractionDataProvider.provideMiniCartListUiModelAllAvailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
-        val miniCartSimplifiedData = UserInteractionDataProvider.provideMiniCartSimplifiedDataAllAvailable()
+        val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllAvailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
         //when
@@ -55,9 +56,9 @@ class UserInteractionTest {
         //given
         val productId = "1920796612"
         val newQty = 5
-        val miniCartListUiModel = UserInteractionDataProvider.provideMiniCartListUiModelAllAvailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
-        val miniCartSimplifiedData = UserInteractionDataProvider.provideMiniCartSimplifiedDataAllAvailable()
+        val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllAvailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
         //when
@@ -72,9 +73,9 @@ class UserInteractionTest {
         //given
         val productId = "1920796612"
         val newNotes = "new notes"
-        val miniCartListUiModel = UserInteractionDataProvider.provideMiniCartListUiModelAllAvailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
-        val miniCartSimplifiedData = UserInteractionDataProvider.provideMiniCartSimplifiedDataAllAvailable()
+        val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllAvailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
         //when
@@ -89,9 +90,9 @@ class UserInteractionTest {
         //given
         val productId = "1920796612"
         val newNotes = "new notes"
-        val miniCartListUiModel = UserInteractionDataProvider.provideMiniCartListUiModelAllAvailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
-        val miniCartSimplifiedData = UserInteractionDataProvider.provideMiniCartSimplifiedDataAllAvailable()
+        val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllAvailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
         //when
@@ -104,9 +105,9 @@ class UserInteractionTest {
     @Test
     fun `WHEN user toggle accordion from expanded to collapsed THEN temporary collapsed data should not be empty`() {
         //given
-        val miniCartListUiModel = UserInteractionDataProvider.provideMiniCartListUiModelAllUnavailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllUnavailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
-        val miniCartSimplifiedData = UserInteractionDataProvider.provideMiniCartSimplifiedDataAllUnavailable()
+        val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllUnavailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
         //when
@@ -119,9 +120,9 @@ class UserInteractionTest {
     @Test
     fun `WHEN user toggle accordion from collapsed to expanded THEN temporary collapsed data should be empty`() {
         //given
-        val miniCartListUiModel = UserInteractionDataProvider.provideMiniCartListUiModelAllUnavailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllUnavailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
-        val miniCartSimplifiedData = UserInteractionDataProvider.provideMiniCartSimplifiedDataAllUnavailable()
+        val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllUnavailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
         //when
