@@ -3,6 +3,7 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
@@ -105,6 +106,9 @@ class ShopGradeWidget(
         tvPmShopScoreTips.setOnClickListener {
             RouteManager.route(context, Constant.Url.SHOP_PERFORMANCE_TIPS)
             powerMerchantTracking.sendEventClickTipsToImproveShopScore(element.shopScore.toString())
+        }
+        wrapperPmShopScore.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL)
         }
     }
 

@@ -93,28 +93,39 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvPmShopGradeScore"
+    <LinearLayout
+        android:id="@+id/wrapperPmShopScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:textColor="@color/Unify_N700"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="@id/guidelinePmShopGradeLeft"
-        app:layout_constraintTop_toBottomOf="@+id/containerPmShopGrade"
-        app:typographyType="heading_3"
-        tools:text="Performa Toko : 75" />
+        app:layout_constraintTop_toBottomOf="@+id/containerPmShopGrade">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvPmShopGradeScoreTotal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl1"
-        android:textColor="@color/Unify_N400"
-        app:layout_constraintBottom_toBottomOf="@+id/tvPmShopGradeScore"
-        app:layout_constraintStart_toEndOf="@+id/tvPmShopGradeScore"
-        app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="/100" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPmShopGradeScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700"
+            app:typographyType="heading_3"
+            tools:text="Performa Toko : 75" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvPmShopGradeScoreTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:textColor="@color/Unify_N400"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="/100" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_gravity="center_vertical"
+            app:icon_name="CHEVRON_RIGHT" />
+    </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmShopGradeThreshold"
@@ -126,7 +137,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/guidelinePmShopGradeRight"
         app:layout_constraintStart_toStartOf="@+id/guidelinePmShopGradeLeft"
-        app:layout_constraintTop_toBottomOf="@+id/tvPmShopGradeScore"
+        app:layout_constraintTop_toBottomOf="@+id/wrapperPmShopScore"
         app:layout_constraintVertical_bias="0.0"
         app:typographyType="body_2"
         tools:text="@string/pm_shop_grade_shop_score_threshold_description_pm_active" />
@@ -141,7 +152,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/guidelinePmShopGradeRight"
         app:layout_constraintStart_toStartOf="@+id/guidelinePmShopGradeLeft"
-        app:layout_constraintTop_toBottomOf="@+id/tvPmShopGradeScore"
+        app:layout_constraintTop_toBottomOf="@+id/wrapperPmShopScore"
         app:layout_constraintVertical_bias="0.0"
         tools:layout_height="48dp" />
 

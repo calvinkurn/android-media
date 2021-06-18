@@ -562,12 +562,8 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
                 && data.currentPMGrade?.gradeName != PMShopGrade.ULTIMATE
                 && isPmPro && isPmActive
         if (shouldShowNextGradeWidget) {
-            val pmProThreshold = pmBasicInfo?.shopInfo?.shopScorePmProThreshold
-                    ?: PMShopInfoUiModel.DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD
             widgets.add(WidgetDividerUiModel)
             widgets.add(getNextShopGradeWidgetData(data))
-            widgets.add(WidgetDividerUiModel)
-            widgets.add(WidgetNextUpdateUiModel(pmProThreshold, data.nextMonthlyRefreshDate))
         }
         if (pmBasicInfo?.shopInfo?.isNewSeller.orFalse()) {
             widgets.add(WidgetDividerUiModel)
