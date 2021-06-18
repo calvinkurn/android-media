@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -63,6 +64,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private var reviewHeader: ReadReviewHeader? = null
     private var statisticsBottomSheet: ReadReviewStatisticsBottomSheet? = null
     private var loadingView: View? = null
+    private var networkError: GlobalError? = null
 
     private val readReviewFilterFactory by lazy {
         ReadReviewSortFilterFactory()
@@ -192,6 +194,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private fun bindViews(view: View) {
         reviewHeader = view.findViewById(R.id.read_review_header)
         loadingView = view.findViewById(R.id.read_review_loading)
+        networkError = view.findViewById(R.id.read_review_network_error)
     }
 
     private fun getProductReview(page: Int) {
@@ -200,21 +203,20 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     private fun observeRatingAndTopics() {
         viewModel.ratingAndTopic.observe(viewLifecycleOwner, Observer {
+            hideLoading()
             when (it) {
                 is Success -> onSuccessGetRatingAndTopic(it.data)
-                is Fail -> {
-                }
+                is Fail -> onFailGetRatingAndTopic()
             }
         })
     }
 
     private fun observeProductReviews() {
         viewModel.productReviews.observe(viewLifecycleOwner, Observer {
+            hideLoading()
             when (it) {
                 is Success -> onSuccessGetProductReviews(it.data)
-                is Fail -> {
-
-                }
+                is Fail -> onFailGetProductReviews()
             }
         })
     }
@@ -237,14 +239,32 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             setRatingData(ratingAndTopics.rating)
             setListener(this@ReadReviewFragment)
             setAvailableFilters(ratingAndTopics.topics, ratingAndTopics.availableFilters, this@ReadReviewFragment)
+            show()
         }
-        hideLoading()
+        hideError()
+    }
+
+    private fun onFailGetRatingAndTopic() {
+        showError()
     }
 
     private fun onSuccessGetProductReviews(productrevGetProductReviewList: ProductrevGetProductReviewList) {
+        hideError()
         with(productrevGetProductReviewList) {
             renderList(viewModel.mapProductReviewToReadReviewUiModel(reviewList, shopInfo.shopID, shopInfo.name), hasNext)
         }
+    }
+
+    private fun onFailGetProductReviews() {
+        showError()
+    }
+
+    private fun showError() {
+        networkError?.show()
+    }
+
+    private fun hideError() {
+        networkError?.hide()
     }
 
     private fun getReviewStatistics(): List<ProductReviewDetail> {
