@@ -99,8 +99,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var hasRequestedLocation: Boolean = false
     /*to differentiate positive flow or negative flow*/
     private var isPositiveFlow: Boolean = true
-    /*to differentiate bottomsheet device location or tokopedia access location*/
-    private var isDeviceLocation: Boolean = true
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
@@ -419,12 +417,10 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                         getLocation()
                     } else {
                         hasRequestedLocation = false
-                        isDeviceLocation = false
-                        showBottomSheetLocUndefined()
+                        requestPermissionLocation()
                     }
                 } else {
-                    isDeviceLocation = true
-                    showBottomSheetLocUndefined()
+                    requestPermissionLocation()
                 }
             }
 
@@ -464,7 +460,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
             }
         } else {
-            isDeviceLocation = true
             showBottomSheetLocUndefined()
         }
     }
@@ -495,8 +490,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             tvInfoLocUndefined.text = "Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu."
             btnActivateLocation.setOnClickListener {
                 AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiPinpoint(userSession.userId)
-                if (isDeviceLocation) goToSettingLocationPage()
-                else requestPermissionLocation()
+                goToSettingLocationPage()
             }
         }
     }

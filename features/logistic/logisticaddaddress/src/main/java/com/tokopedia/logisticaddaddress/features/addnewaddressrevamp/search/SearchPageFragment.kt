@@ -75,8 +75,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private var bottomSheetLocUndefined: BottomSheetUnify? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var hasRequestedLocation: Boolean = false
-    /*to differentiate bottomsheet device location or tokopedia access location*/
-    private var isDeviceLocation: Boolean = true
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -212,12 +210,10 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                     getLocation()
                 } else {
                     hasRequestedLocation = false
-                    isDeviceLocation = false
-                    showBottomSheetLocUndefined()
+                    requestPermissionLocation()
                 }
             } else {
-                isDeviceLocation = true
-                showBottomSheetLocUndefined()
+                requestPermissionLocation()
             }
         }
     }
@@ -248,8 +244,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             tvInfoLocUndefined.text = "Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu."
             btnActivateLocation.setOnClickListener {
                 AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiSearch(userSession.userId)
-                if (isDeviceLocation) goToSettingLocationPage()
-                else requestPermissionLocation()
+                goToSettingLocationPage()
             }
         }
     }
@@ -364,7 +359,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
             }
         } else {
-            isDeviceLocation = true
             showBottomSheetLocUndefined()
         }
     }
