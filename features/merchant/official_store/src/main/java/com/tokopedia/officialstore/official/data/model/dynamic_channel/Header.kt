@@ -8,6 +8,8 @@ import com.google.gson.annotations.SerializedName
 data class Header(
         @Expose @SerializedName("id") val id: Long,
         @Expose @SerializedName("name") val name: String,
+        @Expose @SerializedName("subtitle") val subtitle: String,
+        @Expose @SerializedName("textColor") val textColor: String,
         @Expose @SerializedName("url") val url: String,
         @Expose @SerializedName("applink") val applink: String,
         @Expose @SerializedName("serverTime") val serverTime: Long,
@@ -19,6 +21,8 @@ data class Header(
     private constructor(parcel: Parcel) : this(
             id = parcel.readLong(),
             name = parcel.readString() ?: "",
+            subtitle = parcel.readString() ?: "",
+            textColor = parcel.readString() ?: "",
             url = parcel.readString() ?: "",
             applink = parcel.readString() ?: "",
             serverTime = parcel.readLong(),
@@ -31,6 +35,8 @@ data class Header(
         dest?.run {
             writeLong(id)
             writeString(name)
+            writeString(subtitle)
+            writeString(textColor)
             writeString(url)
             writeString(applink)
             writeLong(serverTime)
