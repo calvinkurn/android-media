@@ -1,7 +1,7 @@
 {
   "ace_search_product_v4": {
     "header": {
-      "responseCode": 0,
+      "responseCode": 1,
       "keywordProcess": "2",
       "totalData": 8,
       "totalDataText": "8",
@@ -83,6 +83,8 @@
           "originalPrice": "Rp7.000",
           "discountPercentage": 30,
           "parentId": 1682734974,
+          "source_engine": "sourceEngine",
+          "boosterList": "boosterList",
           "shop": {
             "id": 3102419,
             "name": "Maxi phone cell",

@@ -47,7 +47,8 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
             visitableList: List<Visitable<*>>
     ) {
         val firstProductIndex = visitableList.indexOfFirst { it is ProductItemDataView }
-        val nextPageProductIndex = firstProductIndex + categoryModelPage1.searchProduct.data.productList.size
+        val page1ProductSize = categoryModelPage1.searchProduct.data.productList.size
+        val nextPageProductIndex = firstProductIndex + page1ProductSize
         val page2ProductList = categoryModelPage2.searchProduct.data.productList
         val nextPageVisitableList = visitableList.subList(
                 nextPageProductIndex,
@@ -56,7 +57,8 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
 
         verifyProductItemDataViewList(
                 page2ProductList,
-                nextPageVisitableList.filterIsInstance<ProductItemDataView>()
+                nextPageVisitableList.filterIsInstance<ProductItemDataView>(),
+                page1ProductSize + 1
         )
     }
 
