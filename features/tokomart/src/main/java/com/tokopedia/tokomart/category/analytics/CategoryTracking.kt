@@ -5,6 +5,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_BANNER
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_CART_BUTTON_TOP_NAV
+import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_LEVEL_2_FILTER_WIDGET
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_PRODUCT
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_SEARCH_BAR
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_SEMUA_KATEGORI
@@ -59,6 +60,7 @@ object CategoryTracking {
         const val CLICK_SEMUA_KATEGORI = "click semua kategori"
         const val IMPRESSION_PRODUCT = "impression product"
         const val CLICK_PRODUCT = "click product"
+        const val CLICK_LEVEL_2_FILTER_WIDGET = "click level 2 filter widget"
     }
 
     object Category {
@@ -245,7 +247,7 @@ object CategoryTracking {
     fun sendApplyCategoryL2FilterEvent(categoryId: String, filterCategoryId: String) {
         sendGeneralEvent(DataLayer.mapOf(
                 EVENT, EVENT_CLICK_VALUE,
-                EVENT_ACTION, "click level 2 filter widget",
+                EVENT_ACTION, CLICK_LEVEL_2_FILTER_WIDGET,
                 EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                 EVENT_LABEL, "$categoryId - $filterCategoryId",
                 BUSINESSUNIT, BUSINESS_UNIT_VALUE,
