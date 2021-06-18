@@ -703,8 +703,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun generateNewCoachMarkAnchorForNewBuyerRemoveProfile(view: View, index: Int): View {
         return when (index) {
-            1 -> binding.newPreferenceCard.btnNewChangeAddress
-            else -> binding.newPreferenceCard.tvNewHeader
+            1 -> binding.newPreferenceCard.btnChangeAddress
+            else -> binding.newPreferenceCard.tvProfileHeader
         }
     }
 
