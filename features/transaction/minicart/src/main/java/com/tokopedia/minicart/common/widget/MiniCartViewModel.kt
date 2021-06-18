@@ -72,6 +72,9 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         _miniCartSimplifiedData.value = miniCartSimplifiedData
     }
 
+
+    // Setter & Getter
+
     fun initializeCurrentPage(currentPage: MiniCartAnalytics.Page) {
         _currentPage.value = currentPage
     }
@@ -83,6 +86,17 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
     fun initializeGlobalState() {
         _globalEvent.value = GlobalEvent()
     }
+
+    fun updateMiniCartSimplifiedData(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        _miniCartSimplifiedData.value = miniCartSimplifiedData
+    }
+
+    fun getLatestMiniCartData(): MiniCartSimplifiedData {
+        return miniCartListUiModelMapper.reverseMapUiModel(miniCartListBottomSheetUiModel.value)
+    }
+
+
+    // API Call & Callback
 
     fun getLatestWidgetState(shopIds: List<String>? = null) {
         if (shopIds != null) {
@@ -133,272 +147,6 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                     throwable = throwable
             )
         }
-    }
-
-    fun updateProductQty(productId: String, newQty: Int) {
-        val visitables = miniCartListBottomSheetUiModel.value?.visitables ?: emptyList()
-        loop@ for (visitable in visitables) {
-            if (visitable is MiniCartProductUiModel && visitable.productId == productId && !visitable.isProductDisabled) {
-                visitable.productQty = newQty
-                break@loop
-            }
-        }
-
-        val cartItems = miniCartSimplifiedData.value?.miniCartItems ?: emptyList()
-        loop@ for (cartItem in cartItems) {
-            if (cartItem.productId == productId && !cartItem.isError) {
-                cartItem.quantity = newQty
-                break@loop
-            }
-        }
-    }
-
-    fun updateProductNotes(productId: String, newNotes: String) {
-        val visitables = miniCartListBottomSheetUiModel.value?.visitables ?: emptyList()
-        loop@ for (visitable in visitables) {
-            if (visitable is MiniCartProductUiModel && visitable.productId == productId && !visitable.isProductDisabled) {
-                visitable.productNotes = newNotes
-                break@loop
-            }
-        }
-
-        val cartItems = miniCartSimplifiedData.value?.miniCartItems ?: emptyList()
-        loop@ for (cartItem in cartItems) {
-            if (cartItem.productId == productId && !cartItem.isError) {
-                cartItem.notes = newNotes
-                break@loop
-            }
-        }
-    }
-
-    fun calculateProduct() {
-        val visitables = miniCartListBottomSheetUiModel.value?.visitables ?: mutableListOf()
-
-        val miniCartProductList = mutableListOf<MiniCartProductUiModel>()
-        visitables.forEach { visitable ->
-            if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
-                miniCartProductList.add(visitable)
-            }
-        }
-
-        // Set temporary parent id for non variant product
-        var tmpParentId = 0
-        miniCartProductList.forEach { visitable ->
-            if (visitable.parentId == "0") {
-                visitable.parentId = TEMPORARY_PARENT_ID_PREFIX + ++tmpParentId
-            }
-        }
-
-        // Map of parent id - qty
-        val productParentQtyMap = mutableMapOf<String, Int>()
-        miniCartProductList.forEach { visitable ->
-            if (productParentQtyMap.containsKey(visitable.parentId)) {
-                val newQty = (productParentQtyMap[visitable.parentId] ?: 0) + visitable.productQty
-                productParentQtyMap[visitable.parentId] = newQty
-            } else {
-                productParentQtyMap[visitable.parentId] = visitable.productQty
-            }
-        }
-
-        // Set wholesale price
-        setWholesalePrice(miniCartProductList, productParentQtyMap, visitables)
-
-        // Calculate total price
-        var totalQty = 0
-        var totalPrice = 0L
-        var totalValue = 0L
-        var totalDiscount = 0L
-        var totalWeight = 0
-        visitables.forEach { visitable ->
-            if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
-                if (visitable.parentId.contains(TEMPORARY_PARENT_ID_PREFIX)) {
-                    visitable.parentId = "0"
-                }
-                val price = if (visitable.productWholeSalePrice > 0) visitable.productWholeSalePrice else visitable.productPrice
-                totalQty += visitable.productQty
-                totalPrice += visitable.productQty * price
-                val originalPrice = if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice else visitable.productPrice
-                totalValue += visitable.productQty * originalPrice
-                totalWeight += visitable.productQty * visitable.productWeight
-                val discountValue = if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice - visitable.productPrice else 0
-                totalDiscount += visitable.productQty * discountValue
-            }
-        }
-        miniCartListBottomSheetUiModel.value?.let {
-            it.miniCartWidgetUiModel.totalProductPrice = totalPrice
-            it.miniCartWidgetUiModel.totalProductCount = totalQty
-            it.miniCartSummaryTransactionUiModel.qty = totalQty
-            it.miniCartSummaryTransactionUiModel.totalValue = totalValue
-            it.miniCartSummaryTransactionUiModel.discountValue = totalDiscount
-            it.miniCartSummaryTransactionUiModel.paymentTotal = totalPrice
-            it.isFirstLoad = false
-            it.needToCalculateAfterLoad = false
-        }
-
-        validateOverWeight(totalWeight, visitables)
-
-        miniCartListBottomSheetUiModel.value?.visitables = visitables
-        _miniCartListBottomSheetUiModel.value = miniCartListBottomSheetUiModel.value
-    }
-
-    private fun setWholesalePrice(miniCartProductList: MutableList<MiniCartProductUiModel>,
-                                  productParentQtyMap: MutableMap<String, Int>,
-                                  visitables: MutableList<Visitable<*>>) {
-        val updatedProductForWholesalePriceItems = mutableListOf<MiniCartProductUiModel>()
-        val updatedProductForWholesalePriceItemsProductId = mutableListOf<String>()
-        miniCartProductList.forEach { visitable ->
-            val updatedProduct = visitable.deepCopy()
-            var isUpdatedWholeSalePrice = false // flag to update ui
-            var isEligibleForWholesalePrice = false
-            loop@ for (wholesalePrice in visitable.wholesalePriceGroup) {
-                val qty = productParentQtyMap[visitable.parentId] ?: 0
-
-                // Set wholesale price if eligible
-                if (qty >= wholesalePrice.qtyMin) {
-                    if (updatedProduct.productWholeSalePrice != wholesalePrice.prdPrc) {
-                        updatedProduct.productWholeSalePrice = wholesalePrice.prdPrc
-                        isUpdatedWholeSalePrice = true
-                    }
-                    isEligibleForWholesalePrice = true
-                    break@loop
-                }
-            }
-
-            // Reset wholesale price not eligible and previously has wholesale price
-            if (!isEligibleForWholesalePrice && visitable.productWholeSalePrice > 0L) {
-                updatedProduct.productWholeSalePrice = 0
-                isUpdatedWholeSalePrice = true
-            }
-
-            if (isUpdatedWholeSalePrice) {
-                updatedProductForWholesalePriceItems.add(updatedProduct)
-                updatedProductForWholesalePriceItemsProductId.add(updatedProduct.productId)
-            }
-        }
-
-        val updatedProductIndex = mutableListOf<Int>()
-        visitables.forEachIndexed { index, visitable ->
-            if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled && updatedProductForWholesalePriceItemsProductId.contains(visitable.productId)) {
-                updatedProductIndex.add(index)
-            }
-        }
-
-        var tmpIndex = 0
-        updatedProductIndex.forEach { index ->
-            val tmpVisitable = updatedProductForWholesalePriceItems[tmpIndex++]
-            visitables[index] = tmpVisitable
-        }
-    }
-
-    private fun validateOverWeight(totalWeight: Int, visitables: MutableList<Visitable<*>>) {
-        val maxWeight = miniCartListBottomSheetUiModel.value?.maximumShippingWeight ?: 0
-
-        if (totalWeight > maxWeight) {
-            var tickerWarning: MiniCartTickerWarningUiModel? = null
-            var tickerWarningIndex = -1
-            loop@ for ((index, visitable) in visitables.withIndex()) {
-                if (visitable is MiniCartTickerWarningUiModel) {
-                    tickerWarning = visitable
-                    tickerWarningIndex = index
-                    break@loop
-                }
-            }
-
-            val warningWording = miniCartListBottomSheetUiModel.value?.maximumShippingWeightErrorMessage
-                    ?: ""
-            val overWeight = (totalWeight - maxWeight) / 1000.0f
-            if (tickerWarning == null) {
-                tickerWarning = miniCartListUiModelMapper.mapTickerWarningUiModel(overWeight, warningWording)
-                tickerWarning.let {
-                    val firstItem = visitables.firstOrNull()
-                    if (firstItem != null && firstItem is MiniCartTickerErrorUiModel) {
-                        visitables.add(1, it)
-                    } else {
-                        visitables.add(0, it)
-                    }
-                }
-            } else {
-                val updatedTickerWarning = tickerWarning.deepCopy()
-                updatedTickerWarning.warningMessage = warningWording.replace("{{weight}}", "$overWeight ")
-                visitables[tickerWarningIndex] = updatedTickerWarning
-            }
-        } else {
-            removeTickerWarning(visitables)
-        }
-    }
-
-    private fun removeTickerWarning(visitables: MutableList<Visitable<*>>) {
-        var tmpIndex = -1
-        loop@ for ((index, visitable) in visitables.withIndex()) {
-            if (visitable is MiniCartTickerWarningUiModel) {
-                tmpIndex = index
-                break@loop
-            }
-        }
-
-        if (tmpIndex != -1) {
-            visitables.removeAt(tmpIndex)
-        }
-    }
-
-    fun toggleUnavailableItemsAccordion() {
-        val visitables = miniCartListBottomSheetUiModel.value?.visitables?.toMutableList()
-                ?: mutableListOf()
-        var accordionUiModel: MiniCartAccordionUiModel? = null
-        var indexAccordionUiModel: Int = -1
-        loop@ for ((index, visitable) in visitables.withIndex()) {
-            if (visitable is MiniCartAccordionUiModel) {
-                accordionUiModel = visitable
-                indexAccordionUiModel = index
-                break@loop
-            }
-        }
-
-        accordionUiModel?.let {
-            if (it.isCollapsed) {
-                expandUnavailableItems(visitables, it, indexAccordionUiModel)
-            } else {
-                collapseUnavailableItems(visitables, it, indexAccordionUiModel)
-            }
-        }
-    }
-
-    private fun collapseUnavailableItems(visitables: MutableList<Visitable<*>>, accordionUiModel: MiniCartAccordionUiModel, indexAccordionUiModel: Int) {
-        val tmpUnavailableProducts = mutableListOf<Visitable<*>>()
-        visitables.forEachIndexed { index, visitable ->
-            if (visitable is MiniCartUnavailableReasonUiModel || (visitable is MiniCartProductUiModel && visitable.isProductDisabled)) {
-                tmpUnavailableProducts.add(visitable)
-            }
-        }
-
-        if (tmpUnavailableProducts.size > 2) {
-            val updatedAccordionUiModel = accordionUiModel.deepCopy().apply {
-                isCollapsed = !isCollapsed
-            }
-            visitables[indexAccordionUiModel] = updatedAccordionUiModel
-
-            tmpUnavailableProducts.removeFirst() // exclude first reason
-            tmpUnavailableProducts.removeFirst() // exclude first unavailable item
-            tmpHiddenUnavailableItems.clear()
-            tmpHiddenUnavailableItems.addAll(tmpUnavailableProducts)
-            visitables.removeAll(tmpUnavailableProducts)
-
-            miniCartListBottomSheetUiModel.value?.visitables = visitables
-            _miniCartListBottomSheetUiModel.value = miniCartListBottomSheetUiModel.value
-        }
-    }
-
-    private fun expandUnavailableItems(visitables: MutableList<Visitable<*>>, accordionUiModel: MiniCartAccordionUiModel, indexAccordionUiModel: Int) {
-        val updatedAccordionUiModel = accordionUiModel.deepCopy().apply {
-            isCollapsed = !isCollapsed
-        }
-        visitables[indexAccordionUiModel] = updatedAccordionUiModel
-
-        visitables.addAll(indexAccordionUiModel - 1, tmpHiddenUnavailableItems)
-        tmpHiddenUnavailableItems.clear()
-
-        miniCartListBottomSheetUiModel.value?.visitables = visitables
-        _miniCartListBottomSheetUiModel.value = miniCartListBottomSheetUiModel.value
     }
 
     fun deleteSingleCartItem(product: MiniCartProductUiModel) {
@@ -573,11 +321,276 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         }
     }
 
-    fun getLatestMiniCartData(): MiniCartSimplifiedData {
-        return miniCartListUiModelMapper.reverseMapUiModel(miniCartListBottomSheetUiModel.value)
+
+    // User Interaction
+
+    fun updateProductQty(productId: String, newQty: Int) {
+        val visitables = miniCartListBottomSheetUiModel.value?.visitables ?: emptyList()
+        loop@ for (visitable in visitables) {
+            if (visitable is MiniCartProductUiModel && visitable.productId == productId && !visitable.isProductDisabled) {
+                visitable.productQty = newQty
+                break@loop
+            }
+        }
+
+        val cartItems = miniCartSimplifiedData.value?.miniCartItems ?: emptyList()
+        loop@ for (cartItem in cartItems) {
+            if (cartItem.productId == productId && !cartItem.isError) {
+                cartItem.quantity = newQty
+                break@loop
+            }
+        }
     }
 
-    fun updateMiniCartSimplifiedData(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        _miniCartSimplifiedData.value = miniCartSimplifiedData
+    fun updateProductNotes(productId: String, newNotes: String) {
+        val visitables = miniCartListBottomSheetUiModel.value?.visitables ?: emptyList()
+        loop@ for (visitable in visitables) {
+            if (visitable is MiniCartProductUiModel && visitable.productId == productId && !visitable.isProductDisabled) {
+                visitable.productNotes = newNotes
+                break@loop
+            }
+        }
+
+        val cartItems = miniCartSimplifiedData.value?.miniCartItems ?: emptyList()
+        loop@ for (cartItem in cartItems) {
+            if (cartItem.productId == productId && !cartItem.isError) {
+                cartItem.notes = newNotes
+                break@loop
+            }
+        }
     }
+
+    fun toggleUnavailableItemsAccordion() {
+        val visitables = miniCartListBottomSheetUiModel.value?.visitables?.toMutableList()
+                ?: mutableListOf()
+        var accordionUiModel: MiniCartAccordionUiModel? = null
+        var indexAccordionUiModel: Int = -1
+        loop@ for ((index, visitable) in visitables.withIndex()) {
+            if (visitable is MiniCartAccordionUiModel) {
+                accordionUiModel = visitable
+                indexAccordionUiModel = index
+                break@loop
+            }
+        }
+
+        accordionUiModel?.let {
+            if (it.isCollapsed) {
+                expandUnavailableItems(visitables, it, indexAccordionUiModel)
+            } else {
+                collapseUnavailableItems(visitables, it, indexAccordionUiModel)
+            }
+        }
+    }
+
+    private fun collapseUnavailableItems(visitables: MutableList<Visitable<*>>, accordionUiModel: MiniCartAccordionUiModel, indexAccordionUiModel: Int) {
+        val tmpUnavailableProducts = mutableListOf<Visitable<*>>()
+        visitables.forEachIndexed { index, visitable ->
+            if (visitable is MiniCartUnavailableReasonUiModel || (visitable is MiniCartProductUiModel && visitable.isProductDisabled)) {
+                tmpUnavailableProducts.add(visitable)
+            }
+        }
+
+        if (tmpUnavailableProducts.size > 2) {
+            val updatedAccordionUiModel = accordionUiModel.deepCopy().apply {
+                isCollapsed = !isCollapsed
+            }
+            visitables[indexAccordionUiModel] = updatedAccordionUiModel
+
+            tmpUnavailableProducts.removeFirst() // exclude first reason
+            tmpUnavailableProducts.removeFirst() // exclude first unavailable item
+            tmpHiddenUnavailableItems.clear()
+            tmpHiddenUnavailableItems.addAll(tmpUnavailableProducts)
+            visitables.removeAll(tmpUnavailableProducts)
+
+            miniCartListBottomSheetUiModel.value?.visitables = visitables
+            _miniCartListBottomSheetUiModel.value = miniCartListBottomSheetUiModel.value
+        }
+    }
+
+    private fun expandUnavailableItems(visitables: MutableList<Visitable<*>>, accordionUiModel: MiniCartAccordionUiModel, indexAccordionUiModel: Int) {
+        val updatedAccordionUiModel = accordionUiModel.deepCopy().apply {
+            isCollapsed = !isCollapsed
+        }
+        visitables[indexAccordionUiModel] = updatedAccordionUiModel
+
+        visitables.addAll(indexAccordionUiModel - 1, tmpHiddenUnavailableItems)
+        tmpHiddenUnavailableItems.clear()
+
+        miniCartListBottomSheetUiModel.value?.visitables = visitables
+        _miniCartListBottomSheetUiModel.value = miniCartListBottomSheetUiModel.value
+    }
+
+
+    // Calculation
+
+    fun calculateProduct() {
+        val visitables = miniCartListBottomSheetUiModel.value?.visitables ?: mutableListOf()
+
+        val miniCartProductList = mutableListOf<MiniCartProductUiModel>()
+        visitables.forEach { visitable ->
+            if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
+                miniCartProductList.add(visitable)
+            }
+        }
+
+        // Set temporary parent id for non variant product
+        var tmpParentId = 0
+        miniCartProductList.forEach { visitable ->
+            if (visitable.parentId == "0") {
+                visitable.parentId = TEMPORARY_PARENT_ID_PREFIX + ++tmpParentId
+            }
+        }
+
+        // Map of parent id - qty
+        val productParentQtyMap = mutableMapOf<String, Int>()
+        miniCartProductList.forEach { visitable ->
+            if (productParentQtyMap.containsKey(visitable.parentId)) {
+                val newQty = (productParentQtyMap[visitable.parentId] ?: 0) + visitable.productQty
+                productParentQtyMap[visitable.parentId] = newQty
+            } else {
+                productParentQtyMap[visitable.parentId] = visitable.productQty
+            }
+        }
+
+        // Set wholesale price
+        setWholesalePrice(miniCartProductList, productParentQtyMap, visitables)
+
+        // Calculate total price
+        var totalQty = 0
+        var totalPrice = 0L
+        var totalValue = 0L
+        var totalDiscount = 0L
+        var totalWeight = 0
+        visitables.forEach { visitable ->
+            if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
+                if (visitable.parentId.contains(TEMPORARY_PARENT_ID_PREFIX)) {
+                    visitable.parentId = "0"
+                }
+                val price = if (visitable.productWholeSalePrice > 0) visitable.productWholeSalePrice else visitable.productPrice
+                totalQty += visitable.productQty
+                totalPrice += visitable.productQty * price
+                val originalPrice = if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice else visitable.productPrice
+                totalValue += visitable.productQty * originalPrice
+                totalWeight += visitable.productQty * visitable.productWeight
+                val discountValue = if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice - visitable.productPrice else 0
+                totalDiscount += visitable.productQty * discountValue
+            }
+        }
+        miniCartListBottomSheetUiModel.value?.let {
+            it.miniCartWidgetUiModel.totalProductPrice = totalPrice
+            it.miniCartWidgetUiModel.totalProductCount = totalQty
+            it.miniCartSummaryTransactionUiModel.qty = totalQty
+            it.miniCartSummaryTransactionUiModel.totalValue = totalValue
+            it.miniCartSummaryTransactionUiModel.discountValue = totalDiscount
+            it.miniCartSummaryTransactionUiModel.paymentTotal = totalPrice
+            it.isFirstLoad = false
+            it.needToCalculateAfterLoad = false
+        }
+
+        validateOverWeight(totalWeight, visitables)
+
+        miniCartListBottomSheetUiModel.value?.visitables = visitables
+        _miniCartListBottomSheetUiModel.value = miniCartListBottomSheetUiModel.value
+    }
+
+    private fun setWholesalePrice(miniCartProductList: MutableList<MiniCartProductUiModel>,
+                                  productParentQtyMap: MutableMap<String, Int>,
+                                  visitables: MutableList<Visitable<*>>) {
+        val updatedProductForWholesalePriceItems = mutableListOf<MiniCartProductUiModel>()
+        val updatedProductForWholesalePriceItemsProductId = mutableListOf<String>()
+        miniCartProductList.forEach { visitable ->
+            val updatedProduct = visitable.deepCopy()
+            var isUpdatedWholeSalePrice = false // flag to update ui
+            var isEligibleForWholesalePrice = false
+            loop@ for (wholesalePrice in visitable.wholesalePriceGroup) {
+                val qty = productParentQtyMap[visitable.parentId] ?: 0
+
+                // Set wholesale price if eligible
+                if (qty >= wholesalePrice.qtyMin) {
+                    if (updatedProduct.productWholeSalePrice != wholesalePrice.prdPrc) {
+                        updatedProduct.productWholeSalePrice = wholesalePrice.prdPrc
+                        isUpdatedWholeSalePrice = true
+                    }
+                    isEligibleForWholesalePrice = true
+                    break@loop
+                }
+            }
+
+            // Reset wholesale price not eligible and previously has wholesale price
+            if (!isEligibleForWholesalePrice && visitable.productWholeSalePrice > 0L) {
+                updatedProduct.productWholeSalePrice = 0
+                isUpdatedWholeSalePrice = true
+            }
+
+            if (isUpdatedWholeSalePrice) {
+                updatedProductForWholesalePriceItems.add(updatedProduct)
+                updatedProductForWholesalePriceItemsProductId.add(updatedProduct.productId)
+            }
+        }
+
+        val updatedProductIndex = mutableListOf<Int>()
+        visitables.forEachIndexed { index, visitable ->
+            if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled && updatedProductForWholesalePriceItemsProductId.contains(visitable.productId)) {
+                updatedProductIndex.add(index)
+            }
+        }
+
+        var tmpIndex = 0
+        updatedProductIndex.forEach { index ->
+            val tmpVisitable = updatedProductForWholesalePriceItems[tmpIndex++]
+            visitables[index] = tmpVisitable
+        }
+    }
+
+    private fun validateOverWeight(totalWeight: Int, visitables: MutableList<Visitable<*>>) {
+        val maxWeight = miniCartListBottomSheetUiModel.value?.maximumShippingWeight ?: 0
+
+        if (totalWeight > maxWeight) {
+            var tickerWarning: MiniCartTickerWarningUiModel? = null
+            var tickerWarningIndex = -1
+            loop@ for ((index, visitable) in visitables.withIndex()) {
+                if (visitable is MiniCartTickerWarningUiModel) {
+                    tickerWarning = visitable
+                    tickerWarningIndex = index
+                    break@loop
+                }
+            }
+
+            val warningWording = miniCartListBottomSheetUiModel.value?.maximumShippingWeightErrorMessage
+                    ?: ""
+            val overWeight = (totalWeight - maxWeight) / 1000.0f
+            if (tickerWarning == null) {
+                tickerWarning = miniCartListUiModelMapper.mapTickerWarningUiModel(overWeight, warningWording)
+                tickerWarning.let {
+                    val firstItem = visitables.firstOrNull()
+                    if (firstItem != null && firstItem is MiniCartTickerErrorUiModel) {
+                        visitables.add(1, it)
+                    } else {
+                        visitables.add(0, it)
+                    }
+                }
+            } else {
+                val updatedTickerWarning = tickerWarning.deepCopy()
+                updatedTickerWarning.warningMessage = warningWording.replace("{{weight}}", "$overWeight ")
+                visitables[tickerWarningIndex] = updatedTickerWarning
+            }
+        } else {
+            removeTickerWarning(visitables)
+        }
+    }
+
+    private fun removeTickerWarning(visitables: MutableList<Visitable<*>>) {
+        var tmpIndex = -1
+        loop@ for ((index, visitable) in visitables.withIndex()) {
+            if (visitable is MiniCartTickerWarningUiModel) {
+                tmpIndex = index
+                break@loop
+            }
+        }
+
+        if (tmpIndex != -1) {
+            visitables.removeAt(tmpIndex)
+        }
+    }
+
 }
