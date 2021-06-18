@@ -251,6 +251,9 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         if (shouldLoadOverlayImage(data.overlayImageUrl)) {
             if (shouldScrollToLeftBanner()) recyclerViewItem.smoothScrollToPosition(LEFT_BANNER_POSITION)
             overlayImage.loadImage(data.overlayImageUrl, overlayImageHandler(data))
+        } else {
+            overlayImage.setImageDrawable(null)
+            configureBackgroundOverlay(data)
         }
         recyclerViewItem.setMargin(
                 left = 0,
@@ -287,6 +290,9 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             overlayBackground.setGradientBackground(data.gradientColors)
         } else if (data.backgroundUrl.isNotBlank() && data.backgroundUrl.isNotEmpty()) {
             overlayBackground.loadImage(data.backgroundUrl)
+        } else {
+            overlayBackground.setImageDrawable(null)
+            overlayBackground.background = null
         }
     }
 
