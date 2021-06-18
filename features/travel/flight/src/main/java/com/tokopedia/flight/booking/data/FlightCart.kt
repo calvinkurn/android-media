@@ -1,5 +1,6 @@
 package com.tokopedia.flight.booking.data
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -213,6 +214,7 @@ data class FlightCart(
             @Expose
             val label: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",
@@ -239,6 +241,7 @@ data class FlightCart(
             @Expose
             val type: Int = 0,
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",
@@ -273,6 +276,7 @@ data class FlightCart(
             @Expose
             val id: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",
@@ -651,6 +655,7 @@ data class FlightCart(
             @Expose
             val type: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",
