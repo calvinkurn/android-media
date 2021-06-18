@@ -82,7 +82,8 @@ class ReadReviewViewModel @Inject constructor(
 
     fun toggleLikeReview(reviewId: String, shopId: String, likeStatus: Int) {
         launchCatchError(block = {
-            toggleLikeReviewUseCase.setParams(reviewId, shopId, productId.value ?: "", ReadReviewUtils.invertLikeStatus(likeStatus))
+            toggleLikeReviewUseCase.setParams(reviewId, shopId, productId.value
+                    ?: "", ReadReviewUtils.invertLikeStatus(likeStatus))
             val data = toggleLikeReviewUseCase.executeOnBackground()
             _toggleLikeReview.postValue(Success(data.toggleProductReviewLike))
         }) {
@@ -91,16 +92,24 @@ class ReadReviewViewModel @Inject constructor(
     }
 
     fun setFilter(selectedFilters: List<ListItemUnify>, type: SortFilterBottomSheetType) {
-        if(type == SortFilterBottomSheetType.RatingFilterBottomSheet) {
-            this.filter.replace(mapRatingFilterToFilterType(selectedFilters))
+        if (type == SortFilterBottomSheetType.RatingFilterBottomSheet) {
+            if (selectedFilters.isEmpty()) {
+                this.filter.removeBasedOnClass(FilterType.FilterRating())
+            } else {
+                this.filter.replace(mapRatingFilterToFilterType(selectedFilters))
+            }
         } else {
-            this.filter.replace(mapTopicFilterToFilterType(selectedFilters))
+            if (selectedFilters.isEmpty()) {
+                this.filter.removeBasedOnClass(FilterType.FilterTopic())
+            } else {
+                this.filter.replace(mapTopicFilterToFilterType(selectedFilters))
+            }
         }
         resetPage()
     }
 
     fun setFilterWithImage(isActive: Boolean) {
-        if(isActive) {
+        if (isActive) {
             this.filter.forEach {
                 if (it is FilterType.FilterWithImage) {
                     filter.remove(it)
@@ -117,9 +126,34 @@ class ReadReviewViewModel @Inject constructor(
         resetPage()
     }
 
+    fun getSelectedRatingFilter(): List<String> {
+        val selectedFilters = filter.getBasedOnClass(FilterType.FilterRating())?.value
+        return selectedFilters?.split(",")?.map { it.trim() } ?: listOf()
+    }
+
+    fun getSelectedTopicFilter(): List<String> {
+        val selectedFilters = filter.getBasedOnClass(FilterType.FilterTopic())?.value?.split(",")?.map { it.trim() } ?: listOf()
+        val topicsMap = getTopicsMap()
+        val result = mutableListOf<String>()
+        selectedFilters.forEach {
+            result.add(getKey(topicsMap, it))
+        }
+        return result
+    }
+
+    private fun getKey(map: Map<String, String>, target: String): String {
+        map.keys.forEach {
+            if (target == map[it]) {
+                return it
+            }
+        }
+        return ""
+    }
+
     private fun getProductReviews(page: Int) {
         launchCatchError(block = {
-            getProductReviewListUseCase.setParams(productId.value ?: "", page, sort, mapFilterToRequestParams())
+            getProductReviewListUseCase.setParams(productId.value
+                    ?: "", page, sort, mapFilterToRequestParams())
             val data = getProductReviewListUseCase.executeOnBackground()
             _productReviews.postValue(Success(data.productrevGetProductReviewList))
         }) {
@@ -150,7 +184,7 @@ class ReadReviewViewModel @Inject constructor(
     }
 
     private fun mapFilterToRequestParams(): String {
-        if(filter.isEmpty()) return ""
+        if (filter.isEmpty()) return ""
         return filter.joinToString(separator = ";") { "${it.param}=${it.value}" }
     }
 
@@ -175,10 +209,27 @@ class ReadReviewViewModel @Inject constructor(
 
     private fun MutableList<FilterType>.replace(filter: FilterType) {
         this.forEach {
-            if(it::class == filter::class) {
+            if (it::class == filter::class) {
                 remove(it)
             }
         }
         add(filter)
+    }
+
+    private fun MutableList<FilterType>.removeBasedOnClass(filter: FilterType) {
+        this.forEach {
+            if (it::class == filter::class) {
+                remove(it)
+            }
+        }
+    }
+
+    private fun MutableList<FilterType>.getBasedOnClass(filter: FilterType): FilterType? {
+        this.forEach {
+            if (it::class == filter::class) {
+                return it
+            }
+        }
+        return null
     }
 }

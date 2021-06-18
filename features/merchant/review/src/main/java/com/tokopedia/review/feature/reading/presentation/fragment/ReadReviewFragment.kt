@@ -127,13 +127,13 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onFilterWithTopicClicked(topics: List<ProductTopic>, index: Int) {
         val filterOptions = readReviewFilterFactory.getTopicFilters(topics)
-        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_topic_filter_title), filterOptions, this, SortFilterBottomSheetType.TopicFilterBottomSheet, listOf(), "", index).show(it, ReadReviewFilterBottomSheet.TAG) }
+        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_topic_filter_title), filterOptions, this, SortFilterBottomSheetType.TopicFilterBottomSheet, viewModel.getSelectedTopicFilter(), "", index).show(it, ReadReviewFilterBottomSheet.TAG) }
     }
 
     override fun onFilterWithRatingClicked(index: Int) {
         val filterOptions = readReviewFilterFactory.getRatingFilters((MAX_RATING downTo MIN_RATING).map { it.toString() })
         activity?.supportFragmentManager?.let {
-            ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_rating_filter_title), filterOptions, this, SortFilterBottomSheetType.RatingFilterBottomSheet, listOf()
+            ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_rating_filter_title), filterOptions, this, SortFilterBottomSheetType.RatingFilterBottomSheet, viewModel.getSelectedRatingFilter()
                     , "", index).show(it, ReadReviewFilterBottomSheet.TAG)
         }
     }
