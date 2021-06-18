@@ -70,7 +70,6 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                             productName = cartDetail.product.productName
                             productVariantName = cartDetail.product.variantDescriptionDetail.variantName.joinToString(", ")
                             productPrice = cartDetail.product.productPrice
-                            productQty = cartDetail.product.productQuantity
                         }
                 )
             }

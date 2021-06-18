@@ -305,7 +305,6 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     productName = visitable.productName
                     productVariantName = visitable.productVariantName
                     productPrice = visitable.productPrice
-                    productQty = visitable.productQty
                 }
                 miniCartItems.add(miniCartItem)
 

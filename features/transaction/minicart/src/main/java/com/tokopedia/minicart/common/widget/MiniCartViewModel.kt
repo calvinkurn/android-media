@@ -57,6 +57,18 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
 
     private var lastDeletedProductItem: MiniCartProductUiModel? = null
 
+    // Used for mocking _miniCartListBottomSheetUiModel value.
+    // Should only be called from unit test.
+    fun setMiniCartListUiModel(miniCartListUiModel: MiniCartListUiModel) {
+        _miniCartListBottomSheetUiModel.value = miniCartListUiModel
+    }
+
+    // Used for mocking _miniCartSimplifiedData value.
+    // Should only be called from unit test.
+    fun setMiniCartSimplifiedData(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        _miniCartSimplifiedData.value = miniCartSimplifiedData
+    }
+
     fun initializeCurrentPage(currentPage: MiniCartAnalytics.Page) {
         _currentPage.value = currentPage
     }
@@ -304,7 +316,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                 }
             } else {
                 val updatedTickerWarning = tickerWarning.deepCopy()
-                updatedTickerWarning.warningMessage = warningWording.replace("{{weight}}", overWeight.toString())
+                updatedTickerWarning.warningMessage = warningWording.replace("{{weight}}", overWeight.toString() + " ")
                 visitables[tickerWarningIndex] = updatedTickerWarning
             }
         } else {
