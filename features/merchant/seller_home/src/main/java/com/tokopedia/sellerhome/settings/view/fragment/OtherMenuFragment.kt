@@ -302,7 +302,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         otherMenuViewModel.getShopOperational()
                     }
                     is Fail -> {
-                        SellerHomeErrorHandler.logExceptionToCrashlytics(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
+                        SellerHomeErrorHandler.logException(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
                         showSettingShopInfoState(SettingResponseState.SettingError)
                     }
                 }
@@ -355,7 +355,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 is Success -> otherMenuViewHolder?.showOperationalHourLayout(it.data)
                 is Fail -> {
                     otherMenuViewHolder?.onErrorGetSettingShopInfoData()
-                    SellerHomeErrorHandler.logExceptionToCrashlytics(
+                    SellerHomeErrorHandler.logException(
                         it.throwable,
                         ERROR_GET_SHOP_OPERATIONAL_HOUR
                     )
