@@ -19,9 +19,10 @@ class UpdateCartAndValidateUseUseCase @Inject constructor(private val updateCart
 
     override fun createObservable(requestParams: RequestParams?): Observable<UpdateAndValidateUseData> {
         val paramUpdateList = requestParams?.getObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST) as ArrayList<UpdateCartRequest>
+        val paramUpdateSource = requestParams?.getString(UpdateCartUseCase.PARAM_KEY_SOURCE, "")
         val requestParamUpdateCart = RequestParams.create()
         requestParamUpdateCart.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, paramUpdateList)
-        requestParamUpdateCart.putObject(UpdateCartUseCase.PARAM_KEY_SOURCE, UpdateCartUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES)
+        requestParamUpdateCart.putString(UpdateCartUseCase.PARAM_KEY_SOURCE, paramUpdateSource)
 
         val paramValidateUse = requestParams.getObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE) as ValidateUsePromoRequest
         val requestParamValidateUse = RequestParams.create()

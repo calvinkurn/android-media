@@ -1,5 +1,6 @@
 package com.tokopedia.tokomart.search.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
@@ -8,22 +9,32 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.BUSINESSUNIT
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.CURRENTSITE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokomart.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokomart.search.utils.SEARCH_QUERY_PARAM_MAP
+import com.tokopedia.tokomart.search.utils.SearchTracking.Action.GENERAL_SEARCH
+import com.tokopedia.tokomart.search.utils.SearchTracking.Category.TOKONOW_TOP_NAV
+import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
 import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel
-import com.tokopedia.tokomart.searchcategory.presentation.model.CategoryFilterDataView
-import com.tokopedia.tokomart.searchcategory.presentation.model.ChooseAddressDataView
-import com.tokopedia.tokomart.searchcategory.presentation.model.ProductCountDataView
+import com.tokopedia.tokomart.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
 import com.tokopedia.tokomart.searchcategory.presentation.model.QuickFilterDataView
-import com.tokopedia.tokomart.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokomart.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokomart.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
+import com.tokopedia.track.TrackAppUtils.EVENT
+import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
+import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
+import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -56,6 +67,9 @@ class SearchViewModel @Inject constructor (
         abTestPlatformWrapper,
 ) {
 
+    private val generalSearchEventMutableLiveData = SingleLiveEvent<Map<String, Any>>()
+    val generalSearchEventLiveData: LiveData<Map<String, Any>> = generalSearchEventMutableLiveData
+
     val query = queryParamMap[SearchApiConst.Q] ?: ""
 
     private var suggestionModel: AceSearchProductModel.Suggestion? = null
@@ -78,10 +92,12 @@ class SearchViewModel @Inject constructor (
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {
         suggestionModel = searchModel.searchProduct.data.suggestion
 
+        val searchProductHeader = searchModel.searchProduct.header
+
         val headerDataView = HeaderDataView(
                 title = "",
                 hasSeeAllCategoryButton = false,
-                aceSearchProductHeader = searchModel.searchProduct.header,
+                aceSearchProductHeader = searchProductHeader,
                 categoryFilterDataValue = searchModel.categoryFilter,
                 quickFilterDataValue = searchModel.quickFilter,
                 bannerChannel = searchModel.bannerChannel,
@@ -92,6 +108,8 @@ class SearchViewModel @Inject constructor (
         )
 
         onGetFirstPageSuccess(headerDataView, contentDataView)
+
+        sendGeneralSearchTracking(searchProductHeader)
     }
 
     override fun postProcessHeaderList(headerList: MutableList<Visitable<*>>) {
@@ -121,6 +139,27 @@ class SearchViewModel @Inject constructor (
         val quickFilterIndex = headerList.indexOfFirst { it is QuickFilterDataView }
 
         return quickFilterIndex + 1
+    }
+
+    private fun sendGeneralSearchTracking(searchProductHeader: SearchProductHeader) {
+        val eventLabel = query +
+                "|${searchProductHeader.keywordProcess}" +
+                "|${searchProductHeader.responseCode}" +
+                "|$BUSINESS_UNIT_VALUE" +
+                "|$TOKONOW" +
+                "|$HASIL_PENCARIAN_DI_TOKONOW" +
+                "|${searchProductHeader.totalData}"
+
+        val generalSearchDataLayer = mapOf(
+                EVENT to EVENT_CLICK_VALUE,
+                EVENT_ACTION to GENERAL_SEARCH,
+                EVENT_CATEGORY to TOKONOW_TOP_NAV,
+                EVENT_LABEL to eventLabel,
+                BUSINESSUNIT to BUSINESS_UNIT_VALUE,
+                CURRENTSITE to CURRENT_SITE_VALUE,
+        )
+
+        generalSearchEventMutableLiveData.value = generalSearchDataLayer
     }
 
     private fun onGetSearchFirstPageError(throwable: Throwable) {

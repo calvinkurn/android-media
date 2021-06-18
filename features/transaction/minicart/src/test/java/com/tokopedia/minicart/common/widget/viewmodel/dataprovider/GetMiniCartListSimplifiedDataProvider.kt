@@ -1,7 +1,6 @@
 package com.tokopedia.minicart.common.widget.viewmodel.dataprovider
 
 import com.google.gson.Gson
-import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper

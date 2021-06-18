@@ -1,9 +1,15 @@
 package com.tokopedia.tokomart.search.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
-import com.tokopedia.tokomart.category.domain.model.CategoryModel
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.BUSINESSUNIT
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.CURRENTSITE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
 import com.tokopedia.tokomart.search.domain.model.SearchModel
+import com.tokopedia.tokomart.search.utils.SearchTracking.Action.GENERAL_SEARCH
+import com.tokopedia.tokomart.search.utils.SearchTracking.Category.TOKONOW_TOP_NAV
+import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
 import com.tokopedia.tokomart.searchcategory.assertBannerDataView
 import com.tokopedia.tokomart.searchcategory.assertCategoryFilterDataView
 import com.tokopedia.tokomart.searchcategory.assertChooseAddressDataView
@@ -12,11 +18,14 @@ import com.tokopedia.tokomart.searchcategory.assertQuickFilterDataView
 import com.tokopedia.tokomart.searchcategory.assertTitleDataView
 import com.tokopedia.tokomart.searchcategory.jsonToObject
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 import com.tokopedia.tokomart.searchcategory.verifyProductItemDataViewList
-import org.hamcrest.CoreMatchers
+import com.tokopedia.track.TrackAppUtils.EVENT
+import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
+import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
+import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import org.junit.Assert.assertThat
 import org.junit.Test
-import org.hamcrest.CoreMatchers.`is` as shouldBe
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class SearchFirstPageTest: BaseSearchPageLoadTest() {
@@ -66,13 +75,14 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         val expectedProductList = searchModel.searchProduct.data.productList
         val actualProductItemDataViewList = visitableList.filterIsInstance<ProductItemDataView>()
 
-        verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList)
+        verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList, 1)
     }
 
     private fun `Then assert get first page success interactions`(searchModel: SearchModel) {
         `Then assert auto complete applink from API`(searchModel)
         `Then assert header background is shown`()
         `Then assert content is not loading`()
+        `Then assert general search tracking`(searchModel)
     }
 
     private fun `Then assert auto complete applink from API`(searchModel: SearchModel) {
@@ -89,6 +99,29 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         assertThat(searchViewModel.isContentLoadingLiveData.value, shouldBe(false))
     }
 
+    private fun `Then assert general search tracking`(searchModel: SearchModel) {
+        val searchProductHeader = searchModel.searchProduct.header
+        val keywordProcess = searchProductHeader.keywordProcess
+        val responseCode = searchProductHeader.responseCode
+        val totalData = searchProductHeader.totalData.toString()
+        val eventLabel = defaultKeyword +
+                "|$keywordProcess" +
+                "|$responseCode" +
+                "|$BUSINESS_UNIT_VALUE" +
+                "|$TOKONOW" +
+                "|$HASIL_PENCARIAN_DI_TOKONOW" +
+                "|$totalData"
+
+        val generalSearch = searchViewModel.generalSearchEventLiveData.value!!
+
+        assertThat(generalSearch[EVENT], shouldBe(EVENT_CLICK_VALUE))
+        assertThat(generalSearch[EVENT_ACTION], shouldBe(GENERAL_SEARCH))
+        assertThat(generalSearch[EVENT_CATEGORY], shouldBe(TOKONOW_TOP_NAV))
+        assertThat(generalSearch[EVENT_LABEL], shouldBe(eventLabel))
+        assertThat(generalSearch[BUSINESSUNIT], shouldBe(BUSINESS_UNIT_VALUE))
+        assertThat(generalSearch[CURRENTSITE], shouldBe(CURRENT_SITE_VALUE))
+    }
+
     @Test
     fun `test first page has next page`() {
         val searchModel = "search/first-page-16-products.json".jsonToObject<SearchModel>()
@@ -103,18 +136,5 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         `Then assert visitable list end with loading more model`(visitableList)
         `Then assert has next page value`(true)
         `Then assert get first page success interactions`(searchModel)
-    }
-
-    @Test
-    fun `test first page should get warehouse id if shop id is empty`() {
-        val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
-
-        `Given choose address data`(ChooseAddressConstant.emptyAddress)
-        `Given search view model`()
-        `Given get search first page use case will be successful`(searchModel)
-
-        `When view created`()
-
-        
     }
 }
