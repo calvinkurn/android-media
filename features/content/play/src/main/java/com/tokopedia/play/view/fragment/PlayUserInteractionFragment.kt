@@ -69,10 +69,7 @@ import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
-import com.tokopedia.play_common.util.extension.awaitMeasured
-import com.tokopedia.play_common.util.extension.dismissToaster
-import com.tokopedia.play_common.util.extension.globalVisibleRect
-import com.tokopedia.play_common.util.extension.recreateView
+import com.tokopedia.play_common.util.extension.*
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -128,6 +125,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
+    private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
@@ -1168,8 +1166,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         if (pinnedModel != null) {
             pinnedView?.setPinnedMessage(pinnedModel)
-//            if (pinnedModel.shouldShow && !bottomInsets.isAnyShown) pinnedView?.show()
-            if (!bottomInsets.isAnyShown) pinnedView?.show()
+            if (pinnedModel.shouldShow && !bottomInsets.isAnyShown) pinnedView?.show()
             else pinnedView?.hide()
         } else pinnedView?.hide()
 
@@ -1275,19 +1272,37 @@ class PlayUserInteractionFragment @Inject constructor(
             quickReplyView?.showIfNotEmpty()
         } else quickReplyView?.hide()
 
+        /**
+         * This can be solved by a simple barrier, but the barrier only work on testapp, not customerapp
+         * and I don't know why arghhh
+         */
         val quickReplyViewId = quickReplyView?.id ?: return
+        val topmostLikeView = this.topmostLikeView ?: return
         if (videoPlayer.isYouTube && channelType.isVod) {
-            view?.changeConstraint {
-                connect(
-                        quickReplyViewId,
-                        ConstraintSet.BOTTOM,
-                        R.id.barrier_pinned_like,
-                        ConstraintSet.TOP
-                )
+            scope.launch {
+                val pinnedView = this@PlayUserInteractionFragment.pinnedView
+                val anchorId = if (pinnedView == null) topmostLikeView.id
+                else {
+                    val measurePinnedView = asyncCatchError(block = { measureWithTimeout { pinnedView.rootView.awaitLayout() } }) {}
+                    val measureTopmostLikeView = asyncCatchError(block = { measureWithTimeout { topmostLikeView.rootView.awaitLayout() } }) {}
+                    awaitAll(measurePinnedView, measureTopmostLikeView)
+
+                    if (pinnedView.rootView.y < topmostLikeView.rootView.y) pinnedView.id
+                    else topmostLikeView.id
+                }
+
+                view?.changeConstraint {
+                    connect(
+                            quickReplyViewId,
+                            ConstraintSet.BOTTOM,
+                            anchorId,
+                            ConstraintSet.TOP
+                    )
+                }
             }
         } else {
             view?.changeConstraint {
-                connect(quickReplyViewId, ConstraintSet.BOTTOM, R.id.view_topmost_like, ConstraintSet.TOP)
+                connect(quickReplyViewId, ConstraintSet.BOTTOM, topmostLikeView.id, ConstraintSet.TOP)
             }
         }
     }

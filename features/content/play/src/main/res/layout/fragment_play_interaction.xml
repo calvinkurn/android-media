@@ -98,14 +98,6 @@
         app:layout_constraintEnd_toEndOf="@id/space_size"
         />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_pinned_like"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="top"
-        app:constraint_referenced_ids="view_pinned, view_topmost_like"
-        />
-
     <include
         android:id="@+id/view_pinned"
         layout="@layout/view_pinned"
