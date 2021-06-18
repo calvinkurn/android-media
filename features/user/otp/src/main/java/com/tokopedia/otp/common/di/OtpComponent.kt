@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.otp.notif.view.fragment.*
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.fragment.*
+import com.tokopedia.otp.verification.view.fragment.miscall.MisscallVerificationFragment
+import com.tokopedia.otp.verification.view.fragment.miscall.OnboardingMiscallFragment
 import dagger.Component
 
 /**

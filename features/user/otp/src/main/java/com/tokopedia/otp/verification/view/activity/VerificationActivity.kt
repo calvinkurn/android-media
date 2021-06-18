@@ -13,6 +13,8 @@ import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.view.fragment.*
+import com.tokopedia.otp.verification.view.fragment.miscall.MisscallVerificationFragment
+import com.tokopedia.otp.verification.view.fragment.miscall.OnboardingMiscallFragment
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 

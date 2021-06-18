@@ -448,7 +448,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    protected fun setResendOtpFooterSpan(message: String, spannable: Spannable) {
+    open fun setResendOtpFooterSpan(message: String, spannable: Spannable) {
 
         val otpMsg = getString(R.string.resend_otp)
         val start = message.indexOf(otpMsg)
@@ -488,7 +488,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         )
     }
 
-    protected fun setOtherMethodFooterSpan(message: String, spannable: Spannable) {
+    open fun setOtherMethodFooterSpan(message: String, spannable: Spannable) {
         spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
@@ -539,6 +539,8 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     companion object {
         private const val INTERVAL = 1000
         private const val COUNTDOWN_LENGTH = 30
+
+        const val ROLLANCE_KEY_MISCALL_OTP = "otp_miscall_new_ui"
 
         fun createInstance(bundle: Bundle?): VerificationFragment {
             val fragment = VerificationFragment()

@@ -12,10 +12,17 @@
     <string name="enter_verification_code">Masukkan Kode Verifikasi</string>
     <string name="my_phone_inactive_change_at_setting">Nomor ponsel sudah tidak aktif?\nUbah nomor ponsel di Pengaturan</string>
     <string name="setting">Pengaturan</string>
+    
     <string name="cotp_miscall_onboarding_title">Kami akan Missed Call nomor kamu, panggilan ini tidak perlu dijawab.</string>
     <string name="cotp_miscall_onboarding_desc">4 digit terakhir dari nomor yang menelpon kamu adalah kode verifikasi kamu.</string>
+    <string name="cotp_miscall_onboarding_title_new">Kami akan missed call nomor HP-mu, jangan angkat teleponnya.</string>
+    <string name="cotp_miscall_onboarding_desc_new">Kamu cuma perlu masukkan 6 digit terakhir dari nomor yang menelepon HP-mu. Pastikan HP-mu aktif, ya!</string>
     <string name="cotp_miscall_onboarding_send_call">Missed Call Saya</string>
     <string name="cotp_miscall_verification_phone_code" tools:ignore="TypographyDashes">000-0000-</string>
+    <string name="cotp_miscall_resend">Missed call ulang</string>
+    <string name="cotp_miscall_use_other_method">ubah metode verifikasi</string>
+    <string name="cotp_miscall_resend_with_other_method">Nggak ada telepon yang masuk? Missed call ulang atau ubah metode verifikasi.</string>
+    
     <string name="title_activity_activation">Aktivasi Akun</string>
     <string name="validation_title">Masukkan Kode Aktivasi</string>
     <string name="title_validation_otp">Aktivasi</string>
