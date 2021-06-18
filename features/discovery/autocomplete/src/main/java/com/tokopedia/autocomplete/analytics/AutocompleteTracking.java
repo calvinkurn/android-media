@@ -350,4 +350,30 @@ public class AutocompleteTracking {
         );
         iris.saveEvent(map);
     }
+
+    public static void eventClickRefreshTokoNowPopularSearch() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOKO_NOW,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV_TOKO_NOW,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_REFRESH_TOKO_NOW_POPULAR_SEARCH,
+                        EVENT_LABEL, "",
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE
+                )
+        );
+    }
+
+    public static void eventClickTokoNowPopularSearch(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOKO_NOW,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV_TOKO_NOW,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_POPULAR_SEARCH_TOKO_NOW,
+                        EVENT_LABEL, label,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE
+                )
+        );
+    }
 }

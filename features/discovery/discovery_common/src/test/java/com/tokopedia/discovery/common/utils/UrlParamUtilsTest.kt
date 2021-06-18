@@ -97,4 +97,24 @@ internal class UrlParamUtilsTest {
         assertThat(UrlParamUtils.getQueryParams("xxx"), shouldBe(""))
         assertThat(UrlParamUtils.getQueryParams("?xxx"), shouldBe("xxx"))
     }
+
+    @Test
+    fun `Test navsource is tokonow`() {
+        val inputMap = hashMapOf<String, Any>(
+                "q" to "samsung",
+                "navsource" to "tokonow"
+        )
+
+        assert(UrlParamUtils.isTokoNow(inputMap))
+    }
+
+    @Test
+    fun `Test navsource is not tokonow`() {
+        val inputMap = hashMapOf<String, Any>(
+                "q" to "samsung",
+                "navsource" to "campaign"
+        )
+
+        assert(!UrlParamUtils.isTokoNow(inputMap))
+    }
 }

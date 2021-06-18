@@ -17,6 +17,7 @@ import com.tokopedia.autocomplete.suggestion.topshop.convertToTopShopWidgetVisit
 import com.tokopedia.autocomplete.util.getProfileIdFromApplink
 import com.tokopedia.autocomplete.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -59,6 +60,10 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
 
     private fun getUserId(): String {
         return if (userSession.isLoggedIn) userSession.userId else "0"
+    }
+
+    private fun isTokoNow(): Boolean {
+        return UrlParamUtils.isTokoNow(searchParameter)
     }
 
     override fun search() {

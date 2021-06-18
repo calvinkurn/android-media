@@ -1,0 +1,24 @@
+{
+  "readme": "Autocomplete TokoNow Initial State Tracking",
+  "mode": "exact",
+  "query" : [
+    {
+      "event": "clickTokoNow",
+      "eventAction": "click - popular search - initial state",
+      "eventCategory": "tokonow - top nav",
+      "eventLabel": "value: .+ - po: .+ - page: .+",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".+"
+    },
+    {
+      "event": "clickTokoNow",
+      "eventAction": "click - refresh popular search - initial state",
+      "eventCategory": "tokonow - top nav",
+      "eventLabel": "",
+      "businessUnit": "search",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".+"
+    }
+  ]
+}
