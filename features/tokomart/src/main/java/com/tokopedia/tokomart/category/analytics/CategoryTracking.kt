@@ -241,4 +241,15 @@ object CategoryTracking {
             )
         )
     }
+
+    fun sendApplyCategoryL2FilterEvent(categoryId: String, filterCategoryId: String) {
+        sendGeneralEvent(DataLayer.mapOf(
+                EVENT, EVENT_CLICK_VALUE,
+                EVENT_ACTION, "click level 2 filter widget",
+                EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
+                EVENT_LABEL, "$categoryId - $filterCategoryId",
+                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                CURRENTSITE, CURRENT_SITE_VALUE,
+        ))
+    }
 }

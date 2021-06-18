@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.tokomart.category.analytics.CategoryTracking
@@ -125,5 +126,11 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
         CategoryTracking.sendAllCategoryClickEvent(getViewModel().categoryL1)
 
         super.onSeeAllCategoryClicked()
+    }
+
+    override fun onCategoryFilterChipClick(option: Option, isSelected: Boolean) {
+        CategoryTracking.sendApplyCategoryL2FilterEvent(getViewModel().categoryL1, option.value)
+
+        super.onCategoryFilterChipClick(option, isSelected)
     }
 }
