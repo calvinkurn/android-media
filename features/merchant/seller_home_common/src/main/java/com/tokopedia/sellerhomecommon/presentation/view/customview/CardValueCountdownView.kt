@@ -44,7 +44,7 @@ class CardValueCountdownView: FrameLayout {
         if (previousValue != nextValue) {
             nextTypography?.alpha = START_ALPHA
             previousTypography?.alpha = MAX_ALPHA
-            previousTypography?.text = previousValue
+            previousTypography?.text = previousValue.parseAsHtml()
             nextTypography?.text = nextValue.parseAsHtml()
 
             previousTypography
