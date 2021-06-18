@@ -383,6 +383,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(R.drawable.topads_ic_tips))
         }
 
+        tipButton.visibility = View.VISIBLE
         tipButton.addItem(tooltipView)
         tipButton.setOnClickListener {
             val tipsList: ArrayList<TipsUiModel> = ArrayList()

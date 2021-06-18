@@ -46,8 +46,9 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
         }
     }
 
-    fun getWhitelist() {
+    fun getWhitelist(authorListEmpty: Boolean) {
         getWhitelistUseCase.clearRequest()
+        getWhitelistUseCase.setCacheStrategy(authorListEmpty)
         getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
                 GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_ENTRY_POINT))
         )

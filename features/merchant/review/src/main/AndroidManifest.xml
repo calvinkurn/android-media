@@ -42,7 +42,7 @@
         <activity
             android:name="com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity"
             android:label="@string/title_activity_reputation_review"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.AppCompat.Translucent"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait">
             <intent-filter>

@@ -4,7 +4,6 @@ import android.app.Application
 import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.common.SingleLiveEvent
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -13,6 +12,7 @@ import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.SaleCountDownTimer
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import java.util.*
 
 

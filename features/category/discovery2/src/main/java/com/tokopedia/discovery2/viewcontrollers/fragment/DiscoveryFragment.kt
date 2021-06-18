@@ -14,13 +14,11 @@ import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -63,12 +61,12 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -191,11 +189,6 @@ class DiscoveryFragment :
         chooseAddressWidget = view.findViewById(R.id.choose_address_widget)
         chooseAddressWidgetDivider = view.findViewById(R.id.divider_view)
         chooseAddressWidget?.bindChooseAddress(this)
-        context?.let {
-            if (ChooseAddressUtils.isRollOutUser(it)) {
-                fetchUserLatestAddressData()
-            }
-        }
     }
 
     private fun initToolbar(view: View) {
@@ -256,7 +249,7 @@ class DiscoveryFragment :
                     shouldShowChooseAddressWidget = false
                     scrollDist = 0
                 } else if (scrollDist < -MINIMUM) {
-                    if (discoveryViewModel.getAddressVisibilityValue() && ChooseAddressUtils.isRollOutUser(context)) {
+                    if (discoveryViewModel.getAddressVisibilityValue()) {
                         chooseAddressWidget?.show()
                         chooseAddressWidgetDivider?.show()
                         shouldShowChooseAddressWidget = true
@@ -372,7 +365,7 @@ class DiscoveryFragment :
 
         discoveryViewModel.checkAddressVisibility().observe(viewLifecycleOwner, { widgetVisibilityStatus ->
             context?.let {
-                if (widgetVisibilityStatus && ChooseAddressUtils.isRollOutUser(it)) {
+                if (widgetVisibilityStatus) {
                     if(shouldShowChooseAddressWidget) {
                         chooseAddressWidget?.show()
                         chooseAddressWidgetDivider?.show()
@@ -673,6 +666,12 @@ class DiscoveryFragment :
         startActivityForResult(intent, OPEN_PLAY_CHANNEL)
     }
 
+    fun refreshCarouselData(componentPosition: Int = -1) {
+        if (componentPosition >= 0) {
+            discoveryAdapter.getViewModelAtPosition(componentPosition)?.refreshProductCarouselError()
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         var discoveryBaseViewModel: DiscoveryBaseViewModel? = null
@@ -790,7 +789,7 @@ class DiscoveryFragment :
             }
         })
         context?.let {
-            if (ChooseAddressUtils.isRollOutUser(it) && discoveryViewModel.getAddressVisibilityValue()) {
+            if (discoveryViewModel.getAddressVisibilityValue()) {
                 updateChooseAddressWidget()
                 checkAddressUpdate()
             }
@@ -866,13 +865,7 @@ class DiscoveryFragment :
     }
 
     override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
-        if (isRollOutUser && discoveryViewModel.getAddressVisibilityValue()) {
-            chooseAddressWidget?.show()
-            chooseAddressWidgetDivider?.show()
-        } else {
-            chooseAddressWidget?.hide()
-            chooseAddressWidgetDivider?.hide()
-        }
+
     }
 
     override fun getLocalizingAddressHostFragment(): Fragment {

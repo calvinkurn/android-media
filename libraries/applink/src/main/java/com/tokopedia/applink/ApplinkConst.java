@@ -388,6 +388,7 @@ public interface ApplinkConst {
 
     String ACCOUNT_HOST = "account";
     String ACCOUNT = "tokopedia://account";
+    String MARKETPLACE_ONBOARDING = "tokopedia://marketplace/onboarding";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
@@ -628,6 +629,7 @@ public interface ApplinkConst {
         String VALUE_ROLE_SELLER = "seller";
 
         String PARAM_SOURCE = "source";
+        String PARAM_SHOW_BOTTOM_NAV = "show_bottom_nav";
     }
 
     interface GeneralInfo {

@@ -102,7 +102,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 postFilter = widget.postFilter?.mapIndexed { i, filter ->
-                    PostFilterUiModel(filter.name.orEmpty(), filter.value.orEmpty(), isSelected = i == 0)
+                    WidgetFilterUiModel(filter.name.orEmpty(), filter.value.orEmpty(), isSelected = i == 0)
                 }.orEmpty(),
                 isLoaded = false,
                 isLoading = false,
@@ -145,7 +145,10 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 isLoaded = false,
                 isLoading = false,
                 isFromCache = fromCache,
-                emptyState = widget.emptyStateModel.mapToUiModel()
+                emptyState = widget.emptyStateModel.mapToUiModel(),
+                tableFilters = widget.searchTableColumnFilters?.mapIndexed { i, filter ->
+                    WidgetFilterUiModel(filter.name.orEmpty(), filter.value.orEmpty(), isSelected = i == 0)
+                }.orEmpty()
         )
     }
 
