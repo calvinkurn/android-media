@@ -24,7 +24,6 @@ import com.tokopedia.minicart.cartlist.subpage.summarytransaction.SummaryTransac
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartDataResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.minicart.common.domain.data.UndoDeleteCartDomainModel
@@ -506,7 +505,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     }
 
     override fun onToggleShowHideUnavailableItemsClicked() {
-        viewModel?.handleUnavailableItemsAccordion()
+        viewModel?.toggleUnavailableItemsAccordion()
         val lastItemPosition = (adapter?.list?.size ?: 0) - 1
         if (lastItemPosition != -1) {
             rvMiniCartList?.smoothScrollToPosition(lastItemPosition)

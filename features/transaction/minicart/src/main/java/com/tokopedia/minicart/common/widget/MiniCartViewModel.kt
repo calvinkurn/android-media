@@ -53,7 +53,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
     val miniCartListBottomSheetUiModel: LiveData<MiniCartListUiModel>
         get() = _miniCartListBottomSheetUiModel
 
-    private val tmpHiddenUnavailableItems = mutableListOf<Visitable<*>>()
+    val tmpHiddenUnavailableItems = mutableListOf<Visitable<*>>()
 
     private var lastDeletedProductItem: MiniCartProductUiModel? = null
 
@@ -338,7 +338,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         }
     }
 
-    fun handleUnavailableItemsAccordion() {
+    fun toggleUnavailableItemsAccordion() {
         val visitables = miniCartListBottomSheetUiModel.value?.visitables?.toMutableList()
                 ?: mutableListOf()
         var accordionUiModel: MiniCartAccordionUiModel? = null

@@ -8,13 +8,24 @@ object UserInteractionDataProvider {
 
     private val uiModelMapper = MiniCartListUiModelMapper()
 
-    fun provideMiniCartListUiModel(): MiniCartListUiModel {
+    fun provideMiniCartListUiModelAllAvailable(): MiniCartListUiModel {
         val miniCartData = GetMiniCartListDataProvider.provideGetMiniCartListSuccessAllAvailable()
         return uiModelMapper.mapUiModel(miniCartData)
     }
 
-    fun provideMiniCartSimplifiedData(): MiniCartSimplifiedData {
+    fun provideMiniCartListUiModelAllUnavailable(): MiniCartListUiModel {
+        val miniCartData = GetMiniCartListDataProvider.provideGetMiniCartListSuccessAllUnavailable()
+        return uiModelMapper.mapUiModel(miniCartData)
+    }
+
+    fun provideMiniCartSimplifiedDataAllAvailable(): MiniCartSimplifiedData {
         val miniCartSimplifieddata = GetMiniCartListSimplifiedDataProvider.provideGetMiniCartSimplifiedSuccessAllAvailable()
         return miniCartSimplifieddata
     }
+
+    fun provideMiniCartSimplifiedDataAllUnavailable(): MiniCartSimplifiedData {
+        val miniCartSimplifieddata = GetMiniCartListSimplifiedDataProvider.provideGetMiniCartSimplifiedSuccessAllUnavailable()
+        return miniCartSimplifieddata
+    }
+
 }

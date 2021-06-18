@@ -38,9 +38,9 @@ class UserInteractionTest {
         //given
         val productId = "1920796612"
         val newQty = 5
-        val miniCartListUiModel = UserInteractionDataProvider.provideMiniCartListUiModel()
+        val miniCartListUiModel = UserInteractionDataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
-        val miniCartSimplifiedData = UserInteractionDataProvider.provideMiniCartSimplifiedData()
+        val miniCartSimplifiedData = UserInteractionDataProvider.provideMiniCartSimplifiedDataAllAvailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
         //when
@@ -55,9 +55,9 @@ class UserInteractionTest {
         //given
         val productId = "1920796612"
         val newQty = 5
-        val miniCartListUiModel = UserInteractionDataProvider.provideMiniCartListUiModel()
+        val miniCartListUiModel = UserInteractionDataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
-        val miniCartSimplifiedData = UserInteractionDataProvider.provideMiniCartSimplifiedData()
+        val miniCartSimplifiedData = UserInteractionDataProvider.provideMiniCartSimplifiedDataAllAvailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
         //when
@@ -72,9 +72,9 @@ class UserInteractionTest {
         //given
         val productId = "1920796612"
         val newNotes = "new notes"
-        val miniCartListUiModel = UserInteractionDataProvider.provideMiniCartListUiModel()
+        val miniCartListUiModel = UserInteractionDataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
-        val miniCartSimplifiedData = UserInteractionDataProvider.provideMiniCartSimplifiedData()
+        val miniCartSimplifiedData = UserInteractionDataProvider.provideMiniCartSimplifiedDataAllAvailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
         //when
@@ -89,9 +89,9 @@ class UserInteractionTest {
         //given
         val productId = "1920796612"
         val newNotes = "new notes"
-        val miniCartListUiModel = UserInteractionDataProvider.provideMiniCartListUiModel()
+        val miniCartListUiModel = UserInteractionDataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
-        val miniCartSimplifiedData = UserInteractionDataProvider.provideMiniCartSimplifiedData()
+        val miniCartSimplifiedData = UserInteractionDataProvider.provideMiniCartSimplifiedDataAllAvailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
 
         //when
@@ -100,5 +100,37 @@ class UserInteractionTest {
         //then
         assert(viewModel.miniCartSimplifiedData.value?.getMiniCartItemByProductId(productId)?.notes ?: 0 == newNotes)
     }
+
+    @Test
+    fun `WHEN user toggle accordion from expanded to collapsed THEN temporary collapsed data should not be empty`() {
+        //given
+        val miniCartListUiModel = UserInteractionDataProvider.provideMiniCartListUiModelAllUnavailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        val miniCartSimplifiedData = UserInteractionDataProvider.provideMiniCartSimplifiedDataAllUnavailable()
+        viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
+
+        //when
+        viewModel.toggleUnavailableItemsAccordion()
+
+        //then
+        assert(viewModel.tmpHiddenUnavailableItems.size > 0)
+    }
+
+    @Test
+    fun `WHEN user toggle accordion from collapsed to expanded THEN temporary collapsed data should be empty`() {
+        //given
+        val miniCartListUiModel = UserInteractionDataProvider.provideMiniCartListUiModelAllUnavailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        val miniCartSimplifiedData = UserInteractionDataProvider.provideMiniCartSimplifiedDataAllUnavailable()
+        viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)
+
+        //when
+        viewModel.toggleUnavailableItemsAccordion()
+        viewModel.toggleUnavailableItemsAccordion()
+
+        //then
+        assert(viewModel.tmpHiddenUnavailableItems.size == 0)
+    }
+
 
 }
