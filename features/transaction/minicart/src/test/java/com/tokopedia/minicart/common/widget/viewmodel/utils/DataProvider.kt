@@ -77,6 +77,11 @@ object DataProvider {
         return miniCartSimplifiedData
     }
 
+    fun provideGetMiniCartListSuccessWithSingleAvailableItem(): MiniCartListUiModel {
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_single_available_item"), MiniCartGqlResponse::class.java)
+        return miniCartListUiModelMapper.mapUiModel(json.miniCart)
+    }
+
     fun provideGetMiniCartListSuccessWithWholesaleVariant(): MiniCartListUiModel {
         val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_wholesale_variant"), MiniCartGqlResponse::class.java)
         return miniCartListUiModelMapper.mapUiModel(json.miniCart)
