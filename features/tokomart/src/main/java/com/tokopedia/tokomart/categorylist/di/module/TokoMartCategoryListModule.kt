@@ -23,12 +23,6 @@ class TokoMartCategoryListModule {
 
     @TokoMartCategoryListScope
     @Provides
-    fun provideHomeAnalytic(): HomeAnalytics {
-        return HomeAnalytics()
-    }
-
-    @TokoMartCategoryListScope
-    @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }

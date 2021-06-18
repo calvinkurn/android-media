@@ -55,19 +55,17 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
-import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.BUSINESSUNIT
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.CURRENTSITE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_ACTION_CLICK_SEARCH_BAR_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CATEGORY_TOP_NAV_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOP_NAV
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokomart.common.view.NoAddressEmptyStateView
+import com.tokopedia.tokomart.search.utils.SearchTracking.Action.EVENT_ACTION_CLICK_SEARCH_BAR_VALUE
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokomart.searchcategory.presentation.customview.StickySingleHeaderView
@@ -83,7 +81,6 @@ import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataV
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.track.TrackApp
-import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
@@ -278,12 +275,12 @@ abstract class BaseSearchCategoryFragment:
     protected open fun onSearchBarClick(hint: String = "") {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
-                        EVENT, EVENT_CLICK_VALUE,
+                        EVENT, EVENT_CLICK_TOKONOW,
                         EVENT_ACTION, EVENT_ACTION_CLICK_SEARCH_BAR_VALUE,
-                        EVENT_CATEGORY, EVENT_CATEGORY_TOP_NAV_VALUE,
+                        EVENT_CATEGORY, EVENT_CATEGORY_TOP_NAV,
                         EVENT_LABEL, hint,
-                        BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                        CURRENTSITE, CURRENT_SITE_VALUE,
+                        KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                        KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
                 )
         )
 

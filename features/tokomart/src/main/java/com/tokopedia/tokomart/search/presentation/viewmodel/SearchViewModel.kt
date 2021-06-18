@@ -9,11 +9,11 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.BUSINESSUNIT
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.CURRENTSITE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokomart.search.utils.SEARCH_FIRST_PAGE_USE_CASE
@@ -145,18 +145,18 @@ class SearchViewModel @Inject constructor (
         val eventLabel = query +
                 "|${searchProductHeader.keywordProcess}" +
                 "|${searchProductHeader.responseCode}" +
-                "|$BUSINESS_UNIT_VALUE" +
+                "|$BUSINESS_UNIT_PHYSICAL_GOODS" +
                 "|$TOKONOW" +
                 "|$HASIL_PENCARIAN_DI_TOKONOW" +
                 "|${searchProductHeader.totalData}"
 
         val generalSearchDataLayer = mapOf(
-                EVENT to EVENT_CLICK_VALUE,
+                EVENT to EVENT_CLICK_TOKONOW,
                 EVENT_ACTION to GENERAL_SEARCH,
                 EVENT_CATEGORY to TOKONOW_TOP_NAV,
                 EVENT_LABEL to eventLabel,
-                BUSINESSUNIT to BUSINESS_UNIT_VALUE,
-                CURRENTSITE to CURRENT_SITE_VALUE,
+                KEY_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
         )
 
         generalSearchEventMutableLiveData.value = generalSearchDataLayer

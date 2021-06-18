@@ -7,13 +7,14 @@ import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics.ACTION.EVENT_A
 import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CART_BUTTON
 import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CATEGORY_ON_CATEGORY
 import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CHOOSE_ADDRESS
+import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SEARCH_BAR
 import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SHARE_BUTTON
 import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SLIDER_BANNER
 import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_SLIDER_BANNER
 import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_CHOOSE_ADDRESS
 import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE
-import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_TOP_NAV
 import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics.PROMOTION.NAME_PROMOTION
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOP_NAV
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.EVENT.EVENT_CLICK_ADDRESS
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.EVENT.EVENT_PROMO_CLICK
@@ -43,12 +44,12 @@ import com.tokopedia.track.interfaces.Analytics
 class HomeAnalytics {
 
     object CATEGORY{
-        const val EVENT_CATEGORY_TOP_NAV = "tokonow - top nav"
         const val EVENT_CATEGORY_CHOOSE_ADDRESS = "widget choose address"
         const val EVENT_CATEGORY_HOME_PAGE = "tokonow - homepage"
     }
 
     object ACTION{
+        const val EVENT_ACTION_CLICK_SEARCH_BAR = "click search bar on homepage"
         const val EVENT_ACTION_CLICK_CART_BUTTON = "click cart button on homepage"
         const val EVENT_ACTION_CLICK_SHARE_BUTTON = "click share button on homepage"
         const val EVENT_ACTION_CLICK_CHOOSE_ADDRESS = "click widget choose address tokonow"
@@ -60,6 +61,16 @@ class HomeAnalytics {
 
     object PROMOTION {
         const val NAME_PROMOTION = "tokonow - p1 - promo"
+    }
+
+    fun onClickSearchBar() {
+        hitCommonHomeTracker(
+                getDataLayer(
+                        event = EVENT_CLICK_TOKONOW,
+                        action = EVENT_ACTION_CLICK_SEARCH_BAR,
+                        category = EVENT_CATEGORY_TOP_NAV
+                )
+        )
     }
 
     fun onClickCartButton() {
@@ -104,60 +115,50 @@ class HomeAnalytics {
     }
 
     fun onClickBannerPromo(position: Int, userId: String, channelGrid: ChannelGrid, channelModel: ChannelModel) {
-        val dataLayer = getDataLayer(
+        val dataLayer = getEcommerceDataLayer(
                 event = EVENT_PROMO_CLICK,
                 action = EVENT_ACTION_CLICK_SLIDER_BANNER,
-                category = EVENT_CATEGORY_HOME_PAGE
-        ).apply {
-            this[KEY_AFFINITY_LABEL] = channelModel.trackingAttributionModel.persona
-            this[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-            this[KEY_CURRENT_SITE] = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
-            this[KEY_USER_ID] = userId
-            this[KEY_ECOMMERCE] = ecommerceDataLayerBannerClicked(
-                    channelModel = channelModel,
-                    channelGrid = channelGrid,
-                    position = position
-            )
-        }
-        getTracker().sendGeneralEvent(dataLayer)
+                category = EVENT_CATEGORY_HOME_PAGE,
+                affinityLabel = channelModel.trackingAttributionModel.persona,
+                userId = userId,
+                eccommerce = ecommerceDataLayerBannerClicked(
+                        channelModel = channelModel,
+                        channelGrid = channelGrid,
+                        position = position
+                )
+        )
+        getTracker().sendEnhanceEcommerceEvent(dataLayer)
     }
 
     fun onImpressBannerPromo(position: Int, userId: String, channelModel: ChannelModel) {
-        val dataLayer = getDataLayer(
+        val dataLayer = getEcommerceDataLayer(
                 event = EVENT_PROMO_VIEW,
                 action = EVENT_ACTION_IMPRESSION_SLIDER_BANNER,
-                category = EVENT_CATEGORY_HOME_PAGE
-        ).apply {
-            this[KEY_AFFINITY_LABEL] = channelModel.trackingAttributionModel.persona
-            this[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-            this[KEY_CURRENT_SITE] = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
-            this[KEY_USER_ID] = userId
-            this[KEY_ECOMMERCE] = ecommerceDataLayerBannerImpressed(
-                    channelModel = channelModel,
-                    channelGrid = channelModel.channelGrids[position],
-                    position = position
-            )
-        }
-        getTracker().sendGeneralEvent(dataLayer)
+                category = EVENT_CATEGORY_HOME_PAGE,
+                affinityLabel = channelModel.trackingAttributionModel.persona,
+                userId = userId,
+                eccommerce = ecommerceDataLayerBannerImpressed(
+                        channelModel = channelModel,
+                        position = position
+                )
+        )
+        getTracker().sendEnhanceEcommerceEvent(dataLayer)
     }
 
     fun onClickCategory(position: Int, userId: String, categoryId: String, channelModel: ChannelModel? = null) {
-        val dataLayer = getDataLayer(
+        val dataLayer = getEcommerceDataLayer(
                 event = EVENT_PROMO_CLICK,
                 action = EVENT_ACTION_CLICK_CATEGORY_ON_CATEGORY,
-                category = EVENT_CATEGORY_HOME_PAGE
-        ).apply {
-            this[KEY_AFFINITY_LABEL] = ""
-            this[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-            this[KEY_CURRENT_SITE] = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
-            this[KEY_USER_ID] = userId
-            this[KEY_ECOMMERCE] = ecommerceDataLayerCategoryClicked(
-                    categoryId = categoryId,
-                    position = position,
-                    channelModel = channelModel!!,
-            )
-        }
-        getTracker().sendGeneralEvent(dataLayer)
+                category = EVENT_CATEGORY_HOME_PAGE,
+                affinityLabel = "",
+                userId = userId,
+                eccommerce = ecommerceDataLayerCategoryClicked(
+                        categoryId = categoryId,
+                        position = position,
+                        channelModel = channelModel!!,
+                )
+        )
+        getTracker().sendEnhanceEcommerceEvent(dataLayer)
     }
 
     private fun ecommerceDataLayerBannerClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int): MutableMap<String, Any> {
@@ -194,12 +195,12 @@ class HomeAnalytics {
                 )
     }
 
-    private fun ecommerceDataLayerBannerImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int): MutableMap<String, Any> {
+    private fun ecommerceDataLayerBannerImpressed(channelModel: ChannelModel, position: Int): MutableMap<String, Any> {
         return DataLayer.mapOf(
                     KEY_PROMO_CLICK, DataLayer.mapOf(
                         KEY_PROMOTIONS, DataLayer.mapOf(
                             KEY_CREATIVE_NAME, channelModel.trackingAttributionModel.galaxyAttribution,
-                            KEY_ID, channelModel.id + "_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId,
+                            KEY_ID, channelModel.id + "_" + 1222 + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId,
                             KEY_NAME, NAME_PROMOTION,
                             KEY_POSITION, (position + 1).toString()
                         )
@@ -216,7 +217,22 @@ class HomeAnalytics {
                 TrackAppUtils.EVENT, event,
                 TrackAppUtils.EVENT_ACTION, action,
                 TrackAppUtils.EVENT_CATEGORY, category,
-                TrackAppUtils.EVENT_LABEL, label)
+                TrackAppUtils.EVENT_LABEL, label
+        )
+    }
+
+    private fun getEcommerceDataLayer(event: String, action: String, category: String, label: String = "", affinityLabel: String, userId: String, eccommerce: MutableMap<String, Any>): MutableMap<String, Any> {
+        return DataLayer.mapOf(
+                TrackAppUtils.EVENT, event,
+                TrackAppUtils.EVENT_ACTION, action,
+                TrackAppUtils.EVENT_CATEGORY, category,
+                TrackAppUtils.EVENT_LABEL, label,
+                KEY_AFFINITY_LABEL, affinityLabel,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+                KEY_USER_ID, userId,
+                KEY_ECOMMERCE, eccommerce
+        )
     }
 
     private fun hitCommonHomeTracker(dataLayer: MutableMap<String, Any>) {

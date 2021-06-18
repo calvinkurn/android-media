@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -43,13 +42,6 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.BUSINESSUNIT
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.CURRENTSITE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_ACTION_CLICK_SEARCH_BAR_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CATEGORY_TOP_NAV_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_EXP_NAME
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_VARIANT_OLD
@@ -76,11 +68,6 @@ import com.tokopedia.tokomart.home.presentation.viewholder.HomeCategoryItemViewH
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokomart.home.presentation.viewmodel.TokoMartHomeViewModel
-import com.tokopedia.track.TrackApp
-import com.tokopedia.track.TrackAppUtils.EVENT
-import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
-import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
-import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_tokomart_home.*
@@ -624,17 +611,7 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     private fun onSearchBarClick(hint: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(
-                        EVENT, EVENT_CLICK_VALUE,
-                        EVENT_ACTION, EVENT_ACTION_CLICK_SEARCH_BAR_VALUE,
-                        EVENT_CATEGORY, EVENT_CATEGORY_TOP_NAV_VALUE,
-                        EVENT_LABEL, hint,
-                        BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                        CURRENTSITE, CURRENT_SITE_VALUE,
-                )
-        )
-
+        analytics.onClickSearchBar()
         RouteManager.route(context,
                 getAutoCompleteApplinkPattern(),
                 SOURCE,
