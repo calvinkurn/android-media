@@ -1517,6 +1517,7 @@ object DynamicProductDetailTracking {
                     dimension83 = dimension83,
                     dimension81 = productInfo?.shopTypeString ?: "",
                     dimension98 = dimension98,
+                    dimension90 = if(affiliateUniqueId.isNotBlank()) "affiliate" else ProductTrackingConstant.Tracking.DEFAULT_VALUE,
                     dimension113 = affiliateUniqueId,
                     index = 1
             ))
