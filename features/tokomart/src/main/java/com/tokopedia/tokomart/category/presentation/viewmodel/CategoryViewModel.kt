@@ -71,6 +71,9 @@ class CategoryViewModel @Inject constructor (
         }
     }
 
+    override val tokonowSource: String
+        get() = TOKONOW_DIRECTORY
+
     override fun loadFirstPage() {
         getCategoryFirstPageUseCase.cancelJobs()
         getCategoryFirstPageUseCase.execute(
@@ -92,8 +95,6 @@ class CategoryViewModel @Inject constructor (
     override fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
         super.appendMandatoryParams(tokonowQueryParam)
 
-        tokonowQueryParam[SearchApiConst.NAVSOURCE] = TOKONOW_DIRECTORY
-        tokonowQueryParam[SearchApiConst.SOURCE] = TOKONOW_DIRECTORY
         tokonowQueryParam[SearchApiConst.SRP_PAGE_ID] = categoryL1
     }
 

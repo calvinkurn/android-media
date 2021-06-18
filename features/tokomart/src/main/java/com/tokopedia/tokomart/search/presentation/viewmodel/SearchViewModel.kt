@@ -74,6 +74,9 @@ class SearchViewModel @Inject constructor (
 
     private var suggestionModel: AceSearchProductModel.Suggestion? = null
 
+    override val tokonowSource: String
+        get() = TOKONOW
+
     override fun loadFirstPage() {
         getSearchFirstPageUseCase.cancelJobs()
         getSearchFirstPageUseCase.execute(
@@ -81,12 +84,6 @@ class SearchViewModel @Inject constructor (
                 ::onGetSearchFirstPageError,
                 createRequestParams()
         )
-    }
-
-    override fun appendMandatoryParams(tokonowQueryParam: MutableMap<String, Any>) {
-        super.appendMandatoryParams(tokonowQueryParam)
-
-        tokonowQueryParam[SearchApiConst.SOURCE] = TOKONOW
     }
 
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {

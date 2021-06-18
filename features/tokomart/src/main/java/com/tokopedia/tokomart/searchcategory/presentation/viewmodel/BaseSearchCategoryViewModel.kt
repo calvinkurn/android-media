@@ -160,7 +160,7 @@ abstract class BaseSearchCategoryViewModel(
 
     init {
         showLoading()
-        updateQueryParamWithDefaultSort()
+        updateQueryParams()
 
         hasGlobalMenu = isABTestNavigationRevamp()
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
@@ -170,9 +170,13 @@ abstract class BaseSearchCategoryViewModel(
         isContentLoadingMutableLiveData.value = true
     }
 
-    private fun updateQueryParamWithDefaultSort() {
+    private fun updateQueryParams() {
         queryParamMutable[SearchApiConst.OB] = DEFAULT_VALUE_OF_PARAMETER_SORT
+        queryParamMutable[SearchApiConst.NAVSOURCE] = tokonowSource
+        queryParamMutable[SearchApiConst.SOURCE] = tokonowSource
     }
+
+    abstract val tokonowSource: String
 
     private fun isABTestNavigationRevamp() =
             getNavigationExpVariant() == NAVIGATION_VARIANT_REVAMP
