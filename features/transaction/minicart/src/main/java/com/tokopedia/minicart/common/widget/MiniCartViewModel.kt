@@ -8,7 +8,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
+import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartDataResponse
+import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.RemoveFromCartDomainModel
@@ -123,11 +126,11 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         }
     }
 
-    private fun onErrorGetCartList(isFirstLoad: Boolean, it: Throwable) {
+    private fun onErrorGetCartList(isFirstLoad: Boolean, throwable: Throwable) {
         if (isFirstLoad) {
             _globalEvent.value = GlobalEvent(
                     state = GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET,
-                    throwable = it
+                    throwable = throwable
             )
         }
     }
@@ -398,22 +401,26 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         _miniCartListBottomSheetUiModel.value = miniCartListBottomSheetUiModel.value
     }
 
-    fun singleDeleteCartItems(product: MiniCartProductUiModel) {
+    fun deleteSingleCartItem(product: MiniCartProductUiModel) {
         deleteCartUseCase.setParams(listOf(product))
         deleteCartUseCase.execute(
                 onSuccess = {
-                    handleDelete(product, it)
+                    onSuccessDeleteSingleCartItem(product, it)
                 },
                 onError = {
-                    _globalEvent.value = GlobalEvent(
-                            state = GlobalEvent.STATE_FAILED_DELETE_CART_ITEM,
-                            throwable = it
-                    )
+                    onErrorDeleteSingleCartItem(it)
                 }
         )
     }
 
-    private fun handleDelete(product: MiniCartProductUiModel, removeFromCartData: com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData) {
+    private fun onErrorDeleteSingleCartItem(throwable: Throwable) {
+        _globalEvent.value = GlobalEvent(
+                state = GlobalEvent.STATE_FAILED_DELETE_CART_ITEM,
+                throwable = throwable
+        )
+    }
+
+    private fun onSuccessDeleteSingleCartItem(product: MiniCartProductUiModel, removeFromCartData: RemoveFromCartData) {
         val visitables = miniCartListBottomSheetUiModel.value?.visitables ?: mutableListOf()
         val tmpVisitables = miniCartListBottomSheetUiModel.value?.visitables ?: mutableListOf()
         loop@ for ((index, visitable) in visitables.withIndex()) {
@@ -463,38 +470,54 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         deleteCartUseCase.setParams(unavailableCartItems)
         deleteCartUseCase.execute(
                 onSuccess = {
-                    _globalEvent.value = GlobalEvent(
-                            state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
-                            data = RemoveFromCartDomainModel(removeFromCartData = it, isLastItem = isLastItem, isBulkDelete = true)
-                    )
+                    onSuccessBulkDeleteUnavailableCartItems(it, isLastItem)
                 },
                 onError = {
-                    _globalEvent.value = GlobalEvent(
-                            state = GlobalEvent.STATE_FAILED_DELETE_CART_ITEM,
-                            throwable = it
-                    )
+                    onErrorBulkDeleteUnavailableCartItems(it)
                 }
         )
     }
 
-    fun undoDeleteCartItems(isLastItem: Boolean) {
+    private fun onErrorBulkDeleteUnavailableCartItems(throwable: Throwable) {
+        _globalEvent.value = GlobalEvent(
+                state = GlobalEvent.STATE_FAILED_DELETE_CART_ITEM,
+                throwable = throwable
+        )
+    }
+
+    private fun onSuccessBulkDeleteUnavailableCartItems(removeFromCartData: RemoveFromCartData, isLastItem: Boolean) {
+        _globalEvent.value = GlobalEvent(
+                state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
+                data = RemoveFromCartDomainModel(removeFromCartData = removeFromCartData, isLastItem = isLastItem, isBulkDelete = true)
+        )
+    }
+
+    fun undoDeleteCartItem(isLastItem: Boolean) {
         lastDeletedProductItem?.let {
             undoDeleteCartUseCase.setParams(it.cartId)
             undoDeleteCartUseCase.execute(
                     onSuccess = {
-                        _globalEvent.value = GlobalEvent(
-                                state = GlobalEvent.STATE_SUCCESS_UNDO_DELETE_CART_ITEM,
-                                data = UndoDeleteCartDomainModel(it, isLastItem)
-                        )
+                        onSuccessUndoDeleteCartItem(it, isLastItem)
                     },
                     onError = {
-                        _globalEvent.value = GlobalEvent(
-                                state = GlobalEvent.STATE_FAILED_UNDO_DELETE_CART_ITEM,
-                                throwable = it
-                        )
+                        onErrorUndoDeleteCartItem(it)
                     }
             )
         }
+    }
+
+    private fun onErrorUndoDeleteCartItem(throwable: Throwable) {
+        _globalEvent.value = GlobalEvent(
+                state = GlobalEvent.STATE_FAILED_UNDO_DELETE_CART_ITEM,
+                throwable = throwable
+        )
+    }
+
+    private fun onSuccessUndoDeleteCartItem(undoDeleteCartDataResponse: UndoDeleteCartDataResponse, isLastItem: Boolean) {
+        _globalEvent.value = GlobalEvent(
+                state = GlobalEvent.STATE_SUCCESS_UNDO_DELETE_CART_ITEM,
+                data = UndoDeleteCartDomainModel(undoDeleteCartDataResponse, isLastItem)
+        )
     }
 
     fun updateCart(isForCheckout: Boolean = false, observer: Int = GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
@@ -515,31 +538,39 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         }
         updateCartUseCase.execute(
                 onSuccess = {
-                    if (isForCheckout) {
-                        if (it.data.status) {
-                            _globalEvent.value = GlobalEvent(
-                                    observer = observer,
-                                    state = GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT
-                            )
-                        } else {
-                            _globalEvent.value = GlobalEvent(
-                                    observer = observer,
-                                    state = GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT,
-                                    data = it.data
-                            )
-                        }
-                    }
+                    onSuccessUpdateCart(isForCheckout, it, observer)
                 },
                 onError = {
-                    if (isForCheckout) {
-                        _globalEvent.value = GlobalEvent(
-                                observer = observer,
-                                state = GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT,
-                                throwable = it
-                        )
-                    }
+                    onErrorUpdateCart(isForCheckout, observer, it)
                 }
         )
+    }
+
+    private fun onErrorUpdateCart(isForCheckout: Boolean, observer: Int, throwable: Throwable) {
+        if (isForCheckout) {
+            _globalEvent.value = GlobalEvent(
+                    observer = observer,
+                    state = GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT,
+                    throwable = throwable
+            )
+        }
+    }
+
+    private fun onSuccessUpdateCart(isForCheckout: Boolean, updateCartV2Data: UpdateCartV2Data, observer: Int) {
+        if (isForCheckout) {
+            if (updateCartV2Data.data.status) {
+                _globalEvent.value = GlobalEvent(
+                        observer = observer,
+                        state = GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT
+                )
+            } else {
+                _globalEvent.value = GlobalEvent(
+                        observer = observer,
+                        state = GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT,
+                        data = updateCartV2Data.data
+                )
+            }
+        }
     }
 
     fun getLatestMiniCartData(): MiniCartSimplifiedData {

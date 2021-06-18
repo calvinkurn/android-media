@@ -332,7 +332,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
                     bottomSheetListener?.showToaster(view, message, Toaster.TYPE_NORMAL, ctaText) {
                         analytics.eventClickUndoDelete()
                         showProgressLoading()
-                        viewModel.undoDeleteCartItems(false)
+                        viewModel.undoDeleteCartItem(false)
                     }
                 }
             }
@@ -451,7 +451,7 @@ class MiniCartListBottomSheet @Inject constructor(var miniCartListDecoration: Mi
     override fun onDeleteClicked(element: MiniCartProductUiModel) {
         analytics.eventClickDeleteFromTrashBin()
         bottomSheetListener?.showProgressLoading()
-        viewModel?.singleDeleteCartItems(element)
+        viewModel?.deleteSingleCartItem(element)
     }
 
     override fun onBulkDeleteUnavailableItems() {
