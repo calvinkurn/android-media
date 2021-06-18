@@ -47,6 +47,8 @@ object SellerHomeTracking {
                 arrayOf(TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH, dataKey).joinToString(" - "),
                 "$emptyStatus - $cardValue"
         )
+        map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        map[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
         TrackingHelper.sendGeneralEvent(map)
     }
 
@@ -298,6 +300,8 @@ object SellerHomeTracking {
 
         val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_PIE_CHART, position))
         eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
 
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
     }
@@ -331,6 +335,8 @@ object SellerHomeTracking {
 
         val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_BAR_CHART, position))
         eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
 
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
     }
