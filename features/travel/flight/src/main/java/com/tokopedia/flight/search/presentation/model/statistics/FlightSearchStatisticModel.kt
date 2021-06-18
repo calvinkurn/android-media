@@ -21,17 +21,15 @@ class FlightSearchStatisticModel(val minPrice: Int,
                                  val isSeatDistancing: Boolean) {
 
     fun getAirline(airlineID: String): FlightAirlineModel {
-        val airlineStatList: List<AirlineStat>? = airlineStatList
-        if (airlineStatList != null) {
-            var i = 0
-            val sizei = airlineStatList.size
-            while (i < sizei) {
-                val flightAirlineDB = airlineStatList[i].airlineDB
-                if (airlineID == flightAirlineDB.id) {
-                    return flightAirlineDB
-                }
-                i++
+        val airlineStatList: List<AirlineStat> = airlineStatList
+        var i = 0
+        val sizei = airlineStatList.size
+        while (i < sizei) {
+            val flightAirlineDB = airlineStatList[i].airlineDB
+            if (airlineID == flightAirlineDB.id) {
+                return flightAirlineDB
             }
+            i++
         }
         return FlightAirlineModel(airlineID, "", "", "")
     }
