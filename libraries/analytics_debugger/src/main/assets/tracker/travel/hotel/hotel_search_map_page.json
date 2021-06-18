@@ -102,6 +102,18 @@
       "category": "hotel"
     },
     {
+      "event": "clickHotel",
+      "eventCategory": "digital - native",
+      "eventAction": "click cari di sekitar sini",
+      "eventLabel": "hotel - .+ - .+",
+      "screenName": "/hotel/searchresult",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": ".+",
+      "sessionIris": ".+",
+      "userId": ".*",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel"
+    }, {
       "event": "view_item_list",
       "eventCategory": "digital - native",
       "eventAction": "view hotel name on map",

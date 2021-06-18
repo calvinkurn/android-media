@@ -91,6 +91,7 @@ class HotelSearchMapActivityTest {
             bottomSheet.setState(BottomSheetBehavior.STATE_COLLAPSED)
         }
         getCurrentPosition()
+        getRadiusAndMidScreenPoint()
         scrollToPropertyCard()
         clickHotelFromHorizontalItems()
 
@@ -212,9 +213,10 @@ class HotelSearchMapActivityTest {
     private fun getRadiusAndMidScreenPoint() {
         Thread.sleep(2000)
         //to make user interact with maps to make maps appear
-        Espresso.onView(ViewMatchers.withId(R.id.mapHotelSearchMap)).perform(ViewActions.swipeUp())
-        Thread.sleep(2000)
-        Espresso.onView(ViewMatchers.withId(R.id.btnGetRadiusHotelSearchMap)).perform(ViewActions.click())
+        uiDevice.findObject(
+                UiSelector().description("MAP READY")
+        ).pinchIn(50, 2)
+        Espresso.onView(AllOf.allOf(ViewMatchers.withText("Cari di sekitar sini"))).perform(ViewActions.click())
     }
 
     @After
