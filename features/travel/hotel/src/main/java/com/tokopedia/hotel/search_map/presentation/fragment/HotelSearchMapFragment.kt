@@ -605,7 +605,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 val opacity = 1f - (slideOffset * 3f)
-                rvHorizontalPropertiesHotelSearchMap.alpha = opacity
+                rvHorizontalPropertiesHotelSearchMap?.let {
+                    rvHorizontalPropertiesHotelSearchMap.alpha = opacity
+                }
             }
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -627,7 +629,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         if (searchPropertiesMap.isNullOrEmpty()) {
                             googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
                         } else {
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchPropertiesMap[0],
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[0]))
+                            val newLatLng = getMapCenter(searchPropertiesMap[0])
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(newLatLng,
                                     MAPS_ZOOM_OUT))
                         }
                         setupContentMargin(false)
