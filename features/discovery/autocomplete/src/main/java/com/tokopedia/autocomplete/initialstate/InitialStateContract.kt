@@ -45,6 +45,12 @@ interface InitialStateContract {
         fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String)
 
         val chooseAddressData: LocalCacheModel?
+
+        fun onRefreshPopularSearch()
+
+        fun onRefreshTokoNowPopularSearch()
+
+        fun trackEventClickTokoNowDynamicSectionItem(label: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -64,7 +70,7 @@ interface InitialStateContract {
 
         fun recentSearchSeeMoreClicked()
 
-        fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
+        fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch)
 
         fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView)
     }

@@ -17,7 +17,7 @@ interface InitialStateItemClickListener {
 
     fun onRefreshDynamicSection(featureId: String)
 
-    fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
+    fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch)
 
     fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView)
 }

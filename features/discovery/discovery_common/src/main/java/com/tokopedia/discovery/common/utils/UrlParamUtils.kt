@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.common.utils
 
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 
@@ -85,5 +86,18 @@ object UrlParamUtils {
         if (url == null) return ""
         val splitUrl = url.split("\\?".toRegex()).toTypedArray()
         return if (splitUrl.size < 2) "" else splitUrl[1]
+    }
+
+    @JvmStatic
+    fun isTokoNow(searchParameter: Map<String, Any>): Boolean {
+        val navSource = searchParameter.getValueString(SearchApiConst.NAVSOURCE)
+
+        return navSource == SearchApiConst.DEFAULT_VALUE_OF_NAVSOURCE_TOKONOW
+    }
+
+    private fun Map<String, Any>?.getValueString(key: String): String {
+        this ?: return ""
+
+        return get(key)?.toString() ?: ""
     }
 }
