@@ -29,8 +29,8 @@ class PortraitVideoBoundsProvider(
 
     override suspend fun getVideoTopBounds(videoOrientation: VideoOrientation): Int = coroutineScope {
         return@coroutineScope if (videoOrientation.isHorizontal) {
-            val toolbarLayout = asyncCatchError(block = { measureWithTimeout { toolbarView.awaitMeasured() } }) {}
-            val statsInfoLayout = asyncCatchError(block = { measureWithTimeout { statsInfoView.awaitMeasured() } }) {}
+            val toolbarLayout = asyncCatchError(block = { measureWithTimeout(MEASURE_TOP_BOUNDS_TIMEOUT, toolbarView::awaitMeasured) }) {}
+            val statsInfoLayout = asyncCatchError(block = { measureWithTimeout(MEASURE_TOP_BOUNDS_TIMEOUT, statsInfoView::awaitMeasured) }) {}
 
             awaitAll(toolbarLayout, statsInfoLayout)
 
@@ -80,5 +80,9 @@ class PortraitVideoBoundsProvider(
         val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
 
         return@coroutineScope interactionTopmostY
+    }
+
+    companion object {
+        private const val MEASURE_TOP_BOUNDS_TIMEOUT = 35000L
     }
 }
