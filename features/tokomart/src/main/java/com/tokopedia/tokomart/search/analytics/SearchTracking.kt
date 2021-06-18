@@ -23,8 +23,6 @@ import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_TAMBA
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.IMPRESSION_BANNER
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.IMPRESSION_PRODUCT
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Category.TOKONOW_SEARCH_RESULT
-import com.tokopedia.tokomart.search.analytics.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
-import com.tokopedia.tokomart.search.analytics.SearchTracking.Misc.LOCAL_SEARCH
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ACTION_FIELD
@@ -45,7 +43,6 @@ import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingCon
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.HOME_AND_BROWSE
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.USER_ID
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
-import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
@@ -79,12 +76,8 @@ object SearchTracking {
 
     object Misc {
         const val HASIL_PENCARIAN_DI_TOKONOW = "Hasil pencarian di TokoNOW!"
-        const val LOCAL_SEARCH = "local_search"
         const val TOKONOW_SEARCH_PRODUCT_ORGANIC = "/tokonow - searchproduct - organic"
     }
-
-    fun getDimension90(pageId: String) =
-            "${HASIL_PENCARIAN_DI_TOKONOW}.$TOKONOW.${LOCAL_SEARCH}.$pageId"
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
@@ -107,7 +100,6 @@ object SearchTracking {
             trackingQueue: TrackingQueue,
             productItemDataView: ProductItemDataView,
             filterSortValue: String,
-            pageId: String,
             keyword: String,
             userId: String,
     ) {
@@ -122,7 +114,7 @@ object SearchTracking {
                 ECOMMERCE, DataLayer.mapOf(
                     CURRENCYCODE, IDR,
                     IMPRESSIONS, DataLayer.listOf(
-                        productItemDataView.getAsImpressionClickObjectDataLayer(filterSortValue, pageId)
+                        productItemDataView.getAsImpressionClickObjectDataLayer(filterSortValue)
                     )
                 )
         ) as HashMap<String, Any>
@@ -131,8 +123,7 @@ object SearchTracking {
     }
 
     private fun ProductItemDataView.getAsObjectDataLayerMap(
-            filterSortValue: String,
-            pageId: String,
+            filterSortValue: String
     ): MutableMap<String, Any> {
         return DataLayer.mapOf(
                 "brand", SearchCategoryTrackingConst.Misc.NONE_OTHER,
@@ -140,7 +131,6 @@ object SearchTracking {
                 "dimension100", sourceEngine,
                 "dimension61", filterSortValue,
                 "dimension81", SearchCategoryTrackingConst.Misc.TOKO_NOW,
-                "dimension90", getDimension90(pageId),
                 "dimension96", boosterList,
                 "id", id,
                 "dimension40", TOKONOW_SEARCH_PRODUCT_ORGANIC,
@@ -152,9 +142,8 @@ object SearchTracking {
 
     private fun ProductItemDataView.getAsImpressionClickObjectDataLayer(
             filterSortValue: String,
-            pageId: String,
     ): Any {
-        return getAsObjectDataLayerMap(filterSortValue, pageId).also {
+        return getAsObjectDataLayerMap(filterSortValue).also {
             it.putAll(DataLayer.mapOf(
                     "position", position,
             ))
@@ -166,7 +155,6 @@ object SearchTracking {
             keyword: String,
             userId: String,
             filterSortValue: String,
-            pageId: String,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
@@ -182,7 +170,7 @@ object SearchTracking {
                         ACTION_FIELD, DataLayer.mapOf(
                             LIST, TOKONOW_SEARCH_PRODUCT_ORGANIC,
                             PRODUCTS, DataLayer.listOf(
-                                productItemDataView.getAsImpressionClickObjectDataLayer(filterSortValue, pageId)
+                                productItemDataView.getAsImpressionClickObjectDataLayer(filterSortValue)
                             )
                         )
                     ),
@@ -248,7 +236,6 @@ object SearchTracking {
             keyword: String,
             userId: String,
             sortFilterParams: String,
-            pageId: String,
             quantity: Int,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -263,7 +250,7 @@ object SearchTracking {
                 ECOMMERCE, DataLayer.mapOf(
                     ADD, DataLayer.mapOf(
                         PRODUCTS, DataLayer.listOf(
-                            productItemDataView.getAsATCObjectDataLayer(sortFilterParams, pageId, quantity)
+                            productItemDataView.getAsATCObjectDataLayer(sortFilterParams, quantity)
                         )
                     ),
                     CURRENCYCODE, IDR,
@@ -274,10 +261,9 @@ object SearchTracking {
 
     private fun ProductItemDataView.getAsATCObjectDataLayer(
             filterSortValue: String,
-            pageId: String,
             quantity: Int,
     ): Any {
-        return getAsObjectDataLayerMap(filterSortValue, pageId).also {
+        return getAsObjectDataLayerMap(filterSortValue).also {
             it.putAll(DataLayer.mapOf(
                     "quantity", quantity,
                     "shop_id", shop.id,
@@ -330,7 +316,6 @@ object SearchTracking {
             keyword: String,
             userId: String,
             sortFilterParams: String,
-            pageId: String,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
@@ -343,16 +328,16 @@ object SearchTracking {
                 USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
                     PROMO_VIEW, DataLayer.mapOf(
-                        PROMOTIONS, channelModel.getAsObjectDataLayer(sortFilterParams, pageId)
+                        PROMOTIONS, channelModel.getAsObjectDataLayer(sortFilterParams)
                     ),
                 )
             )
         )
     }
 
-    private fun ChannelModel.getAsObjectDataLayer(sortFilterParam: String, pageId: String): List<Any> {
+    private fun ChannelModel.getAsObjectDataLayer(sortFilterParam: String): List<Any> {
         return channelGrids.mapIndexed { index, channelGrid ->
-            getChannelGridAsObjectDataLayer(this, channelGrid, sortFilterParam, pageId, index)
+            getChannelGridAsObjectDataLayer(this, channelGrid, sortFilterParam, index)
         }
     }
 
@@ -360,7 +345,6 @@ object SearchTracking {
             channelModel: ChannelModel,
             channelGrid: ChannelGrid,
             sortFilterParam: String,
-            pageId: String,
             position: Int,
     ): Any {
         val channelModelId = channelModel.id
@@ -378,7 +362,6 @@ object SearchTracking {
                 "creative", channelGrid.id,
                 "position", position,
                 "dimension61", sortFilterParam,
-                "dimension90", getDimension90(pageId)
         )
     }
 
@@ -387,7 +370,6 @@ object SearchTracking {
             keyword: String,
             userId: String,
             sortFilterParams: String,
-            pageId: String,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
@@ -400,7 +382,7 @@ object SearchTracking {
                 USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
                     PROMO_CLICK, DataLayer.mapOf(
-                        PROMOTIONS, channelModel.getAsObjectDataLayer(sortFilterParams, pageId)
+                        PROMOTIONS, channelModel.getAsObjectDataLayer(sortFilterParams)
                     ),
                 )
             )
