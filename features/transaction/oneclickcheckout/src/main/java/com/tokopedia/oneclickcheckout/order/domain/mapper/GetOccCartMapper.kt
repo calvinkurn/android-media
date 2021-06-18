@@ -198,7 +198,7 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapPayment(payment: Payment): OrderProfilePayment {
-        return OrderProfilePayment(payment.enable, payment.active, payment.gatewayCode, "Gopay", payment.image,
+        return OrderProfilePayment(payment.enable, payment.active, payment.gatewayCode, payment.gatewayName, payment.image,
                 payment.description, payment.metadata, payment.tickerMessage
         )
     }
