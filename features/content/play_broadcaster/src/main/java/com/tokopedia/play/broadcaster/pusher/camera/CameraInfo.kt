@@ -1,11 +1,7 @@
 package com.tokopedia.play.broadcaster.pusher.camera
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.wmspanel.libstream.Streamer
 import com.wmspanel.libstream.Streamer.FpsRange
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 /**
@@ -43,17 +39,5 @@ class CameraInfo(val cameraId: String) {
         stringBuilder.append("\nisZoomSupported=").append(isZoomSupported)
             .append(", maxZoom=").append(maxZoom).append(";")
         return stringBuilder.toString()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    fun toMap(cameraList: List<CameraInfo>): Map<String, CameraInfo> {
-        val map = LinkedHashMap<String, CameraInfo>()
-        for (info in cameraList) {
-            map[info.cameraId] = info
-            for (subInfo in info.physicalCameras) {
-                map[info.cameraId + subInfo.cameraId] = subInfo
-            }
-        }
-        return map
     }
 }
