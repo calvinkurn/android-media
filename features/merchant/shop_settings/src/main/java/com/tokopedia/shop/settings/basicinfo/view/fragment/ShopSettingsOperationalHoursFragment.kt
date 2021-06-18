@@ -716,10 +716,12 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         autoChatTicker?.gone()
         opsHourContainer?.gone()
         shopIsOnHolidayContainer?.gone()
+        headerOpsHour?.gone()
     }
 
     private fun hideLoader() {
         loader?.gone()
         opsHourContainer?.visible()
+        headerOpsHour?.visible()
     }
 }
