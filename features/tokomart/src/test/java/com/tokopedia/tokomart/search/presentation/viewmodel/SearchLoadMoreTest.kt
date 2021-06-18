@@ -48,7 +48,8 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
             visitableList: List<Visitable<*>>
     ) {
         val firstProductIndex = visitableList.indexOfFirst { it is ProductItemDataView }
-        val nextPageProductIndex = firstProductIndex + searchModelPage1.searchProduct.data.productList.size
+        val page1ProductSize = searchModelPage1.searchProduct.data.productList.size
+        val nextPageProductIndex = firstProductIndex + page1ProductSize
         val page2ProductList = searchModelPage2.searchProduct.data.productList
         val nextPageVisitableList = visitableList.subList(
                 nextPageProductIndex, nextPageProductIndex + page2ProductList.size
@@ -56,7 +57,8 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
 
         verifyProductItemDataViewList(
                 page2ProductList,
-                nextPageVisitableList.filterIsInstance<ProductItemDataView>()
+                nextPageVisitableList.filterIsInstance<ProductItemDataView>(),
+                page1ProductSize + 1
         )
     }
 

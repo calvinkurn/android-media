@@ -3,6 +3,8 @@ package com.tokopedia.tokomart.search.presentation.viewmodel
 import com.tokopedia.tokomart.search.domain.model.SearchModel
 import com.tokopedia.tokomart.searchcategory.EmptyProductTestHelper
 import com.tokopedia.tokomart.searchcategory.jsonToObject
+import com.tokopedia.usecase.RequestParams
+import io.mockk.verify
 import org.junit.Test
 
 class SearchEmptyProductTest: SearchTestFixtures(), EmptyProductTestHelper.Callback {
@@ -19,8 +21,37 @@ class SearchEmptyProductTest: SearchTestFixtures(), EmptyProductTestHelper.Callb
         `Given get search first page use case will be successful`(emptyProductModel)
     }
 
+    override fun `Given first page product list will be successful`() {
+        val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
+        `Given get search first page use case will be successful`(searchModel)
+    }
+
+    override fun `Then verify first page API is called`(
+            count: Int,
+            requestParamsSlot: MutableList<RequestParams>,
+    ) {
+        verify (exactly = count) {
+            getSearchFirstPageUseCase.execute(any(), any(), capture(requestParamsSlot))
+        }
+    }
+
     @Test
     fun `empty product list should show empty product view`() {
         emptyProductTestHelper.`empty product list should show empty product view`()
+    }
+
+    @Test
+    fun `empty product list because of filter should show filter list`() {
+        emptyProductTestHelper.`empty product list because of filter should show filter list`()
+    }
+
+    @Test
+    fun `empty state remove filter`() {
+        emptyProductTestHelper.`empty state remove filter`()
+    }
+
+    @Test
+    fun `empty state remove filter with exclude_ prefix`() {
+        emptyProductTestHelper.`empty state remove filter with exclude_ prefix`()
     }
 }

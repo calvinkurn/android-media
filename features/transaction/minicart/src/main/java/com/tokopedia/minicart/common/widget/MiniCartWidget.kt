@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -28,11 +29,13 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.updatecart.Data
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.minicart.common.widget.di.DaggerMiniCartWidgetComponent
 import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import java.net.SocketTimeoutException
@@ -109,6 +112,9 @@ class MiniCartWidget @JvmOverloads constructor(
     private fun observeGlobalEvent(fragment: Fragment) {
         viewModel?.globalEvent?.observe(fragment.viewLifecycleOwner, {
             when (it.state) {
+                GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM -> {
+                    onSuccessDeleteCartItem(it)
+                }
                 GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET -> {
                     onFailedToLoadMiniCartBottomSheet(it, fragment)
                 }
@@ -128,6 +134,29 @@ class MiniCartWidget @JvmOverloads constructor(
                 }
             }
         })
+    }
+
+    private fun onSuccessDeleteCartItem(globalEvent: GlobalEvent) {
+        val data = globalEvent.data as? RemoveFromCartDomainModel
+        // last item should be handled by mini cart widget, since the bottomsheet already dismissed
+        if (data?.isLastItem == false) return
+
+        hideProgressLoading()
+        miniCartListBottomSheet.dismiss()
+        val message = data?.removeFromCartData?.data?.message?.firstOrNull() ?: ""
+        if(message.isNotBlank()) {
+            if (data?.isBulkDelete == true) {
+                showToaster(
+                        message = message,
+                        type = Toaster.TYPE_NORMAL
+                )
+            } else {
+                showToaster(
+                        message = message,
+                        type = Toaster.TYPE_NORMAL
+                )
+            }
+        }
     }
 
     private fun onFailedUpdateCartForCheckout(globalEvent: GlobalEvent, fragment: Fragment) {
@@ -293,7 +322,7 @@ class MiniCartWidget @JvmOverloads constructor(
         }
     }
 
-    override fun showToaster(view: View?, message: String, type: Int, ctaText: String, onClickListener: OnClickListener?) {
+    override fun showToaster(view: View?, message: String, type: Int, ctaText: String, isShowCta: Boolean, onClickListener: OnClickListener?) {
         if (message.isBlank()) return
 
         var toasterViewRoot = view
@@ -301,12 +330,14 @@ class MiniCartWidget @JvmOverloads constructor(
         toasterViewRoot?.let {
             Toaster.toasterCustomBottomHeight = it.resources?.getDimensionPixelSize(R.dimen.dp_72)
                     ?: 0
-            if (ctaText.isNotBlank()) {
+            if (isShowCta && ctaText.isNotBlank()) {
                 var tmpCtaClickListener = OnClickListener { }
                 if (onClickListener != null) {
                     tmpCtaClickListener = onClickListener
                 }
                 Toaster.build(it, message, Toaster.LENGTH_LONG, type, ctaText, tmpCtaClickListener).show()
+            } else {
+                Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
             }
         }
     }
@@ -337,6 +368,7 @@ class MiniCartWidget @JvmOverloads constructor(
     * This will trigger widget to update the UI with provided data
     * */
     fun updateData(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        setTotalAmountLoading(true)
         viewModel?.updateMiniCartSimplifiedData(miniCartSimplifiedData)
     }
 
@@ -373,6 +405,14 @@ class MiniCartWidget @JvmOverloads constructor(
             imageChevronUnavailable?.gone()
         }
         setTotalAmountLoading(false)
+        setAmountViewLayoutParams()
+    }
+
+    private fun setAmountViewLayoutParams() {
+        val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        lp.weight = 0f
+        lp.setMargins(0, 0, 4.toPx(), 0)
+        totalAmount?.amountView?.layoutParams = lp
     }
 
     private fun setTotalAmountLoading(isLoading: Boolean) {

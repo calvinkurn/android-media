@@ -61,7 +61,6 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
     private fun configureViews() {
         val context = context ?: return
         val filter = filter ?: return
-        val selectedOption = selectedOption ?: return
 
         val drawable = ContextCompat.getDrawable(context, R.drawable.tokomart_divider_category_chooser) ?: return
         val itemDivider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
@@ -76,11 +75,14 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
                 it.addItemDecoration(itemDivider)
         }
 
-        configureButtonApplyVisibility(selectedOption.index)
+        selectedOption?.let { callback?.getResultCount(it.value) }
+        buttonApply?.setOnClickListener(::onButtonApplyClicked)
+    }
 
-        buttonApply?.setOnClickListener {
-            callback?.onApplyCategory(selectedOption.value)
-        }
+    private fun onButtonApplyClicked(view: View) {
+        val selectedOption = selectedOption ?: return
+
+        callback?.onApplyCategory(selectedOption.value)
     }
 
     fun setResultCountText(resultCount: String) {
@@ -95,7 +97,6 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
 
         updateSelectedOption(position, option)
         notifyAdapterSelection(previousPosition, position)
-        configureButtonApplyVisibility(position)
 
         callback?.getResultCount(option)
     }
@@ -114,11 +115,6 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
             if (newPosition >= 0 && newPosition < adapter.itemCount)
                 adapter.notifyItemChanged(newPosition)
         }
-    }
-
-    private fun configureButtonApplyVisibility(position: Int) {
-        val shouldShowButtonApply = initialSelectedOptionIndex != position
-        buttonApply?.showWithCondition(shouldShowButtonApply)
     }
 
     override fun getCheckedOption() = selectedOption

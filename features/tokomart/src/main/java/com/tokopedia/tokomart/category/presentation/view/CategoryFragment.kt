@@ -11,6 +11,7 @@ import com.tokopedia.tokomart.category.presentation.listener.CategoryAisleListen
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokomart.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokomart.category.presentation.viewmodel.CategoryViewModel
+import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_DIRECTORY
 import javax.inject.Inject
@@ -43,11 +44,6 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
         }
     }
 
-    override fun createNavToolbarIconBuilder() = IconBuilder()
-            .addShare()
-            .addCart()
-            .addGlobalNav()
-
     override fun getBaseAutoCompleteApplink() =
             super.getBaseAutoCompleteApplink() + "?" +
                     "${SearchApiConst.NAVSOURCE}=$TOKONOW_DIRECTORY"
@@ -76,5 +72,9 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
 
     override fun onAisleClick(categoryAisleItemDataView: CategoryAisleItemDataView) {
         RouteManager.route(context, categoryAisleItemDataView.applink)
+    }
+
+    override fun onProductImpressed(productItemDataView: ProductItemDataView) {
+
     }
 }

@@ -186,7 +186,7 @@ class BannerViewHolder(
     override fun onClick(position: Int) {
         channelModel?.let {channel ->
             channel.selectGridInPosition(position) {
-                bannerListener.onBannerClick(it.applink)
+                bannerListener.onBannerClick(channel, it.applink)
             }
         }
     }

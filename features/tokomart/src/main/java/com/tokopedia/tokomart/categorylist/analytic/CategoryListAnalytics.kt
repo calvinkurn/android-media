@@ -6,8 +6,8 @@ import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.ACTION
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.ACTION.ACTION_COLLAPSE_LEVEL_ONE
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.ACTION.ACTION_EXPAND_LEVEL_ONE
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.EVENT.EVENT_CATEGORY_VALUE
-import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.MISC.BUSINESSUNIT
-import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.MISC.CURRENTSITE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.BUSINESSUNIT
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.CURRENTSITE
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.MISC.SEE_ALL_CATEGORY
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
@@ -30,8 +30,6 @@ class CategoryListAnalytics{
     }
 
     object MISC{
-        const val CURRENTSITE = "currentSite"
-        const val BUSINESSUNIT = "businessUnit"
         const val SEE_ALL_CATEGORY = "Lihat Semua"
     }
 

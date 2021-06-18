@@ -20,6 +20,7 @@ import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.IsNull.nullValue
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class AddToCartNonVariantTestHelper(
@@ -65,6 +66,7 @@ class AddToCartNonVariantTestHelper(
         )
         `Then assert product item quantity`(productItemDataViewToATC, addToCartQty)
         `Then verify mini cart is refreshed`()
+        `Then verify add to cart tracking is called`(addToCartQty, productItemDataViewToATC)
     }
 
     private fun `Given view already created`() {
@@ -122,6 +124,16 @@ class AddToCartNonVariantTestHelper(
         verify(exactly = exactly) {
             getMiniCartListSimplifiedUseCase.execute(any(), any())
         }
+    }
+
+    private fun `Then verify add to cart tracking is called`(
+            quantity: Int,
+            productItem: ProductItemDataView,
+    ) {
+        val addToCartEvent = baseViewModel.addToCartTrackingLiveData.value!!
+
+        assertThat(addToCartEvent.first, shouldBe(quantity))
+        assertThat(addToCartEvent.second, shouldBe(productItem))
     }
 
     fun `test add to cart failed`() {
@@ -192,17 +204,9 @@ class AddToCartNonVariantTestHelper(
         }
     }
 
-    fun `add to cart to update quantity success`() {
+    fun `add to cart to decrease quantity success`() {
         val updateCartSuccessMessage = "Success nih"
-        val successUpdateCartResponse = UpdateCartV2Data(
-                data = Data(status = true, message = updateCartSuccessMessage)
-        )
-
-        callback.`Given first page API will be successful`()
-        `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
-        `Given update cart use case will be successful`(successUpdateCartResponse)
-        `Given view already created`()
-        `Given view resumed to update mini cart`()
+        `Given view setup to update quantity`(updateCartSuccessMessage)
 
         val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
         val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
@@ -213,13 +217,25 @@ class AddToCartNonVariantTestHelper(
 
         `When add to cart a product`(productInVisitable, productUpdatedQuantity)
 
-        `Then assert update cart params`(productUpdatedQuantity, productInMiniCart)
-        `Then assert cart message event`(
-                expectedSuccessMessage = updateCartSuccessMessage
+        `Then assert update quantity`(
+                productUpdatedQuantity,
+                productInMiniCart,
+                updateCartSuccessMessage,
+                productInVisitable
         )
-        `Then assert product item quantity`(productInVisitable, productUpdatedQuantity)
-        `Then assert add to cart use case is not called`()
-        `Then verify mini cart is refreshed`(2)
+        `Then verify decrease cart quantity tracking is called`(productIdToATC)
+    }
+
+    private fun `Given view setup to update quantity`(updateCartSuccessMessage: String) {
+        val successUpdateCartResponse = UpdateCartV2Data(
+                data = Data(status = true, message = updateCartSuccessMessage)
+        )
+
+        callback.`Given first page API will be successful`()
+        `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
+        `Given update cart use case will be successful`(successUpdateCartResponse)
+        `Given view already created`()
+        `Given view resumed to update mini cart`()
     }
 
     private fun `Given update cart use case will be successful`(
@@ -232,7 +248,23 @@ class AddToCartNonVariantTestHelper(
         }
     }
 
-    private fun `Then assert update cart params`(productUpdatedQuantity: Int, productInMiniCart: MiniCartItem) {
+    private fun `Then assert update quantity`(
+            productUpdatedQuantity: Int,
+            productInMiniCart: MiniCartItem,
+            updateCartSuccessMessage: String,
+            productInVisitable: ProductItemDataView
+    ) {
+        `Then assert update cart params`(productUpdatedQuantity, productInMiniCart)
+        `Then assert cart message event`(expectedSuccessMessage = updateCartSuccessMessage)
+        `Then assert product item quantity`(productInVisitable, productUpdatedQuantity)
+        `Then assert add to cart use case is not called`()
+        `Then verify mini cart is refreshed`(2)
+    }
+
+    private fun `Then assert update cart params`(
+            productUpdatedQuantity: Int,
+            productInMiniCart: MiniCartItem,
+    ) {
         val updateCartParamSlot = slot<List<MiniCartItem>>()
         val updateCartParam by lazy { updateCartParamSlot.captured }
 
@@ -242,6 +274,44 @@ class AddToCartNonVariantTestHelper(
         val updatedMiniCartItem = updateCartParam[0]
         assertThat(updatedMiniCartItem.quantity, shouldBe(productUpdatedQuantity))
         assertThat(updatedMiniCartItem.cartId, shouldBe(productInMiniCart.cartId))
+    }
+
+    private fun `Then verify decrease cart quantity tracking is called`(productIdToATC: String) {
+        val increaseQtyTracking = baseViewModel.increaseQtyTrackingLiveData.value
+        assertThat(increaseQtyTracking, nullValue())
+
+        val reduceQtyTracking = baseViewModel.decreaseQtyTrackingLiveData.value!!
+        assertThat(reduceQtyTracking, shouldBe(productIdToATC))
+    }
+
+    fun `add to cart to increase quantity success`() {
+        val updateCartSuccessMessage = "Success nih"
+        `Given view setup to update quantity`(updateCartSuccessMessage)
+
+        val productItemList = baseViewModel.visitableListLiveData.value!!.getProductItemList()
+        val productIdToATC = PRODUCT_ID_NON_VARIANT_ATC
+        val productInMiniCart = miniCartItems.find { it.productId == productIdToATC }!!
+
+        val productUpdatedQuantity = productInMiniCart.quantity + 3
+        val productInVisitable = productItemList.find { it.id == productIdToATC }!!
+
+        `When add to cart a product`(productInVisitable, productUpdatedQuantity)
+
+        `Then assert update quantity`(
+                productUpdatedQuantity,
+                productInMiniCart,
+                updateCartSuccessMessage,
+                productInVisitable,
+        )
+        `Then verify increase cart quantity tracking is called`(productIdToATC)
+    }
+
+    private fun `Then verify increase cart quantity tracking is called`(productIdToATC: String) {
+        val increaseQtyTracking = baseViewModel.increaseQtyTrackingLiveData.value!!
+        assertThat(increaseQtyTracking, shouldBe(productIdToATC))
+
+        val reduceQtyTracking = baseViewModel.decreaseQtyTrackingLiveData.value
+        assertThat(reduceQtyTracking, nullValue())
     }
 
     fun `add to cart to update quantity failed`() {

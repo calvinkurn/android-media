@@ -206,7 +206,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
             override fun onError(e: Throwable) {}
 
             override fun onNext(quantity: Int?) {
-                if (quantity != null) {
+                if (quantity != null && quantity != 0) {
                     addToCartNonVariantClickListener?.onQuantityChanged(quantity)
                 }
             }
