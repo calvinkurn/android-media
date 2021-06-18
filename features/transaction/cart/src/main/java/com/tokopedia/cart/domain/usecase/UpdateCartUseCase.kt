@@ -26,7 +26,7 @@ class UpdateCartUseCase @Inject constructor(private val graphqlUseCase: GraphqlU
         val PARAM_UPDATE_CART_REQUEST = "PARAM_UPDATE_CART_REQUEST"
         val PARAM_CARTS = "carts"
 
-        const val PARAM_KEY_SOURCE = "SOURCE"
+        const val PARAM_KEY_SOURCE = "source"
         const val PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES = "update_qty_notes"
 
         private const val PARAM_KEY_LANG = "lang"

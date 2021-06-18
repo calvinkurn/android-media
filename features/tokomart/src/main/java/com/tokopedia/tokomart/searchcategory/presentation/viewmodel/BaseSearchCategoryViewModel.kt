@@ -89,6 +89,7 @@ abstract class BaseSearchCategoryViewModel(
     protected var totalFetchedData = 0
     protected var nextPage = 1
     protected var chooseAddressData: LocalCacheModel? = null
+    protected var currentProductPosition: Int = 1
     private var cartItemsNonVariant: List<MiniCartItem>? = null
     private var cartItemsVariantGrouped: Map<String, List<MiniCartItem>>? = null
 
@@ -145,6 +146,17 @@ abstract class BaseSearchCategoryViewModel(
 
     protected val isOutOfServiceMutableLiveData = MutableLiveData(false)
     val isOutOfServiceLiveData: LiveData<Boolean> = isOutOfServiceMutableLiveData
+
+    protected val addToCartTrackingMutableLiveData =
+            SingleLiveEvent<Pair<Int, ProductItemDataView>>()
+    val addToCartTrackingLiveData: LiveData<Pair<Int, ProductItemDataView>> =
+            addToCartTrackingMutableLiveData
+
+    protected val decreaseQtyTrackingMutableLiveData = SingleLiveEvent<String>()
+    val decreaseQtyTrackingLiveData: LiveData<String> = decreaseQtyTrackingMutableLiveData
+
+    protected val increaseQtyTrackingMutableLiveData = SingleLiveEvent<String>()
+    val increaseQtyTrackingLiveData: LiveData<String> = increaseQtyTrackingMutableLiveData
 
     init {
         showLoading()
@@ -287,6 +299,7 @@ abstract class BaseSearchCategoryViewModel(
         totalData = headerDataView.aceSearchProductHeader.totalData
         totalFetchedData += contentDataView.aceSearchProductData.productList.size
         autoCompleteApplink = contentDataView.aceSearchProductData.autocompleteApplink
+        currentProductPosition = 1
 
         val isEmptyProductList = contentDataView.aceSearchProductData.productList.isEmpty()
 
@@ -446,9 +459,9 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun createContentVisitableList(contentDataView: ContentDataView) =
-            contentDataView.aceSearchProductData.productList.map(::mapToProductItemDataView)
+            contentDataView.aceSearchProductData.productList.mapIndexed(::mapToProductItemDataView)
 
-    protected open fun mapToProductItemDataView(product: Product): ProductItemDataView {
+    protected open fun mapToProductItemDataView(index: Int, product: Product): ProductItemDataView {
         return ProductItemDataView(
                 id = product.id,
                 imageUrl300 = product.imageUrl300,
@@ -460,6 +473,7 @@ abstract class BaseSearchCategoryViewModel(
                 parentId = product.parentId,
                 shop = ProductItemDataView.Shop(
                         id = product.shop.id,
+                        name = product.shop.name,
                 ),
                 ratingAverage = product.ratingAverage,
                 variantATC = createVariantATCDataView(product),
@@ -479,7 +493,10 @@ abstract class BaseSearchCategoryViewModel(
                             typeVariant = labelGroupVariant.typeVariant,
                             hexColor = labelGroupVariant.hexColor,
                     )
-                }
+                },
+                sourceEngine = product.sourceEngine,
+                boosterList = product.boosterList,
+                position = currentProductPosition++,
         )
     }
 
@@ -803,6 +820,7 @@ abstract class BaseSearchCategoryViewModel(
 
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
+            sendAddToCartTracking(quantity, productItem)
             onAddToCartSuccess(
                     productItem,
                     it.data.quantity,
@@ -811,6 +829,10 @@ abstract class BaseSearchCategoryViewModel(
         }, {
             onAddToCartFailed(it)
         })
+    }
+
+    private fun sendAddToCartTracking(quantity: Int, productItem: ProductItemDataView) {
+        addToCartTrackingMutableLiveData.value = Pair(quantity, productItem)
     }
 
     private fun onAddToCartSuccess(
@@ -847,10 +869,20 @@ abstract class BaseSearchCategoryViewModel(
         miniCartItem.quantity = quantity
         updateCartUseCase.setParams(listOf(miniCartItem))
         updateCartUseCase.execute({
+            sendTrackingUpdateQuantity(quantity, productItem)
             onAddToCartSuccess(productItem, quantity, it.data.message)
         }, {
             onAddToCartFailed(it)
         })
+    }
+
+    private fun sendTrackingUpdateQuantity(newQuantity: Int, productItem: ProductItemDataView) {
+        val nonVariantATC = productItem.nonVariantATC ?: return
+
+        if (nonVariantATC.quantity > newQuantity)
+            decreaseQtyTrackingMutableLiveData.value = productItem.id
+        else if (nonVariantATC.quantity < newQuantity)
+            increaseQtyTrackingMutableLiveData.value = productItem.id
     }
 
     fun onLocalizingAddressSelected() {

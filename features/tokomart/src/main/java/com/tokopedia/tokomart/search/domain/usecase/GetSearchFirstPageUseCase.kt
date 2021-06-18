@@ -44,12 +44,14 @@ class GetSearchFirstPageUseCase(
 
     private fun createCategoryFilterParams(queryParams: Map<String?, Any>): Map<String?, Any> {
         return queryParams.toMutableMap().also {
+            it[SearchApiConst.NAVSOURCE] = CATEGORY_TOKONOW
             it[SearchApiConst.SOURCE] = CATEGORY_TOKONOW
         }
     }
 
     private fun createQuickFilterParams(queryParams: Map<String?, Any>): Map<String?, Any> {
         return queryParams.toMutableMap().also {
+            it[SearchApiConst.NAVSOURCE] = QUICK_FILTER_TOKONOW
             it[SearchApiConst.SOURCE] = QUICK_FILTER_TOKONOW
         }
     }

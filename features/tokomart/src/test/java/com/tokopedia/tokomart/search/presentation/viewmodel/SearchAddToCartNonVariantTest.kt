@@ -45,8 +45,13 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
     }
 
     @Test
-    fun `add to cart to update quantity success`() {
-        addToCartTestHelper.`add to cart to update quantity success`()
+    fun `add to cart to increase quantity success`() {
+        addToCartTestHelper.`add to cart to increase quantity success`()
+    }
+
+    @Test
+    fun `add to cart to decrease quantity success`() {
+        addToCartTestHelper.`add to cart to decrease quantity success`()
     }
 
     @Test
