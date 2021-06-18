@@ -17,14 +17,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.constant.ShopStatusDef
+import com.tokopedia.shop.common.remoteconfig.ShopAbTestPlatform
 import com.tokopedia.shop.common.util.OperationalHoursUtil
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsSetOperationalHoursActivity
@@ -40,6 +44,10 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -64,6 +72,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
         private const val NO_HOLIDAY_DATE = "0"
         private const val REQUEST_CODE_SET_OPS_HOUR = 100
+        private const val AB_TEST_EXPERIMENT_KEY_OPS_HOUR = "operational_hour"
     }
 
     @Inject
@@ -99,6 +108,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var shopIsOnHolidaySwitcher: SwitchUnify? = null
     private var checkBoxCloseNow: CheckboxUnify? = null
 
+    private var shopAbTestPlatform: ShopAbTestPlatform? = null
     private var isNeedToShowToaster: Boolean = false
     private var isShopOnScheduledHoliday: Boolean = false
     private var isShouldShowHolidaySchedule: Boolean = false
@@ -111,6 +121,11 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var selectedEndDate = Date()
     private var existingStartDate = Date()
     private var existingEndDate = Date()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        checkAbTestRollenceVariant()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(FRAGMENT_LAYOUT, container, false).apply {
@@ -156,6 +171,29 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     override fun initInjector() {
         component?.inject(this)
+    }
+
+    private fun checkAbTestRollenceVariant() {
+        shopAbTestPlatform = ShopAbTestPlatform(requireContext()).apply {
+            requestParams = ShopAbTestPlatform.createRequestParam(
+                    listExperimentName = listOf(AB_TEST_EXPERIMENT_KEY_OPS_HOUR),
+                    shopId = userSession.shopId
+            )
+            fetch(object : RemoteConfig.Listener {
+                override fun onComplete(remoteConfig: RemoteConfig?) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val variantType = getString(AB_TEST_EXPERIMENT_KEY_OPS_HOUR, "")
+                        if (variantType.isEmpty() || variantType != AB_TEST_EXPERIMENT_KEY_OPS_HOUR) {
+                            // redirect to old shop ops hour settings
+                            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+                            activity?.finish()
+                        }
+                    }
+                }
+
+                override fun onError(e: Exception?) {}
+            })
+        }
     }
 
     private fun initView(view: View?) {
