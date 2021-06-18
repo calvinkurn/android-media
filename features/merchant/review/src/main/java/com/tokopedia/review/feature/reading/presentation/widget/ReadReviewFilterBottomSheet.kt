@@ -16,7 +16,7 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val TAG = "ReadReviewFilterBottomSheet Tag"
-        fun newInstance(title: String, filterList: ArrayList<ListItemUnify>, readReviewFilterBottomSheetListener: ReadReviewFilterBottomSheetListener, sortFilterBottomSheetType: SortFilterBottomSheetType, selectedFilter: List<String> = listOf(), selectedSort: String = ""): ReadReviewFilterBottomSheet {
+        fun newInstance(title: String, filterList: ArrayList<ListItemUnify>, readReviewFilterBottomSheetListener: ReadReviewFilterBottomSheetListener, sortFilterBottomSheetType: SortFilterBottomSheetType, selectedFilter: List<String> = listOf(), selectedSort: String = "", index: Int): ReadReviewFilterBottomSheet {
             return ReadReviewFilterBottomSheet().apply {
                 setTitle(title)
                 this.filterData = filterList
@@ -24,6 +24,7 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
                 this.sortFilterBottomSheetType = sortFilterBottomSheetType
                 this.selectedFilter = selectedFilter
                 this.selectedSort = selectedSort
+                this.index = index
             }
         }
     }
@@ -36,6 +37,7 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
     private var sortFilterBottomSheetType: SortFilterBottomSheetType? = null
     private var selectedFilter: List<String> = listOf()
     private var selectedSort: String = ""
+    private var index: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = View.inflate(context, R.layout.bottomsheet_read_review_filter, null)
@@ -83,7 +85,7 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
             if (isSortMode()) {
                 listener?.onSortSubmitted(getSelectedSort())
             } else {
-                listener?.onFilterSubmitted(getSelectedFilters())
+                listener?.onFilterSubmitted(getSelectedFilters(), sortFilterBottomSheetType ?: SortFilterBottomSheetType.RatingFilterBottomSheet, index)
             }
         }
     }

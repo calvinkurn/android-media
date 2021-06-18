@@ -11,8 +11,11 @@ import com.tokopedia.review.feature.reading.domain.usecase.GetProductRatingAndTo
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductReviewListUseCase
 import com.tokopedia.review.feature.reading.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
+import com.tokopedia.review.feature.reading.presentation.uimodel.FilterType
+import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
 import com.tokopedia.review.feature.reading.utils.ReadReviewUtils
+import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -44,7 +47,7 @@ class ReadReviewViewModel @Inject constructor(
     private val currentPage = MutableLiveData<Int>()
     private var productId: MutableLiveData<String> = MutableLiveData()
     private var sort: String = SortTypeConstants.MOST_HELPFUL_PARAM
-    private var filter: String = ""
+    private var filter: MutableList<FilterType> = mutableListOf()
 
     init {
         _ratingAndTopics.addSource(productId) {
@@ -87,8 +90,25 @@ class ReadReviewViewModel @Inject constructor(
         }
     }
 
-    fun setFilter(filter: String) {
+    fun setFilter(selectedFilters: List<ListItemUnify>, type: SortFilterBottomSheetType) {
+        if(type == SortFilterBottomSheetType.RatingFilterBottomSheet) {
+            this.filter.replace(mapRatingFilterToFilterType(selectedFilters))
+        } else {
+            this.filter.replace(mapTopicFilterToFilterType(selectedFilters))
+        }
+        resetPage()
+    }
 
+    fun setFilterWithImage(isActive: Boolean) {
+        if(isActive) {
+            this.filter.forEach {
+                if (it is FilterType.FilterWithImage) {
+                    filter.remove(it)
+                }
+            }
+        } else {
+            this.filter.add(getFilterWithImageParam())
+        }
         resetPage()
     }
 
@@ -99,7 +119,7 @@ class ReadReviewViewModel @Inject constructor(
 
     private fun getProductReviews(page: Int) {
         launchCatchError(block = {
-            getProductReviewListUseCase.setParams(productId.value ?: "", page, sort, filter)
+            getProductReviewListUseCase.setParams(productId.value ?: "", page, sort, mapFilterToRequestParams())
             val data = getProductReviewListUseCase.executeOnBackground()
             _productReviews.postValue(Success(data.productrevGetProductReviewList))
         }) {
@@ -122,11 +142,43 @@ class ReadReviewViewModel @Inject constructor(
     }
 
     private fun mapSortOptionToSortParam(sort: String): String {
-        return when (sort) {
-            SortTypeConstants.HIGHEST_RATING_COPY -> SortTypeConstants.HIGHEST_RATING_PARAM
-            SortTypeConstants.LOWEST_RATING_COPY -> SortTypeConstants.LOWEST_RATING_PARAM
-            SortTypeConstants.LATEST_COPY -> SortTypeConstants.LATEST_PARAM
-            else -> SortTypeConstants.MOST_HELPFUL_PARAM
+        return SortTypeConstants.sortMap[sort] ?: SortTypeConstants.MOST_HELPFUL_PARAM
+    }
+
+    private fun getFilterWithImageParam(): FilterType {
+        return FilterType.FilterWithImage()
+    }
+
+    private fun mapFilterToRequestParams(): String {
+        if(filter.isEmpty()) return ""
+        return filter.joinToString(separator = ";") { "${it.param}=${it.value}" }
+    }
+
+    private fun mapRatingFilterToFilterType(ratingFilters: List<ListItemUnify>): FilterType.FilterRating {
+        val selectedRatings = ratingFilters.map {
+            it.listTitleText
+        }.joinToString { it }
+        return FilterType.FilterRating(selectedRatings)
+    }
+
+    private fun mapTopicFilterToFilterType(topicFilters: List<ListItemUnify>): FilterType.FilterTopic {
+        val topicsMap = getTopicsMap()
+        val selectedTopics = topicFilters.map {
+            topicsMap[it.listTitleText] ?: ""
+        }.joinToString { it }
+        return FilterType.FilterTopic(selectedTopics)
+    }
+
+    private fun getTopicsMap(): Map<String, String> {
+        return (_ratingAndTopics.value as? Success)?.data?.getTopicsMap() ?: mapOf()
+    }
+
+    private fun MutableList<FilterType>.replace(filter: FilterType) {
+        this.forEach {
+            if(it::class == filter::class) {
+                remove(it)
+            }
         }
+        add(filter)
     }
 }

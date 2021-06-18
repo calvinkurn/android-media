@@ -379,5 +379,7 @@
     <string name="review_reading_seller_label">Penjual</string>
     <string name="review_reading_hide_response">Tutup Balasan</string>
     <string name="review_reading_empty_review">Tidak ada ulasan</string>
+    <string name="review_reading_filter_multiple_rating_selected">%d Rating</string>
+    <string name="review_reading_filter_multiple_topic_selected">%d Topik</string>
 
 </resources>

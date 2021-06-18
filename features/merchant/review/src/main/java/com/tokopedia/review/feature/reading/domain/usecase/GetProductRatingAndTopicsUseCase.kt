@@ -32,6 +32,7 @@ class GetProductRatingAndTopicsUseCase @Inject constructor(graphqlRepository: Gr
                   rating
                   formatted
                   reviewCount
+                  key
                 }
                 variants
                 availableFilters {

@@ -1,8 +1,10 @@
 package com.tokopedia.review.feature.reading.presentation.widget
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reading.data.AvailableFilters
@@ -10,11 +12,13 @@ import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.review.feature.reading.data.ProductTopic
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterChipsListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
+import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class ReadReviewHeader : BaseCustomView {
@@ -53,18 +57,23 @@ class ReadReviewHeader : BaseCustomView {
     private fun mapAvailableFiltersToSortFilter(topics: List<ProductTopic>, availableFilters: AvailableFilters, listener: ReadReviewFilterChipsListener): ArrayList<SortFilterItem> {
         val filter = arrayListOf<SortFilterItem>()
         if (availableFilters.withAttachment) {
-            filter.add(SortFilterItem(context.getString(R.string.review_reading_filter_with_attachment), ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_SMALL).apply {
-                this.listener = {
-                    listener.onFilterWithAttachmentClicked()
-                    toggleSelected()
-                }
-            })
+            val withAttachmentFilterOption = SortFilterItem(context.getString(R.string.review_reading_filter_with_attachment), ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_SMALL)
+            withAttachmentFilterOption.apply {
+                this.listener = { listener.onFilterWithAttachmentClicked(this.type == ChipsUnify.TYPE_SELECTED) }
+            }
+            filter.add(withAttachmentFilterOption)
         }
         if (availableFilters.rating) {
-            filter.add(getSortFilterItem(context.getString(R.string.review_reading_filter_all_ratings)) { listener.onFilterWithRatingClicked() })
+            val ratingFilter = getSortFilterItem(context.getString(R.string.review_reading_filter_all_ratings))
+            setListenerAndChevronListener(ratingFilter) {
+                listener.onFilterWithRatingClicked(getIndexOfSortFilter(ratingFilter))
+            }
+            filter.add(ratingFilter)
         }
         if (availableFilters.topics) {
-            filter.add(getSortFilterItem(context.getString(R.string.review_reading_filter_all_topics)) { listener.onFilterWithTopicClicked(topics) })
+            val topicFilter = getSortFilterItem(context.getString(R.string.review_reading_filter_all_topics))
+            setListenerAndChevronListener(topicFilter) { listener.onFilterWithTopicClicked(topics, getIndexOfSortFilter(topicFilter)) }
+            filter.add(topicFilter)
         }
         val sortOption = getSortFilterItem(context.getString(R.string.review_reading_sort_most_helpful))
         sortOption.listener = { listener.onSortClicked(sortOption.title.toString()) }
@@ -72,10 +81,50 @@ class ReadReviewHeader : BaseCustomView {
         return filter
     }
 
-    private fun getSortFilterItem(text: String, action: () -> Unit = {}): SortFilterItem {
-        return SortFilterItem(text, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_SMALL).apply {
-            listener = { action.invoke() }
-            chevronListener = { action.invoke() }
+    private fun getSortFilterItem(text: String): SortFilterItem {
+        return SortFilterItem(text, ChipsUnify.TYPE_NORMAL, ChipsUnify.SIZE_SMALL)
+    }
+
+    private fun setListenerAndChevronListener(sortFilterItem: SortFilterItem, action: () -> Unit) {
+        sortFilterItem.apply {
+            this.listener = { action.invoke() }
+            this.chevronListener = { action.invoke() }
+        }
+    }
+
+    private fun updateFilterChip(sortFilterItem: SortFilterItem?, isEmpty: Boolean, title: String, drawable: Drawable? = null) {
+        sortFilterItem?.apply {
+            this.title = title
+            iconDrawable = drawable
+            type = if (isEmpty) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
+        }
+    }
+
+    private fun getIndexOfSortFilter(sortFilterItem: SortFilterItem): Int {
+        return sortFilter?.chipItems?.indexOf(sortFilterItem) ?: 0
+    }
+
+    private fun getTopicFilterTitleBasedOnCount(selectedFilter: List<ListItemUnify>): String {
+        return if (selectedFilter.size > 1) {
+            context.getString(R.string.review_reading_filter_multiple_topic_selected, selectedFilter.size)
+        } else {
+            selectedFilter.firstOrNull()?.listTitleText
+                    ?: context.getString(R.string.review_reading_filter_all_topics)
+        }
+    }
+
+    private fun getRatingFilterTitleAndDrawableBasedOnCount(selectedFilter: List<ListItemUnify>): Pair<String, Drawable?> {
+        return when {
+            selectedFilter.size > 1 -> {
+                Pair(context.getString(R.string.review_reading_filter_multiple_rating_selected, selectedFilter.size), null)
+            }
+            selectedFilter.isEmpty() -> {
+                Pair(context.getString(R.string.review_reading_filter_all_ratings), null)
+            }
+            else -> {
+                Pair(selectedFilter.firstOrNull()?.listTitleText
+                        ?: context.getString(R.string.review_reading_filter_all_ratings), ContextCompat.getDrawable(context, R.drawable.ic_rating_star_item))
+            }
         }
     }
 
@@ -95,14 +144,23 @@ class ReadReviewHeader : BaseCustomView {
         sortFilter?.addItem(mapAvailableFiltersToSortFilter(topics, availableFilters, listener))
     }
 
-    fun updateFilter() {
+    fun updateFilter(selectedFilter: List<ListItemUnify>, sortFilterBottomSheetType: SortFilterBottomSheetType, index: Int) {
+        if (sortFilterBottomSheetType is SortFilterBottomSheetType.RatingFilterBottomSheet) {
+            val titleAndDrawable = getRatingFilterTitleAndDrawableBasedOnCount(selectedFilter)
+            updateFilterChip(sortFilter?.chipItems?.get(index), selectedFilter.isEmpty(), titleAndDrawable.first, titleAndDrawable.second)
+        } else {
+            updateFilterChip(sortFilter?.chipItems?.get(index), selectedFilter.isEmpty(), getTopicFilterTitleBasedOnCount(selectedFilter))
+        }
+    }
 
+    fun updateFilterWithImage() {
+        sortFilter?.chipItems?.firstOrNull()?.toggleSelected()
     }
 
     fun updateSelectedSort(selectedSort: String) {
         sortFilter?.chipItems?.lastOrNull()?.apply {
             title = selectedSort
-            type = if(selectedSort == SortTypeConstants.MOST_HELPFUL_COPY) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
+            type = if (selectedSort == SortTypeConstants.MOST_HELPFUL_COPY) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
         }
     }
 }

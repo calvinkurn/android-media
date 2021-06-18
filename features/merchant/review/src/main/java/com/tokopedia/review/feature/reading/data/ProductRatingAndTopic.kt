@@ -22,7 +22,15 @@ data class ProductrevGetProductRatingAndTopic(
         @SerializedName("availableFilters")
         @Expose
         val availableFilters: AvailableFilters = AvailableFilters()
-)
+) {
+    fun getTopicsMap(): Map<String, String> {
+        val topicsMap = mutableMapOf<String, String>()
+        this.topics.forEach {
+                topicsMap[it.formatted] = it.key
+        }
+        return topicsMap
+    }
+}
 
 data class ProductRating(
         @SerializedName("positivePercentageFmt")
@@ -54,7 +62,10 @@ data class ProductTopic(
         val formatted: String = "",
         @SerializedName("reviewCount")
         @Expose
-        val reviewCount: Long = 0
+        val reviewCount: Long = 0,
+        @SerializedName("key")
+        @Expose
+        val key: String = ""
 )
 
 data class AvailableFilters(
