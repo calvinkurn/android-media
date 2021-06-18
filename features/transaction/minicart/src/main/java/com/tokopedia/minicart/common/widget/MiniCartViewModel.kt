@@ -443,19 +443,6 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         }
     }
 
-    fun getUnavailableItems(): MutableList<MiniCartProductUiModel> {
-        val unavailableProducts = mutableListOf<MiniCartProductUiModel>()
-        val visitables = miniCartListBottomSheetUiModel.value?.visitables?.toMutableList()
-                ?: emptyList()
-        visitables.forEach {
-            if (it is MiniCartProductUiModel && it.isProductDisabled) {
-                unavailableProducts.add(it)
-            }
-        }
-
-        return unavailableProducts
-    }
-
     fun bulkDeleteUnavailableCartItems() {
         val unavailableCartItems = mutableListOf<MiniCartProductUiModel>()
         miniCartListBottomSheetUiModel.value?.visitables?.forEach {
