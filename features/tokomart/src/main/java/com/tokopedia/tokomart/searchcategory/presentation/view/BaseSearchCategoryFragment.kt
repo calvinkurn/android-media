@@ -462,6 +462,12 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onLoadMore()
     }
 
+    protected fun getUserId(): String {
+        val userId = userSession.userId ?: ""
+
+        return if (userId.isEmpty()) "0" else userId
+    }
+
     override fun onLocalizingAddressSelected() {
         getViewModel().onLocalizingAddressSelected()
     }

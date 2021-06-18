@@ -151,12 +151,6 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         )
     }
 
-    private fun getUserId(): String {
-        val userId = userSession.userId ?: ""
-
-        return if (userId.isEmpty()) "0" else userId
-    }
-
     private fun getProductItemAsImpressionClickObjectDataLayer(
             productItemDataView: ProductItemDataView
     ): Any {

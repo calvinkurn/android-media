@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.tokomart.category.analytics.CategoryTracking
 import com.tokopedia.tokomart.category.di.CategoryComponent
@@ -89,5 +90,17 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
 
     override fun onProductImpressed(productItemDataView: ProductItemDataView) {
 
+    }
+
+    override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {
+        CategoryTracking.sendBannerImpressionEvent(channelModel, getViewModel().categoryL1, getUserId())
+
+        super.onBannerImpressed(channelModel, position)
+    }
+
+    override fun onBannerClick(channelModel: ChannelModel, applink: String) {
+        CategoryTracking.sendBannerClickEvent(channelModel, getViewModel().categoryL1, getUserId())
+
+        super.onBannerClick(channelModel, applink)
     }
 }
