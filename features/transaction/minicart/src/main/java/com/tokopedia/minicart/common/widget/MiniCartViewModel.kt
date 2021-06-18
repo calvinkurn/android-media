@@ -58,7 +58,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
     val tmpHiddenUnavailableItems = mutableListOf<Visitable<*>>()
 
-    private var lastDeletedProductItem: MiniCartProductUiModel? = null
+    var lastDeletedProductItem: MiniCartProductUiModel? = null
+        private set
 
     // Used for mocking _miniCartListBottomSheetUiModel value.
     // Should only be called from unit test.
@@ -161,13 +162,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         )
     }
 
-    private fun onErrorDeleteSingleCartItem(throwable: Throwable) {
-        _globalEvent.value = GlobalEvent(
-                state = GlobalEvent.STATE_FAILED_DELETE_CART_ITEM,
-                throwable = throwable
-        )
-    }
-
     private fun onSuccessDeleteSingleCartItem(product: MiniCartProductUiModel, removeFromCartData: RemoveFromCartData) {
         val visitables = miniCartListBottomSheetUiModel.value?.visitables ?: mutableListOf()
         val tmpVisitables = miniCartListBottomSheetUiModel.value?.visitables ?: mutableListOf()
@@ -198,6 +192,13 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         }
     }
 
+    private fun onErrorDeleteSingleCartItem(throwable: Throwable) {
+        _globalEvent.value = GlobalEvent(
+                state = GlobalEvent.STATE_FAILED_DELETE_CART_ITEM,
+                throwable = throwable
+        )
+    }
+
     fun bulkDeleteUnavailableCartItems() {
         val unavailableCartItems = mutableListOf<MiniCartProductUiModel>()
         miniCartListBottomSheetUiModel.value?.visitables?.forEach {
@@ -226,17 +227,17 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         )
     }
 
-    private fun onErrorBulkDeleteUnavailableCartItems(throwable: Throwable) {
-        _globalEvent.value = GlobalEvent(
-                state = GlobalEvent.STATE_FAILED_DELETE_CART_ITEM,
-                throwable = throwable
-        )
-    }
-
     private fun onSuccessBulkDeleteUnavailableCartItems(removeFromCartData: RemoveFromCartData, isLastItem: Boolean) {
         _globalEvent.value = GlobalEvent(
                 state = GlobalEvent.STATE_SUCCESS_DELETE_CART_ITEM,
                 data = RemoveFromCartDomainModel(removeFromCartData = removeFromCartData, isLastItem = isLastItem, isBulkDelete = true)
+        )
+    }
+
+    private fun onErrorBulkDeleteUnavailableCartItems(throwable: Throwable) {
+        _globalEvent.value = GlobalEvent(
+                state = GlobalEvent.STATE_FAILED_DELETE_CART_ITEM,
+                throwable = throwable
         )
     }
 
@@ -254,17 +255,17 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         }
     }
 
-    private fun onErrorUndoDeleteCartItem(throwable: Throwable) {
-        _globalEvent.value = GlobalEvent(
-                state = GlobalEvent.STATE_FAILED_UNDO_DELETE_CART_ITEM,
-                throwable = throwable
-        )
-    }
-
     private fun onSuccessUndoDeleteCartItem(undoDeleteCartDataResponse: UndoDeleteCartDataResponse, isLastItem: Boolean) {
         _globalEvent.value = GlobalEvent(
                 state = GlobalEvent.STATE_SUCCESS_UNDO_DELETE_CART_ITEM,
                 data = UndoDeleteCartDomainModel(undoDeleteCartDataResponse, isLastItem)
+        )
+    }
+
+    private fun onErrorUndoDeleteCartItem(throwable: Throwable) {
+        _globalEvent.value = GlobalEvent(
+                state = GlobalEvent.STATE_FAILED_UNDO_DELETE_CART_ITEM,
+                throwable = throwable
         )
     }
 

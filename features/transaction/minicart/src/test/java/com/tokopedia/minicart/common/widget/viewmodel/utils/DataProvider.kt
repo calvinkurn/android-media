@@ -3,6 +3,8 @@ package com.tokopedia.minicart.common.widget.viewmodel.utils
 import com.google.gson.Gson
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
+import com.tokopedia.minicart.common.data.response.deletecart.DeleteCartGqlResponse
+import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -83,6 +85,11 @@ object DataProvider {
     fun provideGetMiniCartListSuccessWithSlashPrice(): MiniCartListUiModel {
         val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_slash_price"), MiniCartGqlResponse::class.java)
         return miniCartListUiModelMapper.mapUiModel(json.miniCart)
+    }
+
+    fun provideDeleteFromCartSuccess(): RemoveFromCartData {
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/remove_from_cart_success"), DeleteCartGqlResponse::class.java)
+        return json.removeFromCart
     }
 
 }
