@@ -13,6 +13,7 @@ import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResul
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetBroadCastMetaDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUseCase
+import com.tokopedia.vouchercreation.voucherlist.model.remote.ChatBlastSellerMetadata
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -403,5 +404,55 @@ class VoucherListViewModelTest {
             assert(successVoucherLiveData.value is Fail)
         }
     }
+
+    @Test
+    fun `success getBroadCastMetaData`() = runBlocking {
+        with(mViewModel) {
+            coEvery {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            } returns ChatBlastSellerMetadata()
+            getBroadCastMetaData()
+            coVerify {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            }
+
+            assert(broadCastMetadata.value is Success)
+        }
+    }
+
+    @Test
+    fun `fail getBroadCastMetaData`() = runBlocking {
+        with(mViewModel) {
+            val dummyThrowable = MessageErrorException("")
+
+            coEvery {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            } throws dummyThrowable
+
+            getBroadCastMetaData()
+
+            coVerify {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            }
+
+            assert(broadCastMetadata.value is Fail)
+        }
+    }
+
+    @Test
+    fun `check whether showBroadCastChatTicker value is true after set to true`() = runBlocking {
+        with(mViewModel) {
+            setShowBroadCastChatTicker(true)
+            assert(getShowBroadCastChatTicker())
+        }
+    }
+
+    @Test
+    fun `checkas whether showBroadCastChatTicker value is true after set to true`() = runBlocking {
+//        with(mViewModel) {
+//            isBroadCastChatTickerExpired(15345345)
+//        }
+    }
+
 
 }
