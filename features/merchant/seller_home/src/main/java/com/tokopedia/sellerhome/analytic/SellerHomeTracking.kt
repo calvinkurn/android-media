@@ -42,7 +42,7 @@ object SellerHomeTracking {
         val cardValue = model.data?.header.orEmpty()
 
         val map = TrackingHelper.createMap(
-                TrackingConstant.VIEW_SELLER_WIDGET,
+                TrackingConstant.VIEW_SELLER_HOMEPAGE_IRIS,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 arrayOf(TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH, dataKey).joinToString(" - "),
                 "$emptyStatus - $cardValue"
@@ -290,7 +290,7 @@ object SellerHomeTracking {
         val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
         val eventMap = TrackingHelper.createMap(
-                event = TrackingConstant.PROMO_VIEW,
+                event = TrackingConstant.VIEW_SELLER_HOMEPAGE_IRIS,
                 category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_PIE_CHART, model.dataKey).joinToString(" - "),
                 label = "$state - $value"
@@ -323,7 +323,7 @@ object SellerHomeTracking {
         val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
         val eventMap = TrackingHelper.createMap(
-                event = TrackingConstant.PROMO_VIEW,
+                event = TrackingConstant.VIEW_SELLER_HOMEPAGE_IRIS,
                 category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_BAR_CHART, model.dataKey).joinToString(" - "),
                 label = "$state - $value"
