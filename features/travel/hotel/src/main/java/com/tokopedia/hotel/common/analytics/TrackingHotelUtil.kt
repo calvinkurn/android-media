@@ -624,7 +624,7 @@ class TrackingHotelUtil {
     fun clickOnAdvancedFilter(context: Context?, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - Filters - 1"
-        map.addGeneralEvent(CLICK_HOTEL, CLICK_USER_CLICK_FILTER, eventLabel)
+        map.addGeneralEvent(CLICK_HOTEL, CLICK_QUICK_FILTER_ON_SRP, eventLabel)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
