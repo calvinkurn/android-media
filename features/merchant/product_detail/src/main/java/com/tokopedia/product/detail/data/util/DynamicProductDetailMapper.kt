@@ -319,6 +319,6 @@ object DynamicProductDetailMapper {
     }
 
     fun getAffiliateUIID(affiliateUniqueString: String, uuid: String): AffiliateUIIDRequest? {
-        return if(affiliateUniqueString.isNotBlank()) AffiliateUIIDRequest(uuid, affiliateUniqueString, TrackApp.getInstance().gtm.irisSessionId) else null
+        return if(affiliateUniqueString.isNotBlank()) AffiliateUIIDRequest(trackerID = uuid, uuid = affiliateUniqueString, irisSessionID = TrackApp.getInstance().gtm.irisSessionId) else null
     }
 }
