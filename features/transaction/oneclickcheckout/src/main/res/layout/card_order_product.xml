@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_product_image"
         android:layout_width="46dp"
         android:layout_height="46dp"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
         android:scaleType="fitCenter"
-        app:layout_constraintStart_toStartOf="@+id/flow_shop_location_and_free_shipping"
-        app:layout_constraintTop_toBottomOf="@+id/flow_shop_location_and_free_shipping" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_name"
@@ -231,4 +231,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_protection_description" />
 
-</merge>
+</androidx.constraintlayout.widget.ConstraintLayout>

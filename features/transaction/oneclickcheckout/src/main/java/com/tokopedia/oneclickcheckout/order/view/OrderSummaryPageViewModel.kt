@@ -9,8 +9,6 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.logisticcart.shipping.model.ShippingParam
-import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
@@ -79,10 +77,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private var hasSentViewOspEe = false
 
     var revampData: OccRevampData = OccRevampData()
-
-    fun getCurrentProfileId(): Int {
-        return _orderPreference.preference.profileId
-    }
 
     fun getCurrentShipperId(): Int {
         return _orderShipment.getRealShipperId()
@@ -179,7 +173,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private suspend fun getRatesSuspend() {
-        val result = logisticProcessor.getRates(orderCart, _orderPreference, _orderShipment, generateListShopShipment())
+        val result = logisticProcessor.getRates(orderCart, _orderPreference, _orderShipment, orderShop.shopShipment)
         if (result.clearOldPromoCode.isNotEmpty()) {
             clearOldLogisticPromo(result.clearOldPromoCode)
         }
@@ -199,14 +193,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
         updateCart()
         configureForceShowOnboarding()
-    }
-
-    fun generateShippingParam(): ShippingParam {
-        return logisticProcessor.generateShippingParam(orderCart, _orderPreference)
-    }
-
-    fun generateListShopShipment(): List<ShopShipment> {
-        return orderShop.shopShipment
     }
 
     private fun sendViewShippingErrorMessage(shippingErrorId: String?) {
@@ -405,7 +391,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    fun generateUpdateCartParam(): UpdateCartOccRequest? {
+    private fun generateUpdateCartParam(): UpdateCartOccRequest? {
         return cartProcessor.generateUpdateCartParam(orderCart, _orderPreference, _orderShipment, _orderPayment)
     }
 

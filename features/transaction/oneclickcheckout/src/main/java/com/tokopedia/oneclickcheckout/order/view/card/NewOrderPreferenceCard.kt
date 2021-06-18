@@ -8,11 +8,9 @@ import android.text.style.RelativeSizeSpan
 import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.view.View
-import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -28,71 +26,107 @@ import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.address.AddressListBottomSheet
+import com.tokopedia.oneclickcheckout.databinding.CardOrderPreferenceNewBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
-import com.tokopedia.oneclickcheckout.address.AddressListBottomSheet
-import com.tokopedia.oneclickcheckout.payment.creditcard.installment.InstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.payment.creditcard.installment.InstallmentDetailBottomSheet
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
-class NewOrderPreferenceCard(private val view: View, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
+class NewOrderPreferenceCard(private val view: CardOrderPreferenceNewBinding, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
 
     private lateinit var preference: OrderPreference
     private var shipment: OrderShipment? = null
     private var payment: OrderPayment? = null
 
-    private val tvHeader by lazy { view.findViewById<Typography>(R.id.tv_new_header) }
-    private val tvCardHeader by lazy { view.findViewById<Typography>(R.id.tv_new_card_header) }
-    private val lblDefaultPreference by lazy { view.findViewById<Label>(R.id.lbl_new_default_preference) }
-    private val tvChoosePreference by lazy { view.findViewById<Typography>(R.id.tv_new_choose_preference) }
+    private val tvHeader
+    get() = view.tvNewHeader
+    private val tvCardHeader
+    get() = view.tvNewCardHeader
+    private val lblDefaultPreference
+    get() = view.lblNewDefaultPreference
+    private val tvChoosePreference
+    get() = view.tvNewChoosePreference
 
-    private val lblMainAddress by lazy { view.findViewById<Label>(R.id.lbl_new_main_address) }
-    private val tvAddressName by lazy { view.findViewById<Typography>(R.id.tv_new_address_name) }
-    private val tvAddressDetail by lazy { view.findViewById<Typography>(R.id.tv_new_address_detail) }
-    private val btnChangeAddress by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_address) }
+    private val lblMainAddress
+    get() = view.lblNewMainAddress
+    private val tvAddressName
+    get() = view.tvNewAddressName
+    private val tvAddressDetail
+    get() = view.tvNewAddressDetail
+    private val btnChangeAddress
+    get() = view.btnNewChangeAddress
 
-    private val loaderShipping by lazy { view.findViewById<LoaderUnify>(R.id.loader_shipping) }
+    private val loaderShipping
+    get() = view.loaderShipping
 
-    private val tickerShippingPromo by lazy { view.findViewById<CardUnify>(R.id.ticker_new_shipping_promo) }
-    private val tickerShippingPromoDescription by lazy { view.findViewById<Typography>(R.id.ticker_new_shipping_promo_description) }
-    private val tickerShippingPromoTitle by lazy { view.findViewById<Typography>(R.id.ticker_new_shipping_promo_title) }
-    private val tickerShippingPromoSubtitle by lazy { view.findViewById<Typography>(R.id.ticker_new_shipping_promo_subtitle) }
-    private val tickerAction by lazy { view.findViewById<Typography>(R.id.ticker_new_action) }
+    private val tickerShippingPromo
+    get() = view.tickerNewShippingPromo
+    private val tickerShippingPromoDescription
+    get() = view.tickerNewShippingPromoDescription
+    private val tickerShippingPromoTitle
+    get() = view.tickerNewShippingPromoTitle
+    private val tickerShippingPromoSubtitle
+    get() = view.tickerNewShippingPromoSubtitle
+    private val tickerAction
+    get() = view.tickerNewAction
 
-    private val tvShippingDuration by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_duration) }
-    private val tvShippingDurationEta by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_duration_eta) }
-    private val btnChangeDuration by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_duration) }
-    private val tvShippingCourier by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_courier) }
-    private val tvShippingPrice by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_price) }
-    private val tvShippingCourierEta by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_courier_eta) }
-    private val btnChangeCourier by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_courier) }
-    private val tvShippingErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_error_message) }
-    private val btnReloadShipping by lazy { view.findViewById<Typography>(R.id.btn_new_reload_shipping) }
-    private val iconReloadShipping by lazy { view.findViewById<IconUnify>(R.id.icon_new_reload_shipping) }
+    private val tvShippingDuration
+    get() = view.tvNewShippingDuration
+    private val tvShippingDurationEta
+    get() = view.tvNewShippingDurationEta
+    private val btnChangeDuration
+    get() = view.btnNewChangeDuration
+    private val tvShippingCourier
+    get() = view.tvNewShippingCourier
+    private val tvShippingPrice
+    get() = view.tvNewShippingPrice
+    private val tvShippingCourierEta
+    get() = view.tvNewShippingCourierEta
+    private val btnChangeCourier
+    get() = view.btnNewChangeCourier
+    private val tvShippingErrorMessage
+    get() = view.tvNewShippingErrorMessage
+    private val btnReloadShipping
+    get() = view.btnNewReloadShipping
+    private val iconReloadShipping
+    get() = view.iconNewReloadShipping
 
-    private val tvPaymentCCName by lazy { view.findViewById<Typography>(R.id.tv_new_payment_cc_name) }
-    private val btnChangePaymentCC by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_payment_cc) }
-    private val dividerCCPayment by lazy { view.findViewById<View>(R.id.divider_new_cc_payment) }
+    private val tvPaymentCCName
+    get() = view.tvNewPaymentCcName
+    private val btnChangePaymentCC
+    get() = view.btnNewChangePaymentCc
+    private val dividerCCPayment
+    get() = view.dividerNewCcPayment
 
-    private val ivPayment by lazy { view.findViewById<ImageView>(R.id.iv_new_payment) }
-    private val tvPaymentName by lazy { view.findViewById<Typography>(R.id.tv_new_payment_name) }
-    private val tvPaymentDetail by lazy { view.findViewById<Typography>(R.id.tv_new_payment_detail) }
-    private val btnChangePayment by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_payment) }
-    private val tvPaymentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_new_payment_error_message) }
-    private val tvPaymentOvoErrorAction by lazy { view.findViewById<Typography>(R.id.tv_new_payment_ovo_error_action) }
+    private val ivPayment
+    get() = view.ivNewPayment
+    private val tvPaymentName
+    get() = view.tvNewPaymentName
+    private val tvPaymentDetail
+    get() = view.tvNewPaymentDetail
+    private val btnChangePayment
+    get() = view.btnNewChangePayment
+    private val tvPaymentErrorMessage
+    get() = view.tvNewPaymentErrorMessage
+    private val tvPaymentOvoErrorAction
+    get() = view.tvNewPaymentOvoErrorAction
 
-    private val tvPaymentInfo by lazy { view.findViewById<Typography>(R.id.tv_new_payment_info) }
+    private val tvPaymentInfo
+    get() = view.tvNewPaymentInfo
 
-    private val tvInstallmentType by lazy { view.findViewById<Typography>(R.id.tv_new_installment_type) }
-    private val tvInstallmentDetail by lazy { view.findViewById<Typography>(R.id.tv_new_installment_detail) }
-    private val btnChangeInstallment by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_installment) }
-    private val tvInstallmentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_new_installment_error_message) }
-    private val tvInstallmentErrorAction by lazy { view.findViewById<Typography>(R.id.tv_new_installment_error_action) }
+    private val tvInstallmentType
+    get() = view.tvNewInstallmentType
+    private val tvInstallmentDetail
+    get() = view.tvNewInstallmentDetail
+    private val btnChangeInstallment
+    get() = view.btnNewChangeInstallment
+    private val tvInstallmentErrorMessage
+    get() = view.tvNewInstallmentErrorMessage
+    private val tvInstallmentErrorAction
+    get() = view.tvNewInstallmentErrorAction
 
     fun setPreference(preference: OrderPreference) {
         this.preference = preference
@@ -150,7 +184,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         } else {
             loaderShipping?.gone()
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
-                tvShippingDuration?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.serviceName)
+                tvShippingDuration?.text = view.root.context.getString(R.string.lbl_shipping_with_name, shipping.serviceName)
                 tvShippingDuration?.visible()
                 tvShippingDurationEta?.gone()
                 setMultiViewsOnClickListener(tvShippingDuration, btnChangeDuration) {
@@ -167,7 +201,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 renderBboTicker(shipping)
 
                 if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-                    tvShippingCourier?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.logisticPromoViewModel.title)
+                    tvShippingCourier?.text = view.root.context.getString(R.string.lbl_shipping_with_name, shipping.logisticPromoViewModel.title)
                     tvShippingDuration?.gone()
                     btnChangeDuration?.gone()
                     if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
@@ -180,7 +214,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                         span.setSpan(RelativeSizeSpan(10 / 12f), 1, 1 + originalPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                         span.setSpan(StyleSpan(BOLD), 0, 1, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                         span.setSpan(StyleSpan(BOLD), 1 + originalPrice.length, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        view.context?.let {
+                        view.root.context?.let {
                             val color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
                             span.setSpan(ForegroundColorSpan(color), 0, 1, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                             span.setSpan(ForegroundColorSpan(color), 1 + originalPrice.length, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -226,7 +260,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     }
                 }
             } else if (shipping.serviceErrorMessage.isNotBlank() && shipping.shippingRecommendationData != null) {
-                tvShippingDuration?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.serviceName)
+                tvShippingDuration?.text = view.root.context.getString(R.string.lbl_shipping_with_name, shipping.serviceName)
                 tvShippingDuration?.visible()
                 if (shipping.serviceEta != null) {
                     if (shipping.serviceEta.isNotEmpty()) {
@@ -242,10 +276,10 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     /* no-op */
                 }
                 btnChangeDuration?.gone()
-                val button = view.context.getString(R.string.lbl_change_template)
+                val button = view.root.context.getString(R.string.lbl_change_template)
                 val span = SpannableString("${shipping.serviceErrorMessage} $button")
                 span.setSpan(StyleSpan(BOLD), shipping.serviceErrorMessage.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                view.context?.let {
+                view.root.context?.let {
                     span.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), shipping.serviceErrorMessage.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
                 tvShippingErrorMessage?.text = span
@@ -261,7 +295,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 tvShippingCourierEta?.gone()
                 tickerShippingPromo?.gone()
             } else {
-                tvShippingDuration?.text = view.context.getString(R.string.lbl_shipping)
+                tvShippingDuration?.text = view.root.context.getString(R.string.lbl_shipping)
                 tvShippingDuration?.visible()
                 tvShippingDurationEta?.gone()
                 btnChangeDuration?.gone()
@@ -319,7 +353,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         val paymentModel = preference.preference.payment
 
         ivPayment?.let {
-            ImageHandler.loadImageFitCenter(view.context, it, paymentModel.image)
+            ImageHandler.loadImageFitCenter(view.root.context, it, paymentModel.image)
         }
         tvPaymentName?.text = paymentModel.gatewayName
         val description = paymentModel.description
@@ -354,7 +388,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     val span = SpannableString("$message $button")
                     if (button.isNotBlank()) {
                         span.setSpan(StyleSpan(BOLD), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        view.context?.let {
+                        view.root.context?.let {
                             span.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                         }
                         tvPaymentErrorMessage?.setOnClickListener {
@@ -391,7 +425,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     } else if (message.isNotBlank() && button.isNotBlank()) {
                         // show message and button
                         span.setSpan(StyleSpan(BOLD), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        view.context?.let {
+                        view.root.context?.let {
                             span.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                         }
                         tvPaymentErrorMessage?.setOnClickListener {
@@ -448,7 +482,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
             if (selectedTerm.term > 0) {
                 tvInstallmentDetail?.text = "${selectedTerm.term} Bulan x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(selectedTerm.monthlyAmount, false).removeDecimalSuffix()}"
             } else {
-                tvInstallmentDetail?.text = view.context.getString(R.string.lbl_installment_full_payment)
+                tvInstallmentDetail?.text = view.root.context.getString(R.string.lbl_installment_full_payment)
             }
             setupPaymentInstallmentError(selectedTerm)
             setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetail, btnChangeInstallment) {
@@ -466,8 +500,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private fun setupPaymentInstallmentError(selectedTerm: OrderPaymentInstallmentTerm) {
         if (selectedTerm.isError) {
             tvInstallmentDetail?.alpha = 0.5f
-            tvInstallmentErrorMessage?.text = view.context.getString(R.string.lbl_installment_error)
-            tvInstallmentErrorAction?.text = view.context.getString(R.string.lbl_change_template)
+            tvInstallmentErrorMessage?.text = view.root.context.getString(R.string.lbl_installment_error)
+            tvInstallmentErrorAction?.text = view.root.context.getString(R.string.lbl_change_template)
             tvInstallmentErrorAction?.setOnClickListener {
                 listener.onInstallmentDetailClicked()
             }
