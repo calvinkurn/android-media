@@ -224,7 +224,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 else AddNewAddressRevampAnalytics.onClickIconPhoneBookNegative(userSession.userId)
                 onNavigateToContact()
             }
-            formAccount.etNomorHp.textFieldInput.addTextChangedListener(setWrapperWatcherPhone(formAccount.etNomorHp.textFieldWrapper, getString(R.string.validate_no_ponsel_less_char)))
+            formAccount.etNomorHp.textFieldInput.addTextChangedListener(setWrapperWatcherPhone(formAccount.etNomorHp.textFieldWrapper, getString(R.string.validate_no_ponsel_new)))
             formAccount.btnInfo.setOnClickListener {
                 showBottomSheetInfoPenerima()
             }

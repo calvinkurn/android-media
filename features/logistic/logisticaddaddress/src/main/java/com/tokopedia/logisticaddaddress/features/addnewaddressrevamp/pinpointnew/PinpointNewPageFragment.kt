@@ -637,7 +637,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             binding?.bottomsheetLocation?.run {
                 imgInvalidLoc.setImageUrl(LOCATION_NOT_FOUND)
                 tvInvalidLoc.text = "Yaah, alamatmu tidak terdeteksi"
-                tvInvalidLocDetail.text = "Tenang, kamu tetep bisa pilih lokasi ini dengan melengkapi alamat secara manual."
+                tvInvalidLocDetail.text = "Tenang, kamu tetap bisa pilih lokasi ini dengan melengkapi alamat secara manual."
             }
         }
 
