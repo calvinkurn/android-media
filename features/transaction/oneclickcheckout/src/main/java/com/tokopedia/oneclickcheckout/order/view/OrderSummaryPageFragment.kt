@@ -971,11 +971,19 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onAddAddress(token: Token?) {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
-                putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
-                putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
-                putExtra(CheckoutConstant.KERO_TOKEN, token)
-            }, REQUEST_CODE_ADD_ADDRESS)
+            if (LogisticCommonUtil.isRollOutUserANARevamp()) {
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
+                    putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
+                    putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
+                    putExtra(CheckoutConstant.KERO_TOKEN, token)
+                }, REQUEST_CODE_ADD_ADDRESS)
+            } else {
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+                    putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
+                    putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
+                    putExtra(CheckoutConstant.KERO_TOKEN, token)
+                }, REQUEST_CODE_ADD_ADDRESS)
+            }
         }
 
         override fun onAddressChange(addressModel: RecipientAddressModel) {
