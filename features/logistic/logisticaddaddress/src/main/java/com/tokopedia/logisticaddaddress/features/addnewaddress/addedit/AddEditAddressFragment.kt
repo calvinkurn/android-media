@@ -795,7 +795,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     private fun showDistrictRecommendationBottomSheet() {
         val districtRecommendationBottomSheetFragment =
-                DiscomBottomSheetFragment.newInstance(isLogisticLabel, false)
+                DiscomBottomSheetFragment.newInstance(isLogisticLabel, false, null)
         districtRecommendationBottomSheetFragment.setActionListener(this)
         fragmentManager?.run {
             districtRecommendationBottomSheetFragment.show(this, "")
@@ -1001,7 +1001,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         presenter.getAutoComplete(districtName)
     }
 
-    override fun onChooseZipcode(districtAddress: Address, zipCode: String) {
+    override fun onChooseZipcode(districtAddress: Address, zipCode: String, isPinpoint: Boolean) {
         //no-op
     }
 

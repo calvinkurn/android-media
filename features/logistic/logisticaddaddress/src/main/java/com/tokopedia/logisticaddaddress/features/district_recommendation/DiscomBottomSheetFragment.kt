@@ -27,11 +27,13 @@ import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.ZipCodeChipsAdapter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomAdapterRevamp
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomNewAdapter
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
 import kotlinx.android.synthetic.main.form_add_new_address_mismatch_data_item.*
 import rx.Emitter
@@ -75,11 +77,15 @@ class DiscomBottomSheetFragment : BottomSheets(),
     private var isAnaRevamp: Boolean = true
     private var staticDimen8dp: Int? = 0
     private var districtAddressData: Address? = null
+    private var isPinpoint: Boolean = false
 
     private var binding by autoCleared<BottomsheetDistrictRecommendationBinding>()
 
     @Inject
     lateinit var presenter: DiscomContract.Presenter
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +93,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
             isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
             isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
             isAnaRevamp = it.getBoolean(EXTRA_IS_ANA_REVAMP, true)
+            isPinpoint = it.getBoolean(EXTRA_IS_PINPOINT, false)
         }
     }
 
@@ -222,6 +229,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     override fun onCityChipClicked(city: String) {
+        if (isAnaRevamp) AddNewAddressRevampAnalytics.onClickChipsKotaKecamatanNegative(userSession.userId)
         binding.etSearchDistrictRecommendation.setText(city)
         binding.etSearchDistrictRecommendation.setSelection(city.length)
         AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
@@ -244,6 +252,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
 
     private fun setViewListener() {
         binding.etSearchDistrictRecommendation.apply {
+            if (isAnaRevamp) AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
             isFocusableInTouchMode = true
             requestFocus()
         }
@@ -277,6 +286,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     override fun onDistrictItemRevampClicked(districtModel: Address) {
+        AddNewAddressRevampAnalytics.onClickDropDownSuggestionKotaNegative(userSession.userId)
         context?.let {
             districtModel.run {
                 actionListener.onGetDistrict(districtModel)
@@ -325,11 +335,13 @@ class DiscomBottomSheetFragment : BottomSheets(),
         binding.etKodepos.textFieldInput.apply {
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
+                    AddNewAddressRevampAnalytics.onClickFieldKodePosNegative(userSession.userId)
                     openSoftKeyboard()
                     showZipCodes(data)
                 }
             }
             setOnClickListener {
+                AddNewAddressRevampAnalytics.onClickFieldKodePosNegative(userSession.userId)
                 openSoftKeyboard()
                 showZipCodes(data)
             }
@@ -361,7 +373,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
 
     interface ActionListener {
         fun onGetDistrict(districtAddress: Address)
-        fun onChooseZipcode(districtAddress: Address, zipCode: String)
+        fun onChooseZipcode(districtAddress: Address, zipCode: String, isPinpoint: Boolean)
     }
 
     companion object {
@@ -369,24 +381,27 @@ class DiscomBottomSheetFragment : BottomSheets(),
         private const val MAX_HEIGHT_MULTIPLIER = 0.90
 
         @JvmStatic
-        fun newInstance(isLogisticLabel: Boolean, isAnaRevamp: Boolean): DiscomBottomSheetFragment {
+        fun newInstance(isLogisticLabel: Boolean, isAnaRevamp: Boolean, isPinpoint: Boolean?): DiscomBottomSheetFragment {
             return DiscomBottomSheetFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(EXTRA_IS_LOGISTIC_LABEL, isLogisticLabel)
                     putBoolean(EXTRA_IS_ANA_REVAMP, isAnaRevamp)
+                    isPinpoint?.let { putBoolean(EXTRA_IS_PINPOINT, it) }
                 }
             }
         }
     }
 
     override fun onZipCodeClicked(zipCode: String) {
+        AddNewAddressRevampAnalytics.onClickChipsKodePosNegative(userSession.userId)
         binding.rvKodeposChips.visibility = View.GONE
         binding.etKodepos.textFieldInput.run {
             setText(zipCode)
             binding.btnChooseZipcode.isEnabled = true
         }
         binding.btnChooseZipcode.setOnClickListener {
-            districtAddressData?.let { data -> actionListener.onChooseZipcode(data, zipCode) }
+            AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId)
+            districtAddressData?.let { data -> actionListener.onChooseZipcode(data, zipCode, isPinpoint) }
             dismiss()
         }
     }

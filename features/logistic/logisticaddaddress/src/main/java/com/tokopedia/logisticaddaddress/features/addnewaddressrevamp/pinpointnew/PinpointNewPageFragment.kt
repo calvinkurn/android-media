@@ -53,6 +53,7 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LATITUDE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LONGITUDE
@@ -396,7 +397,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             bottomsheetLocation.btnPrimary.setOnClickListener {
                 if (!isPositiveFlow) {
                     AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId)
-                    goToAddressForm()
+                    setResultAddressFormNegative()
                 } else {
                     AddNewAddressRevampAnalytics.onClickPilihLokasiPositive(userSession.userId)
                     goToAddressForm()
@@ -666,7 +667,16 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
             startActivityForResult(this, 1599)
         }
+    }
 
+    private fun setResultAddressFormNegative() {
+        val saveModel = viewModel.getAddress()
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(AddressFormFragment.EXTRA_ADDRESS_NEW, saveModel)
+            })
+            finish()
+        }
     }
 
     companion object {
