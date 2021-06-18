@@ -11,6 +11,7 @@ import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_C
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_FILTER
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_LEVEL_2_FILTER_WIDGET
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_LIHAT_CATEGORY_LAINNYA
+import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_PILIH_VARIANT_BUTTON
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_PRODUCT
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_QUICK_FILTER
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_SEARCH_BAR
@@ -77,6 +78,7 @@ object CategoryTracking {
         const val CLICK_CATEGORY_FILTER = "click category filter"
         const val APPLY_CATEGORY_FILTER = "apply category filter"
         const val ADD_TO_CART = "add to cart"
+        const val CLICK_PILIH_VARIANT_BUTTON = "click pilih variant button"
     }
 
     object Category {
@@ -384,5 +386,16 @@ object CategoryTracking {
                 "shop_type", TOKO_NOW,
                 "variant", NONE_OTHER
         )
+    }
+
+    fun sendChooseVariantClickEvent(categoryId: String) {
+        sendGeneralEvent(DataLayer.mapOf(
+                EVENT, EVENT_CLICK_VALUE,
+                EVENT_ACTION, CLICK_PILIH_VARIANT_BUTTON,
+                EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
+                EVENT_LABEL, categoryId,
+                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                CURRENTSITE, CURRENT_SITE_VALUE,
+        ))
     }
 }

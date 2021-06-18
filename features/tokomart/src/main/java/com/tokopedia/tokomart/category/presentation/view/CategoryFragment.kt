@@ -177,4 +177,10 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
                 cartId,
         )
     }
+
+    override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
+        CategoryTracking.sendChooseVariantClickEvent(getViewModel().categoryL1)
+
+        super.onProductChooseVariantClicked(productItemDataView)
+    }
 }
