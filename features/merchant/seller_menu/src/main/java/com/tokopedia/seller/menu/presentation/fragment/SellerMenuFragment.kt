@@ -104,6 +104,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observeViewModel()
         setupPMShopScoreInterrupt()
         setupScrollToShopSetting()
+        viewModel.getShopAccountInfo()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -157,6 +158,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     override fun onRefreshShopInfo() {
         showShopInfoLoading()
+        viewModel.getShopAccountInfo()
         getAllShopInfo()
     }
 
@@ -170,7 +172,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setOnRefreshListener {
             showShopInfoLoading()
-            getAllShopInfo()
+            viewModel.getShopAccountInfo()
         }
     }
 
