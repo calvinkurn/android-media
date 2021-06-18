@@ -1,4 +1,4 @@
-package com.tokopedia.otp.verification.view.fragment.miscall
+package com.tokopedia.otp.verification.view.fragment
 
 import android.content.Context
 import android.graphics.Typeface
@@ -23,11 +23,9 @@ import com.tokopedia.otp.verification.common.util.PhoneCallBroadcastReceiver
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
-import com.tokopedia.otp.verification.view.fragment.VerificationFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 

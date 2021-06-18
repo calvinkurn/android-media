@@ -1,4 +1,4 @@
-package com.tokopedia.otp.verification.view.fragment.miscall
+package com.tokopedia.otp.verification.view.fragment
 
 import android.os.Build
 import android.os.Bundle
@@ -16,7 +16,6 @@ import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
-import com.tokopedia.otp.verification.view.fragment.VerificationFragment
 import com.tokopedia.otp.verification.view.fragment.VerificationFragment.Companion.ROLLANCE_KEY_MISCALL_OTP
 import com.tokopedia.otp.verification.view.viewbinding.OnboardingMisscallViewBinding
 import com.tokopedia.remoteconfig.RemoteConfigInstance
