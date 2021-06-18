@@ -1,4 +1,4 @@
-package com.tokopedia.otp.idling
+package com.tokopedia.otp.common.idling
 
 import androidx.fragment.app.FragmentManager
 import androidx.test.espresso.IdlingResource

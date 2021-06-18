@@ -1,4 +1,4 @@
-package com.tokopedia.otp
+package com.tokopedia.otp.common.utility
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.common.network.util.CommonUtil

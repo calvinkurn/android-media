@@ -292,7 +292,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         }
     }
 
-    private fun onGoToInactivePhoneNumber() {
+    open fun onGoToInactivePhoneNumber() {
         context?.let {
             analytics.trackClickInactivePhoneNumber(otpData.otpType.toString())
             analytics.trackClickInactivePhoneLink()

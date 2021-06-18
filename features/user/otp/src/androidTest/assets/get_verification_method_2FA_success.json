@@ -4,7 +4,7 @@
     "message": "OTP Mode Found",
     "errorMessage": "",
     "otpDigit": 6,
-    "linkType": 0,
+    "linkType": 1,
     "modeLists": [
       {
         "modeCode": 1,

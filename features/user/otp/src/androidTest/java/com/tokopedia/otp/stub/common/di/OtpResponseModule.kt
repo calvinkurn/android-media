@@ -1,6 +1,6 @@
 package com.tokopedia.otp.stub.common.di
 
-import com.tokopedia.otp.AndroidFileUtil
+import com.tokopedia.otp.common.utility.AndroidFileUtil
 import com.tokopedia.otp.common.di.OtpScope
 import com.tokopedia.otp.verification.domain.data.OtpRequestPojo
 import com.tokopedia.otp.verification.domain.data.OtpValidatePojo

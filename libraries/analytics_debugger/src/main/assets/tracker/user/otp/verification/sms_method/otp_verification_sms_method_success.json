@@ -1,5 +1,5 @@
 {
-  "readme": "Verification with sms method",
+  "readme": "Success verification with sms method",
   "mode": "subset",
   "query": [
     {
@@ -26,10 +26,17 @@
       "isLoggedInStatus": ".+",
       "appsflyerId": ".+",
       "shopId": ".*",
-      "screenName": "Input OTP .+",
+      "screenName": "In put OTP .+",
       "event": "openScreen",
       "userId": ".*",
       "sessionIris": ".+"
+    },
+    {
+      "event": "clickConfirm",
+      "eventCategory": "input otp page",
+      "eventAction": "click on verifikasi",
+      "eventLabel": ".*",
+      "sessionIris": ".*"
     }
   ]
 }

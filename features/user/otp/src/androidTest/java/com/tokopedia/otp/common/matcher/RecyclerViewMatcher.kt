@@ -1,4 +1,4 @@
-package com.tokopedia.otp.matcher
+package com.tokopedia.otp.common.matcher
 
 import android.content.res.Resources
 import android.view.View
@@ -7,8 +7,8 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 
-
 class RecyclerViewMatcher(private val recyclerViewId: Int) {
+
     fun atPosition(position: Int): Matcher<View> {
         return atPositionOnView(position, -1)
     }
@@ -17,6 +17,7 @@ class RecyclerViewMatcher(private val recyclerViewId: Int) {
         return object : TypeSafeMatcher<View>() {
             var resources: Resources? = null
             var childView: View? = null
+
             override fun describeTo(description: Description) {
                 var idDescription = recyclerViewId.toString()
                 resources?.let {
@@ -44,4 +45,6 @@ class RecyclerViewMatcher(private val recyclerViewId: Int) {
             }
         }
     }
+
+
 }
