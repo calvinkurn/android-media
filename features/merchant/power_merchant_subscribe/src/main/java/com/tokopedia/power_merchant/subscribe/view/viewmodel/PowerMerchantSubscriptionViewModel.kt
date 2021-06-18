@@ -6,12 +6,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.local.model.PMActivationStatusUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMGradeBenefitInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
-import com.tokopedia.gm.common.domain.interactor.GetPMGradeBenefitUseCase
+import com.tokopedia.gm.common.domain.interactor.GetPMGradeBenefitInfoUseCase
+import com.tokopedia.gm.common.domain.interactor.GetPMGradeBenefitListUseCase
 import com.tokopedia.gm.common.domain.interactor.PowerMerchantActivateUseCase
-import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMActiveDataUseCase
-import com.tokopedia.power_merchant.subscribe.view.model.PMActiveDataUiModel
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -26,14 +25,14 @@ import javax.inject.Inject
  */
 
 class PowerMerchantSubscriptionViewModel @Inject constructor(
-        private val getPMGradeBenefitUseCase: Lazy<GetPMGradeBenefitUseCase>,
-        private val getPMActiveDataUseCase: Lazy<GetPMActiveDataUseCase>,
-        private val activatePMUseCase: Lazy<PowerMerchantActivateUseCase>,
+        private val getPmGradeBenefitListUseCase: Lazy<GetPMGradeBenefitListUseCase>,
+        private val getPmGradeBenefitInfoUseCase: Lazy<GetPMGradeBenefitInfoUseCase>,
+        private val activatePmUseCase: Lazy<PowerMerchantActivateUseCase>,
         private val userSession: Lazy<UserSessionInterface>,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    val pmPmActiveData: LiveData<Result<PMActiveDataUiModel>>
+    val pmPmActiveData: LiveData<Result<PMGradeBenefitInfoUiModel>>
         get() = _pmActiveData
     val pmGradeBenefitInfo: LiveData<Result<List<PMGradeWithBenefitsUiModel>>>
         get() = _pmGradeBenefitInfo
@@ -42,19 +41,21 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
     val pmCancelDeactivationStatus: LiveData<Result<PMActivationStatusUiModel>>
         get() = _pmCancelDeactivationStatus
 
-    private val _pmActiveData: MutableLiveData<Result<PMActiveDataUiModel>> = MutableLiveData()
+    private val _pmActiveData: MutableLiveData<Result<PMGradeBenefitInfoUiModel>> = MutableLiveData()
     private val _pmGradeBenefitInfo: MutableLiveData<Result<List<PMGradeWithBenefitsUiModel>>> = MutableLiveData()
     private val _pmActivationStatus: MutableLiveData<Result<PMActivationStatusUiModel>> = MutableLiveData()
     private val _pmCancelDeactivationStatus: MutableLiveData<Result<PMActivationStatusUiModel>> = MutableLiveData()
 
-    fun getPmRegistrationData() {
+    fun getPmRegistrationData(shouldFromCache: Boolean) {
         launchCatchError(block = {
-            getPMGradeBenefitUseCase.get().params = GetPMGradeBenefitUseCase.createParams(
+            val cacheStrategy = GetPMGradeBenefitListUseCase.getCacheStrategy(shouldFromCache)
+            getPmGradeBenefitListUseCase.get().setCacheStrategy(cacheStrategy)
+            getPmGradeBenefitListUseCase.get().params = GetPMGradeBenefitListUseCase.createParams(
                     shopId = userSession.get().shopId,
                     source = PMConstant.PM_SETTING_INFO_SOURCE
             )
             val result = withContext(dispatchers.io) {
-                getPMGradeBenefitUseCase.get().executeOnBackground()
+                getPmGradeBenefitListUseCase.get().executeOnBackground()
             }
             _pmGradeBenefitInfo.value = Success(result)
         }, onError = {
@@ -62,10 +63,29 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
         })
     }
 
-    fun getPmActiveStateData() {
+    fun getPmActiveStateData(pmTire: Int) {
         launchCatchError(block = {
+            val fields = if (pmTire == PMConstant.PMTierType.POWER_MERCHANT_PRO) {
+                listOf(
+                        GetPMGradeBenefitInfoUseCase.FIELD_CURRENT_PM_GRADE,
+                        GetPMGradeBenefitInfoUseCase.FIELD_CURRENT_BENEFIT_LIST,
+                        GetPMGradeBenefitInfoUseCase.FIELD_NEXT_PM_GRADE,
+                        GetPMGradeBenefitInfoUseCase.FIELD_NEXT_BENEFIT_LIST
+                )
+            } else {
+                listOf(
+                        GetPMGradeBenefitInfoUseCase.FIELD_CURRENT_PM_GRADE,
+                        GetPMGradeBenefitInfoUseCase.FIELD_CURRENT_BENEFIT_LIST
+                )
+            }
+
+            getPmGradeBenefitInfoUseCase.get().params = GetPMGradeBenefitInfoUseCase.createParams(
+                    shopId = userSession.get().shopId,
+                    source = PMConstant.PM_SETTING_INFO_SOURCE,
+                    fields = fields
+            )
             val result = withContext(dispatchers.io) {
-                getPMActiveDataUseCase.get().executeOnBackground()
+                getPmGradeBenefitInfoUseCase.get().executeOnBackground()
             }
             _pmActiveData.value = Success(result)
         }, onError = {
@@ -75,9 +95,9 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
 
     fun submitPMActivation(currentShopTier: Int, nextShopTierType: Int) {
         launchCatchError(block = {
-            activatePMUseCase.get().params = PowerMerchantActivateUseCase.createActivationParam(currentShopTier, nextShopTierType, PMConstant.PM_SETTING_INFO_SOURCE)
+            activatePmUseCase.get().params = PowerMerchantActivateUseCase.createActivationParam(currentShopTier, nextShopTierType, PMConstant.PM_SETTING_INFO_SOURCE)
             val result = withContext(dispatchers.io) {
-                activatePMUseCase.get().executeOnBackground()
+                activatePmUseCase.get().executeOnBackground()
             }
             _pmActivationStatus.value = Success(result)
         }, onError = {
@@ -88,9 +108,9 @@ class PowerMerchantSubscriptionViewModel @Inject constructor(
     fun cancelPmDeactivationSubmission(currentShopTier: Int) {
         launchCatchError(block = {
             val nextShopTierType = currentShopTier
-            activatePMUseCase.get().params = PowerMerchantActivateUseCase.createActivationParam(currentShopTier, nextShopTierType, PMConstant.PM_SETTING_INFO_SOURCE)
+            activatePmUseCase.get().params = PowerMerchantActivateUseCase.createActivationParam(currentShopTier, nextShopTierType, PMConstant.PM_SETTING_INFO_SOURCE)
             val result = withContext(dispatchers.io) {
-                activatePMUseCase.get().executeOnBackground()
+                activatePmUseCase.get().executeOnBackground()
             }
             _pmCancelDeactivationStatus.value = Success(result)
         }, onError = {

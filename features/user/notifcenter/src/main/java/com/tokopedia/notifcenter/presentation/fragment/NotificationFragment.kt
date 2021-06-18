@@ -56,6 +56,7 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.N
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.BottomSheetFactory
+import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationLongerContentBottomSheet
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationProductLongerContentBottomSheet
 import com.tokopedia.notifcenter.presentation.lifecycleaware.RecommendationLifeCycleAware
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
@@ -70,10 +71,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
+open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
         InboxFragment, NotificationItemListener, LoadMoreViewHolder.Listener,
         NotificationEndlessRecyclerViewScrollListener.Listener,
-        NotificationAdapter.Listener {
+        NotificationAdapter.Listener, NotificationLongerContentBottomSheet.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -496,12 +497,13 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun initInjector() {
-        DaggerNotificationComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .commonModule(context?.let { CommonModule(it) })
-                .build()
-                .inject(this)
+        generateDaggerComponent().inject(this)
     }
+
+    protected open fun generateDaggerComponent() = DaggerNotificationComponent.builder()
+        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+        .commonModule(context?.let { CommonModule(it) })
+        .build()
 
     override fun showLongerContent(element: NotificationUiModel) {
         BottomSheetFactory.showLongerContent(childFragmentManager, element)
@@ -637,6 +639,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun trackClickOrderListItem(order: Card) {
         analytic.trackClickOrderListItem(containerListener?.role, order)
+    }
+
+    override fun getNotifAnalytic(): NotificationAnalytic {
+        return analytic
     }
 
     override fun hasFilter(): Boolean {

@@ -74,6 +74,7 @@
     <!-- Dynamic feature for Fintech-->
     <string name="saldo_deposit_app_name">Saldo</string>
     <string name="ovop2p_app_name">Saldo</string>
+    <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
 
     <!-- Dynamic feature for Travel Subhomepage-->
     <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
