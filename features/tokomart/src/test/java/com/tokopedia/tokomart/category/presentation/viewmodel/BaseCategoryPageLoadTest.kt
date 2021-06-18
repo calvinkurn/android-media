@@ -87,6 +87,7 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
     }
 
     private fun CategoryAisleItemDataView.assertAisle(navigationItem: NavigationItem) {
+        assertThat(this.id, shouldBe(navigationItem.id))
         assertThat(this.name, shouldBe(navigationItem.name))
         assertThat(this.imgUrl, shouldBe(navigationItem.imageUrl))
         assertThat(this.applink, shouldBe(navigationItem.applinks))

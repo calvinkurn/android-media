@@ -148,8 +148,8 @@ abstract class BaseSearchCategoryViewModel(
     val isOutOfServiceLiveData: LiveData<Boolean> = isOutOfServiceMutableLiveData
 
     protected val addToCartTrackingMutableLiveData =
-            SingleLiveEvent<Pair<Int, ProductItemDataView>>()
-    val addToCartTrackingLiveData: LiveData<Pair<Int, ProductItemDataView>> =
+            SingleLiveEvent<Triple<Int, String, ProductItemDataView>>()
+    val addToCartTrackingLiveData: LiveData<Triple<Int, String, ProductItemDataView>> =
             addToCartTrackingMutableLiveData
 
     protected val decreaseQtyTrackingMutableLiveData = SingleLiveEvent<String>()
@@ -158,9 +158,12 @@ abstract class BaseSearchCategoryViewModel(
     protected val increaseQtyTrackingMutableLiveData = SingleLiveEvent<String>()
     val increaseQtyTrackingLiveData: LiveData<String> = increaseQtyTrackingMutableLiveData
 
+    protected val quickFilterTrackingMutableLiveData = SingleLiveEvent<Pair<Option, Boolean>>()
+    val quickFilterTrackingLiveData: LiveData<Pair<Option, Boolean>> = quickFilterTrackingMutableLiveData
+
     init {
         showLoading()
-        updateQueryParamWithDefaultSort()
+        updateQueryParams()
 
         hasGlobalMenu = isABTestNavigationRevamp()
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
@@ -170,9 +173,13 @@ abstract class BaseSearchCategoryViewModel(
         isContentLoadingMutableLiveData.value = true
     }
 
-    private fun updateQueryParamWithDefaultSort() {
+    private fun updateQueryParams() {
         queryParamMutable[SearchApiConst.OB] = DEFAULT_VALUE_OF_PARAMETER_SORT
+        queryParamMutable[SearchApiConst.NAVSOURCE] = tokonowSource
+        queryParamMutable[SearchApiConst.SOURCE] = tokonowSource
     }
+
+    abstract val tokonowSource: String
 
     private fun isABTestNavigationRevamp() =
             getNavigationExpVariant() == NAVIGATION_VARIANT_REVAMP
@@ -393,7 +400,7 @@ abstract class BaseSearchCategoryViewModel(
             }
 
     private fun createSortFilterItem(filter: Filter): SortFilterItem {
-        val option = filter.options.getOrNull(0) ?: Option()
+        val option = filter.options.firstOrNull() ?: Option()
         val isSelected = filterController.getFilterViewState(option)
         val chipType = getSortFilterItemType(isSelected)
 
@@ -402,9 +409,9 @@ abstract class BaseSearchCategoryViewModel(
 
         if (filter.options.size == 1) {
             sortFilterItem.listener = {
+                sendQuickFilterTrackingEvent(option, isSelected)
                 filter(option, !isSelected)
             }
-
         }
         else {
             val listener = {
@@ -419,6 +426,10 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun getSortFilterItemType(isSelected: Boolean) =
             if (isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+
+    private fun sendQuickFilterTrackingEvent(option: Option, isSelected: Boolean) {
+        quickFilterTrackingMutableLiveData.value = Pair(option, !isSelected)
+    }
 
     private fun filter(option: Option, isApplied: Boolean) {
         filterController.setFilter(
@@ -815,7 +826,7 @@ abstract class BaseSearchCategoryViewModel(
 
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
-            sendAddToCartTracking(quantity, productItem)
+            sendAddToCartTracking(quantity, it.data.cartId, productItem)
             onAddToCartSuccess(
                     productItem,
                     it.data.quantity,
@@ -826,8 +837,8 @@ abstract class BaseSearchCategoryViewModel(
         })
     }
 
-    private fun sendAddToCartTracking(quantity: Int, productItem: ProductItemDataView) {
-        addToCartTrackingMutableLiveData.value = Pair(quantity, productItem)
+    private fun sendAddToCartTracking(quantity: Int, cartId: String, productItem: ProductItemDataView) {
+        addToCartTrackingMutableLiveData.value = Triple(quantity, cartId, productItem)
     }
 
     private fun onAddToCartSuccess(

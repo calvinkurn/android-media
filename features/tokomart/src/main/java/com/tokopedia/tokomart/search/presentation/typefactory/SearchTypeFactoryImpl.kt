@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokomart.search.presentation.listener.SuggestionListener
 import com.tokopedia.tokomart.search.presentation.model.SuggestionDataView
+import com.tokopedia.tokomart.search.presentation.viewholder.SearchChooseAddressViewHolder
 import com.tokopedia.tokomart.search.presentation.viewholder.SuggestionViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.CategoryFilterListener
@@ -14,6 +15,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.listener.ProductItemLi
 import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactoryImpl
+import com.tokopedia.tokomart.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
 
 
 class SearchTypeFactoryImpl(
@@ -41,6 +43,7 @@ class SearchTypeFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
+            BaseChooseAddressViewHolder.LAYOUT -> SearchChooseAddressViewHolder(view, chooseAddressListener)
             SuggestionViewHolder.LAYOUT -> SuggestionViewHolder(view, suggestionListener)
             else -> super.createViewHolder(view, type)
         }

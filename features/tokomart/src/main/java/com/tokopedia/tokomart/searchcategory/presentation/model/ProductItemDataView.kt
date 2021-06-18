@@ -1,12 +1,7 @@
 package com.tokopedia.tokomart.searchcategory.presentation.model
 
-import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.NONE_OTHER
-import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
-import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.TOKO_NOW
-import com.tokopedia.tokomart.search.utils.SearchTracking.getDimension90
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 
 data class ProductItemDataView(
@@ -39,49 +34,4 @@ data class ProductItemDataView(
             val id: String = "",
             val name: String = "",
     )
-
-    private fun getAsObjectDataLayerMap(
-            filterSortValue: String,
-            pageId: String,
-    ): MutableMap<String, Any> {
-        return DataLayer.mapOf(
-                "brand", NONE_OTHER,
-                "category", NONE_OTHER,
-                "dimension100", sourceEngine,
-                "dimension61", filterSortValue,
-                "dimension81", TOKO_NOW,
-                "dimension90", getDimension90(pageId),
-                "dimension96", boosterList,
-                "id", id,
-                "dimension40", TOKONOW_SEARCH_PRODUCT_ORGANIC,
-                "name", name,
-                "price", priceInt,
-                "variant", NONE_OTHER,
-        )
-    }
-
-    fun getAsImpressionClickObjectDataLayer(
-            filterSortValue: String,
-            pageId: String,
-    ): Any {
-        return getAsObjectDataLayerMap(filterSortValue, pageId).also {
-            it.putAll(DataLayer.mapOf(
-                    "position", position,
-            ))
-        }
-    }
-
-    fun getAsATCObjectDataLayer(
-            filterSortValue: String,
-            pageId: String,
-            quantity: Int,
-    ): Any {
-        return getAsObjectDataLayerMap(filterSortValue, pageId).also {
-            it.putAll(DataLayer.mapOf(
-                    "quantity", quantity,
-                    "shop_id", shop.id,
-                    "shop_name", shop.name,
-            ))
-        }
-    }
 }

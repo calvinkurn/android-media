@@ -10,6 +10,8 @@ import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
+import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.searchbar.data.HintData
@@ -18,7 +20,7 @@ import com.tokopedia.tokomart.search.presentation.listener.SuggestionListener
 import com.tokopedia.tokomart.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokomart.search.presentation.typefactory.SearchTypeFactoryImpl
 import com.tokopedia.tokomart.search.presentation.viewmodel.SearchViewModel
-import com.tokopedia.tokomart.search.utils.SearchTracking
+import com.tokopedia.tokomart.search.analytics.SearchTracking
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokomart.searchcategory.utils.TOKONOW
@@ -55,6 +57,12 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     override fun getNavToolbarHint() =
             listOf(HintData(searchViewModel.query, searchViewModel.query))
 
+    override fun onSearchBarClick(hint: String) {
+        SearchTracking.sendSearchBarClickEvent(hint)
+
+        super.onSearchBarClick(hint)
+    }
+
     override fun getBaseAutoCompleteApplink() =
             super.getBaseAutoCompleteApplink() + "?" +
                     "${SearchApiConst.Q}=${searchViewModel.query}" + "&" +
@@ -70,13 +78,35 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         super.observeViewModel()
 
         getViewModel().generalSearchEventLiveData.observe(this::sendTrackingGeneralEvent)
-        getViewModel().addToCartTrackingLiveData.observe(this::sendAddToCartTrackingEvent)
         getViewModel().increaseQtyTrackingLiveData.observe(this::sendIncreaseQtyTrackingEvent)
         getViewModel().decreaseQtyTrackingLiveData.observe(this::sendDecreaseQtyTrackingEvent)
     }
 
     private fun sendTrackingGeneralEvent(dataLayer: Map<String, Any>) {
         SearchTracking.sendGeneralEvent(dataLayer)
+    }
+
+    override fun sendAddToCartTrackingEvent(atcData: Triple<Int, String, ProductItemDataView>) {
+        val (quantity, _, productItemDataView) = atcData
+
+        val queryParam = getQueryParamWithoutExcludes()
+        val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
+
+        SearchTracking.sendAddToCartEvent(
+                productItemDataView,
+                getViewModel().query,
+                getUserId(),
+                sortFilterParams,
+                quantity,
+        )
+    }
+
+    private fun sendIncreaseQtyTrackingEvent(productId: String) {
+        SearchTracking.sendIncreaseQtyEvent(searchViewModel.query, productId)
+    }
+
+    private fun sendDecreaseQtyTrackingEvent(productId: String) {
+        SearchTracking.sendDecreaseQtyEvent(searchViewModel.query, productId)
     }
 
     override fun createTypeFactory() = SearchTypeFactoryImpl(
@@ -116,35 +146,31 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     override fun onProductImpressed(productItemDataView: ProductItemDataView) {
         val trackingQueue = trackingQueue ?: return
 
+        val queryParam = getQueryParamWithoutExcludes()
+        val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
+
         SearchTracking.sendProductImpressionEvent(
                 trackingQueue,
-                listOf(getProductItemAsImpressionClickObjectDataLayer(productItemDataView)),
+                productItemDataView,
                 getViewModel().query,
                 getUserId(),
+                sortFilterParams,
         )
     }
 
-    private fun getUserId(): String {
-        val userId = userSession.userId ?: ""
-
-        return if (userId.isEmpty()) "0" else userId
-    }
-
-    private fun getProductItemAsImpressionClickObjectDataLayer(
-            productItemDataView: ProductItemDataView
-    ): Any {
-        val queryParam = searchViewModel.queryParam
-        val pageId = queryParam[SearchApiConst.SRP_PAGE_ID] ?: ""
-        val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
-
-        return productItemDataView.getAsImpressionClickObjectDataLayer(sortFilterParams, pageId)
+    private fun getQueryParamWithoutExcludes(): Map<String, String> {
+        return FilterHelper.createParamsWithoutExcludes(searchViewModel.queryParam)
     }
 
     override fun onProductClick(productItemDataView: ProductItemDataView) {
+        val queryParam = getQueryParamWithoutExcludes()
+        val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
+
         SearchTracking.sendProductClickEvent(
-                getProductItemAsImpressionClickObjectDataLayer(productItemDataView),
+                productItemDataView,
                 getViewModel().query,
                 getUserId(),
+                sortFilterParams,
         )
 
         super.onProductClick(productItemDataView)
@@ -157,8 +183,10 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     }
 
     override fun onApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
-        val paramMap = applySortFilterModel.selectedFilterMapParameter as Map<String?, String>
-        val filterParams = UrlParamUtils.generateUrlParamString(paramMap)
+        val filterParamMap = applySortFilterModel.selectedFilterMapParameter
+        val paramMapWithoutExclude =
+                FilterHelper.createParamsWithoutExcludes(filterParamMap) as Map<String?, String>
+        val filterParams = UrlParamUtils.generateUrlParamString(paramMapWithoutExclude)
         SearchTracking.sendApplySortFilterEvent(filterParams)
 
         super.onApplySortFilter(applySortFilterModel)
@@ -170,27 +198,6 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         super.onCategoryFilterChipClick(option, isSelected)
     }
 
-    private fun sendAddToCartTrackingEvent(atcData: Pair<Int, ProductItemDataView>) {
-        val quantity = atcData.first
-        val productItemDataView = atcData.second
-
-        val queryParam = searchViewModel.queryParam
-        val pageId = queryParam[SearchApiConst.SRP_PAGE_ID] ?: ""
-        val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
-
-        val atcDataLayer = productItemDataView.getAsATCObjectDataLayer(sortFilterParams, pageId, quantity)
-
-        SearchTracking.sendAddToCartEvent(atcDataLayer, getViewModel().query, getUserId())
-    }
-
-    private fun sendIncreaseQtyTrackingEvent(productId: String) {
-        SearchTracking.sendIncreaseQtyEvent(searchViewModel.query, productId)
-    }
-
-    private fun sendDecreaseQtyTrackingEvent(productId: String) {
-        SearchTracking.sendDecreaseQtyEvent(searchViewModel.query, productId)
-    }
-
     override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
         SearchTracking.sendChooseVariantEvent(searchViewModel.query, productItemDataView.id)
 
@@ -198,8 +205,7 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     }
 
     override fun onBannerClick(channelModel: ChannelModel, applink: String) {
-        val queryParam = searchViewModel.queryParam
-        val pageId = queryParam[SearchApiConst.SRP_PAGE_ID] ?: ""
+        val queryParam = getQueryParamWithoutExcludes()
         val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
 
         SearchTracking.sendBannerClickEvent(
@@ -207,15 +213,13 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
                 getViewModel().query,
                 getUserId(),
                 sortFilterParams,
-                pageId,
         )
 
         super.onBannerClick(channelModel, applink)
     }
 
     override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {
-        val queryParam = searchViewModel.queryParam
-        val pageId = queryParam[SearchApiConst.SRP_PAGE_ID] ?: ""
+        val queryParam = getQueryParamWithoutExcludes()
         val sortFilterParams = getSortFilterParamsString(queryParam as Map<String?, Any?>)
 
         SearchTracking.sendBannerImpressionEvent(
@@ -223,9 +227,24 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
                 getViewModel().query,
                 getUserId(),
                 sortFilterParams,
-                pageId,
         )
 
         super.onBannerImpressed(channelModel, position)
+    }
+
+    override fun sendTrackingQuickFilter(quickFilterTracking: Pair<Option, Boolean>) {
+        SearchTracking.sendQuickFilterClickEvent(
+                quickFilterTracking.first,
+                quickFilterTracking.second
+        )
+    }
+
+    override fun onApplyCategory(selectedOption: Option) {
+        val filterParam = selectedOption.key.removePrefix(OptionHelper.EXCLUDE_PREFIX) +
+                "=" +
+                selectedOption.value
+        SearchTracking.sendApplyCategoryL3FilterEvent(filterParam)
+
+        super.onApplyCategory(selectedOption)
     }
 }
