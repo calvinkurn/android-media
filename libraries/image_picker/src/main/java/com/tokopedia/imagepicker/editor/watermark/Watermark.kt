@@ -7,7 +7,6 @@ import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkImage
 import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkText
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapUtils
 
-
 data class Watermark(
     var context: Context,
     var backgroundImg: Bitmap? = null,
@@ -200,10 +199,6 @@ data class Watermark(
         watermarkTexts.forEach {
             createWatermarkText(it)
         }
-    }
-
-    fun saveToLocalPng(path: String) {
-        BitmapUtils.saveAsPNG(outputImage, path, true)
     }
 
     fun setToImageView(target: ImageView) {

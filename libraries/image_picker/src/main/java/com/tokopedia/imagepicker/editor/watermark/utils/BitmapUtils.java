@@ -1,33 +1,19 @@
 package com.tokopedia.imagepicker.editor.watermark.utils;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.os.Environment;
 import android.text.StaticLayout;
 import android.text.TextPaint;
-import android.util.Base64;
 import android.util.TypedValue;
 
-import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkImage;
 import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkText;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
 import androidx.core.content.res.ResourcesCompat;
-import timber.log.Timber;
 
 public class BitmapUtils {
 
@@ -109,37 +95,6 @@ public class BitmapUtils {
 
         return Bitmap.createScaledBitmap(inputBitmap, width,
                 height, true);
-    }
-
-    public static void saveAsPNG(Bitmap inputBitmap, String filePath, boolean withTime) {
-        String sdStatus = Environment.getExternalStorageState();
-        if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) {
-            Timber.e("SD card is not available/writable right now.");
-        }
-
-        @SuppressLint("SimpleDateFormat") String timeStamp =
-                new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US).format(Calendar.getInstance().getTime());
-
-        FileOutputStream out = null;
-        try {
-            if (withTime) {
-                out = new FileOutputStream(filePath + timeStamp + ".png");
-            } else {
-                out = new FileOutputStream(filePath + "watermarked" + ".png");
-            }
-            inputBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-            // PNG is a lossless format, the compression factor (100) is ignored
-        } catch (Exception e) {
-            Timber.e(e.toString());
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException e) {
-                Timber.e(e.toString());
-            }
-        }
     }
 
 }

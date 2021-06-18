@@ -16,6 +16,8 @@ import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkText;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -307,18 +309,18 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                 .contentText(" " + userInfoName + " ")
                 .positionX(0.5)
                 .positionY(0.5)
-                .rotation(45)
-                .textAlpha(150)
-                .textSize(20)
+                .rotation(-30)
+                .textAlpha(120)
+                .textSize(10)
                 .textColor(Color.WHITE);
 
         WatermarkImage watermarkImage = new WatermarkImage()
                 .setImageBitmap(tokopediaBitmap)
                 .positionX(0.5)
                 .positionY(0.5)
-                .rotation(45)
+                .rotation(-30)
                 .imageAlpha(150)
-                .imageSize(0.2);
+                .imageSize(0.12);
 
         Subscription subscription = Observable.just(watermarkBuilder)
                 .flatMap((Func1<WatermarkBuilder, Observable<Bitmap>>) builder -> {
