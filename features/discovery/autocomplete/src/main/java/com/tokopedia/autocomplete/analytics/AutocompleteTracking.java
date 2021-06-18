@@ -168,7 +168,7 @@ public class AutocompleteTracking {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
             DataLayer.mapOf(
                     EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
-                    EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - /",
+                    EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
                     EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_RECENT_SHOP,
                     EVENT_LABEL, label,
                     SCREEN_NAME, "/",
@@ -285,7 +285,7 @@ public class AutocompleteTracking {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
                         EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
-                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - /",
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_DYNAMIC_SECTION + " - " + type,
                         EVENT_LABEL, label,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
