@@ -1,5 +1,6 @@
 package com.tokopedia.shop.common.util
 
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -132,6 +133,26 @@ object OperationalHoursUtil {
             calendar.add(Calendar.MINUTE, DEFAULT_MINUTE)
             calendar.add(Calendar.SECOND, DEFAULT_SECONDS)
             calendar.time
+        }
+    }
+
+    /**
+     * if seller never set ops hour before,
+     * then backend will return empty list
+     * so our apps will show default "24 Jam" everyday
+     * @return [MutableList]
+     */
+    fun generateDefaultOpsHourList(): MutableList<ShopOperationalHour> {
+        return mutableListOf<ShopOperationalHour>().let { list ->
+            // 1 represent MONDAY , 7 represent SUNDAY
+            for (i in 1..7) {
+                list.add(ShopOperationalHour(
+                        day = i,
+                        startTime = MIN_START_TIME,
+                        endTime = MAX_END_TIME
+                ))
+            }
+            list
         }
     }
 

@@ -155,7 +155,13 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         observe(shopSetOperationalHoursViewModel.shopOperationalHoursListData) { result ->
             if (result is Success) {
                 val operationalHourList = result.data.getShopOperationalHoursList?.data
-                setupAccordion(operationalHourList)
+                operationalHourList?.let { list ->
+                    if (list.isNotEmpty()) {
+                        setupAccordion(list)
+                    } else {
+                        setupAccordion(OperationalHoursUtil.generateDefaultOpsHourList())
+                    }
+                }
                 hideLoader()
             }
         }

@@ -25,7 +25,7 @@ data class ShopOperationalHour(
         @SerializedName("endTime")
         var endTime: String = "",
         @SerializedName("status")
-        val status: Int = 0
+        val status: Int = 1
 )
 
 data class ShopOperationalHoursError(

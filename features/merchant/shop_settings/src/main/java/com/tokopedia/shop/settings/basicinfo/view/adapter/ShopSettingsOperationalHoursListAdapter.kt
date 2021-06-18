@@ -33,7 +33,7 @@ class ShopSettingsOperationalHoursListAdapter(
     fun updateOpsHourList(newList: List<ShopOperationalHour>) {
         opsHourList.apply {
             clear()
-            addAll(newList)
+            addAll(if (newList.isEmpty()) OperationalHoursUtil.generateDefaultOpsHourList() else newList)
             notifyDataSetChanged()
         }
     }
