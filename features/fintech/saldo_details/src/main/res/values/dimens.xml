@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="sd_dp_1">1dp</dimen>
+    <dimen name="sd_dp_3">3dp</dimen>
+    <dimen name="sd_dp_5">5dp</dimen>
+    <dimen name="sd_dp_6">6dp</dimen>
+    <dimen name="sd_dp_9">9dp</dimen>
+    <dimen name="sd_dp_10">10dp</dimen>
+    <dimen name="sd_dp_14">14dp</dimen>
+    <dimen name="sd_dp_15">15dp</dimen>
+    <dimen name="sd_dp_18">18dp</dimen>
+    <dimen name="sd_dp_20">20dp</dimen>
+    <dimen name="sd_dp_22">22dp</dimen>
+    <dimen name="sd_dp_26">26dp</dimen>
+    <dimen name="sd_dp_44">44dp</dimen>
+</resources>

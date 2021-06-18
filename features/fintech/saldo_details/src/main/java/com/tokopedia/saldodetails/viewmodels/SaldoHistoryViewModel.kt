@@ -2,12 +2,10 @@ package com.tokopedia.saldodetails.viewmodels
 
 import android.content.ContentValues.TAG
 import android.util.Log
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.saldodetails.utils.SaldoDatePickerUtil
 import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.contract.SaldoHistoryContract
 import com.tokopedia.saldodetails.response.model.DepositActivityResponse
@@ -18,7 +16,6 @@ import com.tokopedia.saldodetails.usecase.GetAllTransactionUsecase
 import com.tokopedia.saldodetails.usecase.GetDepositSummaryUseCase
 import com.tokopedia.saldodetails.utils.*
 import kotlinx.coroutines.Dispatchers
-import rx.Subscriber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.text.ParseException
@@ -97,13 +94,12 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
     }
 
 
-
     override fun onSearchClicked(startDate: String, endDate: String) {
-        setDates(startDate,endDate)
+        setDates(startDate, endDate)
         getSummaryDeposit()
     }
 
-    fun setDates(startDate : String , endDate: String){
+    fun setDates(startDate: String, endDate: String) {
         paramEndDate = endDate
         paramStartDate = startDate
     }
@@ -129,12 +125,14 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
         val date = dateFormatter(view.getEndDate())
         date?.let {
             datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date))
-            datePicker.DatePickerCalendar { year, month, day ->
-                val selectedDate = this@SaldoHistoryViewModel.getDate(year, month, day)
-                view.setEndDate(selectedDate)
-                val startDate = view.getStartDate()
-                android.os.Handler().postDelayed({ this@SaldoHistoryViewModel.onSearchClicked(startDate, selectedDate) }, SEARCH_DELAY)
-            }
+            datePicker.datePickerCalendar(object : SaldoDatePickerUtil.OnDateSelectedListener {
+                override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
+                    val selectedDate = this@SaldoHistoryViewModel.getDate(year, month, dayOfMonth)
+                    view.setEndDate(selectedDate)
+                    val startDate = view.getStartDate()
+                    android.os.Handler().postDelayed({ this@SaldoHistoryViewModel.onSearchClicked(startDate, selectedDate) }, SEARCH_DELAY)
+                }
+            })
         }
     }
 
@@ -142,12 +140,14 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
         val date = dateFormatter(view.getStartDate())
         date?.let {
             datePicker.setDate(getDay(date), getStartMonth(date), getStartYear(date))
-            datePicker.DatePickerCalendar { year, month, day ->
-                val selectedDate = getDate(year, month, day)
-                view.setStartDate(selectedDate)
-                val endDate = view.getEndDate()
-                android.os.Handler().postDelayed({ this.onSearchClicked(selectedDate, endDate) }, SEARCH_DELAY)
-            }
+            datePicker.datePickerCalendar(object : SaldoDatePickerUtil.OnDateSelectedListener {
+                override fun onDateSelected(year: Int, month: Int, dayOfMonth: Int) {
+                    val selectedDate = getDate(year, month, dayOfMonth)
+                    view.setStartDate(selectedDate)
+                    val endDate = view.getEndDate()
+                    android.os.Handler().postDelayed({ this@SaldoHistoryViewModel.onSearchClicked(selectedDate, endDate) }, SEARCH_DELAY)
+                }
+            })
         }
     }
 

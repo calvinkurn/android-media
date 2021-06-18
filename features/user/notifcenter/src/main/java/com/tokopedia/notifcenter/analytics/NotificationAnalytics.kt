@@ -25,8 +25,8 @@ open class NotificationAnalytics {
         return "$notificationId - $productNumber - $location"
     }
 
-    fun getImpressionWithoutLocationLabel(templateKey: String, notificationId: String, productId: String?): String {
-        return "$templateKey - $notificationId - $productId"
+    fun getImpressionWithoutLocationLabel(templateKey: String, notificationId: String): String {
+        return "$templateKey - $notificationId"
     }
 
 }

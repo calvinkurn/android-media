@@ -242,6 +242,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         showErrorToaster()
     }
 
+    override fun getIsShouldRemoveWidget(): Boolean = false
+
+    override fun onRemoveWidget(position: Int) {
+        recyclerView?.post {
+            checkForSectionToBeRemoved(position)
+        }
+    }
+
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
         StatisticTracker.sendClickCardEvent(model)
     }
@@ -260,6 +268,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendImpressionLineGraphEvent(model, position)
     }
 
+    override fun sendLineChartEmptyStateCtaClickEvent(model: LineGraphWidgetUiModel) {
+        StatisticTracker.sendEmptyStateCtaClickLineGraphEvent(model)
+    }
+
     override fun sendCarouselImpressionEvent(dataKey: String, carouselItems: List<CarouselItemUiModel>, position: Int) {
         StatisticTracker.sendImpressionCarouselItemBannerEvent(dataKey, carouselItems, position)
     }
@@ -271,6 +283,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun sendCarouselCtaClickEvent(dataKey: String) {
         StatisticTracker.sendClickCarouselCtaEvent(dataKey)
     }
+
+    override fun sendCarouselEmptyStateCtaClickEvent(element: CarouselWidgetUiModel) {}
 
     override fun sendPosListItemClickEvent(dataKey: String, title: String) {
         StatisticTracker.sendClickPostItemEvent(dataKey, title)
@@ -313,9 +327,17 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendPieChartImpressionEvent(model, position)
     }
 
+    override fun sendPieChartEmptyStateCtaClickEvent(model: PieChartWidgetUiModel) {
+        StatisticTracker.sendPieChartEmptyStateCtaClickEvent(model)
+    }
+
     override fun sendBarChartImpressionEvent(model: BarChartWidgetUiModel) {
         val position = adapter.data.indexOf(model)
         StatisticTracker.sendBarChartImpressionEvent(model, position)
+    }
+
+    override fun sendBarChartEmptyStateCtaClick(element: BarChartWidgetUiModel) {
+        StatisticTracker.sendBarChartEmptyStateCtaClickEvent(element)
     }
 
     override fun sendSectionTooltipClickEvent(model: SectionWidgetUiModel) {
@@ -539,9 +561,15 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
         StatisticTracker.sendSetDateFilterEvent(item.label)
         adapter.data.forEach {
-            if (it !is TickerWidgetUiModel) {
-                it.isLoaded = false
-                it.data = null
+            when(it) {
+                is TickerWidgetUiModel -> { }
+                is SectionWidgetUiModel -> {
+                    it.shouldShow = true
+                }
+                else -> {
+                    it.isLoaded = false
+                    it.data = null
+                }
             }
         }
         adapter.notifyDataSetChanged()
@@ -914,4 +942,36 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             TrackingHelper.getCategoryPage(it, statisticPage?.pageTitle.orEmpty())
         }
     }
+
+    private fun checkForSectionToBeRemoved(removedPosition: Int) {
+        val previousWidget = adapter.data.getOrNull(removedPosition - 1)
+        if (previousWidget is SectionWidgetUiModel) {
+            if (adapter.data.getOrNull(removedPosition + 1) == null) {
+                removeEmptySection(removedPosition - 1)
+            } else {
+                var shouldRemoveSection = false
+                adapter.data?.drop(removedPosition + 1)?.forEach { widget ->
+                    when {
+                        widget.isShowEmpty || !widget.isEmpty() -> {
+                            // If we found that the next widget should be shown, then we should not remove the section
+                            return@forEach
+                        }
+                        widget is SectionWidgetUiModel -> {
+                            shouldRemoveSection = true
+                            return@forEach
+                        }
+                    }
+                }
+                if (shouldRemoveSection) {
+                    removeEmptySection(removedPosition - 1)
+                }
+            }
+        }
+    }
+
+    private fun removeEmptySection(position: Int) {
+        (adapter.data.getOrNull(position) as? SectionWidgetUiModel)?.shouldShow = false
+        adapter.notifyItemChanged(position)
+    }
+
 }
