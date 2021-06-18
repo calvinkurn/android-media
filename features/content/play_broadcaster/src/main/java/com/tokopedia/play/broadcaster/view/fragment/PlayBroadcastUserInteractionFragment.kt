@@ -9,7 +9,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -20,6 +19,7 @@ import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
+import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
@@ -32,7 +32,6 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
 import com.tokopedia.play.broadcaster.view.partial.ChatListViewComponent
-import com.tokopedia.play.broadcaster.view.state.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherViewState
 import com.tokopedia.play.broadcaster.view.state.PlayTimerState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -369,15 +368,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun handleLivePushError(state: PlayLivePusherViewState.Error) {
-        when(state.errorType) {
+        when(state.error.type) {
             PlayLivePusherErrorType.NetworkPoor -> showToaster(
-                message = buildErrorMessage(getString(R.string.play_live_broadcast_network_poor), state.reason),
+                message = getString(R.string.play_live_broadcast_network_poor),
                 type = Toaster.TYPE_ERROR
             )
             PlayLivePusherErrorType.NetworkLoss -> errorLiveNetworkLossView.show()
             PlayLivePusherErrorType.ConnectFailed -> {
                 showToaster(
-                    message = buildErrorMessage(getString(R.string.play_live_broadcast_connect_fail), state.reason),
+                    message = getString(R.string.play_live_broadcast_connect_fail),
                     type = Toaster.TYPE_ERROR,
                     duration = Toaster.LENGTH_INDEFINITE,
                     actionLabel = getString(R.string.play_broadcast_try_again),
@@ -385,29 +384,18 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 )
             }
             PlayLivePusherErrorType.SystemError -> showToaster(
-                message = buildErrorMessage(getString(R.string.play_dialog_unsupported_device_desc), state.reason),
+                message = getString(R.string.play_dialog_unsupported_device_desc),
                 type = Toaster.TYPE_ERROR,
                 duration = Toaster.LENGTH_INDEFINITE,
                 actionLabel = getString(R.string.play_ok),
                 actionListener = { parentViewModel.stopLiveStream(shouldNavigate = true) }
             )
         }
-        analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.title, state.reason)
+        analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.title, state.error.reason)
     }
 
     private fun showLoading(isLoading: Boolean) {
         loadingView.visibility = if (isLoading) View.VISIBLE else View.GONE
-    }
-
-    private fun buildErrorMessage(default: String, reason: String): String {
-        val errorMessage = StringBuilder().append(default)
-        if (GlobalConfig.DEBUG) {
-            errorMessage.append("\n\n")
-            errorMessage.append("reason: $reason")
-            errorMessage.append("\n")
-            errorMessage.append("(Important! this message only appears in debug mode)")
-        }
-        return errorMessage.toString()
     }
 
     //region observe

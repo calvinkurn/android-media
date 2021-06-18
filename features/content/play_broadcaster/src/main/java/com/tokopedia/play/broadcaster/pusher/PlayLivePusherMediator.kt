@@ -1,9 +1,7 @@
 package com.tokopedia.play.broadcaster.pusher
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.play.broadcaster.util.state.PlayLivePusherViewStateListener.Companion.errorStateParser
 import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
-import com.tokopedia.play.broadcaster.view.state.isNetworkTrouble
 
 
 /**
@@ -23,7 +21,6 @@ class PlayLivePusherMediator(
             broadcastStateChanged(pusherState)
 
             if (pusherState.isStopped) removeLastPauseMillis()
-            if (pusherState is PlayLivePusherState.Error) triggerAutoReconnect(pusherState.reason)
         }
     }
 
@@ -55,11 +52,6 @@ class PlayLivePusherMediator(
             setLastPauseMillis()
         }
         livePusher.stopPreview()
-    }
-
-    private fun triggerAutoReconnect(reason: String) {
-        val errorState = errorStateParser(reason)
-        if (errorState.isNetworkTrouble) livePusher.reconnect()
     }
 
     private fun broadcastStateChanged(state: PlayLivePusherState) {

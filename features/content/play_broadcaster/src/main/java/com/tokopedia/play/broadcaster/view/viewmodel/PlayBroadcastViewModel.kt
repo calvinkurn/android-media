@@ -18,6 +18,8 @@ import com.tokopedia.play.broadcaster.socket.PlaySocketType
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
+import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
+import com.tokopedia.play.broadcaster.util.error.isNetworkTrouble
 import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
@@ -25,7 +27,6 @@ import com.tokopedia.play.broadcaster.util.state.PlayChannelLivePusherStateListe
 import com.tokopedia.play.broadcaster.util.state.PlayLivePusherViewStateListener
 import com.tokopedia.play.broadcaster.util.timer.PlayCountDownTimer
 import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
-import com.tokopedia.play.broadcaster.view.state.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.view.state.PlayLivePusherViewState
 import com.tokopedia.play.broadcaster.view.state.PlayTimerState
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
@@ -131,6 +132,7 @@ class PlayBroadcastViewModel @Inject constructor(
                 is PlayLivePusherViewState.Started -> startWebSocket()
                 is PlayLivePusherViewState.Resume -> if (viewState.isResumed) resumeTimer()
                 is PlayLivePusherViewState.Paused -> countDownTimer.pause()
+                is PlayLivePusherViewState.Error -> if (viewState.error.type.isNetworkTrouble) livePusherMediator.reconnect()
             }
 
             sendLivePusherState(viewState)
@@ -143,7 +145,7 @@ class PlayBroadcastViewModel @Inject constructor(
 
     private val channelLivePusherStateListener = object : PlayChannelLivePusherStateListener {
         override fun onChannelStateChanged(channelStatusType: PlayChannelStatusType) {
-            updateChannelStatus(channelStatusType) // TODO: throw error
+            updateChannelStatus(channelStatusType)
         }
     }
 
@@ -292,11 +294,11 @@ class PlayBroadcastViewModel @Inject constructor(
             withContext(dispatcher.io) {
                 updateChannelUseCase.apply {
                     setQueryParams(
-                            UpdateChannelUseCase.createUpdateStatusRequest(
-                                    channelId = channelId,
-                                    authorId = userSession.shopId,
-                                    status = status
-                            )
+                        UpdateChannelUseCase.createUpdateStatusRequest(
+                            channelId = channelId,
+                            authorId = userSession.shopId,
+                            status = status
+                        )
                     )
                 }.executeOnBackground()
             }
@@ -347,8 +349,7 @@ class PlayBroadcastViewModel @Inject constructor(
                 } else {
                     sendLivePusherState(
                         PlayLivePusherViewState.Error(
-                            errorType = PlayLivePusherErrorType.NetworkLoss,
-                            reason = "Failed to get channel details"
+                            PlayLivePusherException("connection failure: Failed to get channel details")
                         )
                     )
                     reconnectJob()
@@ -374,6 +375,7 @@ class PlayBroadcastViewModel @Inject constructor(
         playSocket.destroy()
         countDownTimer.stop()
         livePusherMediator.stop()
+        updateChannelStatus(PlayChannelStatusType.Stop)
         sendLivePusherState(PlayLivePusherViewState.Stopped(shouldNavigate))
     }
 

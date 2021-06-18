@@ -51,7 +51,8 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
 
         mAvailableCameras = CameraManager.getAvailableCameras(context)
         if (mAvailableCameras.isEmpty()) {
-            throw IllegalStateException("Unable to live stream as no camera available")
+            broadcastState(PlayLivePusherState.Error("system: unable to live stream as no camera available"))
+            return
         } else {
             canSwitchCamera = mAvailableCameras.size > 1
         }
@@ -200,21 +201,21 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
             Streamer.CONNECTION_STATE.DISCONNECTED -> {
                 if (lastState is PlayLivePusherState.Pause) return // ignore and just call resume()
                 if (status == null) {
-                    broadcastState(PlayLivePusherState.Error("Unknown connection failure"))
+                    broadcastState(PlayLivePusherState.Error("network: unknown network fail"))
                     return
                 }
                 when(status) {
                     Streamer.STATUS.CONN_FAIL -> broadcastState(
                         PlayLivePusherState.Error(
-                            if (isPushStarted) "Connection failure" else "Can not connect to server"
+                            if (isPushStarted) "network: network fail" else "connect fail: Can not connect to server"
                         )
                     )
-                    Streamer.STATUS.AUTH_FAIL -> broadcastState(PlayLivePusherState.Error("Can not connect to server authentication failure, please check stream credentials."))
+                    Streamer.STATUS.AUTH_FAIL -> broadcastState(PlayLivePusherState.Error("connect fail: Can not connect to server authentication failure, please check stream credentials."))
                     Streamer.STATUS.UNKNOWN_FAIL -> {
                         if (info?.length().orZero() > 0) {
-                            broadcastState(PlayLivePusherState.Error("Unknown connection failure"))
+                            broadcastState(PlayLivePusherState.Error("network: unknown network fail"))
                         } else {
-                            broadcastState(PlayLivePusherState.Error("Connection failure ${info?.toString()}"))
+                            broadcastState(PlayLivePusherState.Error("network: reason ${info?.toString()}"))
                         }
                     }
                     Streamer.STATUS.SUCCESS -> {
@@ -228,8 +229,8 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     override fun onVideoCaptureStateChanged(state: Streamer.CAPTURE_STATE?) {
         if (state == null) return
         when(state) {
-            Streamer.CAPTURE_STATE.ENCODER_FAIL -> broadcastState(PlayLivePusherState.Error("Video encoding failure, try to change video resolution"))
-            Streamer.CAPTURE_STATE.FAILED -> broadcastState(PlayLivePusherState.Error("Video capture failure"))
+            Streamer.CAPTURE_STATE.ENCODER_FAIL -> broadcastState(PlayLivePusherState.Error("system: Video encoding failure, try to change video resolution"))
+            Streamer.CAPTURE_STATE.FAILED -> broadcastState(PlayLivePusherState.Error("system: Video capture failure"))
             Streamer.CAPTURE_STATE.STARTED,
             Streamer.CAPTURE_STATE.STOPPED -> {
                 // ignored
@@ -240,8 +241,8 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     override fun onAudioCaptureStateChanged(state: Streamer.CAPTURE_STATE?) {
         if (state == null) return
         when(state) {
-            Streamer.CAPTURE_STATE.ENCODER_FAIL -> broadcastState(PlayLivePusherState.Error("Audio encoding failure"))
-            Streamer.CAPTURE_STATE.FAILED -> broadcastState(PlayLivePusherState.Error("Audio capture failure"))
+            Streamer.CAPTURE_STATE.ENCODER_FAIL -> broadcastState(PlayLivePusherState.Error("system: Audio encoding failure"))
+            Streamer.CAPTURE_STATE.FAILED -> broadcastState(PlayLivePusherState.Error("system: Audio capture failure"))
             Streamer.CAPTURE_STATE.STARTED,
             Streamer.CAPTURE_STATE.STOPPED -> {
                 // ignored
