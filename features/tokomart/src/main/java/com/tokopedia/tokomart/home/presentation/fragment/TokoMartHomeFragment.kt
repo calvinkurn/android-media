@@ -72,6 +72,7 @@ import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListD
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeCategoryGridViewHolder
+import com.tokopedia.tokomart.home.presentation.viewholder.HomeCategoryItemViewHolder
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokomart.home.presentation.viewmodel.TokoMartHomeViewModel
@@ -91,6 +92,7 @@ class TokoMartHomeFragment: Fragment(),
         HomeChooseAddressWidgetViewHolder.HomeChooseAddressWidgetListener,
         HomeTickerViewHolder.HomeTickerListener,
         HomeCategoryGridViewHolder.HomeCategoryGridListener,
+        HomeCategoryItemViewHolder.HomeCategoryItemListener,
         MiniCartWidgetListener,
         BannerComponentListener
 {
@@ -120,6 +122,7 @@ class TokoMartHomeFragment: Fragment(),
                 homeTickerListener = this,
                 homeChooseAddressWidgetListener = this,
                 homeCategoryGridlistener = this,
+                homeCategoryItemListener = this,
                 bannerComponentListener = this
             ),
             differ = TokoMartHomeListDiffer()
@@ -197,6 +200,7 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
+        analytics.onClickBannerPromo(position, userSession.userId, channelGrid, channelModel)
         context?.let {
             RouteManager.route(it, channelGrid.applink)
         }
@@ -223,6 +227,10 @@ class TokoMartHomeFragment: Fragment(),
         analytics.onClickAllCategory()
     }
 
+    override fun onCategoryClicked(position: Int, categoryId: String) {
+        analytics.onClickCategory(position, userSession.userId, categoryId)
+    }
+
     override fun isMainViewVisible(): Boolean = true
 
     override fun isBannerImpressed(id: String): Boolean = true
@@ -233,7 +241,9 @@ class TokoMartHomeFragment: Fragment(),
 
     override fun onPromoAllClick(channelModel: ChannelModel) {}
 
-    override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {}
+    override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
+        analytics.onImpressBannerPromo(parentPosition, userSession.userId, channelModel)
+    }
 
     private fun initInjector() {
         DaggerTokoMartHomeComponent.builder()

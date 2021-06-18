@@ -103,18 +103,17 @@ class HomeAnalytics {
         )
     }
 
-    private fun onClickBannerPromo(userId: String, channelGrid: ChannelGrid, channelModel: ChannelModel, shopId: String, position: Int) {
+    fun onClickBannerPromo(position: Int, userId: String, channelGrid: ChannelGrid, channelModel: ChannelModel) {
         val dataLayer = getDataLayer(
                 event = EVENT_PROMO_CLICK,
                 action = EVENT_ACTION_CLICK_SLIDER_BANNER,
                 category = EVENT_CATEGORY_HOME_PAGE
         ).apply {
-            this[KEY_AFFINITY_LABEL] = ""
+            this[KEY_AFFINITY_LABEL] = channelModel.trackingAttributionModel.persona
             this[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
             this[KEY_CURRENT_SITE] = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
             this[KEY_USER_ID] = userId
             this[KEY_ECOMMERCE] = ecommerceDataLayerBannerClicked(
-                    shopId = shopId,
                     channelModel = channelModel,
                     channelGrid = channelGrid,
                     position = position
@@ -123,26 +122,26 @@ class HomeAnalytics {
         getTracker().sendGeneralEvent(dataLayer)
     }
 
-    private fun onImpressBannerPromo(userId: String, channelGrid: ChannelGrid, channelModel: ChannelModel, shopId: String, position: Int) {
+    fun onImpressBannerPromo(position: Int, userId: String, channelModel: ChannelModel) {
         val dataLayer = getDataLayer(
                 event = EVENT_PROMO_VIEW,
                 action = EVENT_ACTION_IMPRESSION_SLIDER_BANNER,
                 category = EVENT_CATEGORY_HOME_PAGE
         ).apply {
-            this[KEY_AFFINITY_LABEL] = ""
+            this[KEY_AFFINITY_LABEL] = channelModel.trackingAttributionModel.persona
             this[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
             this[KEY_CURRENT_SITE] = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
             this[KEY_USER_ID] = userId
             this[KEY_ECOMMERCE] = ecommerceDataLayerBannerImpressed(
                     channelModel = channelModel,
-                    channelGrid = channelGrid,
+                    channelGrid = channelModel.channelGrids[position],
                     position = position
             )
         }
         getTracker().sendGeneralEvent(dataLayer)
     }
 
-    private fun onClickCategory(userId: String, channelGrid: ChannelGrid, channelModel: ChannelModel, shopId: String, position: Int) {
+    fun onClickCategory(position: Int, userId: String, categoryId: String, channelModel: ChannelModel? = null) {
         val dataLayer = getDataLayer(
                 event = EVENT_PROMO_CLICK,
                 action = EVENT_ACTION_CLICK_CATEGORY_ON_CATEGORY,
@@ -153,23 +152,22 @@ class HomeAnalytics {
             this[KEY_CURRENT_SITE] = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
             this[KEY_USER_ID] = userId
             this[KEY_ECOMMERCE] = ecommerceDataLayerCategoryClicked(
-                    shopId = shopId,
-                    channelModel = channelModel,
-                    channelGrid = channelGrid,
-                    position = position
+                    categoryId = categoryId,
+                    position = position,
+                    channelModel = channelModel!!,
             )
         }
         getTracker().sendGeneralEvent(dataLayer)
     }
 
-    private fun ecommerceDataLayerBannerClicked(shopId: String, channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int): MutableMap<String, Any> {
+    private fun ecommerceDataLayerBannerClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int): MutableMap<String, Any> {
         return DataLayer.mapOf(
                     KEY_PROMO_CLICK, DataLayer.mapOf(
                         KEY_PROMOTIONS, DataLayer.mapOf(
-                            KEY_CREATIVE_NAME, channelGrid.attribution,
+                            KEY_CREATIVE_NAME, channelModel.trackingAttributionModel.galaxyAttribution,
                             KEY_DIMENSION_104, channelModel.trackingAttributionModel.campaignId,
-                            KEY_DIMENSION_38, channelModel.channelBanner.attribution,
-                            KEY_DIMENSION_79, shopId,
+                            KEY_DIMENSION_38, channelModel.trackingAttributionModel.galaxyAttribution,
+                            KEY_DIMENSION_79, channelModel.trackingAttributionModel.brandId,
                             KEY_DIMENSION_82, channelModel.trackingAttributionModel.categoryId,
                             KEY_ID, channelModel.id + "_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId,
                             KEY_NAME, NAME_PROMOTION,
@@ -179,16 +177,16 @@ class HomeAnalytics {
         )
     }
 
-    private fun ecommerceDataLayerCategoryClicked(shopId: String, channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int): MutableMap<String, Any> {
+    private fun ecommerceDataLayerCategoryClicked(categoryId: String, position: Int, channelModel: ChannelModel): MutableMap<String, Any> {
         return DataLayer.mapOf(
                     KEY_PROMO_CLICK, DataLayer.mapOf(
                         KEY_PROMOTIONS, DataLayer.mapOf(
-                            KEY_CREATIVE_NAME, channelGrid.attribution,
+                            KEY_CREATIVE_NAME, channelModel.trackingAttributionModel.galaxyAttribution,
                             KEY_DIMENSION_49, channelModel.trackingAttributionModel.campaignId,
-                            KEY_DIMENSION_38, channelModel.channelBanner.attribution,
-                            KEY_DIMENSION_79, shopId,
+                            KEY_DIMENSION_38, channelModel.trackingAttributionModel.galaxyAttribution,
+                            KEY_DIMENSION_79, channelModel.trackingAttributionModel.brandId,
                             KEY_DIMENSION_82, channelModel.trackingAttributionModel.categoryId,
-                            KEY_ID, channelModel.id + "_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId,
+                            KEY_ID, channelModel.id + "_" + categoryId + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId,
                             KEY_NAME, NAME_PROMOTION,
                             KEY_POSITION, (position + 1).toString()
                         )
@@ -200,7 +198,7 @@ class HomeAnalytics {
         return DataLayer.mapOf(
                     KEY_PROMO_CLICK, DataLayer.mapOf(
                         KEY_PROMOTIONS, DataLayer.mapOf(
-                            KEY_CREATIVE_NAME, channelGrid.attribution,
+                            KEY_CREATIVE_NAME, channelModel.trackingAttributionModel.galaxyAttribution,
                             KEY_ID, channelModel.id + "_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId,
                             KEY_NAME, NAME_PROMOTION,
                             KEY_POSITION, (position + 1).toString()
