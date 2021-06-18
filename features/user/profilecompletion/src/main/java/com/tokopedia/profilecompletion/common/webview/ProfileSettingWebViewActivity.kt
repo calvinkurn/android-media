@@ -22,8 +22,6 @@ class ProfileSettingWebViewActivity : BaseSimpleWebViewActivity() {
         const val KEY_QUERY_PARAM = "ld"
         const val VALUE_QUERY_PARAM = "tokopedia-android-internal://success-change-email"
 
-        const val KEY_IS_FROM_APP = "isFromApp"
-
         fun createIntent(context: Context, url: String, titleBar: Boolean = true): Intent {
             val intent = Intent(context, ProfileSettingWebViewActivity::class.java)
             intent.putExtra(KEY_URL, url)

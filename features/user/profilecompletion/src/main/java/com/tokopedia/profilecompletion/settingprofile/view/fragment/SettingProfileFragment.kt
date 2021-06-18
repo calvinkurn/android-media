@@ -552,16 +552,13 @@ class SettingProfileFragment : BaseDaggerFragment() {
     }
 
     private fun goToChangeEmail() {
-//        val url = Uri.parse(TokopediaUrl.getInstance().MOBILEWEB).buildUpon().apply {
-        val url = Uri.parse("https://135-staging-feature.tokopedia.com/").buildUpon().apply {
+        val url = Uri.parse(TokopediaUrl.getInstance().MOBILEWEB).buildUpon().apply {
             appendPath(UrlSettingProfileConst.USER_PATH_URL)
             appendPath(UrlSettingProfileConst.PROFILE_PATH_URL)
             appendPath(UrlSettingProfileConst.EMAIL_PATH_URL)
-            appendQueryParameter(ProfileSettingWebViewActivity.KEY_IS_FROM_APP, "true")
             appendQueryParameter(ProfileSettingWebViewActivity.KEY_QUERY_PARAM, ProfileSettingWebViewActivity.VALUE_QUERY_PARAM)
         }.build().toString()
 
-        Log.d("URL Change Email", url)
         val intent = ProfileSettingWebViewActivity.createIntent(requireContext(), url)
         startActivityForResult(intent, REQUEST_CODE_CHANGE_EMAIL)
     }
@@ -624,7 +621,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     companion object {
         const val REQUEST_CODE_EDIT_PROFILE_PHOTO = 200
-        const val REQUEST_CODE_EDIT_EMAIL = 202 //No Implementation yet
         const val REQUEST_CODE_EDIT_PHONE = 203
         const val REQUEST_CODE_EDIT_BOD = 204
 
