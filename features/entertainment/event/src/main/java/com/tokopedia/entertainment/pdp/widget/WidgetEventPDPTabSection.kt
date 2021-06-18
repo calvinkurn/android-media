@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.pdp.data.pdp.EventPDPTabEntity
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_event_pdp_tab_section.view.*
 
@@ -17,8 +18,13 @@ class WidgetEventPDPTabSection @JvmOverloads constructor(context: Context, attrs
     lateinit var recyclerView: RecyclerView
 
     init {
+        initialView()
+    }
+
+    private fun initialView(){
         View.inflate(context, R.layout.widget_event_pdp_tab_section, this)
         tab_widget.customTabMode = TabLayout.MODE_SCROLLABLE
+        tab_widget.customTabGravity = TabLayout.GRAVITY_FILL
         tab_widget.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 tab.select()
@@ -33,6 +39,13 @@ class WidgetEventPDPTabSection @JvmOverloads constructor(context: Context, attrs
 
             }
         })
+    }
+
+    fun setDynamicTitle(titles: List<EventPDPTabEntity>) {
+        tab_widget.tabLayout.removeAllTabs()
+        for (title in titles){
+            tab_widget.addNewTab(title.title)
+        }
     }
 
     fun setScrolledSection(currentPosition: Int) {

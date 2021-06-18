@@ -38,11 +38,9 @@ import com.tokopedia.entertainment.pdp.adapter.factory.EventPDPFactoryImpl
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.common.util.CurrencyFormatter
 import com.tokopedia.entertainment.pdp.common.util.EventShare
-import com.tokopedia.entertainment.pdp.data.Facilities
-import com.tokopedia.entertainment.pdp.data.Outlet
-import com.tokopedia.entertainment.pdp.data.ProductDetailData
-import com.tokopedia.entertainment.pdp.data.ValueBullet
+import com.tokopedia.entertainment.pdp.data.*
 import com.tokopedia.entertainment.pdp.data.pdp.EventPDPModel
+import com.tokopedia.entertainment.pdp.data.pdp.EventPDPTabEntity
 import com.tokopedia.entertainment.pdp.data.pdp.OpenHour
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getActiveDate
 import com.tokopedia.entertainment.pdp.data.pdp.mapper.EventDateMapper.getEndDate
@@ -133,10 +131,10 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             }
         })
 
-        eventPDPViewModel.eventProductDetail.observe(viewLifecycleOwner, Observer {
-            productDetailData = it.eventProductDetail.productDetailData
+        eventPDPViewModel.eventProductDetail.observe(viewLifecycleOwner, Observer { eventPDPContentCombined ->
+            productDetailData = eventPDPContentCombined.eventProductDetailEntity.eventProductDetail.productDetailData
             context?.let {
-                renderView(it, productDetailData)
+                renderView(it, eventPDPContentCombined)
                 if(userSession.isLoggedIn){
                     eventPDPViewModel.getWhiteListUser(userSession.userId.toInt(),userSession.email, productDetailData)
                 }
@@ -202,9 +200,14 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         requestData()
     }
 
-    fun renderView(context: Context, productDetailData: ProductDetailData) {
+    fun renderView(context: Context, combined: EventPDPContentCombined) {
         loadMedia(productDetailData)
-        loadTab(productDetailData)
+        loadTab(productDetailData,
+                eventPDPViewModel.getTabsTitleData(combined,
+                        resources.getString(R.string.ent_pdp_about_this),
+                        resources.getString(R.string.ent_pdp_facilities),
+                        resources.getString(R.string.ent_pdp_detail_lokasi))
+        )
         loadCalendar(context, productDetailData)
         loadPrice(productDetailData)
     }
@@ -289,10 +292,12 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         }
     }
 
-    private fun loadTab(productDetailData: ProductDetailData) {
+    private fun loadTab(productDetailData: ProductDetailData,
+                        tabsTitle: List<EventPDPTabEntity>) {
 
         container_price.show()
         shimmering_price.gone()
+
         (activity as EventNavigationActivity).setSupportActionBar(event_pdp_toolbar)
         (activity as EventNavigationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
         (activity as EventNavigationActivity).supportActionBar?.title = ""
@@ -336,16 +341,18 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             }
         })
 
+        if(tabsTitle.isNotEmpty()) {
+            widget_event_pdp_tab_section.setRecycleView(rv_event_pdp)
+            widget_event_pdp_tab_section.setDynamicTitle(tabsTitle)
 
-        widget_event_pdp_tab_section.setRecycleView(rv_event_pdp)
-
-        rv_event_pdp.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                widget_event_pdp_tab_section.setScrolledSection((rv_event_pdp.layoutManager
-                        as LinearLayoutManager).findFirstVisibleItemPosition())
-            }
-        })
+            rv_event_pdp.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    widget_event_pdp_tab_section.setScrolledSection((rv_event_pdp.layoutManager
+                            as LinearLayoutManager).findFirstVisibleItemPosition())
+                }
+            })
+        }
     }
 
 
