@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics
+import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics
 import com.tokopedia.tokomart.categorylist.di.scope.TokoMartCategoryListScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -16,8 +17,14 @@ class TokoMartCategoryListModule {
 
     @TokoMartCategoryListScope
     @Provides
-    fun provideAnalytic(): CategoryListAnalytics {
+    fun provideCategoryAnalytic(): CategoryListAnalytics {
         return CategoryListAnalytics()
+    }
+
+    @TokoMartCategoryListScope
+    @Provides
+    fun provideHomeAnalytic(): HomeAnalytics {
+        return HomeAnalytics()
     }
 
     @TokoMartCategoryListScope

@@ -62,6 +62,9 @@ class HomeChooseAddressWidgetViewHolder(
 
     private fun setupChooseAddressWidget() {
         chooseAddressWidget = itemView.findViewById(R.id.choose_address_widget)
+        chooseAddressWidget?.setOnClickListener {
+            homeChooseAddressWidgetListener?.onChooseAddressWidgetClicked()
+        }
         bindChooseAddressWidget()
         showCoachMark()
     }
@@ -96,5 +99,6 @@ class HomeChooseAddressWidgetViewHolder(
 
     interface HomeChooseAddressWidgetListener {
         fun onChooseAddressWidgetRemoved()
+        fun onChooseAddressWidgetClicked()
     }
 }

@@ -104,5 +104,6 @@ class HomeCategoryGridViewHolder(
 
     interface HomeCategoryGridListener {
         fun onCategoryRetried()
+        fun onAllCategoryClicked()
     }
 }

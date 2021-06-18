@@ -41,6 +41,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_EXP_NAME
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_VARIANT_OLD
@@ -95,6 +96,9 @@ class TokoMartHomeFragment: Fragment(),
 
     @Inject
     lateinit var viewModel: TokoMartHomeViewModel
+
+    @Inject
+    lateinit var analytics: HomeAnalytics
 
     private val adapter by lazy {
         TokoMartHomeAdapter(
@@ -191,11 +195,19 @@ class TokoMartHomeFragment: Fragment(),
         }
     }
 
+    override fun onChooseAddressWidgetClicked() {
+        analytics.onClickChooseAddress()
+    }
+
     override fun onCategoryRetried() {
         val item = adapter.getItem(HomeCategoryGridUiModel::class.java)
         if (item is HomeCategoryGridUiModel) {
             viewModel.getCategoryGrid(item, localCacheModel?.warehouse_id.orEmpty())
         }
+    }
+
+    override fun onAllCategoryClicked() {
+        analytics.onClickAllCategory()
     }
 
     override fun isMainViewVisible(): Boolean = true
@@ -313,15 +325,19 @@ class TokoMartHomeFragment: Fragment(),
 
     private fun setIconNewTopNavigation() {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                .addIcon(IconList.ID_CART) {}
+                .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
                 .addIcon(IconList.ID_NAV_GLOBAL) {}
         navToolbar?.setIcon(icons)
     }
 
     private fun setIconOldTopNavigation() {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                .addIcon(IconList.ID_CART) {}
+                .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
         navToolbar?.setIcon(icons)
+    }
+
+    private fun onClickCartButton() {
+        analytics.onClickCartButton()
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
