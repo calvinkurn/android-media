@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.domain.model
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -258,6 +259,7 @@ data class PurchaseItem(
         val productName: String,
         @SerializedName("product_brand")
         val productBrand: String,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: Double,
         @SerializedName("price_str")

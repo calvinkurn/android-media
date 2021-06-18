@@ -5,6 +5,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.thankyou_native.data.mapper.DigitalThankPage
+import com.tokopedia.thankyou_native.data.mapper.ThankPageType
 import com.tokopedia.thankyou_native.recommendationdigital.domain.usecase.DigitalRecommendationUseCase
 import com.tokopedia.thankyou_native.recommendationdigital.model.RechargeRecommendationDigiPersoItem
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationDigiPersoResponse
@@ -62,12 +64,12 @@ class DigitalRecommendationViewModelTest {
         )
 
         every { digitalRecommendationUseCase.cancelJobs() } returns Unit
-        every { digitalRecommendationUseCase.getDigitalRecommendationData(any(), any(), any(), any()) } answers {
+        every { digitalRecommendationUseCase.getDigitalRecommendationData(any(), any(), any(), any(), any()) } answers {
             firstArg<(RechargeRecommendationDigiPersoItem) -> Unit>().invoke(mockResponse)
         }
 
         // when
-        digitalRecommendationViewModel.getDigitalRecommendationData("", listOf())
+        digitalRecommendationViewModel.getDigitalRecommendationData("", listOf(), DigitalThankPage)
 
         // then
         val actualData = digitalRecommendationViewModel.digitalRecommendationLiveData
@@ -83,12 +85,12 @@ class DigitalRecommendationViewModelTest {
         val mockResponse = MessageErrorException("Recommendation Error Dummy")
 
         every { digitalRecommendationUseCase.cancelJobs() } returns Unit
-        every { digitalRecommendationUseCase.getDigitalRecommendationData(any(), any(), any(), any()) } answers {
+        every { digitalRecommendationUseCase.getDigitalRecommendationData(any(), any(), any(), any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(mockResponse)
         }
 
         // when
-        digitalRecommendationViewModel.getDigitalRecommendationData("", listOf())
+        digitalRecommendationViewModel.getDigitalRecommendationData("", listOf(), DigitalThankPage)
 
         // then
         val actualData = digitalRecommendationViewModel.digitalRecommendationLiveData
