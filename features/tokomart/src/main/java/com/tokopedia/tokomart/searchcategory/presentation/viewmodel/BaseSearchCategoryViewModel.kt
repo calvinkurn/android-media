@@ -158,6 +158,9 @@ abstract class BaseSearchCategoryViewModel(
     protected val increaseQtyTrackingMutableLiveData = SingleLiveEvent<String>()
     val increaseQtyTrackingLiveData: LiveData<String> = increaseQtyTrackingMutableLiveData
 
+    protected val quickFilterTrackingMutableLiveData = SingleLiveEvent<Pair<Option, Boolean>>()
+    val quickFilterTrackingLiveData: LiveData<Pair<Option, Boolean>> = quickFilterTrackingMutableLiveData
+
     init {
         showLoading()
         updateQueryParams()
@@ -397,7 +400,7 @@ abstract class BaseSearchCategoryViewModel(
             }
 
     private fun createSortFilterItem(filter: Filter): SortFilterItem {
-        val option = filter.options.getOrNull(0) ?: Option()
+        val option = filter.options.firstOrNull() ?: Option()
         val isSelected = filterController.getFilterViewState(option)
         val chipType = getSortFilterItemType(isSelected)
 
@@ -406,9 +409,9 @@ abstract class BaseSearchCategoryViewModel(
 
         if (filter.options.size == 1) {
             sortFilterItem.listener = {
+                sendQuickFilterTrackingEvent(option, isSelected)
                 filter(option, !isSelected)
             }
-
         }
         else {
             val listener = {
@@ -423,6 +426,10 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun getSortFilterItemType(isSelected: Boolean) =
             if (isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+
+    private fun sendQuickFilterTrackingEvent(option: Option, isSelected: Boolean) {
+        quickFilterTrackingMutableLiveData.value = Pair(option, !isSelected)
+    }
 
     private fun filter(option: Option, isApplied: Boolean) {
         filterController.setFilter(

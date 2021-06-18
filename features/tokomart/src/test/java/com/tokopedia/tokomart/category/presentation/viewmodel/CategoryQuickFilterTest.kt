@@ -102,6 +102,7 @@ class CategoryQuickFilterTest: CategoryTestFixtures() {
                 requestParamsSlot.captured,
                 selectedQuickFilter
         )
+        `Then assert quick filter tracking`(selectedQuickFilter, true)
     }
 
     private fun `When quick filter selected`(selectedQuickFilter: SortFilterItemDataView) {
@@ -123,6 +124,16 @@ class CategoryQuickFilterTest: CategoryTestFixtures() {
         val actualParamsValue = getTokonowQueryParam(requestParams)[selectedQuickFilterKey].toString()
 
         assertThat(actualParamsValue, shouldBe(selectedQuickFilter.firstOption!!.value))
+    }
+
+    private fun `Then assert quick filter tracking`(
+            selectedQuickFilter: SortFilterItemDataView,
+            isApplied: Boolean
+    ) {
+        val quickFilterTracking = categoryViewModel.quickFilterTrackingLiveData.value!!
+
+        assertThat(quickFilterTracking.first, shouldBe(selectedQuickFilter.firstOption))
+        assertThat(quickFilterTracking.second, shouldBe(isApplied))
     }
 
     @Test
@@ -148,6 +159,7 @@ class CategoryQuickFilterTest: CategoryTestFixtures() {
                 requestParamsSlot.captured,
                 selectedQuickFilter
         )
+        `Then assert quick filter tracking`(selectedQuickFilter, false)
     }
 
     private fun `Then verify quick filter does not contain unapplied filter`(
@@ -172,11 +184,18 @@ class CategoryQuickFilterTest: CategoryTestFixtures() {
         `When quick filter selected`(selectedQuickFilter)
 
         `Then assert L3 Bottomsheet filter is open with filter`(selectedQuickFilter.filter)
+        `Then assert quick filter tracking is not updated`()
     }
 
     private fun `Then assert L3 Bottomsheet filter is open with filter`(selectedFilter: Filter) {
         val isL3FilterPageOpen = categoryViewModel.isL3FilterPageOpenLiveData.value
 
         assertThat(isL3FilterPageOpen, shouldBe(selectedFilter))
+    }
+
+    private fun `Then assert quick filter tracking is not updated`() {
+        val quickFilterTracking = categoryViewModel.quickFilterTrackingLiveData.value
+
+        assertThat(quickFilterTracking, nullValue())
     }
 }

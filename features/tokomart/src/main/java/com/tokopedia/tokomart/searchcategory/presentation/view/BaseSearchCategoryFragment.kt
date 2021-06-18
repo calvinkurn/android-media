@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
-import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -55,18 +54,9 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
-import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.BUSINESSUNIT
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.CURRENTSITE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_ACTION_CLICK_SEARCH_BAR_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CATEGORY_TOP_NAV_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
 import com.tokopedia.tokomart.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokomart.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokomart.searchcategory.presentation.customview.CategoryChooserBottomSheet
@@ -82,12 +72,6 @@ import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
-import com.tokopedia.track.TrackApp
-import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.track.TrackAppUtils.EVENT
-import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
-import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
-import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -427,6 +411,7 @@ abstract class BaseSearchCategoryFragment:
                 .observe(this::updateHeaderBackgroundVisibility)
         getViewModel().isContentLoadingLiveData.observe(this::updateContentVisibility)
         getViewModel().isOutOfServiceLiveData.observe(this::updateOutOfServiceVisibility)
+        getViewModel().quickFilterTrackingLiveData.observe(this::sendTrackingQuickFilter)
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -702,6 +687,8 @@ abstract class BaseSearchCategoryFragment:
 
         constraintSet.applyTo(container)
     }
+
+    protected abstract fun sendTrackingQuickFilter(quickFilterTracking: Pair<Option, Boolean>)
 
     override fun onPause() {
         super.onPause()

@@ -135,4 +135,14 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
 
         super.onCategoryFilterChipClick(option, isSelected)
     }
+
+    override fun openFilterPage() {
+        CategoryTracking.sendFilterClickEvent(getViewModel().categoryL1)
+
+        super.openFilterPage()
+    }
+
+    override fun sendTrackingQuickFilter(quickFilterTracking: Pair<Option, Boolean>) {
+        CategoryTracking.sendQuickFilterClickEvent(getViewModel().categoryL1)
+    }
 }

@@ -5,9 +5,11 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_BANNER
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_CART_BUTTON_TOP_NAV
+import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_FILTER
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_LEVEL_2_FILTER_WIDGET
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_LIHAT_CATEGORY_LAINNYA
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_PRODUCT
+import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_QUICK_FILTER
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_SEARCH_BAR
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_SEMUA_KATEGORI
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.IMPRESSION_BANNER
@@ -63,6 +65,8 @@ object CategoryTracking {
         const val CLICK_PRODUCT = "click product"
         const val CLICK_LEVEL_2_FILTER_WIDGET = "click level 2 filter widget"
         const val CLICK_LIHAT_CATEGORY_LAINNYA = "click lihat kategori lainnya"
+        const val CLICK_FILTER = "click filter"
+        const val CLICK_QUICK_FILTER = "click quick filter"
     }
 
     object Category {
@@ -265,6 +269,28 @@ object CategoryTracking {
             EVENT_LABEL, "$categoryId - $aisleCategoryId",
             BUSINESSUNIT, BUSINESS_UNIT_VALUE,
             CURRENTSITE, CURRENT_SITE_VALUE,
+        ))
+    }
+
+    fun sendFilterClickEvent(categoryId: String) {
+        sendGeneralEvent(DataLayer.mapOf(
+                EVENT, EVENT_CLICK_VALUE,
+                EVENT_ACTION, CLICK_FILTER,
+                EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
+                EVENT_LABEL, categoryId,
+                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                CURRENTSITE, CURRENT_SITE_VALUE,
+        ))
+    }
+
+    fun sendQuickFilterClickEvent(categoryId: String) {
+        sendGeneralEvent(DataLayer.mapOf(
+                EVENT, EVENT_CLICK_VALUE,
+                EVENT_ACTION, CLICK_QUICK_FILTER,
+                EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
+                EVENT_LABEL, categoryId,
+                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                CURRENTSITE, CURRENT_SITE_VALUE,
         ))
     }
 }

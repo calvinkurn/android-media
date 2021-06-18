@@ -1,6 +1,7 @@
 package com.tokopedia.tokomart.search.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.BUSINESSUNIT
@@ -18,6 +19,7 @@ import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_CHOOS
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_FILTER_OPTION
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_FUZZY_KEYWORDS_REPLACE
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_PRODUCT
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_QUICK_FILTER
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_REMOVE_QUANTITY
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_TAMBAH_KE_KERANJANG
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.IMPRESSION_BANNER
@@ -58,6 +60,7 @@ object SearchTracking {
         const val IMPRESSION_PRODUCT = "impression - product"
         const val CLICK_PRODUCT = "click - product"
         const val CLICK_FILTER_OPTION = "click - filter option"
+        const val CLICK_QUICK_FILTER = "click - quick filter"
         const val CLICK_APPLY_FILTER = "click - apply filter"
         const val CLICK_CATEGORY_FILTER = "click - category filter"
         const val CLICK_FUZZY_KEYWORDS_REPLACE = "click - fuzzy keywords - replace"
@@ -188,6 +191,19 @@ object SearchTracking {
                     EVENT_LABEL, "",
                     BUSINESSUNIT, BUSINESS_UNIT_VALUE,
                     CURRENTSITE, CURRENT_SITE_VALUE,
+                )
+        )
+    }
+
+    fun sendQuickFilterClickEvent(option: Option, isSelected: Boolean) {
+        sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, EVENT_CLICK_VALUE,
+                        EVENT_ACTION, CLICK_QUICK_FILTER,
+                        EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
+                        EVENT_LABEL, "${option.name} - ${option.value} - $isSelected",
+                        BUSINESSUNIT, BUSINESS_UNIT_VALUE,
+                        CURRENTSITE, CURRENT_SITE_VALUE,
                 )
         )
     }

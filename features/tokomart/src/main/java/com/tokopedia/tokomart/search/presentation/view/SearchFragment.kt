@@ -225,4 +225,11 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
 
         super.onBannerImpressed(channelModel, position)
     }
+
+    override fun sendTrackingQuickFilter(quickFilterTracking: Pair<Option, Boolean>) {
+        SearchTracking.sendQuickFilterClickEvent(
+                quickFilterTracking.first,
+                quickFilterTracking.second
+        )
+    }
 }
