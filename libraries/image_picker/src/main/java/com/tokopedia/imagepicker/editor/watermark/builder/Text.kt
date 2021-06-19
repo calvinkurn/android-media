@@ -8,7 +8,7 @@ import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 class Text : TextDefault(), TextUIModel {
 
     fun size(value: Int) = apply {
-        this.size = value.toDouble()
+        this.textSize = value
     }
 
     fun rotation(value: Double) = apply {

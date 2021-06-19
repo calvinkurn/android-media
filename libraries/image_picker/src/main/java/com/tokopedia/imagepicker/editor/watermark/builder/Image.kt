@@ -5,7 +5,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.widget.ImageView
 import com.tokopedia.imagepicker.editor.watermark.data.ImageDefault
 import com.tokopedia.imagepicker.editor.watermark.entity.ImageUIModel
-import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.getBitmapFromDrawable
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeBitmap
 import com.tokopedia.imagepicker.editor.watermark.utils.MAX_IMAGE_SIZE
 
@@ -32,15 +31,7 @@ class Image : ImageUIModel, ImageDefault() {
     }
 
     fun imageSize(value: Double) = apply {
-        this.size = value
-    }
-
-    fun imageDrawable(value: Int) = apply {
-        this.imageDrawable = value
-
-        if (imageDrawable != 0) {
-            image = getBitmapFromDrawable(context, imageDrawable)
-        }
+        this.imageSize = value
     }
 
     fun imageFromImageView(imageView: ImageView) = apply {

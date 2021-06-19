@@ -2,6 +2,7 @@ package com.tokopedia.imagepicker.editor.presenter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 
@@ -294,12 +295,15 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
     }
 
     public void setTokopediaWatermark(String userInfoName, WatermarkBuilder watermarkBuilder) {
-        int tokopediaLogo = R.drawable.watermark_ic_tokopedia_logo;
+        Bitmap tokopediaBitmap = BitmapFactory.decodeResource(
+                getView().getContext().getResources(),
+                R.drawable.watermark_ic_tokopedia_logo
+        );
 
         Subscription subscription = Observable.just(watermarkBuilder)
                 .flatMap((Func1<WatermarkBuilder, Observable<Bitmap>>) builder -> {
                     return Observable.just(builder
-                            .loadWatermarkTextAndImage(userInfoName, tokopediaLogo)
+                            .loadWatermarkTextAndImage(userInfoName, tokopediaBitmap)
                             .getWatermark()
                             .getOutputImage()
                     );

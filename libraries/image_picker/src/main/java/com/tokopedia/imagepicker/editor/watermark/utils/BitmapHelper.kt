@@ -7,7 +7,6 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.TypedValue
-import androidx.annotation.DrawableRes
 import androidx.core.content.res.ResourcesCompat
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 import kotlin.math.roundToInt
@@ -17,7 +16,15 @@ object BitmapHelper {
     fun String.textAsBitmap(context: Context, properties: TextUIModel): Bitmap {
         // created TextPaint for painting the watermark text
         val paint = TextPaint().apply {
+            // text size in pixel based on device dimension
+            val textInPixel = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                properties.textSize.toFloat(),
+                context.resources.displayMetrics
+            )
+
             // basic properties
+            textSize = textInPixel
             strokeWidth = 5f
             isAntiAlias = true
             color = properties.textShadowColor
@@ -28,13 +35,6 @@ object BitmapHelper {
             if (properties.alpha in 0..255) {
                 alpha = properties.alpha
             }
-
-            // text size in pixel based on device dimension
-            val textInPixel = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                properties.size.toFloat(),
-                context.resources.displayMetrics
-            )
 
             // text shadow properties
             if (properties.textShadowBlurRadius != 0f
@@ -145,15 +145,6 @@ object BitmapHelper {
             resultHeight,
             true
         )
-    }
-
-    fun getBitmapFromDrawable(
-        context: Context?,
-        @DrawableRes imageDrawable: Int
-    ): Bitmap {
-        return BitmapFactory
-            .decodeResource(context?.resources, imageDrawable)
-            .resizeBitmap(MAX_IMAGE_SIZE)
     }
 
 }

@@ -9,7 +9,7 @@ import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeBitmap
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.textAsBitmap
 
-data class Watermark234z (
+data class Watermark (
     var context: Context,
     var backgroundImg: Bitmap? = null,
     var watermarkImg: ImageUIModel? = null,
@@ -54,7 +54,7 @@ data class Watermark234z (
         }
 
         val logoBitmap = watermark.image!!.resizeBitmap(
-            size = watermark.size.toFloat(),
+            size = watermark.imageSize.toFloat(),
             background = backgroundImg!!
         )
 
@@ -109,7 +109,7 @@ data class Watermark234z (
         }
 
         var scaledWatermarkBitmap = watermarkImg.image!!.resizeBitmap(
-            size = watermarkImg.size.toFloat() / 100,
+            size = watermarkImg.imageSize.toFloat(),
             background = backgroundImg!!
         )
 

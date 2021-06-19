@@ -6,10 +6,8 @@ import android.graphics.BitmapFactory
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import com.tokopedia.imagepicker.editor.watermark.builder.Image
-import com.tokopedia.imagepicker.editor.watermark.builder.Position
 import com.tokopedia.imagepicker.editor.watermark.builder.Text
 import com.tokopedia.imagepicker.editor.watermark.builder.TextAndImage
-import com.tokopedia.imagepicker.editor.watermark.entity.ImageUIModel
 import com.tokopedia.imagepicker.editor.watermark.entity.TextAndImageUIModel
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeBitmap
@@ -88,12 +86,12 @@ open class WatermarkBuilder {
         }
     }
 
-    fun loadWatermarkTextAndImage(text: String, resourceId: Int) = apply {
+    fun loadWatermarkTextAndImage(text: String, bitmap: Bitmap) = apply {
         this.isCombine = true
 
         this.watermarkTextAndImage = TextAndImage().apply {
+            this.image = bitmap
             this.text = text
-            this.imageDrawable = resourceId
         }
     }
 
