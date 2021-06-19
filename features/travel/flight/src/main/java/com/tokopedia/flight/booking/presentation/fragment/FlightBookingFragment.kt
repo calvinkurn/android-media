@@ -32,6 +32,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.common.travel.widget.CountdownTimeView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.data.*
@@ -436,11 +437,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun setUpTimer(timeStamp: Date) {
         orderDueTimeStampString = FlightDateUtil.dateToString(timeStamp, FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
-        countdown_timeout.setListener {
-            if (context != null) {
-                refreshCart()
-            } else needRefreshCart = true
-        }
+        countdown_timeout.setListener(object : CountdownTimeView.OnActionListener {
+            override fun onFinished() {
+                if (context != null) {
+                    refreshCart()
+                } else needRefreshCart = true
+            }
+        })
         countdown_timeout.cancel()
         countdown_timeout.setExpiredDate(timeStamp)
         countdown_timeout.start()
