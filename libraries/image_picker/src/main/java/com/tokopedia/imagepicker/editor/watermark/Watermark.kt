@@ -3,6 +3,7 @@ package com.tokopedia.imagepicker.editor.watermark
 import android.content.Context
 import android.graphics.*
 import android.widget.ImageView
+import com.tokopedia.imagepicker.editor.watermark.entity.BaseWatermark
 import com.tokopedia.imagepicker.editor.watermark.entity.ImageUIModel
 import com.tokopedia.imagepicker.editor.watermark.entity.TextAndImageUIModel
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
@@ -34,24 +35,7 @@ data class Watermark (
     }
 
     private fun createWatermarkTextAndImage(watermark: TextAndImageUIModel?) {
-        if (backgroundImg == null || watermark == null) {
-            return
-        }
-
-        val watermarkPaint = Paint()
-        watermarkPaint.alpha = watermark.alpha
-
-        val newBitmap = Bitmap.createBitmap(
-            backgroundImg!!.width,
-            backgroundImg!!.height,
-            backgroundImg!!.config
-        )
-
-        val watermarkCanvas = Canvas(newBitmap)
-
-        canvasBitmap?.let {
-            watermarkCanvas.drawBitmap(it, 0f, 0f, null)
-        }
+        if (watermark == null) return
 
         val logoBitmap = watermark.image!!.resizeBitmap(
             size = watermark.imageSize.toFloat(),
@@ -60,137 +44,82 @@ data class Watermark (
 
         val textBitmap = watermark.text.textAsBitmap(context, watermark)
 
-        var scaledWatermarkBitmap = combineImages(logoBitmap, textBitmap)
-
-        scaledWatermarkBitmap = adjustPhotoRotation(
-            scaledWatermarkBitmap,
-            watermark.position.rotation.toInt()
+        createWatermark(
+            bitmap = logoBitmap.combine(textBitmap),
+            config = watermark
         )
-
-        if (isTitleMode) {
-            watermarkPaint.shader = BitmapShader(
-                scaledWatermarkBitmap,
-                Shader.TileMode.REPEAT,
-                Shader.TileMode.REPEAT
-            )
-            val bitmapShaderRect = watermarkCanvas.clipBounds
-            watermarkCanvas.drawRect(bitmapShaderRect, watermarkPaint)
-        } else {
-            watermarkCanvas.drawBitmap(
-                scaledWatermarkBitmap,
-                (watermark.position.positionX * backgroundImg!!.width).toFloat(),
-                (watermark.position.positionY * backgroundImg!!.height).toFloat(),
-                watermarkPaint
-            )
-        }
-
-        canvasBitmap = newBitmap
-        outputImage = newBitmap
     }
 
     private fun createWatermarkImage(watermarkImg: ImageUIModel?) {
-        if (backgroundImg == null || watermarkImg == null) {
-            return
-        }
+        if (watermarkImg == null) return
 
-        val watermarkPaint = Paint()
-        watermarkPaint.alpha = watermarkImg.alpha
-
-        val newBitmap = Bitmap.createBitmap(
-            backgroundImg!!.width,
-            backgroundImg!!.height,
-            backgroundImg!!.config
+        createWatermark(
+            bitmap = watermarkImg.image!!.resizeBitmap(
+                size = watermarkImg.imageSize.toFloat(),
+                background = backgroundImg!!
+            ),
+            config = watermarkImg
         )
-
-        val watermarkCanvas = Canvas(newBitmap)
-
-        canvasBitmap?.let {
-            watermarkCanvas.drawBitmap(it, 0f, 0f, null)
-        }
-
-        var scaledWatermarkBitmap = watermarkImg.image!!.resizeBitmap(
-            size = watermarkImg.imageSize.toFloat(),
-            background = backgroundImg!!
-        )
-
-        scaledWatermarkBitmap = adjustPhotoRotation(
-            scaledWatermarkBitmap,
-            watermarkImg.position.rotation.toInt()
-        )
-
-        if (isTitleMode) {
-            watermarkPaint.shader = BitmapShader(
-                scaledWatermarkBitmap,
-                Shader.TileMode.REPEAT,
-                Shader.TileMode.REPEAT
-            )
-            val bitmapShaderRect = watermarkCanvas.clipBounds
-            watermarkCanvas.drawRect(bitmapShaderRect, watermarkPaint)
-        } else {
-            watermarkCanvas.drawBitmap(
-                scaledWatermarkBitmap,
-                (watermarkImg.position.positionX * backgroundImg!!.width).toFloat(),
-                (watermarkImg.position.positionY * backgroundImg!!.height).toFloat(),
-                watermarkPaint
-            )
-        }
-
-        canvasBitmap = newBitmap
-        outputImage = newBitmap
     }
 
     private fun createWatermarkText(watermarkText: TextUIModel?) {
-        if (backgroundImg == null || watermarkText == null) {
-            return
-        }
+        if (watermarkText == null) return
 
-        val watermarkPaint = Paint()
-        watermarkPaint.alpha = watermarkText.alpha
-
-        val newBitmap = Bitmap.createBitmap(
-            backgroundImg!!.width,
-            backgroundImg!!.height,
-            backgroundImg!!.config
+        createWatermark(
+            bitmap = watermarkText.text.textAsBitmap(context, watermarkText),
+            config = watermarkText
         )
+    }
 
-        val watermarkCanvas = Canvas(newBitmap)
-        canvasBitmap?.let {
-            watermarkCanvas.drawBitmap(it, 0f, 0f, null)
+    private fun createWatermark(
+        bitmap: Bitmap,
+        config: BaseWatermark?
+    ) {
+        if (config == null) return
+
+        val paint = Paint().apply {
+            alpha = config.alpha
         }
 
-        var scaledWatermarkBitmap = watermarkText.text.textAsBitmap(context, watermarkText)
+        backgroundImg?.let {
+            val newBitmap = Bitmap.createBitmap(it.width, it.height, it.config)
+            val watermarkCanvas = Canvas(newBitmap)
 
-        scaledWatermarkBitmap = adjustPhotoRotation(
-            scaledWatermarkBitmap,
-            watermarkText.position.rotation.toInt()
-        )
+            watermarkCanvas.drawBitmap(canvasBitmap!!, 0f, 0f, null)
 
-        if (isTitleMode) {
-            watermarkPaint.shader = BitmapShader(
-                scaledWatermarkBitmap,
-                Shader.TileMode.REPEAT,
-                Shader.TileMode.REPEAT
+            val watermarkBitmap = adjustRotation(
+                bitmap,
+                config.position.rotation.toInt()
             )
-            val bitmapShaderRect = watermarkCanvas.clipBounds
-            watermarkCanvas.drawRect(bitmapShaderRect, watermarkPaint)
-        } else {
-            watermarkCanvas.drawBitmap(
-                scaledWatermarkBitmap,
-                (watermarkText.position.positionX * backgroundImg!!.width).toFloat(),
-                (watermarkText.position.positionY * backgroundImg!!.height).toFloat(),
-                watermarkPaint
-            )
+
+            if (isTitleMode) {
+                paint.shader = BitmapShader(
+                    watermarkBitmap,
+                    Shader.TileMode.REPEAT,
+                    Shader.TileMode.REPEAT
+                )
+
+                val bitmapShaderRect = watermarkCanvas.clipBounds
+                watermarkCanvas.drawRect(bitmapShaderRect, paint)
+            } else {
+                watermarkCanvas.drawBitmap(
+                    watermarkBitmap,
+                    (config.position.positionX * it.width).toFloat(),
+                    (config.position.positionY * it.height).toFloat(),
+                    paint
+                )
+            }
+
+            canvasBitmap = newBitmap
+            outputImage = newBitmap
         }
-
-        canvasBitmap = newBitmap
-        outputImage = newBitmap
     }
 
     fun setToImageView(target: ImageView) {
         target.setImageBitmap(outputImage)
     }
 
-    private fun adjustPhotoRotation(bitmap: Bitmap, orientationAngle: Int): Bitmap {
+    private fun adjustRotation(bitmap: Bitmap, orientationAngle: Int): Bitmap {
         val matrix = Matrix()
         matrix.setRotate(
             orientationAngle.toFloat(),
@@ -201,30 +130,37 @@ data class Watermark (
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
-    private fun combineImages(
-        c: Bitmap,
-        s: Bitmap
-    ): Bitmap {
-        val cs: Bitmap?
+    private fun Bitmap.addSpace(spaceCount: Int): Bitmap {
+        val combinedCanvas = Canvas(this)
+        combinedCanvas.drawBitmap(
+            this,
+            this.width.toFloat() * spaceCount,
+            0f,
+            null
+        )
+        return this
+    }
+
+    private fun Bitmap.combine(secondBitmap: Bitmap): Bitmap {
+        val spaceThreshold = 2
         val width: Int
         val height: Int
 
-        if (c.width > s.width) {
-            width = (c.width + s.width) * 2
-            height = c.height
+        if (this.width > secondBitmap.width) {
+            width = (this.width + secondBitmap.width) * spaceThreshold
+            height = this.height
         } else {
-            width = (s.width + s.width) * 2
-            height = c.height
+            width = (secondBitmap.width + secondBitmap.width) * spaceThreshold
+            height = this.height
         }
 
-        cs = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val combinedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val combinedCanvas = Canvas(combinedBitmap)
 
-        val comboImage = Canvas(cs)
+        combinedCanvas.drawBitmap(this, 0f, 0f, null)
+        combinedCanvas.drawBitmap(secondBitmap, this.width.toFloat() * spaceThreshold, 0f, null)
 
-        comboImage.drawBitmap(c, 0f, 0f, null)
-        comboImage.drawBitmap(s, c.width.toFloat() * 2, 0f, null)
-
-        return cs
+        return combinedBitmap
     }
 
 }

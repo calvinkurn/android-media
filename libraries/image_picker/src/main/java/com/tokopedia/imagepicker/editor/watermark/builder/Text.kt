@@ -5,35 +5,7 @@ import android.widget.TextView
 import com.tokopedia.imagepicker.editor.watermark.data.TextDefault
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 
-class Text : TextDefault(), TextUIModel {
-
-    fun size(value: Int) = apply {
-        this.textSize = value
-    }
-
-    fun rotation(value: Double) = apply {
-        this.position.rotation = value
-    }
-
-    fun contentText(value: String) = apply {
-        this.text = value
-    }
-
-    fun positionX(value: Double) = apply {
-        this.position.positionX = value
-    }
-
-    fun positionY(value: Double) = apply {
-        this.position.positionY = value
-    }
-
-    fun alpha(value: Int) = apply {
-        this.alpha = value
-    }
-
-    fun textColor(value: Int) = apply {
-        this.textColor = value
-    }
+class Text : TextUIModel, TextDefault() {
 
     fun setTextShadow(
         blurRadius: Float,

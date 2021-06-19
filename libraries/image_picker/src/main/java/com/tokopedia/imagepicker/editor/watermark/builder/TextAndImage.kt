@@ -33,42 +33,4 @@ data class TextAndImage(
     override var textShadowXOffset: Float = textDefault.textShadowXOffset,
     override var textShadowYOffset: Float = textDefault.textShadowYOffset,
     override var textShadowColor: Int = textDefault.textShadowColor
-) : TextAndImageUIModel {
-
-    fun image(bitmap: Bitmap) = apply {
-        image = bitmap
-    }
-
-    fun alpha(value: Int) = apply {
-        this.alpha = value
-    }
-
-    fun contentText(value: String) = apply {
-        this.text = value
-    }
-
-    fun textSize(value: Int) = apply {
-        this.textSize = value
-    }
-
-    fun imageSize(value: Double) = apply {
-        this.imageSize = value
-    }
-
-    fun textColor(value: Int) = apply {
-        this.textColor = value
-    }
-
-    fun rotation(value: Double) = apply {
-        this.position.rotation = value
-    }
-
-    fun positionX(value: Double) = apply {
-        this.position.positionX = value
-    }
-
-    fun positionY(value: Double) = apply {
-        this.position.positionY = value
-    }
-
-}
+) : TextAndImageUIModel
