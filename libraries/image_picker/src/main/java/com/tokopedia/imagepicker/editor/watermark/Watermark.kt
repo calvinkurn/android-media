@@ -3,18 +3,18 @@ package com.tokopedia.imagepicker.editor.watermark
 import android.content.Context
 import android.graphics.*
 import android.widget.ImageView
-import com.tokopedia.imagepicker.editor.watermark.entity.Image
-import com.tokopedia.imagepicker.editor.watermark.entity.Text
+import com.tokopedia.imagepicker.editor.watermark.entity.ImageUIModel
+import com.tokopedia.imagepicker.editor.watermark.entity.TextAndImageUIModel
+import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeBitmap
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.textAsBitmap
 
-data class Watermark(
+data class Watermark234z (
     var context: Context,
     var backgroundImg: Bitmap? = null,
-    var watermarkImg: Image? = null,
-    var watermarkBitmaps: List<Image>,
-    var watermarkText: Text? = null,
-    var watermarkTexts: List<Text>,
+    var watermarkImg: ImageUIModel? = null,
+    var watermarkText: TextUIModel? = null,
+    var watermarkTextAndImage: TextAndImageUIModel? = null,
     var outputImage: Bitmap? = null,
     var canvasBitmap: Bitmap? = null,
     var isTitleMode: Boolean,
@@ -27,21 +27,19 @@ data class Watermark(
 
         if (!isCombine) {
             createWatermarkImage(watermarkImg)
-            createWatermarkImages(watermarkBitmaps)
             createWatermarkText(watermarkText)
-            createWatermarkTexts(watermarkTexts)
         } else {
-            createWatermarkImageAndText(watermarkImg, watermarkText)
+            createWatermarkTextAndImage(watermarkTextAndImage)
         }
     }
 
-    private fun createWatermarkImageAndText(watermarkImg: Image?, watermarkText: Text?) {
-        if (backgroundImg == null || watermarkImg == null || watermarkText == null) {
+    private fun createWatermarkTextAndImage(watermark: TextAndImageUIModel?) {
+        if (backgroundImg == null || watermark == null) {
             return
         }
 
         val watermarkPaint = Paint()
-        watermarkPaint.alpha = watermarkImg.alpha
+        watermarkPaint.alpha = watermark.alpha
 
         val newBitmap = Bitmap.createBitmap(
             backgroundImg!!.width,
@@ -55,18 +53,18 @@ data class Watermark(
             watermarkCanvas.drawBitmap(it, 0f, 0f, null)
         }
 
-        val logoBitmap = watermarkImg.image!!.resizeBitmap(
-            size = watermarkImg.size.toFloat(),
+        val logoBitmap = watermark.image!!.resizeBitmap(
+            size = watermark.size.toFloat(),
             background = backgroundImg!!
         )
 
-        val textBitmap = watermarkText.textAsBitmap(context)
+        val textBitmap = watermark.text.textAsBitmap(context, watermark)
 
         var scaledWatermarkBitmap = combineImages(logoBitmap, textBitmap)
 
         scaledWatermarkBitmap = adjustPhotoRotation(
             scaledWatermarkBitmap,
-            watermarkImg.position.rotation.toInt()
+            watermark.position.rotation.toInt()
         )
 
         if (isTitleMode) {
@@ -80,8 +78,8 @@ data class Watermark(
         } else {
             watermarkCanvas.drawBitmap(
                 scaledWatermarkBitmap,
-                (watermarkImg.position.positionX * backgroundImg!!.width).toFloat(),
-                (watermarkImg.position.positionY * backgroundImg!!.height).toFloat(),
+                (watermark.position.positionX * backgroundImg!!.width).toFloat(),
+                (watermark.position.positionY * backgroundImg!!.height).toFloat(),
                 watermarkPaint
             )
         }
@@ -90,7 +88,7 @@ data class Watermark(
         outputImage = newBitmap
     }
 
-    private fun createWatermarkImage(watermarkImg: Image?) {
+    private fun createWatermarkImage(watermarkImg: ImageUIModel?) {
         if (backgroundImg == null || watermarkImg == null) {
             return
         }
@@ -111,7 +109,7 @@ data class Watermark(
         }
 
         var scaledWatermarkBitmap = watermarkImg.image!!.resizeBitmap(
-            size = watermarkImg.size.toFloat(),
+            size = watermarkImg.size.toFloat() / 100,
             background = backgroundImg!!
         )
 
@@ -141,19 +139,13 @@ data class Watermark(
         outputImage = newBitmap
     }
 
-    private fun createWatermarkImages(watermarkImages: List<Image>) {
-        watermarkImages.forEach {
-            createWatermarkImage(it)
-        }
-    }
-
-    private fun createWatermarkText(watermarkText: Text?) {
+    private fun createWatermarkText(watermarkText: TextUIModel?) {
         if (backgroundImg == null || watermarkText == null) {
             return
         }
 
         val watermarkPaint = Paint()
-        watermarkPaint.alpha = watermarkText.textAlpha
+        watermarkPaint.alpha = watermarkText.alpha
 
         val newBitmap = Bitmap.createBitmap(
             backgroundImg!!.width,
@@ -166,7 +158,7 @@ data class Watermark(
             watermarkCanvas.drawBitmap(it, 0f, 0f, null)
         }
 
-        var scaledWatermarkBitmap = watermarkText.textAsBitmap(context)
+        var scaledWatermarkBitmap = watermarkText.text.textAsBitmap(context, watermarkText)
 
         scaledWatermarkBitmap = adjustPhotoRotation(
             scaledWatermarkBitmap,
@@ -192,12 +184,6 @@ data class Watermark(
 
         canvasBitmap = newBitmap
         outputImage = newBitmap
-    }
-
-    private fun createWatermarkTexts(watermarkTexts: List<Text>) {
-        watermarkTexts.forEach {
-            createWatermarkText(it)
-        }
     }
 
     fun setToImageView(target: ImageView) {

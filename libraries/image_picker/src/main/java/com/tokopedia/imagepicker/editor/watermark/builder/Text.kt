@@ -1,29 +1,14 @@
-package com.tokopedia.imagepicker.editor.watermark.entity
+package com.tokopedia.imagepicker.editor.watermark.builder
 
-import android.graphics.Color
-import android.graphics.Paint
 import android.widget.EditText
 import android.widget.TextView
-import androidx.annotation.ColorInt
-import androidx.annotation.FontRes
+import com.tokopedia.imagepicker.editor.watermark.data.TextDefault
+import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 
-data class Text(
-    var text: String = "",
-    var textAlpha: Int = 50,
-    var textSize: Int = 20,
-    @ColorInt var textColor: Int = Color.BLACK,
-    @ColorInt var backgroundColor: Int = Color.TRANSPARENT,
-    var textStyle: Paint.Style = Paint.Style.FILL,
-    @FontRes var typeFaceId: Int = 0,
-    var textShadowBlurRadius: Float = 0f,
-    var textShadowXOffset: Float = 0f,
-    var textShadowYOffset: Float = 0f,
-    @ColorInt var textShadowColor: Int = Color.WHITE,
-    var position: Position = Position()
-) {
+class Text : TextDefault(), TextUIModel {
 
-    fun textSize(value: Int) = apply {
-        this.textSize = value
+    fun size(value: Int) = apply {
+        this.size = value.toDouble()
     }
 
     fun rotation(value: Double) = apply {
@@ -42,8 +27,8 @@ data class Text(
         this.position.positionY = value
     }
 
-    fun textAlpha(value: Int) = apply {
-        this.textAlpha = value
+    fun alpha(value: Int) = apply {
+        this.alpha = value
     }
 
     fun textColor(value: Int) = apply {

@@ -7,52 +7,50 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.TypedValue
+import androidx.annotation.DrawableRes
 import androidx.core.content.res.ResourcesCompat
+import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 import kotlin.math.roundToInt
-import com.tokopedia.imagepicker.editor.watermark.entity.Text as WatermarkText
 
 object BitmapHelper {
 
-    fun WatermarkText.textAsBitmap(context: Context): Bitmap {
-        // to preventing the variable `shadows-issue`, define a new `shadow variable`
-        val watermarkText = this
-
+    fun String.textAsBitmap(context: Context, properties: TextUIModel): Bitmap {
         // created TextPaint for painting the watermark text
         val paint = TextPaint().apply {
             // basic properties
             strokeWidth = 5f
             isAntiAlias = true
-            color = watermarkText.textShadowColor
-            style = watermarkText.textStyle
+            color = properties.textShadowColor
+            style = properties.textStyle
             textAlign = Paint.Align.LEFT
 
             // text alpha
-            if (textAlpha in 0..255) {
-                alpha = watermarkText.textAlpha
+            if (properties.alpha in 0..255) {
+                alpha = properties.alpha
             }
 
             // text size in pixel based on device dimension
             val textInPixel = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
-                watermarkText.textSize.toFloat(),
+                properties.size.toFloat(),
                 context.resources.displayMetrics
             )
 
             // text shadow properties
-            if (watermarkText.textShadowBlurRadius != 0f
-                || watermarkText.textShadowXOffset != 0f
-                || watermarkText.textShadowYOffset != 0f) {
+            if (properties.textShadowBlurRadius != 0f
+                || properties.textShadowXOffset != 0f
+                || properties.textShadowYOffset != 0f) {
                 setShadowLayer(
-                    watermarkText.textShadowBlurRadius,
-                    watermarkText.textShadowXOffset,
-                    watermarkText.textShadowYOffset,
-                    watermarkText.textShadowColor
+                    properties.textShadowBlurRadius,
+                    properties.textShadowXOffset,
+                    properties.textShadowYOffset,
+                    properties.textShadowColor
                 )
             }
 
             // font properties
-            if (watermarkText.typeFaceId != 0) {
-                typeface = ResourcesCompat.getFont(context, watermarkText.typeFaceId)
+            if (properties.typeFaceId != 0) {
+                typeface = ResourcesCompat.getFont(context, properties.typeFaceId)
             }
         }
 
@@ -61,14 +59,14 @@ object BitmapHelper {
         val bounds = Rect()
 
         paint.getTextBounds(
-            watermarkText.text,
+            this,
             0,
-            watermarkText.text.length,
+            this.length,
             bounds
         )
 
         var boundWidth = bounds.width() + 20 // 20 is the threshold of white space
-        val textMaxWidth = paint.measureText(watermarkText.text).toInt()
+        val textMaxWidth = paint.measureText(this).toInt()
 
         if (boundWidth > textMaxWidth) {
             boundWidth = textMaxWidth
@@ -77,16 +75,16 @@ object BitmapHelper {
         // create the static layout
         val staticLayout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             StaticLayout.Builder
-                .obtain(text, 0, watermarkText.text.length, paint, textMaxWidth)
+                .obtain(this, 0, this.length, paint, textMaxWidth)
                 .setAlignment(Layout.Alignment.ALIGN_NORMAL)
                 .setLineSpacing(2.0f, 2.0f)
                 .setIncludePad(false)
                 .build()
         } else {
             StaticLayout(
-                watermarkText.text,
+                this,
                 0,
-                watermarkText.text.length,
+                this.length,
                 paint,
                 textMaxWidth,
                 Layout.Alignment.ALIGN_NORMAL,
@@ -108,7 +106,7 @@ object BitmapHelper {
 
         // create the bitmap canvas
         val canvas = Canvas(bitmapResult)
-        canvas.drawColor(watermarkText.backgroundColor)
+        canvas.drawColor(properties.backgroundColor)
 
         staticLayout.draw(canvas)
 
@@ -147,6 +145,15 @@ object BitmapHelper {
             resultHeight,
             true
         )
+    }
+
+    fun getBitmapFromDrawable(
+        context: Context?,
+        @DrawableRes imageDrawable: Int
+    ): Bitmap {
+        return BitmapFactory
+            .decodeResource(context?.resources, imageDrawable)
+            .resizeBitmap(MAX_IMAGE_SIZE)
     }
 
 }

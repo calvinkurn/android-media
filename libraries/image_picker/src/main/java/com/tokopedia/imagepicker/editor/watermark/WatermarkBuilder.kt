@@ -5,9 +5,13 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import com.tokopedia.imagepicker.editor.watermark.entity.Image
-import com.tokopedia.imagepicker.editor.watermark.entity.Position
-import com.tokopedia.imagepicker.editor.watermark.entity.Text
+import com.tokopedia.imagepicker.editor.watermark.builder.Image
+import com.tokopedia.imagepicker.editor.watermark.builder.Position
+import com.tokopedia.imagepicker.editor.watermark.builder.Text
+import com.tokopedia.imagepicker.editor.watermark.builder.TextAndImage
+import com.tokopedia.imagepicker.editor.watermark.entity.ImageUIModel
+import com.tokopedia.imagepicker.editor.watermark.entity.TextAndImageUIModel
+import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeBitmap
 import com.tokopedia.imagepicker.editor.watermark.utils.MAX_IMAGE_SIZE
 import com.yalantis.ucrop.util.FastBitmapDrawable
@@ -20,9 +24,8 @@ open class WatermarkBuilder {
     private var isCombine: Boolean = false
     private var resizeBackgroundImg: Boolean
     private var watermarkImage: Image? = null
-    private var watermarkText: Text? = null
-    private var watermarkTexts: List<Text> = arrayListOf()
-    private var watermarkBitmaps: List<Image> = arrayListOf()
+    private var watermarkText: TextUIModel? = null
+    private var watermarkTextAndImage: TextAndImageUIModel? = null
 
     private constructor(
         context: Context,
@@ -74,42 +77,24 @@ open class WatermarkBuilder {
     constructor(context: Context, backgroundDrawable: Int) : this(context, backgroundDrawable, true)
 
     fun loadWatermarkText(inputText: String) = apply {
-        watermarkText = Text(text = inputText)
-    }
-
-    fun loadWatermarkText(inputText: String, position: Position) = apply {
-        watermarkText = Text(text = inputText, position = position)
-    }
-
-    fun loadWatermarkText(watermarkString: Text) = apply {
-        watermarkText = watermarkString
-    }
-
-    fun loadWatermarkTexts(watermarkTexts: List<Text>) = apply {
-        this.watermarkTexts = watermarkTexts
+        watermarkText = Text().apply {
+            text = inputText
+        }
     }
 
     fun loadWatermarkImage(watermarkImage: Bitmap) = apply {
-        this.watermarkImage = Image(image = watermarkImage)
+        this.watermarkImage = Image().apply {
+            this.image = watermarkImage
+        }
     }
 
-    fun loadWatermarkImage(watermarkImage: Bitmap, position: Position) = apply {
-        this.watermarkImage = Image(image = watermarkImage, position = position)
-    }
-
-    fun loadWatermarkImage(watermarkImage: Image) = apply {
-        this.watermarkImage = watermarkImage
-    }
-
-    fun loadWatermarkImageAndText(image: Image, text: Text) = apply {
+    fun loadWatermarkTextAndImage(text: String, resourceId: Int) = apply {
         this.isCombine = true
 
-        this.watermarkImage = image
-        this.watermarkText = text
-    }
-
-    fun loadWatermarkImages(watermarkImages: List<Image>) = apply {
-        this.watermarkBitmaps = watermarkImages
+        this.watermarkTextAndImage = TextAndImage().apply {
+            this.text = text
+            this.imageDrawable = resourceId
+        }
     }
 
     fun setTileMode(tileMode: Boolean) = apply {
@@ -130,14 +115,13 @@ open class WatermarkBuilder {
 
     fun getWatermark(): Watermark {
         return Watermark(
-            context = context,
-            backgroundImg = backgroundImg,
+            watermarkTextAndImage = watermarkTextAndImage,
             watermarkImg = watermarkImage,
-            watermarkBitmaps = watermarkBitmaps,
             watermarkText = watermarkText,
-            watermarkTexts = watermarkTexts,
+            backgroundImg = backgroundImg,
             isTitleMode = isTitleMode,
-            isCombine = isCombine
+            isCombine = isCombine,
+            context = context
         )
     }
 

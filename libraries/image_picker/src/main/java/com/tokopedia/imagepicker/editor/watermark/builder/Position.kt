@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.editor.watermark.entity
+package com.tokopedia.imagepicker.editor.watermark.builder
 
 import androidx.annotation.FloatRange
 

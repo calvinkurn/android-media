@@ -2,8 +2,6 @@ package com.tokopedia.imagepicker.editor.presenter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 
@@ -11,8 +9,6 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
-import com.tokopedia.imagepicker.editor.watermark.entity.Image;
-import com.tokopedia.imagepicker.editor.watermark.entity.Text;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
@@ -298,32 +294,12 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
     }
 
     public void setTokopediaWatermark(String userInfoName, WatermarkBuilder watermarkBuilder) {
-        Bitmap tokopediaBitmap = BitmapFactory.decodeResource(
-                getView().getContext().getResources(),
-                R.drawable.watermark_ic_tokopedia_logo
-        );
-
-        Text watermarkText = new Text()
-                .contentText(" " + userInfoName + "")
-                .textColor(Color.WHITE)
-                .positionX(0.5)
-                .positionY(0.5)
-                .rotation(-30)
-                .textAlpha(100)
-                .textSize(14);
-
-        Image watermarkImage = new Image()
-                .setImageBitmap(tokopediaBitmap)
-                .positionX(0.5)
-                .positionY(0.5)
-                .rotation(-30)
-                .imageAlpha(255)
-                .imageSize(0.15);
+        int tokopediaLogo = R.drawable.watermark_ic_tokopedia_logo;
 
         Subscription subscription = Observable.just(watermarkBuilder)
                 .flatMap((Func1<WatermarkBuilder, Observable<Bitmap>>) builder -> {
                     return Observable.just(builder
-                            .loadWatermarkImageAndText(watermarkImage, watermarkText)
+                            .loadWatermarkTextAndImage(userInfoName, tokopediaLogo)
                             .getWatermark()
                             .getOutputImage()
                     );
@@ -337,19 +313,10 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
     }
 
     public void setUserInfoNameWatermark(String userInfoName, WatermarkBuilder watermarkBuilder) {
-        Text watermarkText = new Text()
-                .contentText(" " + userInfoName + " ")
-                .positionX(0.5)
-                .positionY(0.5)
-                .textAlpha(150)
-                .rotation(45)
-                .textSize(20)
-                .textColor(Color.WHITE);
-
         Subscription subscription = Observable.just(watermarkBuilder)
                 .flatMap((Func1<WatermarkBuilder, Observable<Bitmap>>) builder -> {
                     return Observable.just(builder
-                            .loadWatermarkText(watermarkText)
+                            .loadWatermarkText(" " + userInfoName + " ")
                             .setTileMode(true)
                             .getWatermark()
                             .getOutputImage()
