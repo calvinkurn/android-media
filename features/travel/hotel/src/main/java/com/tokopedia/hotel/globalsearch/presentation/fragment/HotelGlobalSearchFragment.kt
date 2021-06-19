@@ -50,10 +50,12 @@ open class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBo
         arguments?.let {
             globalSearchModel.checkInDate = it.getString(EXTRA_CHECK_IN_DATE)
                     ?: TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 1))
-            globalSearchModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.getString(EXTRA_CHECK_IN_DATE) ?: ""))
+            globalSearchModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.getString(EXTRA_CHECK_IN_DATE)
+                    ?: ""))
             globalSearchModel.checkOutDate = it.getString(EXTRA_CHECK_OUT_DATE)
                     ?: TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 2))
-            globalSearchModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.getString(EXTRA_CHECK_OUT_DATE) ?: ""))
+            globalSearchModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.getString(EXTRA_CHECK_OUT_DATE)
+                    ?: ""))
             globalSearchModel.numOfGuests = it.getInt(EXTRA_NUM_OF_GUESTS)
             globalSearchModel.numOfRooms = it.getInt(EXTRA_NUM_OF_ROOMS)
 
@@ -92,7 +94,7 @@ open class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBo
         tv_hotel_homepage_checkin_date.setText(data.checkInDateFmt)
         tv_hotel_homepage_checkout_date.setText(data.checkOutDateFmt)
         tv_hotel_homepage_night_count.text = data.nightCount.toString()
-        tv_hotel_homepage_guest_info.setText(getString(R.string.hotel_homepage_guest_detail_without_child,
+        tv_hotel_homepage_guest_info.setText(String.format(getString(R.string.hotel_homepage_guest_detail_without_child),
                 data.numOfRooms, data.numOfGuests))
 
     }
@@ -165,7 +167,7 @@ open class HotelGlobalSearchFragment : TkpdBaseV4Fragment(), HotelRoomAndGuestBo
                 Toast.makeText(context, R.string.hotel_calendar_error_max_range, Toast.LENGTH_SHORT).show()
             }
         }
-        fragmentManager?.let { hotelCalendarDialog.show(it, TAG_RANGE_DATE_CALENDAR) }
+        parentFragmentManager.let { hotelCalendarDialog.show(it, TAG_RANGE_DATE_CALENDAR) }
     }
 
     open fun onCheckAvailabilityClicked() {
