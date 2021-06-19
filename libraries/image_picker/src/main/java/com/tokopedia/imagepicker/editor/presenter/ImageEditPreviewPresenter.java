@@ -11,13 +11,11 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
-import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkImage;
-import com.tokopedia.imagepicker.editor.watermark.uimodel.WatermarkText;
+import com.tokopedia.imagepicker.editor.watermark.entity.Image;
+import com.tokopedia.imagepicker.editor.watermark.entity.Text;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -302,25 +300,25 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
     public void setTokopediaWatermark(String userInfoName, WatermarkBuilder watermarkBuilder) {
         Bitmap tokopediaBitmap = BitmapFactory.decodeResource(
                 getView().getContext().getResources(),
-                R.drawable.ic_tokopedia_text
+                R.drawable.watermark_ic_tokopedia_logo
         );
 
-        WatermarkText watermarkText = new WatermarkText()
-                .contentText(" " + userInfoName + " ")
+        Text watermarkText = new Text()
+                .contentText(" " + userInfoName + "")
+                .textColor(Color.WHITE)
                 .positionX(0.5)
                 .positionY(0.5)
                 .rotation(-30)
-                .textAlpha(120)
-                .textSize(10)
-                .textColor(Color.WHITE);
+                .textAlpha(100)
+                .textSize(14);
 
-        WatermarkImage watermarkImage = new WatermarkImage()
+        Image watermarkImage = new Image()
                 .setImageBitmap(tokopediaBitmap)
                 .positionX(0.5)
                 .positionY(0.5)
                 .rotation(-30)
-                .imageAlpha(150)
-                .imageSize(0.12);
+                .imageAlpha(255)
+                .imageSize(0.15);
 
         Subscription subscription = Observable.just(watermarkBuilder)
                 .flatMap((Func1<WatermarkBuilder, Observable<Bitmap>>) builder -> {
@@ -339,7 +337,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
     }
 
     public void setUserInfoNameWatermark(String userInfoName, WatermarkBuilder watermarkBuilder) {
-        WatermarkText watermarkText = new WatermarkText()
+        Text watermarkText = new Text()
                 .contentText(" " + userInfoName + " ")
                 .positionX(0.5)
                 .positionY(0.5)

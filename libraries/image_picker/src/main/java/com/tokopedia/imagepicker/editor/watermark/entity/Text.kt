@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.editor.watermark.uimodel
+package com.tokopedia.imagepicker.editor.watermark.entity
 
 import android.graphics.Color
 import android.graphics.Paint
@@ -7,23 +7,23 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.FontRes
 
-data class WatermarkText(
+data class Text(
     var text: String = "",
-    var alpha: Int = 50,
-    var size: Int = 20,
-    @ColorInt var color: Int = Color.BLACK,
+    var textAlpha: Int = 50,
+    var textSize: Int = 20,
+    @ColorInt var textColor: Int = Color.BLACK,
     @ColorInt var backgroundColor: Int = Color.TRANSPARENT,
-    var style: Paint.Style = Paint.Style.FILL,
+    var textStyle: Paint.Style = Paint.Style.FILL,
     @FontRes var typeFaceId: Int = 0,
     var textShadowBlurRadius: Float = 0f,
     var textShadowXOffset: Float = 0f,
     var textShadowYOffset: Float = 0f,
     @ColorInt var textShadowColor: Int = Color.WHITE,
-    var position: WatermarkPosition = WatermarkPosition()
+    var position: Position = Position()
 ) {
 
     fun textSize(value: Int) = apply {
-        this.size = value
+        this.textSize = value
     }
 
     fun rotation(value: Double) = apply {
@@ -43,11 +43,11 @@ data class WatermarkText(
     }
 
     fun textAlpha(value: Int) = apply {
-        this.alpha = value
+        this.textAlpha = value
     }
 
     fun textColor(value: Int) = apply {
-        this.color = value
+        this.textColor = value
     }
 
     fun setTextShadow(
