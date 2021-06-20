@@ -5,6 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -40,6 +42,7 @@ import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerforman
 import com.tokopedia.shop.score.performance.presentation.widget.PenaltyDotBadge
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_penalty_detail.*
 import kotlinx.android.synthetic.main.fragment_shop_performance.*
 import javax.inject.Inject
 
@@ -48,7 +51,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceListener, ItemShopPerformanceListener,
         ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
         ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, SectionFaqListener,
-        GlobalErrorListener, ItemStatusPMProListener {
+        GlobalErrorListener, ItemStatusPMProListener, ItemRegularMerchantListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -64,7 +67,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceAdapterTypeFactory(this, this,
                 this, this,
                 this, this, this,
-                this, this)
+                this, this, this)
     }
 
     private val shopPerformanceAdapter by lazy { ShopPerformanceAdapter(shopPerformanceAdapterTypeFactory) }
@@ -95,6 +98,10 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, R.color.shop_score_page_dms_background))
+        }
+        setupActionBar()
         setupAdapter()
         onSwipeRefreshShopPerformance()
         observeShopPeriod()
@@ -232,6 +239,13 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 }
             }
         }
+    }
+
+    /**
+     * ItemRegularMerchantListener
+     */
+    override fun onRMSectionToPMPage() {
+        goToPowerMerchantSubscribe(PARAM_PM)
     }
 
     private fun goToSellerMigrationPage(context: Context, appLinks: ArrayList<String>) {
@@ -649,6 +663,17 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     private fun hideLoading() {
         shopPerformanceAdapter.hideLoading()
     }
+
+    private fun setupActionBar() {
+        (activity as? AppCompatActivity)?.run {
+            supportActionBar?.hide()
+            setSupportActionBar(shop_performance_toolbar)
+            supportActionBar?.apply {
+                title = getString(R.string.title_shop_performance)
+            }
+        }
+    }
+
 
     companion object {
 

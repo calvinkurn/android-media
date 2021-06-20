@@ -43,14 +43,12 @@ object MediaListenerBuilder {
             val loadTime = (System.currentTimeMillis() - startTime).toString()
 
             // only track if the URL from CDN service
-            if (properties.isTrackable) {
-                trackPerformancePostRender(
-                        performanceMonitoring,
-                        pageName,
-                        loadTime,
-                        fileSize
-                )
-            }
+            trackPerformancePostRender(
+                performanceMonitoring,
+                pageName,
+                loadTime,
+                fileSize
+            )
 
             // override the load time into properties
             properties.loadTime = loadTime

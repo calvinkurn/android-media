@@ -219,9 +219,7 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
                     navigateToCart(it.data)
                 }
                 is Fail -> {
-                    if (it.throwable is DigitalAddToCartViewModel.DigitalUserNotLoginException) {
-                        navigateToLoginPage()
-                    } else renderErrorMessage(it.throwable)
+                    renderErrorMessage(it.throwable)
                     emoneyFullPageLoadingLayout.hide()
                 }
             }
@@ -577,8 +575,12 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun proceedAddToCart(digitalCheckoutData: DigitalCheckoutPassData) {
-        addToCartViewModel.addToCart(digitalCheckoutData, DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-                DigitalSubscriptionParams())
+        if (userSession.isLoggedIn) {
+            addToCartViewModel.addToCart(digitalCheckoutData, DeviceUtil.getDigitalIdentifierParam(requireActivity()),
+                    DigitalSubscriptionParams())
+        } else {
+            navigateToLoginPage()
+        }
     }
 
     private fun navigateToCart(categoryId: String) {
@@ -629,10 +631,16 @@ class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.Action
     }
 
     private fun showCoachMark(show: Boolean) {
-        if (show) {
-            coachMark.showCoachMark(coachMarks)
-        } else {
-            coachMark.hideCoachMark()
+        try {
+            if (coachMarks.isNotEmpty()) {
+                if (show) {
+                    coachMark.showCoachMark(coachMarks)
+                } else {
+                    coachMark.hideCoachMark()
+                }
+            }
+        } catch (e: Throwable) {
+            //do nothing. don't show coachmark.
         }
     }
 
