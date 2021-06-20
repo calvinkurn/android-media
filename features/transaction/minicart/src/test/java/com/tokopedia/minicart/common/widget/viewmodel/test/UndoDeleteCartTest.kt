@@ -36,7 +36,6 @@ class UndoDeleteCartTest {
     @Before
     fun setUp() {
         viewModel = MiniCartViewModel(dispatcher, getMiniCartListSimplifiedUseCase, getMiniCartListUseCase, deleteCartUseCase, undoDeleteCartUseCase, updateCartUseCase, uiModelMapper)
-        viewModel.initializeShopIds(listOf("123"))
     }
 
     @Test

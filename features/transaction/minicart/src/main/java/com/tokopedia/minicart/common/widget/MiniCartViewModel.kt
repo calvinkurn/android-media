@@ -301,16 +301,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         )
     }
 
-    private fun onErrorUpdateCart(isForCheckout: Boolean, observer: Int, throwable: Throwable) {
-        if (isForCheckout) {
-            _globalEvent.value = GlobalEvent(
-                    observer = observer,
-                    state = GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT,
-                    throwable = throwable
-            )
-        }
-    }
-
     private fun onSuccessUpdateCart(isForCheckout: Boolean, updateCartV2Data: UpdateCartV2Data, observer: Int) {
         if (isForCheckout) {
             if (updateCartV2Data.data.status) {
@@ -325,6 +315,16 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                         data = updateCartV2Data.data
                 )
             }
+        }
+    }
+
+    private fun onErrorUpdateCart(isForCheckout: Boolean, observer: Int, throwable: Throwable) {
+        if (isForCheckout) {
+            _globalEvent.value = GlobalEvent(
+                    observer = observer,
+                    state = GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT,
+                    throwable = throwable
+            )
         }
     }
 
