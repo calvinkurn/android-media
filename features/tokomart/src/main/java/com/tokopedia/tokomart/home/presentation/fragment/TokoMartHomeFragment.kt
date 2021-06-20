@@ -64,7 +64,6 @@ import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListD
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeCategoryGridViewHolder
-import com.tokopedia.tokomart.home.presentation.viewholder.HomeCategoryItemViewHolder
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokomart.home.presentation.viewmodel.TokoMartHomeViewModel
@@ -79,7 +78,6 @@ class TokoMartHomeFragment: Fragment(),
         HomeChooseAddressWidgetViewHolder.HomeChooseAddressWidgetListener,
         HomeTickerViewHolder.HomeTickerListener,
         HomeCategoryGridViewHolder.HomeCategoryGridListener,
-        HomeCategoryItemViewHolder.HomeCategoryItemListener,
         MiniCartWidgetListener,
         BannerComponentListener
 {
@@ -109,7 +107,6 @@ class TokoMartHomeFragment: Fragment(),
                 homeTickerListener = this,
                 homeChooseAddressWidgetListener = this,
                 homeCategoryGridlistener = this,
-                homeCategoryItemListener = this,
                 bannerComponentListener = this
             ),
             differ = TokoMartHomeListDiffer()
@@ -127,6 +124,7 @@ class TokoMartHomeFragment: Fragment(),
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
+    private var isFirstImpressionOnBanner = false
 
     private val homeMainToolbarHeight: Int
         get() = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.tokomart_default_toolbar_status_height)
@@ -187,7 +185,7 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
-        analytics.onClickBannerPromo(position, userSession.userId, channelGrid, channelModel)
+        analytics.onClickBannerPromo(position, userSession.userId, channelModel, channelGrid)
         context?.let {
             RouteManager.route(it, channelGrid.applink)
         }
@@ -197,10 +195,6 @@ class TokoMartHomeFragment: Fragment(),
         if(rvHome?.isComputingLayout == false) {
             adapter.removeHomeChooseAddressWidget()
         }
-    }
-
-    override fun onChooseAddressWidgetClicked() {
-        analytics.onClickChooseAddress()
     }
 
     override fun onCategoryRetried() {
@@ -229,7 +223,12 @@ class TokoMartHomeFragment: Fragment(),
     override fun onPromoAllClick(channelModel: ChannelModel) {}
 
     override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
-        analytics.onImpressBannerPromo(parentPosition, userSession.userId, channelModel)
+        if (!isFirstImpressionOnBanner) {
+            isFirstImpressionOnBanner = true
+        } else {
+            analytics.onImpressBannerPromo(userSession.userId, channelModel)
+            isFirstImpressionOnBanner = false
+        }
     }
 
     private fun initInjector() {
