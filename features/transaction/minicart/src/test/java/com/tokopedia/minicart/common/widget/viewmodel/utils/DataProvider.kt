@@ -7,6 +7,8 @@ import com.tokopedia.minicart.common.data.response.deletecart.DeleteCartGqlRespo
 import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
+import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartDataResponse
+import com.tokopedia.minicart.common.data.response.undodeletecart.UndoDeleteCartGqlResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
 
@@ -95,6 +97,11 @@ object DataProvider {
     fun provideDeleteFromCartSuccess(): RemoveFromCartData {
         val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/remove_from_cart_success"), DeleteCartGqlResponse::class.java)
         return json.removeFromCart
+    }
+
+    fun provideUndoDeleteFromCartSuccess(): UndoDeleteCartDataResponse {
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/undo_delete_cart_item_success"), UndoDeleteCartGqlResponse::class.java)
+        return json.undoDeleteCartDataResponse
     }
 
 }

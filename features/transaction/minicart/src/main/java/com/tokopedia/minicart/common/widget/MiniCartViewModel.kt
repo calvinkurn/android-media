@@ -73,6 +73,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         _miniCartSimplifiedData.value = miniCartSimplifiedData
     }
 
+    // Used for mocking lastDeletedProductItem value.
+    // Should only be called from unit test.
+    fun setLastDeleteProductItem(miniCartProductUiModel: MiniCartProductUiModel) {
+        lastDeletedProductItem = miniCartProductUiModel
+    }
 
     // Setter & Getter
 
@@ -242,8 +247,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun undoDeleteCartItem(isLastItem: Boolean) {
-        lastDeletedProductItem?.let { minicartProductUiModel ->
-            undoDeleteCartUseCase.setParams(minicartProductUiModel.cartId)
+        lastDeletedProductItem?.let { miniCartProductUiModel ->
+            undoDeleteCartUseCase.setParams(miniCartProductUiModel.cartId)
             undoDeleteCartUseCase.execute(
                     onSuccess = {
                         onSuccessUndoDeleteCartItem(it, isLastItem)
@@ -256,6 +261,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     private fun onSuccessUndoDeleteCartItem(undoDeleteCartDataResponse: UndoDeleteCartDataResponse, isLastItem: Boolean) {
+        lastDeletedProductItem = null
         _globalEvent.value = GlobalEvent(
                 state = GlobalEvent.STATE_SUCCESS_UNDO_DELETE_CART_ITEM,
                 data = UndoDeleteCartDomainModel(undoDeleteCartDataResponse, isLastItem)
