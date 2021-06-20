@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.pusher.camera.CameraType
 import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 import com.wmspanel.libstream.*
 import org.json.JSONObject
+import java.util.*
 
 
 /**
@@ -20,18 +21,20 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
 
     private var streamer: StreamerGL? = null
 
-    private var mLivePusherListener: PlayLivePusherListener? = null
-    private var mLivePusherState: PlayLivePusherState = PlayLivePusherState.Idle
-    private var mLivePusherConfig = PlayLivePusherConfig()
+    private var mListener: PlayLivePusherListener? = null
+    private var mState: PlayLivePusherState = PlayLivePusherState.Idle
+    private var mConfig = PlayLivePusherConfig()
     private var mHandler: Handler? = null
-    private var mStreamConditionerBase: BitrateAdapter? = null
+    private var mBitrateAdapter: BitrateAdapter? = null
+    private val mConnection = PlayLivePusherConnection()
+    private val mStatistic = PlayLivePusherStatistic()
 
     private var isPushStarted = false
     private var canSwitchCamera = false
 
-    private val mLivePusherConnection: PlayLivePusherConnection = PlayLivePusherConnection()
-
     private var mAvailableCameras = emptyList<CameraInfo>()
+
+    private var statisticUpdateTimer: Timer? = null
 
     private fun createStreamer(surfaceView: SurfaceAspectRatioView) {
         val context = surfaceView.context
@@ -60,13 +63,17 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
         val activeCamera = mAvailableCameras.firstOrNull { it.lensFacing == CameraType.Front } ?: mAvailableCameras.first()
         builder.setCameraId(activeCamera.cameraId)
 
-        val videoSize = CameraManager.getVideoSize(activeCamera) ?: mLivePusherConfig.getVideoSize()
+        val videoSize = CameraManager.getVideoSize(activeCamera) ?: mConfig.getVideoSize()
 
         // default config: h264, 2 sec. keyframe interval
         val videoConfig = VideoConfig()
-        videoConfig.bitRate = mLivePusherConfig.videoBitrate
-        videoConfig.videoSize = CameraManager.verifyResolution(videoConfig.type, Streamer.Size(videoSize.height, videoSize.width))
-        videoConfig.fps = mLivePusherConfig.fps
+        videoConfig.bitRate = mConfig.videoBitrate
+        videoConfig.videoSize = CameraManager.verifyResolution(
+            type = videoConfig.type,
+            videoSize = Streamer.Size(videoSize.height, videoSize.width),
+            defaultVideoSize = mConfig.getVideoSize()
+        )
+        videoConfig.fps = mConfig.fps
         builder.setVideoConfig(videoConfig)
 
         mAvailableCameras.forEach {
@@ -80,25 +87,31 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
         builder.setDisplayRotation(0)
         builder.setFullView(true)
 
-        mStreamConditionerBase = BitrateAdapter.newInstance(context, videoConfig.bitRate, activeCamera.fpsRanges)
+        mBitrateAdapter = BitrateAdapter.newInstance(context, videoConfig.bitRate.toLong(), activeCamera.fpsRanges)
 
         streamer = builder.build()
     }
 
+    override val connection: PlayLivePusherConnection
+        get() = mConnection
+
+    override val config: PlayLivePusherConfig
+        get() = mConfig
+
     override val state: PlayLivePusherState
-        get() = mLivePusherState
+        get() = mState
 
     override fun init(handler: Handler) {
         this.mHandler = handler
     }
 
     override fun prepare(config: PlayLivePusherConfig?) {
-        mLivePusherConfig = config ?: PlayLivePusherConfig()
-        configureStreamer(mLivePusherConfig)
+        mConfig = config ?: PlayLivePusherConfig()
+        configureStreamer(mConfig)
     }
 
     override fun setListener(listener: PlayLivePusherListener) {
-        mLivePusherListener = listener
+        mListener = listener
     }
 
     override fun startPreview(surfaceView: SurfaceAspectRatioView) {
@@ -120,17 +133,17 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
 
     override fun switchCamera() {
         if (!canSwitchCamera) return
-        mStreamConditionerBase?.pause()
+        mBitrateAdapter?.pause()
         streamer?.flip()
 
         val activeCamera = mAvailableCameras.firstOrNull { it.cameraId == streamer?.activeCameraId }
-        activeCamera?.let { mStreamConditionerBase?.setFpsRanges(it.fpsRanges) }
-        if (isPushStarted) mStreamConditionerBase?.resume()
+        activeCamera?.let { mBitrateAdapter?.setFpsRanges(it.fpsRanges) }
+        if (isPushStarted) mBitrateAdapter?.resume()
     }
 
     override fun start(url: String) {
         broadcastState(PlayLivePusherState.Connecting)
-        mLivePusherConnection.uri = url
+        mConnection.uri = url
         startStream()
     }
 
@@ -140,13 +153,15 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     }
 
     private fun startStream() {
-        mLivePusherConnection.connectionId = streamer?.createConnection(mLivePusherConnection)
-        streamer?.let { mStreamConditionerBase?.start(it, mLivePusherConnection.connectionId.orZero()) }
+        mConnection.connectionId = streamer?.createConnection(mConnection)
+        streamer?.let { mBitrateAdapter?.start(it, mConnection.connectionId.orZero()) }
+        startStatsJob()
     }
 
     private fun stopStream() {
-        mLivePusherConnection.connectionId?.let { id -> streamer?.releaseConnection(id) }
-        mStreamConditionerBase?.stop()
+        mConnection.connectionId?.let { id -> streamer?.releaseConnection(id) }
+        mBitrateAdapter?.stop()
+        cancelStatsJob()
     }
 
     override fun pause() {
@@ -175,18 +190,18 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
         info: JSONObject?
     ) {
         if (state == null) return
-        if (connectionId != mLivePusherConnection.connectionId) {
+        if (connectionId != mConnection.connectionId) {
             // ignore already released connection
             return
         }
-        val lastState = mLivePusherState
+        val lastState = mState
         when(state) {
             Streamer.CONNECTION_STATE.IDLE -> broadcastState(PlayLivePusherState.Idle)
             Streamer.CONNECTION_STATE.INITIALIZED,
-            Streamer.CONNECTION_STATE.CONNECTED,
             Streamer.CONNECTION_STATE.SETUP -> {
                 // ignored
             }
+            Streamer.CONNECTION_STATE.CONNECTED -> mStatistic.init(streamer, connectionId)
             Streamer.CONNECTION_STATE.RECORD -> {
                 when {
                     lastState.isError -> broadcastState(PlayLivePusherState.Recovered)
@@ -276,7 +291,27 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     }
 
     private fun broadcastState(state: PlayLivePusherState) {
-        mLivePusherState = state
-        mLivePusherListener?.onNewLivePusherState(state)
+        mState = state
+        mListener?.onNewLivePusherState(state)
+    }
+
+    private fun startStatsJob() {
+        cancelStatsJob()
+        statisticUpdateTimer = Timer()
+        statisticUpdateTimer?.schedule(object : TimerTask() {
+            override fun run() {
+                mHandler?.post {
+                    mStatistic.update()
+                    mListener?.onUpdateLivePusherStatistic(mStatistic)
+                }
+            }
+
+        }, 1000, 1000)
+    }
+
+    private fun cancelStatsJob() {
+        try {
+            statisticUpdateTimer?.cancel()
+        } catch (ignored: Exception) { }
     }
 }

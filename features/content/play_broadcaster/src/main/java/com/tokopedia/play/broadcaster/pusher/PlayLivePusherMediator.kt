@@ -22,6 +22,10 @@ class PlayLivePusherMediator(
 
             if (pusherState.isStopped) removeLastPauseMillis()
         }
+
+        override fun onUpdateLivePusherStatistic(pusherStatistic: PlayLivePusherStatistic) {
+            broadcastStatsUpdated(pusherStatistic)
+        }
     }
 
     init {
@@ -56,6 +60,10 @@ class PlayLivePusherMediator(
 
     private fun broadcastStateChanged(state: PlayLivePusherState) {
         mListeners.forEach { it.onLivePusherStateChanged(state) }
+    }
+
+    private fun broadcastStatsUpdated(stats: PlayLivePusherStatistic) {
+        mListeners.forEach { it.onLivePusherStatsUpdated(stats) }
     }
 
     private fun broadcastReachMaxPauseDuration() {

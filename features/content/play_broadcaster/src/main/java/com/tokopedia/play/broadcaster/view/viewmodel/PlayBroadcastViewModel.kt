@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import android.os.Handler
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
@@ -12,11 +13,14 @@ import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediator
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediatorListener
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.socket.PlayBroadcastSocket
 import com.tokopedia.play.broadcaster.socket.PlaySocketInfoListener
 import com.tokopedia.play.broadcaster.socket.PlaySocketType
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
 import com.tokopedia.play.broadcaster.util.error.isNetworkTrouble
@@ -86,7 +90,7 @@ class PlayBroadcastViewModel @Inject constructor(
         get() = _observableTotalLike
     val observableLiveDuration: LiveData<PlayTimerState>
         get() = _observableLiveDurationState
-    val observableLiveInfoState: LiveData<PlayLivePusherViewState>
+    val observableLivePusherState: LiveData<PlayLivePusherViewState>
         get() = _observableLivePusherState
     val observableChatList: LiveData<out List<PlayChatUiModel>>
         get() = _observableChatList
@@ -104,9 +108,12 @@ class PlayBroadcastViewModel @Inject constructor(
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
     val observableBroadcastSchedule = getCurrentSetupDataStore().getObservableSchedule()
-
     val shareContents: String
         get() = _observableShareInfo.value.orEmpty()
+    val observableLivePusherStatistic: LiveData<PlayLivePusherStatistic>
+        get() = _observableLivePusherStats
+    val observableLivePusherInfo: LiveData<PlayLiveInfoUiModel>
+        get() = _observableLivePusherInfo
 
     private val _observableConfigInfo = MutableLiveData<NetworkResult<ConfigurationUiModel>>()
     private val _observableChannelInfo = MutableLiveData<NetworkResult<ChannelInfoUiModel>>()
@@ -120,10 +127,11 @@ class PlayBroadcastViewModel @Inject constructor(
             chatList.lastOrNull()?.let { value = Event(it) }
         }
     }
-
     private val _observableLivePusherState = MutableLiveData<PlayLivePusherViewState>()
     private val _observableLiveDurationState = MutableLiveData<PlayTimerState>()
     private val _observableEvent = MutableLiveData<EventUiModel>()
+    private val _observableLivePusherStats = MutableLiveData<PlayLivePusherStatistic>()
+    private val _observableLivePusherInfo = MutableLiveData<PlayLiveInfoUiModel>()
 
     private val livePusherViewStateListener = object : PlayLivePusherViewStateListener {
 
@@ -146,6 +154,12 @@ class PlayBroadcastViewModel @Inject constructor(
     private val channelLivePusherStateListener = object : PlayChannelLivePusherStateListener {
         override fun onChannelStateChanged(channelStatusType: PlayChannelStatusType) {
             updateChannelStatus(channelStatusType)
+        }
+    }
+
+    private val livePusherViewStatsListener = object : PlayLivePusherMediatorListener {
+        override fun onLivePusherStatsUpdated(statistic: PlayLivePusherStatistic) {
+            sendLivePusherStats(statistic)
         }
     }
 
@@ -173,6 +187,7 @@ class PlayBroadcastViewModel @Inject constructor(
         _observableChatList.value = mutableListOf()
         livePusherMediator.addListener(livePusherViewStateListener)
         livePusherMediator.addListener(channelLivePusherStateListener)
+        if (GlobalConfig.DEBUG) livePusherMediator.addListener(livePusherViewStatsListener)
         countDownTimer.setListener(countDownTimerListener)
     }
 
@@ -181,6 +196,7 @@ class PlayBroadcastViewModel @Inject constructor(
         viewModelScope.cancel()
         livePusherMediator.removeListener(livePusherViewStateListener)
         livePusherMediator.removeListener(channelLivePusherStateListener)
+        if (GlobalConfig.DEBUG) livePusherMediator.removeListener(livePusherViewStatsListener)
         countDownTimer.destroy()
     }
 
@@ -331,6 +347,7 @@ class PlayBroadcastViewModel @Inject constructor(
         livePusherMediator.start(ingestUrl)
         if (withTimer) startLivePusherTimer()
         isLiveStarted = true
+        _observableLivePusherInfo.value = playBroadcastMapper.mapLiveInfo(livePusherMediator.connection, livePusherMediator.config)
     }
 
     fun reconnectLiveStream() {
@@ -386,6 +403,12 @@ class PlayBroadcastViewModel @Inject constructor(
     private fun sendLivePusherState(state: PlayLivePusherViewState) {
         viewModelScope.launch(dispatcher.main) {
             _observableLivePusherState.value = state
+        }
+    }
+
+    private fun sendLivePusherStats(stats: PlayLivePusherStatistic) {
+        viewModelScope.launch(dispatcher.main) {
+            _observableLivePusherStats.value = stats
         }
     }
 

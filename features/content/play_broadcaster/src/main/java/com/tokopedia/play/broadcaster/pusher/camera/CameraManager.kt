@@ -111,12 +111,12 @@ object CameraManager {
         return videoSize
     }
 
-    fun verifyResolution(type: String?, videoSize: Streamer.Size): Streamer.Size {
+    fun verifyResolution(type: String?, videoSize: Streamer.Size, defaultVideoSize: Streamer.Size): Streamer.Size {
         val info = selectCodec(type)
         val capabilities = info?.getCapabilitiesForType(type)
         val videoCapabilities = capabilities?.videoCapabilities
         if (videoCapabilities?.isSizeSupported(videoSize.width, videoSize.height) == true) {
-            return Streamer.Size(720, 1280)
+            return Streamer.Size(defaultVideoSize.width, defaultVideoSize.height)
         }
         return videoSize
     }

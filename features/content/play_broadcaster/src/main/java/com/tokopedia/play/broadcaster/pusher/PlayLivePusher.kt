@@ -11,6 +11,10 @@ interface PlayLivePusher {
 
     val state: PlayLivePusherState
 
+    val config: PlayLivePusherConfig
+
+    val connection: PlayLivePusherConnection
+
     fun init(handler: Handler)
 
     fun prepare(config: PlayLivePusherConfig? = null)

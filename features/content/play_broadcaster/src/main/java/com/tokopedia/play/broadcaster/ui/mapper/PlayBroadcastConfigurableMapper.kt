@@ -2,7 +2,10 @@ package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConnection
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -115,5 +118,13 @@ class PlayBroadcastConfigurableMapper(
     override fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel {
         return if (!isMock) uiMapper.mapBannedEvent(bannedEvent, event)
         else mockMapper.mapBannedEvent(bannedEvent, event)
+    }
+
+    override fun mapLiveInfo(
+        connection: PlayLivePusherConnection,
+        config: PlayLivePusherConfig
+    ): PlayLiveInfoUiModel {
+        return if (!isMock) uiMapper.mapLiveInfo(connection, config)
+        else mockMapper.mapLiveInfo(connection, config)
     }
 }

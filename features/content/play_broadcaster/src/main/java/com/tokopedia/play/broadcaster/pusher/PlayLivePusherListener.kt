@@ -7,4 +7,6 @@ package com.tokopedia.play.broadcaster.pusher
 interface PlayLivePusherListener {
 
     fun onNewLivePusherState(pusherState: PlayLivePusherState)
+
+    fun onUpdateLivePusherStatistic(pusherStatistic: PlayLivePusherStatistic) { }
 }

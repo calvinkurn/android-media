@@ -295,7 +295,7 @@ class PlayBeforeLiveFragment @Inject constructor(
     }
 
     private fun observeLiveInfo() {
-        parentViewModel.observableLiveInfoState.observe(viewLifecycleOwner, Observer(::handleLiveInfoState))
+        parentViewModel.observableLivePusherState.observe(viewLifecycleOwner, Observer(::handleLiveInfoState))
     }
 
     private fun observeBroadcastSchedule() {

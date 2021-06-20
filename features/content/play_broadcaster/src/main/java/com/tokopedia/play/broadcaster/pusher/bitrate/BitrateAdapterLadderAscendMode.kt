@@ -23,12 +23,12 @@ class BitrateAdapterLadderAscendMode(context: Context) : BitrateAdapter(context)
 
     private var mStep = 0
 
-    override fun start(streamer: Streamer, bitrate: Int, connectionId: Int) {
+    override fun start(streamer: Streamer, bitrate: Long, connectionId: Int) {
         mFullBitrate = bitrate
         mStep = 2
-        val startBitrate = (bitrate * BANDWIDTH_STEPS[mStep]).roundToInt()
+        val startBitrate = (bitrate * BANDWIDTH_STEPS[mStep]).roundToLong()
         super.start(streamer, startBitrate, connectionId)
-        changeBitrateQuiet(startBitrate.toLong())
+        changeBitrateQuiet(startBitrate)
     }
 
     override fun check(audioLost: Long, videoLost: Long) {

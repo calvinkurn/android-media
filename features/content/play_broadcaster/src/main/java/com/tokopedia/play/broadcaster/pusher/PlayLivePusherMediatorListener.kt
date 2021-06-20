@@ -8,6 +8,8 @@ interface PlayLivePusherMediatorListener {
 
     fun onLivePusherStateChanged(state: PlayLivePusherState) { }
 
+    fun onLivePusherStatsUpdated(statistic: PlayLivePusherStatistic) { }
+
     fun onReachMaxPauseDuration() { }
 
     fun onShouldContinueLiveStreaming() { }

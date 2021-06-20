@@ -18,7 +18,7 @@ abstract class BitrateAdapter(context: Context) {
 
         fun newInstance(
             context: Context,
-            bitrate: Int,
+            bitrate: Long,
             fpsRanges: Array<FpsRange?>
         ): BitrateAdapter {
             return BitrateAdapterLadderAscendMode(context).apply {
@@ -29,24 +29,29 @@ abstract class BitrateAdapter(context: Context) {
     }
 
     protected var mContext: Context = context
-    protected var mFullBitrate: Int = 0
+    protected var mFullBitrate: Long = 0
     protected var mLossHistory: Vector<LossHistory> = Vector()
     protected var mBitrateHistory: Vector<BitrateHistory> = Vector()
     protected var mMaxFps: Double = 30.0
 
-    private var mSettingsBitrate = 0
-    private var mCurrentBitrate: Int = 0
+    private var mSettingsBitrate: Long = 0
+    private var mCurrentBitrate: Long = 0
     private var mCurrentFps = 0.0
     private var mCurrentRange: FpsRange = FpsRange(30, 30)
     private var mFpsRanges: Array<FpsRange?> = emptyArray()
     private var mStreamer: Streamer? = null
     private var mConnectionId: Int? = null
     private var mCheckTimer: Timer? = null
+    private var mListener: Listener? = null
 
     inner class LossHistory(var ts: Long, var audio: Long, var video: Long)
     inner class BitrateHistory(var ts: Long, var bitrate: Long)
 
-    fun setBitrate(bitrate: Int) {
+    fun setListener(listener: Listener) {
+        this.mListener = listener
+    }
+
+    fun setBitrate(bitrate: Long) {
         this.mSettingsBitrate = bitrate
     }
 
@@ -58,7 +63,7 @@ abstract class BitrateAdapter(context: Context) {
         start(streamer, mSettingsBitrate, connectionId)
     }
 
-    open fun start(streamer: Streamer, bitrate: Int, connectionId: Int) {
+    open fun start(streamer: Streamer, bitrate: Long, connectionId: Int) {
         mStreamer = streamer
         mConnectionId = connectionId
         mLossHistory.clear()
@@ -101,7 +106,7 @@ abstract class BitrateAdapter(context: Context) {
     }
 
     fun resume() {
-        if (mCurrentBitrate == 0) {
+        if (mCurrentBitrate == 0L) {
             return
         }
         mCurrentBitrate = mFullBitrate
@@ -109,14 +114,14 @@ abstract class BitrateAdapter(context: Context) {
         mCurrentRange = FpsRange(30, 30)
         mCurrentFps = mMaxFps
         runTask()
-        mStreamer?.changeBitRate(mFullBitrate)
+        mStreamer?.changeBitRate(mFullBitrate.toInt())
     }
 
     fun setConnection(connecitonId: Int) {
         mConnectionId = connecitonId
     }
 
-    fun getBitrate(): Int = mCurrentBitrate
+    fun getCurrentBitrate(): Long = mCurrentBitrate
 
     protected open fun check(audioLost: Long, videoLost: Long) {}
     protected fun countLostForInterval(interval: Long): Long {
@@ -137,7 +142,8 @@ abstract class BitrateAdapter(context: Context) {
         mBitrateHistory.add(BitrateHistory(curTime, newBitrate))
         updateFps(newBitrate)
         mStreamer?.changeBitRate(newBitrate.toInt())
-        mCurrentBitrate = newBitrate.toInt()
+        mCurrentBitrate = newBitrate
+        mListener?.onChangeBitrate(mCurrentBitrate)
     }
 
     protected fun changeBitrateQuiet(newBitrate: Long) {
@@ -192,5 +198,9 @@ abstract class BitrateAdapter(context: Context) {
             }
         }
         return range
+    }
+
+    interface Listener {
+        fun onChangeBitrate(lastBitrate: Long)
     }
 }

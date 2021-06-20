@@ -2,7 +2,10 @@ package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConnection
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -60,4 +63,6 @@ interface PlayBroadcastMapper {
     fun mapFreezeEvent(freezeEvent: Freeze, event: EventUiModel?): EventUiModel
 
     fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel
+
+    fun mapLiveInfo(connection: PlayLivePusherConnection, config: PlayLivePusherConfig): PlayLiveInfoUiModel
 }

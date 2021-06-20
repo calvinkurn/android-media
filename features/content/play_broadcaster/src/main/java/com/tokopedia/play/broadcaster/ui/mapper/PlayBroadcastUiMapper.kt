@@ -10,10 +10,13 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConnection
 import com.tokopedia.play.broadcaster.type.EtalaseType
 import com.tokopedia.play.broadcaster.type.OutOfStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play.broadcaster.util.extension.convertMillisToMinuteSecond
@@ -260,4 +263,18 @@ class PlayBroadcastUiMapper(
             message = bannedEvent.reason,
             buttonTitle = bannedEvent.btnText
     )
+
+    override fun mapLiveInfo(
+        connection: PlayLivePusherConnection,
+        config: PlayLivePusherConfig
+    ): PlayLiveInfoUiModel {
+        return PlayLiveInfoUiModel(
+            connection.uri,
+            config.videoWidth,
+            config.videoHeight,
+            config.fps,
+            config.videoBitrate
+        )
+    }
+
 }
