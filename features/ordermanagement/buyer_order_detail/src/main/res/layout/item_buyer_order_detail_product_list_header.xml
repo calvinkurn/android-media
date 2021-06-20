@@ -52,7 +52,7 @@
         app:typographyType="heading_6"
         tools:text="Rockerpower Shopz" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <ImageView
         android:id="@+id/icBuyerOrderDetailSeeShopBadge"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
