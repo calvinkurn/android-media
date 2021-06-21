@@ -1,5 +1,6 @@
 package com.tokopedia.gm.common.domain.interactor
 
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.data.source.cloud.model.DeactivationPowerMerchantResponse
 import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -30,10 +31,14 @@ class DeactivatePMUseCase @Inject constructor(
     }
 
     companion object {
-        private const val QUEST_KEY = "quest_data"
+        private const val KEY_QUEST = "quest"
+        private const val KEY_SOURCE = "source"
+        private const val KEY_CURRENT_SHOP_TIRE = "current_shop_tier"
+        private const val KEY_NEXT_SHOP_TIRE = "next_shop_tier"
+        private const val KEY_AUTO_EXTEND = "autoExtend"
         private val QUERY = """
-            mutation deactivatePowerMerchant(${'$'}quest_data: [questData]) {
-              goldTurnOffSubscription(autoExtend: false, quest: ${'$'}quest_data) {
+            mutation deactivatePowerMerchant(${'$'}source: String!, ${'$'}quest: [questData], ${'$'}current_shop_tier: Int, ${'$'}next_shop_tier: Int) {
+              goldTurnOffSubscription(source: ${'$'}source, quest: ${'$'}quest, current_shop_tier: ${'$'}current_shop_tier, next_shop_tier: ${'$'}next_shop_tier, autoExtend: false) {
                 header {
                   error_code
                 }
@@ -44,9 +49,16 @@ class DeactivatePMUseCase @Inject constructor(
             }
         """.trimIndent()
 
-        fun createRequestParam(questionData: MutableList<PMCancellationQuestionnaireAnswerModel>): RequestParams {
+        fun createRequestParam(
+                questionData: MutableList<PMCancellationQuestionnaireAnswerModel>,
+                currentShopTire: Int, nextShopTire: Int
+        ): RequestParams {
             return RequestParams.create().apply {
-                putObject(QUEST_KEY, questionData)
+                putString(KEY_SOURCE, PMConstant.PM_SETTING_INFO_SOURCE)
+                putInt(KEY_CURRENT_SHOP_TIRE, currentShopTire)
+                putInt(KEY_NEXT_SHOP_TIRE, nextShopTire)
+                putBoolean(KEY_AUTO_EXTEND, false)
+                putObject(KEY_QUEST, questionData)
             }
         }
     }

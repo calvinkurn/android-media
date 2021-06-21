@@ -5,7 +5,6 @@ import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFac
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.TickerShopScoreUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoErrorUiModel
@@ -16,21 +15,7 @@ class SellerMenuAdapter(
     factory: OtherMenuAdapterTypeFactory
 ) : BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(factory) {
 
-    fun showShopScoreTicker(tickerShopScoreUiModel: TickerShopScoreUiModel) {
-        if (visitables.getOrNull(firstIndex) !is TickerShopScoreUiModel) {
-            visitables.add(0, tickerShopScoreUiModel)
-            notifyItemInserted(0)
-        }
-    }
-
-    fun hideShopScoreTicker() {
-        if (visitables.getOrNull(firstIndex) is TickerShopScoreUiModel) {
-            visitables.removeAt(0)
-            notifyItemRemoved(0)
-        }
-    }
-
-    fun showShopInfo(shopInfo: SettingShopInfoUiModel, shopScore: Int, shopAge: Int) {
+    fun showShopInfo(shopInfo: SettingShopInfoUiModel, shopScore: Long, shopAge: Long) {
         findShopInfoIndex()?.let { index ->
             val shopInfoUiModel = ShopInfoUiModel(shopInfo, shopScore, shopAge)
             updateItemAt(index, shopInfoUiModel)

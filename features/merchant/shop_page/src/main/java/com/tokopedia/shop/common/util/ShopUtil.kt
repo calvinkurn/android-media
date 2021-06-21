@@ -37,7 +37,7 @@ object ShopUtil {
         ServerLogger.log(priority, tag, extraMessage)
     }
 
-    fun logShopPageP1BuyerFlowAlerting(
+    fun logShopPageP2BuyerFlowAlerting(
             tag: String,
             functionName: String,
             liveDataName: String = "",
@@ -58,7 +58,7 @@ object ShopUtil {
                 REASON_KEY to errorMessage,
                 DATA_KEY to stackTrace
         )
-        logTimberWarning(Priority.P1, tag, extraParam)
+        logTimberWarning(Priority.P2, tag, extraParam)
     }
 
     fun isExceptionIgnored(throwable: Throwable) = throwable is UnknownHostException || throwable is SocketTimeoutException

@@ -11,4 +11,36 @@
         <attr name="buttonColor" format="color" />
         <attr name="navbarElevation" format="dimension"/>
     </declare-styleable>
+
+    <declare-styleable name="LabelView">
+        <attr name="nav_lv_image" format="reference" />
+        <attr name="nav_lv_image_width" format="dimension" />
+        <attr name="nav_lv_image_height" format="dimension" />
+        <attr name="nav_lv_image_margin_right" format="dimension" />
+        <attr name="nav_lv_title" format="string" />
+        <attr name="nav_lv_badge" format="string" />
+        <attr name="nav_lv_title_text_size" format="dimension" />
+        <attr name="nav_lv_title_color" format="color" />
+        <attr name="nav_lv_title_min_width" format="dimension" />
+        <attr name="nav_lv_title_text_style">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+        <attr name="nav_lv_sub_title" format="string" />
+        <attr name="nav_lv_sub_title_text_size" format="dimension" />
+        <attr name="nav_lv_sub_title_color" format="color" />
+        <attr name="nav_lv_content" format="string" />
+        <attr name="nav_lv_content_color" format="color" />
+        <attr name="nav_lv_content_text_size" format="dimension" />
+        <attr name="nav_lv_content_max_lines" format="integer" />
+        <attr name="nav_lv_content_text_style">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+        <!-- value from 0 to 1 -->
+        <attr name="nav_lv_content_max_width_percentage" format="float" />
+        <attr name="nav_lv_show_arrow" format="boolean"/>
+    </declare-styleable>
 </resources>

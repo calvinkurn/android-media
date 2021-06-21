@@ -56,13 +56,13 @@ class FlightCancellationPassengerViewHolder(itemView: View,
                 passengerModel.firstName, passengerModel.lastName)
 
         when (passengerModel.type) {
-            FlightBookingPassenger.ADULT -> {
+            FlightBookingPassenger.ADULT.value -> {
                 tvPassengerType.setText(R.string.flightbooking_price_adult_label)
             }
-            FlightBookingPassenger.CHILDREN -> {
+            FlightBookingPassenger.CHILDREN.value -> {
                 tvPassengerType.setText(R.string.flightbooking_price_child_label)
             }
-            FlightBookingPassenger.INFANT -> {
+            FlightBookingPassenger.INFANT.value -> {
                 tvPassengerType.setText(R.string.flightbooking_price_infant_label)
             }
             else -> {

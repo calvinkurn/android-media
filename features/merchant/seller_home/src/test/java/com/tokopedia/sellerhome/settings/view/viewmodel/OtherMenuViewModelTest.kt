@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.settings.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.gm.common.constant.END_PERIOD
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
@@ -8,7 +9,9 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
+import com.tokopedia.seller.menu.common.domain.entity.UserShopInfoResponse
 import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopBadgeUiModel
@@ -89,8 +92,9 @@ class OtherMenuViewModelTest {
 
     @Test
     fun `success get all setting shop info data`() = runBlocking {
+        val userShopInfoWrapper = UserShopInfoWrapper(shopType = ShopType.OfficialStore)
         val partialShopInfoSuccess = PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo(
-                ShopType.OfficialStore,
+                userShopInfoWrapper,
                 anyLong(),
                 anyString()
         )
@@ -250,7 +254,7 @@ class OtherMenuViewModelTest {
 
     @Test
     fun `getShopPeriodType should success`() {
-        val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = TRANSITION_PERIOD)
+        val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = END_PERIOD)
         coEvery {
             getShopInfoPeriodUseCase.executeOnBackground()
         } returns shopInfoPeriodUiModel

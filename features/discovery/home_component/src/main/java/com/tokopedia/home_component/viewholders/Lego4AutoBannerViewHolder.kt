@@ -11,6 +11,7 @@ import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.Lego4AutoBannerListener
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.viewholders.adapter.Lego4AutoBannerAdapter
 import com.tokopedia.home_component.visitable.Lego4AutoDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -37,11 +38,20 @@ class Lego4AutoBannerViewHolder (itemView: View,
     override fun bind(element: Lego4AutoDataModel) {
         isCacheData = element.isCache
         setHeaderComponent(element)
+        setChannelDivider(element)
         initView(element)
     }
 
     override fun bind(element: Lego4AutoDataModel, payloads: MutableList<Any>) {
         bind(element)
+    }
+
+    private fun setChannelDivider(element: Lego4AutoDataModel) {
+        ChannelWidgetUtil.validateHomeComponentDivider(
+            channelModel = element.channelModel,
+            dividerTop = itemView.home_component_divider_header,
+            dividerBottom = itemView.home_component_divider_footer
+        )
     }
 
     private fun initView(element: Lego4AutoDataModel) {

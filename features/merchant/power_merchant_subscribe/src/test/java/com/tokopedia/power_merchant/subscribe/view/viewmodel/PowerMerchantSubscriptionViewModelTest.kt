@@ -1,32 +1,31 @@
 package com.tokopedia.power_merchant.subscribe.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.gm.common.data.source.local.model.PMActivationStatusUiModel
+import com.tokopedia.gm.common.data.source.local.model.PMGradeBenefitInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMGradeWithBenefitsUiModel
-import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
-import com.tokopedia.gm.common.data.source.local.model.PMStatusAndShopInfoUiModel
-import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
-import com.tokopedia.gm.common.domain.interactor.GetPMStatusAndShopInfoUseCase
+import com.tokopedia.gm.common.domain.interactor.GetPMGradeBenefitInfoUseCase
+import com.tokopedia.gm.common.domain.interactor.GetPMGradeBenefitListUseCase
 import com.tokopedia.gm.common.domain.interactor.PowerMerchantActivateUseCase
-import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMActiveDataUseCase
-import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMGradeBenefitAndShopInfoUseCase
-import com.tokopedia.power_merchant.subscribe.view.model.PMActiveDataUiModel
-import com.tokopedia.power_merchant.subscribe.view.model.PMGradeBenefitAndShopInfoUiModel
-import com.tokopedia.power_merchant.subscribe.view_old.util.PowerMerchantRemoteConfig
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.*
 
 /**
  * Created By @ilhamsuaib on 21/04/21
@@ -42,19 +41,16 @@ class PowerMerchantSubscriptionViewModelTest {
     val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
-    lateinit var getPMStatusAndShopInfo: GetPMStatusAndShopInfoUseCase
+    lateinit var getPMGradeBenefitListUseCase: GetPMGradeBenefitListUseCase
 
     @RelaxedMockK
-    lateinit var getPMGradeWithBenefitAndShopInfoUseCase: GetPMGradeBenefitAndShopInfoUseCase
+    lateinit var getPMGradeBenefitInfoUseCase: GetPMGradeBenefitInfoUseCase
 
     @RelaxedMockK
-    lateinit var getPMActiveDataUseCase: GetPMActiveDataUseCase
+    lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
     lateinit var activatePMUseCase: PowerMerchantActivateUseCase
-
-    @RelaxedMockK
-    lateinit var remoteConfig: PowerMerchantRemoteConfig
 
     private lateinit var viewModel: PowerMerchantSubscriptionViewModel
 
@@ -63,111 +59,77 @@ class PowerMerchantSubscriptionViewModelTest {
         MockKAnnotations.init(this)
 
         viewModel = PowerMerchantSubscriptionViewModel(
-                Lazy { getPMStatusAndShopInfo },
-                Lazy { getPMGradeWithBenefitAndShopInfoUseCase },
-                Lazy { getPMActiveDataUseCase },
+                Lazy { getPMGradeBenefitListUseCase },
+                Lazy { getPMGradeBenefitInfoUseCase },
                 Lazy { activatePMUseCase },
-                Lazy { remoteConfig },
+                Lazy { userSession },
                 CoroutineTestDispatchersProvider
         )
     }
 
     @Test
-    fun `when get PM status and shop info should set result success`() = coroutineTestRule.runBlockingTest {
-        val data = PMStatusAndShopInfoUiModel(PMStatusUiModel(), PMShopInfoUiModel(), true)
-        coEvery {
-            remoteConfig.isFreeShippingEnabled()
-        } returns true
+    fun `when get PM grade benefit should set result success`() = coroutineTestRule.runBlockingTest {
+        val shopId = anyString()
+        val source = anyString()
+        val cacheStrategy = mockk<GraphqlCacheStrategy>(relaxed = true)
+        getPMGradeBenefitListUseCase.setCacheStrategy(cacheStrategy)
+        getPMGradeBenefitListUseCase.params = GetPMGradeBenefitListUseCase.createParams(shopId, source)
+
+        val result = emptyList<PMGradeWithBenefitsUiModel>()
 
         coEvery {
-            getPMStatusAndShopInfo.executeOnBackground()
-        } returns data
+            getPMGradeBenefitListUseCase.executeOnBackground()
+        } returns result
 
-        viewModel.getPmStatusAndShopInfo()
-
-        coEvery {
-            remoteConfig.isFreeShippingEnabled()
-        }
+        viewModel.getPmRegistrationData(anyBoolean())
 
         coVerify {
-            getPMStatusAndShopInfo.executeOnBackground()
+            getPMGradeBenefitListUseCase.executeOnBackground()
         }
 
-        val expected = Success(data)
+        val expected = Success(result)
 
-        viewModel.pmStatusAndShopInfo.verifySuccessEquals(expected)
+        viewModel.pmGradeBenefitInfo.verifySuccessEquals(expected)
     }
 
     @Test
-    fun `when get PM status and shop info should set result failed`() = coroutineTestRule.runBlockingTest {
+    fun `when get PM grade benefit should set result failed`() = coroutineTestRule.runBlockingTest {
+        val shopId = anyString()
+        val source = anyString()
+        val cacheStrategy = mockk<GraphqlCacheStrategy>(relaxed = true)
+        getPMGradeBenefitListUseCase.setCacheStrategy(cacheStrategy)
+        getPMGradeBenefitListUseCase.params = GetPMGradeBenefitListUseCase.createParams(shopId, source)
+
         val throwable = Throwable()
+
         coEvery {
-            getPMStatusAndShopInfo.executeOnBackground()
+            getPMGradeBenefitListUseCase.executeOnBackground()
         } throws throwable
 
-        viewModel.getPmStatusAndShopInfo()
-
-        coEvery {
-            remoteConfig.isFreeShippingEnabled()
-        }
+        viewModel.getPmRegistrationData(anyBoolean())
 
         coVerify {
-            getPMStatusAndShopInfo.executeOnBackground()
+            getPMGradeBenefitListUseCase.executeOnBackground()
         }
 
         val expected = Fail(throwable)
 
-        viewModel.pmStatusAndShopInfo.verifyErrorEquals(expected)
-    }
-
-    @Test
-    fun `when get PM registration data should set result success`() = coroutineTestRule.runBlockingTest {
-        val data = PMGradeBenefitAndShopInfoUiModel(PMShopInfoUiModel(), listOf(PMGradeWithBenefitsUiModel()))
-        coEvery {
-            getPMGradeWithBenefitAndShopInfoUseCase.executeOnBackground()
-        } returns data
-
-        viewModel.getPmRegistrationData()
-
-        coVerify {
-            getPMGradeWithBenefitAndShopInfoUseCase.executeOnBackground()
-        }
-
-        val expected = Success(data)
-
-        viewModel.shopInfoAndPMGradeBenefits.verifySuccessEquals(expected)
-    }
-
-    @Test
-    fun `when get PM registration data should set result failed`() = coroutineTestRule.runBlockingTest {
-        val error = Throwable()
-        coEvery {
-            getPMGradeWithBenefitAndShopInfoUseCase.executeOnBackground()
-        } throws error
-
-        viewModel.getPmRegistrationData()
-
-        coVerify {
-            getPMGradeWithBenefitAndShopInfoUseCase.executeOnBackground()
-        }
-
-        val expected = Fail(error)
-
-        viewModel.shopInfoAndPMGradeBenefits.verifyErrorEquals(expected)
+        viewModel.pmGradeBenefitInfo.verifyErrorEquals(expected)
     }
 
     @Test
     fun `when get PM active state data should set result success`() = coroutineTestRule.runBlockingTest {
-        val data = PMActiveDataUiModel()
+        val data = PMGradeBenefitInfoUiModel()
+        val pmProTire = 1
 
         coEvery {
-            getPMActiveDataUseCase.executeOnBackground()
+            getPMGradeBenefitInfoUseCase.executeOnBackground()
         } returns data
 
-        viewModel.getPmActiveStateData()
+        viewModel.getPmActiveStateData(pmProTire)
 
         coVerify {
-            getPMActiveDataUseCase.executeOnBackground()
+            getPMGradeBenefitInfoUseCase.executeOnBackground()
         }
 
         val expected = Success(data)
@@ -179,13 +141,13 @@ class PowerMerchantSubscriptionViewModelTest {
     fun `when get PM active state data should set result failed`() = coroutineTestRule.runBlockingTest {
         val error = Throwable()
         coEvery {
-            getPMActiveDataUseCase.executeOnBackground()
+            getPMGradeBenefitInfoUseCase.executeOnBackground()
         } throws error
 
-        viewModel.getPmActiveStateData()
+        viewModel.getPmActiveStateData(1)
 
         coVerify {
-            getPMActiveDataUseCase.executeOnBackground()
+            getPMGradeBenefitInfoUseCase.executeOnBackground()
         }
 
         val expected = Fail(error)
@@ -195,13 +157,18 @@ class PowerMerchantSubscriptionViewModelTest {
 
     @Test
     fun `when submit PM activation should set result success`() = coroutineTestRule.runBlockingTest {
-        val result = true
+        val result = PMActivationStatusUiModel()
+        val currentShopTire = anyInt()
+        val nextShopTire = anyInt()
+        val source = anyString()
+
+        activatePMUseCase.params = PowerMerchantActivateUseCase.createActivationParam(currentShopTire, nextShopTire, source)
 
         coEvery {
             activatePMUseCase.executeOnBackground()
         } returns result
 
-        viewModel.submitPMActivation()
+        viewModel.submitPMActivation(currentShopTire, nextShopTire)
 
         coVerify {
             activatePMUseCase.executeOnBackground()
@@ -215,11 +182,17 @@ class PowerMerchantSubscriptionViewModelTest {
     @Test
     fun `when submit PM activation should set result failed`() = coroutineTestRule.runBlockingTest {
         val error = Throwable()
+        val currentShopTire = anyInt()
+        val nextShopTire = anyInt()
+        val source = anyString()
+
+        activatePMUseCase.params = PowerMerchantActivateUseCase.createActivationParam(currentShopTire, nextShopTire, source)
+
         coEvery {
             activatePMUseCase.executeOnBackground()
         } throws error
 
-        viewModel.submitPMActivation()
+        viewModel.submitPMActivation(currentShopTire, nextShopTire)
 
         coVerify {
             activatePMUseCase.executeOnBackground()
@@ -232,12 +205,14 @@ class PowerMerchantSubscriptionViewModelTest {
 
     @Test
     fun `when submit cancel PM deactivation should set result success`() = coroutineTestRule.runBlockingTest {
-        val result = true
+        val result = PMActivationStatusUiModel()
+        val currentShopTire = anyInt()
+
         coEvery {
             activatePMUseCase.executeOnBackground()
         } returns result
 
-        viewModel.cancelPmDeactivationSubmission()
+        viewModel.cancelPmDeactivationSubmission(currentShopTire)
 
         coVerify {
             activatePMUseCase.executeOnBackground()
@@ -251,11 +226,13 @@ class PowerMerchantSubscriptionViewModelTest {
     @Test
     fun `when submit cancel PM deactivation should set result failed`() = coroutineTestRule.runBlockingTest {
         val error = Throwable()
+        val currentShopTire = anyInt()
+
         coEvery {
             activatePMUseCase.executeOnBackground()
         } throws error
 
-        viewModel.cancelPmDeactivationSubmission()
+        viewModel.cancelPmDeactivationSubmission(currentShopTire)
 
         coVerify {
             activatePMUseCase.executeOnBackground()

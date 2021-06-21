@@ -13,6 +13,7 @@ import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
 import com.tokopedia.product.manage.common.feature.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
 import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingResponse
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo
@@ -65,7 +66,6 @@ open class SellerMenuViewModelTestFixture {
                 getShopInfoPeriodUseCase,
                 getProductListMetaUseCase,
                 getSellerMenuNotifications,
-                getShopScoreUseCase,
                 getShopScoreLevelUseCase,
                 userSession,
                 coroutineTestRule.dispatchers
@@ -131,8 +131,9 @@ open class SellerMenuViewModelTestFixture {
             shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",
             shopType: PowerMerchantStatus = PowerMerchantStatus.Active
     ): Pair<PartialSettingResponse, PartialSettingResponse> {
+        val userShopInfoWrapper = UserShopInfoWrapper(shopType = shopType)
         val shopInfoResponse = PartialShopSettingSuccessInfo(
-                shopType,
+                userShopInfoWrapper,
                 totalFollowers,
                 shopBadgeUrl
         )
@@ -152,12 +153,12 @@ open class SellerMenuViewModelTestFixture {
             isAutoTopUp: Boolean = true,
             shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",
             shopType: PowerMerchantStatus = PowerMerchantStatus.Active,
-            shopScore: Int = 70,
-            shopAge: Int = 65
+            shopScore: Long = 70,
+            shopAge: Long = 65
     ): ShopInfoUiModel {
-
+        val userShopInfoWrapper = UserShopInfoWrapper(shopType = shopType)
         val shopInfoResponse = PartialShopSettingSuccessInfo(
-                shopType,
+                userShopInfoWrapper,
                 totalFollowers,
                 shopBadgeUrl
         )

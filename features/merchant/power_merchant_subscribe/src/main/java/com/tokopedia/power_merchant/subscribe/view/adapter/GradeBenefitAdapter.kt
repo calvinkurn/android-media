@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gm.common.data.source.local.model.PMGradeBenefitUiModel
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
 import kotlinx.android.synthetic.main.item_pm_grade_benefit.view.*
 
@@ -32,10 +32,16 @@ class GradeBenefitAdapter(
     override fun getItemCount(): Int = benefits.size
 
     inner class GradeBenefitViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
         fun bind(benefit: PMGradeBenefitUiModel) {
             with(itemView) {
-                benefit.iconUrl?.let {
-                    icPmBenefitItem.loadImageWithoutPlaceholder(it)
+                val drawableResIcon = benefit.drawableResIcon
+                if (drawableResIcon != null) {
+                    icPmBenefitItem.loadImage(drawableResIcon)
+                } else {
+                    benefit.iconUrl?.let {
+                        icPmBenefitItem.loadImage(it)
+                    }
                 }
                 tvPmBenefitItem.text = benefit.benefitName.parseAsHtml()
             }

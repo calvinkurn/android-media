@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:typographyType="body_3"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/rb_option"
@@ -50,7 +50,7 @@
             android:id="@+id/divider_sublabel"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/Neutral_N75"
+            android:background="@color/Unify_N75"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_below="@id/sublabel_option"/>
 

@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/unify_space_12"
-    android:paddingBottom="@dimen/unify_space_12">
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/horLinePmSeparator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        android:background="@drawable/shape_pm_dashed_line_separator" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPmExpandableSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAllCaps="true"
-        app:typographyType="heading_5"
+        android:paddingTop="@dimen/layout_lvl1"
+        android:paddingBottom="@dimen/layout_lvl1"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
         tools:text="Pengaturan Produk" />
-</RelativeLayout>
+</LinearLayout>

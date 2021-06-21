@@ -75,10 +75,6 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
         }
     }
 
-    fun clickMoreInfoTickerOldShopScore() {
-        sendShopScoreItemEvent(categoryName = COMMUNICATION_PERIOD_OLD_SHOP_SCORE, actionName = CLICK_LEARN_MORE)
-    }
-
     fun clickHereTickerPenalty() {
         sendShopScoreItemEvent(TRANSITION_PERIOD_SHOP_SCORE, CLICK_SEE_DETAIL_PENALTY)
     }
