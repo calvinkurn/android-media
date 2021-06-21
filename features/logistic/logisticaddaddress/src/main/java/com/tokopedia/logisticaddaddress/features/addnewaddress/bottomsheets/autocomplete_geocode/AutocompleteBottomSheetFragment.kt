@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -101,6 +102,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetA
 
         val linearLayoutManager = LinearLayoutManager(
                 context, LinearLayoutManager.VERTICAL, false)
+        binding.root.setBackgroundColor(ContextCompat.getColor(binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_N75))
         binding.rvPoiList.layoutManager = linearLayoutManager
         binding.rvPoiList.adapter = adapter
         setViewListener()
