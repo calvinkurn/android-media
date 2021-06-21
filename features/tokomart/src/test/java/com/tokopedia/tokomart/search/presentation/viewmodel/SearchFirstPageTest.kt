@@ -7,9 +7,9 @@ import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KE
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokomart.search.domain.model.SearchModel
-import com.tokopedia.tokomart.search.utils.SearchTracking.Action.GENERAL_SEARCH
-import com.tokopedia.tokomart.search.utils.SearchTracking.Category.TOKONOW_TOP_NAV
-import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.GENERAL_SEARCH
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Category.TOKONOW_TOP_NAV
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
 import com.tokopedia.tokomart.searchcategory.assertBannerDataView
 import com.tokopedia.tokomart.searchcategory.assertCategoryFilterDataView
 import com.tokopedia.tokomart.searchcategory.assertChooseAddressDataView

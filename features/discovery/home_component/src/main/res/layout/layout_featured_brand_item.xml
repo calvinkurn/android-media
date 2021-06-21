@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_lego_auto"
+    android:foreground="?selectableItemBackground"
+    tools:background="@color/Unify_N700_32">
+
+    <ImageView
+        android:id="@+id/item_logo"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        android:contentDescription="@string/content_desc_featured_brand_icon"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/item_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textColor="@color/Unify_N0"
+        android:layout_marginTop="@dimen/dp_8"
+        app:typographyType="body_3"
+        app:layout_constraintBottom_toBottomOf="@+id/item_frame_image"
+        app:layout_constraintLeft_toLeftOf="@+id/item_logo"
+        app:layout_constraintRight_toLeftOf="@+id/item_frame_image"
+        tools:text="test"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/item_frame_image"
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="@dimen/dp_80"
+        android:scaleType="fitCenter"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardElevation="0dp"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/item_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/content_desc_featured_brand_image"/>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

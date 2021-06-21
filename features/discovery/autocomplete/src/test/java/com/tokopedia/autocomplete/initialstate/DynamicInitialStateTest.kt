@@ -80,7 +80,7 @@ internal class DynamicInitialStateTest: InitialStatePresenterTestFixtures() {
         `Given refresh popular search API will return error`()
         `When presenter refresh dynamic initial state data`(ID_NEW_SECTION)
         `Then verify popularSearch API is called`()
-        `Then verify initial state view behavior for failed refresh`()
+        `Then verify initial state view behavior for failed refresh dynamic`()
     }
 
     private fun `Given refresh popular search API will return error`() {

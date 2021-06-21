@@ -93,13 +93,13 @@ class ItemDetailPerformanceViewHolder(view: View,
 
     private fun Typography.setTextColorUnifyParameterDetail(colorValueDetailPerformance: String) {
         when (colorValueDetailPerformance) {
-            ShopScoreColorUtils.RED -> {
+            ShopScoreColorUtils.RED_DMS -> {
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
             }
-            ShopScoreColorUtils.GREY -> {
+            ShopScoreColorUtils.GREY_DMS -> {
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             }
-            ShopScoreColorUtils.GREEN -> {
+            ShopScoreColorUtils.GREEN_DMS -> {
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             }
         }

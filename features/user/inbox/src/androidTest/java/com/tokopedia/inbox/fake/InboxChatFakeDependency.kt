@@ -11,11 +11,17 @@ import javax.inject.Inject
 /**
  * All chatlist fake dependency on new inbox
  */
-class InboxChatFakeDependency @Inject constructor(
-        val userSession: FakeUserSession,
-        val ws: FakeTopchatWebSocket,
-        val getChatList: FakeGetChatListMessageUseCase
-) {
+class InboxChatFakeDependency @Inject constructor() {
+
+    @Inject
+    lateinit var userSession: FakeUserSession
+
+    @Inject
+    lateinit var ws: FakeTopchatWebSocket
+
+    @Inject
+    lateinit var getChatList: FakeGetChatListMessageUseCase
+
 
     var getChatList_EmptyBuyerResponse = ChatListPojo()
     var getChatList_BuyerSize3Response = ChatListPojo()

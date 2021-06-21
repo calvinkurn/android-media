@@ -59,6 +59,12 @@ query dynamicHomeChannel($type: String, $location: String) {
                     type
                     url
                 }
+                back_color
+                productImageUrl
+                benefit{
+                    type
+                    value
+                }
             }
             banner {
                 id
