@@ -13,7 +13,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics
 import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListChildUiModel
-import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListChildUiModel.*
+import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListChildUiModel.CategoryType
 import com.tokopedia.tokomart.categorylist.presentation.uimodel.CategoryListItemUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -67,7 +67,7 @@ class TokoNowCategoryList : LinearLayout {
             }
 
             setOnClickListener {
-                analytics.onClickLevelTwoCategory(categoryLevel1.name, categoryL2.name)
+                analytics.onClickLevelTwoCategory(categoryLevel1.id, categoryL2.id)
                 RouteManager.route(context, categoryL2.appLink)
                 listener.onClickCategoryItem()
             }
@@ -85,7 +85,7 @@ class TokoNowCategoryList : LinearLayout {
             textTitle.setTextColor(ContextCompat.getColor(context, categoryL2.textColorId))
 
             setOnClickListener {
-                analytics.onClickLihatSemuaCategory(categoryLevel1.name)
+                analytics.onClickLihatSemuaCategory(categoryLevel1.id)
                 RouteManager.route(context, categoryL2.appLink)
                 listener.onClickCategoryItem()
             }

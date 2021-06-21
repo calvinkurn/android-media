@@ -153,9 +153,9 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify() {
         }
         accordionCategoryList?.onItemClick = { position, isExpanded ->
             if (isExpanded) {
-                analytics.onExpandLeveOneCategory(categoryList[position].name)
+                analytics.onExpandLeveOneCategory(categoryList[position].id)
             } else {
-                analytics.onCollapseLevelOneCategory(categoryList[position].name)
+                analytics.onCollapseLevelOneCategory(categoryList[position].id)
             }
         }
     }
