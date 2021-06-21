@@ -54,7 +54,7 @@ class AtcVariantViewModel @Inject constructor(
         private val updateCartUseCase: UpdateCartUseCase
 ) : ViewModel() {
 
-    //This livedata is only for access variant,cartRedirection, and warehouse locally in viewmodel
+    //This livedata is only for access variant, cartRedirection, and warehouse locally in viewmodel
     private var aggregatorData: ProductVariantAggregatorUiData? = null
     private var minicartData: MutableMap<String, MiniCartItem>? = null
     private var localQuantityData: MutableMap<String, Int> = mutableMapOf()
@@ -385,7 +385,10 @@ class AtcVariantViewModel @Inject constructor(
     private fun getUpdateCartUseCase(params: MiniCartItem, updatedQuantity: Int, isTokoNow: Boolean) {
         viewModelScope.launchCatchError(block = {
             val copyOfMiniCartItem = params.copy(quantity = updatedQuantity)
-            updateCartUseCase.setParams(listOf(copyOfMiniCartItem))
+            updateCartUseCase.setParams(
+                    miniCartItemList = listOf(copyOfMiniCartItem),
+                    source = UpdateCartUseCase.VALUE_SOURCE_PDP_UPDATE_QTY_NOTES
+            )
             val result = withContext(dispatcher.io) {
                 updateCartUseCase.executeOnBackground()
             }
