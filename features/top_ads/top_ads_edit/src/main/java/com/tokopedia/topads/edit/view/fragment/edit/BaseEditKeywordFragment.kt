@@ -123,7 +123,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         view_pager.disableScroll(true)
     }
 
-    private fun getViewPagerAdapter(): KeywordEditPagerAdapter? {
+    private fun getViewPagerAdapter(): KeywordEditPagerAdapter {
         val list: ArrayList<Fragment> = arrayListOf()
         list.add(EditKeywordsFragment())
         list.add(EditNegativeKeywordsFragment())
@@ -191,7 +191,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             }
         }
         strategies.clear()
-        if (autobid_selection.text == "Otomatis") {
+        if (autobid_selection?.text == "Otomatis") {
             strategies.add("auto_bid")
         }
         dataMap[POSITIVE_CREATE] = addedKeywordsPos

@@ -9,6 +9,7 @@ import com.tokopedia.gm.common.constant.PMShopGrade
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetExpandableUiModel
@@ -62,7 +63,7 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
         } else {
             context.getString(R.string.pm_update_info_pm_pro_description_text)
         }
-        val clickableText = context.getString(R.string.pm_update_info_description_clickable_text)
+        val clickableText = context.getString(R.string.pm_see_more)
         val termDescription = PowerMerchantSpannableUtil.createSpannableString(
                 text = updateInfoDescription.parseAsHtml(),
                 highlightText = clickableText,
@@ -79,16 +80,16 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
         tvPmCurrentGrade.text = grade.asCamelCase()
         when {
             PMShopGrade.EXPERT.equals(grade, true) -> {
-                tvPmCurrentGrade.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_T500))
-                imgPmGradeBg.loadImageDrawable(R.drawable.bg_pm_benefit_package_expert)
+                tvPmCurrentGrade.setTextColor(context.getResColor(R.color.pm_static_t500_dms))
+                imgPmGradeBg.loadImage(R.drawable.bg_pm_benefit_package_expert)
             }
             PMShopGrade.ULTIMATE.equals(grade, true) -> {
-                tvPmCurrentGrade.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Y400))
-                imgPmGradeBg.loadImageDrawable(R.drawable.bg_pm_benefit_package_ultimate)
+                tvPmCurrentGrade.setTextColor(context.getResColor(R.color.pm_static_y400_dms))
+                imgPmGradeBg.loadImage(R.drawable.bg_pm_benefit_package_ultimate)
             }
             else -> { //PMShopGrade.ADVANCED
-                tvPmCurrentGrade.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                imgPmGradeBg.loadImageDrawable(R.drawable.bg_pm_benefit_package_advanced)
+                tvPmCurrentGrade.setTextColor(context.getResColor(R.color.pm_static_n700_68_dms))
+                imgPmGradeBg.loadImage(R.drawable.bg_pm_benefit_package_advanced)
             }
         }
     }

@@ -8,6 +8,8 @@ import com.tokopedia.rechargeocr.RechargeCameraUtil
 import com.tokopedia.rechargeocr.data.RechargeOcrResponse
 import com.tokopedia.rechargeocr.data.RechargeUploadImageResponse
 import com.tokopedia.rechargeocr.data.ResultOcr
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
@@ -63,7 +65,8 @@ class RechargeUploadImageViewModelTest {
         rechargeUploadImageViewModel.uploadImageRecharge("", "")
 
         //then
-        val actualData = rechargeUploadImageViewModel.resultDataOcr.value
+        assert(rechargeUploadImageViewModel.resultDataOcr.value is Success)
+        val actualData = (rechargeUploadImageViewModel.resultDataOcr.value as Success).data
         assertNotNull(actualData)
         assertEquals(expectedData, actualData)
     }
@@ -79,7 +82,8 @@ class RechargeUploadImageViewModelTest {
         rechargeUploadImageViewModel.uploadImageRecharge("", "")
 
         //then
-        val actualData = rechargeUploadImageViewModel.errorActionOcr.value
+        assert(rechargeUploadImageViewModel.resultDataOcr.value is Fail)
+        val actualData = (rechargeUploadImageViewModel.resultDataOcr.value as Fail).throwable.message
         assertNotNull(actualData)
         assertEquals(errorThrowable.message, actualData)
     }
@@ -111,7 +115,8 @@ class RechargeUploadImageViewModelTest {
         rechargeUploadImageViewModel.uploadImageRecharge("", "")
 
         // then the result should be success
-        val actualData = rechargeUploadImageViewModel.errorActionOcr.value
+        assert(rechargeUploadImageViewModel.resultDataOcr.value is Fail)
+        val actualData = (rechargeUploadImageViewModel.resultDataOcr.value as Fail).throwable.message
         assertNotNull(actualData)
         assertEquals(errorMessage, actualData)
     }

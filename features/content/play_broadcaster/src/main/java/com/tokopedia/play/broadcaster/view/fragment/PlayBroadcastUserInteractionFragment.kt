@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -91,7 +91,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        parentViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
+        parentViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -103,22 +103,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         initView(view)
         setupView()
         setupInsets(view)
+        setupObserve()
 
         if (arguments?.getBoolean(KEY_START_COUNTDOWN) == true) {
             startCountDown()
         }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        observeLiveInfo()
-        observeLiveDuration()
-        observeTotalViews()
-        observeTotalLikes()
-        observeChatList()
-        observeMetrics()
-        observeEvent()
     }
 
     override fun onStart() {
@@ -173,6 +162,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 v.parent.requestLayout()
             }
         }
+    }
+
+    private fun setupObserve() {
+        observeLiveInfo()
+        observeLiveDuration()
+        observeTotalViews()
+        observeTotalLikes()
+        observeChatList()
+        observeMetrics()
+        observeEvent()
     }
 
     private fun startCountDown() {

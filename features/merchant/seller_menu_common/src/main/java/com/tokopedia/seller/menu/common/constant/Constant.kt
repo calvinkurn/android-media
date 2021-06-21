@@ -10,4 +10,6 @@ object Constant {
 
     const val D_DAY_PERIOD_TYPE_PM_PRO = "charging_period_pm_pro"
     const val COMMUNICATION_PERIOD_PM_PRO = "communication_period_pm_pro"
+
+    const val TRANSACTION_RM_SUCCESS = "tx_success"
 }

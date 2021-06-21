@@ -21,8 +21,8 @@ import java.util.*
 
 object ShopScoreUtils {
 
-    fun getLevelBarWhite(level: Int): Int {
-        return when(level) {
+    fun getLevelBarWhite(level: Long): Int {
+        return when (level) {
             ShopScoreConstant.SHOP_SCORE_LEVEL_ONE -> R.drawable.ic_one_level_white
             ShopScoreConstant.SHOP_SCORE_LEVEL_TWO -> R.drawable.ic_two_level_white
             ShopScoreConstant.SHOP_SCORE_LEVEL_THREE -> R.drawable.ic_three_level_white
@@ -42,7 +42,7 @@ fun GlobalError.setTypeGlobalError(throwable: Throwable?) {
 
 fun Typography.setTextMakeHyperlink(text: String, onClick: () -> Unit) {
     val htmlString = HtmlLinkHelper(context, text)
-    this.movementMethod =  LinkMovementMethod.getInstance()
+    this.movementMethod = LinkMovementMethod.getInstance()
     this.highlightColor = Color.TRANSPARENT
     this.text = htmlString.spannedString
     htmlString.urlList.getOrNull(0)?.setOnClickListener {
@@ -70,6 +70,27 @@ fun format(timeMillis: Long, pattern: String, locale: Locale = getLocale()): Str
 
 fun getLocale(): Locale {
     return Locale("id")
+}
+
+fun getPastDaysPenaltyTimeStamp(): Date {
+    val date = Calendar.getInstance(getLocale())
+    val totalDays = ShopScoreConstant.FOUR_WEEKS + getNPastDaysPenalty()
+    date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) - totalDays)
+    return date.time
+}
+
+fun getNPastDaysPenalty(): Int {
+    val calendar = Calendar.getInstance(getLocale())
+    calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - ShopScoreConstant.FOUR_WEEKS)
+    return when (calendar.get(Calendar.DAY_OF_WEEK)) {
+        Calendar.SATURDAY -> 6
+        Calendar.FRIDAY -> 5
+        Calendar.THURSDAY -> 4
+        Calendar.WEDNESDAY -> 3
+        Calendar.TUESDAY -> 2
+        Calendar.MONDAY -> 1
+        else -> 0
+    }
 }
 
 fun getNPastMonthTimeStamp(monthBefore: Int): Date {

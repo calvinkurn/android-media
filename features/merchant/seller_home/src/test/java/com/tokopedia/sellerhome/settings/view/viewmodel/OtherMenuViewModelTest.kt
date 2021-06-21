@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.settings.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.gm.common.constant.END_PERIOD
 import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
@@ -253,7 +254,7 @@ class OtherMenuViewModelTest {
 
     @Test
     fun `getShopPeriodType should success`() {
-        val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = TRANSITION_PERIOD)
+        val shopInfoPeriodUiModel = ShopInfoPeriodUiModel(periodType = END_PERIOD)
         coEvery {
             getShopInfoPeriodUseCase.executeOnBackground()
         } returns shopInfoPeriodUiModel

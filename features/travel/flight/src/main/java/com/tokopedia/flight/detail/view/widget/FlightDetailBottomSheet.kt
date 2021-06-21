@@ -9,9 +9,9 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.detail.view.fragmentnew.FlightDetailFacilityFragment
-import com.tokopedia.flight.detail.view.fragmentnew.FlightDetailFragment
-import com.tokopedia.flight.detail.view.fragmentnew.FlightDetailPriceFragment
+import com.tokopedia.flight.detail.view.fragment.FlightDetailFacilityFragment
+import com.tokopedia.flight.detail.view.fragment.FlightDetailFragment
+import com.tokopedia.flight.detail.view.fragment.FlightDetailPriceFragment
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_flight_detail.view.*

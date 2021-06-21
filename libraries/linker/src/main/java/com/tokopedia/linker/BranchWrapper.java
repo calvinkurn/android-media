@@ -522,8 +522,13 @@ public class BranchWrapper implements WrapperInterface {
     private void checkBranchLinkUTMParams(LinkerDeeplinkRequest linkerDeeplinkRequest) {
         APP_OPEN_FROM_BRANCH_LINK = false;
         Activity activity = ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity();
-        if (activity != null && activity.getIntent().getData() != null && activity.getIntent().getData().toString().contains(LinkerConstants.BRANCH_LINK_DOMAIN)) {
-            APP_OPEN_FROM_BRANCH_LINK = true;
+        if (activity != null && activity.getIntent().getData() != null){
+            String intentDataStr = activity.getIntent().getData().toString();
+            if(intentDataStr.contains(LinkerConstants.BRANCH_LINK_DOMAIN_1) ||
+                    intentDataStr.contains(LinkerConstants.BRANCH_LINK_DOMAIN_2) ||
+                    intentDataStr.contains(LinkerConstants.BRANCH_LINK_DOMAIN_3)) {
+                APP_OPEN_FROM_BRANCH_LINK = true;
+            }
         }
     }
 
@@ -544,6 +549,7 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     private boolean isSkipUtmEvent(Context context) {
+        if(isFirstOpen(context)) return false;
         if (isBranchUtmOnlyBranchLinkActivated(context) && !APP_OPEN_FROM_BRANCH_LINK) {
             return true;
         }

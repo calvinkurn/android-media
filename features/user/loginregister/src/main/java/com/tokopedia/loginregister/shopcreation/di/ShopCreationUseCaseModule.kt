@@ -19,10 +19,9 @@ class ShopCreationUseCaseModule {
     @ShopCreationScope
     @Provides
     fun provideRegisterCheckUseCase(
-            @Named(ShopCreationQueryConstant.MUTATION_REGISTER_CHECK) query: String,
             graphqlRepository: GraphqlRepository,
             dispatcherProvider: CoroutineDispatchers
-    ): RegisterCheckUseCase = RegisterCheckUseCase(query, graphqlRepository, dispatcherProvider)
+    ): RegisterCheckUseCase = RegisterCheckUseCase(graphqlRepository, dispatcherProvider)
 
     @ShopCreationScope
     @Provides

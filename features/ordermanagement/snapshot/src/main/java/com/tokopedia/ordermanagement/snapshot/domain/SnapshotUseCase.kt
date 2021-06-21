@@ -40,13 +40,13 @@ class SnapshotUseCase @Inject constructor(private val gqlRepository: GraphqlRepo
                   product_price_formatted
                   product_total_price_formatted
                   product_weight_formatted
-                  product_total_weight_formatted
                   shop_summary{
                     user_id
                     shop_name
                     shop_id
                     shop_domain
                     logo
+                    badge_url
                   }
                   product_additional_data{
                     create_time
