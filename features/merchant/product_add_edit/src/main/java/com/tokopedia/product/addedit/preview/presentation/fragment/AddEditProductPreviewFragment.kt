@@ -311,6 +311,7 @@ class AddEditProductPreviewFragment :
             photoItemTouchHelper = ItemTouchHelper(photoItemTouchHelperCallback)
             photoItemTouchHelper?.attachToRecyclerView(it)
         }
+        productPhotosView?.show()
         addProductPhotoTipsLayout = view.findViewById(R.id.add_product_photo_tips_layout)
         addEditProductPhotoButton = view.findViewById(R.id.tv_start_add_edit_product_photo)
 
@@ -883,23 +884,9 @@ class AddEditProductPreviewFragment :
 
     private fun displayAddModeDetail(productInputModel: ProductInputModel) {
         doneButton?.show()
-        enablePhotoEdit()
         enableDetailEdit()
         showProductPhotoPreview(productInputModel)
         showProductDetailPreview(productInputModel)
-    }
-
-    private fun displayEditMode() {
-        toolbar?.headerTitle = getString(R.string.label_title_edit_product)
-        doneButton?.show()
-
-        enablePhotoEdit()
-        enableDetailEdit()
-        enableDescriptionEdit()
-        enableVariantEdit()
-        enableShipmentEdit()
-        enablePromotionEdit()
-        enableStatusEdit()
     }
 
     private fun enablePhotoEdit() {
@@ -921,7 +908,7 @@ class AddEditProductPreviewFragment :
         context?.let {
             addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductDescriptionButton?.text = getString(R.string.action_change)
-            addEditProductDescriptionButton?.show()
+            addEditProductDescriptionButton?.animateExpand()
         }
     }
 
@@ -934,16 +921,20 @@ class AddEditProductPreviewFragment :
         context?.let {
             addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductShipmentButton?.text = getString(R.string.action_change)
-            addEditProductShipmentButton?.show()
+            addEditProductShipmentButton?.animateExpand()
         }
     }
 
     private fun enablePromotionEdit() {
-        editProductPromotionLayout?.showWithCondition(GlobalConfig.isSellerApp())
+        if (GlobalConfig.isSellerApp()) {
+            editProductPromotionLayout?.animateExpand()
+        } else {
+            editProductPromotionLayout?.animateCollapse()
+        }
     }
 
     private fun enableStatusEdit() {
-        editProductStatusLayout?.show()
+        editProductStatusLayout?.animateExpand()
     }
 
     private fun disableShipmentEdit() {
@@ -959,7 +950,7 @@ class AddEditProductPreviewFragment :
         context?.let {
             if (addEditProductDescriptionButton?.text != getString(R.string.action_change)) {
                 addEditProductDescriptionButton?.text = getString(R.string.action_add)
-                addEditProductDescriptionButton?.show()
+                addEditProductDescriptionButton?.animateExpand()
             }
         }
     }
@@ -967,7 +958,8 @@ class AddEditProductPreviewFragment :
     private fun observeIsEditingStatus() {
         viewModel.isEditing.observe(viewLifecycleOwner, Observer {
             if (it) {
-                displayEditMode()
+                toolbar?.headerTitle = getString(R.string.label_title_edit_product)
+                doneButton?.show()
             } else {
                 stopPerformanceMonitoring()
             }
@@ -1029,13 +1021,15 @@ class AddEditProductPreviewFragment :
         viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
             showProductPhotoPreview(it)
             showProductDetailPreview(it)
+            showEmptyVariantState(it.variantInputModel.products.isEmpty())
+            enableDescriptionEdit()
+            enableShipmentEdit()
+            enablePromotionEdit()
             updateProductStatusSwitch(it)
-            showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
-            if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
-                displayEditMode()
-            }
+
             stopRenderPerformanceMonitoring()
             stopPerformanceMonitoring()
+
             //check whether productInputModel has value from savedInstanceState
             if (productInputModel != null) {
                 viewModel.productInputModel.value = productInputModel
@@ -1046,6 +1040,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun updateProductStatusSwitch(productInputModel: ProductInputModel) {
+        enableStatusEdit()
         productStatusSwitch?.isChecked = (productInputModel.detailInputModel.status == STATUS_ACTIVE)
     }
 
@@ -1245,15 +1240,17 @@ class AddEditProductPreviewFragment :
             if (urlOrPath.startsWith(HTTP_PREFIX)) productInputModel.detailInputModel.pictureList.getOrNull(pictureIndex++)?.urlThumbnail.orEmpty()
             else urlOrPath
         }
+        enablePhotoEdit()
         productPhotoAdapter?.setProductPhotoPaths(imageUrlOrPathList.toMutableList())
     }
 
     private fun showProductDetailPreview(productInputModel: ProductInputModel) {
         val detailInputModel = productInputModel.detailInputModel
+        enableDetailEdit()
+        productDetailPreviewLayout?.animateExpand()
         productNameView?.text = detailInputModel.productName
         productPriceView?.text = "Rp " + InputPriceUtil.formatProductPriceInput(detailInputModel.price.toString())
         productStockView?.text = detailInputModel.stock.toString()
-        productDetailPreviewLayout?.show()
     }
 
     private fun showEmptyVariantState(isVariantEmpty: Boolean) {
@@ -1264,6 +1261,7 @@ class AddEditProductPreviewFragment :
             addEditProductVariantButton?.text = getString(R.string.action_change)
             addProductVariantTipsLayout?.hide()
         }
+        enableVariantEdit()
     }
 
     private fun showProductStatus(productData: Product) {
