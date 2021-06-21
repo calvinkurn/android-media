@@ -1264,11 +1264,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun observeUpdateCart() {
         viewModel.updateCartLiveData.observe(viewLifecycleOwner) {
-            it.doSuccessOrFail({
-                view?.showToasterSuccess(it.data)
-            }) {
-                view?.showToasterError(it.message
-                        ?: "", ctaText = getString(com.tokopedia.design.R.string.oke))
+            it.doSuccessOrFail({ success ->
+                view?.showToasterSuccess(success.data)
+            }) { throwable ->
+                view?.showToasterError(
+                        throwable.message ?: "",
+                        ctaText = getString(com.tokopedia.design.R.string.oke)
+                )
+                logException(throwable)
             }
         }
     }
@@ -1299,6 +1302,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 }
             }, {
                 pdpUiUpdater?.removeComponent(ProductDetailConstant.KEY_TOP_ADS)
+                logException(it)
             })
         }
     }
@@ -1317,7 +1321,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 pdpUiUpdater?.updateDiscussionData(it.data.discussionMostHelpful)
                 updateUi()
             }, {
-                // No Op
+                logException(it)
             })
         }
     }
@@ -1592,6 +1596,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 setupShopFavoriteToaster(it.data.second)
             }, {
                 onFailFavoriteShop(it)
+                logException(it)
             })
         }
     }
@@ -1609,6 +1614,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 onSuccessWarehouseProduct()
             }, {
                 onErrorWarehouseProduct(it)
+                logException(it)
             })
         }
     }
@@ -1619,6 +1625,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 onSuccessMoveToEtalase()
             }, {
                 onErrorMoveToEtalase(it)
+                logException(it)
             })
         }
     }
@@ -1643,6 +1650,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             }, {
                 pdpUiUpdater?.removeComponent(it.message ?: "")
                 updateUi()
+                logException(it)
             })
         }
 
@@ -1951,18 +1959,16 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun logException(t: Throwable) {
-        try {
-            if (!BuildConfig.DEBUG) {
-                val errorMessage = String.format(
-                        getString(R.string.on_error_p1_string_builder),
-                        viewModel.userSessionInterface.userId,
-                        viewModel.userSessionInterface.email,
-                        t.message
-                )
-                FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage))
-            }
-        } catch (ex: IllegalStateException) {
-            ex.printStackTrace()
+        if (!BuildConfig.DEBUG) {
+            val errorMessage = String.format(
+                    getString(R.string.on_error_p1_string_builder),
+                    viewModel.userSessionInterface.userId,
+                    viewModel.userSessionInterface.email,
+                    t.message
+            )
+            FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage, t))
+        } else {
+            t.printStackTrace()
         }
     }
 
@@ -3339,6 +3345,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 viewModel.updateNotifyMeData()
             }, {
                 onFailNotifyMe(it)
+                logException(it)
             })
         }
     }

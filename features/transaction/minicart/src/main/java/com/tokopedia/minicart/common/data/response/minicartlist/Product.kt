@@ -33,8 +33,22 @@ data class Product(
         val productMinOrder: Int = 0,
         @SerializedName("product_max_order")
         val productMaxOrder: Int = 0,
+        @SerializedName("product_invenage_value")
+        val productInvenageValue: Int = 0,
+        @SerializedName("product_switch_invenage")
+        val productSwitchInvenage: Int = 0,
         @SerializedName("parent_id")
         val parentId: String = "",
         @SerializedName("wholesale_price")
-        val wholesalePrice: List<WholesalePrice> = emptyList()
+        val wholesalePrice: List<WholesalePrice> = emptyList(),
+        @SerializedName("campaign_id")
+        val campaignId: String = "",
+        @SerializedName("warehouse_id")
+        val warehouseId: String = "",
+        @SerializedName("category_id")
+        val categoryId: String = "",
+        @SerializedName("category")
+        val category: String = "",
+        @SerializedName("product_tracker_data")
+        val productTrackerData: ProductTrackerData = ProductTrackerData(),
 )

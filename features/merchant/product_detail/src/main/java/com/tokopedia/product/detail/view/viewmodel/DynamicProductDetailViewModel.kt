@@ -298,7 +298,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return flow {
             val copyOfMiniCartItem = request.copy(quantity = quantity)
 
-            updateCartUseCase.get().setParams(listOf(copyOfMiniCartItem))
+            updateCartUseCase.get().setParams(
+                    miniCartItemList = listOf(copyOfMiniCartItem),
+                    source = UpdateCartUseCase.VALUE_SOURCE_PDP_UPDATE_QTY_NOTES
+            )
             val result = updateCartUseCase.get().executeOnBackground()
 
             if (result.error.isNotEmpty()) {
