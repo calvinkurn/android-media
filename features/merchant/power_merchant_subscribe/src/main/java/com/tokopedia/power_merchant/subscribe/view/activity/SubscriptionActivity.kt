@@ -1,5 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.view.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
@@ -11,13 +13,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.gm.common.constant.KYCStatusId
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
-import com.tokopedia.gm.common.constant.PeriodType
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
@@ -44,6 +46,7 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_pm_subsription.*
 import javax.inject.Inject
@@ -57,6 +60,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     companion object {
         private const val PM_TAB_INDEX = 0
         private const val PM_PRO_TAB_INDEX = 1
+        private const val REQUEST_LOGIN = 1313
     }
 
     @Inject
@@ -90,17 +94,37 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         initPerformanceMonitoring()
+        super.onCreate(savedInstanceState)
         initInjector()
         switchPMToWebView()
         setContentView(R.layout.activity_pm_subsription)
-        window.decorView.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
-        fetchPmBasicInfo(true)
+        if (userSession.isLoggedIn) {
+            fetchPmBasicInfo(true)
+        } else {
+            val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+            startActivityForResult(intent, REQUEST_LOGIN)
+        }
         setupView()
         observePmBasicInfo()
         observeShopModerationStatus()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_LOGIN -> handleAfterLogin()
+        }
+    }
+
+    private fun handleAfterLogin() {
+        if (userSession.isLoggedIn) {
+            fetchPmBasicInfo(true)
+        } else {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
     }
 
     override fun getComponent(): PowerMerchantSubscribeComponent {
@@ -232,6 +256,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     }
 
     private fun setupView() {
+        window.decorView.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
         setSupportActionBar(toolbarPmSubscription)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setWhiteStatusBar()
@@ -412,8 +437,10 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     }
 
     private fun initPerformanceMonitoring() {
-        performanceMonitoring = PMPerformanceMonitoring()
-        performanceMonitoring?.initPerformanceMonitoring()
+        if (UserSession(this).isLoggedIn) {
+            performanceMonitoring = PMPerformanceMonitoring()
+            performanceMonitoring?.initPerformanceMonitoring()
+        }
     }
 
     private fun startNetworkPerformanceMonitoring() {

@@ -170,24 +170,24 @@ class SuggestionFragment :
         this.suggestionViewUpdateListener = suggestionViewUpdateListener
     }
 
-    override fun trackEventClickKeyword(eventLabel: String) {
-        AutocompleteTracking.eventClickKeyword(eventLabel)
+    override fun trackEventClickKeyword(eventLabel: String, dimension90: String) {
+        AutocompleteTracking.eventClickKeyword(eventLabel, dimension90)
     }
 
-    override fun trackEventClickCurated(eventLabel: String, campaignCode: String) {
-        AutocompleteTracking.eventClickCurated(eventLabel, campaignCode)
+    override fun trackEventClickCurated(eventLabel: String, campaignCode: String, dimension90: String) {
+        AutocompleteTracking.eventClickCurated(eventLabel, campaignCode, dimension90)
     }
 
-    override fun trackEventClickShop(eventLabel: String) {
-        AutocompleteTracking.eventClickShop(eventLabel)
+    override fun trackEventClickShop(eventLabel: String, dimension90: String) {
+        AutocompleteTracking.eventClickShop(eventLabel, dimension90)
     }
 
     override fun trackEventClickProfile(eventLabel: String) {
         AutocompleteTracking.eventClickProfile(eventLabel)
     }
 
-    override fun trackEventClickRecentKeyword(eventLabel: String) {
-        AutocompleteTracking.eventClickRecentKeyword(eventLabel)
+    override fun trackEventClickRecentKeyword(eventLabel: String, dimension90: String) {
+        AutocompleteTracking.eventClickRecentKeyword(eventLabel, dimension90)
     }
 
     override fun onTopShopCardClicked(topShopData: SuggestionTopShopCardDataView) {
@@ -206,12 +206,17 @@ class SuggestionFragment :
         AutocompleteTracking.eventClickTopShopSeeMore(eventLabel)
     }
 
-    override fun trackEventClickLocalKeyword(eventLabel: String, userId: String) {
-        AutocompleteTracking.eventClickLocalKeyword(eventLabel, userId)
+    override fun trackEventClickLocalKeyword(eventLabel: String, userId: String, dimension90: String) {
+        AutocompleteTracking.eventClickLocalKeyword(eventLabel, userId, dimension90)
     }
 
-    override fun trackEventClickGlobalKeyword(eventLabel: String, userId: String) {
-        AutocompleteTracking.eventClickGlobalKeyword(eventLabel, userId)
+    override fun trackEventClickGlobalKeyword(eventLabel: String, userId: String, dimension90: String) {
+        AutocompleteTracking.eventClickGlobalKeyword(eventLabel, userId, dimension90)
+    }
+
+    override fun trackEventClickProductLine(item: BaseSuggestionDataView, eventLabel: String, userId: String) {
+        val productDataLayer = item.getProductLineAsObjectDataLayer()
+        AutocompleteTracking.eventClickSuggestionProductLine(productDataLayer, eventLabel, userId)
     }
 
     override val chooseAddressData: LocalCacheModel

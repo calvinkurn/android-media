@@ -9,9 +9,9 @@ interface InitialStateItemClickListener {
 
     fun onRefreshPopularSearch(featureId: String)
 
-    fun onItemClicked(applink: String, webUrl: String)
+    fun onProductLineClicked(item: BaseItemInitialStateSearch)
 
-    fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
+    fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch)
 
     fun onRecentSearchSeeMoreClicked()
 
@@ -20,4 +20,6 @@ interface InitialStateItemClickListener {
     fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch)
 
     fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView)
+
+    fun onRecentViewClicked(item: BaseItemInitialStateSearch)
 }
