@@ -13,7 +13,6 @@ import android.widget.AutoCompleteTextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment
@@ -107,13 +106,13 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
 
         context?.let {
             travelContactArrayAdapter = TravelContactArrayAdapter(it, R.layout.layout_travel_passenger_autocompletetv, arrayListOf(), this)
-            (til_contact_name.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
+            (til_contact_name.mEditText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
 
-            (til_contact_name.editText as AutoCompleteTextView).setOnItemClickListener { _, _, position, _ -> autofillView(travelContactArrayAdapter.getItem(position)) }
+            (til_contact_name.mEditText as AutoCompleteTextView).setOnItemClickListener { _, _, position, _ -> autofillView(travelContactArrayAdapter.getItem(position)) }
 
         }
 
-        til_contact_name.editText.setText(contactData.name)
+        til_contact_name.mEditText?.setText(contactData.name)
         til_contact_name.setErrorTextAppearance(R.style.ErrorTextAppearance)
 
         til_contact_email.textFieldInput.setText(contactData.email)
@@ -165,7 +164,7 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
 
     private fun onSaveButtonClicked() {
         if (validateData()) {
-            contactData.name = til_contact_name.editText.text.toString()
+            contactData.name = til_contact_name.mEditText?.text.toString()
             contactData.email = til_contact_email.textFieldInput.text.toString()
             contactData.phone = til_contact_phone_number.textFieldInput.text.toString()
             contactData.phoneCode = (sp_contact_phone_code.selectedItem as String).toInt()
@@ -186,10 +185,10 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
     private fun validateData(): Boolean {
         var isValid = true
         resetEditTextError()
-        if (til_contact_name.editText.text.isNullOrBlank()) {
+        if (til_contact_name.mEditText?.text.isNullOrBlank()) {
             til_contact_name.error = getString(R.string.travel_contact_data_name_error)
             isValid = false
-        } else if (isNotAplhabetOrSpaceOnly(til_contact_name.editText.text.toString())) {
+        } else if (isNotAplhabetOrSpaceOnly(til_contact_name.mEditText?.text.toString())) {
             til_contact_name.error = getString(R.string.travel_contact_data_name_alphabet_only)
             isValid = false
         }
@@ -230,7 +229,7 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
     }
 
     override fun getFilterText(): String {
-        return til_contact_name.editText.text.toString()
+        return til_contact_name.mEditText?.text.toString()
     }
 
     companion object {

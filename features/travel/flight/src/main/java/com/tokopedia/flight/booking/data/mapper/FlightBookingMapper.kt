@@ -125,7 +125,7 @@ class FlightBookingMapper {
             for (i in 1..adult) {
                 val viewModel = FlightBookingPassengerModel()
                 viewModel.passengerLocalId = passengerNumber
-                viewModel.type = FlightBookingPassenger.ADULT
+                viewModel.type = FlightBookingPassenger.ADULT.value
                 viewModel.headerTitle = String.format("Penumpang dewasa")
                 viewModel.flightBookingLuggageMetaViewModels = arrayListOf()
                 viewModel.flightBookingMealMetaViewModels = arrayListOf()
@@ -137,7 +137,7 @@ class FlightBookingMapper {
                 for (i in 1..child) {
                     val viewModel = FlightBookingPassengerModel()
                     viewModel.passengerLocalId = passengerNumber
-                    viewModel.type = FlightBookingPassenger.CHILDREN
+                    viewModel.type = FlightBookingPassenger.CHILDREN.value
                     viewModel.headerTitle = String.format("Penumpang anak")
                     viewModel.flightBookingLuggageMetaViewModels = arrayListOf()
                     viewModel.flightBookingMealMetaViewModels = arrayListOf()
@@ -150,7 +150,7 @@ class FlightBookingMapper {
                 for (i in 1..infant) {
                     val viewModel = FlightBookingPassengerModel()
                     viewModel.passengerLocalId = passengerNumber
-                    viewModel.type = FlightBookingPassenger.INFANT
+                    viewModel.type = FlightBookingPassenger.INFANT.value
                     viewModel.headerTitle = String.format("Penumpang bayi")
                     viewModel.flightBookingLuggageMetaViewModels = arrayListOf()
                     viewModel.flightBookingMealMetaViewModels = arrayListOf()
