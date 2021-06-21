@@ -47,10 +47,11 @@
             app:typographyType="body_3" />
     </LinearLayout>
 
-    <com.tokopedia.unifycomponents.DividerUnify
+    <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
+        android:background="@color/Unify_N75"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dashboard_layout" />

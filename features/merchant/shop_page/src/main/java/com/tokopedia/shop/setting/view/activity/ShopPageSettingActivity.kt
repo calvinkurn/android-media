@@ -39,6 +39,7 @@ class ShopPageSettingActivity : BaseSimpleActivity(), HasComponent<ShopPageSetti
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        window?.decorView?.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
     override fun onBackPressed() {
