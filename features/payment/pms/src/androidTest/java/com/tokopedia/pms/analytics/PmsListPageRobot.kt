@@ -10,6 +10,7 @@ import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.pms.R
 import com.tokopedia.test.application.espresso_component.CommonActions
+import kotlinx.android.synthetic.main.fragment_change_bank_account.*
 import org.hamcrest.Matchers.allOf
 import org.junit.Rule
 
@@ -105,6 +106,12 @@ class PmsListPageRobot {
 
     fun validateMap(map: List<Map<String, Any>>) {
         assertThat(cassavaTestRule.validate(map), hasAllSuccess())
+    }
+
+    fun checkbutton() {
+        val viewInteraction =
+            onView(allOf(withId(R.id.button_use))).check(matches(isDisplayed()))
+        viewInteraction.perform(click())
     }
 }
 

@@ -71,7 +71,6 @@ class PaymentListActivityTest {
 
     @Test
     fun validateCancelPaymentFlow() {
-        //intendingIntent()
         actionTest {
             testChevronClick(0)
             clickItemOnActionBottomSheet(0)
@@ -82,13 +81,8 @@ class PaymentListActivityTest {
             testCardClick(0)
             Thread.sleep(3000)
             clickItemOnDetailBottomSheet(0, com.tokopedia.pms.R.id.goToHowToPay)
-            Thread.sleep(5000)
-            this@PaymentListActivityTest.hh()
-            //pressBack()
-            Thread.sleep(5000)
-            this@PaymentListActivityTest.hh()
-            //pressBack()
-            Thread.sleep(5000)
+            Thread.sleep(3000)
+            pressBack()
             clickHtpTest(0)
 
         } assertTest {
@@ -137,7 +131,14 @@ class PaymentListActivityTest {
 
     @Test
     fun validateChangeBankAccountEvents() {
+        actionTest {
+            testChevronClick(2)
+            clickItemOnActionBottomSheet(0)
+            checkbutton()
 
+        } assertTest {
+            finishTest()
+        }
     }
 
     @Test

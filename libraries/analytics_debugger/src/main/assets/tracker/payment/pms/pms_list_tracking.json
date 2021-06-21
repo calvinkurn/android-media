@@ -5,15 +5,6 @@
     {
       "sessionIris": ".*",
       "userId": ".*",
-      "eventCategory": "",
-      "eventAction": "",
-      "event": "openScreen",
-      "eventLabel": ".*: \\d{1,}",
-      "isLoggedInStatus": "true|false"
-    },
-    {
-      "sessionIris": ".*",
-      "userId": ".*",
       "eventCategory": "pms page",
       "eventAction": "tap three dots",
       "event": "clickPMS",
