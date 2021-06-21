@@ -69,6 +69,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.util.ImageUtil
@@ -897,6 +898,25 @@ class TopChatRoomPresenterTest {
         // Then
         verify(exactly = 1) { mockOnSendingMessage.invoke() }
         verify(exactly = 1) { RxWebSocket.send(stickerContract, listInterceptor) }
+        verify(exactly = 1) { view.clearAttachmentPreviews() }
+    }
+
+    @Test
+    fun `on success send SRW through websocket`() {
+        // Given
+        val srwQuestion = QuestionUiModel()
+        val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+        presenter.sendAttachmentsAndSrw(
+            exMessageId, srwQuestion, exStartTime, exOpponentId, mockOnSendingMessage
+        )
+
+        // Then
+        verify(exactly = 1) { mockOnSendingMessage.invoke() }
         verify(exactly = 1) { view.clearAttachmentPreviews() }
     }
 
