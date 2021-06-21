@@ -211,8 +211,8 @@
 
                         <include
                             android:id="@+id/layout_watermark"
-                            android:layout_height="@dimen/image_editor_control_height"
                             android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/dp_16"
                             android:layout_marginRight="@dimen/dp_16"
                             android:visibility="gone"

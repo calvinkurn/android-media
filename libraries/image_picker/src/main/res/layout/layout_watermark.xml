@@ -1,51 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/image_editor_control_height"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/image_editor_control_height">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <com.tokopedia.imagepicker.editor.widget.ItemSelectionWidget
+        android:id="@+id/watermark_item_selection"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:orientation="horizontal"
-        android:layout_centerInParent="true">
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_watermark_tokopedia"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/dp_32"
-            android:layout_weight="1"
-            android:layout_margin="@dimen/dp_8"
-            android:textSize="@dimen/sp_12"
-            app:unifyButtonVariant="ghost"
-            app:unifyButtonSize="medium"
-            android:text="@string/editor_watermark_tokopedia"/>
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_watermark_user_info"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/dp_32"
-            android:layout_weight="1"
-            android:layout_margin="@dimen/dp_8"
-            android:textSize="@dimen/sp_12"
-            app:unifyButtonVariant="ghost"
-            app:unifyButtonSize="medium"
-            android:text="@string/editor_watermark_seller_name"/>
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_watermark_both"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/dp_32"
-            android:layout_weight="1"
-            android:layout_margin="@dimen/dp_8"
-            android:textSize="@dimen/sp_12"
-            app:unifyButtonVariant="ghost"
-            app:unifyButtonSize="medium"
-            android:enabled="false"
-            android:text="@string/editor_watermark_both"/>
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>
