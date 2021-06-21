@@ -6,7 +6,63 @@
       "sessionIris": ".*",
       "userId": ".*",
       "eventCategory": "pms page",
+      "eventAction": "click ubah detail rekening",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
       "eventAction": "click confirm ubah detail rekening",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click ubah user klikbca",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click confirm ubah user klikbca",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click ubah bukti pembayaran",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click pilih gambar",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click pilih gambar lain",
+      "event": "clickPMS",
+      "eventLabel": ".*"
+    },
+    {
+      "sessionIris": ".*",
+      "userId": ".*",
+      "eventCategory": "pms page",
+      "eventAction": "click confirm selesai pilih gambar",
       "event": "clickPMS",
       "eventLabel": ".*"
     }

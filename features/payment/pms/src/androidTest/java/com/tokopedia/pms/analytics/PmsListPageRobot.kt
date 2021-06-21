@@ -10,6 +10,7 @@ import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.pms.R
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import kotlinx.android.synthetic.main.fragment_change_bank_account.*
 import org.hamcrest.Matchers.allOf
 import org.junit.Rule
@@ -26,7 +27,7 @@ class PmsListPageRobot {
         viewInteraction.perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                 position,
-                CommonActions.clickChildViewWithId(R.id.cardMenu)
+                CommonActions.clickChildViewWithId(R.id.goToHowToPay)
             )
         )
     }
@@ -108,9 +109,9 @@ class PmsListPageRobot {
         assertThat(cassavaTestRule.validate(map), hasAllSuccess())
     }
 
-    fun checkbutton() {
+    fun actionClickView(resId: Int) {
         val viewInteraction =
-            onView(allOf(withId(R.id.button_use))).check(matches(isDisplayed()))
+            onView(allOf(withId(resId))).check(matches(isDisplayed()))
         viewInteraction.perform(click())
     }
 }

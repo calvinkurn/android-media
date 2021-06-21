@@ -8,7 +8,9 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.core.internal.deps.guava.collect.Iterables
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.toPackage
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
@@ -27,6 +29,7 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import kotlinx.android.synthetic.main.fragment_upload_proof_payment.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -59,6 +62,16 @@ class PaymentListActivityTest {
                 InstrumentationMockHelper.getRawString(context, R.raw.response_cancel_detail),
                 MockModelConfig.FIND_BY_CONTAINS
             )
+            addMockResponse(
+                PmsDetailMockResponse.GQL_BANK_DETAIL_EDIT,
+                InstrumentationMockHelper.getRawString(context, R.raw.response_change_bank_acccount_details),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
+            addMockResponse(
+                PmsDetailMockResponse.GQL_KLIC_BCA_EDIT,
+                InstrumentationMockHelper.getRawString(context, R.raw.response_change_klic_bca_id),
+                MockModelConfig.FIND_BY_CONTAINS
+            )
         }
         launchActivity()
     }
@@ -70,7 +83,7 @@ class PaymentListActivityTest {
     }
 
     @Test
-    fun validateCancelPaymentFlow() {
+    fun validatePaymentListEvents() {
         actionTest {
             testChevronClick(0)
             clickItemOnActionBottomSheet(0)
@@ -84,35 +97,58 @@ class PaymentListActivityTest {
             Thread.sleep(3000)
             pressBack()
             clickHtpTest(0)
+            Thread.sleep(3000)
+            pressBack()
 
         } assertTest {
             validate(PAYMENT_LIST_TRACKER_PATH)
             finishTest()
         }
-    }
-
-    private fun intendingIntent() {
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     @Test
-    fun validateCombineVaDetailEvent() {
+    fun validateChangeBankAccountEvents() {
+
         actionTest {
-            // open Screen
-            testChevronClick(3)
+            // change klic bca id
+            testChevronClick(1)
             clickItemOnActionBottomSheet(0)
-            clickItemOnDetailBottomSheet(0, R.id.goToHowToPay)
+            Thread.sleep(3000)
+            actionClickView(R.id.button_use)
+            Thread.sleep(3000)
+
+            // change bank account details
+            testChevronClick(2)
+            clickItemOnActionBottomSheet(0)
+            Thread.sleep(3000)
+            actionClickView(R.id.button_use)
+            Thread.sleep(3000)
+
+            // upload proof
+          /*  val resultData = Intent().apply {
+                putStringArrayListExtra("result_paths", arrayListOf("a", "b"))
+            }
+            val result = Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
+            intending(toPackage("com.tokopedia.imagepicker")).respondWith(result)
+*/
+            testChevronClick(2)
+            clickItemOnActionBottomSheet(1)
+            actionClickView(R.id.button_save)
+            Thread.sleep(3000)
+            //actionClickView(R.id.button_save)
+
             pressBack()
+
         } assertTest {
-            validate(PAYMENT_LIST_TRACKER_PATH)
+            validate(PAYMENT_EDIT_TRACKER_PATH)
             finishTest()
         }
     }
+
 
     @Test
     fun validateChangeUserIdKlicBCAEvents() {
-        actionTest {
+        /*actionTest {
             // open Screen
             testChevronClick(3)
             clickItemOnActionBottomSheet(0)
@@ -120,44 +156,12 @@ class PaymentListActivityTest {
         } assertTest {
             validate(PAYMENT_LIST_TRACKER_PATH)
             finishTest()
-        }
+        }*/
     }
 
     @Test
     fun validateUploadProofEvents() {
 
-    }
-
-
-    @Test
-    fun validateChangeBankAccountEvents() {
-        actionTest {
-            testChevronClick(2)
-            clickItemOnActionBottomSheet(0)
-            checkbutton()
-
-        } assertTest {
-            finishTest()
-        }
-    }
-
-    @Test
-    fun validateHtp() {
-        val testEvent = listOf(
-            mapOf(
-                "userId" to ".*",
-                "event" to "clickPMS",
-                "eventCategory" to "pms page",
-                "eventAction" to "click lihat cara bayar",
-                "eventLabel" to ".*"
-            )
-        )
-        actionTest {
-            //clickHtpTest()
-        } assertTest {
-            validateMap(testEvent)
-            finishTest()
-        }
     }
 
     private fun login() = InstrumentationAuthHelper.loginInstrumentationTestUser1()
@@ -172,20 +176,8 @@ class PaymentListActivityTest {
         activityRule.launchActivity(intent)
     }
 
-    fun hh(): Activity? {
-        getInstrumentation().waitForIdleSync()
-        val activity = arrayOfNulls<Activity>(1)
-        UiThreadTestRule().runOnUiThread {
-            val activities: Collection<Activity> =
-                ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED)
-            activity[0] = Iterables.getOnlyElement(activities)
-
-
-        }
-        return activity[0]
-    }
-
     companion object {
         const val PAYMENT_LIST_TRACKER_PATH = "tracker/payment/pms/pms_list_tracking.json"
+        const val PAYMENT_EDIT_TRACKER_PATH = "tracker/payment/pms/pms_bank_account_tracking.json"
     }
 }
