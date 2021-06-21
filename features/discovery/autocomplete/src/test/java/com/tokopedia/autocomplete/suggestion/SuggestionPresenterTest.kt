@@ -14,6 +14,7 @@ import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineData
 import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetDataView
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.usecase.RequestParams
@@ -30,6 +31,17 @@ private const val suggestionCampaignResponse = "autocomplete/suggestion/local-gl
 private const val suggestionCampaignAtTopResponse = "autocomplete/suggestion/local-global-at-top-response.json"
 
 internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
+
+    private val searchProductPageTitle = "Waktu Indonesia Belanja"
+    private val searchParameter = mapOf(
+            SearchApiConst.NAVSOURCE to "clp",
+            SearchApiConst.SRP_PAGE_TITLE to searchProductPageTitle,
+            SearchApiConst.SRP_PAGE_ID to "1234"
+    )
+    private val expectedDefaultDimension90 = SearchConstant.CustomDimension.DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL
+    private val expectedLocalDimension90 =
+            "${searchParameter[SearchApiConst.SRP_PAGE_TITLE]}.${searchParameter[SearchApiConst.NAVSOURCE]}." +
+                    "local_search.${searchParameter[SearchApiConst.SRP_PAGE_ID]}"
 
     private val requestParamsSlot = slot<RequestParams>()
 
@@ -116,10 +128,10 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList[8].shouldBeInstanceOf<SuggestionDoubleLineDataDataView>()
         visitableList.size shouldBe suggestionUniverse.data.items.size
 
-        assertVisitableListData(visitableList, suggestionUniverse)
+        assertVisitableListData(visitableList, suggestionUniverse, expectedDefaultDimension90)
     }
 
-    private fun assertVisitableListData(visitableList: List<Visitable<*>>, suggestionUniverse: SuggestionUniverse) {
+    private fun assertVisitableListData(visitableList: List<Visitable<*>>, suggestionUniverse: SuggestionUniverse, dimension90: String = "") {
         var expectedPosition = 0
         visitableList.forEach { visitable ->
             val expectedItem = suggestionUniverse.data.items[expectedPosition]
@@ -133,7 +145,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
                     expectedPosition++
                 }
                 is BaseSuggestionDataView -> {
-                    (visitable as BaseSuggestionDataView).assertBaseSuggestionDataView(expectedItem)
+                    (visitable as BaseSuggestionDataView).assertBaseSuggestionDataView(expectedItem, dimension90)
                     expectedPosition++
                 }
             }
@@ -170,7 +182,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         }
     }
 
-    private fun BaseSuggestionDataView.assertBaseSuggestionDataView(item: SuggestionItem) {
+    private fun BaseSuggestionDataView.assertBaseSuggestionDataView(item: SuggestionItem, dimension90: String = "") {
         template shouldBe item.template
         type shouldBe item.type
         applink shouldBe item.applink
@@ -186,6 +198,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         labelType shouldBe item.labelType
         urlTracker shouldBe item.urlTracker
         trackingCode shouldBe item.tracking.code
+        this.dimension90 shouldBe dimension90
     }
 
     @Test
@@ -244,12 +257,13 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList[9].shouldBeInstanceOf<SuggestionTopShopWidgetDataView>()
         visitableList.size shouldBe suggestionUniverse.data.items.size
 
-        assertVisitableListData(visitableList, suggestionUniverse)
+        assertVisitableListData(visitableList, suggestionUniverse, expectedDefaultDimension90)
     }
 
     @Test
     fun `test get suggestion data with campaign local global component`() {
         val suggestionUniverse = suggestionCampaignResponse.jsonToObject<SuggestionUniverse>()
+        `Given presenter will return searchParameter`(searchParameter)
         `given suggestion use case capture request params`(suggestionUniverse)
 
         `when presenter get suggestion data (search)`()
@@ -275,12 +289,13 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList[10].shouldBeInstanceOf<SuggestionDoubleLineWithoutImageDataDataView>()
         visitableList.size shouldBe suggestionUniverse.data.items.size + 1
 
-        assertVisitableListData(visitableList, suggestionUniverse)
+        assertVisitableListData(visitableList, suggestionUniverse, expectedLocalDimension90)
     }
 
     @Test
     fun `test get suggestion data with campaign local global component at the top`() {
         val suggestionUniverse = suggestionCampaignAtTopResponse.jsonToObject<SuggestionUniverse>()
+        `Given presenter will return searchParameter`(searchParameter)
         `given suggestion use case capture request params`(suggestionUniverse)
 
         `when presenter get suggestion data (search)`()
@@ -297,7 +312,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         visitableList[1].shouldBeInstanceOf<SuggestionDoubleLineWithoutImageDataDataView>()
         visitableList.size shouldBe suggestionUniverse.data.items.size
 
-        assertVisitableListData(visitableList, suggestionUniverse)
+        assertVisitableListData(visitableList, suggestionUniverse, expectedLocalDimension90)
     }
 
     @Test

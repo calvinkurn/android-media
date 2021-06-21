@@ -23,11 +23,11 @@ import com.tokopedia.tokomart.category.analytics.CategoryTracking.Category.TOP_N
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Event.CLICK_TOP_NAV
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Misc.PRODUCT_ID
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Misc.TOKONOW_CATEGORY_ORGANIC
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.BUSINESSUNIT
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.CURRENTSITE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ACTION_FIELD
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ADD
@@ -102,8 +102,8 @@ object CategoryTracking {
                         EVENT_ACTION, CLICK_SEARCH_BAR,
                         EVENT_CATEGORY, TOP_NAV_TOKONOW_CATEGORY_PAGE,
                         EVENT_LABEL, categoryId,
-                        BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                        CURRENTSITE, CURRENT_SITE_VALUE,
+                        KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                        KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
                 )
         )
     }
@@ -111,12 +111,12 @@ object CategoryTracking {
     fun sendCartClickEvent(categoryId: String) {
         sendGeneralEvent(
                 DataLayer.mapOf(
-                        EVENT, EVENT_CLICK_VALUE,
+                        EVENT, EVENT_CLICK_TOKONOW,
                         EVENT_ACTION, CLICK_CART_BUTTON_TOP_NAV,
                         EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                         EVENT_LABEL, categoryId,
-                        BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                        CURRENTSITE, CURRENT_SITE_VALUE,
+                        KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                        KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
                 )
         )
     }
@@ -128,8 +128,8 @@ object CategoryTracking {
                 EVENT_ACTION, IMPRESSION_BANNER,
                 EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                 EVENT_LABEL, categoryId,
-                BUSINESSUNIT, HOME_AND_BROWSE,
-                CURRENTSITE, CURRENT_SITE_VALUE,
+                KEY_BUSINESS_UNIT, HOME_AND_BROWSE,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
                 USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
                     PROMO_VIEW, DataLayer.mapOf(
@@ -175,8 +175,8 @@ object CategoryTracking {
                 EVENT_ACTION, CLICK_BANNER,
                 EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                 EVENT_LABEL, categoryId,
-                BUSINESSUNIT, HOME_AND_BROWSE,
-                CURRENTSITE, CURRENT_SITE_VALUE,
+                KEY_BUSINESS_UNIT, HOME_AND_BROWSE,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
                 USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
                     PROMO_CLICK, DataLayer.mapOf(
@@ -190,12 +190,12 @@ object CategoryTracking {
     fun sendAllCategoryClickEvent(categoryId: String) {
         sendGeneralEvent(
                 DataLayer.mapOf(
-                        EVENT, EVENT_CLICK_VALUE,
+                        EVENT, EVENT_CLICK_TOKONOW,
                         EVENT_ACTION, CLICK_SEMUA_KATEGORI,
                         EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                         EVENT_LABEL, categoryId,
-                        BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                        CURRENTSITE, CURRENT_SITE_VALUE,
+                        KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                        KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
                 )
         )
     }
@@ -211,8 +211,8 @@ object CategoryTracking {
                 EVENT_ACTION, IMPRESSION_PRODUCT,
                 EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                 EVENT_LABEL, categoryId,
-                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                CURRENTSITE, CURRENT_SITE_VALUE,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
                 USER_ID, userId,
                 PRODUCT_ID, productItemDataView.id,
                 ECOMMERCE, DataLayer.mapOf(
@@ -248,8 +248,8 @@ object CategoryTracking {
                 EVENT_ACTION, CLICK_PRODUCT,
                 EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                 EVENT_LABEL, categoryId,
-                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                CURRENTSITE, CURRENT_SITE_VALUE,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
                 USER_ID, userId,
                 PRODUCT_ID, productItemDataView.id,
                 ECOMMERCE, DataLayer.mapOf(
@@ -264,78 +264,78 @@ object CategoryTracking {
 
     fun sendApplyCategoryL2FilterEvent(categoryId: String, filterCategoryId: String) {
         sendGeneralEvent(DataLayer.mapOf(
-            EVENT, EVENT_CLICK_VALUE,
+            EVENT, EVENT_CLICK_TOKONOW,
             EVENT_ACTION, CLICK_LEVEL_2_FILTER_WIDGET,
             EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
             EVENT_LABEL, "$categoryId - $filterCategoryId",
-            BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-            CURRENTSITE, CURRENT_SITE_VALUE,
+            KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+            KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
         ))
     }
 
     fun sendAisleClickEvent(categoryId: String, aisleCategoryId: String) {
         sendGeneralEvent(DataLayer.mapOf(
-            EVENT, EVENT_CLICK_VALUE,
+            EVENT, EVENT_CLICK_TOKONOW,
             EVENT_ACTION, CLICK_LIHAT_CATEGORY_LAINNYA,
             EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
             EVENT_LABEL, "$categoryId - $aisleCategoryId",
-            BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-            CURRENTSITE, CURRENT_SITE_VALUE,
+            KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+            KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
         ))
     }
 
     fun sendFilterClickEvent(categoryId: String) {
         sendGeneralEvent(DataLayer.mapOf(
-                EVENT, EVENT_CLICK_VALUE,
+                EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_FILTER,
                 EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                 EVENT_LABEL, categoryId,
-                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                CURRENTSITE, CURRENT_SITE_VALUE,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
         ))
     }
 
     fun sendQuickFilterClickEvent(categoryId: String) {
         sendGeneralEvent(DataLayer.mapOf(
-                EVENT, EVENT_CLICK_VALUE,
+                EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_QUICK_FILTER,
                 EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                 EVENT_LABEL, categoryId,
-                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                CURRENTSITE, CURRENT_SITE_VALUE,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
         ))
     }
 
     fun sendApplySortFilterEvent(categoryId: String) {
         sendGeneralEvent(DataLayer.mapOf(
-                EVENT, EVENT_CLICK_VALUE,
+                EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_APPLY_FILTER,
                 EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                 EVENT_LABEL, categoryId,
-                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                CURRENTSITE, CURRENT_SITE_VALUE,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
         ))
     }
 
     fun sendOpenCategoryL3FilterEvent(categoryId: String) {
         sendGeneralEvent(DataLayer.mapOf(
-                EVENT, EVENT_CLICK_VALUE,
+                EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_CATEGORY_FILTER,
                 EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                 EVENT_LABEL, categoryId,
-                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                CURRENTSITE, CURRENT_SITE_VALUE,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
         ))
     }
 
     fun sendApplyCategoryL3FilterEvent(categoryId: String, filterCategoryId: String) {
         sendGeneralEvent(DataLayer.mapOf(
-                EVENT, EVENT_CLICK_VALUE,
+                EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, APPLY_CATEGORY_FILTER,
                 EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                 EVENT_LABEL, "$categoryId - $filterCategoryId",
-                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                CURRENTSITE, CURRENT_SITE_VALUE,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
         ))
     }
 
@@ -352,8 +352,8 @@ object CategoryTracking {
                 EVENT_ACTION, Action.ADD_TO_CART,
                 EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                 EVENT_LABEL, categoryId,
-                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                CURRENTSITE, CURRENT_SITE_VALUE,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
                 USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
                     ADD, DataLayer.mapOf(
@@ -390,12 +390,12 @@ object CategoryTracking {
 
     fun sendChooseVariantClickEvent(categoryId: String) {
         sendGeneralEvent(DataLayer.mapOf(
-                EVENT, EVENT_CLICK_VALUE,
+                EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_PILIH_VARIANT_BUTTON,
                 EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                 EVENT_LABEL, categoryId,
-                BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                CURRENTSITE, CURRENT_SITE_VALUE,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
         ))
     }
 }

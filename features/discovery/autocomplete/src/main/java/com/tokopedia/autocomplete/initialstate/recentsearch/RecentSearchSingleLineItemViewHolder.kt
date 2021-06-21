@@ -39,6 +39,6 @@ class RecentSearchSingleLineItemViewHolder(itemView: View, private val clickList
 
     private fun bindListener(item: BaseItemInitialStateSearch){
         itemView.actionShortcutButton?.setOnClickListener { _ -> clickListener.onDeleteRecentSearchItem(item) }
-        itemView.autocompleteSingleLineItem?.setOnClickListener { _ -> clickListener.onRecentSearchItemClicked(item, adapterPosition) }
+        itemView.autocompleteSingleLineItem?.setOnClickListener { _ -> clickListener.onRecentSearchItemClicked(item) }
     }
 }
