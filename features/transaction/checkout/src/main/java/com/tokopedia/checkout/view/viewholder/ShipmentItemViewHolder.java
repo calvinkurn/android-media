@@ -1141,7 +1141,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         labelSelectedSingleShippingOriginalPrice.setVisibility(View.GONE);
         labelSelectedSingleShippingDiscountedPrice.setVisibility(View.GONE);
         labelSingleShippingEta.setVisibility(View.GONE);
-        String pinpointErrorMessage = itemView.getContext().getString(R.string.checkout_label_set_pinpoint_description);
+        String pinpointErrorMessage = itemView.getContext().getString(R.string.checkout_label_set_pinpoint_description) + " ";
         String pinpointErrorAction = itemView.getContext().getString(R.string.checkout_label_set_pinpoint_action);
         SpannableString spannableString = new SpannableString(pinpointErrorMessage + pinpointErrorAction);
         spannableString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500_96)), pinpointErrorMessage.length(), spannableString.length(), SpannableString.SPAN_INCLUSIVE_EXCLUSIVE);
