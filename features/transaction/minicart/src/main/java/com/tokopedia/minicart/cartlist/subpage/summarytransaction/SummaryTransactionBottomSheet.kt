@@ -79,12 +79,15 @@ class SummaryTransactionBottomSheet @Inject constructor() {
 
     private fun renderSellerCashback(data: MiniCartSummaryTransactionUiModel) {
         if (data.sellerCashbackValue > 0) {
-            textTotalCashbackTitle?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.sellerCashbackValue, false).replace("Rp", "")
             textTotalCashbackTitle?.text = data.sellerCashbackWording
+            textTotalCashbackValue?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.sellerCashbackValue, false).replace("Rp", "")
+            textTotalCashbackTitle?.show()
+            textTotalCashbackValue?.show()
+            separatorSellerCashback?.show()
         } else {
-            separatorSellerCashback?.gone()
             textTotalCashbackTitle?.gone()
             textTotalCashbackValue?.gone()
+            separatorSellerCashback?.gone()
         }
     }
 }
