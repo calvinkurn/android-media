@@ -4,7 +4,7 @@
     <application>
         <activity
             android:name=".views.activities.TransParentActivity"
-            android:theme="@style/Theme.AppCompat.Translucent">
+            android:theme="@style/Theme.AppCompat">
         </activity>
     </application>
 </manifest>
