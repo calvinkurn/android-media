@@ -14,7 +14,6 @@ import com.tokopedia.autocomplete.suggestion.singleline.SuggestionSingleLineData
 import com.tokopedia.autocomplete.suggestion.title.SuggestionTitleDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocomplete.suggestion.topshop.SuggestionTopShopWidgetDataView
-import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
