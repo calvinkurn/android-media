@@ -21,8 +21,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.minicart.common.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
@@ -247,8 +245,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         _productInfoP3.addSource(_p2Data) { p2Data ->
             launchCatchError(context = dispatcher.io, block = {
                 getDynamicProductInfoP1?.let {
-                    getProductInfoP3(shopDomain, it)?.let { p3Data ->
-                        updateShippingValue(p3Data.ratesModel?.getMinimumShippingPrice())
+                    getProductInfoP3().let { p3Data ->
                         _productInfoP3.postValue(p3Data)
                     }
                 }
@@ -464,8 +461,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     ?: "", productParams.productName ?: "", productParams.warehouseId
                     ?: "", layoutId).also {
 
-                isNewShipment = ChooseAddressUtils.isRollOutUser(null)
-
                 getDynamicProductInfoP1 = it.layoutData.also {
                     listOfParentMedia = it.data.media.toMutableList()
                 }
@@ -605,15 +600,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductInfoP3(shopDomain: String?, productInfo: DynamicProductInfoP1): ProductInfoP3? {
-        val domain = shopDomain ?: getShopInfo().shopCore.domain
-        val origin = if (getMultiOriginByProductId().isFulfillment) getMultiOriginByProductId().getOrigin() else null
-
-        return getProductInfoP3(productInfo.basic.getWeightUnit(), domain, origin)
-    }
-
     private fun updateShippingValue(shippingPriceValue: Int?) {
-        if (isNewShipment) return
         shippingMinimumPrice = if (shippingPriceValue == null || shippingPriceValue == 0) getDynamicProductInfoP1?.basic?.getDefaultOngkirInt()
                 ?: 30000 else shippingPriceValue
     }
@@ -632,7 +619,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 it
             } else if (!isOfficialStore && it.name() == ProductDetailConstant.VALUE_PROP) {
                 it
-            } else if (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO && (!isUserSessionActive || isNewShipment)) {
+            } else if (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO) {
                 it
             } else if (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) {
                 it
@@ -645,8 +632,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } else if (it.name() == ProductDetailConstant.BY_ME && isAffiliate && !GlobalConfig.isSellerApp()) {
                 it
             } else if (it.name() == ProductDetailConstant.REPORT && (isUseOldNav || isShopOwner())) {
-                it
-            } else if (it.name() == ProductDetailConstant.SHIPMENT && !isNewShipment) {
                 it
             } else {
                 null
@@ -1021,11 +1006,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductInfoP3(weight: Float, shopDomain: String?, origin: String?): ProductInfoP3 {
+    private suspend fun getProductInfoP3(): ProductInfoP3 {
         return getProductInfoP3UseCase.get().executeOnBackground(
-                GetProductInfoP3UseCase.createParams(weight, shopDomain, origin),
                 forceRefresh,
-                isUserSessionActive, !isNewShipment)
+                isUserSessionActive)
     }
 
     private suspend fun getPdpLayout(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String): ProductDetailDataModel {
