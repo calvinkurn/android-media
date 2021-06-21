@@ -131,7 +131,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     fun updateWidget(){
-        val textColor = chooseAddressWidgetListener?.getTextColor()
+        val textColor = chooseAddressWidgetListener?.onChangeTextColor()
         if (textColor != null) {
             textChosenAddress?.setTextColor(ContextCompat.getColor(context, textColor))
 
@@ -276,9 +276,11 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             return ""
         }
 
-        /**/
+        /**
+         * Int Color for Text label
+         */
         fun onChangeTextColor(): Int {
-            return com.tokopedia.unifyprinciples.R.color.light_N700_96
+            return com.tokopedia.unifyprinciples.R.color.Unify_N700_96
         }
      }
 
