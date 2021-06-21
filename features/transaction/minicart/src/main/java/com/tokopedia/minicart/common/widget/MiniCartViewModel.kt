@@ -276,12 +276,17 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun updateCart(isForCheckout: Boolean, observer: Int) {
+        var source = ""
+        if (!isForCheckout) {
+            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
+        }
+
         if (observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
             val miniCartItems = mutableListOf<MiniCartItem>()
             miniCartSimplifiedData.value?.miniCartItems?.let {
                 miniCartItems.addAll(it)
             }
-            updateCartUseCase.setParams(miniCartItems, true, !isForCheckout)
+            updateCartUseCase.setParams(miniCartItems, true, source)
         } else if (observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
             val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
             miniCartListBottomSheetUiModel.value?.visitables?.forEach {
@@ -289,7 +294,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                     miniCartProductUiModels.add(it)
                 }
             }
-            updateCartUseCase.setParamsFromUiModels(miniCartProductUiModels, !isForCheckout)
+            updateCartUseCase.setParamsFromUiModels(miniCartProductUiModels, source)
         }
         updateCartUseCase.execute(
                 onSuccess = {
