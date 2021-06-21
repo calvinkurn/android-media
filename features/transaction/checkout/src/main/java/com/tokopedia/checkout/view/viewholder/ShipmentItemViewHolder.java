@@ -195,6 +195,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography labelSelectedShippingPriceorDuration;
     private Typography labelDescCourier;
     private Typography labelDescCourierTnc;
+    private View vFillCourier;
     private ImageView iconChevronChooseCourier;
     private ConstraintLayout layoutStateHasSelectedFreeShipping;
     private Typography labelSelectedFreeShipping;
@@ -315,6 +316,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         labelSelectedShippingPriceorDuration = itemView.findViewById(R.id.label_selected_shipping_price_or_duration);
         labelDescCourier = itemView.findViewById(R.id.label_description_courier);
         labelDescCourierTnc = itemView.findViewById(R.id.label_description_courier_tnc);
+        vFillCourier = itemView.findViewById(R.id.v_fill_courier);
         iconChevronChooseCourier = itemView.findViewById(R.id.icon_chevron_choose_courier);
         layoutStateHasSelectedFreeShipping = itemView.findViewById(R.id.layout_state_has_selected_free_shipping);
         labelSelectedFreeShipping = itemView.findViewById(R.id.label_selected_free_shipping);
@@ -722,6 +724,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
         );
         iconChevronChooseCourier.setOnClickListener(
+                getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
+        );
+        labelDescCourier.setOnClickListener(
+                getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
+        );
+        vFillCourier.setOnClickListener(
                 getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
         );
 
