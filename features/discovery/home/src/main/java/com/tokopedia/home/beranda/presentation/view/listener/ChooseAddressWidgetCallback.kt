@@ -44,4 +44,8 @@ class ChooseAddressWidgetCallback(
     override fun onLocalizingAddressLoginSuccess() {
 
     }
+
+    override fun onChangeTextColor(): Int {
+        return com.tokopedia.unifyprinciples.R.color.light_N700_96
+    }
 }
