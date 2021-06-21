@@ -1,4 +1,4 @@
-package com.tokopedia.minicart.common.widget.viewmodel.dataprovider
+package com.tokopedia.minicart.common.widget.viewmodel.utils
 
 import java.io.IOException
 import java.nio.charset.Charset

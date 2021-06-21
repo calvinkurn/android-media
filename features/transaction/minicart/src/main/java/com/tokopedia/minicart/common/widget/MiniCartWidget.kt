@@ -120,9 +120,9 @@ class MiniCartWidget @JvmOverloads constructor(
                 }
                 GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
-                        context?.let {
+                        context?.let { context ->
                             hideProgressLoading()
-                            onSuccessUpdateCartForCheckout(it)
+                            onSuccessUpdateCartForCheckout(context)
                         }
                     }
                 }
@@ -144,7 +144,7 @@ class MiniCartWidget @JvmOverloads constructor(
         hideProgressLoading()
         miniCartListBottomSheet.dismiss()
         val message = data?.removeFromCartData?.data?.message?.firstOrNull() ?: ""
-        if(message.isNotBlank()) {
+        if (message.isNotBlank()) {
             if (data?.isBulkDelete == true) {
                 showToaster(
                         message = message,

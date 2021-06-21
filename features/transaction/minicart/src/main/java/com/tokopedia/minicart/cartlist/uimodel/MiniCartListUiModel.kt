@@ -35,6 +35,16 @@ data class MiniCartListUiModel(
         return null
     }
 
+    fun getMiniCartProductUiModelByProductId(productId: String): MiniCartProductUiModel? {
+        loop@ for (visitable in visitables) {
+            if (visitable is MiniCartProductUiModel && visitable.productId == productId) {
+                return visitable
+            }
+        }
+
+        return null
+    }
+
     fun getAvailableProduct(): List<MiniCartProductUiModel> {
         val availableProducts = mutableListOf<MiniCartProductUiModel>()
         loop@ for (visitable in visitables) {
