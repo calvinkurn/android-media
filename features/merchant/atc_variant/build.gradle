@@ -44,6 +44,10 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
+
     implementation project(rootProject.ext.features.minicart)
     implementation project(rootProject.ext.features.localizationchooseaddress_common)
     implementation project(rootProject.ext.features.productDetailCommon)

@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tkpd.atc_variant.R
 import com.tkpd.atc_variant.data.uidata.PartialButtonDataModel
 import com.tkpd.atc_variant.di.AtcVariantComponent
@@ -22,6 +23,7 @@ import com.tkpd.atc_variant.views.*
 import com.tkpd.atc_variant.views.adapter.AtcVariantAdapter
 import com.tkpd.atc_variant.views.adapter.AtcVariantAdapterTypeFactoryImpl
 import com.tkpd.atc_variant.views.adapter.AtcVariantDiffutil
+import com.tkpd.atc_variant.views.listener.AtcVariantBottomSheetListener
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
@@ -185,7 +187,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
             when (it) {
                 is Success -> showToasterSuccess(it.data, getString(R.string.atc_variant_oke_label))
-                is Fail -> showToasterError(getErrorMessage(it.throwable))
+                is Fail -> {
+                    showToasterError(getErrorMessage(it.throwable))
+                    logException(it.throwable)
+                }
             }
         })
     }
@@ -198,18 +203,21 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     private fun observeInitialVisitablesData() {
         viewModel.initialData.observe(viewLifecycleOwner, {
-            if (it is Success) {
-                adapter.submitList(it.data)
+            when (it) {
+                is Success -> adapter.submitList(it.data)
+                is Fail -> logException(it.throwable)
             }
         })
     }
 
     private fun observeButtonState() {
         viewModel.buttonData.observe(viewLifecycleOwner, {
-            if (it is Success) {
-                renderButton(it.data)
-            } else {
-                baseAtcBtn?.visibility = false
+            when (it) {
+                is Success -> renderButton(it.data)
+                is Fail -> {
+                    baseAtcBtn?.visibility = false
+                    logException(it.throwable)
+                }
             }
         })
     }
@@ -223,6 +231,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 }
             } else if (it is Fail) {
                 showToasterError(getErrorMessage(it.throwable))
+                logException(it.throwable)
             }
         })
     }
@@ -241,11 +250,14 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 it.throwable.run {
                     viewModel.updateActivityResult(atcSuccessMessage = "")
                     if (this is AkamaiErrorException && message != null) {
-                        showToasterError(message
-                                ?: "", getString(R.string.atc_variant_oke_label))
+                        showToasterError(
+                                message ?: "",
+                                getString(R.string.atc_variant_oke_label)
+                        )
                     } else {
                         showToasterError(getErrorMessage(this), getString(R.string.atc_variant_oke_label))
                     }
+                    logException(this)
                 }
             }
         })
@@ -524,8 +536,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 data.cartTypeData
         )
     }
-}
 
-interface AtcVariantBottomSheetListener {
-    fun onBottomSheetDismiss()
+    private fun logException(t: Throwable) {
+        if (!BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(Exception(t))
+        } else {
+            t.printStackTrace()
+        }
+    }
 }

@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tkpd.atc_variant.R
 import com.tkpd.atc_variant.views.bottomsheet.AtcVariantBottomSheet
-import com.tkpd.atc_variant.views.bottomsheet.AtcVariantBottomSheetListener
+import com.tkpd.atc_variant.views.listener.AtcVariantBottomSheetListener
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.detail.common.AtcVariantHelper.ATC_VARIANT_CACHE_ID
