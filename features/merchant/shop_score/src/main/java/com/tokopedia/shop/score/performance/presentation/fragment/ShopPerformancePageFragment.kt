@@ -51,7 +51,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceListener, ItemShopPerformanceListener,
         ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
         ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, SectionFaqListener,
-        GlobalErrorListener, ItemPotentialPMProListener, ItemStatusPowerMerchantProListener {
+        GlobalErrorListener, ItemRegularMerchantListener, ItemPotentialPMProListener, ItemStatusPowerMerchantProListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -67,7 +67,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceAdapterTypeFactory(this, this,
                 this, this,
                 this, this, this,
-                this, this, this)
+                this, this, this, this)
     }
 
     private val shopPerformanceAdapter by lazy { ShopPerformanceAdapter(shopPerformanceAdapterTypeFactory) }
@@ -250,6 +250,13 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 }
             }
         }
+    }
+
+    /**
+     * ItemRegularMerchantListener
+     */
+    override fun onRMSectionToPMPage() {
+        goToPowerMerchantSubscribe(PARAM_PM)
     }
 
     private fun goToSellerMigrationPage(context: Context, appLinks: ArrayList<String>) {

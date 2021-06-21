@@ -135,7 +135,7 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
             if (!isAdded) return
             childFragmentManager.beginTransaction()
                     .replace(R.id.fragmentList, it, it::class.java.simpleName)
-                    .commit()
+                    .commitAllowingStateLoss()
         }
     }
 
@@ -145,7 +145,7 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
             initiateDetailFragment(orderId, passOrderDetail).let {
                 childFragmentManager.beginTransaction()
                         .replace(R.id.fragmentDetail, it, it::class.java.simpleName)
-                        .commit()
+                        .commitAllowingStateLoss()
             }
         } else {
             somDetailFragment?.setOrderIdToShow(orderId)
@@ -154,4 +154,6 @@ class SomContainerFragment : Fragment(), SomListFragment.SomListClickListener, S
         ivSomDetailWelcomeIllustration?.gone()
         tvSomDetailWelcome?.gone()
     }
+
+
 }
