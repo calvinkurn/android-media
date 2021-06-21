@@ -27,9 +27,7 @@ open class BulkRemoveWishlistUseCase @Inject constructor(val graphqlUseCase: Gra
 
     override fun createObservable(requestParams: RequestParams): Observable<WishlistActionData> {
         val productRequestIds = requestParams.parameters.get(PARAM_PRODUCT_IDS) as MutableList<String>
-        val productRequestIdsInt = productRequestIds.map {
-            it.toInt()
-        }
+        val productRequestIdsInt = productRequestIds.map { it }
         val userId = requestParams.getString(PARAM_USER_ID, "")
 
         val variables = HashMap<String, Any>()
