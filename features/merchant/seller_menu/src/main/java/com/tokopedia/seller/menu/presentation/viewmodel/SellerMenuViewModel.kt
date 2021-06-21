@@ -78,7 +78,7 @@ class SellerMenuViewModel @Inject constructor(
         })
     }
 
-    fun getAllSettingShopInfo(isToasterRetry: Boolean = false, shopAge: Int) {
+    fun getAllSettingShopInfo(isToasterRetry: Boolean = false, shopAge: Long) {
         if (isToasterRetry) {
             launch(coroutineContext) {
                 checkDelayErrorResponseTrigger()
@@ -116,7 +116,7 @@ class SellerMenuViewModel @Inject constructor(
         })
     }
 
-    private fun getAllShopInfoData(shopAge: Int) {
+    private fun getAllShopInfoData(shopAge: Long) {
         launchCatchError(block = {
             val shopId = userSession.shopId
             val getShopInfo = withContext(dispatchers.io) {

@@ -16,6 +16,8 @@ query dynamicHomeChannel($type: String, $location: String) {
                 expiredTime
                 backColor
                 backImage
+                subtitle
+                textColor
             }
             hero {
                 id

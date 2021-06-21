@@ -11,13 +11,12 @@ object GoldMerchantUtil {
     fun isNewSeller(dateString: String): Boolean {
         return totalDays(dateString) < NEW_SELLER_DAYS
     }
-    fun totalDays(dateString: String): Int {
+    fun totalDays(dateString: String): Long {
         return try {
             val simpleDateFormat = SimpleDateFormat(PATTERN_DATE_SHOP_INFO, DateFormatUtils.DEFAULT_LOCALE)
             val joinDate = simpleDateFormat.parse(dateString)
             val diffInMs: Long = abs(System.currentTimeMillis() - joinDate?.time.orZero())
-            val diff = TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)
-            return diff.toInt()
+            return TimeUnit.DAYS.convert(diffInMs, TimeUnit.MILLISECONDS)
         } catch (e: Exception) {
             e.printStackTrace()
             0
