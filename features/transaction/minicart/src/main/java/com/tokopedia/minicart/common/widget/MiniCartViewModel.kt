@@ -477,16 +477,21 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         var totalWeight = 0
         visitables.forEach { visitable ->
             if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
-                if (visitable.parentId.contains(TEMPORARY_PARENT_ID_PREFIX)) {
-                    visitable.parentId = "0"
-                }
-                val price = if (visitable.productWholeSalePrice > 0) visitable.productWholeSalePrice else visitable.productPrice
+                if (visitable.parentId.contains(TEMPORARY_PARENT_ID_PREFIX)) visitable.parentId = "0"
+                val price =
+                        if (visitable.productWholeSalePrice > 0) visitable.productWholeSalePrice
+                        else visitable.productPrice
                 totalQty += visitable.productQty
                 totalPrice += visitable.productQty * price
-                val originalPrice = if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice else visitable.productPrice
+                val originalPrice =
+                        if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice
+                        else if (visitable.productWholeSalePrice > 0) visitable.productWholeSalePrice
+                        else visitable.productPrice
                 totalValue += visitable.productQty * originalPrice
                 totalWeight += visitable.productQty * visitable.productWeight
-                val discountValue = if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice - visitable.productPrice else 0
+                val discountValue =
+                        if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice - visitable.productPrice
+                        else 0
                 totalDiscount += visitable.productQty * discountValue
             }
         }
