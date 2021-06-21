@@ -128,6 +128,30 @@ class UpdateCartTest {
     }
 
     @Test
+    fun `WHEN update cart for save state error THEN global event state should not be changed`() {
+        //given
+        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        viewModel.initializeGlobalState()
+
+        val errorMessage = "Error Message"
+        val throwable = ResponseErrorException(errorMessage)
+        coEvery { updateCartUseCase.setParamsFromUiModels(any(), any()) } just Runs
+        coEvery { updateCartUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        val isForCheckout = false
+        val observer = GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET
+
+        //when
+        viewModel.updateCart(isForCheckout, observer)
+
+        //then
+        assert(viewModel.globalEvent.value?.state == 0)
+    }
+
+    @Test
     fun `WHEN update cart for checkout from mini cart bottom sheet failed with data THEN update cart data should not be empty`() {
         //given
         val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()

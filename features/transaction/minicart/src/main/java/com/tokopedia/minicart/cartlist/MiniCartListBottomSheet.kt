@@ -434,7 +434,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         updateCartDebounceJob?.cancel()
         updateCartDebounceJob = GlobalScope.launch(Dispatchers.Main) {
             delay(500)
-            viewModel?.updateCart(observer = GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
+            viewModel?.updateCart(isForCheckout = false, observer = GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET)
         }
     }
 
