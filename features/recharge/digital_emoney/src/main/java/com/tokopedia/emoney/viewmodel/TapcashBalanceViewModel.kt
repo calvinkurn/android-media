@@ -5,10 +5,8 @@ import android.util.Log
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.util.NFCUtils
-import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.crypogramToByteArray
-import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.stringToByteArray
+import com.tokopedia.common_electronic_money.util.NFCUtils.Companion.stringToByteArrayRadix
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
-import com.tokopedia.emoney.data.AttributesTapcash
 import com.tokopedia.emoney.data.BalanceTapcash
 import com.tokopedia.emoney.util.TapcashObjectMapper.mapTapcashtoEmoney
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -75,7 +73,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         }
     }
 
-    private fun updateBalance(cardData: String, terminalRandomNumber: ByteArray,  balanceRawQuery: String){
+    private fun updateBalance(cardData: String, terminalRandomNumber: ByteArray, balanceRawQuery: String) {
         launchCatchError(block = {
             var mapParam = HashMap<String, Any>()
             mapParam.put(CARD_DATA, cardData)
@@ -85,36 +83,44 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<BalanceTapcash>()
 
-            //val data = Gson().fromJson(DummyTapcash.dummyTapcash, BalanceTapcash::class.java)
             if (data.rechargeUpdateBalance.attributes.cryptogram.isNotEmpty()) {
-                writeBalance(data.rechargeUpdateBalance.attributes, terminalRandomNumber)
+                writeBalance(data, terminalRandomNumber)
             } else {
                 tapcashInquiry.postValue(mapTapcashtoEmoney(data))
             }
-        }){
+        }) {
             errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
         }
     }
 
-    private fun writeBalance(attributesTapcash: AttributesTapcash, terminalRandomNumber: ByteArray){
-        val command = writeBalanceRequest(attributesTapcash.cryptogram, terminalRandomNumber)
-        val commandString = NFCUtils.toHex(command)
-        Log.d("TAPCASH_REQUESTDATA", commandString)
-        val writeResult = isoDep.transceive(command)
-        val writeResultString = NFCUtils.toHex(writeResult)
-        Log.d("TAPCASH_RESULTDATA", writeResultString)
-        if (isCommandFailed(writeResult)) {
-            errorCardMessage.postValue("Error")
+    private fun writeBalance(tapcash: BalanceTapcash, terminalRandomNumber: ByteArray) {
+        val attributesTapcash = tapcash.rechargeUpdateBalance.attributes
+        if (::isoDep.isInitialized && isoDep.isConnected) {
+            try {
+                val command = writeBalanceRequest(attributesTapcash.cryptogram, terminalRandomNumber)
+                val commandString = NFCUtils.toHex(command)
+                Log.d("TAPCASH_REQUESTDATA", commandString)
+                val writeResult = isoDep.transceive(command)
+                val writeResultString = NFCUtils.toHex(writeResult)
+                Log.d("TAPCASH_RESULTDATA", writeResultString)
+                if (isCommandFailed(writeResult)) {
+                    errorCardMessage.postValue("Error")
+                } else {
+                    tapcashInquiry.postValue(mapTapcashtoEmoney(tapcash, writeResultString.substring(48, 54)))
+                }
+            } catch (e: IOException) {
+                isoDep.close()
+                errorCardMessage.postValue("Error, Isodep issue catch")
+            }
         } else {
-            errorCardMessage.postValue("Success ${attributesTapcash.amount}")
+            errorCardMessage.postValue("Error, Isodep issue")
         }
     }
 
     private fun writeBalanceRequest(cryptogram: String, terminalRandomNumber: ByteArray): ByteArray {
-       val command = COMMAND_WRITE_BALANCE.
-        plus(0x03.toByte()).plus(0x14.toByte()).plus(0x02.toByte()).plus(0x14.toByte()).plus(0x03.toByte()). //fixed value
+        val command = COMMAND_WRITE_BALANCE.plus(0x03.toByte()).plus(0x14.toByte()).plus(0x02.toByte()).plus(0x14.toByte()).plus(0x03.toByte()). //fixed value
         plus(terminalRandomNumber). //Terminal Random Number
-        plus(crypogramToByteArray(cryptogram)). // Cryptogram
+        plus(stringToByteArrayRadix(cryptogram.substring(32, 64))). // Cryptogram
         plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()). // fixed value
         plus(0x18.toByte()) //LE field
 
@@ -168,9 +174,9 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     /**
      * for getting the random string that needed as TERMINAL_RANDOM_NUMBER
      */
-    private fun getRandomString() : String {
+    private fun getRandomString(): String {
         val allowedChars = ('A'..'F') + ('0'..'9')
-        return (1..8)
+        return (1..16)
                 .map { allowedChars.random() }
                 .joinToString("")
     }
@@ -178,21 +184,21 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     /**
      * get the first index of each needed from secure purse
      */
-    private fun indexBegin(index: Int): Int{
+    private fun indexBegin(index: Int): Int {
         return (index * 2) - 2
     }
 
     /**
      * get the last index of each needed from secure purse
      */
-    private fun indexEnd(index: Int): Int{
+    private fun indexEnd(index: Int): Int {
         return (index * 2)
     }
 
     /**
      * get the substring of each needed from secure purse
      */
-    private fun getStringFromPosition(securePurse: String, indexBegin:Int, indexEnd: Int): String{
+    private fun getStringFromPosition(securePurse: String, indexBegin: Int, indexEnd: Int): String {
         return securePurse.substring(indexBegin(indexBegin), indexEnd(indexEnd))
     }
 
@@ -214,7 +220,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 0x08.toByte() // // LE Data Field
         )
 
-        private val COMMAND_SECURE_PURSE =  byteArrayOf(
+        private val COMMAND_SECURE_PURSE = byteArrayOf(
                 0x90.toByte(),  // CLA Class
                 0x32.toByte(),  // INS Instruction
                 0x03.toByte(),  // P1  Parameter 1
@@ -222,7 +228,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 0x0A.toByte() //  LC Data Field
         )
 
-        private val COMMAND_WRITE_BALANCE =  byteArrayOf(
+        private val COMMAND_WRITE_BALANCE = byteArrayOf(
                 0x90.toByte(),  // CLA Class
                 0x36.toByte(),  // INS Instruction
                 0x14.toByte(),  // P1  Parameter 1
