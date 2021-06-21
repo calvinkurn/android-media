@@ -37,13 +37,24 @@
         app:typographyWeight="reguler"
         tools:text="Saya sangat puas sekali!! Awalnya saya gak percaya. Dengan memakai handphone ini, saya bisa mendengarkan suaara jernih... Selengkapnya" />
 
+    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewAttachedImages
+        android:id="@+id/read_review_attached_images"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:visibility="gone"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_review_item_review"
+        tools:visibility="visible"/>
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/read_review_like_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:layout_constraintStart_toStartOf="@id/read_review_item_review"
-        app:layout_constraintTop_toBottomOf="@id/read_review_item_review"
+        app:layout_constraintTop_toBottomOf="@id/read_review_attached_images"
         app:srcCompat="@drawable/ic_read_review_like" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -87,10 +98,19 @@
         app:layout_constraintStart_toStartOf="@id/read_review_like_button"
         app:layout_constraintTop_toBottomOf="@id/read_review_like_button" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/read_review_item_barrier"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="read_review_seller_response, read_review_like_button"/>
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:background="@color/Unify_N75"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/read_review_item_barrier"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,15 +10,19 @@ import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.reading.data.LikeDislike
+import com.tokopedia.review.feature.reading.data.ProductReview
+import com.tokopedia.review.feature.reading.data.ProductReviewAttachments
 import com.tokopedia.review.feature.reading.data.ProductReviewResponse
 import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewItemListener
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
+import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
+import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewAttachedImages
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewSellerResponse
 import com.tokopedia.review.feature.reading.utils.ReadReviewUtils
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ReadReviewProductViewHolder(view: View, private val readReviewItemListener: ReadReviewItemListener) : AbstractViewHolder<ReadReviewUiModel>(view) {
+class ReadReviewProductViewHolder(view: View, private val readReviewItemListener: ReadReviewItemListener, private val attachedImagesClickListener: ReadReviewAttachedImagesListener) : AbstractViewHolder<ReadReviewUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_read_review
@@ -32,6 +36,7 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
     private var likeImage: ImageUnify? = null
     private var likeCount: Typography? = null
     private var reviewMessage: Typography? = null
+    private var attachedImages: ReadReviewAttachedImages? = null
     private var showResponseText: Typography? = null
     private var showResponseChevron: IconUnify? = null
     private var sellerResponse: ReadReviewSellerResponse? = null
@@ -44,6 +49,7 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
             setReviewerName(user.fullName)
             showReportOptionWithCondition(isReportable, feedbackID, element.shopId)
             setReview(message)
+            showAttachedImages(imageAttachments, this)
             setLikeButton(feedbackID, element.shopId, likeDislike)
             setReply(element.shopName, reviewResponse)
         }
@@ -53,6 +59,7 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
         basicInfo = itemView.findViewById(R.id.read_review_basic_info)
         reportOption = itemView.findViewById(R.id.read_review_item_three_dots)
         reviewMessage = itemView.findViewById(R.id.read_review_item_review)
+        attachedImages = itemView.findViewById(R.id.read_review_attached_images)
         likeImage = itemView.findViewById(R.id.read_review_like_button)
         likeCount = itemView.findViewById(R.id.read_review_like_count)
         showResponseText = itemView.findViewById(R.id.read_review_show_response)
@@ -163,6 +170,17 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
                 showResponseText?.text = getString(R.string.review_reading_show_response)
                 sellerResponse?.hide()
             }
+        }
+    }
+
+    private fun showAttachedImages(imageAttachments: List<ProductReviewAttachments>, productReview: ProductReview) {
+        if (imageAttachments.isEmpty()) {
+            attachedImages?.hide()
+            return
+        }
+        attachedImages?.apply {
+            setImages(imageAttachments, attachedImagesClickListener, productReview)
+            show()
         }
     }
 }

@@ -9,8 +9,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.adapter.viewholder.ReadReviewLoadingViewHolder
 import com.tokopedia.review.feature.reading.presentation.adapter.viewholder.ReadReviewProductViewHolder
+import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
 
-class ReadReviewAdapterTypeFactory(private val readReviewItemListener: ReadReviewItemListener) : ReadReviewTypeFactory, BaseAdapterTypeFactory() {
+class ReadReviewAdapterTypeFactory(private val readReviewItemListener: ReadReviewItemListener, private val attachedImagesClickListener: ReadReviewAttachedImagesListener) : ReadReviewTypeFactory, BaseAdapterTypeFactory() {
 
     override fun type(loadingMoreModel: LoadingMoreModel): Int {
         return ReadReviewLoadingViewHolder.LAYOUT
@@ -21,8 +22,8 @@ class ReadReviewAdapterTypeFactory(private val readReviewItemListener: ReadRevie
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when(type) {
-            ReadReviewProductViewHolder.LAYOUT -> ReadReviewProductViewHolder(parent, readReviewItemListener)
+        return when (type) {
+            ReadReviewProductViewHolder.LAYOUT -> ReadReviewProductViewHolder(parent, readReviewItemListener, attachedImagesClickListener)
             ReadReviewLoadingViewHolder.LAYOUT -> ReadReviewLoadingViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
