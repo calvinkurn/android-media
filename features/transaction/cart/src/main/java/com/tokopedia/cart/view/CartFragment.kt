@@ -2475,13 +2475,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 if (!showAccordion && it.shopGroupWithErrorDataList.size > 1) {
                     showAccordion = true
                 }
-                it.shopGroupWithErrorDataList.forEach {
-                    val cartItemHolderDataList = it.cartItemHolderDataList
+                it.shopGroupWithErrorDataList.forEach { shop ->
+                    val cartItemHolderDataList = shop.cartItemHolderDataList
                     if (cartItemHolderDataList.isNotEmpty()) {
                         if (!showAccordion && cartItemHolderDataList.size > 1) {
                             showAccordion = true
                         }
-                        cartAdapter.addNotAvailableShop(viewHolderDataMapper.mapDisabledShopHolderData(it))
+                        cartAdapter.addNotAvailableShop(viewHolderDataMapper.mapDisabledShopHolderData(shop, it.title))
                         for ((index, value) in cartItemHolderDataList.withIndex()) {
                             cartAdapter.addNotAvailableProduct(viewHolderDataMapper.mapDisabledItemHolderData(value, index != cartItemHolderDataList.size - 1))
                         }

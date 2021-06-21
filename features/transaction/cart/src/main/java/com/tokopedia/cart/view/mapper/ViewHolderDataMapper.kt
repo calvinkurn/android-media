@@ -21,13 +21,14 @@ class ViewHolderDataMapper @Inject constructor() {
         }
     }
 
-    fun mapDisabledShopHolderData(shopGroupWithErrorData: ShopGroupWithErrorData): DisabledShopHolderData {
+    fun mapDisabledShopHolderData(shopGroupWithErrorData: ShopGroupWithErrorData, reason: String): DisabledShopHolderData {
         return DisabledShopHolderData(
                 shopId = shopGroupWithErrorData.shopId,
                 shopName = shopGroupWithErrorData.shopName,
                 shopBadgeUrl = shopGroupWithErrorData.shopTypeInfoData.shopBadge,
                 isFulfillment = shopGroupWithErrorData.isFulfillment,
-                isTokoNow = shopGroupWithErrorData.isTokoNow
+                isTokoNow = shopGroupWithErrorData.isTokoNow,
+                reason = reason
         )
     }
 
