@@ -471,6 +471,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
         // Calculate total price
         var totalQty = 0
+        var sellerCashbackValue = 0L
         var totalPrice = 0L
         var totalValue = 0L
         var totalDiscount = 0L
@@ -478,21 +479,28 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         visitables.forEach { visitable ->
             if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
                 if (visitable.parentId.contains(TEMPORARY_PARENT_ID_PREFIX)) visitable.parentId = "0"
-                val price =
-                        if (visitable.productWholeSalePrice > 0) visitable.productWholeSalePrice
-                        else visitable.productPrice
                 totalQty += visitable.productQty
+                val price =
+                        when {
+                            visitable.productWholeSalePrice > 0 -> visitable.productWholeSalePrice
+                            else -> visitable.productPrice
+                        }
                 totalPrice += visitable.productQty * price
+                sellerCashbackValue += (visitable.productQty * visitable.productCashbackPercentage / 100.0 * price).toLong()
                 val originalPrice =
-                        if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice
-                        else if (visitable.productWholeSalePrice > 0) visitable.productWholeSalePrice
-                        else visitable.productPrice
+                        when {
+                            visitable.productOriginalPrice > 0 -> visitable.productOriginalPrice
+                            visitable.productWholeSalePrice > 0 -> visitable.productWholeSalePrice
+                            else -> visitable.productPrice
+                        }
                 totalValue += visitable.productQty * originalPrice
-                totalWeight += visitable.productQty * visitable.productWeight
                 val discountValue =
-                        if (visitable.productOriginalPrice > 0) visitable.productOriginalPrice - visitable.productPrice
-                        else 0
+                        when {
+                            visitable.productOriginalPrice > 0 -> visitable.productOriginalPrice - visitable.productPrice
+                            else -> 0
+                        }
                 totalDiscount += visitable.productQty * discountValue
+                totalWeight += visitable.productQty * visitable.productWeight
             }
         }
         miniCartListBottomSheetUiModel.value?.let {
@@ -502,6 +510,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             it.miniCartSummaryTransactionUiModel.totalValue = totalValue
             it.miniCartSummaryTransactionUiModel.discountValue = totalDiscount
             it.miniCartSummaryTransactionUiModel.paymentTotal = totalPrice
+            it.miniCartSummaryTransactionUiModel.sellerCashbackValue = sellerCashbackValue
             it.isFirstLoad = false
             it.needToCalculateAfterLoad = false
         }

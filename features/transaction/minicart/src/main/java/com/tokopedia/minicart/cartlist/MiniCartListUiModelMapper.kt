@@ -1,6 +1,7 @@
 package com.tokopedia.minicart.cartlist
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.common.data.response.minicartlist.*
@@ -36,6 +37,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
             discountValue = miniCartData.data.shoppingSummary.discountValue
             paymentTotalWording = miniCartData.data.shoppingSummary.paymentTotalWording
             paymentTotal = miniCartData.data.shoppingSummary.paymentTotalValue
+            sellerCashbackWording = miniCartData.data.shoppingSummary.sellerCashbackWording
+            sellerCashbackValue = miniCartData.data.shoppingSummary.sellerCashbackValue
         }
     }
 
@@ -220,6 +223,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             } else {
                 productQtyLeft = cartDetail.product.productWarningMessage
             }
+            productCashbackPercentage = cartDetail.product.productCashback.replace("%", "").toIntOrZero()
         }
     }
 
