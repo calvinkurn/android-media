@@ -29,7 +29,7 @@ class InsertSellerResponseUseCase @Inject constructor(
         """
 
         @JvmStatic
-        fun createParams(reviewId: Int, productId: Int, shopId: Int, responseMessage: String): Map<String, Any> =
+        fun createParams(reviewId: Long, productId: Long, shopId: Long, responseMessage: String): Map<String, Any> =
                 mapOf(REVIEW_ID to reviewId, PRODUCT_ID to productId, SHOP_ID to shopId, RESPONSE_MESSAGE to responseMessage)
     }
 

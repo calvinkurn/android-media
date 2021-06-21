@@ -8,6 +8,5 @@ import com.tokopedia.gm.common.constant.PMShopGrade
  */
 
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(value = [PMShopGrade.NO_GRADE, PMShopGrade.BRONZE, PMShopGrade.SILVER, PMShopGrade.GOLD,
-    PMShopGrade.DIAMOND, PMShopGrade.ADVANCED, PMShopGrade.EXPERT, PMShopGrade.ULTIMATE])
+@StringDef(value = [PMShopGrade.ADVANCED, PMShopGrade.EXPERT, PMShopGrade.ULTIMATE])
 annotation class ShopGrade

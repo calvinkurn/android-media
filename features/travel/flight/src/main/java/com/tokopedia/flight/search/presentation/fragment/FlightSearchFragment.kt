@@ -128,7 +128,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     if (it.throwable is FlightSearchThrowable) {
                         val errors = (it.throwable as FlightSearchThrowable).errorList
                         for (error in errors) {
-                            if (error.id == FlightErrorConstant.FLIGHT_ROUTE_NOT_FOUND) {
+                            if (error.id.toInt() == FlightErrorConstant.FLIGHT_ROUTE_NOT_FOUND.value) {
                                 showNoRouteFlightEmptyState(error.title)
                                 flightSearchViewModel.sendProductNotFoundTrack()
                                 break
