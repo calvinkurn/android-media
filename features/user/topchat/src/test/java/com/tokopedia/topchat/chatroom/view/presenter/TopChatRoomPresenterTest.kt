@@ -70,6 +70,7 @@ import com.tokopedia.chat_common.data.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.generateSendAbleProductPreview
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.util.ImageUtil
@@ -278,7 +279,7 @@ class TopChatRoomPresenterTest {
             return ReplyChatViewModel(imageUploadViewModel, true)
         }
 
-        private fun generateSendAbleProductPreview(): SendablePreview {
+        fun generateSendAbleProductPreview(): SendablePreview {
             val productPreview = ProductPreview(
                     name = "hello product",
                     imageUrl = exImageUrl,
@@ -902,7 +903,7 @@ class TopChatRoomPresenterTest {
     }
 
     @Test
-    fun `on success send SRW through websocket`() {
+    fun `on success send SRW preview through websocket`() {
         // Given
         val srwQuestion = QuestionUiModel()
         val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
@@ -918,6 +919,29 @@ class TopChatRoomPresenterTest {
         // Then
         verify(exactly = 1) { mockOnSendingMessage.invoke() }
         verify(exactly = 1) { view.clearAttachmentPreviews() }
+    }
+
+    @Test
+    fun `on success send SRW bubble through websocket`() {
+        // Given
+        val srwQuestion = QuestionUiModel()
+        val products = listOf(generateSendAbleProductPreview())
+        val mockOnSendingMessage: () -> Unit = mockk(relaxed = true)
+        val paramSendMessage = "paramSendMessage"
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        every {
+            TopChatWebSocketParam.generateParamSendMessage(any(), any(), any(), any(), any())
+        } returns paramSendMessage
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+        presenter.sendSrwBubble(
+            exMessageId, srwQuestion, products, exOpponentId, mockOnSendingMessage
+        )
+
+        // Then
+        verify(exactly = 1) { RxWebSocket.send(paramSendMessage, listInterceptor) }
     }
 
     @Test
