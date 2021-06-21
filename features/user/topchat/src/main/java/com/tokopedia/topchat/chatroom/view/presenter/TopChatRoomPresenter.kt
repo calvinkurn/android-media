@@ -732,25 +732,6 @@ open class TopChatRoomPresenter @Inject constructor(
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(thisMessageId))
     }
 
-    override fun copyVoucherCode(
-        fromUid: String?,
-        replyId: String,
-        blastId: String,
-        attachmentId: String,
-        replyTime: String?
-    ) {
-        sendMessageWebSocket(
-            TopChatWebSocketParam.generateParamCopyVoucherCode(
-                thisMessageId,
-                replyId,
-                blastId,
-                attachmentId,
-                replyTime,
-                fromUid
-            )
-        )
-    }
-
     override fun followUnfollowShop(
         shopId: String,
         onError: (Throwable) -> Unit,
