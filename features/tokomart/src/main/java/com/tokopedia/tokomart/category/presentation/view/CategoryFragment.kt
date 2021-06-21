@@ -4,8 +4,12 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.tokomart.category.analytics.CategoryTracking
 import com.tokopedia.tokomart.category.di.CategoryComponent
 import com.tokopedia.tokomart.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleItemDataView
@@ -44,9 +48,22 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
         }
     }
 
+    override fun onSearchBarClick(hint: String) {
+        CategoryTracking.sendSearchBarClickEvent(getViewModel().categoryL1)
+
+        super.onSearchBarClick(hint)
+    }
+
     override fun getBaseAutoCompleteApplink() =
             super.getBaseAutoCompleteApplink() + "?" +
                     "${SearchApiConst.NAVSOURCE}=$TOKONOW_DIRECTORY"
+
+    override val disableDefaultCartTracker: Boolean
+        get() = true
+
+    override fun onNavToolbarCartClicked() {
+        CategoryTracking.sendCartClickEvent(getViewModel().categoryL1)
+    }
 
     override fun getScreenName() = ""
 
@@ -71,10 +88,99 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
         get() = MiniCartAnalytics.Page.CATEGORY_PAGE
 
     override fun onAisleClick(categoryAisleItemDataView: CategoryAisleItemDataView) {
+        CategoryTracking.sendAisleClickEvent(getViewModel().categoryL1, categoryAisleItemDataView.id)
+
         RouteManager.route(context, categoryAisleItemDataView.applink)
     }
 
     override fun onProductImpressed(productItemDataView: ProductItemDataView) {
+        val trackingQueue = trackingQueue ?: return
 
+        CategoryTracking.sendProductImpressionEvent(
+                trackingQueue,
+                productItemDataView,
+                getViewModel().categoryL1,
+                getUserId(),
+        )
+    }
+
+    override fun onProductClick(productItemDataView: ProductItemDataView) {
+        CategoryTracking.sendProductClickEvent(
+                productItemDataView,
+                getViewModel().categoryL1,
+                getUserId(),
+        )
+
+        super.onProductClick(productItemDataView)
+    }
+
+    override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {
+        CategoryTracking.sendBannerImpressionEvent(channelModel, getViewModel().categoryL1, getUserId())
+
+        super.onBannerImpressed(channelModel, position)
+    }
+
+    override fun onBannerClick(channelModel: ChannelModel, applink: String) {
+        CategoryTracking.sendBannerClickEvent(channelModel, getViewModel().categoryL1, getUserId())
+
+        super.onBannerClick(channelModel, applink)
+    }
+
+    override fun onSeeAllCategoryClicked() {
+        CategoryTracking.sendAllCategoryClickEvent(getViewModel().categoryL1)
+
+        super.onSeeAllCategoryClicked()
+    }
+
+    override fun onCategoryFilterChipClick(option: Option, isSelected: Boolean) {
+        CategoryTracking.sendApplyCategoryL2FilterEvent(getViewModel().categoryL1, option.value)
+
+        super.onCategoryFilterChipClick(option, isSelected)
+    }
+
+    override fun openFilterPage() {
+        CategoryTracking.sendFilterClickEvent(getViewModel().categoryL1)
+
+        super.openFilterPage()
+    }
+
+    override fun sendTrackingQuickFilter(quickFilterTracking: Pair<Option, Boolean>) {
+        CategoryTracking.sendQuickFilterClickEvent(getViewModel().categoryL1)
+    }
+
+    override fun onApplySortFilter(applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel) {
+        CategoryTracking.sendApplySortFilterEvent(getViewModel().categoryL1)
+
+        super.onApplySortFilter(applySortFilterModel)
+    }
+
+    override fun openCategoryChooserFilterPage(filter: Filter) {
+        CategoryTracking.sendOpenCategoryL3FilterEvent(getViewModel().categoryL1)
+
+        super.openCategoryChooserFilterPage(filter)
+    }
+
+    override fun onApplyCategory(selectedOption: Option) {
+        CategoryTracking.sendApplyCategoryL3FilterEvent(getViewModel().categoryL1, selectedOption.value)
+
+        super.onApplyCategory(selectedOption)
+    }
+
+    override fun sendAddToCartTrackingEvent(atcData: Triple<Int, String, ProductItemDataView>) {
+        val (quantity, cartId, productItemDataView) = atcData
+
+        CategoryTracking.sendAddToCartEvent(
+                productItemDataView,
+                getViewModel().categoryL1,
+                getUserId(),
+                quantity,
+                cartId,
+        )
+    }
+
+    override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
+        CategoryTracking.sendChooseVariantClickEvent(getViewModel().categoryL1)
+
+        super.onProductChooseVariantClicked(productItemDataView)
     }
 }

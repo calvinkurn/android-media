@@ -3,7 +3,7 @@
     <string name="shc_load_failed">Gagal memuat</string>
     <string name="shc_failed_to_load">Gagal dimuat</string>
     <string name="shc_failed_to_load_information">Oops, informasi gagal ditampilkan</string>
-    <string name="shc_empty_state_title_post_list">Belum ada informasi untukmu</string>
+    <string name="shc_empty_state_title">Belum ada informasi untukmu</string>
     <string name="shc_more">Selengkapnya</string>
     <string name="shc_score">Skor</string>
     <string name="shc_max_progress">/100</string>
@@ -13,9 +13,9 @@
     <string name="shc_select_category">Pilih Kategori</string>
     <string name="shc_select_statistic_data">Pilih data statistik</string>
     <string name="shc_apply_btn">Terapkan</string>
-    <string name="multi_line_empty_state_title">Belum ada data hari ini</string>
-    <string name="multi_line_empty_state_description">Statistik penjualan tokomu akan ditampilkan di sini jika produkmu sudah terjual.</string>
-    <string name="multi_line_empty_state_cta">Yuk, Promosikan Produkmu!</string>
+    <string name="shc_data_empty_state_title">Belum ada data hari ini</string>
+    <string name="shc_empty_state_description">Statistik penjualan tokomu akan ditampilkan di sini jika produkmu sudah terjual.</string>
+    <string name="shc_empty_state_cta">Yuk, Promosikan Produkmu!</string>
     <string name="shc_empty_state_description_post_list">Tenang, kamu tetap bisa ikuti semua update mengenai Seller di Pusat Edukasi Seller, ya.</string>
     <string name="shc_empty_state_button_post_list">Ke Pusat Edukasi Seller</string>
     <string name="shc_content_desc_button_lihat_selengkapnya">button lihat selengkapnya</string>
@@ -24,4 +24,6 @@
     <string name="shc_content_desc_image_dot">image dot</string>
     <string name="shc_content_desc_image_error">image error</string>
     <string name="shc_content_desc_image_table_empty">image table empty</string>
+    <string name="shc_content_desc_image_pie_chart_empty">pie chart empty</string>
+    <string name="shc_content_desc_image_carousel_empty">carousel empty</string>
 </resources>

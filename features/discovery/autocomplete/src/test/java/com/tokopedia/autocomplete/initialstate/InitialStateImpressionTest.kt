@@ -121,12 +121,12 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         val recentViewListResponse = getDataLayerForRecentView(initialStateData[1].items)
         val recentSearchListResponse = getDataLayerForPromo(initialStateData[2].items.take(3))
         val popularSearchListResponse = getDataLayerForPromo(initialStateData[3].items)
-        val dynamicSectionResponse = getDataLayerForPromo(initialStateCommonData[3].items)
+        val dynamicSectionResponse = getDataLayerForPromo(initialStateData[4].items)
 
         assert(recentViewItemList.containsAll(recentViewListResponse))
         assert(recentSearchItemList.containsAll(recentSearchListResponse))
-        popularSearchTrackingModel.assertTrackerModel(popularSearchListResponse, initialStateCommonData[2])
-        dynamicSectionTrackingModel.assertTrackerModel(dynamicSectionResponse, initialStateCommonData[3])
+        popularSearchTrackingModel.assertTrackerModel(popularSearchListResponse, initialStateData[3])
+        dynamicSectionTrackingModel.assertTrackerModel(dynamicSectionResponse, initialStateData[4])
     }
 
     private fun `When see more recent search is clicked`() {

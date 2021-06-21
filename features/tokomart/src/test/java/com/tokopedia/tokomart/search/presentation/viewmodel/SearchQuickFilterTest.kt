@@ -104,6 +104,7 @@ class SearchQuickFilterTest: SearchTestFixtures() {
                 requestParamsSlot.captured,
                 selectedQuickFilter
         )
+        `Then assert quick filter tracking`(selectedQuickFilter, true)
     }
 
     private fun `When quick filter selected`(selectedQuickFilter: SortFilterItemDataView) {
@@ -125,6 +126,16 @@ class SearchQuickFilterTest: SearchTestFixtures() {
         val actualParamsValue = getTokonowQueryParam(requestParams)[selectedQuickFilterKey].toString()
 
         assertThat(actualParamsValue, shouldBe(selectedQuickFilter.firstOption!!.value))
+    }
+
+    private fun `Then assert quick filter tracking`(
+            selectedQuickFilter: SortFilterItemDataView,
+            isApplied: Boolean
+    ) {
+        val quickFilterTracking = searchViewModel.quickFilterTrackingLiveData.value!!
+
+        assertThat(quickFilterTracking.first, shouldBe(selectedQuickFilter.firstOption))
+        assertThat(quickFilterTracking.second, shouldBe(isApplied))
     }
 
     @Test
@@ -151,6 +162,7 @@ class SearchQuickFilterTest: SearchTestFixtures() {
                 requestParamsSlot.captured,
                 selectedQuickFilter
         )
+        `Then assert quick filter tracking`(selectedQuickFilter, false)
     }
 
     private fun `Then verify quick filter does not contain unapplied filter`(

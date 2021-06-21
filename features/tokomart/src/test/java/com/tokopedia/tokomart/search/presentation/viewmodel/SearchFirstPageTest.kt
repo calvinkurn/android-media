@@ -1,15 +1,15 @@
 package com.tokopedia.tokomart.search.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.BUSINESSUNIT
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.CURRENTSITE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokomart.search.domain.model.SearchModel
-import com.tokopedia.tokomart.search.utils.SearchTracking.Action.GENERAL_SEARCH
-import com.tokopedia.tokomart.search.utils.SearchTracking.Category.TOKONOW_TOP_NAV
-import com.tokopedia.tokomart.search.utils.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.GENERAL_SEARCH
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Category.TOKONOW_TOP_NAV
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Misc.HASIL_PENCARIAN_DI_TOKONOW
 import com.tokopedia.tokomart.searchcategory.assertBannerDataView
 import com.tokopedia.tokomart.searchcategory.assertCategoryFilterDataView
 import com.tokopedia.tokomart.searchcategory.assertChooseAddressDataView
@@ -107,19 +107,19 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
         val eventLabel = defaultKeyword +
                 "|$keywordProcess" +
                 "|$responseCode" +
-                "|$BUSINESS_UNIT_VALUE" +
+                "|$BUSINESS_UNIT_PHYSICAL_GOODS" +
                 "|$TOKONOW" +
                 "|$HASIL_PENCARIAN_DI_TOKONOW" +
                 "|$totalData"
 
         val generalSearch = searchViewModel.generalSearchEventLiveData.value!!
 
-        assertThat(generalSearch[EVENT], shouldBe(EVENT_CLICK_VALUE))
+        assertThat(generalSearch[EVENT], shouldBe(EVENT_CLICK_TOKONOW))
         assertThat(generalSearch[EVENT_ACTION], shouldBe(GENERAL_SEARCH))
         assertThat(generalSearch[EVENT_CATEGORY], shouldBe(TOKONOW_TOP_NAV))
         assertThat(generalSearch[EVENT_LABEL], shouldBe(eventLabel))
-        assertThat(generalSearch[BUSINESSUNIT], shouldBe(BUSINESS_UNIT_VALUE))
-        assertThat(generalSearch[CURRENTSITE], shouldBe(CURRENT_SITE_VALUE))
+        assertThat(generalSearch[KEY_BUSINESS_UNIT], shouldBe(BUSINESS_UNIT_PHYSICAL_GOODS))
+        assertThat(generalSearch[KEY_CURRENT_SITE], shouldBe(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE))
     }
 
     @Test

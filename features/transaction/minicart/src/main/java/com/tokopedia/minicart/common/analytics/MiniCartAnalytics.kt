@@ -171,7 +171,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             putString(ITEM_VARIANT, product.productVariantName.toEnhancedEcommerceDefaultValueIfEmpty())
             putString(PRICE, product.productPrice.toString().toEnhancedEcommerceDefaultValueIfEmpty())
             putString(SHOP_ID, product.shopId.toEnhancedEcommerceDefaultValueIfEmpty())
-            putString(QUANTITY, product.productQty.toString().toEnhancedEcommerceDefaultValueIfEmpty())
+            putString(QUANTITY, product.quantity.toString().toEnhancedEcommerceDefaultValueIfEmpty())
             putString(SHOP_NAME, product.shopName.toEnhancedEcommerceDefaultValueIfEmpty())
             putString(SHOP_TYPE, product.shopType.toEnhancedEcommerceDefaultValueIfEmpty())
         }

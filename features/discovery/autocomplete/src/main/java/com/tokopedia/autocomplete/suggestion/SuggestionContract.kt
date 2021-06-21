@@ -10,23 +10,29 @@ interface SuggestionContract {
     interface View : CustomerView {
         fun showSuggestionResult(list: List<Visitable<*>>)
 
-        fun trackEventClickKeyword(eventLabel: String)
+        fun trackEventClickKeyword(eventLabel: String, dimension90: String)
 
-        fun trackEventClickCurated(eventLabel: String, campaignCode: String)
+        fun trackEventClickCurated(eventLabel: String, campaignCode: String, dimension90: String)
 
-        fun trackEventClickShop(eventLabel: String)
+        fun trackEventClickShop(eventLabel: String, dimension90: String)
 
         fun trackEventClickProfile(eventLabel: String)
 
-        fun trackEventClickRecentKeyword(eventLabel: String)
+        fun trackEventClickRecentKeyword(eventLabel: String, dimension90: String)
 
         fun trackEventClickTopShopCard(eventLabel: String)
 
         fun trackEventClickTopShopSeeMore(eventLabel: String)
 
-        fun trackEventClickLocalKeyword(eventLabel: String, userId: String)
+        fun trackEventClickLocalKeyword(eventLabel: String, userId: String, dimension90: String)
 
-        fun trackEventClickGlobalKeyword(eventLabel: String, userId: String)
+        fun trackEventClickGlobalKeyword(eventLabel: String, userId: String, dimension90: String)
+
+        fun trackEventClickProductLine(item: BaseSuggestionDataView, eventLabel: String, userId: String)
+
+        fun trackTokoNowEventClickKeyword(eventLabel: String)
+
+        fun trackTokoNowEventClickCurated(eventLabel: String)
 
         fun dropKeyBoard()
 

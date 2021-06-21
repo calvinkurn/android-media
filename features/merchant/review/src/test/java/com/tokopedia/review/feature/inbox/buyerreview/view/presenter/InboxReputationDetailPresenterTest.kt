@@ -8,8 +8,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyInt
-import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers.*
 import rx.observers.TestSubscriber
 
 class InboxReputationDetailPresenterTest : InboxReputationDetailPresenterTestFixture() {
@@ -150,7 +149,7 @@ class InboxReputationDetailPresenterTest : InboxReputationDetailPresenterTestFix
             testSubscriber.onNext(expectedResponse)
         }
 
-        presenter.sendReplyReview(anyInt(), anyString(), anyInt(), anyString(), anyString())
+        presenter.sendReplyReview(anyLong(), anyString(), anyLong(), anyString(), anyString())
 
         testSubscriber.assertNoErrors()
         testSubscriber.assertValue(expectedResponse)
@@ -171,7 +170,7 @@ class InboxReputationDetailPresenterTest : InboxReputationDetailPresenterTestFix
             testSubscriber.onError(expectedResponse)
         }
 
-        presenter.sendReplyReview(anyInt(), anyString(), anyInt(), anyString(), anyString())
+        presenter.sendReplyReview(anyLong(), anyString(), anyLong(), anyString(), anyString())
 
         testSubscriber.assertError(expectedResponse)
         testSubscriber.assertCompleted()

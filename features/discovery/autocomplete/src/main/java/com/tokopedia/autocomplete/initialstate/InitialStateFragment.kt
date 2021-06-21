@@ -139,13 +139,12 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         presenter.getInitialStateData()
     }
 
-    override fun onItemClicked(applink: String, webUrl: String) {
-        route(applink, presenter.getSearchParameter())
-        finish()
+    override fun onProductLineClicked(item: BaseItemInitialStateSearch) {
+        presenter.onProductLineClicked(item)
     }
 
-    override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
-        presenter.onRecentSearchItemClicked(item, adapterPosition)
+    override fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch) {
+        presenter.onRecentSearchItemClicked(item)
     }
 
     override fun onRecentSearchSeeMoreClicked() {
@@ -189,7 +188,6 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     }
 
     private fun refreshPopularSearch(featureId: String) {
-        AutocompleteTracking.eventClickRefreshPopularSearch()
         presenter.refreshPopularSearch(featureId)
     }
 
@@ -222,24 +220,24 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         AutocompleteTracking.impressedSeeMoreRecentSearch(iris, userId)
     }
 
-    override fun trackEventClickRecentSearch(label: String) {
-        AutocompleteTracking.eventClickRecentSearch(label)
+    override fun trackEventClickRecentSearch(label: String, pageSource: String) {
+        AutocompleteTracking.eventClickRecentSearch(label, pageSource)
     }
 
-    override fun trackEventClickRecentShop(label: String, userId: String) {
-        AutocompleteTracking.eventClickRecentShop(label, userId)
+    override fun trackEventClickRecentShop(label: String, userId: String, pageSource: String) {
+        AutocompleteTracking.eventClickRecentShop(label, userId, pageSource)
     }
 
     override fun trackEventClickSeeMoreRecentSearch(userId: String) {
         AutocompleteTracking.eventClickSeeMoreRecentSearch(userId)
     }
 
-    override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
-        presenter.onDynamicSectionItemClicked(item, adapterPosition)
+    override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch) {
+        presenter.onDynamicSectionItemClicked(item)
     }
 
-    override fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String) {
-        AutocompleteTracking.eventClickDynamicSection(userId, label, type)
+    override fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String, pageSource: String) {
+        AutocompleteTracking.eventClickDynamicSection(userId, label, type, pageSource)
     }
 
     override fun refreshViewWithPosition(position: Int) {
@@ -266,6 +264,20 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         AutocompleteTracking.impressedCuratedCampaign(iris, userId, label, type)
     }
 
+    override fun onRecentViewClicked(item: BaseItemInitialStateSearch) {
+        presenter.onRecentViewClicked(item)
+    }
+
+    override fun trackEventClickRecentView(item: BaseItemInitialStateSearch, label: String) {
+        val productDataLayer = item.getRecentViewAsObjectDataLayer()
+        AutocompleteTracking.eventClickRecentView(productDataLayer, label)
+    }
+
+    override fun trackEventClickProductLine(item: BaseItemInitialStateSearch, userId: String, label: String) {
+        val productDataLayer = item.getProductLineAsObjectDataLayer()
+        AutocompleteTracking.eventClickInitialStateProductLine(productDataLayer, userId, label, item.dimension90)
+    }
+
     override val chooseAddressData: LocalCacheModel
         get() = context?.let {
             try {
@@ -274,4 +286,16 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
                 ChooseAddressConstant.emptyAddress
             }
         } ?: ChooseAddressConstant.emptyAddress
+
+    override fun onRefreshPopularSearch() {
+        AutocompleteTracking.eventClickRefreshPopularSearch()
+    }
+
+    override fun onRefreshTokoNowPopularSearch() {
+        AutocompleteTracking.eventClickRefreshTokoNowPopularSearch()
+    }
+
+    override fun trackEventClickTokoNowDynamicSectionItem(label: String) {
+        AutocompleteTracking.eventClickTokoNowPopularSearch(label)
+    }
 }

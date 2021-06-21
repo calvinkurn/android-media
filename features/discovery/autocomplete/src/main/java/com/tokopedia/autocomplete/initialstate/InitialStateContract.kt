@@ -24,9 +24,9 @@ interface InitialStateContract {
 
         fun finish()
 
-        fun trackEventClickRecentSearch(label: String)
+        fun trackEventClickRecentSearch(label: String, pageSource: String)
 
-        fun trackEventClickRecentShop(label: String, userId: String)
+        fun trackEventClickRecentShop(label: String, userId: String, pageSource: String)
 
         fun trackEventClickSeeMoreRecentSearch(userId: String)
 
@@ -36,7 +36,7 @@ interface InitialStateContract {
 
         fun onDynamicSectionImpressed(model: DynamicInitialStateItemTrackingModel)
 
-        fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String)
+        fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String, pageSource: String)
 
         fun refreshViewWithPosition(position: Int)
 
@@ -44,7 +44,17 @@ interface InitialStateContract {
 
         fun onCuratedCampaignCardImpressed(userId: String, label: String, type: String)
 
+        fun trackEventClickRecentView(item: BaseItemInitialStateSearch, label: String)
+
+        fun trackEventClickProductLine(item: BaseItemInitialStateSearch, userId: String, label: String)
+
         val chooseAddressData: LocalCacheModel?
+
+        fun onRefreshPopularSearch()
+
+        fun onRefreshTokoNowPopularSearch()
+
+        fun trackEventClickTokoNowDynamicSectionItem(label: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -60,12 +70,16 @@ interface InitialStateContract {
 
         fun getQueryKey(): String
 
-        fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
+        fun onRecentSearchItemClicked(item: BaseItemInitialStateSearch)
 
         fun recentSearchSeeMoreClicked()
 
-        fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int)
+        fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch)
 
         fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView)
+
+        fun onRecentViewClicked(item: BaseItemInitialStateSearch)
+
+        fun onProductLineClicked(item: BaseItemInitialStateSearch)
     }
 }
