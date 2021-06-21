@@ -231,39 +231,26 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_gravity="bottom">
-                        <TextView
-                            android:id="@+id/tv_edit_cancel"
-                            style="@style/TextView.Title"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_horizontal"
-                            android:paddingRight="@dimen/dp_16"
-                            android:paddingLeft="@dimen/dp_16"
-                            android:paddingTop="@dimen/dp_20"
-                            android:paddingBottom="@dimen/dp_20"
-                            android:textSize="@dimen/sp_18"
-                            android:textColor="@color/Unify_N700"
-                            android:text="@string/image_picker_label_cancel"
-                            android:clickable="true"
-                            android:focusable="true"/>
 
-                        <TextView
-                            android:id="@+id/tv_edit_save"
-                            style="@style/TextView.Title.Green"
+                        <com.tokopedia.unifycomponents.UnifyButton
+                            android:id="@+id/tv_edit_cancel"
+                            android:text="@string/image_picker_label_cancel"
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:paddingRight="@dimen/dp_16"
-                            android:paddingLeft="@dimen/dp_16"
-                            android:paddingTop="@dimen/dp_20"
-                            android:paddingBottom="@dimen/dp_20"
-                            android:textSize="@dimen/sp_18"
-                            android:gravity="center_horizontal"
+                            app:unifyButtonVariant="text"
+                            android:layout_margin="@dimen/unify_space_16"
+                            app:unifyButtonSize="medium"/>
+
+                        <com.tokopedia.unifycomponents.UnifyButton
+                            android:id="@+id/tv_edit_save"
                             android:text="@string/save"
-                            android:background="?attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:focusable="true"/>
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_margin="@dimen/unify_space_16"
+                            android:layout_height="wrap_content"
+                            app:unifyButtonSize="medium"/>
+
                     </LinearLayout>
                 </FrameLayout>
 
