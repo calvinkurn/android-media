@@ -71,4 +71,33 @@
         app:typographyType="heading_6"
         tools:text="Rp10.000.000" />
 
+    <View
+        android:id="@+id/separator_seller_cashback"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/Unify_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_total_pay_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_total_cashback_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/separator_seller_cashback"
+        app:typographyType="body_3"
+        tools:text="Cashback Penjual" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_total_cashback_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_total_cashback_title"
+        app:typographyType="heading_6"
+        tools:text="Rp10.000.000" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
