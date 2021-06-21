@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class ShippingDurationModelWithPriceMapper @Inject constructor() {
 
-    fun convertToDomainModelWithPrice(response: ShippingRecommendationData, isNewLayout: Boolean): ShippingListModel {
+    fun convertToDomainModelWithPrice(response: ShippingRecommendationData): ShippingListModel {
         return ShippingListModel().apply {
             val servicesList: ArrayList<ServicesItem> = ArrayList()
             if (response.shippingDurationViewModels != null) {
@@ -17,11 +17,7 @@ class ShippingDurationModelWithPriceMapper @Inject constructor() {
                 }
             }
             if (response.logisticPromo != null) {
-                if (isNewLayout) {
-                    servicesList.add(LogisticPromoInfo(response.logisticPromo.imageUrl, true))
-                } else {
-                    servicesList.add(0, LogisticPromoInfo(response.logisticPromo.imageUrl, false))
-                }
+                servicesList.add(LogisticPromoInfo(response.logisticPromo.imageUrl, true))
             }
             services = servicesList
         }

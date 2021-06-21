@@ -286,7 +286,7 @@ class WishlistViewModelGetNextPageDataTest {
         wishlistViewModel.getNextPageWishlistData()
 
         // Expect wishlist data is not changed
-        Assert.assertEquals(6, wishlistViewModel.wishlistLiveData.value!!.size)
+        Assert.assertEquals(7, wishlistViewModel.wishlistLiveData.value!!.size)
         // Expect load more action data is triggered with error message
         Assert.assertEquals(false, wishlistViewModel.loadMoreWishlistAction.value!!.peekContent().isSuccess)
         Assert.assertEquals(mockErrorMessage, wishlistViewModel.loadMoreWishlistAction.value!!.peekContent().message)
@@ -355,7 +355,7 @@ class WishlistViewModelGetNextPageDataTest {
         wishlistViewModel.getNextPageWishlistData()
 
         // Expect wishlist data is not changed
-        Assert.assertEquals(6, wishlistViewModel.wishlistLiveData.value!!.size)
+        Assert.assertEquals(7, wishlistViewModel.wishlistLiveData.value!!.size)
         // Expect load more action data is triggered with error message
         Assert.assertEquals(false, wishlistViewModel.loadMoreWishlistAction.value!!.peekContent().isSuccess)
         Assert.assertEquals(mockErrorMessage, wishlistViewModel.loadMoreWishlistAction.value!!.peekContent().message)
@@ -407,13 +407,13 @@ class WishlistViewModelGetNextPageDataTest {
         // View model get next page wishlist data
         wishlistViewModel.getNextPageWishlistData()
 
-        // Expect wishlistLiveData has 42 items (40 wishlist data + 2 recommendation widget)
-        Assert.assertEquals(42, wishlistViewModel.wishlistLiveData.value!!.size)
+        // Expect wishlistLiveData has 43 items (40 wishlist data + 2 recommendation widget + 1 topads)
+        Assert.assertEquals(43, wishlistViewModel.wishlistLiveData.value!!.size)
         // Expect every 4 product recommendation widget is showed, in 4 for 1st page and 25 for 2nd page
         Assert.assertEquals(BannerTopAdsDataModel::class.java,
                 wishlistViewModel.wishlistLiveData.value!![4].javaClass)
         Assert.assertEquals(RecommendationCarouselDataModel::class.java,
-                wishlistViewModel.wishlistLiveData.value!![25].javaClass)
+                wishlistViewModel.wishlistLiveData.value!![21].javaClass)
     }
 
     @Test

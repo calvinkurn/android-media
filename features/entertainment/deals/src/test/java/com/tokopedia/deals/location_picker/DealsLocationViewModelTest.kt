@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.deals.DealsJsonMapper
 import com.tokopedia.deals.common.model.response.SearchData
-import com.tokopedia.deals.common.utils.DealsTestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.deals.location_picker.domain.usecase.DealsLandmarkLocationUseCase
 import com.tokopedia.deals.location_picker.domain.usecase.DealsPopularCitiesUseCase
 import com.tokopedia.deals.location_picker.domain.usecase.DealsPopularLocationUseCase
@@ -26,7 +26,7 @@ class DealsLocationViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = DealsTestDispatcherProvider()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private val searchLocationUseCase: DealsSearchLocationUseCase = mockk()
     private val popularCitiesUseCase: DealsPopularCitiesUseCase = mockk()
     private val popularLocationUseCase: DealsPopularLocationUseCase = mockk()

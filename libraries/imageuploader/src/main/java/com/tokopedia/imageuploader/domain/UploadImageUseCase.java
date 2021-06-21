@@ -5,6 +5,8 @@ import com.google.gson.Gson;
 import com.tokopedia.imageuploader.domain.model.GenerateHostDomainModel;
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -13,6 +15,7 @@ import java.io.File;
 import java.io.InterruptedIOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.MediaType;
@@ -89,8 +92,11 @@ public class UploadImageUseCase<T> extends UseCase<ImageUploadDomainModel<T>> {
                     if (!(throwable instanceof UnknownHostException) &&
                             !(throwable instanceof SocketException) &&
                             !(throwable instanceof InterruptedIOException) &&
-                            !(throwable instanceof ConnectionShutdownException))
-                        Timber.e(throwable, "P1#IMAGE_UPLOADER#");
+                            !(throwable instanceof ConnectionShutdownException)) {
+                        Map<String, String> logMap = new HashMap<>();
+                        logMap.put("err", throwable.toString());
+                        ServerLogger.log(Priority.P1, "IMAGE_UPLOADER", logMap);
+                    }
                 });
     }
 

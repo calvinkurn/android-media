@@ -47,7 +47,7 @@ class ShopProductViewHolder(
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
         productCard.setProductModel(
-                ShopPageProductListMapper.mapToProductCardModel(shopProductUiModel)
+                ShopPageProductListMapper.mapToProductCardModel(shopProductUiModel, false)
         )
 
         if (shopProductImpressionListener?.getSelectedEtalaseName().orEmpty().isNotEmpty()) {

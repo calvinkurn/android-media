@@ -9,7 +9,7 @@ import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHED
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.types.PlayChannelStatusType
-import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -19,7 +19,7 @@ import javax.inject.Inject
  * Created by mzennis on 01/12/20.
  */
 class BroadcastScheduleDataStoreImpl @Inject constructor(
-        private val dispatcher: CoroutineDispatcherProvider,
+        private val dispatcher: CoroutineDispatchers,
         private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase
 ): BroadcastScheduleDataStore {
 

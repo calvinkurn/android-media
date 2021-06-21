@@ -68,6 +68,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckou
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
 import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.*
 import com.tokopedia.purchase_platform.common.constant.*
+import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -155,12 +156,15 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         private const val PREFERENCES_NAME = "promo_coachmark_preferences"
 
         private const val KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED = "KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED"
+        private const val DESTINATION_BACK = "back"
+        private const val DESTINATION_REFRESH = "refresh"
 
         fun createInstance(pageSource: Int,
                            promoRequest: PromoRequest,
                            validateUsePromoRequest: ValidateUsePromoRequest,
                            bboPromoCodes: ArrayList<String>,
-                           promoMvcLockCourierFlow: Boolean = false): PromoCheckoutFragment {
+                           promoMvcLockCourierFlow: Boolean = false,
+                           chosenAddress: ChosenAddress?): PromoCheckoutFragment {
             return PromoCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARGS_PAGE_SOURCE, pageSource)
@@ -168,6 +172,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     putParcelable(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
                     putStringArrayList(ARGS_BBO_PROMO_CODES, bboPromoCodes)
                     putBoolean(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, promoMvcLockCourierFlow)
+                    // Add chosen address for trade in indomaret case, will be null for other case
+                    putParcelable(ARGS_CHOSEN_ADDRESS, chosenAddress)
                 }
             }
         }
@@ -226,6 +232,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setBackground()
+
         // Initialize hansel helper
         initializeHanselHelper()
 
@@ -243,6 +251,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observePromoRecommendationUiModel()
         observePromoInputUiModel()
         observePromoListUiModel()
+        observeErrorStateUiModel()
         observeEmptyStateUiModel()
         observeVisitableChangeUiModel()
         observeVisitableListChangeUiModel()
@@ -252,6 +261,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeApplyPromoResult()
         observeClearPromoResult()
         observeGetPromoLastSeenResult()
+    }
+
+    private fun setBackground() {
+        activity?.let {
+            it.window.decorView.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N50))
+        }
     }
 
     private fun initializeHanselHelper() {
@@ -273,6 +288,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun setResultIsPromoMvcLockCourierFlow(intent: Intent) {
         intent.putExtra(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, isPromoMvcLockCourierFlow)
+    }
+
+    private fun setResultErrorPromo(intent: Intent) {
+        intent.putExtra(ARGS_PROMO_ERROR, ARGS_FINISH_ERROR)
     }
 
     override fun getRecyclerViewResourceId() = R.id.promo_checkout_marketplace_module_recycler_view
@@ -485,6 +504,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         } else {
             adapter.addVisitable(it)
         }
+    }
+
+    private fun observeErrorStateUiModel() {
+        viewModel.promoErrorStateUiModel.observe(viewLifecycleOwner, Observer {
+            addOrModify(it)
+        })
     }
 
     private fun observeEmptyStateUiModel() {
@@ -827,7 +852,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             showLoading()
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
-            viewModel.getPromoList(mutation, promoRequest, "")
+            val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
+            viewModel.getPromoList(mutation, promoRequest, "", chosenAddress)
         }
     }
 
@@ -1005,7 +1031,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             viewModel.updatePromoInputStateBeforeApplyPromo(promoCode, isFromLastSeen)
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
-            viewModel.getPromoList(mutation, promoRequest, promoCode)
+            val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
+            viewModel.getPromoList(mutation, promoRequest, promoCode, chosenAddress)
         }
     }
 
@@ -1056,4 +1083,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
     }
 
+    override fun onClickErrorStateButton(destination: String) {
+        if (destination.equals(DESTINATION_BACK, true)) {
+            val intent = Intent()
+            setResultErrorPromo(intent)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        } else if (destination.equals(DESTINATION_REFRESH, true)) {
+            reloadData()
+        }
+    }
 }

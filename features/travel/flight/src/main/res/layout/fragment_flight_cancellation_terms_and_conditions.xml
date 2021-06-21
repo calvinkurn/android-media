@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/Unify_N0"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/bottom_container"
+        android:layout_above="@+id/flight_cancellation_terms_bottom_container"
         android:layout_alignParentTop="true"
         android:orientation="vertical">
 
@@ -20,19 +20,19 @@
             android:layout_weight="1">
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/txt_cancellation_tnc"
-                app:typographyType="body_2"
+                android:id="@+id/flight_cancellation_terms_tv_cancellation_tnc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/layout_lvl2"
-                android:textColor="@color/Unify_N700_44" />
+                android:textColor="@color/Unify_N700_44"
+                app:typographyType="body_2" />
 
         </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/bottom_container"
+        android:id="@+id/flight_cancellation_terms_bottom_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -47,37 +47,37 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/flight_dp_10"
             android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/flight_dp_10"
             android:gravity="top"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/checkbox"
+                android:id="@+id/flight_cancellation_terms_checkbox"
                 android:layout_width="@dimen/flight_dp_36"
                 android:layout_height="@dimen/flight_dp_36"
                 android:theme="@style/checkBoxStyle" />
 
             <com.tokopedia.unifyprinciples.Typography
-                app:typographyType="body_3"
-                android:id="@+id/tv_description"
+                android:id="@+id/flight_cancellation_terms_tv_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/flight_dp_10"
                 android:textColor="@color/Unify_N700_44"
+                app:typographyType="body_3"
                 tools:text="@string/flight_cancellation_review_description" />
 
         </LinearLayout>
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_next"
-            app:unifyButtonType="transaction"
-            app:unifyButtonSize="large"
+            android:id="@+id/flight_cancellation_terms_btn_next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/layout_lvl2"
             android:enabled="false"
-            android:text="@string/flight_cancellation_review_button" />
+            android:text="@string/flight_cancellation_review_button"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="transaction" />
 
     </LinearLayout>
 

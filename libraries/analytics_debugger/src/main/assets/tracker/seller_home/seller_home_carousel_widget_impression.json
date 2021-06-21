@@ -5,18 +5,18 @@
     {
       "event": "view_item",
       "eventCategory": "seller app - home",
-      "eventAction": "{{impression widget banner - .{1,}}}",
-      "eventLabel": "{{.* - \\d{1,}}}",
+      "eventAction": "impression widget banner - .{1,}",
+      "eventLabel": ".* - \\d{1,}",
       "promotions": [
         {
-          "creative_name": "{{\\{.{1,}\\}}}",
-          "creative_slot": "{{\\d{1,}}}",
-          "item_id": "{{\\{\\d{1,}\\}}}",
-          "item_name": "{{.{1,}}}",
-          "creative_url": "{{.{1,}}}"
+          "creative_name": "\\{.{1,}\\}",
+          "creative_slot": "\\d{1,}",
+          "item_id": "\\{\\d{1,}\\}",
+          "item_name": ".{1,}",
+          "creative_url": ".{1,}"
         }
       ],
-      "sessionIris": "{{.{1,}}}"
+      "sessionIris": ".{1,}"
     }
   ]
 }

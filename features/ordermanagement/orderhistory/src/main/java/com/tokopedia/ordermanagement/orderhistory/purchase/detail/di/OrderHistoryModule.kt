@@ -2,8 +2,6 @@ package com.tokopedia.ordermanagement.orderhistory.purchase.detail.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.core.network.apiservices.transaction.OrderDetailService
 import com.tokopedia.ordermanagement.orderhistory.purchase.detail.domain.OrderHistoryRepository
 import com.tokopedia.ordermanagement.orderhistory.purchase.detail.domain.mapper.OrderDetailMapper
@@ -43,8 +41,4 @@ class OrderHistoryModule {
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
-
-    @Provides
-    @OrderHistoryScope
-    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 }

@@ -22,7 +22,9 @@ data class SectionWidgetUiModel(
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
-        override var emptyState: WidgetEmptyStateUiModel
+        override var isNeedToBeRemoved: Boolean = false,
+        override var emptyState: WidgetEmptyStateUiModel,
+        var shouldShow: Boolean = true
 ) : BaseWidgetUiModel<BaseDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
@@ -30,7 +32,7 @@ data class SectionWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<BaseDataUiModel> {
-        return SectionWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+        return SectionWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<BaseDataUiModel>): Boolean {

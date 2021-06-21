@@ -15,8 +15,6 @@ data class Payment(
         val image: String = "",
         @SerializedName("description")
         val description: String = "",
-        @SerializedName("url")
-        val url: String = "",
         @SerializedName("minimum_amount")
         val minimumAmount: Long = 0,
         @SerializedName("maximum_amount")

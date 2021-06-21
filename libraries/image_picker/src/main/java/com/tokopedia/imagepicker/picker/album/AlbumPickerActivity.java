@@ -38,8 +38,6 @@ public class AlbumPickerActivity extends BaseSimpleActivity implements LoaderMan
 
     private static final int ALBUM_LOADER_ID = 1;
 
-    private int selectedAlbumId;
-    private RecyclerView recyclerView;
     private View loadingView;
 
     private AlbumAdapter albumAdapter;
@@ -61,14 +59,14 @@ public class AlbumPickerActivity extends BaseSimpleActivity implements LoaderMan
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent = getIntent();
-        selectedAlbumId = intent.getIntExtra(EXTRA_ALBUM_ID, -1);
+        int selectedAlbumId = intent.getIntExtra(EXTRA_ALBUM_ID, -1);
         galleryType = GalleryType.fromInt(intent.getIntExtra(EXTRA_GALLERY_TYPE, GalleryType.IMAGE_ONLY.getValue()));
 
         super.onCreate(savedInstanceState);
 
         albumAdapter = new AlbumAdapter(this, this, galleryType);
 
-        recyclerView = findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
@@ -80,7 +78,7 @@ public class AlbumPickerActivity extends BaseSimpleActivity implements LoaderMan
     @Override
     public void onResume() {
         super.onResume();
-        String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
         if (ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
             showLoading();
             LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, this);

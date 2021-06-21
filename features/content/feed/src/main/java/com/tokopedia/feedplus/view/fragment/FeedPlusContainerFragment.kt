@@ -80,6 +80,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private var showOldToolbar: Boolean = false
     private var feedToolbar: Toolbar? = null
+    private var authorList: List<Author>? = null
 
     companion object {
         const val TOOLBAR_GRADIENT = 1
@@ -194,20 +195,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun initToolbar() {
         status_bar_bg.visibility = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
-            else -> View.GONE
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> View.VISIBLE
+            else -> View.INVISIBLE
         }
         status_bar_bg2.visibility = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.INVISIBLE
-            else -> View.GONE
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> View.INVISIBLE
+            else -> View.INVISIBLE
         }
         toolbarParent.removeAllViews()
-//        if (showOldToolbar) {
-//            initOldToolBar()
-//        } else {
-//            initNewToolBar()
-//        }
         initNewToolBar()
         toolbarParent.addView(feedToolbar)
     }
@@ -393,11 +388,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             goToExplore()
         }
         if (userSession.isLoggedIn) {
-            viewModel.getWhitelist()
+            viewModel.getWhitelist(authorList?.isEmpty()?:false)
         }
     }
 
     private fun renderFab(whitelistDomain: WhitelistDomain) {
+        authorList = whitelistDomain.authors
         if (userSession.isLoggedIn && whitelistDomain.authors.isNotEmpty()) {
             showFeedFab(whitelistDomain)
         }
@@ -408,7 +404,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG,
                     Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 if (userSession.isLoggedIn) {
-                    viewModel.getWhitelist()
+                    viewModel.getWhitelist(authorList?.isEmpty()?:false)
                 }
             })
         }
@@ -432,9 +428,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             feedBackgroundCrossfader.reverseTransition(200)
             toolbarType = TOOLBAR_GRADIENT
             status_bar_bg2.visibility = when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
-                else -> View.GONE
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> View.VISIBLE
+                else -> View.INVISIBLE
             }
             activity?.let {
                 tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
@@ -449,7 +444,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             feedBackgroundCrossfader.reverseTransition(200)
             toolbarType = TOOLBAR_WHITE
             status_bar_bg2.visibility = when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.INVISIBLE
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> View.INVISIBLE
                 else -> View.GONE
             }
             activity?.let {
@@ -487,6 +482,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                             screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
                             appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, createPostAppLink))
                     setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
+                    toolBarAnalytics.sendClickBuatFeedPostEvent()
                 }
             }
             else -> {
@@ -496,6 +492,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                     val author = whitelistDomain.authors.first()
                     fab_feed.setOnClickListener { onGoToLink(author.link) }
                 }
+                toolBarAnalytics.sendClickBuatFeedPostEvent()
             }
         }
     }

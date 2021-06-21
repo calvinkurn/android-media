@@ -18,7 +18,8 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
 
 data class HomeBalanceModel (
         var balanceDrawerItemModels: MutableMap<Int, BalanceDrawerItemModel> = mutableMapOf(),
-        var balanceType: Int? = null
+        var balanceType: Int? = null,
+        var isTokopointsOrOvoFailed: Boolean = false
 ) {
     companion object {
         // State 1: Ovo, Coupon, Bebas Ongkir
@@ -265,7 +266,14 @@ data class HomeBalanceModel (
                     action = {
                         balanceDrawerItemModels[it] = drawerContent.mapToHomeBalanceItemModel(
                                 drawerItemType = type,
-                                state = STATE_SUCCESS
+                                state = STATE_SUCCESS,
+                                defaultIconRes = when (type) {
+                                    TYPE_TOKOPOINT -> R.drawable.ic_new_tokopoints
+                                    TYPE_COUPON -> R.drawable.ic_new_coupon
+                                    TYPE_REWARDS -> R.drawable.ic_new_points
+                                    TYPE_FREE_ONGKIR -> R.drawable.ic_new_bbo
+                                    else -> null
+                                }
                         )
                     }
             )

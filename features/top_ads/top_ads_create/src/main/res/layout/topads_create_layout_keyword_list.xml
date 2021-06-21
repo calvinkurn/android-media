@@ -34,6 +34,7 @@
         android:layout_marginTop="@dimen/dp_6"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_6"
+
         app:layout_constraintTop_toTopOf="parent"
         app:search_bar_placeholder="@string/topads_common_search_hint"
         app:search_bar_show_icon="false" />
@@ -105,7 +106,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="small" />
+            app:typographyType="small"
+            app:typographyWeight="bold"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txtRange"
@@ -119,6 +121,7 @@
             app:layout_constraintEnd_toStartOf="@id/txtkeyCompetition"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="small"
+            app:typographyWeight="bold"
             tools:text="Pencarian" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -133,7 +136,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/checkBox"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="small" />
+            app:typographyType="small"
+            app:typographyWeight="bold"/>
 
         <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
             android:id="@+id/checkBox"
@@ -188,11 +192,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.tokopedia.unifycomponents.DividerUnify
+    <View
         android:id="@+id/view2"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_2"
+        android:layout_marginBottom="@dimen/dp_8"
         android:background="@drawable/topads_bg_shader_gray"
         app:layout_constraintBottom_toTopOf="@+id/btn_next"
         app:layout_constraintEnd_toEndOf="parent"
@@ -204,7 +208,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
-        android:text="@string/topads_common_keyword_list_step"
+        android:text="@string/add_keywords"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/selected_info"

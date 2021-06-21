@@ -24,7 +24,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import com.tokopedia.unifyprinciples.Typography;
 
 import com.laku6.tradeinsdk.api.Laku6TradeIn;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -45,7 +45,6 @@ import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
 import com.tokopedia.tradein.TradeinConstants;
 import com.tokopedia.design.dialog.IAccessRequestListener;
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
-import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 
@@ -62,14 +61,14 @@ import static com.tokopedia.tradein.view.viewcontrollers.activity.FinalPriceActi
 public class MoneyInHomeActivity extends BaseTradeInActivity<TradeInHomeViewModel> implements IAccessRequestListener, Laku6TradeIn.TradeInListener {
 
 
-    private TextView mTvPriceElligible;
+    private Typography mTvPriceElligible;
     private ImageView mButtonRemove;
-    private TextView mTvModelName;
-    private TextView mTvHeaderPrice;
-    private TextView mTvInitialPrice;
-    private TextView mTvGoToProductDetails;
-    private TextView mTvNotUpto;
-    private TextView tvIndicateive;
+    private Typography mTvModelName;
+    private Typography mTvHeaderPrice;
+    private Typography mTvInitialPrice;
+    private Typography mTvGoToProductDetails;
+    private Typography mTvNotUpto;
+    private Typography tvIndicateive;
     private TradeInHomeViewModel tradeInHomeViewModel;
     private int closeButtonText;
     private int notElligibleText;

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
@@ -368,9 +369,11 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         val fcmComponent = DaggerFcmComponent.builder()
                 .fcmModule(FcmModule(requireContext()))
                 .build()
+        val baseAppComponent = (requireActivity().application as BaseMainApplication).baseAppComponent
 
         DaggerTroubleshootComponent.builder()
                 .fcmComponent(fcmComponent)
+                .baseAppComponent(baseAppComponent)
                 .troubleshootModule(TroubleshootModule(requireContext()))
                 .build()
                 .inject(this)

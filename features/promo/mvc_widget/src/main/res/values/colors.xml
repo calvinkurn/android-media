@@ -6,4 +6,5 @@
     <color name="mvcw_green_200">#D6FFDE</color>
     <color name="mvcw_31353B">#31353B</color>
     <color name="mvcw_6831353B">#AD31353B</color>
+    <color name="mvcw_background_color">@color/Unify_N0</color>
 </resources>

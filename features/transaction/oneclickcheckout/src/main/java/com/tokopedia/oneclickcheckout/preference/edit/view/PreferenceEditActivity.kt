@@ -36,7 +36,7 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
 
     private var _preferenceIndex = ""
     private var _profileId = 0
-    private var _addressId = 0
+    private var _addressId: Long = 0
     private var _addressModel: AddressModel? = null
     private var _shippingId = 0
     private var _gatewayCode = ""
@@ -48,7 +48,6 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
     private var _isExtraProfile: Boolean = true
     private var _fromFlow = FROM_FLOW_PREF
     private var _directPaymentStep = false
-    private var _isNewFlow = false
     private var _isSelectedPreference = false
 
     private var tvTitle: Typography? = null
@@ -103,7 +102,6 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         _isExtraProfile = intent.getBooleanExtra(EXTRA_IS_EXTRA_PROFILE, true)
         _fromFlow = intent.getIntExtra(EXTRA_FROM_FLOW, FROM_FLOW_PREF)
         _directPaymentStep = intent.getBooleanExtra(EXTRA_DIRECT_PAYMENT_STEP, false)
-        _isNewFlow = intent.getBooleanExtra(EXTRA_IS_NEW_FLOW, false)
         _isSelectedPreference = intent.getBooleanExtra(EXTRA_SELECTED_PREFERENCE, false)
 
         val ft = supportFragmentManager.beginTransaction()
@@ -163,11 +161,11 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         return _profileId
     }
 
-    override fun setAddressId(addressId: Int) {
+    override fun setAddressId(addressId: Long) {
         _addressId = addressId
     }
 
-    override fun getAddressId(): Int {
+    override fun getAddressId(): Long {
         return _addressId
     }
 
@@ -321,10 +319,6 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
 
     override fun isDirectPaymentStep(): Boolean {
         return _directPaymentStep
-    }
-
-    override fun isNewFlow(): Boolean {
-        return _isNewFlow
     }
 
     companion object {

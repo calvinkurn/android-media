@@ -7,8 +7,11 @@ import android.util.Log;
 
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
+import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.utils.NotificationCancelManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,8 +28,8 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
 
     public static final String IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen";
     private static final String IRIS_ANALYTICS_EVENT_KEY = "event";
-    private CmActivityLifecycleHandler lifecycleHandler;
-    private NotificationCancelManager cancelManager;
+    private final CmActivityLifecycleHandler lifecycleHandler;
+    private final NotificationCancelManager cancelManager;
 
     private int activityCount;
 
@@ -40,12 +43,18 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
         try {
             if (activity != null && activityCount == 0) {
                 trackIrisEventForAppOpen(activity);
+                if (RulesManager.getInstance() != null)
+                    RulesManager.getInstance().updateVisibleStateForAlreadyShown();
             }
             activityCount++;
             lifecycleHandler.onActivityCreatedInternalForPush(activity);
         } catch (Exception e) {
-            Timber.w(CMConstant.TimberTags.TAG + "exception;err='" + Log.getStackTraceString
-                    (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))) + "';data=''");
+            Map<String, String> messageMap = new HashMap<>();
+            messageMap.put("type", "exception");
+            messageMap.put("err", Log.getStackTraceString
+                            (e).substring(0, (Math.min(Log.getStackTraceString(e).length(), CMConstant.TimberTags.MAX_LIMIT))));
+            messageMap.put("data", "");
+            ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap);
         }
     }
 

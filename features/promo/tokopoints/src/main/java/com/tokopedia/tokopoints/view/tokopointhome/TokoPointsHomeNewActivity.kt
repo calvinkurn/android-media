@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.tokopointhome
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -16,12 +17,13 @@ import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
-import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent>, onAppBarCollapseListener {
     private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
-    lateinit var mUserSession: UserSession
+    private var mUserSession: UserSessionInterface? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         mUserSession = UserSession(applicationContext)
         super.onCreate(savedInstanceState)
@@ -30,15 +32,12 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
     }
 
     override fun getNewFragment(): Fragment? {
-        if (mUserSession.isLoggedIn) {
-            val loginStatusBundle = Bundle()
-            val tokoPointsHomeFragmentNew = TokoPointsHomeFragmentNew.newInstance()
-            loginStatusBundle.putBoolean(CommonConstant.BUNDLE_ARGS_USER_IS_LOGGED_IN, mUserSession.isLoggedIn)
-            tokoPointsHomeFragmentNew.arguments = loginStatusBundle
-            return tokoPointsHomeFragmentNew
+        val tokoPointsHomeFragmentNew = TokoPointsHomeFragmentNew.newInstance()
+        return if (mUserSession?.isLoggedIn == true) {
+            tokoPointsHomeFragmentNew
         } else {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-            return null
+            null
         }
     }
 
@@ -53,14 +52,6 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
                 .build()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK) {
-            inflateFragment()
-        } else
-            finish()
-    }
-
     override fun showToolbarElevation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_4)
@@ -71,6 +62,14 @@ class TokoPointsHomeNewActivity : BaseSimpleActivity(), HasComponent<TokopointBu
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
+            inflateFragment()
+        }
+        else finish()
     }
 
     companion object {

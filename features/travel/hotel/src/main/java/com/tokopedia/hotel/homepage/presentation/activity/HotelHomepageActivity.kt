@@ -68,6 +68,8 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
             checkOut = uri.getQueryParameter(PARAM_CHECK_OUT) ?: ""
             room = uri.getQueryParameter(PARAM_ROOM)?.toInt() ?: 0
             adult = uri.getQueryParameter(PARAM_ADULT)?.toInt() ?: 0
+
+            name = name.replace(SPACE_ENCODED, " ")
         }
 
         super.onCreate(savedInstanceState)
@@ -120,5 +122,7 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
         const val PARAM_REGION_NAME = "region_name"
 
         const val HOMEPAGE_SCREEN_NAME = "/hotel/homepage"
+
+        private const val SPACE_ENCODED = "%20"
     }
 }

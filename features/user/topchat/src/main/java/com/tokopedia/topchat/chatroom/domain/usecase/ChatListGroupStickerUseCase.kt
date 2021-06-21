@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopchatCoroutineContextProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -14,7 +14,7 @@ import kotlin.coroutines.CoroutineContext
 open class ChatListGroupStickerUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<ChatListGroupStickerResponse>,
         private val cacheManager: TopchatCacheManager,
-        private var dispatchers: TopchatCoroutineContextProvider
+        private var dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
     private val cacheKey = ChatListGroupStickerUseCase::class.java.simpleName
@@ -22,7 +22,7 @@ open class ChatListGroupStickerUseCase @Inject constructor(
     private val stickerTypeBuyer = 0
     private val stickerTypeSeller = 1
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.Main + SupervisorJob()
+    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     fun safeCancel() {
         if (coroutineContext.isActive) {
@@ -36,11 +36,11 @@ open class ChatListGroupStickerUseCase @Inject constructor(
             onSuccess: (ChatListGroupStickerResponse, List<StickerGroup>) -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        launchCatchError(dispatchers.IO,
+        launchCatchError(dispatchers.io,
                 {
                     val params = generateParams(isSeller)
                     val cache = getCacheStickerGroup(isSeller)?.also {
-                        withContext(dispatchers.Main) {
+                        withContext(dispatchers.main) {
                             onLoading(it)
                         }
                     }
@@ -54,12 +54,12 @@ open class ChatListGroupStickerUseCase @Inject constructor(
                     if (hasDifferentSize || needToUpdateCache.isNotEmpty()) {
                         saveToCache(response, isSeller)
                     }
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onSuccess(response, needToUpdateCache)
                     }
                 },
                 { exception ->
-                    withContext(dispatchers.Main) {
+                    withContext(dispatchers.main) {
                         onError(exception)
                     }
                 }

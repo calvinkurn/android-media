@@ -41,7 +41,8 @@ open class ShopHomeProductItemBigGridViewHolder(
         productCard.setProductModel(ShopPageHomeMapper.mapToProductCardModel(
                 isHasAddToCartButton = false,
                 hasThreeDots = true,
-                shopHomeProductViewModel = shopHomeProductViewModel
+                shopHomeProductViewModel = shopHomeProductViewModel,
+                isWideContent = true
         ))
         setListener()
     }

@@ -41,7 +41,8 @@ open class ShopHomeProductViewHolder(
         productCard.setProductModel(ShopPageHomeMapper.mapToProductCardModel(
                 isHasAddToCartButton = false,
                 hasThreeDots = true,
-                shopHomeProductViewModel = shopHomeProductViewModel
+                shopHomeProductViewModel = shopHomeProductViewModel,
+                isWideContent = false
         ))
         setListener()
     }

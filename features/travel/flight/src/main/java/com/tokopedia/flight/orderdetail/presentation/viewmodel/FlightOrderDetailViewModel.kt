@@ -3,11 +3,11 @@ package com.tokopedia.flight.orderdetail.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.travel.data.TravelCrossSellingGQLQuery
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.view.enum.FlightPassengerType
@@ -38,8 +38,8 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
                                                      private val crossSellUseCase: TravelCrossSellingUseCase,
                                                      private val orderDetailCancellationMapper: FlightOrderDetailCancellationMapper,
                                                      private val flightAnalytics: FlightAnalytics,
-                                                     private val dispatcherProvider: TravelDispatcherProvider)
-    : BaseViewModel(dispatcherProvider.io()) {
+                                                     private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.io) {
 
     var orderId: String = ""
 
@@ -66,7 +66,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
     fun getUserEmail(): String = if (userSession.isLoggedIn) userSession.email else ""
 
     fun fetchOrderDetailData() {
-        launchCatchError(dispatcherProvider.ui(), block = {
+        launchCatchError(dispatcherProvider.main, block = {
             val orderDetailData = orderDetailUseCase.execute(orderId)
             orderDetailData.let {
                 it.journeys.map { journey ->
@@ -84,7 +84,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
     }
 
     fun fetchETicketData() {
-        launchCatchError(dispatcherProvider.ui(), block = {
+        launchCatchError(dispatcherProvider.main, block = {
             val eticketData = getInvoiceEticketUseCase.executeGetETicket(orderId)
             if (eticketData.isNotEmpty()) mutableETicketData.postValue(Success(eticketData))
         }) {
@@ -94,7 +94,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
     }
 
     fun fetchInvoiceData() {
-        launchCatchError(dispatcherProvider.ui(), block = {
+        launchCatchError(dispatcherProvider.main, block = {
             val invoiceData = getInvoiceEticketUseCase.executeGetInvoice(orderId)
             if (invoiceData.isNotEmpty()) mutableInvoiceData.postValue(Success(invoiceData))
         }) {
@@ -104,19 +104,19 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
     }
 
     fun fetchCrossSellData() {
-        launch(dispatcherProvider.ui()) {
+        launch(dispatcherProvider.main) {
             mutableCrossSell.postValue(crossSellUseCase.execute(TravelCrossSellingGQLQuery.QUERY_CROSS_SELLING,
                     orderId, TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT))
         }
     }
 
     fun onNavigateToCancellationClicked(journeyList: List<FlightOrderDetailJourneyModel>) {
-        mutableCancellationData.value = orderDetailCancellationMapper.transform(journeyList)
+        mutableCancellationData.postValue(orderDetailCancellationMapper.transform(journeyList))
     }
 
     fun isWebCheckInAvailable(flightOrderDetailData: FlightOrderDetailDataModel): Pair<Boolean, String> {
         var checkInAvailable = false
-        val today = FlightDateUtil.getCurrentDate()
+        val today = FlightDateUtil.currentDate
         var subtitle: String = ""
 
         if (FlightOrderDetailStatusMapper.getStatusOrder(flightOrderDetailData.status) == FlightOrderDetailStatusMapper.SUCCESS) {

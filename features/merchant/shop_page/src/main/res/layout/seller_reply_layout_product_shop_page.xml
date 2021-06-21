@@ -31,8 +31,8 @@
                     android:layout_height="@dimen/dp_16"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/dp_5"
-                    android:layout_marginRight="@dimen/dp_5"
-                    app:srcCompat="@drawable/ic_like_normal" />
+                    app:srcCompat="@drawable/ic_like_normal"
+                    android:contentDescription="@null" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_counter_like"
@@ -70,9 +70,9 @@
                     android:layout_width="@dimen/dp_16"
                     android:layout_height="@dimen/dp_8"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/dp_5"
                     android:layout_marginStart="@dimen/dp_5"
-                    app:srcCompat="@drawable/ic_arrow_down_grey" />
+                    app:srcCompat="@drawable/ic_arrow_down_grey"
+                    android:contentDescription="@null" />
             </LinearLayout>
 
         </LinearLayout>
@@ -89,7 +89,7 @@
             tools:visibility="visible">
 
             <LinearLayout
-                android:layout_toLeftOf="@+id/reply_overflow"
+                android:layout_toStartOf="@+id/reply_overflow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -105,7 +105,7 @@
                         android:layout_height="wrap_content"
                         app:typographyWeight="reguler"
                         app:typographyType="body_2"
-                        android:layout_marginRight="@dimen/dp_5"
+                        android:layout_marginEnd="@dimen/dp_5"
                         android:text="@string/product_review_label_by" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -129,12 +129,11 @@
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/seller_label"
                         android:layout_width="wrap_content"
-                        style="@style/TextView.Micro.Green.Bold"
+                        android:textColor="@color/Unify_G500"
                         android:layout_height="wrap_content"
                         app:typographyWeight="bold"
                         app:typographyType="body_3"
                         android:layout_marginEnd="@dimen/dp_5"
-                        android:layout_marginRight="@dimen/dp_5"
                         android:background="@drawable/label_seller_shop_page"
                         android:gravity="center_horizontal"
                         android:paddingBottom="@dimen/dp_2"
@@ -175,10 +174,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:srcCompat="@drawable/ic_more_vertical_grey" />
+                app:srcCompat="@drawable/ic_more_vertical_grey"
+                android:contentDescription="@null" />
         </RelativeLayout>
     </LinearLayout>
 </merge>

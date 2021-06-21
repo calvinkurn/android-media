@@ -255,8 +255,10 @@ class DealsCategoryFragment : DealsBaseFragment(),
         }
 
         sort_filter_deals_category.run {
+            var selectedChips = 0
             filterItems.forEachIndexed { index, sortFilterItem ->
                 if (chips[index].isSelected) {
+                    selectedChips++
                     sortFilterItem.type = ChipsUnify.TYPE_SELECTED
                 }
 
@@ -283,7 +285,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
                     onFilterChipClicked(chips)
                 }
             }
-
+            indicatorCounter = selectedChips
             selectFilterFromChipsData()
         }
     }

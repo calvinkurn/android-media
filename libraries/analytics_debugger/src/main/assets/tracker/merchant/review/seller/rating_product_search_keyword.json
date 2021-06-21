@@ -6,27 +6,27 @@
       "event" : "clickReview",
       "eventCategory" : "ulasan - rating produk",
       "eventAction" : "click - rating product tab",
-      "eventLabel" : "{{.*}}",
-      "shopId": "{{\\d{1,}}}",
-      "sessionIris": "{{.{1,}}}",
+      "eventLabel" : ".*",
+      "shopId": "\\d{1,}",
+      "sessionIris": ".{1,}",
       "screenName": "rating produk"
     },
     {
       "event" : "clickReview",
       "eventCategory" : "ulasan - rating produk",
       "eventAction" : "click - search bar on rating product page",
-      "eventLabel" : "{{.*}}",
-      "shopId": "{{\\d{1,}}}",
-      "sessionIris": "{{.{1,}}}",
+      "eventLabel" : ".*",
+      "shopId": "\\d{1,}",
+      "sessionIris": ".{1,}",
       "screenName": "rating produk"
     },
     {
       "event" : "clickReview",
       "eventCategory" : "ulasan - rating produk",
       "eventAction" : "click - search by keyword on rating product page",
-      "eventLabel" : "{{keyword:.*;}}",
-      "shopId": "{{\\d{1,}}}",
-      "sessionIris": "{{.{1,}}}",
+      "eventLabel" : "keyword:.*;",
+      "shopId": "\\d{1,}",
+      "sessionIris": ".{1,}",
       "screenName": "rating produk"
     }
   ]

@@ -289,11 +289,11 @@ object CartListPresenterUpdateCartTest : Spek({
             val shopDataList = mutableListOf<CartShopHolderData>().apply {
                 add(CartShopHolderData().apply {
                     shopGroupAvailableData = ShopGroupAvailableData()
-                    isAllSelected = true
+                    setAllItemSelected(true)
                 })
                 add(CartShopHolderData().apply {
                     shopGroupAvailableData = ShopGroupAvailableData()
-                    isAllSelected = false
+                    setAllItemSelected(false)
                 })
             }
 
@@ -335,7 +335,7 @@ object CartListPresenterUpdateCartTest : Spek({
                             ))
                         }
                     }
-                    isAllSelected = false
+                    setAllItemSelected(false)
                 })
                 add(CartShopHolderData().apply {
                     shopGroupAvailableData = ShopGroupAvailableData().apply {
@@ -346,7 +346,7 @@ object CartListPresenterUpdateCartTest : Spek({
                             ))
                         }
                     }
-                    isAllSelected = false
+                    setAllItemSelected(false)
                 })
             }
 
@@ -413,11 +413,28 @@ object CartListPresenterUpdateCartTest : Spek({
         Scenario("failed update cart because data is empty") {
 
             Given("shop data list") {
-                every { view.getAllAvailableCartDataList() } answers { emptyList() }
+                every { view.getAllSelectedCartDataList() } answers { emptyList() }
             }
 
             When("process to update cart data") {
                 cartListPresenter.processUpdateCartData(false)
+            }
+
+            Then("should hide progress loading") {
+                verify {
+                    view.hideProgressLoading()
+                }
+            }
+        }
+
+        Scenario("failed update cart to save state because data is empty") {
+
+            Given("shop data list") {
+                every { view.getAllAvailableCartDataList() } answers { emptyList() }
+            }
+
+            When("process to update cart data") {
+                cartListPresenter.processUpdateCartData(true)
             }
 
             Then("should hide progress loading") {

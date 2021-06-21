@@ -21,7 +21,7 @@ class ListProductItemViewHolder(
     override fun bind(productItemData: ProductItemDataView?) {
         if (productItemData == null) return
 
-        itemView.productCardView?.setProductModel(productItemData.toProductCardModel(productItemData.imageUrl))
+        itemView.productCardView?.setProductModel(productItemData.toProductCardModel(productItemData.imageUrl, true))
 
         itemView.productCardView?.setThreeDotsOnClickListener {
             productListener.onThreeDotsClick(productItemData, adapterPosition)

@@ -7,10 +7,9 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.logisticaddaddress.test.R
-import com.tokopedia.logisticaddaddress.util.getJsonDataFromAsset
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
@@ -35,12 +34,13 @@ class AddNewAddressTest {
     var permissionRule: GrantPermissionRule =
             GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
 
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
+
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse {
             addMockResponse(AUTOCOMPLETE_KEY, getRawString(context, R.raw.autocomplete_jak), FIND_BY_CONTAINS)
             addMockResponse(GET_DISTRICT_KEY, getRawString(context, R.raw.get_district_jakarta), FIND_BY_CONTAINS)
@@ -56,8 +56,7 @@ class AddNewAddressTest {
 
     @Test
     fun addAddressUserFunnel_PassedAnalyticsTest() {
-        val query = getJsonDataFromAsset(context, "tracker/logistic/addaddress_user_funnel.json")
-                ?: throw AssertionError("Validator Query not found")
+        val query = "tracker/logistic/addaddress_user_funnel.json"
         val screenName = "/user/address/create"
         addAddress {
             launchFrom(mActivityTestRule, screenName)
@@ -67,14 +66,13 @@ class AddNewAddressTest {
             receiver(TEST_RECEIVER)
             phoneNumber(TEST_PHONE)
         } submit {
-            hasPassedAnalytics(gtmLogDBSource, query)
+            hasPassedAnalytics(cassavaTestRule, query)
         }
     }
 
     @Test
     fun addAddressCartFunnel_PassedAnalyticsTest() {
-        val query = getJsonDataFromAsset(context, "tracker/logistic/addaddress_cart_funnel.json")
-                ?: throw AssertionError("Validator Query not found")
+        val queryPath = "tracker/logistic/addaddress_cart_funnel.json"
         val screenName = "/cart/address/create"
         addAddress {
             launchFrom(mActivityTestRule, screenName)
@@ -84,14 +82,13 @@ class AddNewAddressTest {
             receiver(TEST_RECEIVER)
             phoneNumber(TEST_PHONE)
         } submit {
-            hasPassedAnalytics(gtmLogDBSource, query)
+            hasPassedAnalytics(cassavaTestRule, queryPath)
         }
     }
 
     @Test
     fun addAddressNewUserFunnel_PassedAnalyticsTest() {
-        val query = getJsonDataFromAsset(context, "tracker/logistic/addaddress_new_user_funnel.json")
-                ?: throw AssertionError("Validator Query not found")
+        val query = "tracker/logistic/addaddress_new_user_funnel.json"
         val screenName = "/user/address/create/cart"
         addAddress {
             launchFrom(mActivityTestRule, screenName)
@@ -101,7 +98,7 @@ class AddNewAddressTest {
             receiver(TEST_RECEIVER)
             phoneNumber(TEST_PHONE)
         } submit {
-            hasPassedAnalytics(gtmLogDBSource, query)
+            hasPassedAnalytics(cassavaTestRule, query)
         }
     }
 

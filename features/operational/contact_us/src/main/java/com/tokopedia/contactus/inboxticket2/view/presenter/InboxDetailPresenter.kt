@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.MenuItem
 import android.view.View
 import com.google.gson.reflect.TypeToken
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
@@ -51,7 +52,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                            private val closeTicketByUserUseCase: CloseTicketByUserUseCase,
                            private val contactUsUploadImageUseCase: ContactUsUploadImageUseCase,
                            private val userSession: UserSessionInterface,
-                           private val defaultDispatcher: CoroutineDispatcher) : InboxDetailContract.Presenter, CustomEditText.Listener, CoroutineScope {
+                           private val dispatcher: CoroutineDispatchers) : InboxDetailContract.Presenter, CustomEditText.Listener, CoroutineScope {
     private var mView: InboxDetailView? = null
     var mTicketDetail: Tickets? = null
         get() = field
@@ -119,12 +120,6 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
     }
 
     override fun onDestroy() {}
-
-    override fun getBottomFragment(resID: Int): InboxBottomSheetFragment? {
-        val bottomFragment = InboxBottomSheetFragment.getBottomSheetFragment(resID)
-        bottomFragment?.setPresenter(this)
-        return bottomFragment
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.action_search) {
@@ -374,7 +369,7 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                     val files = contactUsUploadImageUseCase.getFile(mView?.imageList)
                     val list = arrayListOf<ImageUpload>()
 
-                    withContext(Dispatchers.IO) {
+                    withContext(dispatcher.io) {
                         list.addAll(contactUsUploadImageUseCase.uploadFile(
                                 userSession.userId,
                                 mView?.imageList,
@@ -438,29 +433,6 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                     it.printStackTrace()
                 })
 
-    }
-
-    override fun setBadRating(position: Int) {
-        if (position in 1..6) {
-            postRatingUseCase.setQueryMap(rateCommentID, no, 1, position, "")
-            mView?.showProgressBar()
-            mView?.toggleTextToolbar(View.VISIBLE)
-            sendRating()
-            ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), "",
-                    InboxTicketTracking.Category.EventInboxTicket,
-                    InboxTicketTracking.Action.EventClickReason,
-                    reasonList[position - 1])
-        }
-    }
-
-    override fun sendCustomReason(customReason: String) {
-        mView?.showSendProgress()
-        postRatingUseCase.setQueryMap(rateCommentID, no, 1, 7, customReason)
-        sendRating()
-        ContactUsTracking.sendGTMInboxTicket(mView?.getActivity(), "",
-                InboxTicketTracking.Category.EventInboxTicket,
-                InboxTicketTracking.Action.EventClickReason,
-                customReason)
     }
 
     override fun getNextResult(): Int {
@@ -529,44 +501,11 @@ class InboxDetailPresenter(private val postMessageUseCase: PostMessageUseCase,
                 "")
     }
 
-
-    private fun sendRating() {
-        postRatingUseCase.execute(object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onCompleted() {}
-            override fun onError(e: Throwable) {
-                e.printStackTrace()
-            }
-
-            override fun onNext(typeRestResponseMap: Map<Type, RestResponse>) {
-                mView?.hideProgressBar()
-                mView?.hideSendProgress()
-                val token = object : TypeToken<InboxDataResponse<RatingResponse?>?>() {}.type
-                val res1 = typeRestResponseMap[token]
-                val ticketListResponse: InboxDataResponse<*> = res1?.getData() as InboxDataResponse<*>
-                val ratingResponse = ticketListResponse.data as RatingResponse
-                if (ratingResponse.isSuccess > 0) {
-                    mView?.hideBottomFragment()
-                    mView?.showMessage(mView?.getActivity()?.getString(R.string.thanks_input) ?: "")
-                    if (mTicketDetail?.status == OPEN || mTicketDetail?.status == SOLVED) {
-                        mView?.toggleTextToolbar(View.VISIBLE)
-                    } else {
-                        mView?.showIssueClosed()
-                        mView?.updateClosedStatus()
-                    }
-                } else {
-                    mView?.setSnackBarErrorMessage(ticketListResponse.errorMessage?.get(0)
-                            ?: "", true)
-                    mView?.toggleTextToolbar(View.GONE)
-                }
-            }
-        })
-    }
-
     private fun search(searchText: String) {
         mView?.showProgressBar()
         launchCatchError(
                 block = {
-                    withContext(defaultDispatcher) {
+                    withContext(dispatcher.default) {
                         initializeIndicesList(searchText)
                         next = 0
                         withContext(Dispatchers.Main) {

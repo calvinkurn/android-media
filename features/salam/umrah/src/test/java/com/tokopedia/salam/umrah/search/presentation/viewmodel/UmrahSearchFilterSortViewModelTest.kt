@@ -1,7 +1,7 @@
 package com.tokopedia.salam.umrah.search.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.salam.umrah.UmrahDispatchersProviderTest
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
 import com.tokopedia.salam.umrah.common.usecase.UmrahSearchParameterUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -25,7 +25,7 @@ class UmrahSearchFilterSortViewModelTest{
     @RelaxedMockK
     lateinit var umrahSearchParammeterUseCase : UmrahSearchParameterUseCase
 
-    private val dispatcher = UmrahDispatchersProviderTest()
+    private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var umrahSearchFilterViewModel : UmrahSearchFilterSortViewModel
 
     @Before

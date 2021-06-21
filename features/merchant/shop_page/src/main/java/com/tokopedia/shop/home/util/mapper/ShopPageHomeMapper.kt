@@ -121,7 +121,7 @@ object ShopPageHomeMapper {
         }
     }
 
-    fun mapToProductCardModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductUiModel): ProductCardModel {
+    fun mapToProductCardModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductUiModel, isWideContent: Boolean): ProductCardModel {
         val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%", "")
                 ?: ""
         val discountPercentage = if (discountWithoutPercentageString == "0") {
@@ -145,7 +145,8 @@ object ShopPageHomeMapper {
                 },
                 hasThreeDots = hasThreeDots,
                 hasAddToCartButton = isHasAddToCartButton,
-                addToCartButtonType = UnifyButton.Type.MAIN
+                addToCartButtonType = UnifyButton.Type.MAIN,
+                isWideContent = isWideContent
         )
     }
 
@@ -308,7 +309,7 @@ object ShopPageHomeMapper {
                 id = it.id
                 name = it.name
                 displayedPrice = it.discountedPrice
-                originalPrice = it.price
+                originalPrice = it.displayedPrice
                 discountPercentage = it.discountPercentage
                 imageUrl = it.imageUrl
                 imageUrl300 = ""
@@ -395,7 +396,8 @@ object ShopPageHomeMapper {
                 header.ctaLink,
                 header.cover,
                 header.ratio,
-                header.isAtc
+                header.isAtc,
+                header.etalaseId
         )
     }
 

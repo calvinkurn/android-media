@@ -3,6 +3,7 @@ package com.tokopedia.devicefingerprint.datavisor.workmanager
 import android.content.Context
 import androidx.work.*
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.device.info.cache.FingerprintCache
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.DEFAULT_VALUE_DATAVISOR
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.DV_SHARED_PREF_NAME
@@ -10,6 +11,8 @@ import com.tokopedia.devicefingerprint.datavisor.response.SubmitDeviceInitRespon
 import com.tokopedia.devicefingerprint.datavisor.usecase.SubmitDVTokenUseCase
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
@@ -17,14 +20,12 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.resume
+import kotlin.math.min
 
 class DataVisorWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
 
     @Inject
     lateinit var submitDVTokenUseCase: SubmitDVTokenUseCase
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     init {
         DaggerDeviceFingerprintComponent.builder()
@@ -73,18 +74,33 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
                         setTokenLocal(applicationContext, token)
                         Result.success()
                     } else {
+                        sendLog(token, true, "")
                         Result.retry()
                     }
                 } catch (e: Exception) {
+                    sendLog(token, false, e.toString())
                     Result.retry()
                 }
             } else {
                 val error = resultInit?.second ?: ""
+                sendLog(token, false, error)
                 sendErrorDataVisorToServer(runAttemptCount, error)
                 Result.retry()
             }
             result
         }
+    }
+
+    private fun sendLog(token: String = "", isError: Boolean = false, throwableString: String) {
+        val throwableTruncate = if (throwableString.isNotEmpty()) {
+            throwableString.substring(0, min(ERR_MAX_LENGTH, throwableString.length))
+        } else {
+            ""
+        }
+        ServerLogger.log(Priority.P1, LOG_TAG,
+                mapOf("token" to token,
+                        "isError" to isError.toString(),
+                        "error" to throwableTruncate))
     }
 
     fun setTokenLocal(context: Context, token: String) {
@@ -95,6 +111,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
                 .apply()
         lastToken = token
         lastTimestampToken = now
+        FingerprintCache.clearFingerprintCache(context)
     }
 
     suspend fun sendErrorDataVisorToServer(runAttemptCount: Int, errorMessage: String) {
@@ -103,12 +120,11 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
 
     private suspend fun sendDataVisorToServer(token: String = DEFAULT_VALUE_DATAVISOR,
                                               countAttempt: Int, errorMessage: String): SubmitDeviceInitResponse {
-        submitDVTokenUseCase.setParams(
+        return submitDVTokenUseCase.execute(
                 token,
                 countAttempt,
                 errorMessage
         )
-        return submitDVTokenUseCase.executeOnBackground()
     }
 
     companion object {
@@ -117,6 +133,8 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
         const val KEY_TOKEN = "tk"
         const val KEY_TS_TOKEN = "ts_tk"
         const val KEY_TS_WORKER = "ts_worker"
+        const val LOG_TAG = "GQL_ERROR_RISK"
+        const val ERR_MAX_LENGTH = 100
         val THRES_TOKEN_VALID_AGE = TimeUnit.DAYS.toMillis(30)
         val THRES_WORKER = TimeUnit.DAYS.toMillis(1)
         var lastToken = ""
@@ -134,7 +152,8 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
                     if (forceWorker || needToRun(appContext)) {
                         runWorker(appContext)
                     }
-                } catch (ignored:Exception) { }
+                } catch (ignored: Exception) {
+                }
             }
         }
 

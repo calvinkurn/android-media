@@ -3,36 +3,36 @@
   "mode": "subset",
   "query": [
     {
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}",
+      "sessionIris": ".*",
+      "userId": ".*",
       "eventCategory": "fin - info page",
       "eventAction": "sim vcc - click daftar paylater",
       "event": "clickFintechMicrosite",
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     },
     {
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}",
+      "sessionIris": ".*",
+      "userId": ".*",
       "eventCategory": "fin - info page",
       "eventAction": "sim vcc - click tab",
       "event": "clickFintechMicrosite",
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     },
     {
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}",
+      "sessionIris": ".*",
+      "userId": ".*",
       "eventCategory": "fin - info page",
       "eventAction": "sim vcc - click pilih paylater",
       "event": "clickFintechMicrosite",
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     },
     {
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}",
+      "sessionIris": ".*",
+      "userId": ".*",
       "eventCategory": "fin - info page",
       "eventAction": "sim vcc - click daftar sekarang",
       "event": "clickFintechMicrosite",
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     }
   ]
 }

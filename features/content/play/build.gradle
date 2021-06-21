@@ -82,6 +82,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+    testImplementation project(rootProject.ext.libraries.unitTest)
     testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
 
     implementation rootProject.ext.miscDependencies.exoPlayerCore

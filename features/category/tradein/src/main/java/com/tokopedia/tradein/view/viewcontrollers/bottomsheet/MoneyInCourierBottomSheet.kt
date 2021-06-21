@@ -3,10 +3,10 @@ package com.tokopedia.tradein.view.viewcontrollers.bottomsheet
 import android.os.Bundle
 import androidx.constraintlayout.widget.ConstraintLayout
 import android.view.View
-import android.widget.TextView
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4.Data.Service.Product.Features.MoneyIn
+import com.tokopedia.unifyprinciples.Typography
 
 class MoneyInCourierBottomSheet : BottomSheets() {
     private var moneyIn: MoneyIn? = null
@@ -39,9 +39,9 @@ class MoneyInCourierBottomSheet : BottomSheets() {
             moneyIn = arguments?.getParcelable(KEY_MONEY_IN)
             description = arguments?.getString(KEY_DESCRIPTION)
         }
-        val shipperButton = view?.findViewById<TextView>(R.id.shipper_name)
-        val exchangeText = view?.findViewById<TextView>(R.id.exchange_text)
-        val price = view?.findViewById<TextView>(R.id.price)
+        val shipperButton = view?.findViewById<Typography>(R.id.shipper_name)
+        val exchangeText = view?.findViewById<Typography>(R.id.exchange_text)
+        val price = view?.findViewById<Typography>(R.id.price)
         val parentLayout = view?.findViewById<ConstraintLayout>(R.id.parent_layout)
 
         shipperButton?.text = moneyIn?.shipperName

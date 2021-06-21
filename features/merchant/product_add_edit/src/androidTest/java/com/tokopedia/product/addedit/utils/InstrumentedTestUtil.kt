@@ -1,9 +1,15 @@
 package com.tokopedia.product.addedit.utils
 
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DB_NAME
+import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DB_TABLE
+import com.tokopedia.product.manage.common.feature.draft.constant.AddEditProductDraftConstant.DB_VERSION_9
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import org.hamcrest.Matchers
 
@@ -48,5 +54,23 @@ object InstrumentedTestUtil {
 
     fun performPressBack() {
         Espresso.pressBackUnconditionally()
+    }
+
+    fun deleteAllDraft() {
+        val db: SQLiteOpenHelper = object : SQLiteOpenHelper(
+                InstrumentationRegistry.getInstrumentation().context,
+                DB_NAME,
+                null,
+                DB_VERSION_9
+        ) {
+            override fun onCreate(p0: SQLiteDatabase?) {}
+            override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {}
+        }
+
+        try {
+            val dbWrite1 = db.writableDatabase
+            dbWrite1.execSQL("DELETE FROM $DB_TABLE")
+            dbWrite1.close()
+        } catch (e: Exception) { }
     }
 }

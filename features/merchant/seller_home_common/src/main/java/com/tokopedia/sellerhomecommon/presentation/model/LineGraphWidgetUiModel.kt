@@ -22,6 +22,7 @@ data class LineGraphWidgetUiModel(
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
+        override var isNeedToBeRemoved: Boolean = false,
         override var emptyState: WidgetEmptyStateUiModel
 ) : BaseWidgetUiModel<LineGraphDataUiModel> {
 
@@ -30,7 +31,7 @@ data class LineGraphWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<LineGraphDataUiModel> {
-        return LineGraphWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+        return LineGraphWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<LineGraphDataUiModel>): Boolean {

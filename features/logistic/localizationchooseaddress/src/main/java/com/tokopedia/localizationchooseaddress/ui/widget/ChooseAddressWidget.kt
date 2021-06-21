@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -130,6 +131,11 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     fun updateWidget(){
+        val textColor = chooseAddressWidgetListener?.onChangeTextColor()
+        if (textColor != null) {
+            textChosenAddress?.setTextColor(ContextCompat.getColor(context, textColor))
+
+        }
         val data = ChooseAddressUtils.getLocalizingAddressData(context)
         if (data?.city_id?.isEmpty() == true) {
             textChosenAddress?.text = data.label
@@ -167,7 +173,8 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             if (hasClicked == false ) {
                 val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
                 val source = chooseAddressWidgetListener?.getLocalizingAddressHostSourceTrackingData()
-                source?.let { it -> ChooseAddressTracking.onClickWidget(it, userSession.userId) }
+                val eventLabel = chooseAddressWidgetListener?.getEventLabelHostPage()
+                source?.let { _source -> eventLabel?.let { _eventLabel -> ChooseAddressTracking.onClickWidget(_source, userSession.userId, _eventLabel) } }
                 val chooseAddressBottomSheet = ChooseAddressBottomSheet()
                 chooseAddressBottomSheet.setListener(this)
                 chooseAddressBottomSheet.show(fragment?.childFragmentManager)
@@ -260,6 +267,21 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
          * host/fragment need to refresh their page
          */
         fun onLocalizingAddressLoginSuccess()
-    }
+
+        /**
+         * String Event Label of Host Page
+         * By default, this method will return String empty
+         */
+        fun getEventLabelHostPage(): String {
+            return ""
+        }
+
+        /**
+         * Int Color for Text label
+         */
+        fun onChangeTextColor(): Int {
+            return com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+        }
+     }
 
 }

@@ -9,6 +9,7 @@ internal class GetRecommendationUseCaseRequest {
                       tID
                       source
                       title
+                      subtitle
                       foreignTitle
                       widgetUrl
                       pageName
@@ -115,6 +116,9 @@ internal class GetRecommendationUseCaseRequest {
                            relatedProductUrlLink
                            price
                            priceInt
+                           discountPercentage
+                           slashedPrice
+                           slashedPriceInt
                            shop {
                                id
                                name

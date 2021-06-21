@@ -24,7 +24,7 @@
       "event": "clickCreateShop",
       "eventCategory": "registration page - shop",
       "eventAction": "click shop domain recommendation",
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     },
     {
       "event": "clickCreateShop",

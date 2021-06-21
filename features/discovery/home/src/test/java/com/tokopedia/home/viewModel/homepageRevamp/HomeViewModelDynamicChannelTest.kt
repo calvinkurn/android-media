@@ -8,12 +8,12 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
-import com.tokopedia.home.viewModel.homepage.givenGetDynamicChannelsUseCaseThrowReturn
 import com.tokopedia.home_component.model.ChannelModel
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import io.mockk.verifyOrder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 
@@ -52,23 +52,10 @@ class HomeViewModelDynamicChannelTest{
         // viewModel load request update dynamic channel data
         homeViewModel.getDynamicChannelData(dataModel, 0)
 
-        // Expect channel updated
-        verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match { homeDataModel ->
-                (homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} as? DynamicChannelDataModel)?.channel?.id == "1"
-            })
-            // check on second update data liveData is removed old dynamic channel
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} == null
-            })
-
-            // check after removed is must add new channel from list of channel
-            observerHome.onChanged(match { homeDataModel ->
-                (homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} as? DynamicChannelDataModel)?.channel?.id == "2"
-            })
+        homeViewModel.homeDataModel.findWidgetList<DynamicChannelDataModel> {
+            Assert.assertEquals(it.size, 1)
+            Assert.assertEquals("2", it[0].channel!!.id)
         }
-        confirmVerified(observerHome)
     }
 
     @Test
@@ -101,28 +88,11 @@ class HomeViewModelDynamicChannelTest{
         // viewModel load request update dynamic channel data") {
         homeViewModel.getDynamicChannelData(dataModel, 0)
 
-        // Expect channel updated
-        verifyOrder {
-            // check on home data initial first channel is dynamic channel
-            observerHome.onChanged(match {homeDataModel ->
-                (homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} as? DynamicChannelDataModel)?.channel?.id == "1"
-            })
-            // check on second update data liveData is removed old dynamic channel
-            observerHome.onChanged(match {
-                it.list.find {it::class.java == DynamicChannelDataModel::class.java} == null
-            })
-
-            // check after removed is must add new channel from list of channel
-            observerHome.onChanged(match {homeDataModel ->
-                (homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} as? DynamicChannelDataModel)?.channel?.id == "3"
-            })
-
-            // check the second new channel from list of channel
-            observerHome.onChanged(match {homeDataModel ->
-                (homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} as? DynamicChannelDataModel)?.channel?.id == "2"
-            })
+        homeViewModel.homeDataModel.findWidgetList<DynamicChannelDataModel> {
+            Assert.assertEquals(2, it.size)
+            Assert.assertEquals("2", it[0].channel!!.id)
+            Assert.assertEquals("3", it[1].channel!!.id)
         }
-        confirmVerified(observerHome)
     }
 
     @Test
@@ -149,16 +119,7 @@ class HomeViewModelDynamicChannelTest{
         // viewModel load request update dynamic channel data
         homeViewModel.getDynamicChannelData(dataModel, 0)
 
-        // Expect channel updated
-        verifyOrder {
-            observerHome.onChanged(match {homeDataModel ->
-                (homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} as? DynamicChannelDataModel)?.channel?.id == "1"
-            })
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} == null
-            })
-        }
-        confirmVerified(observerHome)
+        assert(homeViewModel.homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} == null)
     }
 
     @Test
@@ -187,16 +148,7 @@ class HomeViewModelDynamicChannelTest{
             homeViewModel.getDynamicChannelData(it, ChannelModel(groupId = "1", id="1"), 0)
         }
 
-        // Expect channel updated
-        verifyOrder {
-            observerHome.onChanged(match {homeDataModel ->
-                (homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} as? DynamicChannelDataModel)?.channel?.id == "1"
-            })
-            observerHome.onChanged(match { homeDataModel ->
-                homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} == null
-            })
-        }
-        confirmVerified(observerHome)
+        assert(homeViewModel.homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} == null)
     }
 
     @Test
@@ -223,15 +175,6 @@ class HomeViewModelDynamicChannelTest{
 
         homeViewModel.trackingLiveData.observeForever { assert(it != null) }
 
-        // Expect channel updated
-        verifyOrder {
-            observerHome.onChanged(match {homeDataModel ->
-                (homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} as? DynamicChannelDataModel)?.channel?.id == "1"
-            })
-            observerHome.onChanged(match {homeDataModel ->
-                homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} == null
-            })
-        }
-        confirmVerified(observerHome)
+        assert(homeViewModel.homeDataModel.list.find {it::class.java == DynamicChannelDataModel::class.java} == null)
     }
 }

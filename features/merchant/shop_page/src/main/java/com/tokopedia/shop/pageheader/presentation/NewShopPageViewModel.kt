@@ -15,12 +15,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.exception.UserNotLoginException
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.constant.ShopPageConstant.DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST
-import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
+import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShopResponse
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatusResponse
 import com.tokopedia.shop.common.di.GqlGetShopInfoForHeaderUseCaseQualifier
@@ -40,17 +38,14 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.SHOP_PAGE_SOURCE
 import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase.Companion.SOURCE_SHOP_PAGE
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
-import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.data.model.ShopRequestUnmoderateSuccessResponse
 import com.tokopedia.shop.pageheader.domain.interactor.*
 import com.tokopedia.shop.pageheader.presentation.uimodel.NewShopPageP1HeaderData
-import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.util.NewShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
@@ -62,9 +57,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil
 import dagger.Lazy
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
-import rx.Subscriber
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -83,6 +78,7 @@ class NewShopPageViewModel @Inject constructor(
         private val getShopPageHeaderLayoutUseCase: Lazy<GetShopPageHeaderLayoutUseCase>,
         private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
         private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
+        private val gqlGetShopOperationalHoursListUseCase: Lazy<GqlGetShopOperationalHoursListUseCase>,
         private val dispatcherProvider: CoroutineDispatchers)
     : BaseViewModel(dispatcherProvider.main) {
 
@@ -136,6 +132,10 @@ class NewShopPageViewModel @Inject constructor(
     private val _shopPageShopShareData = MutableLiveData<Result<ShopInfo>>()
     val shopPageShopShareData: LiveData<Result<ShopInfo>>
         get() = _shopPageShopShareData
+
+    private val _shopOperationalHoursListData = MutableLiveData<Result<ShopOperationalHoursListResponse>>()
+    val shopOperationalHoursListData: LiveData<Result<ShopOperationalHoursListResponse>>
+        get() = _shopOperationalHoursListData
 
     fun getShopPageTabData(
             shopId: Int,
@@ -424,5 +424,19 @@ class NewShopPageViewModel @Inject constructor(
                 )
         )
         return useCase.executeOnBackground()
+    }
+
+    fun getShopOperationalHoursList(shopId: String) {
+        launchCatchError(dispatcherProvider.io, block =  {
+
+            val useCase = gqlGetShopOperationalHoursListUseCase.get().apply {
+                params = GqlGetShopOperationalHoursListUseCase.createRequestParams(shopId)
+            }
+            val response = useCase.executeOnBackground()
+            _shopOperationalHoursListData.postValue(Success(response))
+
+        }) {
+            _shopOperationalHoursListData.postValue(Fail(it))
+        }
     }
 }

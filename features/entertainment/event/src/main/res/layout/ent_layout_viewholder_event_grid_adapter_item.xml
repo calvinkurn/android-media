@@ -25,24 +25,6 @@
             tools:src="@tools:sample/backgrounds/scenic"
             tools:ignore="ContentDescription"/>
 
-        <RelativeLayout
-            android:layout_width="@dimen/spacing_lvl6"
-            android:layout_height="@dimen/spacing_lvl6"
-            android:layout_margin="@dimen/spacing_lvl2"
-            android:background="@drawable/ent_ic_circle"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:id="@+id/iv_favorite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                app:srcCompat="@drawable/ent_ic_wishlist_inactive"
-                tools:ignore="ContentDescription"/>
-        </RelativeLayout>
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_location"
             android:layout_width="@dimen/unify_space_0"

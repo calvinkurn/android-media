@@ -30,6 +30,8 @@ class ShopSearchProductViewModel @Inject constructor(
     }
 
     fun isLoggedIn() = userSessionInterface.isLoggedIn
+    val userId: String
+        get() = userSessionInterface.userId
 
     fun getSearchShopProduct(shopId: String, searchQuery: String) {
         launchCatchError(block = {

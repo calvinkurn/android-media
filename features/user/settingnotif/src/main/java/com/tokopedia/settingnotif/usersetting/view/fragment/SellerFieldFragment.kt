@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.VisitableSettings
+import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPushNotif
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
@@ -60,7 +61,15 @@ class SellerFieldFragment: SettingFieldFragment() {
             updatedSettingIds: List<Map<String, Any>>
     ) {
         settingViewModel.requestUpdateUserSetting(TYPE_PUSH_NOTIF, updatedSettingIds)
-        settingViewModel.requestUpdateMoengageUserSetting(updatedSettingIds)
+
+        for (setting in updatedSettingIds) {
+            val name = setting[SettingViewHolder.PARAM_SETTING_KEY]
+            val value = setting[SettingViewHolder.PARAM_SETTING_VALUE]
+
+            if (name !is String || value !is Boolean) return
+
+            settingViewModel.requestUpdateMoengageUserSetting(name, value)
+        }
     }
 
     private fun pushNotifValidation() {

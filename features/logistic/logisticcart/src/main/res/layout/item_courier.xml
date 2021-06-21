@@ -60,7 +60,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_promo_potency"
-        style="@style/TextSmallNormal"
+        app:typographyType="body_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/tv_courier"
@@ -131,21 +131,33 @@
         android:text="@string/jaminan_tepat_waktu"
         app:labelType="general_light_green" />
 
-    <ImageView
-        android:id="@+id/img_check"
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/lbl_dynamic_pricing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/lbl_otd_available"
+        android:layout_marginTop="@dimen/dp_4"
+        android:text="@string/txt_label_dynamic_pricing"
+        android:visibility="gone"
+        app:labelType="general_light_green" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/img_check"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:contentDescription="@string/content_img_check"
-        app:srcCompat="@drawable/ic_check" />
+        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_color_night_enable="@color/Unify_G500"
+        app:icon_enable_state="true"
+        app:icon_name="CHECK_BIG" />
 
     <View
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
-        android:layout_below="@id/lbl_otd_available"
+        android:layout_below="@id/lbl_dynamic_pricing"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@color/Unify_N100" />
 

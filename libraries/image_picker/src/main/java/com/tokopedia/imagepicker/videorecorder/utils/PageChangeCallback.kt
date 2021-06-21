@@ -1,4 +1,4 @@
-package com.tokopedia.videorecorder.utils
+package com.tokopedia.imagepicker.videorecorder.utils
 
 import androidx.viewpager.widget.ViewPager
 

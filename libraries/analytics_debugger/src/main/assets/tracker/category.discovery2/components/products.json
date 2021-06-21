@@ -5,45 +5,45 @@
     {
       "items": [
         {
-          "item_id": "{{.*}}",
-          "item_category": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-          "item_name": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "index": "{{\\d*.\\d*}}",
-          "dimension40": "{{.*}}",
-          "dimension83": "{{.*}}"
+          "item_id": ".*",
+          "item_category": ".*",
+          "item_brand": ".*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "index": "\\d*.\\d*",
+          "dimension40": ".*",
+          "dimension83": ".*"
         }
       ],
-      "sessionIris": "{{.*}}",
-      "eventCategory": "{{.*}}",
+      "sessionIris": ".*",
+      "eventCategory": ".*",
       "eventAction": "product list impression",
       "event": "view_item_list",
-      "eventLabel": "{{.*}}",
-      "item_list": "{{.*}}"
+      "eventLabel": ".*",
+      "item_list": ".*"
     },
     {
       "items": [
         {
-          "item_id": "{{.*}}",
-          "item_category": "{{.*}}",
-          "item_brand": "{{.*}}",
-          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
-          "item_name": "{{.*}}",
-          "item_variant": "{{.*}}",
-          "index": "{{\\d*.\\d*}}",
-          "dimension40": "{{.*}}",
-          "dimension83": "{{.*}}"
+          "item_id": ".*",
+          "item_category": ".*",
+          "item_brand": ".*",
+          "price": "\\d*.\\d*|\\d.\\d+E\\d",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "index": "\\d*.\\d*",
+          "dimension40": ".*",
+          "dimension83": ".*"
         }
       ],
       "eventAction": "click product list",
-      "eventCategory": "{{.*}}",
+      "eventCategory": ".*",
       "event": "select_content",
-      "campaignCode": "{{.*}}",
-      "sessionIris": "{{.*}}",
-      "eventLabel": "{{.*}}",
-      "item_list": "{{.*}}"
+      "campaignCode": ".*",
+      "sessionIris": ".*",
+      "eventLabel": ".*",
+      "item_list": ".*"
     }
   ]
 }

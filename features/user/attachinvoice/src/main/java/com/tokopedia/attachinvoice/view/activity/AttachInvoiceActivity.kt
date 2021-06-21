@@ -27,7 +27,6 @@ class AttachInvoiceActivity : BaseSimpleActivity(), HasComponent<AttachInvoiceCo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        useLightNotificationBar()
         setupToolbar()
     }
 
@@ -43,14 +42,9 @@ class AttachInvoiceActivity : BaseSimpleActivity(), HasComponent<AttachInvoiceCo
             toolbar.elevation = 0f
         }
         supportActionBar?.setTitle(R.string.title_attachinvoice)
-        toolbar.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-    }
-
-    private fun useLightNotificationBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        }
+        toolbar.setBackgroundColor(MethodChecker.getColor(
+                this, com.tokopedia.unifyprinciples.R.color.Unify_N0
+        ))
     }
 
     override fun onClickAttachInvoice(intent: Intent) {

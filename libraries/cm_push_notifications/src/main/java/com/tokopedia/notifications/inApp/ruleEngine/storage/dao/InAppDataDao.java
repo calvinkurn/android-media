@@ -56,6 +56,9 @@ public interface InAppDataDao {
     @Query("UPDATE inapp_data SET shown = 0 where id = :id")
     void updateVisibleState(long id);
 
+    @Query("UPDATE inapp_data SET shown = 0 where shown = 1")
+    void updateVisibleStateForAlreadyShown();
+
     @Query("UPDATE inapp_data SET freq = 0, is_interacted = 1 where id = :id and perst_on = 0")
     void updateFreqWithPerst(long id);
 }

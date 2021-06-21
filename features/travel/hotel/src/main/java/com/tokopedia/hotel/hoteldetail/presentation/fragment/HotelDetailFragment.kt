@@ -643,7 +643,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 isAvailable = true
 
                 btn_see_room.text = getString(R.string.hotel_detail_show_room_text)
-                btn_see_room.buttonType = UnifyButton.Type.TRANSACTION
+                btn_see_room.buttonType = UnifyButton.Type.MAIN
                 btn_see_room.setOnClickListener {
                     trackingHotelUtil.hotelChooseViewRoom(context, hotelHomepageModel, hotelId, hotelName, PDP_SCREEN_NAME)
                     context?.run {

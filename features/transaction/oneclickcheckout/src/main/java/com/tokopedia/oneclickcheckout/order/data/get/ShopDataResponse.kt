@@ -1,31 +1,24 @@
 package com.tokopedia.oneclickcheckout.order.data.get
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
 data class ShopDataResponse(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("shop_id")
-        val shopId: Int = 0,
+        val shopId: Long = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("user_id")
-        val userId: Int = 0,
+        val userId: Long = 0,
         @SerializedName("shop_name")
         val shopName: String = "",
-        @SerializedName("shop_image")
-        val shopImage: String = "",
-        @SerializedName("shop_url")
-        val shopUrl: String = "",
-        @SerializedName("shop_status")
-        val shopStatus: Int = 0,
         @SerializedName("is_gold")
         val isGold: Int = 0,
         @SerializedName("is_gold_badge")
         val isGoldBadge: Boolean = false,
         @SerializedName("is_official")
         val isOfficial: Int = 0,
-        @SerializedName("is_free_returns")
-        val isFreeReturns: Int = 0,
-        @SerializedName("address_id")
-        val addressId: Int = 0,
         @SerializedName("postal_code")
         val postalCode: String = "",
         @SerializedName("latitude")
@@ -33,17 +26,7 @@ data class ShopDataResponse(
         @SerializedName("longitude")
         val longitude: String = "",
         @SerializedName("district_id")
-        val districtId: Int = 0,
-        @SerializedName("district_name")
-        val districtName: String = "",
-        @SerializedName("origin")
-        val origin: Int = 0,
-        @SerializedName("address_street")
-        val addressStreet: String = "",
-        @SerializedName("province_id")
-        val provinceId: Int = 0,
-        @SerializedName("city_id")
-        val cityId: Int = 0,
+        val districtId: String = "",
         @SerializedName("city_name")
         val cityName: String = "",
         @SerializedName("shop_shipments")
@@ -51,10 +34,13 @@ data class ShopDataResponse(
         @SerializedName("gold_merchant")
         val goldMerchant: GoldMerchant = GoldMerchant(),
         @SerializedName("official_store")
-        val officialStore: OfficialStore = OfficialStore()
+        val officialStore: OfficialStore = OfficialStore(),
+        @SerializedName("shop_type_info")
+        val shopType: ShopTypeResponse = ShopTypeResponse()
 )
 
 data class OccShopShipment(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("ship_id")
         val shipId: Int = 0,
         @SerializedName("ship_name")
@@ -70,12 +56,14 @@ data class OccShopShipment(
 )
 
 data class OccShipProd(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("ship_prod_id")
         val shipProdId: Int = 0,
         @SerializedName("ship_prod_name")
         val shipProdName: String = "",
         @SerializedName("ship_group_name")
         val shipGroupName: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("ship_group_id")
         val shipGroupId: Int = 0,
         @SerializedName("additional_fee")
@@ -98,4 +86,15 @@ data class GoldMerchant(
         val isGoldBadge: Boolean = false,
         @SerializedName("gold_merchant_logo_url")
         val goldMerchantLogoUrl: String = ""
+)
+
+data class ShopTypeResponse(
+        @SerializedName("shop_tier")
+        val shopTier: Int = 0,
+        @SerializedName("badge")
+        val badge: String = "",
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("title_fmt")
+        val titleFmt: String = ""
 )

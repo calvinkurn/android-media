@@ -66,4 +66,7 @@
     <string name="ticker_desc">Kamu bisa cek status pembelian dan e-voucher lewat halaman Daftar Transaksi</string>
 
     <string name="how_to_redeem_error">Cara untuk redeem voucher belum dapat ditemukan, silakan coba lagi nanti.</string>
+    
+    <string name="digital_deals_product_not_started">Masa penjualan produk belum dimulai</string>
+    <string name="digital_deals_product_ended">Masa penjualan produk telah berakhir</string>
 </resources>

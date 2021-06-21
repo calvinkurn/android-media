@@ -167,7 +167,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> viewModel.getCart(it.data)
-                is Fail -> closeViewWithMessageAlert(it.throwable.message ?: ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+                is Fail -> closeViewWithMessageAlert(ErrorHandler.getErrorMessage(requireContext(), it.throwable))
             }
         })
 
@@ -176,12 +176,19 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             renderCartBasedOnParamState()
         })
 
-        viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
-            closeViewWithMessageAlert(it ?: ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
+        viewModel.errorThrowable.observe(viewLifecycleOwner, Observer {
+            closeViewWithMessageAlert(ErrorHandler.getErrorMessage(requireContext(), it.throwable))
         })
 
-        viewModel.isSuccessCancelVoucherCart.observe(viewLifecycleOwner, Observer {
-            if (it is Fail) onFailedCancelVoucher(it.throwable)
+        viewModel.cancelVoucherData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.defaultEmptyPromoMessage.isNotEmpty()) {
+                        checkoutBottomViewWidget.promoButtonTitle = it.data.defaultEmptyPromoMessage
+                    }
+                }
+                is Fail -> onFailedCancelVoucher(it.throwable)
+            }
         })
 
         viewModel.totalPrice.observe(viewLifecycleOwner, Observer {
@@ -251,10 +258,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         digitalSubscriptionParams.isSubscribed = cartInfo.crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
         sendGetCartAndCheckoutAnalytics()
 
-        cartInfo.attributes.userInputPrice.run {
-            if (maxPaymentPlain != 0.0 && minPaymentPlain != 0.0) {
-                renderInputPriceView(cartInfo.attributes.pricePlain.toLong(), cartInfo.attributes.userInputPrice)
-            }
+        if (cartInfo.attributes.isOpenAmount) {
+            renderInputPriceView(cartInfo.attributes.pricePlain.toLong(), cartInfo.attributes.userInputPrice)
         }
 
         renderMyBillsLayout(cartInfo)
@@ -361,11 +366,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun onFailedCancelVoucher(throwable: Throwable) {
-        var message: String = ErrorNetMessage.MESSAGE_ERROR_DEFAULT
-        if (!throwable.message.isNullOrEmpty()) {
-            message = ErrorHandler.getErrorMessage(activity, throwable)
-        }
-        showToastMessage(message)
+        checkoutBottomViewWidget.promoButtonState = ButtonPromoCheckoutView.State.ACTIVE
+        showToastMessage(ErrorHandler.getErrorMessage(activity, throwable))
     }
 
     private fun showToastMessage(message: String) {
@@ -453,20 +455,24 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     override fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int) {
-        digitalAnalytics.eventTebusMurahImpression(fintechProduct, position, userSession.userId)
+        digitalAnalytics.eventTebusMurahImpression(fintechProduct, getCategoryName(), position, userSession.userId)
+    }
+
+    override fun onCrossellImpression(fintechProduct: FintechProduct, position: Int) {
+        digitalAnalytics.eventImpressionCrossSell(fintechProduct, getCategoryName(), position, userSession.userId)
     }
 
     override fun onTebusMurahChecked(fintechProduct: FintechProduct, position: Int, isChecked: Boolean) {
-        if (isChecked) digitalAnalytics.eventTebusMurahChecked(fintechProduct, position, userSession.userId)
-        else digitalAnalytics.eventTebusMurahUnchecked(fintechProduct, userSession.userId)
+        if (isChecked) digitalAnalytics.eventTebusMurahChecked(fintechProduct, getCategoryName(), position, userSession.userId)
+        else digitalAnalytics.eventTebusMurahUnchecked(fintechProduct, getCategoryName(), userSession.userId)
         viewModel.onFintechProductChecked(fintechProduct, isChecked, getPriceInput())
     }
 
-    override fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean) {
-        if (fintechProduct.transactionType == TRANSACTION_TYPE_PROTECTION) {
-            digitalAnalytics.eventClickProtection(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
+    override fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean, position: Int) {
+        if (isChecked) {
+            digitalAnalytics.eventClickCrossSell(fintechProduct, getCategoryName(), position, userSession.userId)
         } else {
-            digitalAnalytics.eventClickCrossSell(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
+            digitalAnalytics.eventUnclickCrossSell(fintechProduct, userSession.userId)
         }
         viewModel.onFintechProductChecked(fintechProduct, isChecked, getPriceInput())
     }
@@ -562,7 +568,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
     private fun onResetPromoDiscount() {
         digitalAnalytics.eventClickCancelApplyCoupon(getCategoryName(), getPromoData().promoCode)
-        viewModel.cancelVoucherCart()
+        viewModel.cancelVoucherCart(getPromoData().promoCode, getString(R.string.digital_checkout_error_remove_coupon_message))
     }
 
     private fun navigateToPromoListPage() {
@@ -593,7 +599,6 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     companion object {
         private const val ARG_PASS_DATA = "ARG_PASS_DATA"
         private const val ARG_SUBSCRIPTION_PARAMS = "ARG_SUBSCRIPTION_PARAMS"
-        private const val TRANSACTION_TYPE_PROTECTION = "purchase-protection"
 
         private const val EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA"
         private const val EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER = "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER"

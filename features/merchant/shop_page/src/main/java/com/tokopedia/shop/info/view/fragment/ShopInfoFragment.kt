@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
@@ -30,6 +31,7 @@ import com.tokopedia.shop.common.config.ShopPageConfig
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
+import com.tokopedia.shop.databinding.*
 import com.tokopedia.shop.extension.transformToVisitable
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent
 import com.tokopedia.shop.info.di.module.ShopInfoModule
@@ -45,11 +47,6 @@ import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Comp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.partial_new_shop_page_header.view.*
-import kotlinx.android.synthetic.main.partial_shop_info_delivery.*
-import kotlinx.android.synthetic.main.partial_shop_info_description.*
-import kotlinx.android.synthetic.main.partial_shop_info_note.*
-import kotlinx.android.synthetic.main.partial_shop_info_statistics.*
 import javax.inject.Inject
 
 class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, ShopNoteViewHolder.OnNoteClicked {
@@ -84,9 +81,15 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(getShopId(), isOfficial, isGold)
     }
+    private val recyclerViewNote: RecyclerView?
+        get() = fragmentShopInfoBinding?.layoutPartialShopInfoNote?.recyclerViewNote
+    private val shopInfoNoteLoading: View?
+        get() = fragmentShopInfoBinding?.layoutPartialShopInfoNote?.loading
+    private var fragmentShopInfoBinding: FragmentShopInfoBinding? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_shop_info, container, false)
+        fragmentShopInfoBinding = FragmentShopInfoBinding.inflate(inflater, container, false)
+        return fragmentShopInfoBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -103,6 +106,11 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     override fun onPause() {
         super.onPause()
         shopPageTracking?.sendAllTrackingQueue()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        fragmentShopInfoBinding = null
     }
 
     override fun onDestroy() {
@@ -168,8 +176,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     }
 
     private fun showShopBadgeReputation(shopBadge: ShopBadge) {
-        image_view_shop_reputation_badge?.show()
-        ImageHandler.LoadImage(image_view_shop_reputation_badge, shopBadge.badgeHD)
+        fragmentShopInfoBinding?.layoutPartialShopInfoDescription?.imageViewShopReputationBadge?.apply {
+            show()
+            ImageHandler.LoadImage(this, shopBadge.badgeHD)
+        }
     }
 
     private fun observeShopNotes() {
@@ -201,6 +211,9 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     }
 
     private fun initView() {
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         getShopId()?.let { shopId ->
             setupShopNotesList()
             setStatisticsVisibility()
@@ -230,7 +243,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     private fun setupShopNotesList() {
         noteAdapter = BaseListAdapter(ShopNoteAdapterTypeFactory(this))
 
-        recyclerViewNote.apply {
+        recyclerViewNote?.apply {
             adapter = noteAdapter
             isNestedScrollingEnabled = false
             isFocusable = false
@@ -243,26 +256,28 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     }
 
     private fun setStatisticsVisibility() {
-        shopInfoStatistics.visibility = View.GONE
+        fragmentShopInfoBinding?.layoutPartialShopInfoStatistic?.root?.visibility = View.GONE
     }
 
     private fun showNoteLoading() {
         noteAdapter?.removeErrorNetwork()
-        recyclerViewNote.visibility = View.GONE
-        loading.visibility = View.VISIBLE
+        recyclerViewNote?.visibility = View.GONE
+        shopInfoNoteLoading?.visibility = View.VISIBLE
     }
 
     private fun hideNoteLoading() {
-        loading.visibility = View.GONE
-        recyclerViewNote.visibility = View.VISIBLE
+        shopInfoNoteLoading?.visibility = View.GONE
+        recyclerViewNote?.visibility = View.VISIBLE
     }
 
     private fun displayShopLogistic(shopInfo: ShopInfoData) {
         setupLogisticList(shopInfo)
 
         if (shopViewModel?.isMyShop(shopInfo.shopId) == true) {
-            labelViewLogisticTitle.setContent(getString(R.string.shop_info_label_manage_note))
-            labelViewLogisticTitle.setOnClickListener { goToManageLogistic() }
+            fragmentShopInfoBinding?.layoutPartialShopInfoDelivery?.labelViewLogisticTitle?.apply {
+                content = getString(R.string.shop_info_label_manage_note)
+                setOnClickListener { goToManageLogistic() }
+            }
         }
     }
 
@@ -270,7 +285,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
         val visitable = shopInfo.shipments.map { it.transformToVisitable() }
         val shopLogisticAdapter = ShopInfoLogisticAdapter(ShopInfoLogisticAdapterTypeFactory(), visitable)
 
-        recyclerViewLogistic.apply {
+        fragmentShopInfoBinding?.layoutPartialShopInfoDelivery?.recyclerViewLogistic?.apply {
             adapter = shopLogisticAdapter
             isNestedScrollingEnabled = false
             isFocusable = false
@@ -284,15 +299,16 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     }
 
     private fun displayShopDescription(shopInfo: ShopInfoData) {
-        if (TextUtils.isEmpty(shopInfo.tagLine) && TextUtils.isEmpty(shopInfo.description)) {
-            shopInfoDescription.hide()
-        } else {
-            shopInfoDescription.show()
-            shopInfoDescription.text = MethodChecker
-                    .fromHtmlPreserveLineBreak("${shopInfo.tagLine}<br/><br/>${shopInfo.description}")
+        fragmentShopInfoBinding?.layoutPartialShopInfoDescription?.shopInfoDescription?.apply {
+            if (TextUtils.isEmpty(shopInfo.tagLine) && TextUtils.isEmpty(shopInfo.description)) {
+                hide()
+            } else {
+                show()
+                text = MethodChecker.fromHtmlPreserveLineBreak("${shopInfo.tagLine}<br/><br/>${shopInfo.description}")
+            }
         }
-        shopInfoLocation.text = shopInfo.location
-        shopInfoOpenSince.text = getString(R.string.shop_info_label_open_since_v3, shopInfo.openSince)
+        fragmentShopInfoBinding?.layoutPartialShopInfoDescription?.shopInfoLocation?.text = shopInfo.location
+        fragmentShopInfoBinding?.layoutPartialShopInfoDescription?.shopInfoOpenSince?.text = getString(R.string.shop_info_label_open_since_v3, shopInfo.openSince)
     }
 
     private fun renderListNote(notes: List<ShopNoteUiModel>) {
@@ -315,8 +331,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     }
 
     private fun showManageNotesLabel() {
-        noteLabelView.setContent(getString(R.string.shop_info_label_manage_note))
-        noteLabelView.setOnClickListener { onEmptyButtonClicked() }
+        fragmentShopInfoBinding?.layoutPartialShopInfoNote?.noteLabelView?.apply {
+            content = getString(R.string.shop_info_label_manage_note)
+            setOnClickListener { onEmptyButtonClicked() }
+        }
     }
 
     private fun showShopNotes(notes: List<ShopNoteUiModel>) {

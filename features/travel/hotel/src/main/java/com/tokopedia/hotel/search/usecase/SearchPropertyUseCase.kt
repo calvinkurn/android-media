@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.hotel.search.data.model.PropertySearch
 import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
+import com.tokopedia.hotel.search_map.presentation.viewmodel.HotelSearchMapViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,7 +21,7 @@ class SearchPropertyUseCase @Inject constructor(val graphqlRepository: GraphqlRe
         return try {
             this.setTypeClass(PropertySearch.Response::class.java)
             this.setGraphqlQuery(rawQuery)
-            this.setRequestParams(mapOf(HotelSearchResultViewModel.PARAM_SEARCH_PROPERTY to searchParam))
+            this.setRequestParams(mapOf(HotelSearchMapViewModel.PARAM_SEARCH_PROPERTY to searchParam))
 
             val data = this.executeOnBackground()
             Success(data.response)

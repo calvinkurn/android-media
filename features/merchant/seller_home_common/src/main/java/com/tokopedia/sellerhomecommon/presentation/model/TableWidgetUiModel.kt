@@ -22,7 +22,9 @@ data class TableWidgetUiModel(
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
-        override var emptyState: WidgetEmptyStateUiModel
+        override var isNeedToBeRemoved: Boolean = false,
+        override var emptyState: WidgetEmptyStateUiModel,
+        val tableFilters: List<WidgetFilterUiModel>
 ) : BaseWidgetUiModel<TableDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
@@ -30,7 +32,7 @@ data class TableWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<TableDataUiModel> {
-        return TableWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, emptyState)
+        return TableWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState, tableFilters)
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<TableDataUiModel>): Boolean {

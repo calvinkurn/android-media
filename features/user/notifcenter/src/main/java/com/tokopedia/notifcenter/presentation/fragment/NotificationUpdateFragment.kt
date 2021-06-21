@@ -274,6 +274,13 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         }
     }
 
+    override fun onItemMultipleStockHandlerClick(notification: NotificationItemViewBean) {
+        val productData = notification.getAtcProduct()
+        productData?.let {
+            viewModel.isProductStockHandlerMultiple(notification.notificationId, it)
+        }
+    }
+
     override fun onSwipeRefresh() {
         cursor = ""
         presenter.getTotalUnreadCounter(onSuccessGetTotalUnreadCounter())
@@ -304,8 +311,15 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
         presenter.addProductToCart(userSession.userId, product, onSuccessAddToCart)
     }
 
-    override fun trackOnClickCtaButton(templateKey: String, notificationId: String) {
-        analytics.trackOnClickLongerContentBtn(templateKey, notificationId)
+    override fun trackOnClickCtaButton(
+        templateKey: String,
+        notificationId: String,
+        productId: String,
+        shopId: String
+    ) {
+        analytics.trackOnClickLongerContentBtn(
+            templateKey, notificationId, productId, shopId
+        )
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? = view?.findViewById(R.id.swipeToRefresh)
@@ -317,7 +331,7 @@ open class NotificationUpdateFragment : BaseNotificationFragment(),
     override fun analytics(): NotificationTracker = getAnalytic()
 
     override fun getAnalytic(): NotificationUpdateAnalytics {
-        return NotificationUpdateAnalytics()
+        return analytics
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {

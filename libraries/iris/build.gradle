@@ -46,6 +46,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.rxJava
     implementation project(rootProject.ext.libraries.irisSession)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 

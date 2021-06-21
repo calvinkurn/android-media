@@ -19,6 +19,9 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -51,7 +54,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
 
         private const val MIN_TEXTFIELD_LENGTH = 5
 
-        private const val ERROR_MESSAGE = "Error validate voucher target"
+        private const val VALIDATE_VOUCHER_TARGET_ERROR = "Validate voucher target error"
 
         @JvmStatic
         fun createInstance(onNext: (Int, String, String) -> Unit,
@@ -264,9 +267,13 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
                         }
                     }
                     is Fail -> {
-                        val error = result.throwable.message.toBlankOrString()
-                        view?.showErrorToaster(error)
-                        MvcErrorHandler.logToCrashlytics(result.throwable, ERROR_MESSAGE)
+                        // show user friendly error message to user
+                        val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                        view?.showErrorToaster(errorMessage)
+                        // send crash report to firebase crashlytics
+                        MvcErrorHandler.logToCrashlytics(result.throwable, VALIDATE_VOUCHER_TARGET_ERROR)
+                        // log error type to scalyr
+                        ServerLogger.log(Priority.P2, "MVC_VALIDATE_VOUCHER_TARGET_ERROR", mapOf("type" to errorMessage))
                     }
                 }
             })

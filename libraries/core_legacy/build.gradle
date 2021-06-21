@@ -21,6 +21,15 @@ buildscript {
 }
 
 android {
+    if (project.hasProperty("newRelic")) {
+        sourceSets.each {
+            it.java.srcDirs += "src/main/new_relic"
+        }
+    }else{
+        sourceSets.each {
+            it.java.srcDirs += "src/main/new_relic_dummy"
+        }
+    }
     defaultConfig {
         javaCompileOptions {
             annotationProcessorOptions {
@@ -49,6 +58,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.unifyDependencies.principles
@@ -93,6 +103,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation project(rootProject.ext.libraries.weaver)
+    if (project.hasProperty("newRelic")) {
+        implementation rootProject.ext.miscDependencies.newRelic
+    }
 }
 
 project.ext {

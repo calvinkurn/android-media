@@ -1,9 +1,9 @@
 package com.tokopedia.mediauploader.util
 
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import timber.log.Timber
 import java.io.File
-
-private const val TIMBER_TAG = "P1#MEDIA_UPLOADER_ERROR#"
 
 fun trackToTimber(filePath: File? = null, sourceId: String, message: String) {
     if (filePath != null && filePath.path.isNotEmpty()) {
@@ -12,5 +12,5 @@ fun trackToTimber(filePath: File? = null, sourceId: String, message: String) {
 }
 
 fun trackToTimber(sourceId: String = "", errorMessage: String) {
-    Timber.w("$TIMBER_TAG$sourceId;err='$errorMessage'")
+    ServerLogger.log(Priority.P1, "MEDIA_UPLOADER_ERROR", mapOf("type" to sourceId, "err" to errorMessage))
 }

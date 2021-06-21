@@ -53,7 +53,10 @@ class AbTestRollenceConfigListAdapter(val listener: AbTestRollenceConfigListener
         init {
             val itemContainer: LinearLayout = itemView.findViewById(R.id.config_container)
             itemContainer.setOnClickListener {
-                listener.onListItemClick(keyTextView.text.toString().trim())
+                listener.onListItemClick(
+                        keyTextView.text.toString().trim(),
+                        valueTextView.text.toString()
+                )
             }
         }
 

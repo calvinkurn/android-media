@@ -136,6 +136,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxJava
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
+
+    api rootProject.ext.miscDependencies.coroutineTest
 }
 
 project.ext {

@@ -2,7 +2,10 @@ package com.tokopedia.notifications.common
 
 import android.content.Context
 import android.text.TextUtils
+import android.util.Log
 import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.track.TrackApp
@@ -151,17 +154,35 @@ object IrisAnalyticsEvents {
         val push = "_push'"
         val inapp = "_inapp'"
         if (values.containsKey(CAMPAIGN_ID) && TextUtils.isEmpty(values[CAMPAIGN_ID].toString()))
-            Timber.w("${CMConstant.TimberTags.TAG}validation;reason='no_campaignId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp).plus(";data='${values.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'"))
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                mapOf("type" to "validation",
+                        "reason" to "no_campaignId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                        "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         else if (!values.containsKey(CAMPAIGN_ID))
-            Timber.w("${CMConstant.TimberTags.TAG}validation;reason='campaignId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp).plus(";data='${values.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'"))
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "validation",
+                            "reason" to "campaignId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                            "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         else if (values.containsKey(PARENT_ID) && TextUtils.isEmpty(values[PARENT_ID].toString()))
-            Timber.w("${CMConstant.TimberTags.TAG}validation;reason='no_parentId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp).plus(";data='${values.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'"))
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                    mapOf("type" to "validation",
+                            "reason" to "no_parentId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                            "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         else if (!values.containsKey(PARENT_ID))
-            Timber.w("${CMConstant.TimberTags.TAG}validation;reason='parentId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp).plus(";data='${values.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'"))
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                mapOf("type" to "validation",
+                        "reason" to "parentId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                        "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         else if (values.containsKey(NOTIFICATION_ID) && TextUtils.isEmpty(values[NOTIFICATION_ID].toString()))
-            Timber.w("${CMConstant.TimberTags.TAG}validation;reason='no_notificationId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp).plus(";data='${values.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'"))
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                mapOf("type" to "validation",
+                        "reason" to "no_notificationId".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                        "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
         else if (!values.containsKey(NOTIFICATION_ID))
-            Timber.w("${CMConstant.TimberTags.TAG}validation;reason='notificationId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp).plus(";data='${values.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'"))
+            ServerLogger.log(Priority.P2, "CM_VALIDATION",
+                mapOf("type" to "validation",
+                        "reason" to "notificationId_removed".plus(if(values.containsKey(PUSH_TYPE)) push else inapp),
+                        "data" to values.toString().take(CMConstant.TimberTags.MAX_LIMIT)))
     }
 
     private fun addBaseValues(context: Context, eventName: String, cmInApp: CMInApp): HashMap<String, Any> {

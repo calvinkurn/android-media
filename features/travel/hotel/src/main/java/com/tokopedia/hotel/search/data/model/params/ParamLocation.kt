@@ -18,11 +18,15 @@ data class ParamLocation(
 
         @SerializedName("latitude")
         @Expose
-        var latitude: Float = 0f,
+        var latitude: Double = 0.0,
 
         @SerializedName("longitude")
         @Expose
-        var longitude: Float = 0f,
+        var longitude: Double = 0.0,
+
+        @SerializedName("radius")
+        @Expose
+        var radius: Double = 0.0,
 
         @SerializedName("searchType")
         @Expose

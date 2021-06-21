@@ -1,0 +1,58 @@
+package com.tokopedia.hotel.search_map.presentation.adapter.viewholder
+
+import android.graphics.Paint
+import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.hotel.R
+import com.tokopedia.hotel.search.data.model.Property
+import com.tokopedia.hotel.search.data.model.PropertyPrice
+import com.tokopedia.kotlin.extensions.view.*
+import kotlinx.android.synthetic.main.item_property_search_result_horizontal.view.*
+
+class HotelSearchMapItemViewHolder(view: View) : AbstractViewHolder<Property>(view) {
+    override fun bind(element: Property) {
+        with(itemView) {
+            image.loadImage(element.image.firstOrNull()?.urlMax300 ?: "")
+            title.text = element.name
+
+            if (element.review.score == 0f) {
+                rating_counter.visibility = View.INVISIBLE
+                rate.visibility = View.INVISIBLE
+            } else {
+                rating_counter.visibility = View.VISIBLE
+                rate.visibility = View.VISIBLE
+                rating_counter.text = element.review.score.toString()
+                rate.text = element.review.description
+            }
+
+            if (element.roomAvailability <= MINIMUM_ROOM_AVAILABLE) {
+                info.visible()
+                info.text = getString(R.string.hotel_room_room_left_text,
+                        element.roomAvailability.toString())
+            }
+
+            val propertyPrice = element.roomPrice.firstOrNull() ?: PropertyPrice()
+            price.text = propertyPrice.price
+
+            if (propertyPrice.deals.price.isNotEmpty()) {
+                price_origin.visibility = View.VISIBLE
+                price_origin.text = propertyPrice.deals.price
+                price_origin.paintFlags = price_origin.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                price_origin.visibility = View.GONE
+            }
+            if (element.propertySafetyBadge.isShow && element.propertySafetyBadge.title.isNotEmpty()) {
+                tv_tag_hotel_badge.show()
+                ic_tag_hotel_badge_outline.show()
+            } else {
+                tv_tag_hotel_badge.hide()
+                ic_tag_hotel_badge_outline.hide()
+            }
+        }
+    }
+
+    companion object {
+        const val MINIMUM_ROOM_AVAILABLE = 3
+        val LAYOUT = R.layout.item_property_search_result_horizontal
+    }
+}

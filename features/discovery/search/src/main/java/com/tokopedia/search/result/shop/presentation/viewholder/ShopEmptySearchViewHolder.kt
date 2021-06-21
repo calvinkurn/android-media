@@ -89,7 +89,7 @@ internal class ShopEmptySearchViewHolder(
     }
 
     private fun populateSelectedFilterToRecylerView(selectedFilterAdapter: SelectedFilterAdapter) {
-        val selectedFilterFromEmptyStateListener = emptyStateListener.selectedFilterAsOptionList
+        val selectedFilterFromEmptyStateListener = emptyStateListener.getSelectedFilterAsOptionList()
 
         if (selectedFilterFromEmptyStateListener?.isNotEmpty() == true) {
             selectedFilterAdapter.setOptionList(selectedFilterFromEmptyStateListener)

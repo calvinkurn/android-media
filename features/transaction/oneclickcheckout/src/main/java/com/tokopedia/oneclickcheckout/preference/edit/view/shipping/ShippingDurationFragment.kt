@@ -53,8 +53,6 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     private var contentLayout: Group? = null
     private var globalError: GlobalError? = null
 
-    private var isNewFlow = false
-
     companion object {
         private const val ARG_IS_EDIT = "is_edit"
         private const val ARG_ADDRESS_STATE = "address_state"
@@ -86,11 +84,8 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
 
     private fun initViewModel() {
         val parent = activity
-        if (parent is PreferenceEditParent) {
-            if (parent.getShippingId() > 0) {
-                viewModel.selectedId = parent.getShippingId()
-            }
-            isNewFlow = parent.isNewFlow()
+        if (parent is PreferenceEditParent && parent.getShippingId() > 0) {
+            viewModel.selectedId = parent.getShippingId()
         }
 
         viewModel.shippingDuration.observe(viewLifecycleOwner, {
@@ -99,7 +94,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                     swipeRefreshLayout?.isRefreshing = false
                     globalError?.gone()
                     contentLayout?.visible()
-                    adapter.renderData(it.data.services, isNewFlow)
+                    adapter.renderData(it.data.services)
                     validateButton()
                 }
 
@@ -166,7 +161,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     private fun hitRates() {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            viewModel.getRates(parent.getListShopShipment(), parent.getShippingParam(), parent.isNewFlow())
+            viewModel.getRates(parent.getListShopShipment(), parent.getShippingParam())
         }
     }
 

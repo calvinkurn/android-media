@@ -5,14 +5,14 @@
     {
       "customProperties": {
         "nameValuePairs": {
-          "email": "{{.*}}",
-          "userId": "{{\\w+}}",
-          "phone": "{{.*}}"
+          "email": ".*",
+          "userId": "\\w+",
+          "phone": ".*"
         }
       },
       "eventName": "login",
       "buoList": [],
-      "isStandardEvent": "{{true|false}}",
+      "isStandardEvent": "true|false",
       "standardProperties": {
         "nameValuePairs": {}
       }

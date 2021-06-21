@@ -211,6 +211,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 } else if (isFromANA == true) {
                     listener?.onAddressDataChanged()
                     dismissBottomSheet()
+                } else {
+                    dismissBottomSheet()
                 }
             }
             REQUEST_CODE_LOGIN_PAGE -> {

@@ -35,6 +35,7 @@ import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.model.result.PageResultState
 import com.tokopedia.play_common.util.PlayPreference
+import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import javax.inject.Inject
 
@@ -145,6 +146,7 @@ class PlayActivity : BaseActivity(),
         val newBundle = intent.extras
 
         if (newBundle != null) {
+            newBundle.putString(PLAY_KEY_CHANNEL_ID, intent.data?.lastPathSegment.orEmpty())
             viewModel.setNewChannelParams(newBundle)
         }
     }
@@ -212,12 +214,7 @@ class PlayActivity : BaseActivity(),
     }
 
     private fun setupViewModel() {
-        val viewModelFactory = object : AbstractSavedStateViewModelFactory(this, intent?.extras ?: Bundle()) {
-            override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
-                return playParentViewModelFactory.create(handle) as T
-            }
-        }
-        viewModel = ViewModelProvider(this, viewModelFactory).get(PlayParentViewModel::class.java)
+        viewModel = ViewModelProvider(this, getViewModelFactory()).get(PlayParentViewModel::class.java)
     }
 
     private fun setupPage() {
@@ -230,6 +227,7 @@ class PlayActivity : BaseActivity(),
 
     private fun setupObserve() {
         observeChannelList()
+        observeFirstChannelEvent()
     }
 
     private fun observeChannelList() {
@@ -251,6 +249,12 @@ class PlayActivity : BaseActivity(),
                 }
             }
             swipeContainerView.setChannelIds(it.currentValue)
+        })
+    }
+
+    private fun observeFirstChannelEvent() {
+        viewModel.observableFirstChannelEvent.observe(this, EventObserver {
+            swipeContainerView.reset()
         })
     }
 
@@ -291,6 +295,14 @@ class PlayActivity : BaseActivity(),
 
     override fun canNavigateNextPage(): Boolean {
         return swipeContainerView.hasNextPage()
+    }
+
+    fun getViewModelFactory(): ViewModelProvider.Factory {
+        return object : AbstractSavedStateViewModelFactory(this, intent?.extras ?: Bundle()) {
+            override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
+                return playParentViewModelFactory.create(handle) as T
+            }
+        }
     }
 
     fun getPerformanceMonitoring(): PlayPltPerformanceCallback = pageMonitoring

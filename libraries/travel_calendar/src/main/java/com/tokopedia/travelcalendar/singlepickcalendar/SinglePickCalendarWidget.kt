@@ -4,15 +4,17 @@ import android.app.Application
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.travelcalendar.*
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.travelcalendar.viewmodel.TravelHolidayCalendarViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.dialog_calendar_single_pick.calendar_unify
 import kotlinx.android.synthetic.main.dialog_calendar_single_pick.loading_progress_bar
+import kotlinx.android.synthetic.main.dialog_calendar_single_pick.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -43,9 +45,6 @@ open class SinglePickCalendarWidget : BottomSheetUnify() {
         isFullpage = true
         showCloseIcon = true
         setCloseClickListener { this.dismissAllowingStateLoss() }
-
-        val childView = View.inflate(context, R.layout.dialog_calendar_single_pick, null)
-        setChild(childView)
 
         initInjector()
 
@@ -83,6 +82,18 @@ open class SinglePickCalendarWidget : BottomSheetUnify() {
         component.inject(this)
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initChildLayout()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+
+    private fun initChildLayout(){
+        val childView = View.inflate(context, R.layout.dialog_calendar_single_pick, null)
+        calendar = childView.calendar_unify.calendarPickerView as CalendarPickerView
+        setChild(childView)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -101,8 +112,6 @@ open class SinglePickCalendarWidget : BottomSheetUnify() {
     }
 
     open fun renderSinglePickCalendar(holidayArrayList: ArrayList<Legend>) {
-        calendar = calendar_unify.calendarPickerView as CalendarPickerView
-
         val nextYear = Calendar.getInstance()
         nextYear.add(Calendar.YEAR,1)
 

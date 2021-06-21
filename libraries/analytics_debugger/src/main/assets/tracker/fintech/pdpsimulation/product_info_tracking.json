@@ -3,12 +3,12 @@
   "mode": "subset",
   "query": [
     {
-      "sessionIris": "{{.*}}",
-      "userId": "{{.*}}",
+      "sessionIris": ".*",
+      "userId": ".*",
       "eventCategory": "fin - info page",
       "eventAction": "sim vcc - impression paylater info page",
       "event": "clickFintechMicrosite",
-      "eventLabel": "{{.*}}"
+      "eventLabel": ".*"
     }
   ]
 }

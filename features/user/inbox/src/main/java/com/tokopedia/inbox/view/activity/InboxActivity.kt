@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.view.activity
 
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -9,10 +10,10 @@ import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.ApplinkConst.Inbox.*
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.inbox.R
@@ -26,11 +27,15 @@ import com.tokopedia.inbox.view.custom.InboxBottomNavigationView
 import com.tokopedia.inbox.view.custom.NavigationHeader
 import com.tokopedia.inbox.view.dialog.AccountSwitcherBottomSheet
 import com.tokopedia.inbox.view.ext.getRoleName
+import com.tokopedia.inbox.view.navigator.InboxFragmentFactory
 import com.tokopedia.inbox.view.navigator.InboxFragmentFactoryImpl
 import com.tokopedia.inbox.view.navigator.InboxNavigator
 import com.tokopedia.inbox.viewmodel.InboxViewModel
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
@@ -43,7 +48,60 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
-class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentContainer {
+/**
+ * How to go to this page
+ * Applink: [com.tokopedia.applink.ApplinkConst.INBOX]
+ *
+ * This page accept 4 optional query parameters:
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_PAGE]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_ROLE]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_SOURCE]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_SHOW_BOTTOM_NAV]
+ * the value you can use are as follows
+ *
+ * param [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_PAGE]:
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_PAGE_NOTIFICATION]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_PAGE_CHAT]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_PAGE_TALK]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_PAGE_REVIEW]
+ *
+ * param [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_ROLE]:
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_ROLE_BUYER]
+ * - [com.tokopedia.applink.ApplinkConst.Inbox.VALUE_ROLE_SELLER]
+ *
+ * param [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_SOURCE]:
+ * - you can put any value to this param
+ *
+ * param [com.tokopedia.applink.ApplinkConst.Inbox.PARAM_SHOW_BOTTOM_NAV]:
+ * - boolean value true/false, the default value is true
+ *
+ * If the query parameters is not provided it will use recent/last opened page & role
+ *
+ * example form of applinks:
+ * - tokopedia://inbox
+ * - tokopedia://inbox?page=notification&role=buyer&show_bottom_nav=true
+ * - tokopedia://inbox?page=notification&role=buyer
+ * - tokopedia://inbox?page=notification
+ * - tokopedia://inbox?role=buyer
+ * - tokopedia://inbox?source=uoh
+ *
+ * How to construct the applink with query parameters:
+ * ```
+ * val applinkUri = Uri.parse(ApplinkConstInternalMarketplace.INBOX).buildUpon().apply {
+ *      appendQueryParameter(
+ *          ApplinkConst.Inbox.PARAM_PAGE,
+ *          ApplinkConst.Inbox.VALUE_PAGE_CHAT
+ *      )
+ * }
+ * ```
+ *
+ * note: Do not hardcode applink.
+ * use variables provided in [com.tokopedia.applink.ApplinkConst]
+ */
+open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentContainer {
+
+    private var source = ""
+    private var isShowBottomNav = true
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -67,6 +125,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private var container: CoordinatorLayout? = null
     private var fragmentContainer: FrameLayout? = null
     private var toolbar: NavToolbar? = null
+    private var bottomNavShadow: View? = null
     private var onBoardingCoachMark: CoachMark2? = null
 
     private val viewModel by lazy {
@@ -80,6 +139,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         setContentView(R.layout.activity_inbox)
         setupInjector()
         setupLastPreviousState()
+        setupOptionalParameter()
         trackOpenInbox()
         setupView()
         setupConfig()
@@ -101,27 +161,69 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun setupInjector() {
-        DaggerInboxComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+        createDaggerComponent()
+            .inject(this)
     }
+
+    protected open fun createDaggerComponent() = DaggerInboxComponent.builder()
+        .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+        .build()
 
     private fun setupLastPreviousState() {
         InboxConfig.setRole(cacheState.role)
         InboxConfig.page = cacheState.initialPage
     }
 
-    private fun trackOpenInbox() {
-        if (!viewModel.hasBeenVisited()) {
-            analytic.trackOpenInbox(InboxConfig.page, InboxConfig.role)
-            viewModel.markAsVisited()
+    private fun setupOptionalParameter() {
+        val data = intent?.data ?: return
+        setupInitialPageFromParams(data)
+        setupInitialRoleFromParams(data)
+        setupPageSource(data)
+        setupPageIsShowBottomNav(data)
+    }
+
+    private fun setupInitialPageFromParams(data: Uri) {
+        val pageInt = when (data.getQueryParameter(PARAM_PAGE)) {
+            VALUE_PAGE_NOTIFICATION -> InboxFragmentType.NOTIFICATION
+            VALUE_PAGE_CHAT -> InboxFragmentType.CHAT
+            VALUE_PAGE_TALK -> InboxFragmentType.DISCUSSION
+            VALUE_PAGE_REVIEW -> InboxFragmentType.REVIEW
+            else -> null
         }
+        pageInt?.let {
+            InboxConfig.page = it
+        }
+    }
+
+    private fun setupInitialRoleFromParams(data: Uri) {
+        val roleInt = when (data.getQueryParameter(PARAM_ROLE)) {
+            VALUE_ROLE_BUYER -> RoleType.BUYER
+            VALUE_ROLE_SELLER -> RoleType.SELLER
+            else -> null
+        }
+        roleInt?.let {
+            InboxConfig.setRole(it)
+        }
+    }
+
+    private fun setupPageSource(data: Uri) {
+        val source = data.getQueryParameter(PARAM_SOURCE)
+        source?.let {
+            this.source = it
+        }
+    }
+
+    private fun setupPageIsShowBottomNav(data: Uri) {
+        isShowBottomNav = data.getBooleanQueryParameter(PARAM_SHOW_BOTTOM_NAV, true)
+    }
+
+    private fun trackOpenInbox() {
+        analytic.trackOpenInbox(InboxConfig.page, InboxConfig.role)
     }
 
     override fun clearNotificationCounter() {
         val notificationRole = InboxConfig.inboxCounter.getByRole(
-                InboxConfig.role
+            InboxConfig.role
         ) ?: return
         notificationRole.notifcenterInt = 0
         bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, 0)
@@ -129,7 +231,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     override fun decreaseChatUnreadCounter() {
         val notificationRole = InboxConfig.inboxCounter.getByRole(
-                InboxConfig.role
+            InboxConfig.role
         ) ?: return
         notificationRole.chatInt -= 1
         bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole.chatInt)
@@ -137,7 +239,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     override fun increaseChatUnreadCounter() {
         val notificationRole = InboxConfig.inboxCounter.getByRole(
-                InboxConfig.role
+            InboxConfig.role
         ) ?: return
         notificationRole.chatInt += 1
         bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole.chatInt)
@@ -149,16 +251,38 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     override fun decreaseDiscussionUnreadCounter() {
         val notificationRole = InboxConfig.inboxCounter.getByRole(
-                InboxConfig.role
+            InboxConfig.role
         ) ?: return
         notificationRole.talkInt -= 1
         bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, notificationRole.talkInt)
     }
 
+    override fun decreaseReviewUnreviewedCounter() {
+        val notificationRole = InboxConfig.inboxCounter.getByRole(
+            InboxConfig.role
+        ) ?: return
+        notificationRole.reviewInt -= 1
+        bottomNav?.setBadgeCount(InboxFragmentType.REVIEW, notificationRole.reviewInt)
+    }
+
+    override fun hideReviewCounter() {
+        bottomNav?.setBadgeCount(InboxFragmentType.REVIEW, 0)
+    }
+
+    override fun showReviewCounter() {
+        val notificationRole = InboxConfig.inboxCounter.getByRole(RoleType.BUYER) ?: return
+        bottomNav?.setBadgeCount(InboxFragmentType.REVIEW, notificationRole.reviewInt)
+    }
+
+    override fun getPageSource(): String {
+        return source
+    }
+
     private fun setupToolbar() {
+        setupToolbarLifecycle()
         toolbar?.switchToLightToolbar()
         val view = View.inflate(
-                this, R.layout.partial_inbox_nav_content_view, null
+            this, R.layout.partial_inbox_nav_content_view, null
         ).also {
             navHeader.bindNavHeaderView(it)
             navHeader.bindValue()
@@ -174,15 +298,25 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         }
     }
 
+    protected open fun setupToolbarLifecycle() {
+        toolbar?.let { this.lifecycle.addObserver(it) }
+    }
+
     private fun updateToolbarIcon(hasChatSearch: Boolean = false) {
         val icon = IconBuilder()
         if (hasChatSearch) {
             icon.addIcon(IconList.ID_SEARCH) { }
         }
         icon.addIcon(IconList.ID_CART) { }
-        icon.addIcon(IconList.ID_NAV_GLOBAL) { }
+        if (ableToShowGlobalNav()) {
+            icon.addIcon(IconList.ID_NAV_GLOBAL) { }
+        }
         toolbar?.setIcon(icon)
         toolbar?.setBadgeCounter(IconList.ID_CART, InboxConfig.notifications.totalCart)
+    }
+
+    private fun ableToShowGlobalNav(): Boolean {
+        return InboxConfig.page != InboxFragmentType.NOTIFICATION || isShowBottomNav
     }
 
     private fun setupView() {
@@ -190,6 +324,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         container = findViewById(R.id.coor_container)
         fragmentContainer = findViewById(R.id.fragment_contaier)
         toolbar = findViewById(R.id.inbox_nav_toolbar)
+        bottomNavShadow = findViewById(R.id.bottom_nav_top_shadow)
     }
 
     override fun onDestroy() {
@@ -212,9 +347,11 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         val name = userSession.getRoleName(role)
         val message = getString(R.string.title_change_role, name)
         container?.let {
-            Toaster.toasterCustomBottomHeight = 50.toPx()
+            if (bottomNav?.isVisible == true) {
+                Toaster.toasterCustomBottomHeight = 50.toPx()
+            }
             Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
-                    .show()
+                .show()
         }
     }
 
@@ -249,33 +386,35 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private fun showOnBoardingSeller() {
         if (bottomNav == null || navHeaderContainer == null || switcher == null) return
         val anchors = ArrayList<CoachMark2Item>()
-        anchors.add(
+        if (isShowBottomNav) {
+            anchors.add(
                 CoachMark2Item(
-                        bottomNav!!,
-                        getString(R.string.inbox_title_onboarding_1),
-                        getString(R.string.inbox_desc_onboarding_1)
+                    bottomNav!!,
+                    getString(R.string.inbox_title_onboarding_1),
+                    getString(R.string.inbox_desc_onboarding_1)
                 )
+            )
+        }
+        anchors.add(
+            CoachMark2Item(
+                navHeaderContainer!!,
+                getString(R.string.inbox_title_onboarding_2),
+                getString(R.string.inbox_desc_onboarding_2)
+            )
         )
         anchors.add(
-                CoachMark2Item(
-                        navHeaderContainer!!,
-                        getString(R.string.inbox_title_onboarding_2),
-                        getString(R.string.inbox_desc_onboarding_2)
-                )
-        )
-        anchors.add(
-                CoachMark2Item(
-                        navHeaderContainer!!,
-                        getString(R.string.inbox_title_onboarding_3),
-                        getString(R.string.inbox_desc_onboarding_3),
-                        CoachMark2.POSITION_TOP
-                )
+            CoachMark2Item(
+                navHeaderContainer!!,
+                getString(R.string.inbox_title_onboarding_3),
+                getString(R.string.inbox_desc_onboarding_3),
+                CoachMark2.POSITION_TOP
+            )
         )
         onBoardingCoachMark?.showCoachMark(anchors)
         onBoardingCoachMark?.onFinishListener = {
             viewModel.markFinishedSellerOnBoarding()
             switcher?.setShowListener { }
-            analytic.trackClickOnBoardingCta(role, 2, "selesai")
+            analytic.trackClickOnBoardingCta(role, anchors.lastIndex, "selesai")
         }
         onBoardingCoachMark?.onDismissListener = {
             viewModel.markFinishedSellerOnBoarding()
@@ -284,59 +423,61 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         }
         analytic.trackShowOnBoardingOnStep(role, 0)
         onBoardingCoachMark?.setStepListener(InboxOnBoardingListener(
-                onStepCoach = { currentIndex: Int,
-                                _: CoachMark2Item,
-                                direction: String,
-                                previousIndex: Int ->
-                    analytic.trackShowOnBoardingOnStep(role, currentIndex)
-                    analytic.trackClickOnBoardingCta(role, previousIndex, direction)
-                    onChangeOnBoardingStep(currentIndex, anchors)
-                }
+            onStepCoach = { currentIndex: Int,
+                            _: CoachMark2Item,
+                            direction: String,
+                            previousIndex: Int ->
+                analytic.trackShowOnBoardingOnStep(role, currentIndex)
+                analytic.trackClickOnBoardingCta(role, previousIndex, direction)
+                onChangeOnBoardingStep(currentIndex, anchors)
+            }
         ))
     }
 
     private fun onChangeOnBoardingStep(currentIndex: Int, anchors: ArrayList<CoachMark2Item>) {
-        if (currentIndex == 2) {
+        val coachMarkItem = anchors.getOrNull(currentIndex) ?: return
+        val delayMillis = 250L
+        if (coachMarkItem.title == getString(R.string.inbox_title_onboarding_3)) {
             onBoardingCoachMark?.isDismissed = true
             switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
             switcher?.setShowListener {
                 switcher?.let {
                     anchors.last().anchorView = it.bottomSheetWrapper
                     Handler().postDelayed({
-                        showDelayedOnBoarding(anchors, 2)
-                    }, 250)
+                        showDelayedOnBoarding(anchors, currentIndex)
+                    }, delayMillis)
                 }
             }
-        } else if (currentIndex == 1) {
+        } else if (coachMarkItem.title == getString(R.string.inbox_title_onboarding_2)) {
             switcher?.dialog?.let {
                 onBoardingCoachMark?.isDismissed = true
                 if (it.isShowing) {
                     switcher?.dismiss()
                 }
                 Handler().postDelayed({
-                    showDelayedOnBoarding(anchors, 1)
-                }, 250)
+                    showDelayedOnBoarding(anchors, currentIndex)
+                }, delayMillis)
             }
         }
     }
 
     private fun showDelayedOnBoarding(
-            anchors: ArrayList<CoachMark2Item>,
-            index: Int
+        anchors: ArrayList<CoachMark2Item>,
+        index: Int
     ) {
         onBoardingCoachMark?.isDismissed = false
         onBoardingCoachMark?.showCoachMark(anchors, index = index)
     }
 
     private fun showOnBoardingBuyer() {
-        if (bottomNav == null) return
+        if (bottomNav == null || !isShowBottomNav) return
         val anchors = ArrayList<CoachMark2Item>()
         anchors.add(
-                CoachMark2Item(
-                        bottomNav!!,
-                        getString(R.string.inbox_title_onboarding_1),
-                        getString(R.string.inbox_desc_onboarding_1)
-                )
+            CoachMark2Item(
+                bottomNav!!,
+                getString(R.string.inbox_title_onboarding_1),
+                getString(R.string.inbox_desc_onboarding_1)
+            )
         )
         onBoardingCoachMark?.showCoachMark(anchors)
         onBoardingCoachMark?.setOnDismissListener {
@@ -348,16 +489,20 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     private fun setupNavigator() {
         navigator = InboxNavigator(
-                this,
-                R.id.fragment_contaier,
-                supportFragmentManager,
-                InboxFragmentFactoryImpl()
+            this,
+            R.id.fragment_contaier,
+            supportFragmentManager,
+            createFragmentFactory()
         )
+    }
+
+    protected open fun createFragmentFactory(): InboxFragmentFactory {
+        return InboxFragmentFactoryImpl(InboxConfig.page, isShowBottomNav)
     }
 
     private fun setupBackground() {
         val whiteColor = ContextCompat.getColor(
-                this, com.tokopedia.unifyprinciples.R.color.Unify_N0
+            this, com.tokopedia.unifyprinciples.R.color.Unify_N0
         )
         window.decorView.setBackgroundColor(whiteColor)
     }
@@ -368,15 +513,18 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             }
             window.statusBarColor = ContextCompat.getColor(
-                    this, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                this, com.tokopedia.unifyprinciples.R.color.Unify_N0
             )
         }
     }
 
     private fun setupObserver() {
-        viewModel.notifications.observe(this, Observer { result ->
+        viewModel.notifications.observe(this, { result ->
             if (result is Success) {
                 InboxConfig.notifications = result.data
+                InboxConfig.notifications.adjustTotalCounterBasedOn(
+                    InboxConfig.page, isShowBottomNav
+                )
                 updateBadgeCounter()
             }
         })
@@ -384,12 +532,13 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     private fun updateBadgeCounter() {
         val notificationRole = InboxConfig.inboxCounter.getByRole(
-                InboxConfig.role
+            InboxConfig.role
         ) ?: return
         val oppositeRole = InboxConfig.inboxCounter.getByRoleOpposite(InboxConfig.role)
         bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, notificationRole.notifcenterInt)
         bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole.chatInt)
         bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, notificationRole.talkInt)
+        bottomNav?.setBadgeCount(InboxFragmentType.REVIEW, notificationRole.reviewInt)
         toolbar?.setBadgeCounter(IconList.ID_CART, InboxConfig.notifications.totalCart)
         oppositeRole?.let {
             navHeader.setBadgeCount(oppositeRole.totalInt)
@@ -397,34 +546,47 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun setupBottomNav() {
-        bottomNav?.apply {
-            setBackgroundColor(Color.TRANSPARENT)
-            itemIconTintList = null
-            setOnNavigationItemSelectedListener { menu ->
-                when (menu.itemId) {
-                    R.id.menu_inbox_notification -> {
-                        cacheState.saveInitialPageCache(InboxFragmentType.NOTIFICATION)
-                        onBottomNavSelected(InboxFragmentType.NOTIFICATION)
-                        updateToolbarIcon()
-                        InboxConfig.page = InboxFragmentType.NOTIFICATION
+        if (isShowBottomNav) {
+            bottomNav?.show()
+            bottomNavShadow?.show()
+            bottomNav?.apply {
+                setBackgroundColor(Color.TRANSPARENT)
+                itemIconTintList = null
+                setOnNavigationItemSelectedListener { menu ->
+                    when (menu.itemId) {
+                        R.id.menu_inbox_notification -> {
+                            cacheState.saveInitialPageCache(InboxFragmentType.NOTIFICATION)
+                            onBottomNavSelected(InboxFragmentType.NOTIFICATION)
+                            updateToolbarIcon()
+                            InboxConfig.page = InboxFragmentType.NOTIFICATION
+                        }
+                        R.id.menu_inbox_chat -> {
+                            cacheState.saveInitialPageCache(InboxFragmentType.CHAT)
+                            onBottomNavSelected(InboxFragmentType.CHAT)
+                            updateToolbarIcon(true)
+                            InboxConfig.page = InboxFragmentType.CHAT
+                        }
+                        R.id.menu_inbox_discussion -> {
+                            cacheState.saveInitialPageCache(InboxFragmentType.DISCUSSION)
+                            onBottomNavSelected(InboxFragmentType.DISCUSSION)
+                            updateToolbarIcon()
+                            InboxConfig.page = InboxFragmentType.DISCUSSION
+                        }
+                        R.id.menu_inbox_review -> {
+                            cacheState.saveInitialPageCache(InboxFragmentType.REVIEW)
+                            onBottomNavSelected(InboxFragmentType.REVIEW)
+                            updateToolbarIcon()
+                            InboxConfig.page = InboxFragmentType.REVIEW
+                        }
                     }
-                    R.id.menu_inbox_chat -> {
-                        cacheState.saveInitialPageCache(InboxFragmentType.CHAT)
-                        onBottomNavSelected(InboxFragmentType.CHAT)
-                        updateToolbarIcon(true)
-                        InboxConfig.page = InboxFragmentType.CHAT
-                    }
-                    R.id.menu_inbox_discussion -> {
-                        cacheState.saveInitialPageCache(InboxFragmentType.DISCUSSION)
-                        onBottomNavSelected(InboxFragmentType.DISCUSSION)
-                        updateToolbarIcon()
-                        InboxConfig.page = InboxFragmentType.DISCUSSION
-                    }
+                    analytic.trackOpenInboxPage(InboxConfig.page, InboxConfig.role)
+                    analytic.trackClickBottomNaveMenu(InboxConfig.page, InboxConfig.role)
+                    return@setOnNavigationItemSelectedListener true
                 }
-                analytic.trackOpenInboxPage(InboxConfig.page, InboxConfig.role)
-                analytic.trackClickBottomNaveMenu(InboxConfig.page, InboxConfig.role)
-                return@setOnNavigationItemSelectedListener true
             }
+        } else {
+            bottomNav?.hide()
+            bottomNavShadow?.hide()
         }
     }
 
@@ -442,5 +604,4 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private fun onBottomNavSelected(@InboxFragmentType page: Int) {
         navigator?.onPageSelected(page)
     }
-
 }

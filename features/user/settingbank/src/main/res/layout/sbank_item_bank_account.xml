@@ -4,46 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16">
+    android:padding="@dimen/unify_space_16">
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivBankImage"
-        android:layout_width="@dimen/dp_48"
-        android:layout_height="@dimen/dp_48"
-        android:padding="@dimen/dp_4"
+        android:layout_width="@dimen/unify_space_48"
+        android:layout_height="@dimen/unify_space_48"
+        android:padding="@dimen/unify_space_4"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect"
+        android:contentDescription="null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBankName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        app:typographyType="body_2"
         android:textColor="@color/sbank_text_color"
         app:layout_constraintEnd_toStartOf="@+id/ivBankImage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="BNA" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBankAccountNumber"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        app:typographyType="body_3"
         android:textColor="@color/sbank_text_color"
         app:layout_constraintEnd_toStartOf="@+id/ivBankImage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvBankName"
         tools:text="BNA" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBankAccountHolderName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/unify_space_8"
+        app:typographyType="body_3"
         android:textColor="@color/sbank_text_color"
         app:layout_constraintEnd_toEndOf="@+id/tvBankName"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +57,7 @@
         android:id="@+id/tickerBankAccount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/unify_space_12"
         android:visibility="visible"
         app:closeButtonVisibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/tvBankAccountHolderName"
@@ -65,59 +68,45 @@
         android:id="@+id/tvAccountPending"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:background="@drawable/sbank_bg_in_process"
-        android:paddingStart="@dimen/dp_4"
-        android:paddingLeft="@dimen/dp_4"
-        android:paddingTop="@dimen/dp_3"
-        android:paddingEnd="@dimen/dp_4"
-        android:paddingRight="@dimen/dp_4"
-        android:paddingBottom="@dimen/dp_3"
+        android:paddingStart="@dimen/unify_space_4"
+        android:paddingTop="@dimen/unify_space_2"
+        android:paddingEnd="@dimen/unify_space_4"
+        android:paddingBottom="@dimen/unify_space_2"
         android:text="@string/sbank_verification_in_progress"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/tickerBankAccount"
         app:layout_constraintTop_toBottomOf="@+id/tickerBankAccount"
         app:typographyType="heading_5" />
 
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnHapus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@drawable/sbank_bg_hapus"
-        android:paddingStart="@dimen/dp_10"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingTop="@dimen/dp_4"
-        android:paddingEnd="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_4"
-        android:text="@string/menu_delete"
-        android:textColor="@color/Neutral_N700_68"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonSize="micro"
+        android:text="@string/sbank_menu_delete"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tickerBankAccount"
-        app:typographyType="heading_6" />
+        app:layout_constraintTop_toBottomOf="@+id/tickerBankAccount" />
 
-    <com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnIsiData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@drawable/sbank_bg_make_primary"
-        android:paddingStart="@dimen/dp_10"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingTop="@dimen/dp_4"
-        android:paddingEnd="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_4"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonSize="micro"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:text="@string/sbank_isi_data"
-        android:textColor="@color/green_500"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tickerBankAccount"
-        app:typographyType="heading_6" />
+        app:layout_constraintTop_toBottomOf="@+id/tickerBankAccount"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
