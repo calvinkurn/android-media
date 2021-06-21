@@ -278,7 +278,7 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
         /**/
         fun onChangeTextColor(): Int {
-            return com.tokopedia.unifyprinciples.R.color.dark_Y300
+            return com.tokopedia.unifyprinciples.R.color.Unify_N700_96
         }
      }
 
