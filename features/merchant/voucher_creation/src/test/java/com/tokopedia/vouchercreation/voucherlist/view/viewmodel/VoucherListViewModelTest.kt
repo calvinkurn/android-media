@@ -25,6 +25,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.*
+import java.util.*
 
 @ExperimentalCoroutinesApi
 class VoucherListViewModelTest {
@@ -440,7 +441,7 @@ class VoucherListViewModelTest {
     }
 
     @Test
-    fun `check whether showBroadCastChatTicker value is true after set to true`() = runBlocking {
+    fun `check whether showBroadCastChatTicker value is true after set to true`() {
         with(mViewModel) {
             setShowBroadCastChatTicker(true)
             assert(getShowBroadCastChatTicker())
@@ -448,10 +449,17 @@ class VoucherListViewModelTest {
     }
 
     @Test
-    fun `checkas whether showBroadCastChatTicker value is true after set to true`() = runBlocking {
-//        with(mViewModel) {
-//            isBroadCastChatTickerExpired(15345345)
-//        }
+    fun `check whether broadcast chat ticker is expired if given timestamp is already expired`() {
+        with(mViewModel) {
+            assert(isBroadCastChatTickerExpired(1524017252L))
+        }
+    }
+
+    @Test
+    fun `check whether broadcast chat ticker is not expired if given timestamp is not expired`() {
+        with(mViewModel) {
+            assert(!isBroadCastChatTickerExpired(Date().time))
+        }
     }
 
 
