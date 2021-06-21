@@ -57,6 +57,7 @@ public interface AutocompleteEventTracking {
         String CLICK_POPULAR_SEARCH_TOKONOW = "click - popular search - initial state";
         String CLICK_TOKONOW_KEYWORD_SUGGESTION = "click - product autocomplete - autocomplete";
         String CLICK_TOKONOW_CURATED_SUGGESTION = "click - campaign autocomplete - autocomplete";
+        String CLICK_SEARCH_SEARCH_BAR = "click - search - search bar";
     }
 
     interface Label {
@@ -74,7 +75,7 @@ public interface AutocompleteEventTracking {
         String RECENT_VIEW_ACTION_FIELD = "/search - recentview - product";
         String PRODUCT_LINE_INITIAL_STATE_ACTION_FIELD = "/search - product initial state campaign";
         String PRODUCT_LINE_SUGGESTION_ACTION_FIELD = "/search - product autocomplete campaign";
-
+        String BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods";
     }
 
 }
