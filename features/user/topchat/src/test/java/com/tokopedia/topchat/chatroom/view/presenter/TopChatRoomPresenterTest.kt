@@ -30,6 +30,7 @@ import com.tokopedia.topchat.FileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
 import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel
+import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
@@ -40,8 +41,10 @@ import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStic
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.service.UploadImageBroadcastListener
+import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter.Companion.ENABLE_UPLOAD_IMAGE_SERVICE
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exImageUploadId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exMessageId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.exOpponentId
@@ -1608,6 +1611,32 @@ class TopChatRoomPresenterTest {
         assertThat(productIds.size, `is`(1))
         assertThat(attachmentPreviews.size, `is`(2))
         assertThat(productIds, hasItem("12398764"))
+    }
+
+    @Test
+    fun `should have dummy image when upload image by service`() {
+        // Given
+        val imageViewModel = ImageUploadViewModel(
+            exMessageId, "fromUid", "attachmentId",
+            "fileLoc", "startTime"
+        )
+        val imageDummy = UploadImageDummy(messageId = exMessageId, visitable = imageViewModel)
+        mockkObject(UploadImageChatService.Companion)
+        every {
+            UploadImageChatService.enqueueWork(any(), any(), any())
+        } returns Unit
+        every {
+            remoteConfig.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, any())
+        } returns true
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+        presenter.startUploadImages(imageViewModel)
+
+        // Then
+        verify (exactly = 1) { view.addDummyMessage(imageViewModel) }
+        assertThat(UploadImageChatService.dummyMap, hasItem(imageDummy))
+        assertThat(UploadImageChatService.dummyMap.size, `is`(1))
     }
 
     private fun getErrorAtcModel(): AddToCartDataModel {
