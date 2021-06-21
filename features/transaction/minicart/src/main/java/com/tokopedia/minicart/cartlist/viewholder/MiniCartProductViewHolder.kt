@@ -36,9 +36,6 @@ class MiniCartProductViewHolder(private val view: View,
         AbstractViewHolder<MiniCartProductUiModel>(view) {
 
     companion object {
-        const val LABEL_CASHBACK = "cashback"
-        const val LABEL_DISCOUNT = "label diskon"
-
         val LAYOUT = R.layout.item_mini_cart_product
     }
 
@@ -132,6 +129,13 @@ class MiniCartProductViewHolder(private val view: View,
 
     private fun renderProductName(element: MiniCartProductUiModel) {
         textProductName?.text = element.productName
+        textProductName?.setOnClickListener(productInfoClickListener(element))
+    }
+
+    private fun productInfoClickListener(element: MiniCartProductUiModel): View.OnClickListener {
+        return View.OnClickListener {
+            listener.onProductInfoClicked(element)
+        }
     }
 
     private fun renderProductQtyLeft(element: MiniCartProductUiModel) {
@@ -139,7 +143,7 @@ class MiniCartProductViewHolder(private val view: View,
             textQtyLeft?.text = element.productQtyLeft
             textQtyLeft?.show()
             if (element.productVariantName.isNotBlank()) {
-                textQtyLeft?.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), 0, 0, 0)
+                textQtyLeft?.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), itemView.resources.getDimensionPixelOffset(R.dimen.dp_2), 0, 0)
             } else {
                 textQtyLeft?.setPadding(0, 0, 0, 0)
             }
@@ -184,7 +188,7 @@ class MiniCartProductViewHolder(private val view: View,
     private fun renderSlashPriceFromWholesale(element: MiniCartProductUiModel) {
         val priceDropValue = element.productInitialPriceBeforeDrop
         val price = element.productPrice
-        val originalPrice = if (priceDropValue > price) price else priceDropValue
+        val originalPrice = if (priceDropValue > price) price else if (priceDropValue > price) priceDropValue else price
         textSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice, false)
         textSlashPrice?.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_16), 0, 0, 0)
         textProductPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.productWholeSalePrice, false)
@@ -210,12 +214,14 @@ class MiniCartProductViewHolder(private val view: View,
                 ImageHandler.loadImageWithoutPlaceholder(it, element.productImageUrl)
             }
         }
+        imageProduct?.setOnClickListener(productInfoClickListener(element))
     }
 
     private fun renderProductInformation(element: MiniCartProductUiModel) {
         val tmpProductInformation = element.productInformation.toMutableList()
         if (element.productWholeSalePrice > 0) {
-            val wholesaleLabel = layoutProductInfo?.context?.getString(R.string.mini_cart_label_wholesale_price) ?: ""
+            val wholesaleLabel = layoutProductInfo?.context?.getString(R.string.mini_cart_label_wholesale_price)
+                    ?: ""
             tmpProductInformation.add(wholesaleLabel)
         }
         if (tmpProductInformation.isNotEmpty()) {
@@ -243,9 +249,11 @@ class MiniCartProductViewHolder(private val view: View,
 
     private fun renderProductNotes(element: MiniCartProductUiModel) {
         textNotes?.setOnClickListener {
+            listener.onWriteNotesClicked()
             renderProductNotesEditable(element)
         }
         textNotesChange?.setOnClickListener {
+            listener.onChangeNotesClicked()
             renderProductNotesEditable(element)
         }
 
@@ -271,8 +279,8 @@ class MiniCartProductViewHolder(private val view: View,
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                delayChangeQty?.cancel()
-                delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
+                delayChangeNotes?.cancel()
+                delayChangeNotes = GlobalScope.launch(Dispatchers.Main) {
                     delay(250)
                     val notes = s.toString()
                     element.productNotes = notes
@@ -346,7 +354,7 @@ class MiniCartProductViewHolder(private val view: View,
             val constraintSet = ConstraintSet()
             constraintSet.clone(constraintLayout)
             constraintSet.connect(R.id.button_delete_cart, ConstraintSet.END, R.id.text_product_unavailable_action, ConstraintSet.START, 0)
-            if (element.productInformation.isNotEmpty()) {
+            if (layoutProductInfo?.isVisible == true) {
                 constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.layout_product_info, ConstraintSet.BOTTOM, marginTop)
             } else {
                 constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.image_product, ConstraintSet.BOTTOM, marginTop)
@@ -357,7 +365,7 @@ class MiniCartProductViewHolder(private val view: View,
             val constraintSet = ConstraintSet()
             constraintSet.clone(constraintLayout)
             constraintSet.connect(R.id.button_delete_cart, ConstraintSet.END, R.id.qty_editor_product, ConstraintSet.START, 0)
-            if (element.productInformation.isNotEmpty()) {
+            if (layoutProductInfo?.isVisible == true) {
                 constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.layout_product_info, ConstraintSet.BOTTOM, marginTop)
             } else {
                 constraintSet.connect(R.id.button_delete_cart, ConstraintSet.TOP, R.id.image_product, ConstraintSet.BOTTOM, marginTop)
@@ -384,17 +392,10 @@ class MiniCartProductViewHolder(private val view: View,
             // reset listener
             qtyEditorProduct?.editText?.removeTextChangedListener(qtyTextWatcher)
         }
-        qtyEditorProduct?.setValueChangedListener { _, _, _ -> }
         qtyEditorProduct?.autoHideKeyboard = true
         qtyEditorProduct?.minValue = element.productMinOrder
         qtyEditorProduct?.maxValue = element.productMaxOrder
         qtyEditorProduct?.setValue(element.productQty)
-        qtyEditorProduct?.editText?.imeOptions = EditorInfo.IME_ACTION_DONE
-        qtyEditorProduct?.setValueChangedListener { newValue, oldValue, isOver ->
-            if (element.productQty != newValue) {
-                listener.onQuantityChanged(element.productId, newValue)
-            }
-        }
         qtyTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
@@ -403,17 +404,27 @@ class MiniCartProductViewHolder(private val view: View,
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 delayChangeQty?.cancel()
                 delayChangeQty = GlobalScope.launch(Dispatchers.Main) {
-                    delay(250)
-                    if (s.toString().toIntOrZero() > element.productMaxOrder) {
-                        qtyEditorProduct?.setValue(element.productMaxOrder)
-                    } else if (s.toString().toIntOrZero() < element.productMinOrder) {
-                        qtyEditorProduct?.setValue(element.productMinOrder)
+                    delay(500)
+                    val newValue = s.toString().replace(".", "").toIntOrZero()
+                    if (element.productQty != newValue) {
+                        validateQty(newValue, element)
+                        if (newValue != 0) {
+                            element.productQty = newValue
+                            listener.onQuantityChanged(element.productId, newValue)
+                        }
                     }
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
 
+            }
+        }
+        qtyEditorProduct?.editText?.imeOptions = EditorInfo.IME_ACTION_DONE
+        qtyEditorProduct?.editText?.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                val qty = qtyEditorProduct?.editText?.text?.toString().toIntOrZero()
+                listener.onInputQuantityClicked(qty)
             }
         }
         qtyEditorProduct?.editText?.addTextChangedListener(qtyTextWatcher)
@@ -424,6 +435,30 @@ class MiniCartProductViewHolder(private val view: View,
                 }
                 true
             } else false
+        }
+        qtyEditorProduct?.setAddClickListener {
+            listener.onQuantityPlusClicked()
+        }
+        qtyEditorProduct?.setSubstractListener {
+            listener.onQuantityMinusClicked()
+        }
+    }
+
+    private fun validateQty(newValue: Int, element: MiniCartProductUiModel) {
+        if (newValue == element.productMinOrder && newValue == element.productMaxOrder) {
+            qtyEditorProduct?.addButton?.isEnabled = false
+            qtyEditorProduct?.subtractButton?.isEnabled = false
+        } else if (newValue >= element.productMaxOrder) {
+            qtyEditorProduct?.setValue(element.productMaxOrder)
+            qtyEditorProduct?.addButton?.isEnabled = false
+            qtyEditorProduct?.subtractButton?.isEnabled = true
+        } else if (newValue <= element.productMinOrder) {
+            qtyEditorProduct?.setValue(element.productMinOrder)
+            qtyEditorProduct?.addButton?.isEnabled = true
+            qtyEditorProduct?.subtractButton?.isEnabled = false
+        } else {
+            qtyEditorProduct?.addButton?.isEnabled = true
+            qtyEditorProduct?.subtractButton?.isEnabled = true
         }
     }
 
@@ -451,7 +486,7 @@ class MiniCartProductViewHolder(private val view: View,
         textProductUnavailableAction?.text = action.message
         textProductUnavailableAction?.setOnClickListener {
             if (element.selectedUnavailableActionLink.isNotBlank()) {
-                listener.onShowSimilarProductClicked(element.selectedUnavailableActionLink)
+                listener.onShowSimilarProductClicked(element.selectedUnavailableActionLink, element)
             }
         }
         textProductUnavailableAction?.context?.let {
@@ -462,6 +497,7 @@ class MiniCartProductViewHolder(private val view: View,
 
     private fun renderProductAlpha(element: MiniCartProductUiModel) {
         if (element.isProductDisabled) {
+            listener.onShowUnavailableItem(element)
             imageProduct?.alpha = 0.5f
             textProductName?.alpha = 0.5f
             textProductVariant?.alpha = 0.5f

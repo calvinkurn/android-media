@@ -21,7 +21,7 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
     private var params: Map<String, Any?>? = null
     private var isFromMiniCartWidget: Boolean = false
 
-    fun setParams(miniCartItemList: List<MiniCartItem>, isFromMiniCartWidget: Boolean = false) {
+    fun setParams(miniCartItemList: List<MiniCartItem>, isFromMiniCartWidget: Boolean = false, source: String = "") {
         val updateCartRequestList = mutableListOf<UpdateCartRequest>()
 
         miniCartItemList.forEach {
@@ -34,11 +34,11 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
             )
         }
 
-        mapParams(updateCartRequestList)
+        mapParams(updateCartRequestList, source)
         this.isFromMiniCartWidget = isFromMiniCartWidget
     }
 
-    fun setParamsFromUiModels(miniCartItemList: List<MiniCartProductUiModel>) {
+    fun setParamsFromUiModels(miniCartItemList: List<MiniCartProductUiModel>, source: String = "") {
         val updateCartRequestList = mutableListOf<UpdateCartRequest>()
 
         miniCartItemList.forEach {
@@ -51,14 +51,15 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
             )
         }
 
-        mapParams(updateCartRequestList)
+        mapParams(updateCartRequestList, source)
         isFromMiniCartWidget = true
     }
 
-    private fun mapParams(updateCartRequestList: MutableList<UpdateCartRequest>) {
+    private fun mapParams(updateCartRequestList: MutableList<UpdateCartRequest>, source: String = "") {
         params = mapOf(
                 PARAM_KEY_LANG to PARAM_VALUE_ID,
                 PARAM_CARTS to updateCartRequestList,
+                PARAM_SOURCE to source,
                 KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress()
         )
     }
@@ -88,6 +89,9 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
 
     companion object {
         val PARAM_CARTS = "carts"
+        val PARAM_SOURCE = "source"
+        val VALUE_SOURCE_UPDATE_QTY_NOTES = "update_qty_notes"
+        val VALUE_SOURCE_PDP_UPDATE_QTY_NOTES = "pdp_update_qty_notes"
 
         private const val PARAM_KEY_LANG = "lang"
         private const val PARAM_VALUE_ID = "id"

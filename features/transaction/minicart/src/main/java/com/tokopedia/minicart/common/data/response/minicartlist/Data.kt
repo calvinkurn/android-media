@@ -5,8 +5,6 @@ import com.google.gson.annotations.SerializedName
 data class Data(
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
-        @SerializedName("empty_cart")
-        val emptyCart: EmptyCart = EmptyCart(),
         @SerializedName("out_of_service")
         val outOfService: OutOfService = OutOfService(),
         @SerializedName("max_char_note")

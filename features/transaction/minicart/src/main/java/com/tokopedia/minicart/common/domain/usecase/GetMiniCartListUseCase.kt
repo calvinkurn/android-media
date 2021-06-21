@@ -58,14 +58,6 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                 status
                 data {
                   errors
-                  empty_cart {
-                    title
-                    image
-                    description
-                    buttons {
-                      id
-                    }
-                  }
                   out_of_service {
                     id
                     code
@@ -99,6 +91,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                         maximum_weight_wording
                         maximum_shipping_weight
                         shop_id
+                        shop_name
                         shop_type_info {
                           badge
                           shop_grade
@@ -144,12 +137,21 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           product_notes
                           product_min_order
                           product_max_order
+                          product_invenage_value
+                          product_switch_invenage
                           parent_id
                           wholesale_price {
                             qty_min
                             qty_max
                             prd_prc
                           }
+                          campaign_id
+                          product_tracker_data {
+                            attribution
+                          }
+                          warehouse_id
+                          category_id
+                          category
                         }
                       }
                     }
@@ -186,6 +188,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                         maximum_weight_wording
                         maximum_shipping_weight
                         shop_id
+                        shop_name
                         shop_type_info {
                           badge
                           shop_grade
@@ -227,6 +230,13 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                             qty_max
                             prd_prc
                           }
+                          campaign_id
+                          product_tracker_data {
+                            attribution
+                          }
+                          warehouse_id
+                          category_id
+                          category
                         }
                       }
                     }
