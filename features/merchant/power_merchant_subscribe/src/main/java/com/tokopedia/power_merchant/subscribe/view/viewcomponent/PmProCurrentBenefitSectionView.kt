@@ -63,7 +63,7 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
         } else {
             context.getString(R.string.pm_update_info_pm_pro_description_text)
         }
-        val clickableText = context.getString(R.string.pm_update_info_description_clickable_text)
+        val clickableText = context.getString(R.string.pm_see_more)
         val termDescription = PowerMerchantSpannableUtil.createSpannableString(
                 text = updateInfoDescription.parseAsHtml(),
                 highlightText = clickableText,

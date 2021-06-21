@@ -1,7 +1,7 @@
 package com.tokopedia.shop.score.performance.presentation.adapter
 
 interface ShopPerformanceListener {
-    fun onTooltipLevelClicked(level: Int)
+    fun onTooltipLevelClicked(level: Long)
     fun onTooltipScoreClicked()
     fun onTickerClickedToPenaltyPage()
     fun onTickerImpressionToPenaltyPage()
@@ -13,7 +13,7 @@ interface ItemShopPerformanceListener {
     fun onItemClickedToFaqClicked()
 }
 
-interface ItemStatusPMProListener {
+interface ItemPotentialPMProListener {
     fun onGotoPMProPage()
 }
 
@@ -35,6 +35,11 @@ interface ItemStatusPowerMerchantListener {
     fun onItemClickedGotoPMPro()
     fun onItemClickedGoToPMActivation()
     fun onImpressHeaderPowerMerchantSection()
+}
+
+interface ItemStatusPowerMerchantProListener {
+    fun onItemClickedPMProPage()
+    fun onItemClickedGoToPMProActivation()
 }
 
 interface SectionFaqListener {

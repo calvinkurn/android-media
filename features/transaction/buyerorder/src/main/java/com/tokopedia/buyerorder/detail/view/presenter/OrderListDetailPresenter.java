@@ -20,6 +20,7 @@ import com.tokopedia.buyerorder.detail.data.OrderDetails;
 import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
 import com.tokopedia.buyerorder.detail.data.SendEventEmail;
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RecommendationResponse;
+import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.domain.BuyerGetRecommendationUseCase;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase;
@@ -69,6 +70,12 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String PAYMENT_ID = "paymentId";
     private static final String CART_STRING = "cartString";
     private static final int DEFAULT_DEVICE_ID = 5;
+    private static final String PARAM_INPUT = "input";
+    private static final String PARAM_CHANNEL_NAME = "channelName";
+    private static final String PARAM_CLIENT_NUMBERS = "clientNumbers";
+    private static final String PARAM_DG_CATEGORY_IDS = "dgCategoryIDs";
+    private static final String PARAM_PG_CATEGORY_IDS = "pgCategoryIDs";
+    private static final String DIGI_PERSO_CHANNEL_NAME = "dg_order_detail_recommendation";
 
     private final UserSessionInterface userSessionInterface;
     GraphqlUseCase orderDetailUseCase;
@@ -156,17 +163,30 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             orderDetailUseCase.addRequest(graphqlRequest);
 
-            GraphqlRequest requestRecomm = null;
-            Map<String, Object> variablesWidget = new HashMap<>();
-            variablesWidget.put(TAB_ID, DEFAULT_TAB_ID);
+            GraphqlRequest requestDigiPersoRecomm = null;
+            Map<String, Object> params = new HashMap<>();
+            Map<String, Object> input = new HashMap<>();
+
+            ArrayList<Integer> dgCategoryIds = new ArrayList<>();
+            ArrayList<Integer> pgCategoryIds = new ArrayList<>();
+            ArrayList<String> clientNumbers = new ArrayList<>();
+
+            clientNumbers.add(userSessionInterface.getPhoneNumber());
+
+            input.put(PARAM_CHANNEL_NAME, DIGI_PERSO_CHANNEL_NAME);
+            input.put(PARAM_CLIENT_NUMBERS, clientNumbers);
+            input.put(PARAM_DG_CATEGORY_IDS, dgCategoryIds);
+            input.put(PARAM_PG_CATEGORY_IDS, pgCategoryIds);
+            params.put(PARAM_INPUT, input);
+
             if (getView() != null && getView().getActivity() != null) {
-                requestRecomm = new
+                requestDigiPersoRecomm = new
                         GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                        R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget, false);
+                        R.raw.recharge_widget), RecommendationDigiPersoResponse.class, params, false);
             }
 
-            if (requestRecomm != null) {
-                orderDetailUseCase.addRequest(requestRecomm);
+            if (requestDigiPersoRecomm != null) {
+                orderDetailUseCase.addRequest(requestDigiPersoRecomm);
                 orderDetailUseCase.execute(new Subscriber<GraphqlResponse>() {
                     @Override
                     public void onCompleted() {
@@ -216,7 +236,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                     category = category.substring(1, category.length() - 1);
                                 }
                             } else {
-                                RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
+                                RecommendationDigiPersoResponse rechargeWidgetResponse = response.getData(RecommendationDigiPersoResponse.class);
                                 if (getView() != null) {
                                     getView().setRecommendation(rechargeWidgetResponse);
                                 }
