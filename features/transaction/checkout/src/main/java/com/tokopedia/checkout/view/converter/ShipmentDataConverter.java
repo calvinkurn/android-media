@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.view.converter;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
@@ -192,6 +194,7 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setEligibleNewShippingExperience(cartShipmentAddressFormData.isEligibleNewShippingExperience());
             shipmentCartItemModel.setDisableChangeCourier(groupShop.isDisableChangeCourier());
             shipmentCartItemModel.setAutoCourierSelection(groupShop.getAutoCourierSelection());
+            shipmentCartItemModel.setHasGeolocation(!TextUtils.isEmpty(userAddress.getLongitude()) && !TextUtils.isEmpty(userAddress.getLatitude()));
             shipmentCartItemModel.setCourierSelectionErrorTitle(groupShop.getCourierSelectionErrorData().getTitle());
             shipmentCartItemModel.setCourierSelectionErrorDescription(groupShop.getCourierSelectionErrorData().getDescription());
             shipmentCartItemModels.add(shipmentCartItemModel);

@@ -940,7 +940,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             RecipientAddressModel recipientAddressModel;
             if (shipmentPresenter.getRecipientAddressModel() != null) {
                 recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
-                onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel, position);
+                if (shipmentCartItemModel.isDisableChangeCourier()) {
+                    // refresh page
+                    shipmentPresenter.processInitialLoadCheckoutPage(
+                            true, isOneClickShipment(), isTradeIn(), true,
+                            false, null, getDeviceId(), getCheckoutLeasingId()
+                    );
+                } else {
+                    onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel, position);
+                }
             }
         }
     }
@@ -3093,6 +3101,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onViewErrorInCourierSection(String errorMessage) {
         checkoutAnalyticsCourierSelection.eventViewErrorInCourierSection(errorMessage);
+    }
+
+    @Override
+    public void onClickSetPinpoint(int position) {
+        setPinpoint(position);
     }
 
     @Override
