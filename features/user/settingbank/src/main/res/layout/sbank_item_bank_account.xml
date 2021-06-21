@@ -13,7 +13,7 @@
         android:padding="@dimen/unify_space_4"
         app:unify_image_corner_radius="0"
         app:unify_image_type="rect"
-        android:contentDescription="null"
+        android:contentDescription="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
