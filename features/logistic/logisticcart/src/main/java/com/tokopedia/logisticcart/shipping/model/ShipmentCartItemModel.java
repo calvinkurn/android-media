@@ -104,8 +104,6 @@ public class ShipmentCartItemModel implements Parcelable {
     // Flag for tracking
     private boolean hasShownCourierError;
 
-    private boolean shouldRetryRates;
-
     public ShipmentCartItemModel() {
     }
 
@@ -808,14 +806,6 @@ public class ShipmentCartItemModel implements Parcelable {
 
     public void setHasShownCourierError(boolean hasShownCourierError) {
         this.hasShownCourierError = hasShownCourierError;
-    }
-
-    public boolean isShouldRetryRates() {
-        return shouldRetryRates;
-    }
-
-    public void setShouldRetryRates(boolean shouldRetryRates) {
-        this.shouldRetryRates = shouldRetryRates;
     }
 
     @Override

@@ -941,7 +941,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (shipmentPresenter.getRecipientAddressModel() != null) {
                 recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
                 if (shipmentCartItemModel.isDisableChangeCourier()) {
-                    // reset courier
+                    // refresh page
                     shipmentPresenter.processInitialLoadCheckoutPage(
                             true, isOneClickShipment(), isTradeIn(), true,
                             false, null, getDeviceId(), getCheckoutLeasingId()
