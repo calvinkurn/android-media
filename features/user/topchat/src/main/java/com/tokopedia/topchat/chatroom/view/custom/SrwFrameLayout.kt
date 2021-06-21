@@ -31,7 +31,7 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 
-class SrwLinearLayout : FrameLayout {
+class SrwFrameLayout : FrameLayout {
 
     private var chatSmartReplyQuestion = ChatSmartReplyQuestion()
     private val typeFactory = SrwTypeFactoryImpl()
@@ -112,6 +112,19 @@ class SrwLinearLayout : FrameLayout {
     fun initialize(questionListener: SrwQuestionViewHolder.Listener, listener: Listener) {
         typeFactory.srwQuestionListener = questionListener
         this.listener = listener
+    }
+
+    fun initialize(
+            srwState: SrwState,
+            srwBubbleListener: SrwQuestionViewHolder.Listener?
+    ) {
+        typeFactory.srwQuestionListener = srwBubbleListener
+        this.listener = srwState.listener
+        this.isExpanded = srwState.isExpanded
+        srwState.latestState?.let {
+            updateStatus(it)
+            renderSrwState()
+        }
     }
 
     fun isAllowToShow(): Boolean {
@@ -253,6 +266,7 @@ class SrwLinearLayout : FrameLayout {
             listener?.trackViewSrw()
         }
         srwContentContainer?.show()
+        updateState()
     }
 
     private fun hideSrwContent() {
@@ -267,13 +281,27 @@ class SrwLinearLayout : FrameLayout {
         loadingState?.hide()
     }
 
+    fun getStateInfo(): SrwState {
+        return SrwState(isExpanded, listener, latestState)
+    }
+
+    fun isShowing(): Boolean {
+        return isAllowToShow() && isVisible
+    }
+
+    class SrwState(
+            val isExpanded: Boolean,
+            val listener: Listener? = null,
+            val latestState: Resource<ChatSmartReplyQuestionResponse>? = null
+    )
+
     companion object {
         private val LAYOUT = R.layout.partial_topchat_srw
     }
 }
 
 /**
- * Adapter used specifically for [SrwLinearLayout]
+ * Adapter used specifically for [SrwFrameLayout]
  */
 class SrwAdapter(
         srwTypeFactory: SrwTypeFactory
