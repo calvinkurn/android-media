@@ -89,7 +89,7 @@ class CreateMerchantVoucherStepsViewModelTest {
     }
 
     @Test
-    fun `setting next step with null max position will increment step position 1`() {
+    fun `setting next step with null max position will make step position value to 1`() {
         mViewModel.setNextStep()
 
         assert(mViewModel.stepPositionLiveData.value == 1)
