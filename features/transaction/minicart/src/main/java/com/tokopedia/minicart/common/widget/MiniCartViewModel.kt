@@ -283,8 +283,10 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
         if (observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
             val miniCartItems = mutableListOf<MiniCartItem>()
-            miniCartSimplifiedData.value?.miniCartItems?.let {
-                miniCartItems.addAll(it)
+            miniCartSimplifiedData.value?.miniCartItems?.forEach {
+                if (!it.isError) {
+                    miniCartItems.add(it)
+                }
             }
             updateCartUseCase.setParams(miniCartItems, true, source)
         } else if (observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
