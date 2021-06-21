@@ -95,6 +95,7 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
                 productItemDataView,
                 getViewModel().categoryL1,
                 getUserId(),
+                getViewModel().categoryIdTracking,
         )
     }
 
@@ -103,6 +104,7 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
                 productItemDataView,
                 getViewModel().categoryL1,
                 getUserId(),
+                getViewModel().categoryIdTracking,
         )
 
         super.onProductClick(productItemDataView)
