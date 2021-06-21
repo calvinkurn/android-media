@@ -75,6 +75,7 @@ object DigitalCheckoutMapper {
                 attributesDigital.isEnableVoucher = attributes.enableVoucher
                 if (attributes.isCouponActive) attributesDigital.isCouponActive = 1 else attributesDigital.isCouponActive = 0
                 attributesDigital.voucherAutoCode = attributes.voucher
+                attributesDigital.adminFee = attributes.adminFee
 
                 val userInputPrice = responseRechargeGetCart.response.openPaymentConfig
                 if (userInputPrice.maxPayment != 0.0 && userInputPrice.minPayment != 0.0) {
@@ -84,6 +85,7 @@ object DigitalCheckoutMapper {
                     userInputPriceDigital.minPayment = userInputPrice.minPaymentText
                     userInputPriceDigital.maxPayment = userInputPrice.maxPaymentText
                     attributesDigital.userInputPrice = userInputPriceDigital
+                    attributesDigital.isOpenAmount = true
                 }
 
                 val entity = attributes.autoApply

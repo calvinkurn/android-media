@@ -330,7 +330,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
             buyerReviewFragment?.let {
                 childFragmentManager.beginTransaction()
                         .replace(R.id.reviewSellerInboxFragment, it)
-                        .commit()
+                        .commitAllowingStateLoss()
             }
             shouldCommitBuyerReviewFragment = false
         }

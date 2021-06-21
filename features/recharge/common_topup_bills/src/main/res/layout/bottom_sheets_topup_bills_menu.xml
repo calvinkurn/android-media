@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/spacing_lvl4"
         android:text="@string/common_topup__menu_promo"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_5" />
 
     <View
@@ -28,7 +28,7 @@
         android:paddingTop="@dimen/spacing_lvl4"
         android:paddingBottom="@dimen/spacing_lvl4"
         android:text="@string/common_topup__menu_help"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_5" />
 
     <View
@@ -44,7 +44,7 @@
         android:paddingTop="@dimen/spacing_lvl4"
         android:paddingBottom="@dimen/spacing_lvl4"
         android:text="@string/common_topup__menu_transaction_list"
-        android:textColor="@color/Unify_N700_68"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_5" />
 
 </LinearLayout>

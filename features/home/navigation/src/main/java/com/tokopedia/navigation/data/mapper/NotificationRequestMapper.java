@@ -35,6 +35,7 @@ public class NotificationRequestMapper implements Func1<GraphqlResponse, Notific
         Notification data = new Notification();
         try {
             data.totalNewInbox = entity.getTotalNewInbox();
+            data.totalNotificationOnNewInbox = entity.getTotalNotificationOnNewInbox();
             data.setTotalCart(IntegerUtil.tryParseInt(entity.getTotalCart()));
             data.setTotalInbox(totalInbox(entity));
             data.setTotalNotif(totalNotif(entity, unread));

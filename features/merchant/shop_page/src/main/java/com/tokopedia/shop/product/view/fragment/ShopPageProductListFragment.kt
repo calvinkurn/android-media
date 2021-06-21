@@ -62,6 +62,7 @@ import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
 import com.tokopedia.shop.common.constant.ShopPageConstant.START_PAGE
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_PRODUCT_TAB_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_PREPARE
@@ -672,7 +673,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun loadMerchantVoucher() {
-        viewModel.getNewMerchantVoucher(shopId)
+        viewModel.getNewMerchantVoucher(shopId, context)
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
@@ -1192,15 +1193,16 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 is Fail -> {
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                SHOP_PAGE_PRODUCT_TAB_BUYER_FLOW_TAG,
-                                this::observeViewModelLiveData.name,
-                                ShopPageProductListViewModel::productListData.name,
-                                userId,
-                                shopId,
-                                shopName,
-                                ErrorHandler.getErrorMessage(context, throwable),
-                                Log.getStackTraceString(throwable)
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
+                                tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                functionName = this::observeViewModelLiveData.name,
+                                liveDataName = ShopPageProductListViewModel::productListData.name,
+                                userId = userId,
+                                shopId = shopId,
+                                shopName = shopName,
+                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                stackTrace = Log.getStackTraceString(throwable),
+                                errType = SHOP_PAGE_PRODUCT_TAB_BUYER_FLOW_TAG
                         )
                     }
                     showErrorToasterWithRetry(throwable)
@@ -1384,7 +1386,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                     shopId,
                     data,
                     isShowNewShopHomeTab(),
-                    ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+                    ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
+                    context
             )
         }
         if (initialProductListData == null){

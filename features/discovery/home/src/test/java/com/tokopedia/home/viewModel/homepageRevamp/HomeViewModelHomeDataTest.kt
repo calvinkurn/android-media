@@ -32,7 +32,7 @@ class HomeViewModelHomeDataTest {
                 )
         )
         coEvery { getHomeUseCase.updateHomeData() } returns flow{
-            emit(Result.errorPagination(Throwable(), ""))
+            emit(Result.errorPagination(Throwable(), data = null))
         }
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
 
@@ -48,7 +48,7 @@ class HomeViewModelHomeDataTest {
                 )
         )
         coEvery { getHomeUseCase.updateHomeData() } returns flow{
-            emit(Result.errorPagination(Throwable(), ""))
+            emit(Result.errorPagination(Throwable(), data = null))
         }
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         homeViewModel.refreshHomeData()

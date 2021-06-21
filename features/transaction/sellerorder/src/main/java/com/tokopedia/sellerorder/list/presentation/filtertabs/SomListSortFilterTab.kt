@@ -216,6 +216,6 @@ class SomListSortFilterTab(
 
     interface SomListSortFilterTabClickListener {
         fun onParentSortFilterClicked()
-        fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean, refreshFilter: Boolean = true)
+        fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean, fromClickTab: Boolean = true)
     }
 }
