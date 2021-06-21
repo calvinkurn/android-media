@@ -12,6 +12,12 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.autocomplete.analytics.AutocompleteEventTracking.Action.CLICK_SEARCH_SEARCH_BAR;
+import static com.tokopedia.autocomplete.analytics.AutocompleteEventTracking.Category.TOP_NAV_TOKO_NOW;
+import static com.tokopedia.autocomplete.analytics.AutocompleteEventTracking.Event.CLICK_SEARCH;
+import static com.tokopedia.autocomplete.analytics.AutocompleteEventTracking.Event.CLICK_TOKO_NOW;
+import static com.tokopedia.autocomplete.analytics.AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE;
+import static com.tokopedia.autocomplete.analytics.AutocompleteEventTracking.Other.BUSINESS_UNIT_PHYSICAL_GOODS;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.ACTION_FIELD;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.BUSINESS_UNIT;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.CAMPAIGN_CODE;
@@ -55,7 +61,7 @@ public class AutocompleteTracking {
                     EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
                     EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_RECENT_SEARCH,
                     EVENT_LABEL, label,
-                    CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                    CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                     BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
                     PAGE_SOURCE, pageSource
             )
@@ -69,7 +75,7 @@ public class AutocompleteTracking {
                         EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_SHOP_SUGGESTION,
                         EVENT_LABEL, label,
-                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
                         PAGE_SOURCE, pageSource
                 )
@@ -92,7 +98,7 @@ public class AutocompleteTracking {
                         EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_KEYWORD_SUGGESTION,
                         EVENT_LABEL, label,
-                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
                         PAGE_SOURCE, pageSource
                 )
@@ -106,9 +112,22 @@ public class AutocompleteTracking {
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_DIGITAL_PRODUCT_SUGGESTION,
                         EVENT_LABEL, label,
                         CAMPAIGN_CODE, campaignCode,
-                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
                         PAGE_SOURCE, pageSource
+                )
+        );
+    }
+
+    public static void eventClickSubmitTokoNow(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, CLICK_TOKO_NOW,
+                        EVENT_ACTION, CLICK_SEARCH_SEARCH_BAR,
+                        EVENT_CATEGORY, TOP_NAV_TOKO_NOW,
+                        EVENT_LABEL, label,
+                        BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE
                 )
         );
     }
@@ -157,7 +176,7 @@ public class AutocompleteTracking {
                         EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - homepage",
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_RECENT_SEARCH_AUTOCOMPLETE,
                         EVENT_LABEL, keyword,
-                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
                         PAGE_SOURCE, pageSource
                 )
@@ -172,7 +191,7 @@ public class AutocompleteTracking {
                     EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_RECENT_SHOP,
                     EVENT_LABEL, label,
                     SCREEN_NAME, "/",
-                    CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                    CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                     USER_ID, userId,
                     BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
                     PAGE_SOURCE, pageSource
@@ -241,7 +260,7 @@ public class AutocompleteTracking {
                 EVENT_ACTION, AutocompleteEventTracking.Action.IMPRESSION_SEE_MORE_RECENT_SEARCH,
                 EVENT_LABEL, "",
                 BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
-                CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                 USER_ID, userId
         );
         iris.saveEvent(map);
@@ -255,7 +274,7 @@ public class AutocompleteTracking {
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_SEE_MORE_RECENT_SEARCH,
                         EVENT_LABEL, "",
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
-                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                         USER_ID, userId
                 )
         );
@@ -268,7 +287,7 @@ public class AutocompleteTracking {
                 EVENT_ACTION, AutocompleteEventTracking.Action.IMPRESSION_POPULAR_SEARCH + " - " + model.getType(),
                 EVENT_LABEL, "title: " + model.getTitle(),
                 BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
-                CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                 USER_ID, model.getUserId(),
                 "ecommerce", DataLayer.mapOf(
                         "promoView", DataLayer.mapOf(
@@ -289,7 +308,7 @@ public class AutocompleteTracking {
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_DYNAMIC_SECTION + " - " + type,
                         EVENT_LABEL, label,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
-                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                         USER_ID, userId,
                         PAGE_SOURCE, pageSource
                 )
@@ -304,7 +323,7 @@ public class AutocompleteTracking {
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_LOCAL_KEYWORD,
                         EVENT_LABEL, label,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
-                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                         USER_ID, userId,
                         PAGE_SOURCE, pageSource
                 )
@@ -319,7 +338,7 @@ public class AutocompleteTracking {
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_GLOBAL_KEYWORD,
                         EVENT_LABEL, label,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
-                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                         USER_ID, userId,
                         PAGE_SOURCE, pageSource
                 )
@@ -334,7 +353,7 @@ public class AutocompleteTracking {
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_CURATED_CAMPAIGN + " - " + type,
                         EVENT_LABEL, label,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
-                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                         USER_ID, userId
                 )
         );
@@ -347,7 +366,7 @@ public class AutocompleteTracking {
                 EVENT_ACTION, AutocompleteEventTracking.Action.IMPRESSION_CURATED_CAMPAIGN + " - " + type,
                 EVENT_LABEL, label,
                 BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
-                CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                 USER_ID, userId
         );
         iris.saveEvent(map);
@@ -369,7 +388,7 @@ public class AutocompleteTracking {
                                 )
                         ),
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
-                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                         USER_ID, userId,
                         PAGE_SOURCE, pageSource
                 )
@@ -392,7 +411,7 @@ public class AutocompleteTracking {
                                 )
                         ),
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
-                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                         USER_ID, userId
                 )
         );
@@ -401,12 +420,12 @@ public class AutocompleteTracking {
     public static void eventClickRefreshTokoNowPopularSearch() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
-                        EVENT, AutocompleteEventTracking.Event.CLICK_TOKO_NOW,
-                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV_TOKO_NOW,
+                        EVENT, CLICK_TOKO_NOW,
+                        EVENT_CATEGORY, TOP_NAV_TOKO_NOW,
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_REFRESH_TOKONOW_POPULAR_SEARCH,
                         EVENT_LABEL, "",
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
-                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE
                 )
         );
     }
@@ -414,12 +433,12 @@ public class AutocompleteTracking {
     public static void eventClickTokoNowPopularSearch(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
-                        EVENT, AutocompleteEventTracking.Event.CLICK_TOKO_NOW,
-                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV_TOKO_NOW,
+                        EVENT, CLICK_TOKO_NOW,
+                        EVENT_CATEGORY, TOP_NAV_TOKO_NOW,
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_POPULAR_SEARCH_TOKONOW,
                         EVENT_LABEL, label,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
-                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE
                 )
         );
     }
@@ -427,12 +446,12 @@ public class AutocompleteTracking {
     public static void eventClickTokoNowKeyword(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
-                        EVENT, AutocompleteEventTracking.Event.CLICK_TOKO_NOW,
-                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV_TOKO_NOW,
+                        EVENT, CLICK_TOKO_NOW,
+                        EVENT_CATEGORY, TOP_NAV_TOKO_NOW,
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_TOKONOW_KEYWORD_SUGGESTION,
                         EVENT_LABEL, label,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
-                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE
                 )
         );
     }
@@ -440,12 +459,12 @@ public class AutocompleteTracking {
     public static void eventClickTokoNowCurated(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
-                        EVENT, AutocompleteEventTracking.Event.CLICK_TOKO_NOW,
-                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV_TOKO_NOW,
+                        EVENT, CLICK_TOKO_NOW,
+                        EVENT_CATEGORY, TOP_NAV_TOKO_NOW,
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_TOKONOW_CURATED_SUGGESTION,
                         EVENT_LABEL, label,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
-                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE
                 )
         );
     }

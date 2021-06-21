@@ -48,12 +48,6 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
         }
     }
 
-    override fun onSearchBarClick(hint: String) {
-        CategoryTracking.sendSearchBarClickEvent(getViewModel().categoryL1)
-
-        super.onSearchBarClick(hint)
-    }
-
     override fun getBaseAutoCompleteApplink() =
             super.getBaseAutoCompleteApplink() + "?" +
                     "${SearchApiConst.NAVSOURCE}=$TOKONOW_DIRECTORY"
