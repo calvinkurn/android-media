@@ -1,6 +1,7 @@
 package com.tokopedia.travel.passenger.presentation.widget
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
@@ -8,6 +9,7 @@ import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Parcelable
 import android.text.Editable
 import android.text.TextUtils
@@ -16,6 +18,7 @@ import android.text.method.PasswordTransformationMethod
 import android.util.AttributeSet
 import android.util.SparseArray
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -25,6 +28,7 @@ import android.widget.TextView
 import androidx.annotation.StyleRes
 import androidx.appcompat.widget.AppCompatDrawableManager
 import androidx.appcompat.widget.DrawableUtils
+import androidx.appcompat.widget.TintTypedArray
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.core.widget.TextViewCompat
@@ -32,16 +36,13 @@ import com.google.android.material.internal.CheckableImageButton
 import com.tokopedia.travel.passenger.R
 import java.util.*
 
-class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : LinearLayout(context, attrs, defStyleAttr) {
-
+class TkpdHintTextInputLayout : LinearLayout {
     private var mFrameLayout: FrameLayout? = null
-    var editText: EditText? = null
-        private set
+    var mEditText: EditText? = null
     private var mDefaultHintTextColor: ColorStateList? = null
     private var mFocusedHintTextColor: ColorStateList? = null
     private var mDisabledHintTextColor: ColorStateList? = null
-    private var mHintEnabled = false
+    var mHintEnabled = false
     private var mHint: CharSequence? = null
     private var mTvLabel: TextView? = null
     private var mTvHelper: TextView? = null
@@ -70,7 +71,7 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
     private var mPasswordToggleDrawable: Drawable? = null
     private var mPasswordToggleEnabled = false
     private var mPasswordToggledVisible = false
-    private val mPasswordToggleView: CheckableImageButton? = null
+    private var mPasswordToggleView: CheckableImageButton? = null
     private var mPasswordToggleDummyDrawable: ColorDrawable? = null
     private var mOriginalEditTextEndDrawable: Drawable? = null
     private var mHasPasswordToggleTintList = false
@@ -79,26 +80,36 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
     private var mPasswordToggleTintMode: PorterDuff.Mode? = null
     private var mHelperEnabled = false
     private var mHelperTextAppearance = 0
-    private var isSuccessShown = false
+    var isSuccessShown = false
     private var mSuccessTextAppearance = 0
     private var mHelperText: CharSequence? = null
     private var mPrefixLength = 0
     private var prefixString: String? = null
 
-    init {
-        if (attrs != null) {
-            apply(attrs, defStyleAttr)
-        } else {
-            apply(null, 0)
-        }
+    constructor(context: Context?) : super(context) {
+        apply(null, 0)
         init()
     }
 
-    @SuppressLint("ResourceType")
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+        apply(attrs, 0)
+        init()
+    }
+
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        apply(attrs, defStyleAttr)
+        init()
+    }
+
+    @TargetApi(21)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {
+        apply(attrs, defStyleAttr)
+        init()
+    }
+
+    @SuppressLint("RestrictedApi", "ResourceType")
     private fun apply(attrs: AttributeSet?, defStyleAttr: Int) {
-        val a = context.obtainStyledAttributes(attrs,
-                com.tokopedia.travel.passenger.R.styleable.TkpdHintTextInputLayout, defStyleAttr,
-                com.google.android.material.R.style.Widget_Design_TextInputLayout)
+        val a = TintTypedArray.obtainStyledAttributes(context, attrs, R.styleable.TkpdHintTextInputLayout, defStyleAttr, com.google.android.material.R.style.Widget_Design_TextInputLayout)
         mHintEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_hintEnabled, true)
         mHint = a.getText(R.styleable.TkpdHintTextInputLayout_android_hint)
         mHintAnimationEnabled = a.getBoolean(
@@ -111,7 +122,7 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
         mHintAppearance = a.getResourceId(
                 R.styleable.TkpdHintTextInputLayout_hintTextAppearance, -1)
         if (mHintAppearance != -1) {
-            val hintArr = context.obtainStyledAttributes(mHintAppearance,
+            val hintArr = TintTypedArray.obtainStyledAttributes(context, mHintAppearance,
                     androidx.appcompat.R.styleable.TextAppearance)
             if (hintArr.hasValue(androidx.appcompat.R.styleable.TextAppearance_android_textColor)) {
                 mFocusedHintTextColor = hintArr.getColorStateList(
@@ -122,36 +133,31 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
                         androidx.appcompat.R.styleable.TextAppearance_android_textSize,
                         mHintTextSize.toInt()).toFloat()
             }
-            mHintTypeface = readFontFamilyTypeface(mHintAppearance)
+            if (Build.VERSION.SDK_INT >= 21) {
+                mHintTypeface = readFontFamilyTypeface(mHintAppearance)
+            }
             hintArr.recycle()
         }
         mErrorEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_errorEnabled, false)
         mErrorTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_errorTextAppearance, 0)
         mHelperEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_helperEnabled, false)
-        mHelperTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_helperTextAppearance,
-                R.style.helperTextAppearance)
+        mHelperTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_helperTextAppearance, R.style.helperTextAppearance)
         mHelperText = a.getText(R.styleable.TkpdHintTextInputLayout_helper)
         isSuccessShown = a.getBoolean(R.styleable.TkpdHintTextInputLayout_successEnabled, false)
-        mSuccessTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_successTextAppearance,
-                R.style.successTextAppearance)
-        mCounterEnabled = a.getBoolean(
-                R.styleable.TkpdHintTextInputLayout_counterEnabled, false)
+        mSuccessTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_successTextAppearance, R.style.successTextAppearance)
+        mCounterEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_counterEnabled, false)
         mCounterMaxLength = a.getInt(R.styleable.TkpdHintTextInputLayout_counterMaxLength, INVALID_MAX_LENGTH)
-        mCounterTextAppearance = a.getResourceId(
-                R.styleable.TkpdHintTextInputLayout_counterTextAppearance, 0)
-        mCounterOverflowTextAppearance = a.getResourceId(
-                R.styleable.TkpdHintTextInputLayout_counterOverflowTextAppearance, 0)
-        mPasswordToggleEnabled = a.getBoolean(
-                R.styleable.TkpdHintTextInputLayout_passwordToggleEnabled, true)
-        mPasswordToggleDrawable = a.getDrawable(
-                R.styleable.TkpdHintTextInputLayout_passwordToggleDrawable)
-        mPasswordToggleContentDesc = a.getText(
-                R.styleable.TkpdHintTextInputLayout_passwordToggleContentDescription)
+        mCounterTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_counterTextAppearance, 0)
+        mCounterOverflowTextAppearance = a.getResourceId(R.styleable.TkpdHintTextInputLayout_counterOverflowTextAppearance, 0)
+        mPasswordToggleEnabled = a.getBoolean(R.styleable.TkpdHintTextInputLayout_passwordToggleEnabled, true)
+        mPasswordToggleDrawable = a.getDrawable(R.styleable.TkpdHintTextInputLayout_passwordToggleDrawable)
+        mPasswordToggleContentDesc = a.getText(R.styleable.TkpdHintTextInputLayout_passwordToggleContentDescription)
         if (a.hasValue(R.styleable.TkpdHintTextInputLayout_passwordToggleTint)) {
             mHasPasswordToggleTintList = true
             mPasswordToggleTintList = a.getColorStateList(
                     R.styleable.TkpdHintTextInputLayout_passwordToggleTint)
         }
+
         val theme = context.theme
         if (theme != null) {
             val appcompatCheckAttrs = intArrayOf(
@@ -186,7 +192,7 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
     }
 
     private fun init() {
-        val view = inflate(context, R.layout.widget_hint_text_input_layout, this)
+        val view = inflate(context, R.layout.hint_text_input_layout, this)
         mFrameLayout = view.findViewById<View>(R.id.frame_content) as FrameLayout
         mTvLabel = view.findViewById<View>(R.id.tv_label) as TextView
         mTvHelper = view.findViewById<View>(R.id.tv_helper) as TextView
@@ -211,12 +217,12 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
         mTvLabel?.isEnabled = enabled
-        editText?.isEnabled = enabled
+            mEditText?.isEnabled = enabled
     }
 
-    override fun requestFocus(direction: Int, previouslyFocusedRect: Rect): Boolean {
-        return if (editText != null) {
-            editText?.requestFocus() ?: false
+    override fun requestFocus(direction: Int, previouslyFocusedRect: Rect?): Boolean {
+        return if (mEditText != null) {
+            mEditText!!.requestFocus()
         } else {
             super.requestFocus(direction, previouslyFocusedRect)
         }
@@ -236,7 +242,7 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
         if (mHintTypeface != null) {
             mTvLabel?.typeface = mHintTypeface
         }
-        if (editText != null) {
+        if (mEditText != null) {
             updateLabelState(false)
         }
     }
@@ -247,53 +253,50 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
     }
 
     fun setHint(hint: CharSequence?) {
-        editText?.hint = hint
+            mEditText?.hint = hint
     }
 
-    private fun setUICounter() {
+    fun setUICounter() {
         mTvCounter?.let {
             TextViewCompat.setTextAppearance(it, mCounterTextAppearance)
-        }
-        if (mCounterEnabled) {
-            updateCounter()
-            mTvCounter?.visibility = VISIBLE
-        } else {
-            mTvCounter?.visibility = GONE
+            if (mCounterEnabled) {
+                updateCounter()
+                it.visibility = VISIBLE
+            } else {
+                it.visibility = GONE
+            }
         }
     }
 
     private fun setUIError() {
-        if (mErrorTextAppearance != 0) {
-            mTvError?.let {
+        mTvError?.let {
+            if (mErrorTextAppearance != 0) {
                 TextViewCompat.setTextAppearance(it, mErrorTextAppearance)
             }
+            error = mErrorText
         }
-        error = mErrorText
     }
 
     private fun setUISuccess() {
-        if (mSuccessTextAppearance != 0) {
-            mTvSuccess?.let {
+        mTvSuccess?.let {
+            if (mSuccessTextAppearance != 0) {
                 TextViewCompat.setTextAppearance(it, mSuccessTextAppearance)
             }
+            setSuccess(mSuccessText)
         }
-        setSuccess(mSuccessText)
     }
 
     private fun setUIHelper() {
-        if (mHelperTextAppearance != 0) {
-            mTvHelper?.let {
+        mTvHelper?.let {
+            if (mHelperTextAppearance != 0) {
                 TextViewCompat.setTextAppearance(it, mHelperTextAppearance)
             }
+            setHelper(mHelperText)
         }
-        setHelper(mHelperText)
     }
 
-    private fun setErrorEnabled(enabled: Boolean) {
+    fun setErrorEnabled(enabled: Boolean) {
         if (mErrorEnabled != enabled) {
-            /*if (mErrorView != null) {
-                ViewCompat.animate(mErrorView).cancel();
-            }*/
             mErrorEnabled = enabled
             checkErrorVisible()
             updateEditTextBackground()
@@ -330,7 +333,7 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
         }
     }
 
-    private fun setSuccessEnabled(enabled: Boolean) {
+    fun setSuccessEnabled(enabled: Boolean) {
         if (isSuccessShown != enabled) {
             isSuccessShown = enabled
             checkSuccessVisible()
@@ -346,22 +349,22 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
     }
 
     fun setErrorTextAppearance(@StyleRes resId: Int) {
-        mErrorTextAppearance = resId
         mTvError?.let {
+            mErrorTextAppearance = resId
             TextViewCompat.setTextAppearance(it, resId)
         }
     }
 
     fun setHelperTextAppearance(@StyleRes resId: Int) {
-        mHelperTextAppearance = resId
         mTvHelper?.let {
+            mHelperTextAppearance = resId
             TextViewCompat.setTextAppearance(it, resId)
         }
     }
 
     fun setSuccessTextAppearance(@StyleRes resId: Int) {
-        mSuccessTextAppearance = resId
         mTvSuccess?.let {
+            mSuccessTextAppearance = resId
             TextViewCompat.setTextAppearance(it, resId)
         }
     }
@@ -379,7 +382,7 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
             // Else, we'll assume that they want to enable the error functionality
             setErrorEnabled(true)
         }
-        if (error?.isNotEmpty() == true) {
+        if (!TextUtils.isEmpty(error)) {
             mTvError?.text = error
             mTvError?.visibility = VISIBLE
         } else { // empty error
@@ -392,7 +395,7 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
         updateLabelState(animate)
     }
 
-    private fun setSuccess(success: CharSequence?) {
+    fun setSuccess(success: CharSequence?) {
         // Only animate if we're enabled, laid out, and we have a different error message
         setSuccess(success, ViewCompat.isLaidOut(this) && isEnabled
                 && !TextUtils.equals(mTvSuccess?.text, success))
@@ -425,7 +428,7 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
     private fun setSuccess(successText: CharSequence?, animate: Boolean) {
         mSuccessText = successText
         if (!isSuccessShown) {
-            if (successText?.isEmpty() == true) {
+            if (TextUtils.isEmpty(successText)) {
                 if (mTvSuccess?.visibility == VISIBLE) {
                     mTvSuccess?.visibility = GONE
                 }
@@ -448,7 +451,7 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
         updateLabelState(animate)
     }
 
-    private fun setHelper(helper: CharSequence?) {
+    fun setHelper(helper: CharSequence?) {
         mHelperText = helper
         if (!mHelperEnabled) {
             if (TextUtils.isEmpty(helper)) {
@@ -472,11 +475,11 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
         }
     }
 
-    private fun setUIPasswordToogle() {
-        if (!mPasswordToggleEnabled && mPasswordToggledVisible && editText != null) {
+    fun setUIPasswordToogle() {
+        if (!mPasswordToggleEnabled && mPasswordToggledVisible && mEditText != null) {
             // If the toggle is no longer enabled, but we remove the PasswordTransformation
             // to make the password visible, add it back
-            editText?.transformationMethod = PasswordTransformationMethod.getInstance()
+            mEditText?.transformationMethod = PasswordTransformationMethod.getInstance()
         }
 
         // Reset the visibility tracking flag
@@ -491,59 +494,63 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
         }
     }
 
+    @SuppressLint("RestrictedApi")
     private fun updatePasswordToggleView() {
-        if (editText == null) {
+        if (mEditText == null) {
             // If there is no EditText, there is nothing to update
             return
         }
         if (shouldShowPasswordIcon()) {
             if (mPasswordToggleView == null) {
+                mPasswordToggleView = LayoutInflater.from(context)
+                        .inflate(R.layout.design_text_input_password_icon,
+                                mFrameLayout, false) as CheckableImageButton
                 mPasswordToggleView?.setImageDrawable(mPasswordToggleDrawable)
                 mPasswordToggleView?.contentDescription = mPasswordToggleContentDesc
                 mFrameLayout?.addView(mPasswordToggleView)
                 mPasswordToggleView?.setOnClickListener { passwordVisibilityToggleRequested() }
             }
-            editText?.let {
-                if (ViewCompat.getMinimumHeight(it) <= 0) {
-                    // We should make sure that the EditText has the same min-height as the password
-                    // toggle view. This ensure focus works properly, and there is no visual jump
-                    // if the password toggle is enabled/disabled.
-                    mPasswordToggleView?.let { passwordView ->
-                        it.minimumHeight = ViewCompat.getMinimumHeight(passwordView)
+            mPasswordToggleView?.let {
+                mEditText?.let { et ->
+                    if (ViewCompat.getMinimumHeight(et) <= 0) {
+                        // We should make sure that the EditText has the same min-height as the password
+                        // toggle view. This ensure focus works properly, and there is no visual jump
+                        // if the password toggle is enabled/disabled.
+                        et.minimumHeight = ViewCompat.getMinimumHeight(it)
                     }
-                }
-            }
-            mPasswordToggleView?.visibility = VISIBLE
-            mPasswordToggleView?.isSelected = mPasswordToggledVisible
+                    it.visibility = VISIBLE
+                    it.isChecked = mPasswordToggledVisible
 
-            // We need to add a dummy drawable as the end compound drawable so that the text is
-            // indented and doesn't display below the toggle view
-            if (mPasswordToggleDummyDrawable == null) {
-                mPasswordToggleDummyDrawable = ColorDrawable()
-            }
-            mPasswordToggleView?.post {
-                mPasswordToggleDummyDrawable?.setBounds(0, 0, mPasswordToggleView.measuredWidth, 1)
-                editText?.let {
-                    val compounds = TextViewCompat.getCompoundDrawablesRelative(it)
-                    // Store the user defined end compound drawable so that we can restore it later
-                    if (compounds[2] !== mPasswordToggleDummyDrawable) {
-                        mOriginalEditTextEndDrawable = compounds[2]
+                    // We need to add a dummy drawable as the end compound drawable so that the text is
+                    // indented and doesn't display below the toggle view
+                    if (mPasswordToggleDummyDrawable == null) {
+                        mPasswordToggleDummyDrawable = ColorDrawable()
                     }
-                    TextViewCompat.setCompoundDrawablesRelative(it, compounds[0], compounds[1],
-                            mPasswordToggleDummyDrawable, compounds[3])
+                    it.post(object : Runnable {
+                        override fun run() {
+                            mPasswordToggleDummyDrawable?.setBounds(0, 0, it.measuredWidth, 1)
+                            val compounds = TextViewCompat.getCompoundDrawablesRelative(et)
+                            // Store the user defined end compound drawable so that we can restore it later
+                            if (compounds[2] !== mPasswordToggleDummyDrawable) {
+                                mOriginalEditTextEndDrawable = compounds[2]
+                            }
+                            TextViewCompat.setCompoundDrawablesRelative(et, compounds[0], compounds[1],
+                                    mPasswordToggleDummyDrawable, compounds[3])
 
-                    // Copy over the EditText's padding so that we match
-                    mPasswordToggleView.setPadding(it.paddingLeft,
-                            it.paddingTop, it.paddingRight,
-                            it.paddingBottom)
+                            // Copy over the EditText's padding so that we match
+                            it.setPadding(et.paddingLeft,
+                                    et.paddingTop, et.paddingRight,
+                                    et.paddingBottom)
+                        }
+                    })
                 }
             }
         } else {
-            if (mPasswordToggleView != null && mPasswordToggleView.visibility == VISIBLE) {
-                mPasswordToggleView.visibility = GONE
+            if (mPasswordToggleView?.visibility == VISIBLE) {
+                mPasswordToggleView?.visibility = GONE
             }
-            if (mPasswordToggleDummyDrawable != null) {
-                editText?.let {
+            mEditText?.let {
+                if (mPasswordToggleDummyDrawable != null) {
                     // Make sure that we remove the dummy end compound drawable if it exists, and then
                     // clear it
                     val compounds = TextViewCompat.getCompoundDrawablesRelative(it)
@@ -557,21 +564,22 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
         }
     }
 
-    private fun passwordVisibilityToggleRequested() {
+    @SuppressLint("RestrictedApi")
+    fun passwordVisibilityToggleRequested() {
         if (mPasswordToggleEnabled) {
             // Store the current cursor position
-            var selection = editText?.selectionEnd ?: 0
+            var selection = mEditText?.selectionEnd ?: 0
             if (hasPasswordTransformation()) {
-                editText?.transformationMethod = null
+                mEditText?.transformationMethod = null
                 mPasswordToggledVisible = true
             } else {
-                editText?.transformationMethod = PasswordTransformationMethod.getInstance()
+                mEditText?.transformationMethod = PasswordTransformationMethod.getInstance()
                 mPasswordToggledVisible = false
             }
-            mPasswordToggleView?.isSelected = mPasswordToggledVisible
+            mPasswordToggleView?.isChecked = mPasswordToggledVisible
             if (selection < 0) selection = 0
             // And restore the cursor position
-            editText?.setSelection(selection)
+            mEditText?.setSelection(selection)
         }
     }
 
@@ -595,13 +603,12 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
                     DrawableCompat.setTintList(it, mPasswordToggleTintList)
                 }
                 if (mHasPasswordToggleTintMode) {
-                    mPasswordToggleTintMode?.let { tintMode ->
-                        DrawableCompat.setTintMode(it, tintMode)
+                    mPasswordToggleTintMode?.let { passTintMode ->
+                        DrawableCompat.setTintMode(it, passTintMode)
                     }
                 }
-                if (mPasswordToggleView != null
-                        && mPasswordToggleView.drawable != mPasswordToggleDrawable) {
-                    mPasswordToggleView.setImageDrawable(mPasswordToggleDrawable)
+                if (mPasswordToggleView?.drawable !== mPasswordToggleDrawable) {
+                    mPasswordToggleView?.setImageDrawable(mPasswordToggleDrawable)
                 }
             }
         }
@@ -612,8 +619,8 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
     }
 
     private fun hasPasswordTransformation(): Boolean {
-        return (editText != null
-                && editText?.transformationMethod is PasswordTransformationMethod)
+        return (mEditText != null
+                && mEditText?.transformationMethod is PasswordTransformationMethod)
     }
 
     var isCounterEnabled: Boolean
@@ -641,8 +648,8 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
 
     private fun updateCounter() {
         var length = 0
-        editText?.let {
-            if (it.text.isNotEmpty()) length = it.text.length
+        if (mEditText != null && mEditText?.text?.isNotEmpty() == true) {
+            length = mEditText?.text?.length ?: 0
         }
         val wasCounterOverflowed = mCounterOverflowed
         val currentLength = if (length > mPrefixLength) length - mPrefixLength else length
@@ -653,15 +660,13 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
             mCounterOverflowed = length > mCounterMaxLength
             if (wasCounterOverflowed != mCounterOverflowed) {
                 mTvCounter?.let {
-                    TextViewCompat.setTextAppearance(it,
-                            if (mCounterOverflowed) mCounterOverflowTextAppearance
-                            else mCounterTextAppearance)
+                    TextViewCompat.setTextAppearance(it, if (mCounterOverflowed) mCounterOverflowTextAppearance else mCounterTextAppearance)
                 }
             }
             mTvCounter?.text = String.format(Locale.US, "%1\$d / %2\$d",
                     currentLength, mCounterMaxLength - mPrefixLength)
         }
-        if (editText != null && wasCounterOverflowed != mCounterOverflowed) {
+        if (mEditText != null && wasCounterOverflowed != mCounterOverflowed) {
             updateLabelState(false)
             updateEditTextBackground()
         }
@@ -689,13 +694,10 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
         if (child is EditText) {
             // Make sure that the EditText is vertically at the bottom, so that it sits on the
             // EditText's underline
-//            FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(params);
-//            flp.gravity = Gravity.CENTER_VERTICAL | (flp.gravity & ~Gravity.VERTICAL_GRAVITY_MASK);
             mFrameLayout?.addView(child)
 
             // Now use the EditText's LayoutParams as our own and update them to make enough space
             // for the label
-//            mFrameLayout.setLayoutParams(params);
             setEditText(child)
             setUIPasswordToogle()
             applyPasswordToggleTint()
@@ -707,13 +709,17 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
 
     private fun setEditText(editText: EditText) {
         // If we already have an EditText, throw an exception
-        require(this.editText == null) { "We already have an EditText, can only have one" }
-        this.editText = editText
+        require(mEditText == null) { "We already have an EditText, can only have one" }
+        mEditText= editText
 
         // Add a TextWatcher so that we know when the text input has changed
         editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
             override fun afterTextChanged(s: Editable) {
                 updateLabelState(!mRestoringSavedState)
                 if (mCounterEnabled) {
@@ -735,9 +741,8 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
             mHint = editText.hint
             mTvLabel?.text = mHint
         }
-
         // Update the label visibility with no animation, but force a state change
-        updateLabelState(animate = false, force = true)
+        updateLabelState(false, true)
     }
 
     override fun drawableStateChanged() {
@@ -759,48 +764,44 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
 
     @SuppressLint("RestrictedApi")
     private fun updateEditTextBackground() {
-        if (editText == null) {
+        if (mEditText == null) {
             return
         }
-        var editTextBackground = editText?.background ?: return
+        var editTextBackground = mEditText?.background ?: return
         if (DrawableUtils.canSafelyMutateDrawable(editTextBackground)) {
             editTextBackground = editTextBackground.mutate()
         }
         val isErrorShowing = !TextUtils.isEmpty(error)
-        when {
-            isErrorShowing -> {
-                // Set a color filter of the error color
-                mTvError?.let {
-                    editTextBackground.colorFilter = AppCompatDrawableManager.getPorterDuffColorFilter(
-                            it.currentTextColor, PorterDuff.Mode.SRC_IN)
-                }
+        if (isErrorShowing) {
+            // Set a color filter of the error color
+            mTvError?.let {
+                editTextBackground.colorFilter = AppCompatDrawableManager.getPorterDuffColorFilter(
+                        it.currentTextColor, PorterDuff.Mode.SRC_IN)
             }
-            mCounterOverflowed -> {
-                // Set a color filter of the counter color
-                mTvCounter?.let {
-                    editTextBackground.colorFilter = AppCompatDrawableManager.getPorterDuffColorFilter(
-                            it.currentTextColor, PorterDuff.Mode.SRC_IN)
-                }
+        } else if (mCounterOverflowed) {
+            // Set a color filter of the counter color
+            mTvCounter?.let {
+                editTextBackground.colorFilter = AppCompatDrawableManager.getPorterDuffColorFilter(
+                        it.currentTextColor, PorterDuff.Mode.SRC_IN)
             }
-            else -> {
-                // Else reset the color filter and refresh the drawable state so that the
-                // normal tint is used
-                DrawableCompat.clearColorFilter(editTextBackground)
-                editText?.refreshDrawableState()
-            }
+        } else {
+            // Else reset the color filter and refresh the drawable state so that the
+            // normal tint is used
+            DrawableCompat.clearColorFilter(editTextBackground)
+            mEditText?.refreshDrawableState()
         }
     }
 
     @JvmOverloads
     fun updateLabelState(animate: Boolean, force: Boolean = false) {
         val isEnabled = isEnabled
-        if (editText == null) {
+        if (mEditText == null) {
             return
         }
-        val isFocused = editText?.isFocused
+        val isFocused = mEditText?.isFocused ?: false
         if (!isEnabled) {
             mTvLabel?.setTextColor(mDisabledHintTextColor)
-        } else if (isFocused == true) {
+        } else if (isFocused) {
             mTvLabel?.setTextColor(mFocusedHintTextColor)
         } else {
             mTvLabel?.setTextColor(mDefaultHintTextColor)
@@ -824,7 +825,7 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
         set(error) {
             // Only animate if we're enabled, laid out, and we have a different error message
             setError(error, ViewCompat.isLaidOut(this) && isEnabled
-                    && !TextUtils.equals(mTvError?.text ?: "", error))
+                    && !TextUtils.equals(mTvError?.text, error))
         }
 
     override fun dispatchRestoreInstanceState(container: SparseArray<Parcelable>) {
@@ -835,7 +836,6 @@ class TkpdHintTextInputLayout @JvmOverloads constructor(context: Context, attrs:
 
     companion object {
         private const val INVALID_MAX_LENGTH = -1
-
         private fun arrayContains(array: IntArray, value: Int): Boolean {
             for (v in array) {
                 if (v == value) {
