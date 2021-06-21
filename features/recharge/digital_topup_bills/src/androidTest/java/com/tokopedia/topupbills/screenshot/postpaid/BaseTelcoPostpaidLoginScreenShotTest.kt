@@ -4,6 +4,8 @@ import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import android.view.animation.AlphaAnimation
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +23,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
+import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
@@ -91,10 +94,10 @@ class BaseTelcoPostpaidLoginScreenShotTest {
     @Test
     fun screenshot() {
         stubSearchNumber()
-//        take_screenshot_visible_screen()
-//        take_screenshot_interaction_menu()
-//        take_screenshot_input_number()
-//        take_screenshot_enquiry_phone_number()
+        take_screenshot_visible_screen()
+        take_screenshot_interaction_menu()
+        take_screenshot_input_number()
+        take_screenshot_enquiry_phone_number()
         take_screenshot_interaction_view_pager()
         take_screenshot_interaction_interactive_header()
     }
@@ -213,9 +216,22 @@ class BaseTelcoPostpaidLoginScreenShotTest {
     }
 
     fun take_screenshot_interaction_interactive_header() {
+        val baseTelcoActivity = mActivityRule.activity as BaseTelcoActivity
+        val bannerImage = mActivityRule.activity.findViewById<ImageView>(R.id.telco_bg_img_banner)
+
+        val fadeOut = AlphaAnimation(1.0f, 0f)
+        fadeOut.duration = 300
+        fadeOut.fillAfter = true
+
         Thread.sleep(2000)
         val recyclerView = mActivityRule.activity.findViewById<RecyclerView>(R.id.recycler_view_menu_component)
         scrollRecyclerViewToPosition(recyclerView, 5)
+
+        mActivityRule.runOnUiThread {
+            baseTelcoActivity.onCollapseAppBar()
+            bannerImage.clearAnimation()
+            bannerImage.startAnimation(fadeOut)
+        }
 
         Thread.sleep(2000)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
