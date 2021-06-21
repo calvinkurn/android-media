@@ -32,14 +32,18 @@ import com.tokopedia.imagepicker.editor.main.Constant;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
+import com.tokopedia.imagepicker.editor.widget.ItemSelection;
+import com.tokopedia.imagepicker.editor.widget.ItemSelectionWidget;
 import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
-import com.tokopedia.unifycomponents.UnifyButton;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.file.FileUtil;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.tokopedia.imagepicker.common.BuilderConstantKt.EXTRA_IMAGE_EDITOR_BUILDER;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.PICKER_RESULT_PATHS;
@@ -99,6 +103,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private ImageEditorViewPagerAdapter imageEditorViewPagerAdapter;
     private ImageEditThumbnailListWidget imageEditThumbnailListWidget;
     private ImageEditActionMainWidget imageEditActionMainWidget;
+    private ItemSelectionWidget watermarkItemSelection;
     private View editorMainView;
     private View editorControlView;
     private View doneButton;
@@ -118,21 +123,14 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private TextView tvActionTitle;
     private long maxFileSize;
 
-    //watermark
-    private final UnifyButton[] btnWatermarks = new UnifyButton[2];
-    private UnifyButton btnWatermarkUnfocus;
-    private final int[] btnWatermarksId = {
-            R.id.btn_watermark_tokopedia,
-            R.id.btn_watermark_user_info,
-//            R.id.btn_watermark_both
-    };
-
     //to give flag if the image is editted or not, in case the caller need it.
     protected ArrayList<Boolean> isEdittedList;
     private boolean isPermissionGotDenied;
     private ImageRatioType defaultRatio;
     private ArrayList<ImageRatioType> imageRatioOptionList;
     private ImageEditCropListWidget imageEditCropListWidget;
+
+    private UserSessionInterface userSession;
 
     public static Intent getIntent(Context context, ImageEditorBuilder imageEditorBuilder) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
@@ -217,6 +215,8 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
 
         super.onCreate(savedInstanceState);
 
+        userSession = new UserSession(getApplicationContext());
+
         vgDownloadProgressBar = findViewById(R.id.vg_download_progress_bar);
         vgContentContainer = findViewById(R.id.vg_content_container);
 
@@ -227,6 +227,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         View editSaveView = findViewById(R.id.tv_edit_save);
         imageEditActionMainWidget = findViewById(R.id.image_edit_action_main_widget);
         imageEditThumbnailListWidget = findViewById(R.id.image_edit_thumbnail_list_widget);
+        watermarkItemSelection = findViewById(R.id.watermark_item_selection);
         doneButton = findViewById(R.id.tv_done);
         vEditProgressBar = findViewById(R.id.crop_progressbar);
         blockingView = findViewById(R.id.crop_blocking_view);
@@ -684,46 +685,30 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     }
 
     private void setupWatermarkWidget() {
-        // reset color
-        for (int i = 0; i < btnWatermarksId.length; i++) {
-            btnWatermarks[i] = findViewById(btnWatermarksId[i]);
-            btnWatermarks[i].setButtonVariant(UnifyButton.Variant.GHOST);
-            btnWatermarks[i].setOnClickListener(buttonWatermarkWidgetClicked());
-        }
-
-        btnWatermarkUnfocus = btnWatermarks[0];
-    }
-
-    private View.OnClickListener buttonWatermarkWidgetClicked() {
         ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
 
-        return view -> {
-            int id = view.getId();
-            int watermarkType = Constant.TYPE_WATERMARK_TOPED;
+        List<ItemSelection> items = new ArrayList<>();
 
-            if (id == R.id.btn_watermark_tokopedia) {
-                setButtonWatermarkFocus(btnWatermarkUnfocus, btnWatermarks[0]);
-                watermarkType = Constant.TYPE_WATERMARK_TOPED;
-            } else if (id == R.id.btn_watermark_user_info) {
-                setButtonWatermarkFocus(btnWatermarkUnfocus, btnWatermarks[1]);
-                watermarkType = Constant.TYPE_WATERMARK_USER_INFO;
-            }
-//            else if (id == R.id.btn_watermark_both) {
-//                setButtonWatermarkFocus(btnWatermarkUnfocus, btnWatermarks[2]);
-//                watermarkType = Constant.TYPE_WATERMARK_BOTH;
-//            }
+        String tokopedia = getString(R.string.editor_watermark_tokopedia);
+        String preview = edittedImagePaths.get(currentImageIndex).get(getCurrentStepForCurrentImage());
+        String userInfoName = userSession.hasShop() ? userSession.getShopName() : userSession.getName();
 
-            if (imageEditPreviewFragment != null) {
-                imageEditPreviewFragment.setWatermark(watermarkType);
-            }
-        };
-    }
+        items.add(new ItemSelection(
+                tokopedia,
+                preview,
+                tokopedia,
+                Constant.TYPE_WATERMARK_TOPED,
+                false)
+        );
 
-    private void setButtonWatermarkFocus(UnifyButton btnUnfocus, UnifyButton btnFocus) {
-        btnUnfocus.setButtonVariant(UnifyButton.Variant.GHOST);
-        btnFocus.setButtonVariant(UnifyButton.Variant.FILLED);
+        items.add(new ItemSelection(
+                tokopedia + " + " + userInfoName,
+                preview,
+                userInfoName,
+                Constant.TYPE_WATERMARK_USER_INFO, false)
+        );
 
-        this.btnWatermarkUnfocus = btnFocus;
+        watermarkItemSelection.setData(items, imageEditPreviewFragment::setWatermark);
     }
 
     @Override
