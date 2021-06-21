@@ -2,7 +2,6 @@ package com.tokopedia.pms.paymentlist.presentation.activity
 
 import android.app.Activity
 import android.content.Intent
-import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -29,9 +28,8 @@ class PaymentListActivity : BaseSimpleActivity(), HasComponent<PmsComponent>,
     @Inject
     lateinit var pmsAnalytics: dagger.Lazy<PmsAnalytics>
 
-    override fun getNewFragment(): Fragment {
-        return DeferredPaymentListFragment.createInstance()
-    }
+    override fun getNewFragment() = DeferredPaymentListFragment.createInstance()
+    override fun getScreenName() = PmsAnalytics.SCREEN_NAME
 
     override fun getComponent(): PmsComponent {
         if (!::component.isInitialized) {

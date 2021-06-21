@@ -1,7 +1,6 @@
 package com.tokopedia.pms.analytics
 
 sealed class PmsEvents {
-    data class DeferredPaymentsShownEvent(val waitingPaymentCount: Int) : PmsEvents()
     data class ChevronTapClickEvent(val tag: Int) : PmsEvents()
     data class InvokeCancelTransactionBottomSheetEvent(val tag: Int) : PmsEvents()
     data class ConfirmCancelTransactionEvent(val tag: Int) : PmsEvents()

@@ -20,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.pms.R
-import com.tokopedia.pms.analytics.PmsAnalytics
 import com.tokopedia.pms.analytics.PmsEvents
 import com.tokopedia.pms.paymentlist.di.PmsComponent
 import com.tokopedia.pms.paymentlist.domain.data.*
@@ -46,9 +45,8 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         viewModelProvider.get(PaymentListViewModel::class.java)
     }
 
-    private var isFirstTimeLoad: Boolean = true
     private var loader: LoaderDialog? = null
-    override fun getScreenName() = PmsAnalytics.SCREEN_NAME
+    override fun getScreenName() = null
     override fun initInjector() = getComponent(PmsComponent::class.java).inject(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -144,7 +142,6 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun renderPaymentList(data: ArrayList<BasePaymentModel>) {
-        sentDataLoadingEvent()
         handleSwipeRefresh(false)
         hideLoader()
         noPendingTransactionEmptyState.gone()
@@ -154,7 +151,6 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun showErrorUi(throwable: Throwable) {
-        sentDataLoadingEvent()
         handleSwipeRefresh(false)
         hideLoader()
         noPendingTransactionEmptyState.gone()
@@ -166,7 +162,6 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun showEmptyState() {
-        sentDataLoadingEvent()
         handleSwipeRefresh(false)
         noPendingTransactionEmptyState.visible()
         noPendingTransactionEmptyState.setPrimaryCTAClickListener {
@@ -175,7 +170,6 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     }
 
     private fun setGlobalErrors(errorType: Int) {
-        sentDataLoadingEvent()
         paymentListGlobalError.setType(errorType)
         paymentListGlobalError.visible()
         paymentListGlobalError.setActionClickListener {
@@ -255,14 +249,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         loader = null
     }
 
-    fun sentDataLoadingEvent() {
-        if (isFirstTimeLoad) {
-            sendEventToAnalytics(PmsEvents.DeferredPaymentsShownEvent(viewModel.getTotalPendingTransactions()))
-            isFirstTimeLoad = false
-        }
-    }
-
-    fun sendEventToAnalytics(event: PmsEvents) = activity?.let {
+    private fun sendEventToAnalytics(event: PmsEvents) = activity?.let {
         (it as PaymentListActivity).sendEventToAnalytics(event)
     }
 

@@ -26,11 +26,14 @@ class CommonPaymentTransferViewHolder(
 
     private val defaultCardTitle =
         view.context.getString(com.tokopedia.pms.R.string.pms_deferred_payment_card_title)
+    private val combinedCardTitle =
+        view.context.getString(com.tokopedia.pms.R.string.pms_deferred_combined_payment_card_title)
     private val defaultAmountHeading =
         view.context.getString(com.tokopedia.pms.R.string.pms_hwp_total_pembayaran)
 
     private fun bindVA(item: VirtualAccountPaymentModel) {
-        bindTransactionHeaderData(defaultCardTitle, item.expiryDate, item.expiryTime)
+        val cardTitle = getCardTitle(item.transactionList.size)
+        bindTransactionHeaderData(cardTitle, item.expiryDate, item.expiryTime)
         bindPaymentGatewayData(item)
         bindVATransactionAmountData(item)
         setCommonClickRedirections(item)
@@ -124,6 +127,9 @@ class CommonPaymentTransferViewHolder(
 
     private fun handleActionList(isActionListEmpty: Boolean) =
         if (isActionListEmpty) view.cardMenu.gone() else view.cardMenu.visible()
+
+    private fun getCardTitle(size: Int): String =
+        if (size > 1) combinedCardTitle else defaultCardTitle
 
     companion object {
         private val LAYOUT_ID = R.layout.common_transfer_payment_list_item

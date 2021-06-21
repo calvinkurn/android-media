@@ -72,6 +72,7 @@
 
     <string name="pms_htp_redirect_label">Lihat Cara Bayar</string>
     <string name="pms_deferred_payment_card_title">Belanja</string>
+    <string name="pms_deferred_combined_payment_card_title">Transaksi Gabungan</string>
     <string name="pms_deferred_payment_expire_title">Bayar Sebelum</string>
     <string name="pms_deferred_payment_waiting_label">Menunggu verifikasi</string>
 
