@@ -49,8 +49,8 @@ class GetProductInfoP2LoginUseCase @Inject constructor(private val rawQueries: M
         """.trimIndent()
 
         val QUERY_TOP_ADS_PRODUCT_MANAGE = """
-            query topAdsGetProductManageV2(${'$'}productID :String!,${'$'}shopID:String!,${'$'}source:String!){
-               	topAdsGetProductManageV2(type:1, shop_id:${'$'}shopID,item_id:${'$'}productID,source:${'$'}source){
+            query topAdsGetProductManageV2(${'$'}productID :String!,${'$'}shopID:String!){
+               	topAdsGetProductManageV2(type:1, shop_id:${'$'}shopID,item_id:${'$'}productID,source: "pdp.manage_product"){
             			data {
             			  ad_id
             			  ad_type
