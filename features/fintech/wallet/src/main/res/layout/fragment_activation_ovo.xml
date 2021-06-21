@@ -16,6 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/unify_space_16"
+            android:contentDescription="@null"
             app:srcCompat="@drawable/wallet_ic_activation_ovo" />
 
         <com.tokopedia.unifyprinciples.Typography

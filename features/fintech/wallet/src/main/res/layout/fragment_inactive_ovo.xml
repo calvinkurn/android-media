@@ -18,6 +18,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/unify_space_16"
             android:layout_marginBottom="@dimen/unify_space_16"
+            android:contentDescription="@null"
             app:srcCompat="@drawable/wallet_ic_intro_activation" />
 
         <com.tokopedia.unifyprinciples.Typography
