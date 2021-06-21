@@ -2175,9 +2175,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             messageId,
             question,
             startTime,
-            opponentId,
-            onSendingMessage()
-        )
+            opponentId
+        ) {
+            analytics.eventSendMessage()
+            getViewState().scrollToBottom()
+            sellerReviewHelper.hasRepliedChat = true
+        }
     }
 
     private fun addSrwBubbleToChat() {
