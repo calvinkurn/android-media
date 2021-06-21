@@ -59,6 +59,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.toUserId
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseEndTypingString
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseImageAttachmentString
+import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseProductAttachmentString
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseReadMessageString
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseReplyString
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Dummy.wsResponseTypingString
@@ -213,6 +214,7 @@ class TopChatRoomPresenterTest {
     private lateinit var wsResponseEndTyping: WebSocketInfo
     private lateinit var wsResponseReadMessage: WebSocketInfo
     private lateinit var wsResponseImageAttachment: WebSocketInfo
+    private lateinit var wsResponseProductAttachment: WebSocketInfo
     private val websocketServer = PublishSubject.create<WebSocketInfo>()
 
     object Dummy {
@@ -248,6 +250,9 @@ class TopChatRoomPresenterTest {
         )
         val wsResponseImageAttachmentString = FileUtil.readFileContent(
                 "/ws_response_image_attachment.json"
+        )
+        val wsResponseProductAttachmentString = FileUtil.readFileContent(
+                "/ws_response_product_attachment.json"
         )
         val successGetOrderProgressResponse: OrderProgressResponse = FileUtil.parse(
                 "/success_get_order_progress.json",
@@ -343,6 +348,7 @@ class TopChatRoomPresenterTest {
         wsResponseEndTyping = WebSocketInfo(webSocket, wsResponseEndTypingString)
         wsResponseReadMessage = WebSocketInfo(webSocket, wsResponseReadMessageString)
         wsResponseImageAttachment = WebSocketInfo(webSocket, wsResponseImageAttachmentString)
+        wsResponseProductAttachment = WebSocketInfo(webSocket, wsResponseProductAttachmentString)
     }
 
     private fun mockSingletonObject() {
@@ -427,7 +433,7 @@ class TopChatRoomPresenterTest {
     }
 
     @Test
-    fun `should remove SRW bubble if receive attachment event`() {
+    fun `should remove SRW bubble if receive image attachment event`() {
         // Given
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
         every { getChatUseCase.isInTheMiddleOfThePage() } returns false
@@ -438,6 +444,22 @@ class TopChatRoomPresenterTest {
 
         // Then
         verify(exactly = 1) { view.removeSrwBubble() }
+    }
+
+    @Test
+    fun `should remove SRW bubble if receive product attachment event`() {
+        // Given
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        val wsChatPojo = mockkParseResponse(wsResponseProductAttachment)
+        val wsChatVisitable = mockkWsMapper(wsChatPojo) as ProductAttachmentViewModel
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+        websocketServer.onNext(wsResponseProductAttachment)
+
+        // Then
+        verify(exactly = 1) { view.removeSrwBubble(wsChatVisitable.productId) }
     }
 
     @Test
