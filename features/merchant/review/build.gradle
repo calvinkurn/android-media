@@ -29,7 +29,8 @@ android {
                     pathSources + 'reviewreply',
                     pathSources + 'createreputation',
                     pathSources + 'reading',
-                    pathSources + 'gallery'
+                    pathSources + 'gallery',
+                    pathSources + 'common'
             ]
         }
     }

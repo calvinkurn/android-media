@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.reading.presentation.activity
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
+import com.tokopedia.review.feature.reading.presentation.fragment.ReviewFragment
 
 class ReadReviewActivity : BaseSimpleActivity() {
 
@@ -14,7 +14,7 @@ class ReadReviewActivity : BaseSimpleActivity() {
             val segments = uri.pathSegments
             segments.getOrNull(segments.size - 2) ?: "0"
         } else ""
-        return ReadReviewFragment.createNewInstance(productId)
+        return ReviewFragment.createNewInstance(productId)
     }
 
 }

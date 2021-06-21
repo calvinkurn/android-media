@@ -6,16 +6,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
-import com.tokopedia.review.common.util.getReviewStar
+import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
+import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.reading.data.LikeDislike
 import com.tokopedia.review.feature.reading.data.ProductReviewResponse
 import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewItemListener
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewSellerResponse
 import com.tokopedia.review.feature.reading.utils.ReadReviewUtils
-import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -28,10 +27,8 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
         private const val MAX_LINES_REVIEW = 3
     }
 
-    private var ratingStars: ImageUnify? = null
-    private var timeStamp: Typography? = null
-    private var reportOption: ImageUnify? = null
-    private var reviewerName: Typography? = null
+    private var basicInfo: ReviewBasicInfoWidget? = null
+    private var reportOption: IconUnify? = null
     private var likeImage: ImageUnify? = null
     private var likeCount: Typography? = null
     private var reviewMessage: Typography? = null
@@ -53,10 +50,8 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
     }
 
     private fun bindViews() {
-        ratingStars = itemView.findViewById(R.id.read_review_item_rating)
-        timeStamp = itemView.findViewById(R.id.read_review_item_timestamp)
+        basicInfo = itemView.findViewById(R.id.read_review_basic_info)
         reportOption = itemView.findViewById(R.id.read_review_item_three_dots)
-        reviewerName = itemView.findViewById(R.id.read_review_item_reviewer_name)
         reviewMessage = itemView.findViewById(R.id.read_review_item_review)
         likeImage = itemView.findViewById(R.id.read_review_like_button)
         likeCount = itemView.findViewById(R.id.read_review_like_count)
@@ -66,15 +61,11 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
     }
 
     private fun setRating(rating: Int) {
-        ratingStars?.let {
-            it.loadImage(getReviewStar(rating))
-        }
+        basicInfo?.setRating(rating)
     }
 
     private fun setCreateTime(createTime: String) {
-        timeStamp?.let {
-            it.text = createTime
-        }
+        basicInfo?.setCreateTime(createTime)
     }
 
     private fun showReportOptionWithCondition(isReportable: Boolean, reviewId: String, shopId: String) {
@@ -91,9 +82,7 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
     }
 
     private fun setReviewerName(name: String) {
-        reviewerName?.let {
-            it.text = name
-        }
+        basicInfo?.setReviewerName(name)
     }
 
     private fun setReview(message: String) {
@@ -106,7 +95,7 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
         }
         reviewMessage?.apply {
             isEnabled = true
-            val formattingResult = reviewDescFormatter(message)
+            val formattingResult = ReviewUtil.reviewDescFormatter(itemView.context, message, MAX_CHAR, ALLOW_CLICK)
             maxLines = MAX_LINES_REVIEW
             text = formattingResult.first
             if (formattingResult.second) {
@@ -125,9 +114,9 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
 
     private fun setLikeButton(reviewId: String, shopId: String, likeDislike: LikeDislike) {
         if (likeDislike.likeStatus == ReadReviewUtils.LIKED) {
-            likeImage?.setImageDrawable(itemView.context.resources.getDrawable(R.drawable.ic_read_review_liked))
+            likeImage?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_read_review_liked))
         } else {
-            likeImage?.setImageDrawable(itemView.context.resources.getDrawable(R.drawable.ic_read_review_like))
+            likeImage?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_read_review_like))
         }
         likeImage?.setOnClickListener {
             readReviewItemListener.onLikeButtonClicked(reviewId, shopId, likeDislike.likeStatus)
@@ -174,16 +163,6 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
                 showResponseText?.text = getString(R.string.review_reading_show_response)
                 sellerResponse?.hide()
             }
-        }
-    }
-
-    private fun reviewDescFormatter(review: String): Pair<CharSequence?, Boolean> {
-        val formattedText = HtmlLinkHelper(itemView.context, review).spannedString ?: ""
-        return if (formattedText.length > MAX_CHAR) {
-            val subDescription = formattedText.substring(0, MAX_CHAR)
-            Pair(HtmlLinkHelper(itemView.context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... " + getString(R.string.review_expand)).spannedString, ALLOW_CLICK)
-        } else {
-            Pair(formattedText, !ALLOW_CLICK)
         }
     }
 }

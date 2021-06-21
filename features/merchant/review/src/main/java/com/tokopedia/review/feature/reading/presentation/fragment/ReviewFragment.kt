@@ -30,27 +30,27 @@ import com.tokopedia.review.feature.reading.presentation.factory.ReadReviewSortF
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterBottomSheetListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterChipsListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
-import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewReportBottomSheetListener
+import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
 import com.tokopedia.review.feature.reading.presentation.viewmodel.ReadReviewViewModel
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewFilterBottomSheet
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
-import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewReportBottomSheet
+import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapterTypeFactory>(),
+class ReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapterTypeFactory>(),
         HasComponent<ReadReviewComponent>, ReadReviewItemListener, ReadReviewHeaderListener,
-        ReadReviewFilterChipsListener, ReadReviewFilterBottomSheetListener, ReadReviewReportBottomSheetListener {
+        ReadReviewFilterChipsListener, ReadReviewFilterBottomSheetListener, ReviewReportBottomSheetListener {
 
     companion object {
         const val MAX_RATING = 5
         const val MIN_RATING = 1
-        fun createNewInstance(productId: String): ReadReviewFragment {
-            return ReadReviewFragment().apply {
+        fun createNewInstance(productId: String): ReviewFragment {
+            return ReviewFragment().apply {
                 arguments = Bundle().apply {
                     putString(ReviewConstants.ARGS_PRODUCT_ID, productId)
                 }
@@ -107,7 +107,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onThreeDotsClicked(reviewId: String, shopId: String) {
-        activity?.supportFragmentManager?.let { ReadReviewReportBottomSheet.newInstance(reviewId, shopId, this).show(it, ReadReviewReportBottomSheet.TAG) }
+        activity?.supportFragmentManager?.let { ReviewReportBottomSheet.newInstance(reviewId, shopId, this).show(it, ReviewReportBottomSheet.TAG) }
     }
 
     override fun onLikeButtonClicked(reviewId: String, shopId: String, likeStatus: Int) {
@@ -237,8 +237,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private fun onSuccessGetRatingAndTopic(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
         reviewHeader?.apply {
             setRatingData(ratingAndTopics.rating)
-            setListener(this@ReadReviewFragment)
-            setAvailableFilters(ratingAndTopics.topics, ratingAndTopics.availableFilters, this@ReadReviewFragment)
+            setListener(this@ReviewFragment)
+            setAvailableFilters(ratingAndTopics.topics, ratingAndTopics.availableFilters, this@ReviewFragment)
             show()
         }
         hideError()
