@@ -66,9 +66,6 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
 
     private PreOrderModel preOrderModel;
 
-    // Flag for custom pinpoint error handling
-    private boolean isErrorPinpoint;
-
     public CourierItemData() {
     }
 
@@ -491,7 +488,6 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeParcelable(this.ontimeDelivery, flags);
         dest.writeParcelable(this.codProductData, flags);
         dest.writeParcelable(this.preOrderModel, flags);
-        dest.writeByte(this.isErrorPinpoint ? (byte) 1: (byte) 0);
     }
 
     protected CourierItemData(Parcel in) {
@@ -543,7 +539,6 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.ontimeDelivery = in.readParcelable(OntimeDelivery.class.getClassLoader());
         this.codProductData = in.readParcelable(CodProductData.class.getClassLoader());
         this.preOrderModel = in.readParcelable(PreOrderModel.class.getClassLoader());
-        this.isErrorPinpoint = in.readByte() != 0;
     }
 
     public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {
@@ -604,13 +599,5 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
 
     public void setPreOrderModel(PreOrderModel preOrderModel) {
         this.preOrderModel = preOrderModel;
-    }
-
-    public boolean isErrorPinpoint() {
-        return isErrorPinpoint;
-    }
-
-    public void setErrorPinpoint(boolean errorPinpoint) {
-        isErrorPinpoint = errorPinpoint;
     }
 }

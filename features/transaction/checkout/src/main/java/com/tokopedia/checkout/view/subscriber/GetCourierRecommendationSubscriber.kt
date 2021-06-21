@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.subscriber
 
 import com.tokopedia.checkout.view.ShipmentContract
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
@@ -42,7 +41,7 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                         for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                             if (isTradeInDropOff || shippingCourierUiModel.productData.shipperProductId == spId &&
                                     shippingCourierUiModel.productData.shipperId == shipperId) {
-                                if (!shipmentCartItemModel.isDisableChangeCourier && !shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
+                                if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
                                     view.renderCourierStateFailed(itemPosition, isTradeInDropOff)
                                     return
                                 } else {
@@ -60,10 +59,10 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                 // corner case auto selection if BE default duration failed
                 if (shipmentCartItemModel.isAutoCourierSelection) {
                     val shippingDuration = shippingRecommendationData.shippingDurationViewModels.firstOrNull { it.serviceData.error?.errorId.isNullOrEmpty() && it.serviceData.error?.errorMessage.isNullOrEmpty() }
-                            ?: shippingRecommendationData.shippingDurationViewModels.first()
-                    if (shippingDuration != null && shippingDuration.shippingCourierViewModelList.isNotEmpty()) {
-                        val shippingCourier = shippingDuration.shippingCourierViewModelList.firstOrNull { it.productData.error?.errorMessage.isNullOrEmpty() }
-                                ?: shippingDuration.shippingCourierViewModelList.first()
+                    if (shippingDuration != null) {
+                        val shippingCourier = shippingDuration.shippingCourierViewModelList.firstOrNull {
+                            it.productData.error?.errorMessage.isNullOrEmpty()
+                        }
                         if (shippingCourier != null) {
                             shippingCourier.isSelected = true
                             view.renderCourierStateSuccess(generateCourierItemData(shippingCourier, shippingRecommendationData),
@@ -112,10 +111,6 @@ class GetCourierRecommendationSubscriber(private val view: ShipmentContract.View
                 courierItemData.etaText = it.etaData.textEta
                 courierItemData.etaErrorCode = it.etaData.errorCode
             }
-        }
-
-        if (shippingCourierUiModel.productData?.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
-            courierItemData.isErrorPinpoint = true
         }
         return courierItemData
     }
