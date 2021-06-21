@@ -49,7 +49,7 @@ class StatisticActivityViewModelTest {
         } returns params
 
         coEvery {
-            checkWhitelistedStatusUseCase.executeOnBackground(params)
+            checkWhitelistedStatusUseCase.execute(params)
         } returns true
 
         viewModel.checkWhiteListStatus()
@@ -61,7 +61,7 @@ class StatisticActivityViewModelTest {
         }
 
         coVerify {
-            checkWhitelistedStatusUseCase.executeOnBackground(expectedParams)
+            checkWhitelistedStatusUseCase.execute(expectedParams)
         }
 
         Assert.assertEquals(params.parameters.toString(), expectedParams.parameters.toString())
@@ -80,7 +80,7 @@ class StatisticActivityViewModelTest {
         val exception = MessageErrorException("error message")
 
         coEvery {
-            checkWhitelistedStatusUseCase.executeOnBackground(params)
+            checkWhitelistedStatusUseCase.execute(params)
         } throws exception
 
         viewModel.checkWhiteListStatus()
@@ -92,7 +92,7 @@ class StatisticActivityViewModelTest {
         }
 
         coVerify {
-            checkWhitelistedStatusUseCase.executeOnBackground(actualParams)
+            checkWhitelistedStatusUseCase.execute(actualParams)
         }
 
         Assert.assertEquals(params.parameters, actualParams.parameters)

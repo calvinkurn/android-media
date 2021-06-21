@@ -17,11 +17,11 @@ import javax.inject.Inject
  */
 
 //docs : https://tokopedia.atlassian.net/wiki/spaces/~354932339/pages/896109749/Centralized+Whitelist+System
+class CheckWhitelistedStatusUseCase @Inject constructor(
+        private val gqlRepository: GraphqlRepository
+): BaseStatisticUseCase<Boolean>() {
 
-@StatisticScope
-class CheckWhitelistedStatusUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) {
-
-    suspend fun executeOnBackground(params: RequestParams): Boolean {
+    override suspend fun execute(params: RequestParams): Boolean {
         val tenMinutes = TimeUnit.MINUTES.toMillis(10)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                 .setExpiryTime(tenMinutes)
