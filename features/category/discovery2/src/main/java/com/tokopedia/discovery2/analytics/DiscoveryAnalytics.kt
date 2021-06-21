@@ -302,10 +302,10 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     }
 
 
-    override fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?, positionInPage: Int) {
+    override fun trackTDNBannerImpression(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-                KEY_ID to "",
+                KEY_ID to "${adID}_$shopId",
                 KEY_NAME to "$pagePath - $pageType - ${positionInPage + 1} - $TDN_BANNER_COMPONENT",
                 KEY_CREATIVE to (componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING),
                 KEY_POSITION to "1"
@@ -323,10 +323,10 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
-    override fun trackTDNBannerClick(componentsItem: ComponentsItem, userID: String?, positionInPage: Int) {
+    override fun trackTDNBannerClick(componentsItem: ComponentsItem, userID: String?, positionInPage: Int, adID: String, shopId: String) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-                KEY_ID to "",
+                KEY_ID to "${adID}_$shopId",
                 KEY_NAME to "$pagePath - $pageType - ${positionInPage + 1} - $TDN_BANNER_COMPONENT",
                 KEY_CREATIVE to (componentsItem.data?.firstOrNull()?.creativeName ?: EMPTY_STRING),
                 KEY_POSITION to "1"
@@ -334,8 +334,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                 EVENT_PROMO_CLICK to mapOf(
                         KEY_PROMOTIONS to list))
-//        TODO:: add event label
-        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_TDN_BANNER, EMPTY_STRING)
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_TDN_BANNER, eventLabel ="$adID - $shopId" )
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[KEY_E_COMMERCE] = eCommerce

@@ -25,8 +25,13 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
     private val tdnImageView: TopAdsImageView? = itemView.findViewById(R.id.tdn_view)
     private val mHeaderView: FrameLayout? = itemView.findViewById(R.id.header_view)
     private val shimmerView: LoaderUnify? = itemView.findViewById(R.id.shimmer_view)
-    private var shouldHitService = true
     private lateinit var viewModel: DiscoveryTDNBannerViewModel
+
+    private val inventoryID = "13"
+    private val adCount = 1
+    private val dimenID = 3
+    private var shouldHitService = true
+    private lateinit var topAdsModel: TopAdsImageViewModel
 
     init {
         tdnImageView?.setApiResponseListener(this)
@@ -44,10 +49,9 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
             itemView.context?.let { context ->
                 if (UserSession(context).isLoggedIn) {
                     viewModel.componentLiveData.observe(lifecycleOwner, {
-//                TODO::CHANGE SOURCE ID FOR IMAGE_DATA = 13
                         if (shouldHitService) {
                             addCardHeader(it)
-                            tdnImageView?.getImageData("5", 1, 3, depId = it.data?.firstOrNull()?.depID
+                            tdnImageView?.getImageData(inventoryID, adCount, dimenID, depId = it.data?.firstOrNull()?.depID
                                     ?: "")
                         }
                     })
@@ -91,7 +95,8 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
         if (imageDataList.isNotEmpty()) {
             shimmerView?.hide()
             tdnImageView?.show()
-            tdnImageView?.loadImage(imageDataList[0])
+            topAdsModel = imageDataList[0]
+            tdnImageView?.loadImage(topAdsModel)
         } else {
             shouldHitService = false
             handleError()
@@ -104,10 +109,12 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
     }
 
     override fun onTopAdsImageViewClicked(applink: String?) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerClick(viewModel.components, UserSession(fragment.context).userId, viewModel.position)
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerClick(viewModel.components, UserSession(fragment.context).userId,
+                viewModel.position, topAdsModel.bannerId ?: "", "")
     }
 
     override fun onTopAdsImageViewImpression(viewUrl: String) {
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerImpression(viewModel.components, UserSession(fragment.context).userId, viewModel.position)
+        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerImpression(viewModel.components, UserSession(fragment.context).userId,
+                viewModel.position, topAdsModel.bannerId ?: "", "")
     }
 }
