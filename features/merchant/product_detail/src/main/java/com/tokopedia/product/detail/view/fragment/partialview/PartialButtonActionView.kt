@@ -38,7 +38,6 @@ class PartialButtonActionView private constructor(val view: View,
     private var miniCartItem: MiniCartItem? = null
     private var isVariant: Boolean = false
     private var minQuantity: Int = 0
-    private var alternateButtonVariant: String = ""
     private var textWatchers: TextWatcher? = null
     private var localQuantity: Int = 0
 
@@ -63,7 +62,6 @@ class PartialButtonActionView private constructor(val view: View,
                    hasTopAdsActive: Boolean,
                    isVariant: Boolean,
                    minQuantity: Int = 1,
-                   alternateButtonVariant: String = "",
                    cartTypeData: CartTypeData? = null,
                    miniCartItem: MiniCartItem? = null) {
 
@@ -76,7 +74,6 @@ class PartialButtonActionView private constructor(val view: View,
         this.miniCartItem = miniCartItem
         this.isVariant = isVariant
         this.minQuantity = minQuantity
-        this.alternateButtonVariant = alternateButtonVariant
         renderButton()
     }
 
@@ -105,8 +102,6 @@ class PartialButtonActionView private constructor(val view: View,
 
         if (!isVariant && miniCartItem != null) {
             renderQuantityButton(miniCartItem?.quantity ?: 1)
-        } else if (isVariant && alternateButtonVariant.isNotEmpty()) {
-            renderNormalButtonCartRedirection(alternateButtonVariant)
         } else {
             renderNormalButtonCartRedirection()
         }
@@ -119,15 +114,9 @@ class PartialButtonActionView private constructor(val view: View,
 
     }
 
-    private fun renderNormalButtonCartRedirection(alternateButtonVariant: String = "") = with(view) {
+    private fun renderNormalButtonCartRedirection() = with(view) {
         qtyButtonPdp.hide()
-        val availableButton = cartTypeData?.availableButtons?.map {
-            if (alternateButtonVariant.isNotEmpty()) {
-                it.copy(text = alternateButtonVariant)
-            } else {
-                it
-            }
-        } ?: listOf()
+        val availableButton = cartTypeData?.availableButtons ?: listOf()
 
         btn_buy_now.showWithCondition(availableButton.firstOrNull() != null)
         btn_add_to_cart.showWithCondition(availableButton.getOrNull(1) != null)
