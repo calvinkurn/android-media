@@ -700,27 +700,24 @@ abstract class BaseSearchCategoryViewModel(
         getMiniCartListSimplifiedUseCase.cancelJobs()
         getMiniCartListSimplifiedUseCase.setParams(listOf(shopId))
         getMiniCartListSimplifiedUseCase.execute(
-                ::onGetMiniCartDataSuccess,
+                ::onViewUpdateCartItems,
                 ::onGetMiniCartDataFailed,
         )
     }
 
     private fun String.isValidId() = this.isNotEmpty() && this != "0"
 
-    private fun onGetMiniCartDataSuccess(miniCartSimplifiedData: MiniCartSimplifiedData) {
+    open fun onViewUpdateCartItems(miniCartSimplifiedData: MiniCartSimplifiedData) {
         updateMiniCartWidgetData(miniCartSimplifiedData)
-        onViewUpdateCartItems(miniCartSimplifiedData)
+
+        viewModelScope.launch {
+            updateMiniCartInBackground(miniCartSimplifiedData)
+        }
     }
 
     private fun updateMiniCartWidgetData(miniCartSimplifiedData: MiniCartSimplifiedData) {
         miniCartWidgetMutableLiveData.value = miniCartSimplifiedData
         isShowMiniCartMutableLiveData.value = miniCartSimplifiedData.isShowMiniCartWidget
-    }
-
-    open fun onViewUpdateCartItems(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        viewModelScope.launch {
-            updateMiniCartInBackground(miniCartSimplifiedData)
-        }
     }
 
     private suspend fun updateMiniCartInBackground(

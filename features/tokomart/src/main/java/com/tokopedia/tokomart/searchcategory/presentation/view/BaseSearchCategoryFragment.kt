@@ -570,9 +570,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     private fun updateMiniCartWidgetVisibility(isVisible: Boolean?) {
-        isVisible ?: return
-
-        miniCartWidget?.showWithCondition(isVisible)
+        miniCartWidget?.showWithCondition(isVisible == true)
     }
 
     private fun notifyAdapterItemChange(indices: List<Int>) {
