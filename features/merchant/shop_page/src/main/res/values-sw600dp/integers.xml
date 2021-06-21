@@ -6,4 +6,5 @@
     <integer name="header_button_height">2</integer>
     <integer name="header_text_first_line_size">7</integer>
     <integer name="header_text_second_line_size">8</integer>
+    <integer name="header_button_shop_note_icon_size">24</integer>
 </resources>
