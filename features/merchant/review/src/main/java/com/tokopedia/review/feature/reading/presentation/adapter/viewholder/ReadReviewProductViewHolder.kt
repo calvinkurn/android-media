@@ -49,7 +49,7 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
             setReviewerName(user.fullName)
             showReportOptionWithCondition(isReportable, feedbackID, element.shopId)
             setReview(message)
-            showAttachedImages(imageAttachments, this)
+            showAttachedImages(imageAttachments, this, element.shopId)
             setLikeButton(feedbackID, element.shopId, likeDislike)
             setReply(element.shopName, reviewResponse)
         }
@@ -173,13 +173,13 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
         }
     }
 
-    private fun showAttachedImages(imageAttachments: List<ProductReviewAttachments>, productReview: ProductReview) {
+    private fun showAttachedImages(imageAttachments: List<ProductReviewAttachments>, productReview: ProductReview, shopId: String) {
         if (imageAttachments.isEmpty()) {
             attachedImages?.hide()
             return
         }
         attachedImages?.apply {
-            setImages(imageAttachments, attachedImagesClickListener, productReview)
+            setImages(imageAttachments, attachedImagesClickListener, productReview, shopId)
             show()
         }
     }

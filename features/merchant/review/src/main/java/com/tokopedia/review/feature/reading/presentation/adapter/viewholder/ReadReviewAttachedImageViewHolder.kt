@@ -24,7 +24,7 @@ class ReadReviewAttachedImageViewHolder(private val view: View) : RecyclerView.V
         attachedImage = view.findViewById(R.id.reviewHistoryAttachedImage)
     }
 
-    fun bind(attachedImageUrl: String, listener: ReadReviewAttachedImagesListener, productReview: ProductReview) {
+    fun bind(attachedImageUrl: String, listener: ReadReviewAttachedImagesListener, productReview: ProductReview, shopId: String) {
         if (attachedImageUrl.isEmpty()) {
             itemView.apply {
                 blankSpace?.show()
@@ -37,7 +37,7 @@ class ReadReviewAttachedImageViewHolder(private val view: View) : RecyclerView.V
             attachedImage?.show()
             attachedImage?.loadImage(attachedImageUrl)
             setOnClickListener {
-                listener.onAttachedImagesClicked(productReview, adapterPosition)
+                listener.onAttachedImagesClicked(productReview, adapterPosition, shopId)
             }
         }
     }

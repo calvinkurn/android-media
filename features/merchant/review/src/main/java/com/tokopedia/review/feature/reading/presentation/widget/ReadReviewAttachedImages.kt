@@ -33,12 +33,12 @@ class ReadReviewAttachedImages : BaseCustomView {
         reviewAttachedImages = findViewById(R.id.reviewAttachedImages)
     }
 
-    fun setImages(attachedImages: List<ProductReviewAttachments>, listener: ReadReviewAttachedImagesListener, productReview: ProductReview) {
+    fun setImages(attachedImages: List<ProductReviewAttachments>, listener: ReadReviewAttachedImagesListener, productReview: ProductReview, shopId: String) {
         val attachedImageAdapter = ReadReviewAttachedImagesAdapter(listener)
         reviewAttachedImages?.apply {
             adapter = attachedImageAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            attachedImageAdapter.setData(attachedImages, productReview)
+            attachedImageAdapter.setData(attachedImages, productReview, shopId)
         }
     }
 

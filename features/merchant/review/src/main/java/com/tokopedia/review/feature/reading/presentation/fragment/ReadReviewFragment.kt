@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -19,6 +20,7 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.feature.gallery.presentation.activity.ReviewGalleryActivity
 import com.tokopedia.review.feature.reading.data.*
 import com.tokopedia.review.feature.reading.di.DaggerReadReviewComponent
 import com.tokopedia.review.feature.reading.di.ReadReviewComponent
@@ -47,6 +49,9 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     companion object {
         const val MAX_RATING = 5
         const val MIN_RATING = 1
+        const val PRODUCT_REVIEW_KEY = "ProductReview"
+        const val INDEX_KEY = "Index"
+        const val SHOP_ID_KEY = "ShopId"
         fun createNewInstance(productId: String): ReadReviewFragment {
             return ReadReviewFragment().apply {
                 arguments = Bundle().apply {
@@ -159,8 +164,14 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_sort_title), filterOptions, this, SortFilterBottomSheetType.SortBottomSheet, listOf(), chipTitle, 0).show(it, ReadReviewFilterBottomSheet.TAG) }
     }
 
-    override fun onAttachedImagesClicked(productReview: ProductReview, positionClicked: Int) {
-
+    override fun onAttachedImagesClicked(productReview: ProductReview, positionClicked: Int, shopId: String) {
+        context?.let {
+            val cacheManager = SaveInstanceCacheManager(it, true)
+            cacheManager.put(PRODUCT_REVIEW_KEY, productReview)
+            cacheManager.put(INDEX_KEY, positionClicked)
+            cacheManager.put(SHOP_ID_KEY, shopId)
+            startActivity(ReviewGalleryActivity.getIntent(it, cacheManager.id ?: ""))
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

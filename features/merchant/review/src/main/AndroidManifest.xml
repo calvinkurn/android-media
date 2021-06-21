@@ -183,6 +183,12 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".feature.gallery.presentation.activity.ReviewGalleryActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+        </activity>
+
     </application>
 
 </manifest>

@@ -3,6 +3,7 @@ package com.tokopedia.review.common.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.getReviewStar
@@ -49,5 +50,11 @@ class ReviewBasicInfoWidget : BaseCustomView {
 
     fun setReviewerName(name: String) {
         reviewerName?.text = name
+    }
+
+    fun invertColors() {
+        val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White_96)
+        timeStamp?.setTextColor(color)
+        reviewerName?.setTextColor(color)
     }
 }

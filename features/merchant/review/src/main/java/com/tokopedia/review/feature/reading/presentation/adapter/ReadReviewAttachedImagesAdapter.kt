@@ -13,6 +13,7 @@ class ReadReviewAttachedImagesAdapter(private val imageClickListener: ReadReview
 
     private var attachedImages: List<String> = listOf()
     private var productReview: ProductReview = ProductReview()
+    private var shopId: String = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReadReviewAttachedImageViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_review_attached_image, parent, false)
@@ -24,16 +25,17 @@ class ReadReviewAttachedImagesAdapter(private val imageClickListener: ReadReview
     }
 
     override fun onBindViewHolder(holder: ReadReviewAttachedImageViewHolder, position: Int) {
-        holder.bind(attachedImages[position], imageClickListener, productReview)
+        holder.bind(attachedImages[position], imageClickListener, productReview, shopId)
     }
 
-    fun setData(attachedImages: List<ProductReviewAttachments>, productReview: ProductReview) {
+    fun setData(attachedImages: List<ProductReviewAttachments>, productReview: ProductReview, shopId: String) {
         val updatedImages = attachedImages.map {
             it.imageThumbnailUrl
         }.toMutableList()
         updatedImages.add(0, "")
         this.attachedImages = updatedImages
         this.productReview = productReview
+        this.shopId = shopId
         notifyDataSetChanged()
     }
 }

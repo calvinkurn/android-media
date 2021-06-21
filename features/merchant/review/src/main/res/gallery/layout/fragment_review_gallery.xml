@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/Unify_Static_Black">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/review_gallery_close_button"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginTop="@dimen/dp_10"
         android:layout_marginStart="@dimen/dp_12"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/dp_10"
+        app:icon_name="CLOSE"
         app:layout_constraintStart_toStartOf="parent"
-        app:icon_name="CLOSE"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/review_gallery_menu_button"
@@ -20,15 +21,22 @@
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_12"
-        app:layout_constraintTop_toTopOf="parent"
+        app:icon_name="MENU_KEBAB_VERTICAL"
         app:layout_constraintEnd_toEndOf="parent"
-        app:icon_name="MENU_KEBAB_VERTICAL"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/review_gallery_image"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/review_gallery_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl6"
-        app:layout_constraintTop_toBottomOf="@id/review_gallery_close_button"/>
+        app:layout_constraintTop_toBottomOf="@id/review_gallery_close_button" />
+
+    <com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryReviewDetailWidget
+        android:id="@+id/review_gallery_review_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/review_gallery_recyclerview"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
