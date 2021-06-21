@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ProgressBar
+        android:id="@+id/rating_only_circular_progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/review_reading_rating_only_progress_bar_background"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="65"
+        android:progressDrawable="@drawable/review_reading_rating_only_progress_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/rating_only_satisfaction_rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rating_only_circular_progress_bar"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        tools:text="96% allalalal" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/rating_only_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rating_only_satisfaction_rate"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="20 rating (tanpa ulasan)" />
+
+    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingBar
+        android:id="@+id/rating_only_statistic_five_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl4"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/rating_only_count"
+        app:read_review_rating="5" />
+
+    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingBar
+        android:id="@+id/rating_only_statistic_four_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/rating_only_statistic_five_progress_bar"
+        app:read_review_rating="4" />
+
+    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingBar
+        android:id="@+id/rating_only_statistic_three_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/rating_only_statistic_four_progress_bar"
+        app:read_review_rating="3" />
+
+    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingBar
+        android:id="@+id/rating_only_statistic_two_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/rating_only_statistic_three_progress_bar"
+        app:read_review_rating="2" />
+
+    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingBar
+        android:id="@+id/rating_only_statistic_one_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/rating_only_statistic_two_progress_bar"
+        app:read_review_rating="1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
