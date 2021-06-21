@@ -263,12 +263,12 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-    fun reverseMapUiModel(miniCartListUiModel: MiniCartListUiModel?): MiniCartSimplifiedData {
+    fun reverseMapUiModel(miniCartListUiModel: MiniCartListUiModel?, tmpHiddenUnavailableItems: List<Visitable<*>>?): MiniCartSimplifiedData {
         if (miniCartListUiModel == null) {
             return MiniCartSimplifiedData()
         } else {
             return MiniCartSimplifiedData().apply {
-                val miniCartItemsMapResult = mapMiniCartItems(miniCartListUiModel.visitables)
+                val miniCartItemsMapResult = mapMiniCartItems(miniCartListUiModel.visitables, tmpHiddenUnavailableItems)
                 miniCartItems = miniCartItemsMapResult.first
                 isShowMiniCartWidget = miniCartItems.isNotEmpty()
                 miniCartWidgetData = miniCartListUiModel.miniCartWidgetUiModel
@@ -278,11 +278,16 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-    private fun mapMiniCartItems(visitables: List<Visitable<*>>): Triple<List<MiniCartItem>, Boolean, Int> {
+    private fun mapMiniCartItems(visitables: List<Visitable<*>>, tmpHiddenUnavailableItems: List<Visitable<*>>?): Triple<List<MiniCartItem>, Boolean, Int> {
+        val tmpVisitables = mutableListOf<Visitable<*>>()
+        tmpVisitables.addAll(visitables)
+        if (tmpHiddenUnavailableItems != null) {
+            tmpVisitables.addAll(tmpHiddenUnavailableItems)
+        }
         var hasAvailableItem = false
         var unavailableItemCount = 0
         val miniCartItems = mutableListOf<MiniCartItem>()
-        visitables.forEach { visitable ->
+        tmpVisitables.forEach { visitable ->
             if (visitable is MiniCartProductUiModel) {
                 val miniCartItem = MiniCartItem().apply {
                     isError = visitable.isProductDisabled
