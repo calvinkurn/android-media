@@ -38,7 +38,7 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
             tvShopScoreValue?.text = if (element?.shopScore != null) element.shopScore else "-"
 
             ivLevelBarShopScore?.background = ContextCompat.getDrawable(context,
-                    ShopScoreUtils.getLevelBarWhite(element?.shopLevel.toIntOrZero()))
+                    ShopScoreUtils.getLevelBarWhite(element?.shopLevel.toLongOrZero()))
         }
     }
 
@@ -100,7 +100,7 @@ class ItemHeaderShopPerformanceViewHolder(view: View,
             }
 
             ic_performance_level_information?.setOnClickListener {
-                shopPerformanceListener.onTooltipLevelClicked(element?.shopLevel.toIntOrZero())
+                shopPerformanceListener.onTooltipLevelClicked(element?.shopLevel.toLongOrZero())
             }
             ic_shop_score_performance?.setOnClickListener {
                 shopPerformanceListener.onTooltipScoreClicked()

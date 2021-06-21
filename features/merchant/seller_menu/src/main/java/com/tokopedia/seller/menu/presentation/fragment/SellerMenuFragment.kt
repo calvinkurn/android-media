@@ -72,7 +72,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     private var canShowErrorToaster = true
     private var isNewSeller = false
-    private var shopAge = 0
+    private var shopAge = 0L
 
     private val adapter by lazy {
         SellerMenuAdapter(OtherMenuAdapterTypeFactory(
@@ -104,6 +104,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observeViewModel()
         setupPMShopScoreInterrupt()
         setupScrollToShopSetting()
+        viewModel.getShopAccountInfo()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -157,6 +158,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
 
     override fun onRefreshShopInfo() {
         showShopInfoLoading()
+        viewModel.getShopAccountInfo()
         getAllShopInfo()
     }
 
@@ -170,7 +172,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun setupSwipeRefresh() {
         swipeRefreshLayout.setOnRefreshListener {
             showShopInfoLoading()
-            getAllShopInfo()
+            viewModel.getShopAccountInfo()
         }
     }
 
@@ -242,7 +244,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         }
     }
 
-    private fun showShopInfo(settingResponseState: SettingResponseState, shopScore: Int = 0, shopAge: Int = 0) {
+    private fun showShopInfo(settingResponseState: SettingResponseState, shopScore: Long = 0, shopAge: Long = 0) {
         when (settingResponseState) {
             is SettingSuccess -> {
                 if (settingResponseState is SettingShopInfoUiModel) {

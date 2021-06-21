@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardBuyerOrderDetailProduct"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="11dp"
+    android:layout_marginEnd="11dp"
+    android:padding="@dimen/spacing_lvl4">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/ivBuyerOrderDetailProductThumbnail"
+            android:layout_width="@dimen/buyer_order_detail_product_thumbnail_size"
+            android:layout_height="@dimen/buyer_order_detail_product_thumbnail_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvBuyerOrderDetailProductName"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toTopOf="@id/tvBuyerOrderDetailProductPriceQuantity"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivBuyerOrderDetailProductThumbnail"
+            app:layout_constraintTop_toTopOf="@id/ivBuyerOrderDetailProductThumbnail"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:typographyType="heading_6"
+            tools:text="Jordan 1 Mid Royal (2020) - Original Hoops Malaysia" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvBuyerOrderDetailProductPriceQuantity"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="@id/ivBuyerOrderDetailProductThumbnail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tvBuyerOrderDetailProductName"
+            app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailProductName"
+            app:typographyType="body_3"
+            tools:text="2 x Rp 2.000.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvBuyerOrderDetailProductNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintTop_toBottomOf="@id/ivBuyerOrderDetailProductThumbnail"
+            app:typographyType="body_3"
+            tools:text="43 Size. Packing rapi plis." />
+
+        <View
+            android:id="@+id/dividerBuyerOrderDetailProduct"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:background="@color/buyer_order_detail_dms_thin_divider"
+            app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailProductNote" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvBuyerOrderDetailTotalProductPriceLabel"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:text="@string/label_total_price"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toTopOf="@id/tvBuyerOrderDetailProductPriceValue"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dividerBuyerOrderDetailProduct"
+            app:layout_constraintWidth_default="wrap"
+            app:typographyType="small" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvBuyerOrderDetailProductPriceValue"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:textColor="@color/Unify_N700_96"
+            android:translationY="-1.97dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailTotalProductPriceLabel"
+            app:layout_constraintWidth_default="wrap"
+            app:typographyType="heading_6"
+            tools:text="Rp4.000.000" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnBuyerOrderDetailBuyProductAgain"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
+            android:text="@string/buy_again_label"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/dividerBuyerOrderDetailProduct"
+            app:layout_constraintWidth_default="wrap"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

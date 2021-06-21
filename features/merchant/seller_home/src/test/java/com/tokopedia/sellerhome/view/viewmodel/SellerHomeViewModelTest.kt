@@ -47,7 +47,7 @@ class SellerHomeViewModelTest {
         private const val DATA_KEY_BAR_CHART = "BAR_CHART"
         private const val DATA_KEY_MULTI_LINE = "MULTI_LINE"
         private const val DATA_KEY_ANNOUNCEMENT = "ANNOUNCEMENT"
-        private const val DATA_KEY_RECOMMENDATION = "MULTI_LINE"
+        private const val DATA_KEY_RECOMMENDATION = "RECOMMENDATION"
     }
 
     @RelaxedMockK
