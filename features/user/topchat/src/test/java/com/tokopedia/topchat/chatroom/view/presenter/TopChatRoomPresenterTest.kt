@@ -427,6 +427,20 @@ class TopChatRoomPresenterTest {
     }
 
     @Test
+    fun `should remove SRW bubble if receive attachment event`() {
+        // Given
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+
+        // When
+        presenter.connectWebSocket(exMessageId)
+        websocketServer.onNext(wsResponseImageAttachment)
+
+        // Then
+        verify(exactly = 1) { view.removeSrwBubble() }
+    }
+
+    @Test
     fun `onMessage ws event reply when in the middle of the page`() {
         // Given
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
