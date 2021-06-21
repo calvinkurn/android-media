@@ -4,6 +4,8 @@ import com.tokopedia.gm.common.data.source.cloud.model.PMShopStatusResponse
 import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.domain.mapper.PMShopStatusMapper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
@@ -59,7 +61,6 @@ class GetPMStatusUseCase @Inject constructor(
              }
            }
         """.trimIndent()
-
 
         fun createParams(shopId: String): RequestParams {
             return RequestParams.create().apply {

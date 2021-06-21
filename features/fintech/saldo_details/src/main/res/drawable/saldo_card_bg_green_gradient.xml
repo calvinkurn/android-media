@@ -3,7 +3,7 @@
 
     <gradient
         android:angle="270"
-        android:centerColor="@color/white"
-        android:endColor="@color/tkpd_main_light_green"
-        android:startColor="@color/white" />
+        android:centerColor="@color/Unify_N0"
+        android:endColor="@color/Unify_G200"
+        android:startColor="@color/Unify_N0" />
 </shape>

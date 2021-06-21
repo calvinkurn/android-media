@@ -12,7 +12,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartPar
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartResult
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
-import com.tokopedia.discovery.common.utils.URLParser
+import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
@@ -165,6 +165,7 @@ class ProductListPresenter @Inject constructor(
     private var pageId = ""
     private var pageTitle = ""
     private var searchRef = ""
+    private var dimension90 = ""
     private var autoCompleteApplink = ""
     private var isGlobalNavWidgetAvailable = false
     private var isShowHeadlineAdsBasedOnGlobalNav = false
@@ -455,7 +456,8 @@ class ProductListPresenter @Inject constructor(
                 lastProductItemPosition,
                 searchProductModel,
                 pageTitle,
-                isLocalSearch()
+                isLocalSearch(),
+                dimension90,
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -560,6 +562,7 @@ class ProductListPresenter @Inject constructor(
                     item.categoryBreadcrumb = topAds.product.categoryBreadcrumb
                     item.productUrl = topAds.product.uri
                     item.minOrder = topAds.product.productMinimumOrder
+                    item.dimension90 = dimension90
                     list.add(i, item)
                     j++
                     topAdsCount++
@@ -620,6 +623,7 @@ class ProductListPresenter @Inject constructor(
         pageId = searchParameter.getValueString(SearchApiConst.SRP_PAGE_ID)
         pageTitle = searchParameter.getValueString(SearchApiConst.SRP_PAGE_TITLE)
         searchRef = searchParameter.getValueString(SearchApiConst.SEARCH_REF)
+        dimension90 = Dimension90Utils.getDimension90(searchParameter)
         additionalParams = ""
 
         val requestParams = createInitializeSearchParam(searchParameter)
@@ -1570,7 +1574,8 @@ class ProductListPresenter @Inject constructor(
                         productDataView.productList.isNotEmpty().toString(),
                         StringUtils.join(categoryIdMapping, ","),
                         StringUtils.join(categoryNameMapping, ","),
-                        createGeneralSearchTrackingRelatedKeyword(productDataView)
+                        createGeneralSearchTrackingRelatedKeyword(productDataView),
+                        dimension90,
                 )
         )
     }
@@ -1798,7 +1803,7 @@ class ProductListPresenter @Inject constructor(
             )
         }
 
-        view.sendProductImpressionTrackingEvent(item, getSuggestedRelatedKeyword(), getDimension90())
+        view.sendProductImpressionTrackingEvent(item, getSuggestedRelatedKeyword())
     }
 
     private fun getSuggestedRelatedKeyword(): String {
@@ -1807,11 +1812,6 @@ class ProductListPresenter @Inject constructor(
 
         return if (relatedDataView.relatedKeyword.isNotEmpty()) relatedDataView.relatedKeyword
         else ""
-    }
-
-    private fun getDimension90(): String {
-        return if (isLocalSearch()) "$pageTitle.$navSource.local_search.$pageId"
-        else searchRef
     }
 
     private fun checkShouldShowBOELabelOnBoarding(position: Int) {
@@ -1863,7 +1863,7 @@ class ProductListPresenter @Inject constructor(
             )
         }
 
-        view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword(), getDimension90())
+        view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword())
     }
 
     override fun getProductCount(mapParameter: Map<String, String>?) {

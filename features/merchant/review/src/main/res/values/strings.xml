@@ -147,7 +147,7 @@
     <string name="review_pending_no_product_empty_content">Saatnya belanja dan kasih ulasan untuk barang-barang incaranmu!</string>
     <string name="review_pending_variant">Varian: %s</string>
     <string name="review_pending_deleted_product_error_toaster">Maaf, barang ini sudah dihapus. Simpan saja ulasanmu di hati.</string>
-    <string name="review_pending_invalid_to_review">Oops, kamu tidak bisa ulas barang ini karena sudah melebihi batas waktu.</string>
+    <string name="review_pending_invalid_to_review">Oops, kamu sudah kasih ulasan untuk barang ini. Coba refresh, ya.</string>
     <string name="review_pending_shop_button">Mulai Belanja</string>
 
     <string name="review_history_tab_title">Riwayat</string>

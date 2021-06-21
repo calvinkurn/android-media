@@ -135,14 +135,16 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         if (mHeaderView.childCount > 0)
             mHeaderView.removeAllViews()
 
-        carouselEmptyState?.run {
-            title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
-            description?.text = context?.getString(R.string.discovery_product_empty_state_description).orEmpty()
-            refreshBtn?.setOnClickListener {
-                reloadComponent()
+        if (mProductCarouselComponentViewModel.getProductList() == null) {
+            carouselEmptyState?.run {
+                title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
+                description?.text = context?.getString(R.string.discovery_product_empty_state_description).orEmpty()
+                refreshBtn?.setOnClickListener {
+                    reloadComponent()
+                }
+                carouselEmptyState?.visible()
+                mProductCarouselRecyclerView.gone()
             }
-            carouselEmptyState?.visible()
-            mProductCarouselRecyclerView.gone()
         }
     }
 
