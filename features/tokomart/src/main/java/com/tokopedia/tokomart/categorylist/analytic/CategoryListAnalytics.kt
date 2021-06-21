@@ -5,20 +5,20 @@ import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.ACTION
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.ACTION.ACTION_CLICK_LEVEL_TWO
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.ACTION.ACTION_COLLAPSE_LEVEL_ONE
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.ACTION.ACTION_EXPAND_LEVEL_ONE
-import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.EVENT.EVENT_CATEGORY_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.BUSINESSUNIT
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.CURRENTSITE
+import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.CATEGORY.EVENT_CATEGORY_VALUE
 import com.tokopedia.tokomart.categorylist.analytic.CategoryListAnalytics.MISC.SEE_ALL_CATEGORY
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
 
 class CategoryListAnalytics{
 
-    object EVENT{
+    object CATEGORY{
         const val EVENT_CATEGORY_VALUE = "tokonow semua category jumper"
     }
 
@@ -83,10 +83,10 @@ class CategoryListAnalytics{
     }
 
     private fun MutableMap<String, Any>.addCategoryJumperGeneralClick(): MutableMap<String, Any>? {
-        this[TrackAppUtils.EVENT] = EVENT_CLICK_VALUE
+        this[TrackAppUtils.EVENT] = EVENT_CLICK_TOKONOW
         this[TrackAppUtils.EVENT_CATEGORY] = EVENT_CATEGORY_VALUE
-        this[CURRENTSITE] = CURRENT_SITE_VALUE
-        this[BUSINESSUNIT] = BUSINESS_UNIT_VALUE
+        this[KEY_CURRENT_SITE] = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+        this[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_PHYSICAL_GOODS
         return this
     }
 }

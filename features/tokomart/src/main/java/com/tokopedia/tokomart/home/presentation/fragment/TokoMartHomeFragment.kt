@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -42,13 +41,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.BUSINESSUNIT
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.MISC.CURRENTSITE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.CURRENT_SITE_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_ACTION_CLICK_SEARCH_BAR_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CATEGORY_TOP_NAV_VALUE
-import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.VALUE.EVENT_CLICK_VALUE
+import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_EXP_NAME
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_VARIANT_OLD
@@ -74,11 +67,6 @@ import com.tokopedia.tokomart.home.presentation.viewholder.HomeCategoryGridViewH
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokomart.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokomart.home.presentation.viewmodel.TokoMartHomeViewModel
-import com.tokopedia.track.TrackApp
-import com.tokopedia.track.TrackAppUtils.EVENT
-import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
-import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
-import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_tokomart_home.*
@@ -109,6 +97,9 @@ class TokoMartHomeFragment: Fragment(),
     @Inject
     lateinit var viewModel: TokoMartHomeViewModel
 
+    @Inject
+    lateinit var analytics: HomeAnalytics
+
     private val adapter by lazy {
         TokoMartHomeAdapter(
             typeFactory = TokoMartHomeAdapterTypeFactory(
@@ -133,6 +124,7 @@ class TokoMartHomeFragment: Fragment(),
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
+    private var isFirstImpressionOnBanner = false
 
     private val homeMainToolbarHeight: Int
         get() = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.tokomart_default_toolbar_status_height)
@@ -193,6 +185,7 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
+        analytics.onClickBannerPromo(position, userSession.userId, channelModel, channelGrid)
         context?.let {
             RouteManager.route(it, channelGrid.applink)
         }
@@ -211,6 +204,14 @@ class TokoMartHomeFragment: Fragment(),
         }
     }
 
+    override fun onAllCategoryClicked() {
+        analytics.onClickAllCategory()
+    }
+
+    override fun onCategoryClicked(position: Int, categoryId: String) {
+        analytics.onClickCategory(position, userSession.userId, categoryId)
+    }
+
     override fun isMainViewVisible(): Boolean = true
 
     override fun isBannerImpressed(id: String): Boolean = true
@@ -221,7 +222,14 @@ class TokoMartHomeFragment: Fragment(),
 
     override fun onPromoAllClick(channelModel: ChannelModel) {}
 
-    override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {}
+    override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
+        if (!isFirstImpressionOnBanner) {
+            isFirstImpressionOnBanner = true
+        } else {
+            analytics.onImpressBannerPromo(userSession.userId, channelModel)
+            isFirstImpressionOnBanner = false
+        }
+    }
 
     private fun initInjector() {
         DaggerTokoMartHomeComponent.builder()
@@ -326,15 +334,19 @@ class TokoMartHomeFragment: Fragment(),
 
     private fun setIconNewTopNavigation() {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                .addIcon(IconList.ID_CART) {}
+                .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
                 .addIcon(IconList.ID_NAV_GLOBAL) {}
         navToolbar?.setIcon(icons)
     }
 
     private fun setIconOldTopNavigation() {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                .addIcon(IconList.ID_CART) {}
+                .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
         navToolbar?.setIcon(icons)
+    }
+
+    private fun onClickCartButton() {
+        analytics.onClickCartButton()
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
@@ -598,17 +610,7 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     private fun onSearchBarClick(hint: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(
-                        EVENT, EVENT_CLICK_VALUE,
-                        EVENT_ACTION, EVENT_ACTION_CLICK_SEARCH_BAR_VALUE,
-                        EVENT_CATEGORY, EVENT_CATEGORY_TOP_NAV_VALUE,
-                        EVENT_LABEL, hint,
-                        BUSINESSUNIT, BUSINESS_UNIT_VALUE,
-                        CURRENTSITE, CURRENT_SITE_VALUE,
-                )
-        )
-
+        analytics.onClickSearchBar()
         RouteManager.route(context,
                 getAutoCompleteApplinkPattern(),
                 SOURCE,
