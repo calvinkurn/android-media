@@ -1282,6 +1282,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertTemplateChatVisibility(isDisplayed())
     }
 
+    // TODO: should scroll to bottom when send SRW question and not clear composed msg
     // TODO: SRW should hide broadcast handler if visible
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
     // TODO: SRW bubble should removed when user receive voucher event from ws.
