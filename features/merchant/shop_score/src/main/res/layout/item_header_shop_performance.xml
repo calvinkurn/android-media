@@ -169,6 +169,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvHeaderShopService"
+        app:layout_constraintBottom_toTopOf="@id/barrierTickerHasPenalty"
         app:typographyType="body_3"
         tools:text="@string/desc_shop_score_service"
         tools:visibility="visible" />

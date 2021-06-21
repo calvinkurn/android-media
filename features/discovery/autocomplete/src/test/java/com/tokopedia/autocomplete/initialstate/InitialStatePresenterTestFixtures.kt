@@ -65,6 +65,10 @@ internal open class InitialStatePresenterTestFixtures {
         initialStatePresenter.getInitialStateData()
     }
 
+    protected fun `Given presenter will return searchParameter`(searchParameter: Map<String, String>) {
+        initialStatePresenter.setSearchParameter(searchParameter as HashMap<String, String>)
+    }
+
     protected fun `Given view already get initial state`(responseJSON: String) {
         val initialStateUniverse = responseJSON.jsonToObject<InitialStateUniverse>()
 

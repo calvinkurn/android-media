@@ -68,6 +68,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
             thumbnail_product
             bebas_ongkir_dimension
             is_bbi
+            category_id
         }
         shipping_amount
         shipping_amount_str
