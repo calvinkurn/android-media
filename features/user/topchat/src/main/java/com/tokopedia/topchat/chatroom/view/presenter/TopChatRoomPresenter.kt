@@ -1046,6 +1046,6 @@ open class TopChatRoomPresenter @Inject constructor(
 
     companion object {
         const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service"
-        private val PROBLEMATIC_DEVICE = arrayListOf("iris88", "iris88_lite", "lenovo k9")
+        private val PROBLEMATIC_DEVICE = listOf("iris88", "iris88_lite", "lenovo k9")
     }
 }
