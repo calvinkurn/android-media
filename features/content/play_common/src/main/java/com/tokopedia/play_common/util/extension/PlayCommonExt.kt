@@ -19,7 +19,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -245,6 +248,23 @@ fun Fragment.recreateView() {
             ?.attach(this)
             ?.commit()
 }
+
+inline fun FragmentManager.commit(
+        allowStateLoss: Boolean = false,
+        body: FragmentTransaction.() -> Unit
+) {
+    val transaction = beginTransaction()
+    transaction.body()
+    if (allowStateLoss) {
+        transaction.commitAllowingStateLoss()
+    } else {
+        transaction.commit()
+    }
+}
+
+val List<GraphqlError>.defaultErrorMessage: String
+    get() = mapNotNull { it.message }.joinToString(separator = ", ")
+
 
 fun dismissToaster() {
     try { Toaster.snackBar.dismiss() } catch (e: Exception) {}

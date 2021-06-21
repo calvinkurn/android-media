@@ -51,7 +51,7 @@ class InboxReviewFeedbackViewHolder(view: View,
             setupVariant(element.variantName)
             setActionReply(element)
             setFeedbackReply(element)
-            setupFeedbackReview(element.reviewText, element.feedbackId.toString(), element.productID.toString())
+            setupFeedbackReview(element.reviewText, element.feedbackId, element.productID)
             setImageAttachment(element)
             showKejarUlasanLabel(element.isKejarUlasan)
         }
@@ -133,9 +133,9 @@ class InboxReviewFeedbackViewHolder(view: View,
                 rvItemAttachmentFeedback?.hide()
             } else {
                 reviewInboxFeedbackImageAdapter?.setAttachmentUiData(element.attachments)
-                reviewInboxFeedbackImageAdapter?.setFeedbackId(element.feedbackId.toString())
+                reviewInboxFeedbackImageAdapter?.setFeedbackId(element.feedbackId)
                 reviewInboxFeedbackImageAdapter?.setTitleProduct(element.productName)
-                reviewInboxFeedbackImageAdapter?.setProductId(element.productID.toString())
+                reviewInboxFeedbackImageAdapter?.setProductId(element.productID)
                 reviewInboxFeedbackImageAdapter?.submitList(element.attachments)
                 rvItemAttachmentFeedback?.show()
             }

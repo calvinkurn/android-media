@@ -21,7 +21,6 @@ import com.tokopedia.cart.view.subscriber.*
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -33,7 +32,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -123,7 +122,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         this.cartListData = cartListData
     }
 
-    override fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean) {
+    override fun processInitialGetCartData(cartId: String, initialLoad: Boolean, isLoadingTypeRefresh: Boolean, getCartState: Int) {
         view?.let {
             if (initialLoad) {
                 it.renderLoadGetCartData()
@@ -131,7 +130,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 it.showProgressLoading()
             }
 
-            val params = getCartListSimplifiedUseCase?.buildParams(cartId)
+            val params = getCartListSimplifiedUseCase?.buildParams(cartId, getCartState)
             val requestParams = RequestParams.create()
             requestParams.putObject(GetCartListSimplifiedUseCase.PARAM_GET_CART, params)
             compositeSubscription.add(getCartListSimplifiedUseCase?.createObservable(requestParams)
@@ -202,10 +201,18 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 val requestParams = RequestParams.create()
                 requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
-                compositeSubscription.add(
-                        updateCartUseCase?.createObservable(requestParams)
-                                ?.subscribe(UpdateCartSubscriber(view, this, fireAndForget))
-                )
+                if (fireAndForget) {
+                    // Trigger use case without composite subscription, because this should continue even after view destroyed
+                    requestParams.putString(UpdateCartUseCase.PARAM_KEY_SOURCE, UpdateCartUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES)
+                    updateCartUseCase?.createObservable(requestParams)?.subscribe({/* no-op */ }, {/* no-op */ })
+                    return@let
+                } else {
+                    requestParams.putString(UpdateCartUseCase.PARAM_KEY_SOURCE, "")
+                    compositeSubscription.add(
+                            updateCartUseCase?.createObservable(requestParams)
+                                    ?.subscribe(UpdateCartSubscriber(view, this))
+                    )
+                }
             } else {
                 if (!fireAndForget) {
                     it.hideProgressLoading()
@@ -214,7 +221,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
     }
 
-    override fun processToUpdateAndReloadCartData(cartId: String) {
+    override fun processToUpdateAndReloadCartData(cartId: String, getCartState: Int) {
         view?.let {
             val cartItemDataList = ArrayList<CartItemData>()
             for (data in it.getAllAvailableCartDataList()) {
@@ -227,8 +234,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             if (updateCartRequestList.isNotEmpty()) {
                 val requestParams = RequestParams.create()
                 requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
+                requestParams.putString(UpdateCartUseCase.PARAM_KEY_SOURCE, UpdateCartUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES)
 
-                val cartParams = getCartListSimplifiedUseCase?.buildParams(cartId)
+                val cartParams = getCartListSimplifiedUseCase?.buildParams(cartId, getCartState)
                 requestParams.putObject(GetCartListSimplifiedUseCase.PARAM_GET_CART, cartParams)
 
                 compositeSubscription.add(
@@ -262,7 +270,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         // Get total error product
         val errorProductCount = getErrorProductCount(dataList)
 
-        // Collect all Cart Item
+        // Collect all Cart Item & also calculate total weight on each shop
         val tmpAllCartItemDataList = getAvailableCartItemDataList(dataList)
 
         // Set cart item parent id
@@ -284,18 +292,27 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     private fun getAvailableCartItemDataList(dataList: List<CartShopHolderData>): ArrayList<CartItemHolderData> {
         // Collect all Cart Item, if has no error and selected
+        // Also calculate total weight on each shop
         val allCartItemDataList = ArrayList<CartItemHolderData>()
         for (cartShopHolderData in dataList) {
             if (cartShopHolderData.shopGroupAvailableData?.cartItemDataList != null &&
-                    cartShopHolderData.shopGroupAvailableData?.isError == false &&
-                    (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected)) {
-                cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
-                    for (cartItemHolderData in it) {
-                        if (cartItemHolderData.cartItemData?.isError == false && cartItemHolderData.isSelected) {
-                            allCartItemDataList.add(cartItemHolderData)
+                    cartShopHolderData.shopGroupAvailableData?.isError == false) {
+                var shopWeight = 0.0
+                if (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected) {
+                    cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
+                        for (cartItemHolderData in it) {
+                            if (cartItemHolderData.cartItemData?.isError == false && cartItemHolderData.isSelected) {
+                                allCartItemDataList.add(cartItemHolderData)
+                                val quantity = cartItemHolderData.cartItemData?.updatedData?.quantity
+                                        ?: 0
+                                val weight = cartItemHolderData.cartItemData?.originData?.weightPlan
+                                        ?: 0.0
+                                shopWeight += quantity * weight
+                            }
                         }
                     }
                 }
+                cartShopHolderData.shopGroupAvailableData?.totalWeight = shopWeight
             }
         }
 
@@ -1094,7 +1111,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val clickUrl = productModel.clickUrl
             if (clickUrl.isNotEmpty() && productModel.isTopAds) view?.sendATCTrackingURLRecent(productModel)
         } else if (productModel is CartRecommendationItemHolderData) {
-            val (_, recommendationItem) = productModel
+            val recommendationItem = productModel.recommendationItem
             productId = recommendationItem.productId.toLong()
             shopId = recommendationItem.shopId
             productName = recommendationItem.name
@@ -1105,6 +1122,17 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             val clickUrl = recommendationItem.clickUrl
             if (clickUrl.isNotEmpty()) view?.sendATCTrackingURL(recommendationItem)
+        } else if (productModel is BannerShopProductViewModel) {
+            productId = productModel.productId.toLongOrZero()
+            shopId = productModel.shopId.toIntOrZero()
+            productName = productModel.productName
+            productCategory = productModel.productCategory
+            productPrice = productModel.productPrice
+            quantity = productModel.productMinOrder
+            externalSource = AddToCartRequestParams.ATC_FROM_RECOMMENDATION
+
+            val clickUrl = productModel.adsClickUrl
+            if (clickUrl.isNotEmpty()) view?.sendATCTrackingURL(productModel)
         }
 
         val addToCartRequestParams = AddToCartRequestParams().apply {
@@ -1177,6 +1205,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             if (updateCartRequestList.isNotEmpty()) {
                 val requestParams = RequestParams.create()
                 requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
+                requestParams.putString(UpdateCartUseCase.PARAM_KEY_SOURCE, UpdateCartUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES)
 
                 compositeSubscription.add(
                         updateCartUseCase?.createObservable(requestParams)
@@ -1214,6 +1243,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             if (updateCartRequestList.isNotEmpty()) {
                 val requestParams = RequestParams.create()
                 requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
+                requestParams.putString(UpdateCartUseCase.PARAM_KEY_SOURCE, UpdateCartUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES)
                 requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
                 lastValidateUseRequest = promoRequest
 

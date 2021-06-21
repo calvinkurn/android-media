@@ -99,7 +99,7 @@ ext {
     unifyIconsVersion = '1.0.7'
     unifyPrinciplesVersion = '1.3.8'
     unifyComponentsVersion = '1.1.66'
-    unifyCoachMarkVersion = '1.2.11'
+    unifyCoachMarkVersion = '1.2.13'
     unifyCalendarVersion = '1.1.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.9'
@@ -112,7 +112,7 @@ ext {
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.7'
-    unifyAccordionVersion = '1.1.2'
+    unifyAccordionVersion = '1.1.4-beta-1' // to-do update into stable version
     unifyTotalAmountVersion = '1.0.3'
     unifyExplorePromoVersion = '1.0.2'
 

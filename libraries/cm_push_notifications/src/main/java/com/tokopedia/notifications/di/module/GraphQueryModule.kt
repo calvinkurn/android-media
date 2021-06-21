@@ -22,17 +22,6 @@ import javax.inject.Named
     }
 
     @Provides
-    @Named(ATC_MUTATION_QUERY)
-    fun provideAtcQuery(
-            @CMNotificationContext context: Context
-    ): String {
-        return GraphqlHelper.loadRawString(
-                context.resources,
-                com.tokopedia.atc_common.R.raw.mutation_add_to_cart
-        )
-    }
-
-    @Provides
     @Named(AMPLIFICATION_QUERY)
     fun provideAmplificationQuery(
             @CMNotificationContext context: Context
@@ -45,7 +34,6 @@ import javax.inject.Named
 
     companion object {
         const val ATTRIBUTION_QUERY = "query_attribution"
-        const val ATC_MUTATION_QUERY = "query_atcMutation"
         const val AMPLIFICATION_QUERY = "query_amplification"
     }
 

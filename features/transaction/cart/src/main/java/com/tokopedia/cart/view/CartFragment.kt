@@ -42,6 +42,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -56,6 +57,8 @@ import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_MA
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_OVERLOAD
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_TIMEOUT
 import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
+import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER_CHOOSE_ADDRESS
+import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_DEFAULT
 import com.tokopedia.cart.view.adapter.cart.CartAdapter
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.bottomsheet.showGlobalErrorBottomsheet
@@ -119,6 +122,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -187,8 +191,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var cartListData: CartListData? = null
     private var wishLists: List<CartWishlistItemHolderData>? = null
     private var recentViewList: List<CartRecentViewItemHolderData>? = null
-    private var recommendationList: MutableList<CartRecommendationItemHolderData>? = null
-    private var recommendationSectionHeader: CartSectionHeaderHolderData? = null
     private var recommendationWishlistActionListener: WishListActionListener? = null
     private var cartUnavailableWishlistActionListener: WishListActionListener? = null
     private var lastSeenWishlistActionListener: WishListActionListener? = null
@@ -342,12 +344,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         recentViewList?.let {
             saveInstanceCacheManager?.put(CartRecentViewItemHolderData::class.java.simpleName, recentViewList)
         }
-        recommendationList?.let {
-            saveInstanceCacheManager?.put(CartRecommendationItemHolderData::class.java.simpleName, recommendationList)
-        }
-        recommendationSectionHeader?.let {
-            saveInstanceCacheManager?.put(CartSectionHeaderHolderData::class.java.simpleName, recommendationSectionHeader)
-        }
     }
 
     override fun onStop() {
@@ -412,7 +408,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 showToastMessageRed(message ?: "")
             }
             else -> {
-                refreshCartWithProgressDialog()
+                refreshCartWithProgressDialog(GET_CART_STATE_DEFAULT)
             }
         }
     }
@@ -456,7 +452,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     .build()
                     .inject(this)
         }
-        cartAdapter = CartAdapter(this, this, this, this)
+        cartAdapter = CartAdapter(this, this, this, this, userSession)
     }
 
     private fun initRemoteConfig() {
@@ -571,10 +567,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 object : TypeToken<ArrayList<CartWishlistItemHolderData>>() {}.type, null)
         recentViewList = saveInstanceCacheManager?.get<List<CartRecentViewItemHolderData>>(CartRecentViewItemHolderData::class.java.simpleName,
                 object : TypeToken<ArrayList<CartRecentViewItemHolderData>>() {}.type, null)
-        recommendationList = saveInstanceCacheManager?.get<MutableList<CartRecommendationItemHolderData>>(CartRecommendationItemHolderData::class.java.simpleName,
-                object : TypeToken<ArrayList<CartRecommendationItemHolderData>>() {}.type, null)
-        recommendationSectionHeader = saveInstanceCacheManager?.get<CartSectionHeaderHolderData>(CartSectionHeaderHolderData::class.java.simpleName,
-                object : TypeToken<CartSectionHeaderHolderData>() {}.type, null)
     }
 
     override fun onBackPressed() {
@@ -1151,7 +1143,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onLocalizingAddressUpdatedFromWidget() {
-        refreshCartWithProgressDialog()
+        refreshCartWithProgressDialog(GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
     }
 
     override fun onClickShopNow() {
@@ -1444,7 +1436,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         var index = 1
         var recommendationItemClick: RecommendationItem? = null
-        for ((_, item) in recommendationList as List<CartRecommendationItemHolderData>) {
+        val recommendationList = cartAdapter.getRecommendationItem()
+        for ((_, item) in recommendationList) {
             if (item.productId.toString().equals(productId, ignoreCase = true)) {
                 recommendationItemClick = item
                 break
@@ -1569,18 +1562,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartShopNameClicked(shopId: String?, shopName: String?) {
+    override fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean) {
         if (shopId != null && shopName != null) {
             cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
-            routeToShopPage(shopId)
+            if (isTokoNow) {
+                routeToApplink(ApplinkConstInternalTokopediaNow.HOME)
+            } else {
+                routeToShopPage(shopId)
+            }
         }
     }
 
     override fun onShopItemCheckChanged(itemPosition: Int, checked: Boolean) {
         dPresenter.setHasPerformChecklistChange(true)
         cartAdapter.setShopSelected(itemPosition, checked)
-        onNeedToUpdateViewItem(itemPosition)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
+        onNeedToUpdateViewItem(itemPosition)
         validateGoToCheckout()
         dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
 
@@ -1809,7 +1806,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             setTopLayoutVisibility(false)
         } else {
             renderCartNotEmpty(it)
-            setTopLayoutVisibility(true)
+            setTopLayoutVisibility(it.shopGroupAvailableDataList.isNotEmpty())
         }
     }
 
@@ -1855,7 +1852,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun validateShowPopUpMessage(cartListData: CartListData) {
-        if (cartListData.popUpMessage.isNotBlank()) {
+        if (cartListData.popupErrorMessage.isNotBlank()) {
+            showToastMessageRed(cartListData.popupErrorMessage)
+            cartPageAnalytics.eventViewToasterErrorInCartPage(cartListData.popupErrorMessage)
+        } else if (cartListData.popUpMessage.isNotBlank()) {
             showToastMessageGreen(cartListData.popUpMessage)
         }
     }
@@ -1897,7 +1897,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     lat = localizationChooseAddressData.latitude,
                     long = localizationChooseAddressData.longitude,
                     label = String.format("%s %s", localizationChooseAddressData.addressName, localizationChooseAddressData.receiverName),
-                    postalCode = localizationChooseAddressData.postalCode)
+                    postalCode = localizationChooseAddressData.postalCode,
+                    shopId = localizationChooseAddressData.shopId,
+                    warehouseId = localizationChooseAddressData.warehouseId)
         }
     }
 
@@ -1953,6 +1955,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.enhancedECommerceCartLoadedStep0(
                 dPresenter.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_0)
         )
+        cartListData.unavailableGroupData.forEach { unavailableGroup ->
+            unavailableGroup.shopGroupWithErrorDataList.forEach { shop ->
+                cartPageAnalytics.eventLoadCartWithUnavailableProduct(shop.shopId, unavailableGroup.title)
+            }
+        }
 
         cartAdapter.notifyDataSetChanged()
 
@@ -2468,13 +2475,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 if (!showAccordion && it.shopGroupWithErrorDataList.size > 1) {
                     showAccordion = true
                 }
-                it.shopGroupWithErrorDataList.forEach {
-                    val cartItemHolderDataList = it.cartItemHolderDataList
+                it.shopGroupWithErrorDataList.forEach { shop ->
+                    val cartItemHolderDataList = shop.cartItemHolderDataList
                     if (cartItemHolderDataList.isNotEmpty()) {
                         if (!showAccordion && cartItemHolderDataList.size > 1) {
                             showAccordion = true
                         }
-                        cartAdapter.addNotAvailableShop(viewHolderDataMapper.mapDisabledShopHolderData(it))
+                        cartAdapter.addNotAvailableShop(viewHolderDataMapper.mapDisabledShopHolderData(shop, it.title))
                         for ((index, value) in cartItemHolderDataList.withIndex()) {
                             cartAdapter.addNotAvailableProduct(viewHolderDataMapper.mapDisabledItemHolderData(value, index != cartItemHolderDataList.size - 1))
                         }
@@ -3087,13 +3094,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun refreshCartWithProgressDialog() {
+    private fun refreshCartWithProgressDialog(getCartState: Int) {
         resetRecentViewList()
         if (dPresenter.dataHasChanged()) {
             showMainContainer()
-            dPresenter.processToUpdateAndReloadCartData(getCartId())
+            dPresenter.processToUpdateAndReloadCartData(getCartId(), getCartState)
         } else {
-            dPresenter.processInitialGetCartData(getCartId(), false, false)
+            dPresenter.processInitialGetCartData(getCartId(), false, false, getCartState)
         }
     }
 
@@ -3172,43 +3179,26 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun renderRecommendation(recommendationWidget: RecommendationWidget?) {
         val cartRecommendationItemHolderDataList = ArrayList<CartRecommendationItemHolderData>()
 
-        if (recommendationWidget != null) {
-            // Render from API
-            val recommendationItems = recommendationWidget.recommendationItemList
-            for (recommendationItem in recommendationItems) {
-                val cartRecommendationItemHolderData = CartRecommendationItemHolderData(false, recommendationItem)
-                cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData)
-            }
-        } else {
-            // Render from Cache
-            if (recommendationList?.size != 0) {
-                recommendationList?.forEach {
-                    it.hasSentImpressionAnalytics = false
-                }
-                cartRecommendationItemHolderDataList.addAll(this.recommendationList!!)
-            }
+        val recommendationItems = recommendationWidget?.recommendationItemList ?: emptyList()
+        for (recommendationItem in recommendationItems) {
+            val cartRecommendationItemHolderData = CartRecommendationItemHolderData(false, recommendationItem)
+            cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData)
         }
 
         var cartSectionHeaderHolderData: CartSectionHeaderHolderData? = null
         if (recommendationPage == 1) {
-            if (recommendationSectionHeader != null) {
-                cartSectionHeaderHolderData = recommendationSectionHeader
+            cartSectionHeaderHolderData = CartSectionHeaderHolderData()
+            if (!TextUtils.isEmpty(recommendationWidget?.title)) {
+                cartSectionHeaderHolderData.title = recommendationWidget?.title ?: ""
             } else {
-                cartSectionHeaderHolderData = CartSectionHeaderHolderData()
-                if (!TextUtils.isEmpty(recommendationWidget?.title)) {
-                    cartSectionHeaderHolderData.title = recommendationWidget?.title ?: ""
-                } else {
-                    cartSectionHeaderHolderData.title = getString(R.string.checkout_module_title_recommendation)
-                }
-                recommendationSectionHeader = cartSectionHeaderHolderData
+                cartSectionHeaderHolderData.title = getString(R.string.checkout_module_title_recommendation)
             }
         }
 
         if (cartRecommendationItemHolderDataList.size > 0) {
-            cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList)
-            if (recommendationList.isNullOrEmpty()) {
-                recommendationList = cartRecommendationItemHolderDataList
-            }
+            cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList, recommendationPage)
+        } else {
+            cartAdapter.addCartTopAdsHeadlineData(cartSectionHeaderHolderData, recommendationPage)
         }
 
         recommendationPage++
@@ -3443,6 +3433,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val productName = recommendationItem.name
         val imageUrl = recommendationItem.imageUrl
         val url = "${recommendationItem.clickUrl}&click_source=ATC_direct_click"
+
+        activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, url, productId, productName, imageUrl) }
+    }
+
+    override fun sendATCTrackingURL(bannerShopProductViewModel: BannerShopProductViewModel) {
+        val productId = bannerShopProductViewModel.productId.toString()
+        val productName = bannerShopProductViewModel.productName
+        val imageUrl = bannerShopProductViewModel.imageUrl
+        val url = "${bannerShopProductViewModel.adsClickUrl}&click_source=ATC_direct_click"
 
         activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(it, url, productId, productName, imageUrl) }
     }

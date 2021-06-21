@@ -88,13 +88,6 @@ class PlayModule(val mContext: Context) {
 
     @Provides
     @PlayScope
-    @Named(AtcConstant.MUTATION_ADD_TO_CART)
-    internal fun provideAddToCartMutation(): String {
-        return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
-    }
-
-    @Provides
-    @PlayScope
     internal fun provideAddToCartUseCase(graphqlUseCase: GraphqlUseCase,
                                          atcMapper: AddToCartDataMapper,
                                          chosenAddressHelper: ChosenAddressRequestHelper): AddToCartUseCase {

@@ -72,12 +72,6 @@ class GqlRawQueryModule {
 
     @ProductDetailScope
     @Provides
-    @Named("atcMutation")
-    fun provideAddToCartMutation(@ApplicationContext context: Context):
-            String = GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
-
-    @ProductDetailScope
-    @Provides
     @Named("atcOcsMutation")
     fun provideAddToCartOcsMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_shipment)

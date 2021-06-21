@@ -11,7 +11,8 @@ class ProductViewModelMapper {
             lastProductItemPosition: Int,
             searchProductModel: SearchProductModel,
             pageTitle: String,
-            isLocalSearch: Boolean
+            isLocalSearch: Boolean,
+            dimension90: String,
     ): ProductDataView {
         val (searchProductHeader, searchProductData) = searchProductModel.searchProduct
 
@@ -20,9 +21,9 @@ class ProductViewModelMapper {
         productDataView.adsModel = searchProductModel.topAdsModel
         productDataView.globalNavDataView = convertToViewModel(searchProductModel.globalSearchNavigation)
         productDataView.cpmModel = searchProductModel.cpmModel
-        productDataView.relatedDataView = convertToRelatedViewModel(searchProductData.related, isLocalSearch)
+        productDataView.relatedDataView = convertToRelatedViewModel(searchProductData.related, isLocalSearch, dimension90)
         productDataView.productList = convertToProductItemDataViewList(
-                lastProductItemPosition, searchProductData.productList, pageTitle
+                lastProductItemPosition, searchProductData.productList, pageTitle, dimension90,
         )
         productDataView.adsModel = searchProductModel.topAdsModel
         productDataView.tickerModel = convertToTickerDataView(searchProductData)
@@ -81,10 +82,10 @@ class ProductViewModelMapper {
         }
     }
 
-    private fun convertToRelatedViewModel(related: Related, isLocalSearch: Boolean): RelatedDataView {
+    private fun convertToRelatedViewModel(related: Related, isLocalSearch: Boolean, dimension90: String): RelatedDataView {
         val broadMatchDataViewList: MutableList<BroadMatchDataView> = ArrayList()
         for (otherRelated in related.otherRelatedList) {
-            broadMatchDataViewList.add(convertToBroadMatchViewModel(otherRelated, isLocalSearch))
+            broadMatchDataViewList.add(convertToBroadMatchViewModel(otherRelated, isLocalSearch, dimension90))
         }
         return RelatedDataView(
                 related.relatedKeyword,
@@ -93,10 +94,10 @@ class ProductViewModelMapper {
         )
     }
 
-    private fun convertToBroadMatchViewModel(otherRelated: OtherRelated, isLocalSearch: Boolean): BroadMatchDataView {
+    private fun convertToBroadMatchViewModel(otherRelated: OtherRelated, isLocalSearch: Boolean, dimension90: String): BroadMatchDataView {
         val broadMatchItemDataViewList = otherRelated.productList.mapIndexed { index, otherRelatedProduct ->
             val position = index + 1
-            convertToBroadMatchItemViewModel(otherRelatedProduct, position, otherRelated.keyword)
+            convertToBroadMatchItemViewModel(otherRelatedProduct, position, otherRelated.keyword, dimension90)
         }
 
         return BroadMatchDataView(
@@ -104,14 +105,16 @@ class ProductViewModelMapper {
                 otherRelated.url,
                 otherRelated.applink,
                 isLocalSearch,
-                broadMatchItemDataViewList
+                broadMatchItemDataViewList,
+                dimension90,
         )
     }
 
     private fun convertToBroadMatchItemViewModel(
             otherRelatedProduct: OtherRelatedProduct,
             position: Int,
-            alternativeKeyword: String
+            alternativeKeyword: String,
+            dimension90: String,
     ): BroadMatchItemDataView {
         val isOrganicAds = otherRelatedProduct.isOrganicAds()
 
@@ -136,6 +139,7 @@ class ProductViewModelMapper {
                 otherRelatedProduct.ratingAverage,
                 otherRelatedProduct.labelGroupList.mapToLabelGroupDataViewList(),
                 BroadMatchProduct(isOrganicAds),
+                dimension90
         )
     }
 
@@ -149,18 +153,20 @@ class ProductViewModelMapper {
     private fun convertToProductItemDataViewList(
             lastProductItemPosition: Int,
             productModels: List<Product>,
-            pageTitle: String
+            pageTitle: String,
+            dimension90: String,
     ): List<ProductItemDataView> {
         return productModels.mapIndexed { index, productModel ->
             val position = lastProductItemPosition + index + 1
-            convertToProductItem(productModel, position, pageTitle)
+            convertToProductItem(productModel, position, pageTitle, dimension90,)
         }
     }
 
     private fun convertToProductItem(
             productModel: Product,
             position: Int,
-            pageTitle: String
+            pageTitle: String,
+            dimension90: String,
     ): ProductItemDataView {
         val productItem = ProductItemDataView()
         productItem.productID = productModel.id
@@ -199,6 +205,7 @@ class ProductViewModelMapper {
         productItem.minOrder = productModel.minOrder
         productItem.productUrl = productModel.url
         productItem.pageTitle = pageTitle
+        productItem.dimension90 = dimension90
         return productItem
     }
 

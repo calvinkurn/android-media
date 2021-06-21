@@ -206,6 +206,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.deviceFingerprint)
     implementation project(rootProject.ext.libraries.utils)
+    implementation project(rootProject.ext.libraries.screenshot_observer)
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.features.developerOptions)
     } else {
@@ -215,6 +216,7 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.sellerAppWidget)
+    implementation project(rootProject.ext.features.sellerFeedback)
     implementation project(rootProject.ext.features.sellerHome)
     implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)
@@ -351,6 +353,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
 
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.multiDex

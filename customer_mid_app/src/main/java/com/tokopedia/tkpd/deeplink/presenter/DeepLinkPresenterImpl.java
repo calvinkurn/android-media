@@ -281,6 +281,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openLoginByQr(uriData);
                     screenName = "";
                     break;
+                case DeepLinkChecker.POWER_MERCHANT:
+                    openPowerMechant(uriData);
+                    screenName = "";
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -452,6 +456,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
+    private void openPowerMechant(Uri uriData) {
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.POWER_MERCHANT_SUBSCRIBE);
+        viewListener.goToPage(intent);
+    }
+
     @Override
     public void sendCampaignGTM(Activity activity, String campaignUri, String screenName, boolean isAmp) {
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri), isAmp);
@@ -524,9 +533,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             public void onNext(ShopInfo shopInfo) {
                 if (context != null) {
                     if (shopInfo != null && shopInfo.getInfo() != null) {
-                        String shopId = shopInfo.getInfo().getShopId();
+                        String shopId = "";
+                        if(shopInfo.getInfo().getShopId() != null){
+                            shopId = shopInfo.getInfo().getShopId();
+                        }
                         String lastSegment = linkSegment.get(linkSegment.size() - 1);
-                        if (isEtalase(linkSegment)) {
+                        if (shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID)) {
+                            RouteManager.route(context,
+                                    bundle,
+                                    ApplinkConst.TokopediaNow.HOME);
+                        } else if (isEtalase(linkSegment)) {
                             RouteManager.route(context,
                                     bundle,
                                     ApplinkConst.SHOP_ETALASE,

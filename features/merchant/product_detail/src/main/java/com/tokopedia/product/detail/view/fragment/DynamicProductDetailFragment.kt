@@ -2660,7 +2660,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun setNavToolbarSearchHint(hint: String) {
         val isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
         val applink = ApplinkConstInternalDiscovery.AUTOCOMPLETE +
-                if (isTokoNow) "?${SearchApiConst.NAVSOURCE}=tokonow&${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokoMart.SEARCH}"
+                if (isTokoNow) "?${SearchApiConst.NAVSOURCE}=tokonow&${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokopediaNow.SEARCH}"
                 else ""
         navToolbar?.setupSearchbar(listOf(HintData(hint)), applink = applink)
     }

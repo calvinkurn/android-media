@@ -6,6 +6,8 @@ import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionUniverse
+import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -65,6 +67,10 @@ internal open class InitialStatePresenterTestFixtures {
         initialStatePresenter.getInitialStateData()
     }
 
+    protected fun `Given presenter will return searchParameter`(searchParameter: Map<String, String>) {
+        initialStatePresenter.setSearchParameter(searchParameter as HashMap<String, String>)
+    }
+
     protected fun `Given view already get initial state`(responseJSON: String) {
         val initialStateUniverse = responseJSON.jsonToObject<InitialStateUniverse>()
 
@@ -79,6 +85,7 @@ internal open class InitialStatePresenterTestFixtures {
 
     protected fun `Then verify initial state view behavior is correct`() {
         verifyOrder {
+            initialStateView.chooseAddressData
             initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
             initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
@@ -88,7 +95,37 @@ internal open class InitialStatePresenterTestFixtures {
         confirmVerified(initialStateView)
     }
 
-    protected fun `Then verify initial state view do nothing behavior`() {
+    protected fun `Then verify initial state view behavior for failed refresh`() {
+        verifyOrder {
+            initialStateView.chooseAddressData
+            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
+            initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
+            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
+            initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
+            initialStateView.showInitialStateResult(capture(slotVisitableList))
+            initialStateView.onRefreshPopularSearch()
+            initialStateView.chooseAddressData
+        }
+        confirmVerified(initialStateView)
+    }
+
+    protected fun `Then verify initial state view behavior for failed refresh dynamic`() {
+        verifyOrder {
+            initialStateView.chooseAddressData
+            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
+            initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
+            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
+            initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
+            initialStateView.showInitialStateResult(capture(slotVisitableList))
+            initialStateView.chooseAddressData
+        }
+        confirmVerified(initialStateView)
+    }
+
+    protected fun `Then verify view interaction for load data failed with exception`() {
+        verify {
+            initialStateView.chooseAddressData
+        }
         confirmVerified(initialStateView)
     }
 

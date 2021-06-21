@@ -388,6 +388,7 @@ public interface ApplinkConst {
 
     String ACCOUNT_HOST = "account";
     String ACCOUNT = "tokopedia://account";
+    String MARKETPLACE_ONBOARDING = "tokopedia://marketplace/onboarding";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
@@ -471,6 +472,13 @@ public interface ApplinkConst {
         String SELLER_SHIPPING_EDITOR = "sellerapp://setting/shipping-editor";
         String STATISTIC_DASHBOARD = "sellerapp://gold-merchant-statistic-dashboard";
         String SHOP_SETTINGS_SELLER_APP = "sellerapp://shop/{shop_id}/settings";
+    }
+
+    interface TokopediaNow {
+        String HOME = "tokopedia://now";
+        String TOKOPEDIA_NOW_PRODUCTION_SHOP_ID = "11530573";
+        String SEARCH = "tokopedia://now/search";
+        String CATEGORY = "tokopedia://now/category";
     }
 
     interface Query {
@@ -628,6 +636,7 @@ public interface ApplinkConst {
         String VALUE_ROLE_SELLER = "seller";
 
         String PARAM_SOURCE = "source";
+        String PARAM_SHOW_BOTTOM_NAV = "show_bottom_nav";
     }
 
     interface GeneralInfo {

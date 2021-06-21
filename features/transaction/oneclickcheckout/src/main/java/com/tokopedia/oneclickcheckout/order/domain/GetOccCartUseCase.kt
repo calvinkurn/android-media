@@ -123,6 +123,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
             prd_prc_fmt
           }
           product_weight
+          product_weight_actual
           is_preorder
           product_cashback
           product_min_order
@@ -260,6 +261,10 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           state
           state_detail
           status
+          tokonow {
+            shop_id
+            warehouse_id
+          }
         }
         payment {
           enable
