@@ -1602,9 +1602,11 @@ class TopChatRoomPresenterTest {
         presenter.addAttachmentPreview(product)
         presenter.addAttachmentPreview(invoice)
         val productIds = presenter.getProductIdPreview()
+        val attachmentPreviews = presenter.getAttachmentsPreview()
 
         // Then
         assertThat(productIds.size, `is`(1))
+        assertThat(attachmentPreviews.size, `is`(2))
         assertThat(productIds, hasItem("12398764"))
     }
 
