@@ -8,10 +8,10 @@ public class ShopData {
 
     @SerializedName("shop_id")
     @Expose
-    private int shopId;
+    private long shopId;
     @SerializedName("shop_user_id")
     @Expose
-    private int shopUserId;
+    private long shopUserId;
     @SerializedName("domain")
     @Expose
     private String domain;
@@ -28,7 +28,7 @@ public class ShopData {
     @Expose
     private ShopReputation shopReputation;
 
-    public int getShopId() {
+    public long getShopId() {
         return shopId;
     }
 
@@ -36,7 +36,7 @@ public class ShopData {
         this.shopId = shopId;
     }
 
-    public int getShopUserId() {
+    public long getShopUserId() {
         return shopUserId;
     }
 

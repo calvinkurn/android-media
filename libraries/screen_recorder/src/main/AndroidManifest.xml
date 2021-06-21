@@ -9,7 +9,7 @@
 
     <application>
 
-        <service android:name=".ScreenRecordService" android:enabled="true" android:exported="true"
+        <service android:name=".ScreenRecordService" android:enabled="true" android:exported="false"
             android:process=":ScreenRecorder"/>
 
         <activity android:name=".ScreenRecorderActivity">

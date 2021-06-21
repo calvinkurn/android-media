@@ -149,6 +149,15 @@ class SellerHomeUseCaseModule {
 
     @SellerHomeScope
     @Provides
+    fun provideGetRecommendationDataUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: RecommendationMapper
+    ): GetRecommendationDataUseCase {
+        return GetRecommendationDataUseCase(gqlRepository, mapper)
+    }
+
+    @SellerHomeScope
+    @Provides
     fun provideGetTickerUseCase(
             gqlRepository: GraphqlRepository,
             mapper: TickerMapper,
@@ -162,7 +171,7 @@ class SellerHomeUseCaseModule {
             balanceInfoUseCase: BalanceInfoUseCase,
             getShopBadgeUseCase: GetShopBadgeUseCase,
             getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
-            shopStatusTypeUseCase: ShopStatusTypeUseCase,
+            getUserShopInfoUseCase: GetUserShopInfoUseCase,
             topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
             topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
             dispatchers: CoroutineDispatchers
@@ -172,7 +181,7 @@ class SellerHomeUseCaseModule {
                 balanceInfoUseCase,
                 getShopBadgeUseCase,
                 getShopTotalFollowersUseCase,
-                shopStatusTypeUseCase,
+                getUserShopInfoUseCase,
                 topAdsAutoTopupUseCase,
                 topAdsDashboardDepositUseCase,
                 dispatchers

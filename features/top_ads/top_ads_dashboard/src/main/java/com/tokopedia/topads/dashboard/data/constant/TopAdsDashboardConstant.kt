@@ -46,6 +46,7 @@ object TopAdsDashboardConstant {
     const val GROUP_NAME = "group_name"
     const val GROUP_TOTAL = "group_total"
     const val GROUPID = "groupId"
+    const val GROUP_STRATEGY = "groupStrategy"
     const val GROUPNAME = "groupName"
     const val PRICEBID = "price_bid"
     const val CUSTOM_DATE = 5
