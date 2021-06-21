@@ -18,6 +18,8 @@ class PmsListPageRobot {
     var cassavaTestRule = CassavaTestRule(false)
 
     fun clickHtpTest(position: Int) {
+        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)))
+            .check(matches(isDisplayed())).perform(click())
         val viewInteraction =
             onView(allOf(withId(R.id.recycler_view))).check(matches(isDisplayed()))
         viewInteraction.perform(

@@ -3,14 +3,20 @@ package com.tokopedia.pms
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import androidx.test.annotation.UiThreadTest
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.pressBack
+import androidx.test.espresso.core.internal.deps.guava.collect.Iterables
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
+import androidx.test.rule.UiThreadTestRule
+import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
+import androidx.test.runner.lifecycle.Stage
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.pms.analytics.PmsDetailMockResponse
 import com.tokopedia.pms.analytics.PmsIdlingResource
@@ -77,12 +83,13 @@ class PaymentListActivityTest {
             Thread.sleep(3000)
             clickItemOnDetailBottomSheet(0, com.tokopedia.pms.R.id.goToHowToPay)
             Thread.sleep(5000)
-            pressBack()
+            this@PaymentListActivityTest.hh()
+            //pressBack()
             Thread.sleep(5000)
-            pressBack()
+            this@PaymentListActivityTest.hh()
+            //pressBack()
             Thread.sleep(5000)
-
-            //clickHtpTest(0)
+            clickHtpTest(0)
 
         } assertTest {
             validate(PAYMENT_LIST_TRACKER_PATH)
@@ -164,6 +171,18 @@ class PaymentListActivityTest {
         activityRule.launchActivity(intent)
     }
 
+    fun hh(): Activity? {
+        getInstrumentation().waitForIdleSync()
+        val activity = arrayOfNulls<Activity>(1)
+        UiThreadTestRule().runOnUiThread {
+            val activities: Collection<Activity> =
+                ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED)
+            activity[0] = Iterables.getOnlyElement(activities)
+
+
+        }
+        return activity[0]
+    }
 
     companion object {
         const val PAYMENT_LIST_TRACKER_PATH = "tracker/payment/pms/pms_list_tracking.json"
