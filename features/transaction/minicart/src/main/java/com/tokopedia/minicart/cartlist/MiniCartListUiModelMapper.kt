@@ -55,8 +55,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
         val miniCartUnavailableSectionUiModels: MutableList<Visitable<*>> = mutableListOf()
 
         // Add error ticker
-        if (miniCartData.data.totalProductError > 0) {
-            miniCartTickerErrorUiModel = mapTickerErrorUiModel(miniCartData.data.totalProductError)
+        if (miniCartData.data.totalProductError > 0 && miniCartData.data.totalProductCount > 0) {
+            miniCartTickerErrorUiModel = mapTickerErrorUiModel(miniCartData.data.totalProductError, miniCartData.data.totalProductCount)
         }
 
         var weightTotal = 0
@@ -82,7 +82,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
 
         // Add unavailable separator
-        if (miniCartData.data.totalProductError > 0) {
+        if (miniCartData.data.totalProductError > 0 && miniCartData.data.totalProductCount > 0) {
             val miniCartSeparatorUiModel = mapSeparatorUiModel(8)
             miniCartUnavailableSectionUiModels.add(miniCartSeparatorUiModel)
         }
@@ -238,10 +238,10 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-    private fun mapTickerErrorUiModel(totalProductError: Int): MiniCartTickerErrorUiModel {
+    private fun mapTickerErrorUiModel(totalProductError: Int, totalProductAvailable: Int): MiniCartTickerErrorUiModel {
         return MiniCartTickerErrorUiModel().apply {
             unavailableItemCount = totalProductError
-            isShowErrorActionLabel = true
+            isShowErrorActionLabel = totalProductAvailable > 1
         }
     }
 
