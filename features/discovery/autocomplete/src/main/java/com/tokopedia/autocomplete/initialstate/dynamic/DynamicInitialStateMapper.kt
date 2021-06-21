@@ -7,6 +7,7 @@ import java.util.ArrayList
 
 fun InitialStateData.convertDynamicInitialStateSearchToVisitableList(): MutableList<Visitable<*>> {
     val childList = ArrayList<BaseItemInitialStateSearch>()
+    var position = 1
     for (item in this.items) {
         val model = BaseItemInitialStateSearch(
                 template = item.template,
@@ -23,9 +24,11 @@ fun InitialStateData.convertDynamicInitialStateSearchToVisitableList(): MutableL
                 productId = item.itemId,
                 type = item.type,
                 featureId = this.featureId,
-                header = this.header
+                header = this.header,
+                position = position
         )
         childList.add(model)
+        position++
     }
     return arrayListOf(DynamicInitialStateSearchDataView(this.featureId, childList))
 }

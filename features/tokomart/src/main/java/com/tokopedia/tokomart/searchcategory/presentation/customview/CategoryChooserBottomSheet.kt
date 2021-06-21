@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.searchcategory.utils.copyParcelable
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -75,7 +74,7 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
                 it.addItemDecoration(itemDivider)
         }
 
-        selectedOption?.let { callback?.getResultCount(it.value) }
+        updateResultCount()
         buttonApply?.setOnClickListener(::onButtonApplyClicked)
     }
 
@@ -85,8 +84,14 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
         callback?.onApplyCategory(selectedOption.value)
     }
 
-    fun setResultCountText(resultCount: String) {
-        buttonApply?.text = resultCount
+    private fun updateResultCount() {
+        val totalData = selectedOption?.value?.totalData ?: "0"
+        val buttonApplyText = String.format(
+                getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
+                totalData
+        )
+
+        buttonApply?.text = buttonApplyText
     }
 
     override fun onChecked(position: Int, option: Option, isChecked: Boolean) {
@@ -97,8 +102,7 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
 
         updateSelectedOption(position, option)
         notifyAdapterSelection(previousPosition, position)
-
-        callback?.getResultCount(option)
+        updateResultCount()
     }
 
     private fun updateSelectedOption(position: Int, option: Option) {
@@ -205,8 +209,6 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
     interface Callback {
 
         fun onApplyCategory(selectedOption: Option)
-
-        fun getResultCount(selectedOption: Option)
     }
 
     companion object {

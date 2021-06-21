@@ -4,7 +4,19 @@ data class MiniCartSimplifiedData(
         var miniCartWidgetData: MiniCartWidgetData = MiniCartWidgetData(),
         var miniCartItems: List<MiniCartItem> = emptyList(),
         var isShowMiniCartWidget: Boolean = false
-)
+) {
+
+    fun getMiniCartItemByProductId(productId: String): MiniCartItem? {
+        loop@ for (miniCartItem in miniCartItems) {
+            if (miniCartItem.productId == productId) {
+                return miniCartItem
+            }
+        }
+
+        return null
+    }
+
+}
 
 data class MiniCartWidgetData(
         var totalProductCount: Int = 0,
@@ -36,6 +48,5 @@ data class MiniCartItem(
         var category: String = "",
         var productName: String = "",
         var productVariantName: String = "",
-        var productPrice: Long = 0L,
-        var productQty: Int = 0
+        var productPrice: Long = 0L
 )

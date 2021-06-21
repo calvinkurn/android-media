@@ -189,7 +189,6 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     }
 
     private fun refreshPopularSearch(featureId: String) {
-        AutocompleteTracking.eventClickRefreshPopularSearch()
         presenter.refreshPopularSearch(featureId)
     }
 
@@ -234,8 +233,8 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         AutocompleteTracking.eventClickSeeMoreRecentSearch(userId)
     }
 
-    override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
-        presenter.onDynamicSectionItemClicked(item, adapterPosition)
+    override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch) {
+        presenter.onDynamicSectionItemClicked(item)
     }
 
     override fun trackEventClickDynamicSectionItem(userId: String, label: String, type: String) {
@@ -274,4 +273,16 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
                 ChooseAddressConstant.emptyAddress
             }
         } ?: ChooseAddressConstant.emptyAddress
+
+    override fun onRefreshPopularSearch() {
+        AutocompleteTracking.eventClickRefreshPopularSearch()
+    }
+
+    override fun onRefreshTokoNowPopularSearch() {
+        AutocompleteTracking.eventClickRefreshTokoNowPopularSearch()
+    }
+
+    override fun trackEventClickTokoNowDynamicSectionItem(label: String) {
+        AutocompleteTracking.eventClickTokoNowPopularSearch(label)
+    }
 }

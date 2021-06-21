@@ -350,4 +350,56 @@ public class AutocompleteTracking {
         );
         iris.saveEvent(map);
     }
+
+    public static void eventClickRefreshTokoNowPopularSearch() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOKO_NOW,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV_TOKO_NOW,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_REFRESH_TOKONOW_POPULAR_SEARCH,
+                        EVENT_LABEL, "",
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE
+                )
+        );
+    }
+
+    public static void eventClickTokoNowPopularSearch(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOKO_NOW,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV_TOKO_NOW,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_POPULAR_SEARCH_TOKONOW,
+                        EVENT_LABEL, label,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE
+                )
+        );
+    }
+
+    public static void eventClickTokoNowKeyword(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOKO_NOW,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV_TOKO_NOW,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_TOKONOW_KEYWORD_SUGGESTION,
+                        EVENT_LABEL, label,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE
+                )
+        );
+    }
+
+    public static void eventClickTokoNowCurated(String label) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOKO_NOW,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV_TOKO_NOW,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_TOKONOW_CURATED_SUGGESTION,
+                        EVENT_LABEL, label,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE
+                )
+        );
+    }
 }

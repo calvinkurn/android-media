@@ -19,6 +19,7 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.*
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
 import com.tokopedia.autocomplete.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -56,6 +57,10 @@ class InitialStatePresenter @Inject constructor(
 
     private fun getUserId(): String {
         return if (userSession.isLoggedIn) userSession.userId else "0"
+    }
+
+    private fun isTokoNow(): Boolean {
+        return UrlParamUtils.isTokoNow(searchParameter)
     }
 
     override fun getInitialStateData() {
@@ -284,6 +289,9 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun refreshPopularSearch(featureId: String) {
+        if (isTokoNow()) view?.onRefreshTokoNowPopularSearch()
+        else view?.onRefreshPopularSearch()
+
         val warehouseId = view?.chooseAddressData?.warehouse_id ?: ""
 
         refreshInitialStateUseCase.unsubscribe()
@@ -527,12 +535,22 @@ class InitialStatePresenter @Inject constructor(
         }
     }
 
-    override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
-        val label = "value: ${item.title} - title: ${item.header} - po: ${adapterPosition + 1}"
-        view?.trackEventClickDynamicSectionItem(getUserId(), label, item.featureId)
+    override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch) {
+        if (isTokoNow()) trackEventClickTokoNowDynamicSectionItem(item)
+        else trackEventClickDynamicSectionItem(item)
 
         view?.route(item.applink, searchParameter)
         view?.finish()
+    }
+
+    private fun trackEventClickTokoNowDynamicSectionItem(item: BaseItemInitialStateSearch) {
+        val label = "value: ${item.title} - po: ${item.position} - page: ${item.applink}"
+        view?.trackEventClickTokoNowDynamicSectionItem(label)
+    }
+
+    private fun trackEventClickDynamicSectionItem(item: BaseItemInitialStateSearch) {
+        val label = "value: ${item.title} - title: ${item.header} - po: ${item.position}"
+        view?.trackEventClickDynamicSectionItem(getUserId(), label, item.featureId)
     }
 
     override fun onCuratedCampaignCardClicked(curatedCampaignDataView: CuratedCampaignDataView) {

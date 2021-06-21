@@ -65,6 +65,7 @@ object PublicFolderUtil {
             mimeType: String,
             directory: String? = null,
     ): Pair<File?, Uri?> {
+
         try {
             val contentResolver: ContentResolver = context.contentResolver
             val contentValues = createContentValues(outputFileName, mimeType, directory)
@@ -83,20 +84,26 @@ object PublicFolderUtil {
                 }
                 resetPending(contentResolver, contentValues, uri)
             }
-            return fileAndUriPair(contentResolver, uri)
+            return fileAndUriPair(contentResolver, uri, outputFileName)
         } catch (ex: Exception) {
             return null to null
         }
     }
 
-    private fun fileAndUriPair (contentResolver: ContentResolver, uri:Uri?): Pair<File?, Uri?> {
+    private fun fileAndUriPair (contentResolver: ContentResolver, uri:Uri?, outputFileName: String = ""): Pair<File?, Uri?> {
         val filePath = FileUtil.getPath(contentResolver, uri)
-        return if (filePath != null) {
-            File(filePath) to uri
-        } else {
-            null to null
+        if (filePath == null) return null to null
+
+        var resultFile = File(filePath)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            try {
+                val resultPath = resultFile.absolutePath.replace(resultFile.name, outputFileName)
+                resultFile.renameTo(File(resultPath))
+            } catch (ex: Exception) {}
         }
+        return resultFile to uri
     }
+
 
     private fun getContentUriFromMime(mimeType: String): Uri {
         return when {

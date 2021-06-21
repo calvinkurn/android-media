@@ -12,6 +12,7 @@ public interface AutocompleteEventTracking {
         String PROMO_VIEW_IRIS = "promoViewIris";
         String VIEW_TOP_NAV_IRIS = "viewTopNavIris";
         String PRODUCT_CLICK = "productClick";
+        String CLICK_TOKO_NOW = "clickTokoNow";
     }
 
     interface Category {
@@ -20,6 +21,7 @@ public interface AutocompleteEventTracking {
         String INITIAL_STATE = "initial-state";
         String SEARCH = "Search";
         String TOP_NAV_INITIAL_STATE = "top nav - initial state";
+        String TOP_NAV_TOKO_NOW = "tokonow - top nav";
     }
 
     interface Action {
@@ -48,6 +50,10 @@ public interface AutocompleteEventTracking {
         String IMPRESSION_SEE_MORE_RECENT_SEARCH = "impression see more - recent search";
         String CLICK_CURATED_CAMPAIGN = "click - curated campaign";
         String IMPRESSION_CURATED_CAMPAIGN = "impression - curated campaign";
+        String CLICK_REFRESH_TOKONOW_POPULAR_SEARCH = "click - refresh popular search - initial state";
+        String CLICK_POPULAR_SEARCH_TOKONOW = "click - popular search - initial state";
+        String CLICK_TOKONOW_KEYWORD_SUGGESTION = "click - product autocomplete - autocomplete";
+        String CLICK_TOKONOW_CURATED_SUGGESTION = "click - campaign autocomplete - autocomplete";
     }
 
     interface Label {

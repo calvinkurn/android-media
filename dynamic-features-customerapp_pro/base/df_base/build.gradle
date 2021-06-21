@@ -116,6 +116,7 @@ dependencies {
     implementation project(rootProject.ext.features.paymentSetting)
     implementation project(rootProject.ext.features.instantDebitBca)
     implementation project(rootProject.ext.features.pms)
+    implementation project(rootProject.ext.features.withdraw)
 
     //Promo
     implementation project(rootProject.ext.features.promoCheckout)
