@@ -535,6 +535,7 @@ open class TopChatRoomPresenter @Inject constructor(
         opponentId: String,
         onSendingMessage: () -> Unit
     ) {
+        onSendingMessage.invoke()
         sendAttachments(messageId, opponentId, question.content)
         sendMessage(messageId, question.content, startTime, opponentId, question.intent)
         view?.clearAttachmentPreviews()
