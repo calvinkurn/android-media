@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -130,6 +131,11 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     fun updateWidget(){
+        val textColor = chooseAddressWidgetListener?.getTextColor()
+        if (textColor != null) {
+            textChosenAddress?.setTextColor(ContextCompat.getColor(context, textColor))
+
+        }
         val data = ChooseAddressUtils.getLocalizingAddressData(context)
         if (data?.city_id?.isEmpty() == true) {
             textChosenAddress?.text = data.label
@@ -269,6 +275,11 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         fun getEventLabelHostPage(): String {
             return ""
         }
-    }
+
+        /**/
+        fun getTextColor(): Int {
+            return com.tokopedia.unifyprinciples.R.color.light_N700_96
+        }
+     }
 
 }
