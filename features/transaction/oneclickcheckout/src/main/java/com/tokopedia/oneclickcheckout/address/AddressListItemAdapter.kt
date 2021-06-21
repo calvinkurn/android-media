@@ -1,9 +1,11 @@
 package com.tokopedia.oneclickcheckout.address
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.oneclickcheckout.databinding.CardAddressListBinding
+import com.tokopedia.oneclickcheckout.databinding.ItemLoadingAddressListBinding
 
 class AddressListItemAdapter(private val listener: OnSelectedListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -29,10 +31,11 @@ class AddressListItemAdapter(private val listener: OnSelectedListener) : Recycle
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
         if (viewType == AddressLoadingViewHolder.LOADING_LAYOUT) {
-            return AddressLoadingViewHolder(parent.inflateLayout(AddressLoadingViewHolder.LOADING_LAYOUT))
+            return AddressLoadingViewHolder(ItemLoadingAddressListBinding.inflate(inflater))
         }
-        return AddressListItemViewHolder(parent.inflateLayout(AddressListItemViewHolder.LAYOUT), listener)
+        return AddressListItemViewHolder(CardAddressListBinding.inflate(inflater), listener)
     }
 
     override fun getItemCount(): Int {
