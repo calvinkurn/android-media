@@ -366,13 +366,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return p2Data.value?.miniCart?.get(getDynamicProductInfoP1?.basic?.productID ?: "")
     }
 
-    fun isParentExistInMiniCart(parentId: String): Boolean {
-        val data = p2Data.value?.miniCart?.values?.toList() ?: listOf()
-        return data.any {
-            it.productParentId == parentId
-        }
-    }
-
     fun updateDynamicProductInfoData(data: DynamicProductInfoP1?) {
         data?.let {
             getDynamicProductInfoP1 = it

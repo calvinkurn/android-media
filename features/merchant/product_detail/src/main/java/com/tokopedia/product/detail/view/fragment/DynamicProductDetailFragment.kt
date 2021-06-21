@@ -1417,13 +1417,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun updateButtonState() {
         viewModel.getDynamicProductInfoP1?.let {
-            val miniCartItem = if (it.basic.isTokoNow) viewModel.getMiniCartItem() else null
-            val alternateText = viewModel.p2Data.value?.alternateCopy?.firstOrNull {
-                it.cartType == ProductDetailCommonConstant.KEY_CART_TYPE_UPDATE_CART
-            }?.text ?: ProductDetailCommonConstant.TEXT_SAVE_ATC
             val cartTypeData = viewModel.getCartTypeByProductId()
+            val miniCartItem = if (it.basic.isTokoNow && cartTypeData?.availableButtons?.firstOrNull()?.isCartTypeDisabledOrRemindMe() == false) viewModel.getMiniCartItem() else null
 
-            val alternateButtonVariant = if (it.data.variant.isVariant && viewModel.isParentExistInMiniCart(it.parentProductId) && cartTypeData?.availableButtons?.firstOrNull()?.isCartTypeDisabledOrRemindMe() == false) alternateText else ""
             actionButtonView.renderData(
                     isWarehouseProduct = !it.isProductActive(),
                     hasShopAuthority = viewModel.hasShopAuthority(),
@@ -1431,7 +1427,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     hasTopAdsActive = hasTopAds(),
                     isVariant = it.data.variant.isVariant,
                     cartTypeData = cartTypeData,
-                    alternateButtonVariant = alternateButtonVariant,
                     miniCartItem = miniCartItem)
         }
         showOrHideButton()
