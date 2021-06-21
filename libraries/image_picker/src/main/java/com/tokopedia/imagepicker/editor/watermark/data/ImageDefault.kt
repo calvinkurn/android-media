@@ -4,8 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import androidx.annotation.DrawableRes
 import androidx.annotation.FloatRange
-import com.tokopedia.imagepicker.editor.watermark.builder.Position
 import com.tokopedia.imagepicker.editor.watermark.entity.ImageUIModel
+import com.tokopedia.imagepicker.editor.watermark.entity.PositionUIModel
 
 open class ImageDefault(
     override var alpha: Int = 100,

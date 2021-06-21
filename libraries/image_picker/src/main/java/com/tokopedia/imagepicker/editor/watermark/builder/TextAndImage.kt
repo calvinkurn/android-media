@@ -28,7 +28,7 @@ data class TextAndImage(
     override var textSize: Int = textDefault.textSize,
     override var backgroundColor: Int = textDefault.backgroundColor,
     override var textStyle: Paint.Style = textDefault.textStyle,
-    override var typeFaceId: Int = textDefault.typeFaceId,
+    override var fontTypeId: Int = textDefault.fontTypeId,
     override var textShadowBlurRadius: Float = textDefault.textShadowBlurRadius,
     override var textShadowXOffset: Float = textDefault.textShadowXOffset,
     override var textShadowYOffset: Float = textDefault.textShadowYOffset,

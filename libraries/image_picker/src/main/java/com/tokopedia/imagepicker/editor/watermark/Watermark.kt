@@ -9,6 +9,7 @@ import com.tokopedia.imagepicker.editor.watermark.entity.TextAndImageUIModel
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeBitmap
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.textAsBitmap
+import com.tokopedia.imagepicker.editor.watermark.utils.createBitmap
 
 data class Watermark (
     var context: Context,
@@ -23,7 +24,10 @@ data class Watermark (
 ) {
 
     init {
+        // set the initial value of canvas
         canvasBitmap = backgroundImg
+
+        // set the initial value of watermark result
         outputImage = backgroundImg
 
         if (!isCombine) {
@@ -34,6 +38,10 @@ data class Watermark (
         }
     }
 
+    /**
+     * watermark builder by [TextUIModel] and [ImageUIModel]
+     * @param watermark
+     */
     private fun createWatermarkTextAndImage(watermark: TextAndImageUIModel?) {
         if (watermark == null) return
 
@@ -50,27 +58,42 @@ data class Watermark (
         )
     }
 
-    private fun createWatermarkImage(watermarkImg: ImageUIModel?) {
-        if (watermarkImg == null) return
+    /**
+     * watermark builder by image
+     * @param watermarkImage
+     */
+    private fun createWatermarkImage(watermarkImage: ImageUIModel?) {
+        if (watermarkImage == null) return
 
         createWatermark(
-            bitmap = watermarkImg.image!!.resizeBitmap(
-                size = watermarkImg.imageSize.toFloat(),
+            bitmap = watermarkImage.image!!.resizeBitmap(
+                size = watermarkImage.imageSize.toFloat(),
                 background = backgroundImg!!
             ),
-            config = watermarkImg
+            config = watermarkImage
         )
     }
 
+    /**
+     * watermark builder by text
+     * @param watermarkText
+     */
     private fun createWatermarkText(watermarkText: TextUIModel?) {
         if (watermarkText == null) return
 
         createWatermark(
-            bitmap = watermarkText.text.textAsBitmap(context, watermarkText),
+            bitmap = watermarkText.text
+                .textAsBitmap(context, watermarkText)
+                .combine(null),
             config = watermarkText
         )
     }
 
+    /**
+     * generic function for watermark builder
+     * @param bitmap (Bitmap)
+     * @param config (Generic)
+     */
     private fun createWatermark(
         bitmap: Bitmap,
         config: BaseWatermark?
@@ -82,7 +105,7 @@ data class Watermark (
         }
 
         backgroundImg?.let {
-            val newBitmap = Bitmap.createBitmap(it.width, it.height, it.config)
+            val newBitmap = createBitmap(it.width, it.height, it.config)
             val watermarkCanvas = Canvas(newBitmap)
 
             watermarkCanvas.drawBitmap(canvasBitmap!!, 0f, 0f, null)
@@ -115,6 +138,10 @@ data class Watermark (
         }
     }
 
+    /**
+     * set the watermark result into image view
+     * @param target (ImageView)
+     */
     fun setToImageView(target: ImageView) {
         target.setImageBitmap(outputImage)
     }
@@ -127,24 +154,15 @@ data class Watermark (
             (bitmap.height / 2).toFloat()
         )
 
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+        return bitmap.createBitmap(matrix = matrix)
     }
 
-    private fun Bitmap.addSpace(spaceCount: Int): Bitmap {
-        val combinedCanvas = Canvas(this)
-        combinedCanvas.drawBitmap(
-            this,
-            this.width.toFloat() * spaceCount,
-            0f,
-            null
-        )
-        return this
-    }
-
-    private fun Bitmap.combine(secondBitmap: Bitmap): Bitmap {
-        val spaceThreshold = 2
+    private fun Bitmap.combine(other: Bitmap?): Bitmap {
         val width: Int
         val height: Int
+        val spaceThreshold = 2
+
+        val secondBitmap = other ?: createBitmap(0, 0)
 
         if (this.width > secondBitmap.width) {
             width = (this.width + secondBitmap.width) * spaceThreshold
@@ -154,7 +172,7 @@ data class Watermark (
             height = this.height
         }
 
-        val combinedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val combinedBitmap = createBitmap(width, height)
         val combinedCanvas = Canvas(combinedBitmap)
 
         combinedCanvas.drawBitmap(this, 0f, 0f, null)

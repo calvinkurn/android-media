@@ -49,8 +49,8 @@ object BitmapHelper {
             }
 
             // font properties
-            if (properties.typeFaceId != 0) {
-                typeface = ResourcesCompat.getFont(context, properties.typeFaceId)
+            if (properties.fontTypeId != 0) {
+                typeface = ResourcesCompat.getFont(context, properties.fontTypeId)
             }
         }
 
@@ -101,7 +101,7 @@ object BitmapHelper {
         var bitmapResult = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
 
         if (boundWidth > 0 && bitmapHeight > 0) {
-            bitmapResult = Bitmap.createBitmap(boundWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
+            bitmapResult = createBitmap(boundWidth, bitmapHeight)
         }
 
         // create the bitmap canvas
@@ -114,22 +114,12 @@ object BitmapHelper {
     }
 
     fun Bitmap.resizeBitmap(size: Float, background: Bitmap): Bitmap {
-        val bitmapWidth = this.width
-        val bitmapHeight = this.height
-        val scale = (background.width * size) / bitmapWidth
-
+        val scale = (background.width * size) / this.width
         val matrix = Matrix()
+
         matrix.postScale(scale, scale)
 
-        return Bitmap.createBitmap(
-            this,
-            0,
-            0,
-            bitmapWidth,
-            bitmapHeight,
-            matrix,
-            true
-        )
+        return this.createBitmap(matrix = matrix)
     }
 
     fun Bitmap.resizeBitmap(maxImageSize: Int): Bitmap {

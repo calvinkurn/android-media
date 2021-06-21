@@ -8,7 +8,7 @@ interface TextUIModel : BaseWatermark {
     var textColor: Int
     var backgroundColor: Int
     var textStyle: Paint.Style
-    var typeFaceId: Int
+    var fontTypeId: Int
     var textShadowBlurRadius: Float
     var textShadowXOffset: Float
     var textShadowYOffset: Float

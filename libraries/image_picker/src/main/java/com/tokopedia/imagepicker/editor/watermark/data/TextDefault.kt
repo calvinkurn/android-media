@@ -10,7 +10,7 @@ open class TextDefault(
     @ColorInt override var backgroundColor: Int = Color.TRANSPARENT,
     @ColorInt override var textShadowColor: Int = Color.WHITE,
     @ColorInt override var textColor: Int = Color.BLACK,
-    @FontRes override var typeFaceId: Int = 0,
+    @FontRes override var fontTypeId: Int = 0,
     override var textStyle: Paint.Style = Paint.Style.FILL,
     override var textShadowBlurRadius: Float = 0f,
     override var textShadowXOffset: Float = 0f,
