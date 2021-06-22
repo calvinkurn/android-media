@@ -86,7 +86,7 @@ class CategoryViewModel @Inject constructor (
         getCategoryFirstPageUseCase.cancelJobs()
         getCategoryFirstPageUseCase.execute(
                 this::onGetCategoryFirstPageSuccess,
-                this::onGetCategoryFirstPageError,
+                this::onGetFirstPageError,
                 createRequestParams(),
         )
     }

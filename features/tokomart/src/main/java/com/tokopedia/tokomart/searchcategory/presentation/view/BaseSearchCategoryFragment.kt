@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -47,6 +48,7 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.network.utils.ErrorHandler.getErrorMessage
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -413,6 +415,16 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().isOutOfServiceLiveData.observe(this::updateOutOfServiceVisibility)
         getViewModel().quickFilterTrackingLiveData.observe(this::sendTrackingQuickFilter)
         getViewModel().addToCartTrackingLiveData.observe(this::sendAddToCartTrackingEvent)
+        getViewModel().isShowErrorLiveData.observe(this::showNetworkErrorHelper)
+    }
+
+    private fun showNetworkErrorHelper(throwable: Throwable?) {
+        val context = activity ?: return
+        val view = view ?: return
+
+        NetworkErrorHelper.showEmptyState(context, view, getErrorMessage(context, throwable)) {
+            getViewModel().onViewReloadPage()
+        }
     }
 
     protected open fun onShopIdUpdated(shopId: String) {

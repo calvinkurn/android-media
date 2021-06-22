@@ -81,7 +81,7 @@ class SearchViewModel @Inject constructor (
         getSearchFirstPageUseCase.cancelJobs()
         getSearchFirstPageUseCase.execute(
                 ::onGetSearchFirstPageSuccess,
-                ::onGetSearchFirstPageError,
+                ::onGetFirstPageError,
                 createRequestParams()
         )
     }
@@ -157,10 +157,6 @@ class SearchViewModel @Inject constructor (
         )
 
         generalSearchEventMutableLiveData.value = generalSearchDataLayer
-    }
-
-    private fun onGetSearchFirstPageError(throwable: Throwable) {
-
     }
 
     override fun executeLoadMore() {
