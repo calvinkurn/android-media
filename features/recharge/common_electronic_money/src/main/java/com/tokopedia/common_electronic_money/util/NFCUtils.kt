@@ -17,11 +17,6 @@ class NFCUtils {
         }
 
         @JvmStatic
-        fun stringToByteArray(str: String): ByteArray {
-            return str.toByteArray()
-        }
-
-        @JvmStatic
         fun toHex(bytes: ByteArray): String {
             val hexChars = CharArray(bytes.size * 2)
             for (j in bytes.indices) {
@@ -36,11 +31,6 @@ class NFCUtils {
         fun formatCardUID(cardNumber: String): String {
             return cardNumber.substring(0, 4) + " - " + cardNumber.substring(4, 8) + " - " +
                     cardNumber.substring(8, 12) + " - " + cardNumber.substring(12, 16)
-        }
-
-        @JvmStatic
-        fun get8Byte(bytes: ByteArray):ByteArray {
-            return bytes.sliceArray(0..7)
         }
 
         @JvmStatic

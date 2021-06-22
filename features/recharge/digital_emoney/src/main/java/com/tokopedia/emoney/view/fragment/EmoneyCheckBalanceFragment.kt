@@ -184,11 +184,48 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         })
 
         tapcashBalanceViewModel.errorCardMessage.observe(this, Observer {
-            showError(it)
+            showError(ErrorHandler.getErrorMessage(context, it),
+                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_check_balance_problem_label),
+                    resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_failed_read_card_link),
+                    true
+            )
+        })
+
+        tapcashBalanceViewModel.errorInquiry.observe(this, Observer { throwable ->
+            context?.let {
+                val errorMessage = ErrorHandler.getErrorMessage(it, throwable)
+                if((throwable is SocketTimeoutException)){
+                    showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error),
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_timeout_socket_error_title),
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_socket_time_out),
+                            isButtonShow = true,
+                            isGlobalErrorShow = false,
+                            mandiriGetSocketTimeout = true
+                    )
+                } else if((throwable is UnknownHostException) || errorMessage.equals(getString(com.tokopedia.network.R.string.default_request_error_unknown))){
+                    showError(resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_grpc_label_error),
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
+                            "",
+                            true)
+                } else {
+                    showError(errorMessage,
+                            resources.getString(com.tokopedia.common_electronic_money.R.string.emoney_nfc_error_title),
+                            "",
+                            true, true)
+                }
+            }
         })
 
         tapcashBalanceViewModel.tapcashInquiry.observe(this, Observer {
-            showCardLastBalance(it)
+            it.error?.let { error ->
+                when (error.status) {
+                    0 -> showCardLastBalance(it)
+                    1 -> it.error?.let { error ->
+                        showError(error.title)
+                    }
+                    else -> return@let
+                }
+            }
         })
 
     }
