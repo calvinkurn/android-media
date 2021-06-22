@@ -9,6 +9,7 @@ import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
@@ -35,7 +36,7 @@ import com.tokopedia.oneclickcheckout.payment.creditcard.installment.Installment
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
-class NewOrderPreferenceCard(private val binding: CardOrderPreferenceNewBinding, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
+class NewOrderPreferenceCard(private val binding: CardOrderPreferenceNewBinding, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics): RecyclerView.ViewHolder(binding.root) {
 
     private lateinit var preference: OrderPreference
     private var shipment: OrderShipment? = null
@@ -607,6 +608,8 @@ class NewOrderPreferenceCard(private val binding: CardOrderPreferenceNewBinding,
     }
 
     companion object {
+        const val VIEW_TYPE = 4
+
         private val BBO_DESCRIPTION_MINIMUM_LIMIT = arrayOf("belum", "min")
 
         private const val MAIN_ADDRESS_LEFT_MARGIN = 8

@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view.card
 
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
@@ -16,7 +17,7 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
-class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private val listener: OrderTotalPaymentCardListener) {
+class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private val listener: OrderTotalPaymentCardListener): RecyclerView.ViewHolder(binding.root) {
 
     fun setPaymentVisible(isVisible: Boolean) {
         binding.root.visibility = if (isVisible) View.VISIBLE else View.GONE
@@ -144,6 +145,8 @@ class OrderTotalPaymentCard(private val binding: LayoutPaymentBinding, private v
     }
 
     companion object {
+        const val VIEW_TYPE = 6
+
         private const val ICON_BUTTON_LEFT_BOUND = 24
         private const val ICON_BUTTON_TOP_BOUND = 0
         private const val ICON_BUTTON_RIGHT_BOUND = 44

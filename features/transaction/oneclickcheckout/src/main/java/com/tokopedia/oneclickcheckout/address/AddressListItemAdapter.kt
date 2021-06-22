@@ -33,9 +33,9 @@ class AddressListItemAdapter(private val listener: OnSelectedListener) : Recycle
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         if (viewType == AddressLoadingViewHolder.LOADING_LAYOUT) {
-            return AddressLoadingViewHolder(ItemLoadingAddressListBinding.inflate(inflater))
+            return AddressLoadingViewHolder(ItemLoadingAddressListBinding.inflate(inflater, parent, false))
         }
-        return AddressListItemViewHolder(CardAddressListBinding.inflate(inflater), listener)
+        return AddressListItemViewHolder(CardAddressListBinding.inflate(inflater, parent, false), listener)
     }
 
     override fun getItemCount(): Int {

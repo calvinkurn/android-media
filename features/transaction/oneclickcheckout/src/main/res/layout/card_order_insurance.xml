@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:layout_marginStart="@dimen/dp_16"
+        android:background="@color/Unify_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cb_insurance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:checked="true"
+        app:indeterminate="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_insurance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lbl_shipping_insurance"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toBottomOf="@+id/cb_insurance"
+        app:layout_constraintStart_toEndOf="@+id/cb_insurance"
+        app:layout_constraintTop_toTopOf="@+id/cb_insurance"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/img_bt_insurance_info"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:paddingStart="@dimen/spacing_lvl2"
+        android:paddingEnd="@dimen/spacing_lvl2"
+        app:icon_name="INFORMATION"
+        app:layout_constraintBottom_toBottomOf="@+id/cb_insurance"
+        app:layout_constraintStart_toEndOf="@+id/tv_insurance"
+        app:layout_constraintTop_toTopOf="@+id/cb_insurance" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_insurance_price"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintBottom_toBottomOf="@+id/cb_insurance"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/img_bt_insurance_info"
+        app:layout_constraintTop_toTopOf="@+id/cb_insurance"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@color/Unify_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cb_insurance" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

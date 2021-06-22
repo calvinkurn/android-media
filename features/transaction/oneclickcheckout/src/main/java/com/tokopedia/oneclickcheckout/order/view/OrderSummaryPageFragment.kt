@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -33,6 +34,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet.Companion.EXTRA_IS_FULL_FLOW
@@ -117,6 +119,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private var binding by autoCleared<FragmentOrderSummaryPageBinding>()
 
+    private lateinit var adapter: OrderSummaryPageAdapter
     private var orderProductCard: OrderProductCard? = null
     private var orderShopCard: OrderShopCard? = null
     private lateinit var newOrderPreferenceCard: NewOrderPreferenceCard
@@ -256,10 +259,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
+        adapter = OrderSummaryPageAdapter(orderSummaryAnalytics, this, getNewOrderPreferenceCardListener(),
+                getOrderInsuranceCardListener(), getOrderTotalPaymentCardListener())
+        binding.rvOrderSummaryPage.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding.rvOrderSummaryPage.adapter = adapter
         orderProductCard = OrderProductCard(binding.cardOrderProduct, this, orderSummaryAnalytics)
         orderShopCard = OrderShopCard(binding.cardOrderShop, orderSummaryAnalytics)
         newOrderPreferenceCard = NewOrderPreferenceCard(binding.newPreferenceCard, getNewOrderPreferenceCardListener(), orderSummaryAnalytics)
-        orderInsuranceCard = OrderInsuranceCard(binding, getOrderInsuranceCardListener(), orderSummaryAnalytics)
+//        orderInsuranceCard = OrderInsuranceCard(binding, getOrderInsuranceCardListener(), orderSummaryAnalytics)
         orderTotalPaymentCard = OrderTotalPaymentCard(binding.layoutPayment, getOrderTotalPaymentCardListener())
         binding.btnPromoCheckout.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
     }
@@ -276,6 +283,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     binding.loaderContent.animateGone()
                     binding.globalError.animateGone()
                     view?.also { _ ->
+                        adapter.shop = viewModel.orderShop
+                        adapter.product = viewModel.orderProduct
+                        adapter.preference = it.data
+                        adapter.onboarding = it.data.onboarding
+                        if (binding.rvOrderSummaryPage.isComputingLayout) {
+                            binding.rvOrderSummaryPage.post {
+                                adapter.notifyDataSetChanged()
+                            }
+                        } else {
+                            adapter.notifyDataSetChanged()
+                        }
                         orderProductCard?.setProduct(viewModel.orderProduct)
                         orderProductCard?.setShop(viewModel.orderShop)
                         orderShopCard?.setShop(viewModel.orderShop, viewModel.orderProduct.freeOngkirImg, viewModel.orderProduct.isFreeOngkirExtra)
@@ -286,37 +304,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             showPreferenceCard()
                             newOrderPreferenceCard.setPreference(it.data)
                             binding.layoutNoAddress.root.animateGone()
-                            binding.mainContent.animateShow()
+//                            binding.mainContent.animateShow()
+                            binding.rvOrderSummaryPage.show()
                         } else {
-                            binding.mainContent.animateGone()
-                        }
-                    }
-                }
-                is OccState.Success -> {
-                    orderPreference = it.data
-                    binding.loaderContent.animateGone()
-                    binding.globalError.animateGone()
-                    view?.also { _ ->
-                        if (orderProductCard?.isProductInitialized() == false) {
-                            orderProductCard?.setProduct(viewModel.orderProduct)
-                            orderProductCard?.setShop(viewModel.orderShop)
-                            orderShopCard?.setShop(viewModel.orderShop, viewModel.orderProduct.freeOngkirImg, viewModel.orderProduct.isFreeOngkirExtra)
-                            orderProductCard?.initView()
-                            showMessage(it.data)
-                            if (it.data.preference.address.addressId > 0 &&
-                                    it.data.preference.payment.gatewayCode.isNotEmpty()) {
-                                showPreferenceCard()
-                                newOrderPreferenceCard.setPreference(it.data)
-                                binding.layoutNoAddress.root.animateGone()
-                                binding.mainContent.animateShow()
-                            } else {
-                                binding.mainContent.animateGone()
-                            }
+//                            binding.mainContent.animateGone()
+                            binding.rvOrderSummaryPage.gone()
                         }
                     }
                 }
                 is OccState.Loading -> {
                     binding.mainContent.animateGone()
+                    binding.rvOrderSummaryPage.gone()
                     binding.globalError.animateGone()
                     binding.layoutNoAddress.root.animateGone()
                     binding.loaderContent.animateShow()
@@ -331,8 +329,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         viewModel.orderShipment.observe(viewLifecycleOwner) {
+            adapter.insurance = it?.insuranceData
+            adapter.shipment = it
+            if (binding.rvOrderSummaryPage.isComputingLayout) {
+                binding.rvOrderSummaryPage.post {
+                    adapter.notifyDataSetChanged()
+                }
+            } else {
+                adapter.notifyDataSetChanged()
+            }
             newOrderPreferenceCard.setShipment(it)
-            orderInsuranceCard.setupInsurance(it?.insuranceData, viewModel.orderProduct.productId.toString())
+//            orderInsuranceCard.setupInsurance(it?.insuranceData, viewModel.orderProduct.productId.toString())
             if (it?.needPinpoint == true && orderPreference?.preference?.address != null) {
                 goToPinpoint(orderPreference?.preference?.address)
             }
@@ -340,9 +347,25 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         viewModel.orderPayment.observe(viewLifecycleOwner) {
             newOrderPreferenceCard.setPayment(it)
+            adapter.payment = it
+            if (binding.rvOrderSummaryPage.isComputingLayout) {
+                binding.rvOrderSummaryPage.post {
+                    adapter.notifyDataSetChanged()
+                }
+            } else {
+                adapter.notifyDataSetChanged()
+            }
         }
 
         viewModel.orderTotal.observe(viewLifecycleOwner) {
+            adapter.total = it
+            if (binding.rvOrderSummaryPage.isComputingLayout) {
+                binding.rvOrderSummaryPage.post {
+                    adapter.notifyDataSetChanged()
+                }
+            } else {
+                adapter.notifyDataSetChanged()
+            }
             orderTotalPaymentCard.setupPayment(it)
         }
 
@@ -683,7 +706,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     val relativeLocation = IntArray(2)
                     ViewHelper.getRelativePositionRec(firstView, scrollview, relativeLocation)
                     scrollview.scrollTo(0, relativeLocation.last())
-                    coachMark.showCoachMark(coachMarkItems, scrollview)
+//                    coachMark.showCoachMark(coachMarkItems, scrollview)
                     // trigger first analytics
                     triggerCoachMarkAnalytics(onboarding, 0)
                 }
@@ -1022,6 +1045,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             refresh()
         }
         binding.mainContent.animateGone()
+        binding.rvOrderSummaryPage.gone()
         binding.layoutNoAddress.root.animateGone()
         binding.globalError.animateShow()
     }
@@ -1076,6 +1100,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 activity?.finish()
             }
             binding.mainContent.animateGone()
+            binding.rvOrderSummaryPage.gone()
             binding.layoutNoAddress.root.animateGone()
             binding.globalError.animateShow()
         }
@@ -1096,6 +1121,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             activity?.finish()
         }
         binding.mainContent.animateGone()
+        binding.rvOrderSummaryPage.gone()
         binding.layoutNoAddress.root.animateGone()
         binding.globalError.animateShow()
     }
@@ -1103,6 +1129,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun refresh(shouldHideAll: Boolean = true, isFullRefresh: Boolean = true) {
         if (shouldHideAll) {
             binding.mainContent.animateGone()
+            binding.rvOrderSummaryPage.gone()
             binding.layoutNoAddress.root.animateGone()
             binding.globalError.animateGone()
             binding.loaderContent.animateShow()

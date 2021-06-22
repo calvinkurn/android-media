@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.databinding.CardOrderShopBinding
@@ -7,7 +8,11 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import java.util.*
 
-class OrderShopCard(private val view: CardOrderShopBinding, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
+class OrderShopCard(private val view: CardOrderShopBinding, private val orderSummaryAnalytics: OrderSummaryAnalytics): RecyclerView.ViewHolder(view.root) {
+
+    companion object {
+        const val VIEW_TYPE = 2
+    }
 
     private lateinit var shop: OrderShop
 

@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -20,7 +21,7 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-class OrderProductCard(private val binding: CardOrderProductBinding, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : CoroutineScope {
+class OrderProductCard(private val binding: CardOrderProductBinding, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root), CoroutineScope {
 
     private lateinit var product: OrderProduct
     private lateinit var shop: OrderShop
@@ -226,6 +227,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
     }
 
     companion object {
+        const val VIEW_TYPE = 3
         const val MAX_NOTES_LENGTH = 144
 
         private const val DEBOUNCE_RESET_QUANTITY_MS = 1000L

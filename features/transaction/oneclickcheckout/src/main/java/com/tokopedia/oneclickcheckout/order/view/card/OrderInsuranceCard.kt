@@ -1,16 +1,21 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
-import com.tokopedia.oneclickcheckout.databinding.FragmentOrderSummaryPageBinding
+import com.tokopedia.oneclickcheckout.databinding.CardOrderInsuranceBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
-class OrderInsuranceCard(private val binding: FragmentOrderSummaryPageBinding, private val listener: OrderInsuranceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
+class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private val listener: OrderInsuranceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics): RecyclerView.ViewHolder(binding.root) {
+
+    companion object {
+        const val VIEW_TYPE = 5
+    }
 
     fun setupInsurance(insuranceData: InsuranceData?, productId: String) {
         binding.apply {
@@ -28,11 +33,11 @@ class OrderInsuranceCard(private val binding: FragmentOrderSummaryPageBinding, p
                         cbInsurance.isEnabled = false
                         forceSetChecked(cbInsurance, true)
                         listener.onInsuranceChecked(true)
-                        groupInsurance.visible()
+                        root.visible()
                     }
                     InsuranceConstant.INSURANCE_TYPE_NO -> {
                         listener.onInsuranceChecked(false)
-                        groupInsurance.gone()
+                        root.gone()
                     }
                     InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
                         tvInsurance.setText(com.tokopedia.purchase_platform.common.R.string.label_shipment_insurance)
@@ -44,11 +49,11 @@ class OrderInsuranceCard(private val binding: FragmentOrderSummaryPageBinding, p
                             forceSetChecked(cbInsurance, false)
                             listener.onInsuranceChecked(false)
                         }
-                        groupInsurance.visible()
+                        root.visible()
                     }
                 }
             } else {
-                groupInsurance.gone()
+                root.gone()
             }
         }
     }
