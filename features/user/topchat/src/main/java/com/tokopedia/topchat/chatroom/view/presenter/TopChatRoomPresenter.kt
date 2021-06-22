@@ -839,9 +839,8 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun getOrderProgress(messageId: String) {
         orderProgressUseCase.getOrderProgress(
             messageId,
-            ::onSuccessGetOrderProgress,
-            ::onErrorGetOrderProgress
-        )
+            ::onSuccessGetOrderProgress
+        ) {}
     }
 
     override fun getStickerGroupList(chatRoom: ChatroomViewModel) {
@@ -1012,8 +1011,6 @@ open class TopChatRoomPresenter @Inject constructor(
             false
         }
     }
-
-    private fun onErrorGetOrderProgress(throwable: Throwable) {}
 
     private fun onErrorGetStickerGroup(throwable: Throwable) {}
 
