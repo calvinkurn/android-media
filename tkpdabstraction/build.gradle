@@ -3,10 +3,13 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
+    google()
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
 buildscript {
     repositories {
+    google()
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }

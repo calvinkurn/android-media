@@ -4,6 +4,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
+    google()
         maven {
             url "https://maven.google.com"
         }

@@ -15,13 +15,14 @@ repositories {
 
 buildscript {
     repositories {
+    google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
         jcenter()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
+//        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 

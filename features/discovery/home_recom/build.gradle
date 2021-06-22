@@ -22,6 +22,7 @@ android{
 
 buildscript {
     repositories {
+    google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
@@ -30,7 +31,7 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.androidjunit5
+//        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 

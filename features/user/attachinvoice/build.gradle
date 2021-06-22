@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: "de.mannodermaus.android-junit5"
+//apply plugin: "de.mannodermaus.android-junit5"
 
 android {
     testOptions {
@@ -11,13 +11,13 @@ android {
         unitTests {
             includeAndroidResources = true
         }
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
+//        junitPlatform {
+//            filters {
+//                engines {
+//                    include 'spek2'
+//                }
+//            }
+//        }
     }
 }
 
@@ -27,6 +27,7 @@ repositories {
 
 buildscript {
     repositories {
+    google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()

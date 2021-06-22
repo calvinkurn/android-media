@@ -6,6 +6,7 @@ apply from: '../tools/set_debug_tools.gradle'
 
 buildscript {
     repositories {
+    google()
         google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()

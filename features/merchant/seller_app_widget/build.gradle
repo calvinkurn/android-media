@@ -5,6 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 
 buildscript {
     repositories {
+    google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
         jcenter()

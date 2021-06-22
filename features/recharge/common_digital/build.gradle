@@ -14,6 +14,7 @@ android {
 
 buildscript {
     repositories {
+    google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }

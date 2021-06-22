@@ -232,7 +232,7 @@ ext {
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
-            hansel                : "io.hansel.preprocessor:preprocessor:_normanX2",
+            hansel                : "io.hansel.preprocessor:preprocessor:_normanX10",
             robust                : "com.tokopedia.patch:robust:0.0.1@aar",
             autopatchbase         : "com.tokopedia.patch:autopatchbase:0.0.1",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
