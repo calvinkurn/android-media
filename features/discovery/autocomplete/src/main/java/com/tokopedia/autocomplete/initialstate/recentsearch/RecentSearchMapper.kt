@@ -4,8 +4,9 @@ import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.InitialStateItem
 import java.util.*
 
-fun List<InitialStateItem>.convertToRecentSearchDataView(): RecentSearchDataView {
+fun List<InitialStateItem>.convertToRecentSearchDataView(dimension90: String): RecentSearchDataView {
     val childList = ArrayList<BaseItemInitialStateSearch>()
+    var position = 1
     for (item in this) {
         val model = BaseItemInitialStateSearch(
                 template = item.template,
@@ -20,9 +21,12 @@ fun List<InitialStateItem>.convertToRecentSearchDataView(): RecentSearchDataView
                 labelType = item.labelType,
                 shortcutImage = item.shortcutImage,
                 productId = item.itemId,
-                type = item.type
+                type = item.type,
+                dimension90 = dimension90,
+                position = position
         )
         childList.add(model)
+        position++
     }
     return RecentSearchDataView(childList)
 }

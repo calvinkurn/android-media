@@ -3,18 +3,18 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.utils.PMCommonUtils
-import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
+import com.tokopedia.power_merchant.subscribe.view.model.PMProStatusInfoUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetShopGradeUiModel
 import kotlinx.android.synthetic.main.widget_pm_shop_grade.view.*
 import java.util.*
@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit
 
 class ShopGradeWidget(
         itemView: View,
+        private val listener: Listener,
         private val powerMerchantTracking: PowerMerchantTracking
 ) : AbstractViewHolder<WidgetShopGradeUiModel>(itemView) {
 
@@ -75,6 +76,8 @@ class ShopGradeWidget(
     }
 
     private fun setupShopScore(element: WidgetShopGradeUiModel) = with(itemView) {
+        val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
+        val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         val labelStringId = if (element.isNewSeller) {
             R.string.pm_shop_performance_sum_new_seller
         } else {
@@ -83,8 +86,19 @@ class ShopGradeWidget(
 
         tvPmShopGradeScore.text = context.getString(labelStringId, getShopScoreTextColor(element), getShopScoreFmt(element.shopScore)).parseAsHtml()
         tvPmShopGradeScoreTotal.text = context.getString(R.string.power_merchant_max_score)
-        val shopGradeInfo = getPmShopGradeInfo(element)
-        tvPmShopGradeThreshold.text = shopGradeInfo.parseAsHtml()
+
+        if (isPmActive && isPmPro) {
+            tvPmShopGradeThreshold.gone()
+            pmProStatusInfoView.visible()
+            pmProStatusInfoView.setOnClickListener {
+                listener.showPmProStatusInfo(getPmProStatusInfo(element))
+            }
+        } else {
+            pmProStatusInfoView.gone()
+            tvPmShopGradeThreshold.visible()
+            val shopGradeInfo = getPmShopGradeInfo(element)
+            tvPmShopGradeThreshold.text = shopGradeInfo.parseAsHtml()
+        }
 
         val isPmShopScoreTipsVisible = element.pmStatus == PMStatusConst.IDLE
         tvPmShopScoreTips.isVisible = isPmShopScoreTipsVisible
@@ -92,6 +106,9 @@ class ShopGradeWidget(
         tvPmShopScoreTips.setOnClickListener {
             RouteManager.route(context, Constant.Url.SHOP_PERFORMANCE_TIPS)
             powerMerchantTracking.sendEventClickTipsToImproveShopScore(element.shopScore.toString())
+        }
+        wrapperPmShopScore.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL)
         }
     }
 
@@ -102,10 +119,10 @@ class ShopGradeWidget(
                 val endOfTenure = getEndOfTenureDate(element)
                 itemView.context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_active_new_seller, endOfTenure)
             } else {
-                itemView.context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_active, textColor, element.threshold, getPmTireLabel(element.pmTierType))
+                itemView.context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_active, textColor, element.shopScoreThreshold, getPmTireLabel(element.pmTierType))
             }
         } else {
-            itemView.context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_idle, textColor, element.threshold, getPmTireLabel(element.pmTierType))
+            itemView.context.getString(R.string.pm_shop_grade_shop_score_threshold_description_pm_idle, textColor, element.shopScoreThreshold, getPmTireLabel(element.pmTierType))
         }
     }
 
@@ -126,7 +143,7 @@ class ShopGradeWidget(
     private fun getShopScoreTextColor(element: WidgetShopGradeUiModel): String {
         val minScore = 1
         return when (element.shopScore) {
-            in minScore..element.threshold -> {
+            in minScore..element.shopScoreThreshold -> {
                 PMCommonUtils.getHexColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
             }
             else -> PMCommonUtils.getHexColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
@@ -144,6 +161,7 @@ class ShopGradeWidget(
         tvPmShopGrade.text = getPmTireLabel(element.pmTierType)
         imgPmShopGradeBackground.loadImage(element.gradeBackgroundUrl)
         imgPmShopGrade.loadImageWithoutPlaceholder(element.gradeBadgeImgUrl)
+
         val isPmStatusActive = element.pmStatus == PMStatusConst.ACTIVE
         if (isPmStatusActive) {
             tvPmShopGradeStatus.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
@@ -176,5 +194,19 @@ class ShopGradeWidget(
             PMStatusConst.ACTIVE -> itemView.context.getString(R.string.pm_active)
             else -> itemView.context.getString(R.string.pm_inactive)
         }
+    }
+
+    private fun getPmProStatusInfo(element: WidgetShopGradeUiModel): PMProStatusInfoUiModel {
+        return PMProStatusInfoUiModel(
+                autoExtendDateFmt = element.autoExtendDateStr,
+                pmActiveShopScoreThreshold = element.shopScoreThreshold,
+                pmProActiveShopScoreThreshold = element.pmProShopScoreThreshold,
+                itemSoldThreshold = element.itemSoldThreshold,
+                netItemValueThreshold = element.netItemValueThreshold
+        )
+    }
+
+    interface Listener {
+        fun showPmProStatusInfo(model: PMProStatusInfoUiModel)
     }
 }

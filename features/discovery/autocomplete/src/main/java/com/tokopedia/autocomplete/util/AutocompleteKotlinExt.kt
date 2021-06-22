@@ -17,3 +17,9 @@ internal fun CardView.getHorizontalShadowOffset(): Int {
 
     return (maxElevation + (1 - cos(45.0)) * radius).toFloat().roundToInt()
 }
+
+internal fun Map<String, Any>?.getValueString(key: String): String {
+    this ?: return ""
+
+    return get(key)?.toString() ?: ""
+}

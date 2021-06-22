@@ -91,7 +91,7 @@ public class InboxReputationDetailPresenter
     }
 
     @Override
-    public void sendReplyReview(int reputationId, String productId, int shopId,
+    public void sendReplyReview(long reputationId, String productId, long shopId,
                                 String reviewId, String replyReview) {
         viewListener.showLoadingDialog();
         sendReplyReviewUseCase.execute(SendReplyReviewUseCase.getParam(

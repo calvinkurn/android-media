@@ -53,4 +53,28 @@ interface ShopHomeCarouselProductListener {
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
             shopHomeProductViewModel: ShopHomeProductUiModel?
     )
+
+    fun onCarouselProductShowcaseItemClicked(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductUiModel: ShopHomeProductUiModel?
+    )
+
+    fun onCarouselProductShowcaseItemImpression(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductUiModel: ShopHomeProductUiModel?
+    )
+
+    fun onCarouselProductShowcaseItemClickAddToCart(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductUiModel: ShopHomeProductUiModel?
+    )
+
+    fun onCarouselProductShowcaseCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?)
+
 }

@@ -19,6 +19,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.data.model.SetDelivered
 import com.tokopedia.sellerorder.detail.di.DaggerSomDetailComponent
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.fragment_som_detail.*
 
 class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment() {
 
@@ -132,17 +134,25 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
 
     override fun onSuccessRejectOrder(rejectOrderData: SomRejectOrderResponse.Data.RejectOrder) {
         if (rejectOrderData.success == 1) {
-            showToasterError(rejectOrderData.message.firstOrNull() ?: getString(R.string.global_error), view)
+            showToaster(rejectOrderData.message.firstOrNull() ?: getString(R.string.message_change_order_status_success), view, Toaster.TYPE_NORMAL, "")
         } else {
-            showToasterError(rejectOrderData.message.firstOrNull() ?: getString(R.string.global_error), view)
+            showToaster(rejectOrderData.message.firstOrNull() ?: getString(R.string.global_error), view, Toaster.TYPE_ERROR)
         }
         shouldRefreshOrderList = true
         loadDetail()
     }
 
     override fun onSuccessSetDelivered(deliveredData: SetDelivered) {
-        val message = deliveredData.message.joinToString().takeIf { it.isNotBlank() } ?: getString(R.string.global_error)
-        showToasterError(message, view)
+        if (deliveredData.success == SomConsts.SOM_SET_DELIVERED_SUCCESS_CODE) {
+            showToaster(getString(R.string.message_set_delivered_success), view, Toaster.TYPE_NORMAL, "")
+            dismissBottomSheets()
+            shouldRefreshOrderList = true
+            loadDetail()
+        } else {
+            val message = deliveredData.message.joinToString().takeIf { it.isNotBlank() } ?: getString(R.string.global_error)
+            showToaster(message, view, Toaster.TYPE_ERROR, "")
+            bottomSheetSetDelivered?.onFailedSetDelivered()
+        }
     }
 
     override fun createIntentConfirmShipping(isChangeShipping: Boolean) {
