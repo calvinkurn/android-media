@@ -20,8 +20,13 @@ class CatalogUtilsTestCase {
     }
 
     @Test
-    fun `test one`() {
-
+    fun `Analytics Sort Filter`() {
+        val hashmapSearchQuery = HashMap<String,String>()
+        hashmapSearchQuery["a"] = "1"
+        hashmapSearchQuery["b"] = "2"
+        hashmapSearchQuery["c"] = "3"
+        val result = CatalogUtil.getSortFilterAnalytics(hashmapSearchQuery)
+        Assert.assertEquals(result,"a=1&b=2&c=3")
     }
 
 }
