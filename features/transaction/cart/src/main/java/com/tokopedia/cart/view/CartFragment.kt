@@ -75,9 +75,12 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
@@ -459,7 +462,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun isNavRevamp(): Boolean {
         val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
-        val fromActivity = arguments?.getBoolean(CartActivity.EXTRA_IS_FROM_CART_ACTIVITY, false) ?: false
+        val fromActivity = arguments?.getBoolean(CartActivity.EXTRA_IS_FROM_CART_ACTIVITY, false)
+                ?: false
         if (fromActivity) {
             return RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, TOOLBAR_VARIANT_BASIC) == TOOLBAR_VARIANT_NAVIGATION
         } else {
@@ -3513,4 +3517,43 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return null
     }
 
+    private fun getErrorMessage(throwable: Throwable): String? {
+        var errorMessage = throwable.message
+        if (!(throwable is ResponseErrorException || throwable is AkamaiErrorException)) {
+            errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
+        }
+
+        return errorMessage
+    }
+
+    override fun logOnErrorLoadCartPage(throwable: Throwable) {
+        val errorMessage = getErrorMessage(throwable)
+        ServerLogger.log(
+                Priority.P1,
+                LoggerConstant.TAG_MARKETPLACE_CHECKOUT_FLOW_ERROR,
+                mapOf(
+                        LoggerConstant.KEY_TYPE to LoggerConstant.TYPE_LOAD_CART_PAGE_ERROR,
+                        LoggerConstant.KEY_MESSAGE to (errorMessage ?: "unknown exception")
+                )
+        )
+    }
+
+    override fun logOnErrorUpdateCartForCheckout(throwable: Throwable) {
+        val productIdList = mutableListOf<String>()
+        cartAdapter.selectedCartItemData.forEach { cartItemData ->
+            cartItemData.originData?.productId?.let { productId ->
+                productIdList.add(productId)
+            }
+        }
+        val errorMessage = getErrorMessage(throwable)
+        ServerLogger.log(
+                Priority.P1,
+                LoggerConstant.TAG_MARKETPLACE_CHECKOUT_FLOW_ERROR,
+                mapOf(
+                        LoggerConstant.KEY_TYPE to LoggerConstant.TYPE_UPDATE_CART_FOR_CHECKOUT_ERROR,
+                        LoggerConstant.KEY_MESSAGE to (errorMessage ?: "unknown exception"),
+                        LoggerConstant.KEY_PRODUCT_ID_LIST to productIdList.joinToString(",")
+                )
+        )
+    }
 }

@@ -135,5 +135,7 @@ interface ICartListView : CustomerView {
 
     fun sendATCTrackingURLRecent(productModel: CartRecentViewItemHolderData)
 
+    fun logOnErrorLoadCartPage(throwable: Throwable)
 
+    fun logOnErrorUpdateCartForCheckout(throwable: Throwable)
 }

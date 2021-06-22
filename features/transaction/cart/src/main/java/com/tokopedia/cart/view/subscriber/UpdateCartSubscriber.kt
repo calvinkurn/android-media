@@ -6,7 +6,9 @@ import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.cart.view.ICartListView
+import com.tokopedia.network.exception.MessageErrorException
 import rx.Subscriber
+import java.lang.RuntimeException
 
 /**
  * Created by Irfan Khoirul on 2019-12-18.
@@ -26,6 +28,7 @@ class UpdateCartSubscriber(private val view: ICartListView?,
                 e.printStackTrace()
                 it.hideProgressLoading()
                 it.renderErrorToShipmentForm(e)
+                it.logOnErrorUpdateCartForCheckout(e)
             }
         }
     }
@@ -40,6 +43,7 @@ class UpdateCartSubscriber(private val view: ICartListView?,
                     } else {
                         it.renderErrorToShipmentForm(data.message, if (data.toasterActionData.showCta) data.toasterActionData.text else "")
                     }
+                    it.logOnErrorUpdateCartForCheckout(MessageErrorException(data.message))
                 } else {
                     val checklistCondition = getChecklistCondition()
                     val cartItemDataList = it.getAllSelectedCartDataList()

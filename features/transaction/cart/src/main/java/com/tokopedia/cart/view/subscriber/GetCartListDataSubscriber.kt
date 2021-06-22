@@ -25,6 +25,7 @@ class GetCartListDataSubscriber(val view: ICartListView?,
             it.renderLoadGetCartDataFinish()
             it.renderErrorInitialGetCartListData(e)
             it.stopCartPerformanceTrace()
+            it.logOnErrorLoadCartPage(e)
         }
     }
 

@@ -21,6 +21,7 @@ import com.tokopedia.cart.view.subscriber.*
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
@@ -44,6 +45,7 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import rx.subscriptions.CompositeSubscription
+import java.lang.RuntimeException
 import javax.inject.Inject
 
 /**
@@ -211,6 +213,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             } else {
                 if (!fireAndForget) {
                     it.hideProgressLoading()
+                    it.logOnErrorUpdateCartForCheckout(MessageErrorException("update cart empty product"))
                 }
             }
         }
