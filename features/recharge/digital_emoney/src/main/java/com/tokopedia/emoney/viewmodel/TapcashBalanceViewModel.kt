@@ -171,13 +171,16 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
      * @param securePurse should comes from securePurse response result
      * @return should return 184 char, card data mapped by this method
      */
-    private fun getCardData(securePurse: String,
+    fun getCardData(securePurse: String,
                             terminalRandomNumber: String,
                             cardRandomNumber: String
     ): String {
-        if (securePurse.isNotEmpty() && securePurse.length == MAX_SECURE_PURSE_LENGTH
-                && terminalRandomNumber.isNotEmpty() && terminalRandomNumber.length == MAX_16_LENGTH
-                && cardRandomNumber.isNotEmpty() && cardRandomNumber.length == MAX_CHALLAGE_LENGTH) {
+        if (securePurse.isNotEmpty()
+                && securePurse.length == MAX_SECURE_PURSE_LENGTH
+                && terminalRandomNumber.isNotEmpty()
+                && terminalRandomNumber.length == MAX_16_LENGTH
+                && cardRandomNumber.isNotEmpty()
+                && cardRandomNumber.length == MAX_CHALLAGE_LENGTH) {
             val result = FIX_VALUE +
                     getStringFromPosition(securePurse, 9, 16) + // CAN
                     getStringFromPosition(securePurse, 17, 24) + //CSN
@@ -194,14 +197,14 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                     getStringFromPosition(securePurse, 95, 95) + // Last Trx Debit Option Byte
                     getStringFromPosition(securePurse, 96, 103) + // 1st 8 byte eData
                     getStringFromPosition(securePurse, 104, 111) // last counter
-            return if (result.length == MAX_CARD_DATA_SIZE) result else ""
+            return result
         } else return ""
     }
 
     /**
      * @return the random 16 string that needed as TERMINAL_RANDOM_NUMBER
      */
-    private fun getRandomString(): String {
+     fun getRandomString(): String {
         val allowedChars = ('A'..'F') + ('0'..'9')
         return (1..16)
                 .map { allowedChars.random() }
@@ -236,7 +239,6 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
 
         private const val TRANSCEIVE_TIMEOUT_IN_SEC = 5000
 
-        private const val MAX_CARD_DATA_SIZE = 184
         private const val MAX_WRITE_RESULT_SIZE = 100
         private const val MAX_SECURE_PURSE_LENGTH = 230
         private const val MAX_16_LENGTH = 16
@@ -245,7 +247,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         private const val FIX_VALUE = "0001"
         private const val FIX_VALUE_6TH_ROW = "00000000"
 
-        private val COMMAND_GET_CHALLENGE = byteArrayOf(
+        val COMMAND_GET_CHALLENGE = byteArrayOf(
                 0x00.toByte(),  // CLA Class
                 0x84.toByte(),  // INS Instruction
                 0x00.toByte(),  // P1  Parameter 1
@@ -253,7 +255,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 0x08.toByte() // // LE Data Field
         )
 
-        private val COMMAND_SECURE_PURSE = byteArrayOf(
+        val COMMAND_SECURE_PURSE = byteArrayOf(
                 0x90.toByte(),  // CLA Class
                 0x32.toByte(),  // INS Instruction
                 0x03.toByte(),  // P1  Parameter 1
@@ -261,7 +263,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 0x0A.toByte() //  LC Data Field
         )
 
-        private val COMMAND_WRITE_BALANCE = byteArrayOf(
+        val COMMAND_WRITE_BALANCE = byteArrayOf(
                 0x90.toByte(),  // CLA Class
                 0x36.toByte(),  // INS Instruction
                 0x14.toByte(),  // P1  Parameter 1
