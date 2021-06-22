@@ -4,10 +4,25 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.utils.*
+import com.tokopedia.productcard.utils.QUANTITY_EDITOR_DEBOUNCE_IN_MS
+import com.tokopedia.productcard.utils.expandTouchArea
+import com.tokopedia.productcard.utils.getDimensionPixelSize
+import com.tokopedia.productcard.utils.glideClear
+import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImage
+import com.tokopedia.productcard.utils.renderLabelBestSeller
+import com.tokopedia.productcard.utils.renderLabelCampaign
+import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -166,29 +181,17 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         quantityEditorNonVariant?.setValue(newValue)
         quantityEditorNonVariant?.show()
         buttonAddToCart?.gone()
+
+        quantityEditorDebounce?.onQuantityChanged(newValue)
     }
 
     private fun renderQuantityEditorNonVariant(productCardModel: ProductCardModel) {
         val shouldShowQuantityEditor = productCardModel.shouldShowQuantityEditor()
 
+        configureQuantityEditorDebounce()
+
         quantityEditorNonVariant?.showWithCondition(shouldShowQuantityEditor)
         quantityEditorNonVariant?.configureQuantityEditor(productCardModel)
-    }
-
-    private fun QuantityEditorUnify.configureQuantityEditor(productCardModel: ProductCardModel) {
-        val nonVariant = productCardModel.nonVariant ?: return
-
-        clearValueChangeListener()
-        configureQuantityEditorDebounce()
-        configureQuantitySettings(nonVariant)
-
-        setValueChangedListener { newValue, _, _ ->
-            quantityEditorDebounce?.onQuantityChanged(newValue)
-        }
-    }
-
-    private fun QuantityEditorUnify.clearValueChangeListener() {
-        setValueChangedListener { _, _, _ -> }
     }
 
     private fun configureQuantityEditorDebounce() {
@@ -220,6 +223,30 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
                 .subscribe(quantityEditorSubscriber)
     }
 
+    private fun QuantityEditorUnify.configureQuantityEditor(productCardModel: ProductCardModel) {
+        val nonVariant = productCardModel.nonVariant ?: return
+
+        clearValueChangeListener()
+        configureQuantitySettings(nonVariant)
+
+        setAddClickListener {
+            quantityEditorDebounce?.onQuantityChanged(editText.text.toString().toIntOrZero())
+        }
+
+        setSubstractListener {
+            quantityEditorDebounce?.onQuantityChanged(editText.text.toString().toIntOrZero())
+        }
+
+        editText.setOnEditorActionListener { _, _, _ ->
+            quantityEditorDebounce?.onQuantityChanged(editText.text.toString().toIntOrZero())
+            true
+        }
+    }
+
+    private fun QuantityEditorUnify.clearValueChangeListener() {
+        setValueChangedListener { _, _, _ -> }
+    }
+
     private fun QuantityEditorUnify.configureQuantitySettings(nonVariant: ProductCardModel.NonVariant) {
         val quantity = nonVariant.quantity
         if (quantity > 0)
@@ -247,6 +274,12 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     private fun renderTextVariantQuantity(quantity: Int) {
         if (quantity > 99) textVariantQuantity?.text = context.getString(R.string.product_card_text_variant_quantity_grid)
         else textVariantQuantity?.text = "$quantity pcs"
+    }
+
+
+    fun updateNonVariantQuantity(productCardModel: ProductCardModel) {
+        renderButtonAddToCart(productCardModel)
+        renderQuantityEditorNonVariant(productCardModel)
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots
