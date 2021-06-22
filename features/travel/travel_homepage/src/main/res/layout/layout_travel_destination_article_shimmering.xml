@@ -56,19 +56,19 @@
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="65dp"
             android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/travel_homepage_dp_12"
+            android:layout_marginTop="@dimen/unify_space_12"
             app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/travel_homepage_dp_12"
+            android:layout_marginTop="@dimen/unify_space_12"
             app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/travel_homepage_dp_12"
+            android:layout_marginTop="@dimen/unify_space_12"
             app:corners="8" />
 
 
@@ -92,19 +92,19 @@
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="65dp"
             android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/travel_homepage_dp_12"
+            android:layout_marginTop="@dimen/unify_space_12"
             app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/travel_homepage_dp_12"
+            android:layout_marginTop="@dimen/unify_space_12"
             app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/travel_homepage_dp_12"
+            android:layout_marginTop="@dimen/unify_space_12"
             app:corners="8" />
 
 
