@@ -16,6 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.data.uidata.PartialButtonDataModel
+import com.tkpd.atcvariant.data.uidata.VariantErrorDataModel
 import com.tkpd.atcvariant.di.AtcVariantComponent
 import com.tkpd.atcvariant.di.DaggerAtcVariantComponent
 import com.tkpd.atcvariant.util.ATC_LOGIN_REQUEST_CODE
@@ -33,6 +34,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.observeOnce
@@ -48,6 +50,9 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -208,9 +213,18 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         viewModel.initialData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> adapter.submitList(it.data)
-                is Fail -> logException(it.throwable)
+                is Fail -> showError(it.throwable)
             }
         })
+    }
+
+    private fun showError(it: Throwable) {
+        val errorType = if (it is SocketTimeoutException || it is UnknownHostException || it is ConnectException) {
+            GlobalError.NO_CONNECTION
+        } else {
+            GlobalError.SERVER_ERROR
+        }
+        adapter.submitList(listOf(VariantErrorDataModel(errorType = errorType)))
     }
 
     private fun observeButtonState() {
@@ -427,6 +441,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     override fun onQuantityUpdate(quantity: Int, productId: String) {
         viewModel.updateQuantity(quantity, productId)
+    }
+
+    override fun refreshPage() {
+        sharedViewModel.aggregatorParams.observeOnce(viewLifecycleOwner, {
+            viewModel.decideInitialValue(it, userSessionInterface.isLoggedIn)
+        })
     }
 
     private fun doAtc(buttonAction: Int) {
