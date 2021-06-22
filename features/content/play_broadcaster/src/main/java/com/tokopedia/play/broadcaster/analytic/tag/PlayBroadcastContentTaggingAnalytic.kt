@@ -7,7 +7,9 @@ interface PlayBroadcastContentTaggingAnalytic {
 
     fun selectRecommendedTags(selectedTags: Set<String>)
 
-    fun proceedFromContentTagging()
+    fun selectRecommendedTag(channelId: String, tag: String, isChosen: Boolean)
+
+    fun proceedFromContentTagging(channelId: String)
 
     fun clickTitleInputArea()
 }
