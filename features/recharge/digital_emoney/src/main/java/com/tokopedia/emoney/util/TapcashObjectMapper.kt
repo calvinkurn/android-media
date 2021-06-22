@@ -20,15 +20,15 @@ object TapcashObjectMapper {
                         "",
                         1,
                         NFCUtils.formatCardUID(attributes.cardNumber),
-                        2, //todo issuerid
-                "1015", //todo etoll operator id
-                0, //todo pending balance
+                        issuer_id = 2,
+                        operatorId = "1015",
+                        pendingBalance = 0,
                 ),
                 error = EmoneyInquiryError(
                         error.id,
                         error.title,
                         error.status,
-                        needAction = true // todo need action
+                        needAction = true
                 )
         )
 

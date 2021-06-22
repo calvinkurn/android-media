@@ -2,6 +2,7 @@ package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
 import android.util.Log
+import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.util.NFCUtils
@@ -24,9 +25,17 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                                                   val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    val errorCardMessage = SingleLiveEvent<Throwable>()
-    val errorInquiry = SingleLiveEvent<Throwable>()
-    val tapcashInquiry = SingleLiveEvent<EmoneyInquiry>()
+    private var errorCardMessageMutable = SingleLiveEvent<Throwable>()
+    val errorCardMessage: LiveData<Throwable>
+        get() = errorCardMessageMutable
+
+    private var errorInquiryMutable = SingleLiveEvent<Throwable>()
+    val errorInquiry: LiveData<Throwable>
+        get() = errorInquiryMutable
+
+    private var tapcashInquiryMutable = SingleLiveEvent<EmoneyInquiry>()
+    val tapcashInquiry: LiveData<EmoneyInquiry>
+        get() = tapcashInquiryMutable
 
     private lateinit var isoDep: IsoDep
 
@@ -46,7 +55,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                     val result = isoDep.transceive(COMMAND_GET_CHALLENGE)
                     if (isCommandFailed(result)) {
                         isoDep.close()
-                        errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                        errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     } else {
                         val resultString = NFCUtils.toHex(result)
                         Log.d("CHALLANGERESULTSTRING", resultString)
@@ -54,7 +63,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                         Log.d("SECUREREQUESTSTRING", securePurseRequest)
                         val secureResult = isoDep.transceive(secureReadPurse(terminalRandomNumber))
                         if (isCommandFailed(secureResult)) {
-                            errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                         } else {
                             val secureResultString = NFCUtils.toHex(secureResult)
                             Log.d("SECURERESULTSTRING", secureResultString)
@@ -66,11 +75,11 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                     }
                 } catch (e: IOException) {
                     isoDep.close()
-                    errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
             }
         } else {
-            errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
         }
     }
 
@@ -87,10 +96,10 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
             if (data.rechargeUpdateBalance.attributes.cryptogram.isNotEmpty()) {
                 writeBalance(data, terminalRandomNumber)
             } else {
-                tapcashInquiry.postValue(mapTapcashtoEmoney(data))
+                tapcashInquiryMutable.postValue(mapTapcashtoEmoney(data))
             }
         }) {
-            errorInquiry.postValue(it)
+            errorInquiryMutable.postValue(it)
         }
     }
 
@@ -105,18 +114,18 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 val writeResultString = NFCUtils.toHex(writeResult)
                 Log.d("TAPCASH_RESULTDATA", writeResultString)
                 if (isCommandFailed(writeResult)) {
-                    errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 } else if(writeResultString.length == MAX_WRITE_RESULT_SIZE){
-                    tapcashInquiry.postValue(mapTapcashtoEmoney(tapcash, writeResultString.substring(48, 54)))
+                    tapcashInquiryMutable.postValue(mapTapcashtoEmoney(tapcash, writeResultString.substring(48, 54)))
                 } else {
-                    errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                    errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
             } catch (e: IOException) {
                 isoDep.close()
-                errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
             }
         } else {
-            errorCardMessage.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+            errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
         }
     }
 
