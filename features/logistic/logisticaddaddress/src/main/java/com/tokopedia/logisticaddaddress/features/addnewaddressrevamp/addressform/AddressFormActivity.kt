@@ -9,9 +9,16 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_BUNDLE
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressRevampComponent> {
+
+    private val userSession: UserSessionInterface by lazy {
+        UserSession(this)
+    }
 
     override fun getComponent(): AddNewAddressRevampComponent {
         return DaggerAddNewAddressRevampComponent.builder()
@@ -26,6 +33,11 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
             fragment = AddressFormFragment.newInstance(bundle?: Bundle())
         }
         return fragment
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        AddNewAddressRevampAnalytics.onClickBackPositive(userSession.userId)
     }
 
     companion object {

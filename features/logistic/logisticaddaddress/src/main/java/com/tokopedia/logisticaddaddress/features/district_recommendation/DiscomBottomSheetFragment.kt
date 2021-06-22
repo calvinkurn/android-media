@@ -378,7 +378,8 @@ class DiscomBottomSheetFragment : BottomSheets(),
 
     companion object {
 
-        private const val MAX_HEIGHT_MULTIPLIER = 0.90
+        private const val SUCCESS = "success"
+        private const val NOT_SUCCESS = "not success"
 
         @JvmStatic
         fun newInstance(isLogisticLabel: Boolean, isAnaRevamp: Boolean, isPinpoint: Boolean?): DiscomBottomSheetFragment {
@@ -400,7 +401,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
             binding.btnChooseZipcode.isEnabled = true
         }
         binding.btnChooseZipcode.setOnClickListener {
-            AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId)
+            AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
             districtAddressData?.let { data -> actionListener.onChooseZipcode(data, zipCode, isPinpoint) }
             dismiss()
         }

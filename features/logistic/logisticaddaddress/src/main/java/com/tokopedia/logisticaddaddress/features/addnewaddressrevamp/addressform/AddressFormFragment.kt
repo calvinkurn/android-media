@@ -181,15 +181,21 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 is Success -> {
                     if (it.data.isSuccess == 1) {
                         saveDataModel?.id = it.data.addrId
-                        if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickSimpanPositive(userSession.userId)
-                        else AddNewAddressRevampAnalytics.onClickSimpanNegative(userSession.userId)
+                        if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickSimpanPositive(userSession.userId, SUCCESS)
+                        else AddNewAddressRevampAnalytics.onClickSimpanNegative(userSession.userId, SUCCESS)
                         onSuccessAddAddress()
                     }
                 }
 
                 is Fail -> {
-                    if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(userSession.userId)
-                    else AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(userSession.userId)
+                    if (isPositiveFlow) {
+                        AddNewAddressRevampAnalytics.onClickSimpanPositive(userSession.userId, NOT_SUCCESS)
+                        AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(userSession.userId)
+                    }
+                    else {
+                        AddNewAddressRevampAnalytics.onClickSimpanNegative(userSession.userId, NOT_SUCCESS)
+                        AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(userSession.userId)
+                    }
                     val msg = it.throwable.message.toString()
                     view?.let { view -> Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
@@ -569,8 +575,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 }
             }
 
-            formAddressNegative.etKotaKecamatan.textFieldInput.setOnClickListener {
-                AddNewAddressRevampAnalytics.onClickFieldKotaKecamatanNegative(userSession.userId)
+            formAddressNegative.etKotaKecamatan.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    AddNewAddressRevampAnalytics.onClickFieldKotaKecamatanNegative(userSession.userId)
+                }
             }
 
             formAddressNegative.etAlamat.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
@@ -717,6 +725,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
         const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
         const val REQUEST_CODE_CONTACT_PICKER = 99
+
+        const val SUCCESS = "success"
+        const val NOT_SUCCESS = "not success"
 
         fun newInstance(extra: Bundle): AddressFormFragment {
             return AddressFormFragment().apply {

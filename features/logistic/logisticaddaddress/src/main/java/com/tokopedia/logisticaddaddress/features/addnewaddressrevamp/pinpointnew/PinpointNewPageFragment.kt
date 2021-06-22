@@ -418,11 +418,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             }
 
             bottomsheetLocation.btnPrimary.setOnClickListener {
-                if (!isPositiveFlow) {
-                    AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId)
-                    setResultAddressFormNegative()
-                } else {
-                    AddNewAddressRevampAnalytics.onClickPilihLokasiPositive(userSession.userId)
+                if (isPositiveFlow) {
+                    AddNewAddressRevampAnalytics.onClickPilihLokasiPositive(userSession.userId, SUCCESS)
                     goToAddressForm()
                 }
             }
@@ -635,8 +632,16 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
         if (isPolygon) {
             if (data.districtId != districtId) {
+                AddNewAddressRevampAnalytics.onViewToasterPinpointTidakSesuai(userSession.userId)
+                binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
+                    AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId, NOT_SUCCESS)
+                }
                 view?.let { view -> Toaster.build(view, "Pastikan pinpoint sesuai kota & kecamatan pilihanmu.", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
             } else {
+                binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
+                    AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId, SUCCESS)
+                    setResultAddressFormNegative()
+                }
                 val saveAddress = saveAddressMapper.map(data, zipCodes)
                 viewModel.setAddress(saveAddress)
                 updateGetDistrictBottomSheet(saveAddress)
@@ -716,6 +721,9 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         const val BOTTOMSHEET_OUT_OF_INDO = 1
         const val BOTTOMSHEET_NOT_FOUND_LOC = 2
 
+        const val SUCCESS = "success"
+        const val NOT_SUCCESS = "not success"
+
         fun newInstance(extra: Bundle): PinpointNewPageFragment {
             return PinpointNewPageFragment().apply {
                 arguments = Bundle().apply {
@@ -725,6 +733,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                     putString(EXTRA_DISTRICT_NAME, extra.getString(EXTRA_DISTRICT_NAME))
                     putBoolean(EXTRA_IS_POLYGON, extra.getBoolean(EXTRA_IS_POLYGON))
+                    putParcelable(EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(EXTRA_SAVE_DATA_UI_MODEL))
                 }
             }
         }
