@@ -6,6 +6,10 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.IOnBackPressed
@@ -89,6 +93,8 @@ class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
         viewBound.title?.text = getTitle()
         viewBound.subtitle?.text = getDescription()
+
+        setNewImage()
     }
 
     private fun startAnimation() {
@@ -98,6 +104,18 @@ class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     private fun stopAnimation() {
         viewBound.imgAnimation?.pauseAnimation()
+    }
+
+    private fun setNewImage() {
+        viewBound.img?.setImageUrl(URL_IMG_ON_BOARDING_NEW)
+
+        if (isOtpMiscallNew()) {
+            viewBound.imgAnimation?.hide()
+            viewBound.img?.show()
+        } else {
+            viewBound.imgAnimation?.show()
+            viewBound.img?.hide()
+        }
     }
 
     private fun checkPermissionGetPhoneNumber(){
@@ -162,6 +180,7 @@ class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     companion object {
         const val ANIMATION_SPEED = 1F
+        private const val URL_IMG_ON_BOARDING_NEW = "https://images.tokopedia.net/img/android/user/miscall/ic_miscall_onboarding.png"
 
         fun createInstance(bundle: Bundle?): Fragment {
             val fragment = OnboardingMiscallFragment()

@@ -12,11 +12,10 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.common.util.PhoneCallBroadcastReceiver
@@ -58,7 +57,9 @@ class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastR
 
         setPrefixMiscall()
         setIcon()
-        viewBound.prefixTextMethodIcon?.visible()
+        setNewTextTitleAndDescription()
+
+        viewBound.prefixTextMethodIcon?.hide()
     }
 
     private fun setIcon() {
@@ -73,10 +74,17 @@ class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastR
 
         if (isOtpMiscallNew()) {
             context?.let {
-                viewBound.methodIcon?.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_miscall_verification))
+                viewBound.methodIcon?.setImageUrl(URL_IMG_VERIFICATION_MISCALL_NEW)
             }
         } else {
             viewBound.methodIcon?.setImageUrl(MISSCALL_IMAGE_URL)
+        }
+    }
+
+    private fun setNewTextTitleAndDescription() {
+        if (isOtpMiscallNew()) {
+            viewBound.pin?.pinTitle = getString(R.string.cotp_miscall_verification_title)
+            viewBound.pin?.pinDescription = getString(R.string.cotp_miscall_verification_desc)
         }
     }
 
@@ -159,6 +167,11 @@ class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastR
         } else {
             super.setOtherMethodFooterSpan(message, spannable)
         }
+    }
+
+    override fun setRunningCountdownText(countdown: Int) {
+        val text = String.format(getString(R.string.cotp_miscall_coundown_text), countdown)
+        viewBound.pin?.pinMessage = MethodChecker.fromHtml(text)
     }
 
     private fun getFooterTextResendWithOtherMethod(): String {
@@ -308,6 +321,8 @@ class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastR
         private const val MISSCALL_IMAGE_URL = "https://ecs7.tokopedia.net/android/others/otp_miscall_img.png"
         private const val REGEX_PHONE_NUMBER = """[+()\-\s]"""
         private const val REGEX_PHONE_NUMBER_REGION = "^(\\+\\d{1,2})"
+
+        private const val URL_IMG_VERIFICATION_MISCALL_NEW = "https://images.tokopedia.net/img/android/user/miscall/ic_miscall_verification.png"
 
         fun createInstance(bundle: Bundle?): VerificationFragment {
             val fragment = MisscallVerificationFragment()

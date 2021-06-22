@@ -540,7 +540,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         )
     }
 
-    private fun setRunningCountdownText(countdown: Int) {
+    open fun setRunningCountdownText(countdown: Int) {
         val text = String.format(
                 getString(R.string.verification_coundown_text),
                 countdown
