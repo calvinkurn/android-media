@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="@dimen/dp_120"
@@ -18,8 +19,9 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
             android:gravity="right"
-            android:textSize="@dimen/sp_10"
+            app:typographyType="small"
             android:textColor="@color/Unify_N700_68"
+            android:textAllCaps="true"
             android:maxLines="1"
             android:ellipsize="end"
             android:letterSpacing="0.02"
@@ -44,7 +46,8 @@
                 android:layout_alignParentTop="true"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:textSize="@dimen/sp_12"
+                app:typographyType="heading_6"
+                app:typographyWeight="bold"
                 android:textColor="@color/Unify_N700_96"
                 android:textStyle="bold"
                 android:visibility="gone"
@@ -60,7 +63,8 @@
                 android:layout_marginTop="@dimen/dp_2"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:textSize="@dimen/sp_10"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
                 android:textColor="@color/Unify_N700_96"
                 android:lineSpacingExtra="@dimen/sp_6"
                 android:visibility="gone"
