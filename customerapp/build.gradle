@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'embrace-swazzler'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 if (project.hasProperty("enable-shrinkresource")) {
@@ -9,7 +10,6 @@ apply plugin: 'io.hansel.preprocessor'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 apply from: '../tools/set_debug_tools.gradle'
-apply plugin: 'embrace-swazzler'
 
 def isProduction() {
     return project.hasProperty('tkpdBuildType') && tkpdBuildType == "production";
