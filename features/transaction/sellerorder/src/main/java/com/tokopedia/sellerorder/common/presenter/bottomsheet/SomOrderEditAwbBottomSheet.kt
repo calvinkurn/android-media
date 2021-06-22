@@ -15,7 +15,7 @@ class SomOrderEditAwbBottomSheet(
 ) : SomBottomSheet(LAYOUT, true, true, false, SomConsts.TITLE_UBAH_RESI, context, true) {
 
     companion object {
-        private const val KEYBOARD_HEIGHT_PERCENTAGE_PORTRAIT = 0.4f
+        private const val KEYBOARD_HEIGHT_PERCENTAGE_PORTRAIT = 0.25f
         private const val KEYBOARD_HEIGHT_PERCENTAGE_LANDSCAPE = 0.5f
 
         private val LAYOUT = R.layout.bottomsheet_cancel_order
