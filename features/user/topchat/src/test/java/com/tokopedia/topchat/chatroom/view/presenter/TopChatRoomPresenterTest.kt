@@ -651,8 +651,8 @@ class TopChatRoomPresenterTest {
     fun `on success upload image and sent through websocket`() {
         // Given
         every {
-            remoteConfig.getBoolean(any())
-        } returns false
+            remoteConfig.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE)
+        } throws IllegalStateException("Failed to get remote config value")
         every {
             ImageUtil.validateImageAttachment(imageUploadViewModel.imageUrl)
         } returns Pair(true, IMAGE_VALID)
