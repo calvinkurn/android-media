@@ -33,7 +33,6 @@ import com.tokopedia.tokomart.categorylist.presentation.viewmodel.TokoMartCatego
 import com.tokopedia.tokomart.categorylist.presentation.viewmodel.TokoMartCategoryListViewModel.Companion.ERROR_PAGE_NOT_FOUND
 import com.tokopedia.tokomart.categorylist.presentation.viewmodel.TokoMartCategoryListViewModel.Companion.ERROR_SERVER
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -62,9 +61,10 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify() {
     lateinit var analytics: CategoryListAnalytics
 
     private var accordionCategoryList: AccordionUnify? = null
-    private var loader: LoaderUnify? = null
+    private var loader: View? = null
     private var menuTitle: String = ""
     private var globalError: GlobalError? = null
+    private var contentContainer: View? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initView(inflater, container)
@@ -105,6 +105,7 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify() {
         accordionCategoryList = itemView.findViewById(R.id.accordion_category_list)
         loader = itemView.findViewById(R.id.loader)
         globalError = itemView.findViewById(R.id.layout_global_error_category_list)
+        contentContainer = itemView.findViewById(R.id.content_container)
         clearContentPadding = true
         isFullpage = true
         setTitle(menuTitle)
@@ -220,18 +221,18 @@ class TokoMartCategoryListBottomSheet : BottomSheetUnify() {
     private fun hideLoader() {
         loader?.hide()
         globalError?.hide()
-        accordionCategoryList?.show()
+        contentContainer?.show()
     }
 
     private fun showLoader() {
-        loader?.show()
-        accordionCategoryList?.hide()
+        contentContainer?.hide()
         globalError?.hide()
+        loader?.show()
     }
 
     private fun showError(){
         loader?.hide()
-        accordionCategoryList?.hide()
+        contentContainer?.hide()
         globalError?.show()
     }
 }
