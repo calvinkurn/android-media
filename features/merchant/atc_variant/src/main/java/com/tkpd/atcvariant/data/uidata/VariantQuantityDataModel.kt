@@ -1,6 +1,7 @@
 package com.tkpd.atcvariant.data.uidata
 
 import android.os.Bundle
+import com.tkpd.atcvariant.util.DEFAULT_ATC_MAX_ORDER
 import com.tkpd.atcvariant.view.adapter.AtcVariantTypeFactory
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
 
@@ -12,7 +13,7 @@ data class VariantQuantityDataModel(
         val productId: String = "",
         var quantity: Int = 0,
         var minOrder: Int = 0,
-        var maxOrder: Int = 0,
+        var maxOrder: Int = DEFAULT_ATC_MAX_ORDER,
         var shouldShowView: Boolean = false
 ) : AtcVariantVisitable {
     override fun uniqueId(): Long = position
