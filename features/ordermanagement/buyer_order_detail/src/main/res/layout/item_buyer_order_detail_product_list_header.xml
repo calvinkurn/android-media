@@ -59,6 +59,7 @@
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:translationY="-1.3dp"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailShopName"
         app:layout_constraintEnd_toStartOf="@id/tvBuyerOrderDetailShopName"
         app:layout_constraintHorizontal_bias="1"
