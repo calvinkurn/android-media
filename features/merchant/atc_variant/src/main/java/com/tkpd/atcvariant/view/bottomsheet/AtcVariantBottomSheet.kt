@@ -447,7 +447,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         viewModel.updateQuantity(quantity, productId)
     }
 
-    override fun refreshPage() {
+    override fun onClickRefresh() {
         sharedViewModel.aggregatorParams.observeOnce(viewLifecycleOwner, {
             viewModel.decideInitialValue(it, userSessionInterface.isLoggedIn)
         })

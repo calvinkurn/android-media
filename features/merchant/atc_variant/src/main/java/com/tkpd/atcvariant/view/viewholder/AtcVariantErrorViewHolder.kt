@@ -24,7 +24,7 @@ class AtcVariantErrorViewHolder(
         globalError.setPadding(0, 0, 0, 30.toPx())
         globalError.setType(element.errorType)
         globalError.setActionClickListener {
-            listener.refreshPage()
+            listener.onClickRefresh()
         }
     }
 }
