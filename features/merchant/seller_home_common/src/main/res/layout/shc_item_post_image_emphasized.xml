@@ -7,10 +7,8 @@
     android:layout_height="wrap_content"
     android:maxHeight="@dimen/shc_dimen_74dp"
     android:paddingStart="@dimen/layout_lvl1"
-    android:paddingLeft="@dimen/layout_lvl1"
     android:paddingTop="@dimen/shc_dimen_6dp"
     android:paddingEnd="@dimen/layout_lvl1"
-    android:paddingRight="@dimen/layout_lvl1"
     android:paddingBottom="@dimen/shc_dimen_6dp"
     tools:background="@drawable/shc_bg_ripple_radius_4dp">
 
@@ -31,7 +29,6 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/shc_dimen_12dp"
-        android:layout_marginLeft="@dimen/shc_dimen_12dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/Unify_N700_96"
