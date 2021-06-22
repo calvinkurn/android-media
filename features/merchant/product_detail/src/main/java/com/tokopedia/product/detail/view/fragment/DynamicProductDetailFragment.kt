@@ -1670,9 +1670,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun onSuccessAtcTokoNow(result: AddToCartDataModel) {
         view?.showToasterSuccess(result.data.message.firstOrNull()
-                ?: "", ctaText = getString(R.string.pdp_see_label), ctaListener = {
-            gotoCart()
-        })
+                ?: "", ctaText = getString(R.string.label_oke_pdp))
         updateButtonState()
     }
 

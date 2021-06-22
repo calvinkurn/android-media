@@ -347,21 +347,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             val message = if (successMessage == null || successMessage.isEmpty()) it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default) else
                 successMessage
             viewModel.updateActivityResult(atcSuccessMessage = message)
-            showToasterSuccess(message, getString(R.string.atc_variant_lihat_label)) {
+            showToasterSuccess(message, getString(R.string.atc_variant_oke_label)) {
                 ProductTrackingCommon.onSeeCartVariantBottomSheetClicked(message, adapter.getHeaderDataModel()?.headerData?.productId ?: "")
-                doActionOrLogin({
-                    startActivity(RouteManager.getIntent(it, ApplinkConst.CART))
-                })
             }
-        }
-    }
-
-    private fun doActionOrLogin(actionLogin: () -> Unit, actionNonLogin: (() -> Unit)? = null) {
-        if (userSessionInterface.isLoggedIn) {
-            actionLogin.invoke()
-        } else {
-            actionNonLogin?.invoke()
-            checkLogin()
         }
     }
 
