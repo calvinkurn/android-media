@@ -418,15 +418,6 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().isShowErrorLiveData.observe(this::showNetworkErrorHelper)
     }
 
-    private fun showNetworkErrorHelper(throwable: Throwable?) {
-        val context = activity ?: return
-        val view = view ?: return
-
-        NetworkErrorHelper.showEmptyState(context, view, getErrorMessage(context, throwable)) {
-            getViewModel().onViewReloadPage()
-        }
-    }
-
     protected open fun onShopIdUpdated(shopId: String) {
         if (shopId.isEmpty()) return
 
@@ -697,6 +688,15 @@ abstract class BaseSearchCategoryFragment:
         constraintSet.connect(outOfServiceView.id, TOP, navToolbar.id, BOTTOM)
 
         constraintSet.applyTo(container)
+    }
+
+    protected open fun showNetworkErrorHelper(throwable: Throwable?) {
+        val context = activity ?: return
+        val view = view ?: return
+
+        NetworkErrorHelper.showEmptyState(context, view, getErrorMessage(context, throwable)) {
+            getViewModel().onViewReloadPage()
+        }
     }
 
     protected abstract fun sendTrackingQuickFilter(quickFilterTracking: Pair<Option, Boolean>)
