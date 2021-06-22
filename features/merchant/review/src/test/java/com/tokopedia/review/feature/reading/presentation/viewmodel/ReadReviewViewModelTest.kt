@@ -206,7 +206,6 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         coEvery { toggleLikeReviewUseCase.executeOnBackground() } throws throwable
     }
 
-
     private fun verifyGetProductRatingAndTopicsUseCaseExecuted() {
         coVerify { getProductRatingAndTopicsUseCase.executeOnBackground() }
     }
