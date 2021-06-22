@@ -66,7 +66,7 @@ data class Watermark (
         if (watermarkText == null) return
 
         createWatermark(
-            bitmap = watermarkText.text.textAsBitmap(context, watermarkText),
+            bitmap = watermarkText.text.textAsBitmap(context, watermarkText).combine(null),
             config = watermarkText
         )
     }
@@ -136,16 +136,18 @@ data class Watermark (
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
-    private fun Bitmap.combine(secondBitmap: Bitmap): Bitmap {
+    private fun Bitmap.combine(secondBitmap: Bitmap?): Bitmap {
         val spaceThreshold = 2
         val width: Int
         val height: Int
 
-        if (this.width > secondBitmap.width) {
-            width = (this.width + secondBitmap.width) * spaceThreshold
+        val other = secondBitmap ?: Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888)
+
+        if (this.width > other.width) {
+            width = (this.width + other.width) * spaceThreshold
             height = this.height
         } else {
-            width = (secondBitmap.width + secondBitmap.width) * spaceThreshold
+            width = (other.width + other.width) * spaceThreshold
             height = this.height
         }
 
@@ -153,7 +155,7 @@ data class Watermark (
         val combinedCanvas = Canvas(combinedBitmap)
 
         combinedCanvas.drawBitmap(this, 0f, 0f, null)
-        combinedCanvas.drawBitmap(secondBitmap, this.width.toFloat() * spaceThreshold, 0f, null)
+        combinedCanvas.drawBitmap(other, this.width.toFloat() * spaceThreshold, 0f, null)
 
         return combinedBitmap
     }
