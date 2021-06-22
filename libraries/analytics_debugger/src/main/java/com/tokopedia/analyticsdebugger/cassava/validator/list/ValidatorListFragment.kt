@@ -116,7 +116,6 @@ class ValidatorListFragment : Fragment() {
 
     private fun observeLiveData() {
         viewModel.listFiles.observe(viewLifecycleOwner, {
-            Timber.d("List files: %s", it)
             listingAdapter.setItems(it)
         })
     }

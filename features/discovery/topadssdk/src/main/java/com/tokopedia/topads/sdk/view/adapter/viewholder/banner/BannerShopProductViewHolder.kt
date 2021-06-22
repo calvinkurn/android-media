@@ -1,11 +1,13 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder.banner
 
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.topads.sdk.listener.TopAdsAddToCartClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -16,7 +18,8 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductV
  */
 
 class BannerShopProductViewHolder(container: View, private val topAdsBannerClickListener: TopAdsBannerClickListener?,
-                                  private val impressionListener: TopAdsItemImpressionListener?) : AbstractViewHolder<BannerShopProductViewModel?>(container) {
+                                  private val impressionListener: TopAdsItemImpressionListener?,
+                                  private val addToCartClickListener: TopAdsAddToCartClickListener?) : AbstractViewHolder<BannerShopProductViewModel?>(container) {
     private val productCardGridView: ProductCardGridView = itemView.findViewById(R.id.product_item)
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(itemView.context)
@@ -38,6 +41,11 @@ class BannerShopProductViewHolder(container: View, private val topAdsBannerClick
                     topAdsBannerClickListener?.onBannerAdsClicked(adapterPosition,
                             model.appLink, model.cpmData)
                     topAdsUrlHitter.hitClickUrl(className, model.adsClickUrl, "", "", "")
+                }
+                addToCartClickListener?.let { listener ->
+                    setAddToCartOnClickListener {
+                        listener.onAdToCartClicked(element)
+                    }
                 }
             }
         }

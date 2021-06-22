@@ -8,6 +8,7 @@
     android:paddingBottom="@dimen/accounthome_dp_14"
     android:paddingLeft="@dimen/spacing_lvl1"
     android:paddingRight="@dimen/spacing_lvl1"
+    android:minHeight="@dimen/layout_lvl7"
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -16,6 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toStartOf="@id/account_user_item_icon_arrow"
+        app:layout_constraintBottom_toTopOf="@id/account_user_item_common_body"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

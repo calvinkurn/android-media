@@ -51,9 +51,6 @@ class PmsAnalytics @Inject constructor(
             is PmsEvents.InvokeChangeAccountDetailsEvent -> prepareCommonMap(
                 ACTION_CLICK_CHANGE_BANK_DETAIL
             )
-            is PmsEvents.DeferredPaymentsShownEvent -> prepareOpenScreenEventMap(
-                "$LABEL_WAITING_PAYMENT_COUNT: ${event.waitingPaymentCount}",
-            )
         }
     }
 
@@ -64,12 +61,6 @@ class PmsAnalytics @Inject constructor(
             action,
             label
         )
-        sendAnalytics(map)
-    }
-
-    private fun prepareOpenScreenEventMap(eventLabel: String) {
-        val map = TrackAppUtils.gtmData(EVENT_NAME_OPEN_SCREEN, "", "", eventLabel)
-        map[KEY_LOGGED_IN_STATUS] = if (userId.isEmpty()) "false" else "true"
         sendAnalytics(map)
     }
 
@@ -86,16 +77,14 @@ class PmsAnalytics @Inject constructor(
         const val KEY_USER_ID = "userId"
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
-        const val KEY_LOGGED_IN_STATUS = "isLoggedInStatus"
 
         const val BUSINESS_UNIT_PAYMENT = "Payment"
         const val CURRENT_SITE_PAYMENT = "tokopedia"
 
-        const val SCREEN_NAME = "pms page"
+        const val SCREEN_NAME = "PMS page"
         const val EVENT_NAME = "clickPMS"
-        const val EVENT_NAME_OPEN_SCREEN = "openScreen"
-
         const val ACTION_TAP_THREE_DOTS = "tap three dots"
+
         const val ACTION_CLICK_CANCEL_TRANSACTION = "click batalkan transaksi"
         const val ACTION_CLICK_CONFIRM_CANCEL_TRANSACTION = "click confirm batalkan transaksi"
         const val ACTION_CLICK_CANCEL_ON_TRANSACTION_DETAIL = "click batalkan on detail"
@@ -117,6 +106,5 @@ class PmsAnalytics @Inject constructor(
         const val ACTION_CLICK_HTP_REDIRECTION = "click lihat cara bayar"
 
         const val LABEL_PAYMENT_CARD_TYPE = "payment cards"
-        const val LABEL_WAITING_PAYMENT_COUNT = "number of waiting payment"
     }
 }

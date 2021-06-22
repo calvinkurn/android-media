@@ -147,8 +147,6 @@ class PaymentListViewModel @Inject constructor(
 
     fun refreshPage() = gqlPaymentList.clear()
 
-    fun getTotalPendingTransactions() = gqlPaymentList.size
-
     fun getCancelDescriptionMessage(detailData: CancelDetail): String {
         return if (detailData.refundWalletAmount ?: 0 > 0 &&
             detailData.combineMessage.isNullOrBlank()

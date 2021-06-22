@@ -2,6 +2,7 @@ package com.tokopedia.catalog.listener
 
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.catalog.model.raw.CatalogImage
+import com.tokopedia.catalog.model.raw.ComparisionModel
 import com.tokopedia.catalog.model.raw.VideoComponentData
 
 interface CatalogDetailListener {
@@ -32,6 +33,11 @@ interface CatalogDetailListener {
      * CatalogVideoViewHolder
      */
     fun playVideo(catalogVideo : VideoComponentData, position : Int)
+
+    /**
+     * CatalogComparisionContainerViewHolder
+     */
+    fun comparisionCatalogClicked(comparisionCatalogId : String)
 
     val childsFragmentManager: FragmentManager?
 

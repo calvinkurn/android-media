@@ -13,7 +13,11 @@ import com.tokopedia.applink.penalty.DeepLinkMapperPenalty
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import io.mockk.clearStaticMockk
 import io.mockk.every
+import io.mockk.mockkStatic
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -23,7 +27,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     override fun setup() {
         super.setup()
+        mockkStatic(RemoteConfigInstance::class)
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
+    }
+
+    override fun finish() {
+        super.finish()
+        clearStaticMockk(RemoteConfigInstance::class)
     }
 
     @Test
@@ -1118,7 +1128,17 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check notification appLink then should return tokopedia internal notification in customerapp`() {
+        // Given
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/notification"
+
+        // When
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                AbTestPlatform.KEY_NEW_NOTFICENTER, AbTestPlatform.VARIANT_OLD_NOTFICENTER
+            )
+        } returns AbTestPlatform.VARIANT_OLD_NOTFICENTER
+
+        // Then
         assertEqualsDeepLinkMapper(ApplinkConst.NOTIFICATION, expectedDeepLink)
     }
 

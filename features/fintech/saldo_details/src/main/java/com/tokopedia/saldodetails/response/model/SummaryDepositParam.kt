@@ -1,6 +1,6 @@
 package com.tokopedia.saldodetails.response.model
 
-import java.util.HashMap
+import java.util.*
 
 class SummaryDepositParam {
 

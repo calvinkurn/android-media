@@ -70,7 +70,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
+open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
         InboxFragment, NotificationItemListener, LoadMoreViewHolder.Listener,
         NotificationEndlessRecyclerViewScrollListener.Listener,
         NotificationAdapter.Listener {
@@ -496,12 +496,13 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun initInjector() {
-        DaggerNotificationComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .commonModule(context?.let { CommonModule(it) })
-                .build()
-                .inject(this)
+        generateDaggerComponent().inject(this)
     }
+
+    protected open fun generateDaggerComponent() = DaggerNotificationComponent.builder()
+        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+        .commonModule(context?.let { CommonModule(it) })
+        .build()
 
     override fun showLongerContent(element: NotificationUiModel) {
         BottomSheetFactory.showLongerContent(childFragmentManager, element)

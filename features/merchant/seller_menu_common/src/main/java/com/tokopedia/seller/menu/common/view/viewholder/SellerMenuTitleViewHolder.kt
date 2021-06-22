@@ -1,14 +1,12 @@
 package com.tokopedia.seller.menu.common.view.viewholder
 
-import android.content.res.Resources
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.seller.menu.common.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
-import com.tokopedia.seller.menu.common.errorhandler.SellerMenuErrorHandler
 import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel.SectionTitleType
 import com.tokopedia.seller.menu.common.view.uimodel.SectionTitleUiModel.SectionTitleType.*
@@ -22,34 +20,28 @@ class SellerMenuTitleViewHolder(
     companion object {
         @LayoutRes
         val SECTION_WITH_CTA_LAYOUT = R.layout.item_seller_menu_title_section
+
         @LayoutRes
         val SECTION_OTHER_LAYOUT = R.layout.item_seller_menu_title_other_section
 
         fun getLayout(type: SectionTitleType): Int {
-            return if(type == OTHER_SECTION_TITLE) {
+            return if (type == OTHER_SECTION_TITLE) {
                 SECTION_OTHER_LAYOUT
             } else {
                 SECTION_WITH_CTA_LAYOUT
             }
         }
     }
-    
-    private val context by lazy { itemView.context }
 
     override fun bind(menu: SectionTitleUiModel) {
-        itemView.textTitle?.context?.let {
-            menu.title?.let {
-                try {
-                    itemView.textTitle.text = context.getString(it)
-                } catch (e: Resources.NotFoundException) {
-                    SellerMenuErrorHandler.logExceptionToCrashlytics(e, SellerMenuErrorHandler.ERROR_RENDER_TITLE)
-                }
-            }
+        itemView.textTitle?.shouldShowWithAction(!menu.title.isNullOrBlank()) {
+            itemView.textTitle.text = menu.title
         }
 
-        menu.ctaText?.let {
-            itemView.textCta.show()
-            itemView.textCta.text = context.getString(it)
+        if (getLayout(menu.type) == SECTION_WITH_CTA_LAYOUT) {
+            itemView.textCta?.shouldShowWithAction(!menu.ctaText.isNullOrBlank()) {
+                itemView.textCta.text = menu.ctaText
+            }
         }
 
         menu.onClickApplink?.let { appLink ->
@@ -61,10 +53,12 @@ class SellerMenuTitleViewHolder(
     }
 
     private fun trackClickSection(menu: SectionTitleUiModel) {
-        when(menu.type) {
+        when (menu.type) {
             PRODUCT_SECTION_TITLE -> tracker?.sendEventAddProductClick()
             ORDER_SECTION_TITLE -> tracker?.sendEventClickOrderHistory()
-            else -> {} // do nothing
+            else -> {
+                // no op
+            }
         }
     }
 }

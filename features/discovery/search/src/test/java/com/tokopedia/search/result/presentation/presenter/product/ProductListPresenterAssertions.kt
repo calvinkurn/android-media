@@ -50,14 +50,14 @@ fun MockKVerificationScope.verifyHideLoading(productListView: ProductListSection
 fun MockKVerificationScope.verifyShowError(productListView: ProductListSectionContract.View) {
     productListView.showRefreshLayout()
     productListView.removeLoading()
-    productListView.showNetworkError(any())
+    productListView.showNetworkError(any(), any())
     productListView.hideRefreshLayout()
 }
 
 fun MockKVerificationScope.verifyShowLoadMoreError(productListView: ProductListSectionContract.View, startRow: Int = 0) {
     productListView.removeLoading()
     productListView.hideRefreshLayout()
-    productListView.showNetworkError(startRow)
+    productListView.showNetworkError(startRow, any())
 }
 
 fun MockKVerificationScope.verifySendTrackingOnFirstTimeLoad(productListView: ProductListSectionContract.View) {
