@@ -44,33 +44,36 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         if (isoDep != null) {
             run {
                 try {
-                    val terminalRandomNumber = stringToByteArray(getRandomString())
+                    val terminalRandomNumber = stringToByteArrayRadix(getRandomString())
                     this.isoDep = isoDep
                     isoDep.connect()
                     isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC // 5 sec time out
 
                     val challangeRequest = NFCUtils.toHex(COMMAND_GET_CHALLENGE)
-                    Log.d("CHALLANGEREQUESTSTRING", challangeRequest)
-                    Log.d("TERMINALRANDOMSTRING", NFCUtils.toHex(terminalRandomNumber))
+                    Log.d("TAPCASH_CHALLANGE_REQ", challangeRequest)
+                    Log.d("TAPCASH_TERMINAL_RANDOM", NFCUtils.toHex(terminalRandomNumber))
                     val result = isoDep.transceive(COMMAND_GET_CHALLENGE)
                     if (isCommandFailed(result)) {
                         isoDep.close()
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     } else {
                         val resultString = NFCUtils.toHex(result)
-                        Log.d("CHALLANGERESULTSTRING", resultString)
+                        Log.d("TAPCASH_CHALLANGERESULT", resultString)
                         val securePurseRequest = NFCUtils.toHex(secureReadPurse(terminalRandomNumber))
-                        Log.d("SECUREREQUESTSTRING", securePurseRequest)
+                        Log.d("TAPCASH_SECUREREQUEST", securePurseRequest)
                         val secureResult = isoDep.transceive(secureReadPurse(terminalRandomNumber))
                         if (isCommandFailed(secureResult)) {
                             errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                         } else {
                             val secureResultString = NFCUtils.toHex(secureResult)
-                            Log.d("SECURERESULTSTRING", secureResultString)
+                            Log.d("TAPCASH_SECURERESULT", secureResultString)
                             val cardData = getCardData(secureResultString, NFCUtils.toHex(terminalRandomNumber), resultString)
-                            //updateBalance(getNumberCard, balanceRawQuery)
-                            Log.d("CARDDATA", cardData)
-                            errorCardMessage.postValue(cardData)
+                            if(!cardData.isNullOrEmpty()) {
+                                updateBalance(cardData, terminalRandomNumber, balanceRawQuery)
+                                Log.d("TAPCASH_CARDDATA", cardData)
+                            } else {
+                                errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
+                            }
                         }
                     }
                 } catch (e: IOException) {
