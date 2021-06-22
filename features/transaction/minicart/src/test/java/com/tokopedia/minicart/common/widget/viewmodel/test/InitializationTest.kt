@@ -81,4 +81,18 @@ class InitializationTest {
         assert(viewModel.miniCartSimplifiedData.value != null)
     }
 
+    @Test
+    fun `WHEN reset temporary hidden unavailable items THEN temporary hidden unavailable items should be emty`() {
+        //given
+        val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAllUnavailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModels)
+
+        //when
+        viewModel.toggleUnavailableItemsAccordion()
+        viewModel.resetTemporaryHiddenUnavailableItems()
+
+        //then
+        assert(viewModel.tmpHiddenUnavailableItems.size == 0)
+    }
+
 }
