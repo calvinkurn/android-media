@@ -2,6 +2,7 @@ package com.tokopedia.webview
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ResolveInfo
 import android.net.ParseException
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
+import android.widget.Toast
 import androidx.core.app.TaskStackBuilder
 import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
@@ -25,8 +27,6 @@ import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.webview.BaseSimpleWebViewActivity.DeeplinkIntent.APP_WHITELISTED_DOMAINS_URL
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
-import timber.log.Timber
-import java.util.*
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
@@ -36,6 +36,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         private set
     protected var allowOverride = true
     protected var needLogin = false
+    protected var backPressedEnabled = true
+    protected var backPressedMessage = ""
     var webViewTitle = ""
     var whiteListedDomains = WhiteListedDomains()
 
@@ -155,7 +157,31 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 f.webView.goBack()
             }
         } else {
-            goPreviousActivity()
+            if (backPressedEnabled) {
+                goPreviousActivity()
+            } else {
+                showOnBackPressedDisabledMessage()
+            }
+        }
+    }
+
+    fun setOnWebViewPageFinished() {
+        val uri = intent.data
+        uri?.let {
+            backPressedEnabled = it.getBooleanQueryParameter(KEY_BACK_PRESSED_ENABLED, true)
+            val message = it.getQueryParameter(KEY_BACK_PRESSED_MESSAGE)
+            backPressedMessage = if (!message.isNullOrBlank()) {
+                message
+            } else {
+                getString(R.string.webview_on_back_pressed_disabled_message)
+            }
+        }
+    }
+
+    fun enableBackButton() {
+        val f = fragment
+        if (f is BaseWebViewFragment && !f.webView.canGoBack()) {
+            backPressedEnabled = true
         }
     }
 
@@ -200,6 +226,12 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         return false
     }
 
+    private fun showOnBackPressedDisabledMessage() {
+        if (backPressedMessage.isNotBlank()) {
+            Toast.makeText(this, backPressedMessage, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun logWebViewApplink() {
         val domain = getDomainName(url)
         if (domain.isNotEmpty()) {
@@ -222,9 +254,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     private fun isDomainWhitelisted(domain: String): Boolean {
-        if(whiteListedDomains.isEnabled) {
+        if (whiteListedDomains.isEnabled) {
             whiteListedDomains.domains.forEach {
-                if(it.contains(domain)) {
+                if (it.contains(domain)) {
                     return true
                 }
             }
@@ -255,12 +287,12 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         const val TOKOPEDIA_DOMAIN = "tokopedia"
 
         fun getStartIntent(
-                context: Context,
-                url: String,
-                showToolbar: Boolean = true,
-                allowOverride: Boolean = true,
-                needLogin: Boolean = false,
-                title: String = ""
+            context: Context,
+            url: String,
+            showToolbar: Boolean = true,
+            allowOverride: Boolean = true,
+            needLogin: Boolean = false,
+            title: String = ""
         ): Intent {
             return Intent(context, BaseSimpleWebViewActivity::class.java).apply {
                 putExtra(KEY_URL, url.encodeOnce())
@@ -277,6 +309,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         const val SELLERAPP_PACKAGE = "com.tokopedia.sellerapp"
         const val CUSTOMERAPP_PACKAGE = "com.tokopedia.tkpd"
         const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
+        const val CHROME_PACKAGE = "com.android.chrome"
 
         @DeepLink(ApplinkConst.WEBVIEW_PARENT_HOME)
         @JvmStatic
@@ -290,11 +323,15 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             return taskStackBuilder
         }
 
-        @DeepLink(ApplinkConst.WEBVIEW, ApplinkConst.SellerApp.WEBVIEW, ApplinkConst.SELLER_INFO_DETAIL)
+        @DeepLink(
+            ApplinkConst.WEBVIEW,
+            ApplinkConst.SellerApp.WEBVIEW,
+            ApplinkConst.SELLER_INFO_DETAIL
+        )
         @JvmStatic
         fun getInstanceIntentAppLink(context: Context, extras: Bundle): Intent {
             var webUrl = extras.getString(
-                    KEY_URL, TokopediaUrl.getInstance().WEB
+                KEY_URL, TokopediaUrl.getInstance().WEB
             )
             var showToolbar: Boolean
             var needLogin: Boolean
@@ -328,17 +365,25 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         @DeepLink(ApplinkConst.BROWSER, ApplinkConst.SellerApp.BROWSER)
         @JvmStatic
         fun getCallingIntentOpenBrowser(context: Context?, extras: Bundle): Intent? {
-            val webUrl = extras.getString("url", getInstance().WEB)
+            val webUrl = extras.getString(KEY_URL, getInstance().WEB).decode()
+            val ext = extras.getBoolean(KEY_EXT, false)
+            val webUri = Uri.parse(webUrl)
+
             val destinationIntent = Intent(Intent.ACTION_VIEW)
-            val decodedUrl: String?
-            decodedUrl = webUrl.decode()
-            val uriData = Uri.parse(decodedUrl)
-            destinationIntent.data = uriData
-            if (context == null) {
-                return destinationIntent
+            if (context == null) return destinationIntent.apply { data = webUri }
+
+            if (ext) {
+                val intent = WebViewHelper.actionViewIntent(context, webUri)
+                if (intent != null) {
+                    return intent
+                }
             }
+
+            // hacky way: to avoid looping forever
+            destinationIntent.data = Uri.parse(EXAMPLE_DOMAIN)
+
             val resolveInfos = context.packageManager.queryIntentActivities(destinationIntent, 0)
-            // remove deeplink tokopedia if any
+            // remove package tokopedia if any
             for (i in resolveInfos.indices.reversed()) {
                 val resolveInfo = resolveInfos[i]
                 val packageName = resolveInfo.activityInfo.packageName
@@ -347,17 +392,27 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 }
             }
 
-            // return the first intent only (only if it is the only available browser)
-            return if (resolveInfos.size == 1) {
-                val resolveInfo = resolveInfos[0]
-                val browserIntent = Intent()
-                browserIntent.setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
-                browserIntent.data = uriData
-                browserIntent
-            } else {
-                destinationIntent
-            }
+            // return when the device has a browser app
+            return if (resolveInfos.size >= 1) {
+                // open chrome app by default
+                val resolveInfo = resolveInfos.find { it.resolvePackageName == CHROME_PACKAGE }
+                    ?: resolveInfos.first()
+                getBrowserIntent(resolveInfo, webUri)
+            } else getSimpleWebViewActivityIntent(context, webUrl)
         }
+
+        private fun getBrowserIntent(resolveInfo: ResolveInfo, webUri: Uri) =
+            Intent().apply {
+                setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
+                data = webUri
+            }
+
+        private fun getSimpleWebViewActivityIntent(context: Context, webUrl: String) =
+        // param external set to false (if any) is to
+            // prevent infinite loop from webview -> browser -> webview
+            Intent(context, BaseSimpleWebViewActivity::class.java).apply {
+                putExtra(KEY_URL, webUrl.replaceFirst(PARAM_EXTERNAL_TRUE, PARAM_EXTERNAL_FALSE))
+            }
     }
 
 }

@@ -3,11 +3,11 @@ package com.tokopedia.flight.orderdetail.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.travel.data.TravelCrossSellingGQLQuery
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.view.enum.FlightPassengerType
@@ -116,7 +116,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
 
     fun isWebCheckInAvailable(flightOrderDetailData: FlightOrderDetailDataModel): Pair<Boolean, String> {
         var checkInAvailable = false
-        val today = FlightDateUtil.getCurrentDate()
+        val today = FlightDateUtil.currentDate
         var subtitle: String = ""
 
         if (FlightOrderDetailStatusMapper.getStatusOrder(flightOrderDetailData.status) == FlightOrderDetailStatusMapper.SUCCESS) {

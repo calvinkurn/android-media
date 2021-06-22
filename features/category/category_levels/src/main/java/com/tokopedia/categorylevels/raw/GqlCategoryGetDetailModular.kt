@@ -46,6 +46,9 @@ const val GQL_CATEGORY_GET_DETAIL_MODULAR: String = """query categoryGetDetailMo
           isAdult
           applinks
         }
+          ... on CategoryModularStaticText{
+          text
+        }
       }
     }
   }

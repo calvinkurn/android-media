@@ -2,68 +2,53 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="@dimen/dp_18"
     android:layout_marginBottom="@dimen/dp_18"
     android:background="@color/Unify_N0"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/layout_utama"
-        android:layout_width="wrap_content"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btn_alamat_utama"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:text="@string/set_default_address"
+        app:typographyWeight="bold"
+        app:typographyType="body_2"
+        android:layout_marginTop="@dimen/dp_18"
+        android:textColor="@color/Unify_N700"/>
 
-        <TextView
-            android:id="@+id/btn_alamat_utama"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/set_default_address"
-            android:textStyle="bold"
-            android:textSize="@dimen/sp_14"
-            android:layout_marginTop="@dimen/dp_18"
-            android:textColor="@color/Unify_N700"/>
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/Unify_N75"
+        android:layout_marginTop="@dimen/dp_16" />
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:background="@color/Unify_N75"
-            android:layout_marginTop="@dimen/dp_16" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_utama_choose"
-        android:layout_width="wrap_content"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btn_alamat_utama_choose"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:text="@string/set_default_choose_address"
+        app:typographyWeight="bold"
+        app:typographyType="body_2"
+        android:layout_marginTop="@dimen/dp_18"
+        android:textColor="@color/Unify_N700"/>
 
-        <TextView
-            android:id="@+id/btn_alamat_utama_choose"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/set_default_choose_address"
-            android:textStyle="bold"
-            android:textSize="@dimen/sp_14"
-            android:layout_marginTop="@dimen/dp_18"
-            android:textColor="@color/Unify_N700"/>
+    <View
+        android:id="@+id/divider_utama_choose"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/Unify_N75"
+        android:layout_marginTop="@dimen/dp_16" />
 
-        <View
-            android:id="@+id/divider_utama_choose"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:background="@color/Unify_N75"
-            android:layout_marginTop="@dimen/dp_16" />
-
-    </LinearLayout>
-
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/btn_hapus_alamat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/delete_address"
-        android:textStyle="bold"
-        android:textSize="@dimen/sp_14"
+        app:typographyWeight="bold"
+        app:typographyType="body_2"
         android:textColor="@color/Unify_N700"
         android:layout_marginTop="@dimen/dp_18"
         android:layout_marginBottom="@dimen/dp_18" />

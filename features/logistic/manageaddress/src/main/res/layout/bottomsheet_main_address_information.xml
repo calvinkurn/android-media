@@ -29,7 +29,6 @@
         android:layout_height="wrap_content"
         app:closeButtonVisibility="gone"
         android:layout_marginTop="@dimen/dp_12"
-        app:tckv_content_text_size = "@dimen/sp_12"
         app:tickerShapeType="loose" />
 
     <com.tokopedia.unifycomponents.UnifyButton

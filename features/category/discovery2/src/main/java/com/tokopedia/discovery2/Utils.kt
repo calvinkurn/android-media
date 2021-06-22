@@ -122,13 +122,7 @@ class Utils {
                         selectedFilterMapParameter: Map<String, String?>? = null,
                         userId: String? = "0",
                         addCountFilters: Boolean = false): Map<String, Any> {
-            val queryParameterMap = mutableMapOf<String, Any>()
             val component = getComponent(componentId, pageIdentifier)
-
-            queryParameterMap[IDENTIFIER] = pageIdentifier
-            queryParameterMap[DEVICE] = DEVICE_VALUE
-            queryParameterMap[COMPONENT_ID] = componentId
-
             val filtersMasterMapParam = mutableMapOf<String, String?>()
             discoComponentQuery?.let {
                 filtersMasterMapParam.putAll(it)
@@ -156,9 +150,28 @@ class Utils {
                     queryString.append(key).append('=').append(value)
                 }
             }
-            if (queryString.isNotEmpty()) queryParameterMap[FILTERS] = queryString.toString()
 
+            return getComponentsGQLParams(componentId,pageIdentifier,queryString.toString())
+        }
+
+        fun getComponentsGQLParams(componentId: String, pageIdentifier: String, queryString: String): MutableMap<String, Any> {
+            val queryParameterMap = mutableMapOf<String, Any>()
+            queryParameterMap[IDENTIFIER] = pageIdentifier
+            queryParameterMap[DEVICE] = DEVICE_VALUE
+            queryParameterMap[COMPONENT_ID] = componentId
+            if (queryString.isNotEmpty()) queryParameterMap[FILTERS] = queryString
             return queryParameterMap
+        }
+
+        fun getQueryString(filtersMasterMapParam: MutableMap<String, Any>): String {
+            val queryString = StringBuilder()
+            filtersMasterMapParam.forEach { (key, value) ->
+                if (queryString.isNotEmpty()) {
+                    queryString.append('&')
+                }
+                queryString.append(key).append('=').append(value)
+            }
+            return queryString.toString()
         }
 
         fun addAddressQueryMap(userAddressData: LocalCacheModel?): MutableMap<String, String> {

@@ -71,6 +71,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.constant.*
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_PREPARE
@@ -113,6 +114,7 @@ import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
+import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListResultViewModel
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -464,21 +466,22 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     onSuccessGetShopHomeLayoutData(it.data)
-                    viewModel?.getMerchantVoucherCoupon(shopId)
+                    viewModel?.getMerchantVoucherCoupon(shopId, context)
 
                 }
                 is Fail -> {
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
-                                this::observeLiveData.name,
-                                ShopHomeViewModel::shopHomeLayoutData.name,
-                                userId,
-                                shopId,
-                                shopName,
-                                ErrorHandler.getErrorMessage(context, throwable),
-                                Log.getStackTraceString(throwable)
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
+                                tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                functionName = this::observeLiveData.name,
+                                liveDataName = ShopHomeViewModel::shopHomeLayoutData.name,
+                                userId = userId,
+                                shopId = shopId,
+                                shopName = shopName,
+                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                stackTrace = Log.getStackTraceString(throwable),
+                                errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
                         )
                     }
                     onErrorGetShopHomeLayoutData(throwable)
@@ -511,15 +514,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 is Fail -> {
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
-                                this::observeLiveData.name,
-                                ShopHomeViewModel::productListData.name,
-                                userId,
-                                shopId,
-                                shopName,
-                                ErrorHandler.getErrorMessage(context, throwable),
-                                Log.getStackTraceString(throwable)
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
+                                tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                functionName = this::observeLiveData.name,
+                                liveDataName = ShopHomeViewModel::productListData.name,
+                                userId = userId,
+                                shopId = shopId,
+                                shopName = shopName,
+                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                stackTrace = Log.getStackTraceString(throwable),
+                                errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
                         )
                     }
                 }
@@ -1068,7 +1072,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onVoucherReloaded() {
-        viewModel?.getMerchantVoucherCoupon(shopId)
+        viewModel?.getMerchantVoucherCoupon(shopId, context)
     }
 
     override fun onVoucherImpression() {
@@ -1194,15 +1198,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             },
                             {
                                 if (!ShopUtil.isExceptionIgnored(it)) {
-                                    ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                            SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
-                                            ShopHomeViewModel::addProductToCartOcc.name,
-                                            "",
-                                            userId,
-                                            shopId,
-                                            shopName,
-                                            ErrorHandler.getErrorMessage(context, it),
-                                            Log.getStackTraceString(it)
+                                    ShopUtil.logShopPageP2BuyerFlowAlerting(
+                                            tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                            functionName = ShopHomeViewModel::addProductToCartOcc.name,
+                                            liveDataName = "",
+                                            userId = userId,
+                                            shopId = shopId,
+                                            shopName = shopName,
+                                            errorMessage = ErrorHandler.getErrorMessage(context, it),
+                                            stackTrace = Log.getStackTraceString(it),
+                                            errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
                                     )
                                 }
                                 onErrorAddToCart(it)
@@ -1223,15 +1228,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                             },
                             {
                                 if (!ShopUtil.isExceptionIgnored(it)) {
-                                    ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                            SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
-                                            ShopHomeViewModel::addProductToCart.name,
-                                            "",
-                                            userId,
-                                            shopId,
-                                            shopName,
-                                            ErrorHandler.getErrorMessage(context, it),
-                                            Log.getStackTraceString(it)
+                                    ShopUtil.logShopPageP2BuyerFlowAlerting(
+                                            tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                            functionName = ShopHomeViewModel::addProductToCart.name,
+                                            liveDataName = "",
+                                            userId = userId,
+                                            shopId = shopId,
+                                            shopName = shopName,
+                                            errorMessage = ErrorHandler.getErrorMessage(context, it),
+                                            stackTrace = Log.getStackTraceString(it),
+                                            errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
                                     )
                                 }
                                 onErrorAddToCart(it)
@@ -1341,6 +1347,171 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
+    override fun onCarouselProductShowcaseItemClicked(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductUiModel: ShopHomeProductUiModel?
+    ) {
+        shopHomeProductUiModel?.let {
+            shopPageHomeTracking.clickCarouselProductShowcaseItem(
+                    isOwner,
+                    isLogin,
+                    shopHomeCarousellProductUiModel?.header?.etalaseId.orEmpty(),
+                    shopHomeProductUiModel.name ?: "",
+                    shopHomeProductUiModel.id ?: "",
+                    shopHomeProductUiModel.displayedPrice ?: "",
+                    shopName,
+                    parentPosition + 1,
+                    itemPosition + 1,
+                    shopHomeCarousellProductUiModel?.header?.title ?: "",
+                    userId,
+                    CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopHomeProductUiModel.id.orEmpty(),
+                            shopAttribution,
+                            shopRef,
+                            shopHomeProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopHomeProductUiModel.isShowFreeOngkir
+                    )
+            )
+            goToPDP(it.id ?: "")
+        }
+    }
+
+    override fun onCarouselProductShowcaseItemImpression(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductUiModel: ShopHomeProductUiModel?
+    ) {
+        shopHomeProductUiModel?.let {
+            shopPageHomeTracking.impressionCarouselProductShowcaseItem(
+                    isOwner,
+                    isLogin,
+                    shopHomeCarousellProductUiModel?.header?.etalaseId.orEmpty(),
+                    shopHomeProductUiModel.name ?: "",
+                    shopHomeProductUiModel.id ?: "",
+                    shopHomeProductUiModel.displayedPrice ?: "",
+                    shopName,
+                    parentPosition + 1,
+                    itemPosition + 1,
+                    shopHomeCarousellProductUiModel?.header?.title ?: "",
+                    userId,
+                    CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopHomeProductUiModel.id.orEmpty(),
+                            shopAttribution,
+                            shopRef,
+                            shopHomeProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopHomeProductUiModel.isShowFreeOngkir
+                    )
+            )
+        }
+    }
+
+    override fun onCarouselProductShowcaseItemClickAddToCart(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductUiModel: ShopHomeProductUiModel?
+    ) {
+        if (isLogin) {
+            shopHomeProductUiModel?.let { product ->
+                viewModel?.addProductToCart(
+                        product,
+                        shopId,
+                        {
+                            sendCarouselProductShowcaseAddToCartTracker(
+                                    it,
+                                    shopHomeProductUiModel,
+                                    parentPosition,
+                                    shopHomeCarousellProductUiModel
+                            )
+                            view?.let { view ->
+                                NetworkErrorHelper.showGreenCloseSnackbar(view, it.message.first())
+                            }
+                        },
+                        {
+                            if (!ShopUtil.isExceptionIgnored(it)) {
+                                ShopUtil.logShopPageP2BuyerFlowAlerting(
+                                        tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                        functionName = ShopHomeViewModel::addProductToCart.name,
+                                        liveDataName = "",
+                                        userId = userId,
+                                        shopId = shopId,
+                                        shopName = shopName,
+                                        errorMessage = ErrorHandler.getErrorMessage(context, it),
+                                        stackTrace = Log.getStackTraceString(it),
+                                        errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
+                                )
+                            }
+                            onErrorAddToCart(it)
+                        }
+                )
+            }
+        } else {
+            sendCarouselProductShowcaseAddToCartTracker(
+                    null,
+                    shopHomeProductUiModel,
+                    parentPosition,
+                    shopHomeCarousellProductUiModel
+            )
+            redirectToLoginPage()
+        }
+    }
+
+    private fun sendCarouselProductShowcaseAddToCartTracker(
+            dataModelAtc: DataModel?,
+            shopHomeProductUiModel: ShopHomeProductUiModel?,
+            parentPosition: Int,
+            shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?
+    ) {
+        shopHomeProductUiModel?.let {
+            shopPageHomeTracking.addToCartCarouselProductShowcaseItem(
+                    isOwner,
+                    isLogin,
+                    shopHomeCarouselProductUiModel?.header?.etalaseId.orEmpty(),
+                    shopHomeProductUiModel.name ?: "",
+                    shopHomeProductUiModel.id ?: "",
+                    shopHomeProductUiModel.displayedPrice ?: "",
+                    dataModelAtc?.quantity ?: 1,
+                    shopName,
+                    parentPosition + 1,
+                    shopHomeCarouselProductUiModel?.header?.title ?: "",
+                    userId,
+                    dataModelAtc?.cartId.orEmpty(),
+                    CustomDimensionShopPageAttribution.create(
+                            shopId,
+                            isOfficialStore,
+                            isGoldMerchant,
+                            shopHomeProductUiModel.id.orEmpty(),
+                            shopAttribution,
+                            shopRef,
+                            shopHomeProductUiModel.labelGroupList.any { it.position == LABEL_GROUP_POSITION_FULFILLMENT },
+                            shopHomeProductUiModel.isShowFreeOngkir
+                    )
+            )
+        }
+    }
+
+    override fun onCarouselProductShowcaseCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?) {
+        shopPageHomeTracking.clickCtaCarouselProductShowcase(
+                etalaseId = shopHomeCarouselProductUiModel?.header?.etalaseId.orEmpty(),
+                appLink = shopHomeCarouselProductUiModel?.header?.ctaLink.toString(),
+                shopId = shopId,
+                shopType = customDimensionShopPage.shopType.orEmpty(),
+                isOwner = isOwner
+        )
+        context?.let {
+            RouteManager.route(it, shopHomeCarouselProductUiModel?.header?.ctaLink)
+        }
+    }
+
     private fun onSuccessRemoveWishList(
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
             shopHomeProductViewModel: ShopHomeProductUiModel?
@@ -1438,15 +1609,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         },
                         {
                             if (!ShopUtil.isExceptionIgnored(it)) {
-                                ShopUtil.logShopPageP1BuyerFlowAlerting(
-                                        SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG,
-                                        ShopHomeViewModel::addProductToCart.name,
-                                        "",
-                                        userId,
-                                        shopId,
-                                        shopName,
-                                        ErrorHandler.getErrorMessage(context, it),
-                                        Log.getStackTraceString(it)
+                                ShopUtil.logShopPageP2BuyerFlowAlerting(
+                                        tag = SHOP_PAGE_BUYER_FLOW_TAG,
+                                        functionName = ShopHomeViewModel::addProductToCart.name,
+                                        liveDataName = "",
+                                        userId = userId,
+                                        shopId = shopId,
+                                        shopName = shopName,
+                                        errorMessage = ErrorHandler.getErrorMessage(context, it),
+                                        stackTrace = Log.getStackTraceString(it),
+                                        errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
                                 )
                             }
                             onErrorAddToCart(it)

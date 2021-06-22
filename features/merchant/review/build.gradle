@@ -27,6 +27,7 @@ android {
                     pathSources + 'reviewdetail',
                     pathSources + 'reviewlist',
                     pathSources + 'reviewreply',
+                    pathSources + 'createreputation',
             ]
         }
     }
@@ -43,6 +44,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.inboxCommon)
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.features.mediauploader)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.sellerMigrationCommon)
@@ -65,6 +67,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
 
@@ -117,7 +121,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.sortFilter
-    implementation rootProject.ext.unifyDependencies.icons
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor

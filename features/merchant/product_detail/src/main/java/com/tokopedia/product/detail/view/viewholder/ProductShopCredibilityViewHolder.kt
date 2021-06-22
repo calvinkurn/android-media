@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -43,7 +44,7 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
                     shop_location_online.text = context.getString(R.string.location_dot_builder, element.shopLocation)
                 }
                 setupLastActive(element.shopLastActive)
-                setupBadgeAndImage(element.shopAva, element.isOs, element.isPm)
+                setupBadgeAndImage(element.shopAva, element.isOs, element.isPm, element.shopTierBadgeUrl)
                 setupGoApotik(element.isGoApotik)
                 setupInfoRegion(element)
                 setupFollow(element.isFavorite, componentTracker!!)
@@ -155,7 +156,29 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
         }
     }
 
-    private fun setupBadgeAndImage(avatar: String, isOs: Boolean, isPm: Boolean) = with(view) {
+    private fun setupBadgeAndImage(avatar: String,
+                                   isOs: Boolean,
+                                   isPm: Boolean,
+                                   shopTierBadgeUrl: String) = with(view) {
+        if (isNewShopBadgeEnabled()) {
+            showNewBadge(shopTierBadgeUrl)
+        } else {
+            showOldBadge(isOs, isPm)
+        }
+
+        shop_ava.loadImageCircle(avatar)
+    }
+
+    private fun isNewShopBadgeEnabled() = true
+
+    private fun showNewBadge(shopTierBadgeUrl: String) = with(view) {
+        iv_badge.shouldShowWithAction(shopTierBadgeUrl.isNotEmpty()) {
+            iv_badge.scaleType = ImageView.ScaleType.FIT_XY
+            iv_badge.loadImage(shopTierBadgeUrl)
+        }
+    }
+
+    private fun showOldBadge(isOs: Boolean, isPm: Boolean) = with(view) {
         val drawable = when {
             isOs -> {
                 MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_official_store_product)
@@ -167,12 +190,9 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
                 null
             }
         }
-
         iv_badge.shouldShowWithAction(drawable != null) {
             iv_badge.loadImage(drawable)
         }
-
-        shop_ava.loadImageCircle(avatar)
     }
 
     private fun hideShopLoading() = with(view) {

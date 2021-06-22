@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.countdown.CountDownView
+import com.tokopedia.officialstore.official.presentation.widget.CountDownView
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_MODE_ALTERNATE
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_MODE_DISABLED
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_MODE_INVERTED

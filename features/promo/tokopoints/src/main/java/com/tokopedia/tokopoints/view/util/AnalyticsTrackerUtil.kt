@@ -4,10 +4,11 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil.ScreenKeys.Companion.HOME_PAGE_SCREEN_NAME
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import timber.log.Timber
 import kotlin.collections.HashMap
 
 object AnalyticsTrackerUtil {
@@ -106,6 +107,119 @@ object AnalyticsTrackerUtil {
         getTracker().sendEnhanceEcommerceEvent(map)
     }
 
+    fun clickProductRecomItem(productId: String,
+                              recommendationType: String,
+                              productPositionIndex: Int,
+                              productBrand: String,
+                              itemCategory: String,
+                              productName: String,
+                              productVariant: String,
+                              productPrice: String,
+                              isTopAds: Boolean
+    ) {
+        val map = mutableMapOf<String, Any>()
+        map[EventKeys.EVENT] = EventKeys.EVENT_CLICK_RECOM
+        map[EventKeys.EVENT_CATEGORY] = CategoryKeys.EVENT_CATEGORY_RECOM
+        map[EventKeys.EVENT_ACTION] = ActionKeys.CLICK_RECOM_ACTION
+        map[EventKeys.EVENT_LABEL] = ""
+        map[EventKeys.EVENT_BUSINESSUNIT]= EcommerceKeys.BUSINESSUNIT
+        map[EventKeys.EVENT_CURRENTSITE]=EcommerceKeys.CURRENTSITE
+
+        val price = CurrencyFormatHelper?.convertRupiahToInt(productPrice)
+        map[EcommerceKeys.ITEMS] = getItemsMapList(productId,
+            productPositionIndex,
+            productBrand,
+            itemCategory,
+            productName,
+            productVariant,
+            price
+        )
+
+        try {
+            getTracker().sendEnhanceEcommerceEvent(EventKeys.EVENT_CLICK_RECOM, convertToBundle(map))
+        } catch (th: Throwable) {
+            Timber.e(th)
+        }
+    }
+
+    private fun getItemsMapList(productId: String,
+                                productPositionIndex: Int,
+                                productBrand: String,
+                                itemCategory: String,
+                                productName: String,
+                                productVariant: String,
+                                productPrice: Int): List<Map<String, Any>> {
+
+        val itemsMap = HashMap<String, Any>()
+        itemsMap["index"] = productPositionIndex
+        itemsMap["item_brand"] = productBrand
+        itemsMap["item_category"] = itemCategory
+        itemsMap["item_id"] = productId
+        itemsMap["item_name"] = productName
+        itemsMap["item_variant"] = productVariant
+        itemsMap["price"] = productPrice
+        return arrayListOf<Map<String, Any>>(itemsMap)
+    }
+
+    fun impressionProductRecomItem(productId: String,
+                                   recommendationType: String,
+                                   productPositionIndex: Int,
+                                   productBrand: String,
+                                   itemCategory: String,
+                                   productName: String,
+                                   productVariant: String,
+                                   productPrice: String,
+                                   isTopAds: Boolean) {
+        val map = mutableMapOf<String, Any>()
+        map[EventKeys.EVENT] = EventKeys.EVENT_VIEW_RECOM
+        map[EventKeys.EVENT_CATEGORY] = CategoryKeys.EVENT_CATEGORY_RECOM
+        map[EventKeys.EVENT_ACTION] = ActionKeys.IMPRESSION_RECOM_ACTION
+        map[EventKeys.EVENT_LABEL] = ""
+        map[EventKeys.EVENT_BUSINESSUNIT]= EcommerceKeys.BUSINESSUNIT
+        map[EventKeys.EVENT_CURRENTSITE]= EcommerceKeys.CURRENTSITE
+
+        val price = CurrencyFormatHelper.convertRupiahToInt(productPrice)
+
+            map[EcommerceKeys.ITEMS] = getItemsMapList(productId,
+            productPositionIndex,
+            productBrand,
+            itemCategory,
+            productName,
+            productVariant,
+            price)
+
+        try {
+            getTracker().sendEnhanceEcommerceEvent(EventKeys.EVENT_VIEW_RECOM, convertToBundle(map))
+        } catch (th: Throwable) {
+            Timber.e(th)
+        }
+    }
+
+    private fun convertToBundle(data: Map<String, Any>): Bundle {
+        val bundle = Bundle()
+        for (entry in data.entries) {
+            when (val value = entry.value) {
+                is String -> bundle.putString(entry.key, value)
+                is Boolean -> bundle.putBoolean(entry.key, value)
+                is Int -> bundle.putInt(entry.key, value)
+                is Long -> bundle.putLong(entry.key, value)
+                is Double -> bundle.putDouble(entry.key, value)
+                is List<*> -> {
+                    val list = ArrayList<Bundle>(
+                        value.map {
+                            (it as? Map<String, Any>)?.let { map ->
+                                return@map convertToBundle(map)
+                            }
+                            null
+                        }.filterNotNull()
+                    )
+                    bundle.putParcelableArrayList(entry.key, list)
+                }
+            }
+        }
+        return bundle
+    }
+
     interface EventKeys {
         companion object {
             const val EVENT = "event"
@@ -126,6 +240,9 @@ object AnalyticsTrackerUtil {
             const val EVENT_CURRENTSITE = "currentSite"
             const val EVENT_MVC = "mvc - {{x}} - {{shop_name}}"
             const val EVENT_MVC_SECTION = "mvc section"
+            const val EVENT_VIEW_RECOM = "productView"
+            const val EVENT_CLICK_RECOM = "productClick"
+
         }
     }
 
@@ -147,6 +264,7 @@ object AnalyticsTrackerUtil {
             const val POPUP_KIRIM_KUPON = "pop up kirim kupon"
             const val KEY_EVENT_CATEGORY_PROFILE_VALUE = "phone number verification"
             const val KUPON_TOKO = "kupon toko"
+            const val EVENT_CATEGORY_RECOM = "my rewards page"
         }
     }
 
@@ -197,6 +315,9 @@ object AnalyticsTrackerUtil {
             const val CLICK_PRODUCT_CARD = "click product card"
             const val VIEW_HOMEPAGE = "view homepage"
 
+            const val IMPRESSION_RECOM_ACTION = "impression - product"
+            const val CLICK_RECOM_ACTION = "click - product"
+
         }
     }
 
@@ -209,7 +330,8 @@ object AnalyticsTrackerUtil {
             const val PROMOTIONS = "promotions"
             const val BUSINESSUNIT = " buyer growth platform"
             const val CURRENTSITE = " tokopediamarketplace"
-
+            const val ITEM_LIST = "item_list"
+            const val ITEMS = "items"
         }
     }
 

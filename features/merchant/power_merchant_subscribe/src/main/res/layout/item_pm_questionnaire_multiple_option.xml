@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPmQuestionnaireTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700"
+        app:typographyType="heading_4"
+        tools:text="Kenapa Anda ingin berhenti menjadi Power Merchant" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPmQuestionnaireOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        tools:itemCount="5"
+        tools:listitem="@layout/item_pm_questionnaire_option_item" />
+
+    <View
+        android:id="@+id/horLinePmQuestionnaireOptions"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:background="@color/Unify_N75" />
+</LinearLayout>

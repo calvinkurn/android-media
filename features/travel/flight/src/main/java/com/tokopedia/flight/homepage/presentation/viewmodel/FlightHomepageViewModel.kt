@@ -3,17 +3,17 @@ package com.tokopedia.flight.homepage.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.travel.constant.TravelType
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
+import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.homepage.data.cache.FlightDashboardCache
@@ -21,8 +21,8 @@ import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightHomepageModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.homepage.presentation.validator.FlightSelectPassengerValidator
-import com.tokopedia.flight.searchV4.domain.FlightSearchDeleteAllDataUseCase
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.domain.FlightSearchDeleteAllDataUseCase
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -196,12 +196,12 @@ class FlightHomepageViewModel @Inject constructor(
     }
 
     fun generatePairOfMinAndMaxDateForDeparture(): Pair<Date, Date> {
-        val minDate = FlightDateUtil.getCurrentDate()
+        val minDate = FlightDateUtil.currentDate
         val maxDate = FlightDateUtil.addTimeToSpesificDate(
                 FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
                 Calendar.DATE,
                 FlightSearchUniversalViewModel.MINUS_ONE_DAY)
-        val maxDateCalendar = FlightDateUtil.getCurrentCalendar()
+        val maxDateCalendar = FlightDateUtil.currentCalendar
         maxDateCalendar.time = maxDate
         maxDateCalendar.set(Calendar.HOUR_OF_DAY, FlightSearchUniversalViewModel.DEFAULT_LAST_HOUR_IN_DAY)
         maxDateCalendar.set(Calendar.MINUTE, FlightSearchUniversalViewModel.DEFAULT_LAST_MIN)
@@ -215,7 +215,7 @@ class FlightHomepageViewModel @Inject constructor(
                 FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
                 Calendar.DATE,
                 FlightSearchUniversalViewModel.MINUS_ONE_DAY)
-        val maxDateCalendar = FlightDateUtil.getCurrentCalendar()
+        val maxDateCalendar = FlightDateUtil.currentCalendar
         maxDateCalendar.time = maxDate
         maxDateCalendar.set(Calendar.HOUR_OF_DAY, FlightSearchUniversalViewModel.DEFAULT_LAST_HOUR_IN_DAY)
         maxDateCalendar.set(Calendar.MINUTE, FlightSearchUniversalViewModel.DEFAULT_LAST_MIN)
@@ -231,7 +231,7 @@ class FlightHomepageViewModel @Inject constructor(
 
         if (departureDate.after(oneYears)) {
             resultStringResourceId = R.string.flight_dashboard_departure_max_one_years_from_today_error
-        } else if (departureDate.before(FlightDateUtil.removeTime(FlightDateUtil.getCurrentDate()))) {
+        } else if (departureDate.before(FlightDateUtil.removeTime(FlightDateUtil.currentDate))) {
             resultStringResourceId = R.string.flight_dashboard_departure_should_atleast_today_error
         }
 

@@ -20,6 +20,7 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.home_feed_item
+        const val PM_PRO_TITLE = "Power Merchant Pro"
     }
 
     private val productCardView by lazy { itemView.findViewById<ProductCardGridView>(R.id.productCardView) }
@@ -57,6 +58,11 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
             )
             setImageProductViewHintListener(element, object: ViewHintListener {
                 override fun onViewHint() {
+                    //if pm pro
+                    val isPmPro = element.product.badges.find { it.title == PM_PRO_TITLE } != null
+                    if (isPmPro) {
+                        listener.onProductWithPmProImpressed(productCardView.getShopBadgeView(), adapterPosition)
+                    }
                     listener.onProductImpression(element, adapterPosition)
                 }
             })

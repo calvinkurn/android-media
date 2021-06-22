@@ -12,6 +12,8 @@ import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.component.name
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
+import com.tokopedia.home.screenshot.HomeScreenshotTestHelper
+import com.tokopedia.home.screenshot.HomeScreenshotTestHelper.getWidgetScreenshotList
 import com.tokopedia.home.screenshot.HomeScreenshotTestHelper.turnOffAnimation
 import com.tokopedia.home_component.util.HomeNetworkUtil
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
@@ -77,31 +79,11 @@ class HomeScreenshotLoggedInTest {
     }
 
     private fun doScreenshotForEachViewholder() {
-        val screenshotModelList = listOf(
-                ScreenshotModel(name = "Header"),
-                ScreenshotModel(name = "Ticker"),
-                ScreenshotModel(name = "ATF1-Icon"),
-                ScreenshotModel(name = "ATF2-Banner Carousel"),
-                ScreenshotModel(name = "ATF3-Icon"),
-                ScreenshotModel(name = "ATF4-Lego4Image"),
-                ScreenshotModel(name = "Lego6Image"),
-                ScreenshotModel(name = "Lego4Image"),
-                ScreenshotModel(name = "Lego3Image"),
-                ScreenshotModel(name = "1x2Banner"),
-                ScreenshotModel(name = "4BannerAuto"),
-                ScreenshotModel(name = "6ImageAuto"),
-                ScreenshotModel(name = "RecommendationListCarousel"),
-                ScreenshotModel(name = "ProductHighlight"),
-                ScreenshotModel(name = "CategoryWidget"),
-                ScreenshotModel(name = "LeftCarousel"),
-                ScreenshotModel(name = "TopCarousel"),
-                ScreenshotModel(name = "PopularKeyword"),
-                ScreenshotModel(name = "HomeWidget")
-        )
+        val screenshotModelList = getWidgetScreenshotList()
         screenShotList(screenshotModelList)
     }
 
-    private fun screenShotList(screenshotModelList: List<ScreenshotModel>) {
+    private fun screenShotList(screenshotModelList: List<HomeScreenshotTestHelper.ScreenshotModel>) {
         screenshotModelList.forEachIndexed { index, screenshotModel ->
             screenshotHomeViewholdersAtPosition(index, screenshotModel.name)
         }
@@ -166,6 +148,4 @@ class HomeScreenshotLoggedInTest {
                 HOME_EXP,
                 HOME_VARIANT_REVAMP)
     }
-
-    data class ScreenshotModel(val name: String)
 }

@@ -16,6 +16,6 @@ class ProductEmptyViewHolder(val view: View): ProductViewHolder<ProductEmptyView
     }
 
     override fun bind(item: ProductEmptyViewModel) {
-        view.imageView8.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.ill_no_product))
+        view.imageView8.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.no_products))
     }
 }

@@ -22,7 +22,7 @@ interface ProductListSectionContract {
         fun addProductList(list: List<Visitable<*>>)
         fun setProductList(list: List<Visitable<*>>)
         fun addRecommendationList(list: List<Visitable<*>>)
-        fun showNetworkError(startRow: Int)
+        fun showNetworkError(startRow: Int, throwable: Throwable?)
         val queryKey: String
         fun setEmptyProduct(globalNavDataView: GlobalNavDataView?, emptySearchProductDataView: EmptySearchProductDataView)
         fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>)
@@ -66,13 +66,13 @@ interface ProductListSectionContract {
         fun logWarning(message: String?, throwable: Throwable?)
         fun sendTopAdsGTMTrackingProductImpression(item: ProductItemDataView)
         fun sendTopAdsGTMTrackingProductClick(item: ProductItemDataView)
-        fun sendGTMTrackingProductClick(item: ProductItemDataView, userId: String, suggestedRelatedKeyword: String, dimension90: String)
+        fun sendGTMTrackingProductClick(item: ProductItemDataView, userId: String, suggestedRelatedKeyword: String)
         fun routeToProductDetail(item: ProductItemDataView?, adapterPosition: Int)
         fun stopPreparePagePerformanceMonitoring()
         fun startNetworkRequestPerformanceMonitoring()
         fun stopNetworkRequestPerformanceMonitoring()
         fun startRenderPerformanceMonitoring()
-        fun sendProductImpressionTrackingEvent(item: ProductItemDataView, suggestedRelatedKeyword: String, dimension90: String)
+        fun sendProductImpressionTrackingEvent(item: ProductItemDataView, suggestedRelatedKeyword: String)
         fun trackBroadMatchImpression(broadMatchItemDataView: BroadMatchItemDataView)
         fun onQuickFilterSelected(option: Option)
         fun initFilterControllerForQuickFilter(quickFilterList: List<Filter>)
@@ -104,6 +104,12 @@ interface ProductListSectionContract {
         fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean
         fun refreshItemAtIndex(index: Int)
         fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option)
+        fun trackDynamicProductCarouselImpression(dynamicProductCarousel: BroadMatchItemDataView, type: String)
+        fun trackDynamicProductCarouselClick(dynamicProductCarousel: BroadMatchItemDataView, type: String)
+        fun trackEventClickSeeMoreBroadMatch(broadMatchItemDataView: BroadMatchDataView)
+        fun trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel: BroadMatchDataView, type: String)
+        fun modifyApplinkToSearchResult(applink: String): String
+        fun showPowerMerchantProPopUp()
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -129,6 +135,7 @@ interface ProductListSectionContract {
         fun onBottomSheetFilterDismissed()
         fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView)
+        fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)
         fun handleAddToCartAction(productCardOptionModel: ProductCardOptionsModel)
         fun handleVisitShopAction()

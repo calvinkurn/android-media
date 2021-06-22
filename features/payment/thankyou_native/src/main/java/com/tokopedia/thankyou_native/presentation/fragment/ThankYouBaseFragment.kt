@@ -134,13 +134,22 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     private fun addRecommendation() {
+        val pgCategoryIds = mutableListOf<Int>()
         when (ThankPageTypeMapper.getThankPageType(thanksPageData)) {
             is MarketPlaceThankPage -> {
+                thanksPageData.shopOrder.forEach { shopOrder ->
+                    shopOrder.purchaseItemList.forEach { purchaseItem ->
+                        val categoryId = purchaseItem.categoryId.toIntOrNull()
+                        categoryId?.let {
+                            pgCategoryIds.add(it)
+                        }
+                    }
+                }
                 addMarketPlaceRecommendation()
-                addDigitalRecommendation()
+                addDigitalRecommendation(pgCategoryIds, MarketPlaceThankPage)
             }
             is DigitalThankPage -> {
-                addDigitalRecommendation()
+                addDigitalRecommendation(pgCategoryIds, DigitalThankPage)
                 addMarketPlaceRecommendation()
             }
         }
@@ -157,7 +166,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             iRecommendationView?.loadRecommendation(thanksPageData, this)
     }
 
-    private fun addDigitalRecommendation() {
+    private fun addDigitalRecommendation(pgCategoryIds: List<Int> = listOf(), pageType: ThankPageType) {
         val recomContainer = getRecommendationContainer()
         iDigitalRecommendationView = recomContainer?.let { container ->
             val view = getRecommendationView(digitalRecommendationLayout)
@@ -166,7 +175,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
         if (::thanksPageData.isInitialized)
             iDigitalRecommendationView?.loadRecommendation(thanksPageData,
-                    this, digitalRecomTrackingQueue)
+                    this, digitalRecomTrackingQueue, pgCategoryIds, pageType)
     }
 
     private fun getRecommendationView(@LayoutRes layout: Int): View {

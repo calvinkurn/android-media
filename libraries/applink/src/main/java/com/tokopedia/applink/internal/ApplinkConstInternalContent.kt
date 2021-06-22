@@ -49,4 +49,6 @@ object ApplinkConstInternalContent {
     const val COMMENT_EXTRA_PARAM = "?$ARGS_FROM_APPLINK=$ARGS_FROM_APPLINK_VALUE"
     const val INTERNAL_MEDIA_PREVIEW = "$MEDIA_PREVIEW?$ARG_MEDIA_INDEX=$DUMMY_MEDIA_INDEX"
 
+    const val PLAY_PATH_LITE = "play/channel/"
+
 }

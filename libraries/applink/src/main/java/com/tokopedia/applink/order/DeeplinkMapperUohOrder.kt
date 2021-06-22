@@ -27,6 +27,8 @@ object DeeplinkMapperUohOrder {
     const val UOH_AB_TEST_KEY = "uoh_android_v2"
     const val UOH_AB_TEST_VALUE = "uoh_android_v2"
 
+    private const val REVAMPED_BUYER_ORDER_DETAIL_ROLLENCE_EXPERIMENT_NAME = "bomdetail"
+    private const val REVAMPED_BUYER_ORDER_DETAIL_ROLLENCE_VALUE = "bomdetail"
     private const val PATH_ORDER = "order"
     const val PATH_ORDER_ID = "order_id"
     const val PATH_PAYMENT_ID = "payment_id"
@@ -58,7 +60,7 @@ object DeeplinkMapperUohOrder {
                 td == PURCHASE_DELIVERED ||
                 d.startsWith(PURCHASE_HISTORY) ||
                 td == ORDER_HISTORY ||
-                td == OMS_ORDER_DETAIL ||
+                d.startsWith(OMS_ORDER_DETAIL) ||
                 td == TRAVEL_AND_ENTERTAINMENT_ORDER ||
                 td == PURCHASE_ONGOING
     }
@@ -174,7 +176,7 @@ object DeeplinkMapperUohOrder {
             return (remoteConfigRollenceValue == UOH_AB_TEST_VALUE && remoteConfigFirebase)
 
         } catch (e: Exception) {
-            false
+            true
         }
     }
 
@@ -247,7 +249,7 @@ object DeeplinkMapperUohOrder {
 
                 var category = ""
                 if (deepLink.startsWith(MARKETPLACE_ORDER)) {
-                    category = ApplinkConstInternalOrder.MARKETPLACE_ORDER
+                    category = if (useRevampedBuyerOrderDetail()) ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL else ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER
                 } else if (deepLink.startsWith(DIGITAL_ORDER)) {
                     category = ApplinkConstInternalOrder.DIGITAL_ORDER
                 }
@@ -264,7 +266,7 @@ object DeeplinkMapperUohOrder {
 
                 var category = ""
                 if (deepLink.startsWith(MARKETPLACE_ORDER)) {
-                    category = ApplinkConstInternalOrder.MARKETPLACE_ORDER
+                    category = if (useRevampedBuyerOrderDetail()) ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL else ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER
                 } else if (deepLink.startsWith(DIGITAL_ORDER)) {
                     category = ApplinkConstInternalOrder.DIGITAL_ORDER
                 }
@@ -297,6 +299,14 @@ object DeeplinkMapperUohOrder {
                         .toString()
             }
             else -> ""
+        }
+    }
+
+    fun useRevampedBuyerOrderDetail(): Boolean {
+        return try {
+            return RemoteConfigInstance.getInstance().abTestPlatform.getString(REVAMPED_BUYER_ORDER_DETAIL_ROLLENCE_EXPERIMENT_NAME, "") == REVAMPED_BUYER_ORDER_DETAIL_ROLLENCE_VALUE
+        } catch (e: Exception) {
+            false
         }
     }
 }

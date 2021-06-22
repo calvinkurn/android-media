@@ -56,13 +56,28 @@ object InstrumentationAuthHelper {
         }
     }
 
-    private fun userSession(
+    fun userSession(
             context: Context = InstrumentationRegistry.getInstrumentation().targetContext,
             action: UserSession.() -> Unit
     ) {
         try {
             val userSession = UserSession(context)
+            userSession.setIsLogin(true)
+            userSession.action()
+        }
+        catch (throwable: Throwable) {
+            throwable.printStackTrace()
+        }
+    }
 
+    private fun userSessionWithModifier(
+            context: Context = InstrumentationRegistry.getInstrumentation().targetContext,
+            modifyUserSession: ((UserSession) -> Unit)? = null,
+            action: UserSession.() -> Unit
+    ) {
+        try {
+            val userSession = UserSession(context)
+            modifyUserSession?.invoke(userSession)
             userSession.setIsLogin(true)
             userSession.action()
         }

@@ -57,7 +57,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:layout_marginBottom="@dimen/spacing_lvl1"
             android:includeFontPadding="false"
-            android:inputType="text"
+            android:inputType="textNoSuggestions"
             android:textColor="@color/Unify_Static_White"
             android:visibility="visible"
             app:typographyType="small"

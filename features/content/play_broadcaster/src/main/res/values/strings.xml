@@ -58,8 +58,9 @@
     <string name="play_prepare_broadcast_promo_detail_title">Diskon Produk &amp; Kuotanya</string>
     <string name="play_prepare_broadcast_promo_detail_description"><![CDATA[<b>Diskon %1$d\%%</b> (%2$d Kuota)]]></string>
 
-    <string name="play_prepare_cover_title_title">"Tambah Cover &amp; Judul"</string>
-    <string name="play_prepare_cover_title_header_description">Buatlah cover &amp; judul yang kreatif yang bisa bikin calon penonton live streaming tokomu jadi penasaran!</string>
+    <!--Cover-->
+    <string name="play_prepare_cover_title_title">Tambah Cover</string>
+    <string name="play_prepare_cover_title_header_description">Tambahkan cover yang kreatif yang bisa bikin calon penonton live streaming tokomu jadi penasaran!</string>
     <string name="play_prepare_cover_title_default_title_label">Judul live streaming</string>
     <string name="play_prepare_cover_title_default_title_placeholder">Contoh: Sneakers Pria Diskon 50\%%</string>
     <string name="play_prepare_cover_title_counter">%1$d/%2$d</string>
@@ -69,6 +70,12 @@
     <string name="play_prepare_cover_gallery_error_pixel_label">Oops, file foto minimal harus %1$dx%2$d piksel</string>
     <string name="play_prepare_cover_gallery_error_size_label">Oops, file foto maksimal harus %d MB</string>
     <string name="play_prepare_cover_gallery_error_not_found_label">Oops, file foto tidak ditemukan</string>
+    
+    <!--Title & Tags-->
+    <string name="play_title_and_tags_title">Tambah Judul &amp; Tag</string>
+    <string name="play_title_input_label">Judul Siaran</string>
+    <string name="play_tags_instruction_text">Pilih tag supaya videomu lebih mudah ditemukan.</string>
+    <string name="play_add_tag_hint">Tulis Tag</string>
 
     <string name="play_camera_cancel_label">Cancel</string>
     <string name="play_camera_timer_label">Timer</string>
@@ -96,7 +103,7 @@
     <string name="play_live_broadcast_dialog_end_timeout_primary">Lihat Laporan</string>
     <string name="play_live_broadcast_share_link_copied">Link disalin!</string>
     <string name="play_dialog_continue_live_title">Mau lanjutkan siaranmu?</string>
-    <string name="play_dialog_continue_live_desc">Live streaming tokomu berhenti sementara karena kamu sempat keluar dari apli</string>
+    <string name="play_dialog_continue_live_desc">Live streaming tokomu berhenti sementara karena kamu sempat keluar dari aplikasi.</string>
     <string name="play_dialog_error_active_other_devices_title">Tokomu sedang siaran di\n perangkat lain</string>
     <string name="play_dialog_error_active_other_devices_desc">Akhiri siaran live streaming di perangkat lain\n jika ingin mengambil alih siaran</string>
     <string name="play_loader_connecting">Menyambungkan…</string>

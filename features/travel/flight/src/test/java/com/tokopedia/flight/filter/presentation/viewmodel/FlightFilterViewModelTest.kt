@@ -2,17 +2,17 @@ package com.tokopedia.flight.filter.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.constant.TravelSortOption
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.model.PriceRangeModel
-import com.tokopedia.flight.searchV4.domain.FlightSearchCountUseCase
-import com.tokopedia.flight.searchV4.domain.FlightSearchStatisticsUseCase
-import com.tokopedia.flight.searchV4.presentation.model.FlightAirlineModel
-import com.tokopedia.flight.searchV4.presentation.model.filter.DepartureTimeEnum
-import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.searchV4.presentation.model.filter.RefundableEnum
-import com.tokopedia.flight.searchV4.presentation.model.filter.TransitEnum
-import com.tokopedia.flight.searchV4.presentation.model.statistics.*
+import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
+import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
+import com.tokopedia.flight.search.presentation.model.FlightAirlineModel
+import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
+import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.search.presentation.model.statistics.*
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -304,7 +304,7 @@ class FlightFilterViewModelTest {
         coEvery {
             flightSearchStatisticsUseCase.execute(any())
         } returns FlightSearchStatisticModel(0, 1000, 60, 90,
-                listOf(), null, listOf(), listOf(), listOf(), false,
+                listOf(), listOf(), listOf(), listOf(), listOf(), false,
                 true, true, false, true)
         flightFilterViewModel.init(0, FlightFilterModel())
 
@@ -410,7 +410,7 @@ class FlightFilterViewModelTest {
         //given
         val statistics = FlightSearchStatisticModel(30, 100000, 60, 90,
                 listOf(), listOf(), listOf(), listOf(), listOf(), false, true, true,
-        false, true)
+                false, true)
         coEvery {
             flightSearchStatisticsUseCase.execute(any())
         } returns statistics

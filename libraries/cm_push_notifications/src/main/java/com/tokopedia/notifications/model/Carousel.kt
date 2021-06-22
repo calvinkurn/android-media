@@ -36,7 +36,7 @@ data class Carousel(
         @SerializedName("index")
         @ColumnInfo(name = "index")
         @Expose
-        var index: Int = 0,
+        var index: Int? = 0,
 
         @SerializedName(CMConstant.PayloadKeys.ELEMENT_ID)
         @ColumnInfo(name = CMConstant.PayloadKeys.ELEMENT_ID)
@@ -62,7 +62,7 @@ data class Carousel(
         dest?.writeString(this.text)
         dest?.writeString(this.icon)
         dest?.writeString(this.filePath)
-        dest?.writeInt(this.index)
+        dest?.writeInt(this.index ?: 0)
         dest?.writeString(this.element_id)
     }
 

@@ -1951,6 +1951,75 @@
                         "backColor": "green",
                         "backImage": ""
                     }
+                },
+                {
+                    "id": 14731,
+                    "isAutoRefreshAfterExpired": false,
+                    "layout": "product_review",
+                    "name": "product_review",
+                    "pageName": "",
+                    "perso_type": 8,
+                    "persona": "Others",
+                    "showPromoBadge": false,
+                    "token": "",
+                    "type": "inspiration",
+                    "widgetParam": ""
+                },
+                {
+                    "id": 60439,
+                    "isAutoRefreshAfterExpired": false,
+                    "layout": "best_selling",
+                    "name": "[Context] Best Seller - New Widget - Existing User - C5 wibapr",
+                    "pageName": "best_seller_switching_new",
+                    "perso_type": 10,
+                    "persona": "",
+                    "showPromoBadge": true,
+                    "token": "",
+                    "type": "inspiration",
+                    "widgetParam": "&category_id=1319"
+                },
+                {
+                    "id": 74104,
+                    "layout": "dg_bills"
+                },
+                {
+                    "id": 74103,
+                    "layout": "salam_todo"
+                },
+                {
+                    "id": 75166,
+                    "layout": "home_widget_2",
+                    "widgetParam": "?section=top_up_dan_tagihan"
+                },
+                {
+                    "id": 105697,
+                    "layout": "shop_widget",
+                    "name": "Featured Shop",
+                    "perso_type": 1,
+                    "contextualInfo": 1,
+                    "showPromoBadge": false,
+                    "type": "inspiration",
+                    "widgetParam": "headline_product_count=3&item=10&device=android&user_id=16939915&page=1&ep=cpm&src=homepage&template_id=3",
+                    "banner": {
+                        "applink": "",
+                        "attribution": "",
+                        "back_color": "#1aaba6",
+                        "cta": {
+                            "coupon_code": "",
+                            "mode": "",
+                            "text": "",
+                            "type": ""
+                        },
+                        "description": "This is sample widget of featured shop or headline ads",
+                        "gradient_color": [
+                            "red"
+                        ],
+                        "id": 14093,
+                        "image_url": "",
+                        "text_color": "#ffffff",
+                        "title": "Android Test - Featured shop / headline ads",
+                        "url": ""
+                    }
                 }
             ]
         }

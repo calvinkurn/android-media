@@ -63,7 +63,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_IS_DRAFTING
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_SHOP_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_RESULT_STATUS
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_NAME
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_VALUE
@@ -107,6 +106,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHIPMENT_DATA
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHOP_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_LOCATION_VALIDATION
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_PRODUCT_NAME_VALIDATION
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.SetCashbackResult
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
@@ -230,10 +230,8 @@ class AddEditProductPreviewFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         // start PLT monitoring
         startPerformanceMonitoring()
-
         userSession = UserSession(requireContext())
         shopId = userSession.shopId
-
         super.onCreate(savedInstanceState)
 
         arguments?.let {
@@ -249,7 +247,6 @@ class AddEditProductPreviewFragment :
                 viewModel.getProductDraft(draftId.toLongOrZero())
             }
             if (viewModel.getProductId().isNotEmpty()) {
-                //TODO is goldmerchant and isregular
                 ProductEditStepperTracking.trackScreen(shopId, false, false)
             } else {
                 ProductAddStepperTracking.trackScreen()
@@ -313,7 +310,7 @@ class AddEditProductPreviewFragment :
 
         // photos
         productPhotosView = view.findViewById(R.id.rv_product_photos)
-        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, true, mutableListOf(), this)
+        productPhotoAdapter = ProductPhotoAdapter(viewModel.getMaxProductPhotos(), true, mutableListOf(), this)
         productPhotosView?.let {
             it.adapter = productPhotoAdapter
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -1081,6 +1078,9 @@ class AddEditProductPreviewFragment :
                 }
                 ValidationResultModel.Result.VALIDATION_ERROR -> {
                     showToasterFailed(result.exception)
+                    // log error
+                    AddEditProductErrorHandler.logMessage(TIMBER_PREFIX_PRODUCT_NAME_VALIDATION + " : " + result.serviceResponse)
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(result.exception)
                 }
                 else -> {
                     // no-op
@@ -1311,15 +1311,19 @@ class AddEditProductPreviewFragment :
     private fun moveToImagePicker() {
         val adapter = productPhotoAdapter ?: return
         // show error message when maximum product image is reached
-        val productPhotoSize = adapter.getProductPhotoPaths().size
-        if (productPhotoSize == MAX_PRODUCT_PHOTOS) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
+        val productPhotoCount = adapter.getProductPhotoPaths().size
+        val maxProductPhotoCount = viewModel.getMaxProductPhotos()
+        if (productPhotoCount == maxProductPhotoCount) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
         else {
+            val isAdding = viewModel.isAdding || !isEditing()
             val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
                 if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
                         ?: urlOrPath
                 else urlOrPath
             }.orEmpty()
-            val intent = ImagePickerAddEditNavigation.getIntent(requireContext(), ArrayList(imageUrlOrPathList), viewModel.isAdding || !isEditing())
+            val intent = ImagePickerAddEditNavigation.getIntent(
+                    requireContext(), ArrayList(imageUrlOrPathList), maxProductPhotoCount,
+                    isAdding)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
     }

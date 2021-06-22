@@ -52,6 +52,7 @@ import com.tokopedia.play.view.viewmodel.PlayParentViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.util.event.EventObserver
+import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -376,7 +377,7 @@ class PlayFragment @Inject constructor(
     private fun observeStatusInfo() {
         playViewModel.observableStatusInfo.observe(viewLifecycleOwner, DistinctObserver {
             if (it.statusType.isFreeze) {
-                try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
+                dismissToaster()
 
                 if (!playViewModel.bottomInsets.isAnyBottomSheetsShown && it.shouldAutoSwipeOnFreeze) doAutoSwipe()
 

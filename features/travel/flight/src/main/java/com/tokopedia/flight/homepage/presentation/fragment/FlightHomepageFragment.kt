@@ -20,9 +20,9 @@ import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.widget.TravelVideoBannerWidget
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
-import com.tokopedia.flight.airportv2.presentation.bottomsheet.FlightAirportPickerBottomSheet
-import com.tokopedia.flight.common.constant.FlightUrl.FLIGHT_PROMO_APPLINK
+import com.tokopedia.flight.airport.presentation.bottomsheet.FlightAirportPickerBottomSheet
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
+import com.tokopedia.flight.common.constant.FlightUrl
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.homepage.di.FlightHomepageComponent
@@ -34,8 +34,8 @@ import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHomepageViewModel
 import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.homepage.presentation.widget.FlightCalendarRoundTripWidget
-import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -424,7 +424,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun onAllBannerClicked() {
-        RouteManager.route(context, FLIGHT_PROMO_APPLINK)
+        RouteManager.route(context, FlightUrl.FLIGHT_PROMO_APPLINK)
     }
 
     private fun renderSearchForm(homepageData: FlightHomepageModel) {
