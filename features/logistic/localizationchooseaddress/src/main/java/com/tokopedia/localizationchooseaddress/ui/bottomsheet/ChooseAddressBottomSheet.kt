@@ -500,6 +500,7 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
         const val REQUEST_CODE_ADDRESS_LIST = 399
         const val REQUEST_CODE_LOGIN_PAGE = 499
+
         const val DISTRICT_RECOMMENDATION_ADDRESS = "district_recommendation_address"
         const val LATITUDE = "latitude"
         const val LONGITUDE = "longitude"
