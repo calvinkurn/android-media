@@ -24,8 +24,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
 
     companion object {
         val QUERY = """
-        query pdpGetVariantComponent(${'$'}productID : String, ${'$'}source : String, ${'$'}whID : String, ${'$'}pdpSession : String , ${'$'}userLocation: pdpUserLocation) {
-            pdpGetVariantComponent(productID: ${'$'}productID, source: ${'$'}source, whID: ${'$'}whID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation) {
+        query pdpGetVariantComponent(${'$'}productID : String, ${'$'}source : String, ${'$'}whID : String, ${'$'}pdpSession : String , ${'$'}userLocation: pdpUserLocation, ${'$'}isTokoNow: Boolean) {
+            pdpGetVariantComponent(productID: ${'$'}productID, source: ${'$'}source, whID: ${'$'}whID, pdpSession: ${'$'}pdpSession, userLocation: ${'$'}userLocation, isTokoNow: ${'$'}isTokoNow) {
                 variantData { 
                       errorCode
                       parentID

@@ -18,5 +18,7 @@ object VariantConstant {
     const val STATE_UNSELECTED = 0
     const val STATE_SELECTED = 1
     const val STATE_EMPTY = -1
+
+    const val DEFAULT_MAX_ORDER = 100
 }
 
