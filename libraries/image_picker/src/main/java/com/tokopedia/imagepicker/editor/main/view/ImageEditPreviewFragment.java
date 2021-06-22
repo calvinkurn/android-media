@@ -105,15 +105,20 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         ImageRatioType getCurrentRatio();
     }
 
-    public static ImageEditPreviewFragment newInstance(int imageIndex,
-                                                       String imagePath, int minResolution,
-                                                       boolean isCirclePreview) {
+    public static ImageEditPreviewFragment newInstance(
+            int imageIndex,
+            String imagePath,
+            int minResolution,
+            boolean isCirclePreview,
+            UserSessionInterface userSession
+    ) {
         Bundle args = new Bundle();
         args.putInt(ARG_IMAGE_INDEX, imageIndex);
         args.putString(ARG_IMAGE_PATH, imagePath);
         args.putInt(ARG_MIN_RESOLUTION, minResolution);
         args.putBoolean(ARG_CIRCLE_PREVIEW, isCirclePreview);
         ImageEditPreviewFragment fragment = new ImageEditPreviewFragment();
+        fragment.userSession = userSession;
         fragment.setArguments(args);
         return fragment;
     }
@@ -420,7 +425,6 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        userSession = new UserSession(requireContext());
         setImageData();
     }
 

@@ -997,7 +997,9 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     currentEditStepIndexList,
                     minResolution,
                     imageRatioTypeDefStepList,
-                    isCirclePreview);
+                    isCirclePreview,
+                    userSession
+            );
             viewPager.setAdapter(imageEditorViewPagerAdapter);
         }
         viewPager.post(new Runnable() {
