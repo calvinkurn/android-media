@@ -9,6 +9,9 @@ object SellerMenuErrorHandler {
     const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
     const val ERROR_GET_ADMIN_ACCESS_ROLE = "Error when get admin access role."
     const val ERROR_RENDER_TITLE = "Error when rendering title."
+    const val ERROR_GET_SHOP_TYPE = "Error when get shop type."
+    const val ERROR_GET_BEFORE_ON_DATE = "Error when get before on date"
+
 
     fun logExceptionToCrashlytics(throwable: Throwable, message: String) {
         try {

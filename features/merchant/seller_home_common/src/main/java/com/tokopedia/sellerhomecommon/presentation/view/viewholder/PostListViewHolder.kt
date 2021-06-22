@@ -13,12 +13,14 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.adapter.PostListPagerAdapter
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_post_list_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_post_list_widget_error.view.*
@@ -37,7 +39,6 @@ class PostListViewHolder(
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.shc_post_list_card_widget
-        private const val IMG_EMPTY_STATE = "https://ecs7.tokopedia.net/android/others/shc_post_list_info_empty_state.png"
     }
 
     private var dataKey: String = ""
@@ -51,6 +52,9 @@ class PostListViewHolder(
     }
 
     override fun bind(element: PostListWidgetUiModel) {
+        if (!listener.getIsShouldRemoveWidget()) {
+            itemView.toggleWidgetHeight(true)
+        }
         itemView.rvPostList.isNestedScrollingEnabled = false
         observeState(element)
     }
@@ -85,7 +89,12 @@ class PostListViewHolder(
         val isEmpty = postListWidgetUiModel.data?.isEmptyPost().orFalse()
         when {
             isEmpty && !postListWidgetUiModel.isShowEmpty -> {
-                listener.removeWidget(adapterPosition, postListWidgetUiModel)
+                if (listener.getIsShouldRemoveWidget()) {
+                    listener.removeWidget(adapterPosition, postListWidgetUiModel)
+                } else {
+                    listener.onRemoveWidget(adapterPosition)
+                    itemView.toggleWidgetHeight(false)
+                }
             }
             else -> showSuccessState(postListWidgetUiModel)
         }
@@ -99,7 +108,7 @@ class PostListViewHolder(
             imgShcPostEmpty.visible()
             tvShcPostEmptyTitle.run {
                 text = element.emptyState.title.takeIf { it.isNotBlank() }
-                        ?: getString(R.string.shc_empty_state_title_post_list)
+                        ?: getString(R.string.shc_empty_state_title)
                 visible()
             }
             tvShcPostEmptyDescription.run {
@@ -112,7 +121,7 @@ class PostListViewHolder(
                 setOnClickListener { goToSellerEducationCenter(element) }
             }
             ImageHandler.loadImageWithoutPlaceholderAndError(imgShcPostEmpty, element.emptyState.imageUrl.takeIf { it.isNotBlank() }
-                    ?: IMG_EMPTY_STATE)
+                    ?: SellerHomeUrl.IMG_EMPTY_STATE)
         }
     }
 

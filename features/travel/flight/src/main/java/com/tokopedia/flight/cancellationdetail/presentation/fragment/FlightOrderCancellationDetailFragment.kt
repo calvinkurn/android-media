@@ -182,7 +182,7 @@ class FlightOrderCancellationDetailFragment : BaseDaggerFragment(), FlightOrderC
         }
     }
 
-    private fun generateSimpleViewModel(items: List<OrderDetailCancellation.OrderDetailRefundKeyValue>): List<SimpleModel> {
+    private fun generateSimpleViewModel(items: List<OrderDetailCancellation.OrderDetailRefundKeyValue>): MutableList<SimpleModel> {
         val datas: MutableList<SimpleModel> = ArrayList()
         for (item in items) {
             datas.add(SimpleModel(item.key, item.value))
