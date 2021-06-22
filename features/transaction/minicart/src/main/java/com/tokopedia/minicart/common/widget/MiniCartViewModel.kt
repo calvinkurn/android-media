@@ -17,6 +17,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.minicart.common.domain.data.UndoDeleteCartDomainModel
 import com.tokopedia.minicart.common.domain.usecase.*
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -26,6 +28,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                                             private val deleteCartUseCase: DeleteCartUseCase,
                                             private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
                                             private val updateCartUseCase: UpdateCartUseCase,
+                                            private val seamlessLoginUsecase: SeamlessLoginUsecase,
                                             private val miniCartListUiModelMapper: MiniCartListUiModelMapper)
     : BaseViewModel(executorDispatchers.main) {
 
@@ -339,6 +342,17 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         }
     }
 
+    fun generateSeamlessUrl(url: String, onGenerateUrlSuccess: (url: String) -> Unit, onGenerateUrlError: (errorMessage: String) -> Unit) {
+        seamlessLoginUsecase.generateSeamlessUrl(url, object : SeamlessLoginSubscriber {
+            override fun onUrlGenerated(url: String) {
+                onGenerateUrlSuccess(url)
+            }
+
+            override fun onError(msg: String) {
+                onGenerateUrlError(msg)
+            }
+        })
+    }
 
     // User Interaction
 
