@@ -1,9 +1,9 @@
-package com.tokopedia.review.feature.reading.domain.usecase
+package com.tokopedia.review.common.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.review.feature.reading.data.ToggleLikeReviewResponse
+import com.tokopedia.review.common.data.ToggleLikeReviewResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 

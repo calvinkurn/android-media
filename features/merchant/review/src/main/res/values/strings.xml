@@ -382,4 +382,7 @@
     <string name="review_reading_filter_multiple_rating_selected">%d Rating</string>
     <string name="review_reading_filter_multiple_topic_selected">%d Topik</string>
 
+    <!-- Gallery    -->
+    <string name="review_gallery_image_count">%d/%d</string>
+
 </resources>

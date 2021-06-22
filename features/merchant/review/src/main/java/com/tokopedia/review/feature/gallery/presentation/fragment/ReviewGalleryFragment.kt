@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -15,15 +17,21 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.R
+import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.feature.gallery.presentation.activity.ReviewGalleryActivity
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryImagesAdapter
+import com.tokopedia.review.feature.gallery.presentation.di.DaggerReviewGalleryComponent
+import com.tokopedia.review.feature.gallery.presentation.di.ReviewGalleryComponent
+import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryImageSwipeListener
+import com.tokopedia.review.feature.gallery.presentation.viewmodel.ReviewGalleryViewModel
 import com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryReviewDetailWidget
 import com.tokopedia.review.feature.reading.data.ProductReview
 import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
+import javax.inject.Inject
 
-class ReviewGalleryFragment : Fragment(), ReviewReportBottomSheetListener {
+class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryComponent>, ReviewReportBottomSheetListener, ReviewGalleryImageSwipeListener {
 
     companion object {
         fun newInstance(cacheManagerId: String): ReviewGalleryFragment {
@@ -34,6 +42,9 @@ class ReviewGalleryFragment : Fragment(), ReviewReportBottomSheetListener {
             }
         }
     }
+
+    @Inject
+    lateinit var viewModel: ReviewGalleryViewModel
 
     private var closeButton: IconUnify? = null
     private var menuButton: IconUnify? = null
@@ -46,7 +57,28 @@ class ReviewGalleryFragment : Fragment(), ReviewReportBottomSheetListener {
     private var productReview: ProductReview = ProductReview()
     private var index: Int = 0
     private var shopId: String = ""
+    private var productId: String = ""
     private var areComponentsHidden = false
+
+    override fun getScreenName(): String {
+        return ""
+    }
+
+    override fun initInjector() {
+        component?.inject(this)
+    }
+
+    override fun getComponent(): ReviewGalleryComponent? {
+        return activity?.run {
+            DaggerReviewGalleryComponent.builder()
+                    .reviewComponent(ReviewInstance.getComponent(application))
+                    .build()
+        }
+    }
+
+    override fun onImageSwiped(index: Int) {
+        reviewDetail?.setPhotoCount(index, productReview.imageAttachments.size)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +96,7 @@ class ReviewGalleryFragment : Fragment(), ReviewReportBottomSheetListener {
         setupThreeDots()
         setupRecyclerView()
         setupReviewDetail()
+        observeToggleLikeReviewResult()
     }
 
     override fun onReportOptionClicked(reviewId: String, shopId: String) {
@@ -78,6 +111,7 @@ class ReviewGalleryFragment : Fragment(), ReviewReportBottomSheetListener {
                             ?: ProductReview()
                     index = get(ReadReviewFragment.INDEX_KEY, Int::class.java) ?: 0
                     shopId = get(ReadReviewFragment.SHOP_ID_KEY, String::class.java) ?: ""
+                    productId = get(ReadReviewFragment.PRODUCT_ID_KEY, String::class.java) ?: ""
                 }
             }
         }
@@ -122,8 +156,17 @@ class ReviewGalleryFragment : Fragment(), ReviewReportBottomSheetListener {
                 setTimeStamp(reviewCreateTime)
                 setReviewMessage(message)
                 setLikeCount(likeDislike.totalLike)
+                setLikeButtonClickListener {
+                    viewModel.toggleLikeReview(productReview.feedbackID, shopId, productId, productReview.likeDislike.likeStatus)
+                }
             }
         }
+    }
+
+    private fun observeToggleLikeReviewResult() {
+        viewModel.toggleLikeReview.observe(viewLifecycleOwner, Observer {
+
+        })
     }
 
     private fun goToReportReview(reviewId: String, shopId: String) {

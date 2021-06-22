@@ -11,7 +11,9 @@
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_10"
+        app:icon_color_light_enable="@color/Unify_Static_White_96"
         app:icon_name="CLOSE"
+        app:icon_enable_state="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -21,22 +23,25 @@
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_12"
+        app:icon_color_light_enable="@color/Unify_Static_White_96"
         app:icon_name="MENU_KEBAB_VERTICAL"
+        app:icon_enable_state="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/review_gallery_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_lvl0"
         android:layout_marginTop="@dimen/layout_lvl6"
-        app:layout_constraintTop_toBottomOf="@id/review_gallery_close_button" />
+        android:paddingBottom="@dimen/layout_lvl8"
+        app:layout_constraintTop_toBottomOf="@id/review_gallery_close_button"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryReviewDetailWidget
         android:id="@+id/review_gallery_review_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/review_gallery_recyclerview"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

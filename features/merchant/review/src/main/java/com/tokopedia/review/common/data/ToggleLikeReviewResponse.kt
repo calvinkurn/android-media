@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.reading.data
+package com.tokopedia.review.common.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

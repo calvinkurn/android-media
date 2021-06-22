@@ -1,16 +1,17 @@
-package com.tokopedia.review.feature.reading.di
+package com.tokopedia.review.feature.gallery.presentation.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.review.feature.reading.presentation.viewmodel.ReadReviewViewModel
+import com.tokopedia.review.feature.gallery.presentation.viewmodel.ReviewGalleryViewModel
+import com.tokopedia.review.feature.reading.di.ReadReviewScope
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class ReadReviewViewModelModule {
+abstract class ReviewGalleryViewModelModule {
 
     @Binds
     @ReadReviewScope
@@ -18,6 +19,6 @@ abstract class ReadReviewViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(ReadReviewViewModel::class)
-    internal abstract fun readReviewViewModel(viewModel: ReadReviewViewModel): ViewModel
+    @ViewModelKey(ReviewGalleryViewModel::class)
+    internal abstract fun reviewGalleryViewModel(viewModel: ReviewGalleryViewModel): ViewModel
 }

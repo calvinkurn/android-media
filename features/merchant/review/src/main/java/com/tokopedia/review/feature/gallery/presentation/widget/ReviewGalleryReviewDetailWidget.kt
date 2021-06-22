@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.gallery.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -26,6 +27,7 @@ class ReviewGalleryReviewDetailWidget : BaseCustomView {
     private var basicInfo: ReviewBasicInfoWidget? = null
     private var reviewText: Typography? = null
     private var likeCount: Typography? = null
+    private var likeButton: IconUnify? = null
 
     private fun init() {
         View.inflate(context, R.layout.widget_review_gallery_review_detail, this)
@@ -38,10 +40,11 @@ class ReviewGalleryReviewDetailWidget : BaseCustomView {
         basicInfo = findViewById(R.id.review_gallery_basic_info)
         reviewText = findViewById(R.id.review_gallery_review)
         likeCount = findViewById(R.id.review_gallery_like_count)
+        likeButton = findViewById(R.id.review_gallery_like_icon)
     }
 
     fun setPhotoCount(index: Int, total: Int) {
-        photoCount?.text = "$index/$total"
+        photoCount?.text = context.getString(R.string.review_gallery_image_count, index, total)
     }
 
     fun setRating(rating: Int) {
@@ -58,6 +61,12 @@ class ReviewGalleryReviewDetailWidget : BaseCustomView {
 
     fun setLikeCount(totalLike: Int) {
         likeCount?.text = totalLike.toString()
+    }
+
+    fun setLikeButtonClickListener(action: () -> Unit) {
+        likeButton?.setOnClickListener {
+            action.invoke()
+        }
     }
 
     fun setReviewMessage(reviewMessage: String) {

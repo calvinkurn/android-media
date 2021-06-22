@@ -6,10 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.review.common.data.ToggleProductReviewLike
+import com.tokopedia.review.common.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.review.feature.reading.data.*
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductRatingAndTopicsUseCase
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductReviewListUseCase
-import com.tokopedia.review.feature.reading.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.uimodel.FilterType
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
@@ -60,6 +61,10 @@ class ReadReviewViewModel @Inject constructor(
 
     fun setProductId(productId: String) {
         this.productId.value = productId
+    }
+
+    fun getProductId(): String {
+        return this.productId.value ?: ""
     }
 
     fun getReviewStatistics(): List<ProductReviewDetail> {

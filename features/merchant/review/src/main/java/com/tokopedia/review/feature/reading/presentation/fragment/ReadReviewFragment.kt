@@ -52,6 +52,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         const val PRODUCT_REVIEW_KEY = "ProductReview"
         const val INDEX_KEY = "Index"
         const val SHOP_ID_KEY = "ShopId"
+        const val PRODUCT_ID_KEY = "ProductId"
         fun createNewInstance(productId: String): ReadReviewFragment {
             return ReadReviewFragment().apply {
                 arguments = Bundle().apply {
@@ -170,6 +171,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             cacheManager.put(PRODUCT_REVIEW_KEY, productReview)
             cacheManager.put(INDEX_KEY, positionClicked)
             cacheManager.put(SHOP_ID_KEY, shopId)
+            cacheManager.put(PRODUCT_ID_KEY, viewModel.getProductId())
             startActivity(ReviewGalleryActivity.getIntent(it, cacheManager.id ?: ""))
         }
     }

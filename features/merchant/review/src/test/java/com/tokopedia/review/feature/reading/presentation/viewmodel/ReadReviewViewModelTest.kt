@@ -1,5 +1,7 @@
 package com.tokopedia.review.feature.reading.presentation.viewmodel
 
+import com.tokopedia.review.common.data.ToggleLikeReviewResponse
+import com.tokopedia.review.common.data.ToggleProductReviewLike
 import com.tokopedia.review.feature.reading.data.*
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants

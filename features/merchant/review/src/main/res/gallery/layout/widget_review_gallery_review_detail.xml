@@ -37,9 +37,11 @@
             android:id="@+id/review_gallery_review"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
             android:textColor="@color/Unify_Static_White_96"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/review_gallery_basic_info" />
+            app:layout_constraintTop_toBottomOf="@id/review_gallery_basic_info"
+            app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/review_gallery_like_count"
@@ -57,6 +59,8 @@
             android:layout_height="@dimen/layout_lvl3"
             android:layout_marginTop="@dimen/layout_lvl3"
             android:layout_marginEnd="@dimen/layout_lvl3"
+            app:icon_color_light_enable="@color/Unify_Static_White_96"
+            app:icon_enable_state="true"
             app:icon_name="THUMB"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
