@@ -846,8 +846,7 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun getStickerGroupList(chatRoom: ChatroomViewModel) {
         groupStickerUseCase.getStickerGroup(
             chatRoom.isSeller(), ::onLoadingStickerGroup, ::onSuccessGetStickerGroup,
-            ::onErrorGetStickerGroup
-        )
+        ) {}
     }
 
     override fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel) {
@@ -1011,8 +1010,6 @@ open class TopChatRoomPresenter @Inject constructor(
             false
         }
     }
-
-    private fun onErrorGetStickerGroup(throwable: Throwable) {}
 
     companion object {
         const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service"
