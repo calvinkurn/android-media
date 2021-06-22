@@ -390,7 +390,6 @@ public interface ApplinkConst {
     String ACCOUNT = "tokopedia://account";
 
     String TELEPHONY_MASKING = "tokopedia://telephony-masking";
-    String TELEPHONY_MASKING_WITH_REDIRECT = "tokopedia://telephony-masking?redirect={path}";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
