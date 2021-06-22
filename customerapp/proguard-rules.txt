@@ -265,3 +265,4 @@
 -keepclasseswithmembers class * { native <methods>; }
 -keep class com.datavisor.vangogh.** { *; }
 -keep class com.datavisorobfus.** { *; }
+-keep class io.embrace.android.** { *; }
