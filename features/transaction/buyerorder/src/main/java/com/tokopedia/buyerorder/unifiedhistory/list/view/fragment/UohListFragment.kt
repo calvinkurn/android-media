@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DALAM_PROSES
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DEALS
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DIGITAL
@@ -142,6 +143,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -436,6 +440,16 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun prepareLayout() {
         refreshHandler = RefreshHandler(swipe_refresh_layout, this)
         refreshHandler?.setPullEnabled(true)
+
+        uoh_navtoolbar?.let {
+            val icons = IconBuilder(
+                IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
+            )
+            icons.apply {
+                addIcon(IconList.ID_NAV_GLOBAL) {}
+            }
+            it.setIcon(icons)
+        }
 
         uohItemAdapter = UohItemAdapter().apply {
             setActionListener(this@UohListFragment)

@@ -1256,7 +1256,8 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public boolean isNavigationRevamp() {
-        return isNewNavigation;
+//        return isNewNavigation;
+        return true;
     }
 
     public void populateBottomNavigationView() {

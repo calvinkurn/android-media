@@ -56,6 +56,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.flightOrderList)
     implementation project(rootProject.ext.libraries.logger)
+    implementation project(rootProject.ext.features.searchbar)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
