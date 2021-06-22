@@ -60,7 +60,7 @@ abstract class BaseHotelBookingScreenshotTesting {
 
         Thread.sleep(3000)
 
-        CommonActions.findViewAndScreenShot(R.id.hotel_info_container, filePrefix(), "detail-container")
+        CommonActions.findViewAndScreenShot(R.id.hotel_detail_container, filePrefix(), "detail-container")
         CommonActions.findViewAndScreenShot(R.id.booking_room_duration_info, filePrefix(), "duration-info")
         CommonActions.findViewAndScreenShot(R.id.room_request_container, filePrefix(), "room-request-container")
 
