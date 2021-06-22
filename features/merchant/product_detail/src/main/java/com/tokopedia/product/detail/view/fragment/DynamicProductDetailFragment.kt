@@ -1420,6 +1420,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     hasTopAdsActive = hasTopAds(),
                     isVariant = it.data.variant.isVariant,
                     cartTypeData = cartTypeData,
+                    minQuantity = it.basic.minOrder,
+                    maxQuantity = it.basic.maxOrder,
                     miniCartItem = miniCartItem)
         }
         showOrHideButton()
@@ -1669,9 +1671,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun onSuccessAtcTokoNow(result: AddToCartDataModel) {
         view?.showToasterSuccess(result.data.message.firstOrNull()
-                ?: "", ctaText = getString(R.string.pdp_see_label), ctaListener = {
-            gotoCart()
-        })
+                ?: "", ctaText = getString(R.string.label_oke_pdp))
         updateButtonState()
     }
 
@@ -3015,6 +3015,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     ApplinkConst.SHOP, shopId),
                     ProductDetailConstant.REQUEST_CODE_SHOP_INFO)
         }
+    }
+
+    override fun gotoTokoNow() {
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.INTERNAL_TOKOPEDIA_NOW)
     }
 
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {
