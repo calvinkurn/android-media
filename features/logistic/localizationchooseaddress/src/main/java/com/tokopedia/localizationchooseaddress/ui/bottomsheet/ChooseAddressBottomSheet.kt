@@ -175,8 +175,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             }
             REQUEST_CODE_GET_DISTRICT_RECOM -> {
                 val discomModel = data?.getParcelableExtra<DistrictRecommendationAddress>("district_recommendation_address")
-                val latitude = data?.getStringExtra("latitude")
-                val longitude = data?.getStringExtra("longitude")
+                val latitude = data?.getDoubleExtra("latitude")
+                val longitude = data?.getDoubleExtra("longitude")
                 if (discomModel != null) {
                     viewModel.setStateChosenAddress(
                             status = 4,
@@ -184,8 +184,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                             addressName = "",
                             receiverName = "",
                             districtId = discomModel.districtId.toString(),
-                            latitude = latitude,
-                            longitude = longitude,
+                            latitude = latitude.toString(),
+                            longitude = longitude.toString(),
                             postalCode = ""
                     )
                     isSnippetAddressFlow = true
