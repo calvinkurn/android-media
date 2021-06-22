@@ -39,6 +39,7 @@ class EditFormDefaultViewModelTest {
     private val getAdsUseCase: GetAdsUseCase = mockk(relaxed = true)
     private val getAdKeywordUseCase: GetAdKeywordUseCase = mockk(relaxed = true)
     private val groupInfoUseCase: GroupInfoUseCase = mockk(relaxed = true)
+    private val bidInfoDefaultUseCase: BidInfoUseCase = mockk(relaxed = true)
     private val editSingleAdUseCase: EditSingleAdUseCase = mockk(relaxed = true)
     private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk(relaxed = true)
     private val testDispatcher = TestCoroutineDispatcher()
@@ -50,12 +51,17 @@ class EditFormDefaultViewModelTest {
     @Before
     fun setUp() {
         viewModel = EditFormDefaultViewModel(
-                testDispatcher,
-                validGroupUseCase,
-                bidInfoUseCase,
-                getAdsUseCase,
-                getAdKeywordUseCase,
-                groupInfoUseCase, editSingleAdUseCase, singleAdInfoUseCase, userSession, topAdsCreateUseCase
+            testDispatcher,
+            validGroupUseCase,
+            bidInfoUseCase,
+            bidInfoDefaultUseCase,
+            getAdsUseCase,
+            getAdKeywordUseCase,
+            groupInfoUseCase,
+            editSingleAdUseCase,
+            singleAdInfoUseCase,
+            userSession,
+            topAdsCreateUseCase
         )
     }
 
@@ -82,7 +88,7 @@ class EditFormDefaultViewModelTest {
         val data = ResponseBidInfo.Result()
         val suggestion: List<DataSuggestions> = mockk()
         every {
-            bidInfoUseCase.executeQuerySafeMode(captureLambda(), any())
+            bidInfoDefaultUseCase.executeQuerySafeMode(captureLambda(), any())
         } answers {
             val onSuccess = lambda<(ResponseBidInfo.Result) -> Unit>()
             onSuccess.invoke(data)
@@ -91,7 +97,7 @@ class EditFormDefaultViewModelTest {
         viewModel.getBidInfoDefault(suggestion) {}
 
         verify {
-            bidInfoUseCase.executeQuerySafeMode(any(), any())
+            bidInfoDefaultUseCase.executeQuerySafeMode(any(), any())
         }
     }
 
@@ -122,7 +128,9 @@ class EditFormDefaultViewModelTest {
             onSuccess.invoke(data)
         }
 
-        viewModel.getAds(1, groupId.toString(), "") { _: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, _: Int, _: Int -> }
+        viewModel.getAds(
+            1,
+            groupId.toString(). "") { _: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, _: Int, _: Int -> }
 
         verify {
             getAdsUseCase.executeQuerySafeMode(any(), any())
@@ -157,7 +165,10 @@ class EditFormDefaultViewModelTest {
             onSuccess.invoke(data)
         }
 
-        viewModel.getAdKeyword(groupId, "") { list: List<GetKeywordResponse.KeywordsItem>, s: String -> }
+        viewModel.getAdKeyword(
+            groupId,
+            ""
+        ) { list: List<GetKeywordResponse.KeywordsItem>, s: String -> }
 
 
         verify {

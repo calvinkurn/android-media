@@ -319,6 +319,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                             )
                         },
                         isOfficial = cpmData.cpm?.cpmShop?.isOfficial ?: false,
+                        isPMPro = cpmData.cpm?.cpmShop?.isPMPro ?: false,
                         impressHolder = cpmData.cpm?.cpmShop?.imageShop
                 ),
                 object : ShopCardListener {

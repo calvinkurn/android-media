@@ -26,8 +26,8 @@ data class ProductReviewListResponse(
 
         ) {
             data class Product(
-                    @SerializedName("productID")
-                    val productID: Int? = -1,
+                    @SerializedName("productIDStr")
+                    val productID: String = "",
                     @SerializedName("productImageURL")
                     val productImageURL: String? = "",
                     @SerializedName("productName")

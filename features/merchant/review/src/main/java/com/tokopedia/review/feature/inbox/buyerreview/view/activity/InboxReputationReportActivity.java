@@ -3,11 +3,10 @@ package com.tokopedia.review.feature.inbox.buyerreview.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -30,7 +29,7 @@ public class InboxReputationReportActivity extends BaseSimpleActivity
     @Override
     protected Fragment getNewFragment() {
         String reviewId = getIntent().getExtras().getString(ARGS_REVIEW_ID, "");
-        int shopId = getIntent().getExtras().getInt(ARGS_SHOP_ID);
+        long shopId = getIntent().getExtras().getLong(ARGS_SHOP_ID);
 
         return InboxReputationReportFragment.createInstance(reviewId, shopId);
     }
@@ -45,10 +44,10 @@ public class InboxReputationReportActivity extends BaseSimpleActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public static Intent getCallingIntent(Context context, int shopId, String reviewId) {
+    public static Intent getCallingIntent(Context context, long shopId, String reviewId) {
         Intent intent = new Intent(context, InboxReputationReportActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putInt(ARGS_SHOP_ID, shopId);
+        bundle.putLong(ARGS_SHOP_ID, shopId);
         bundle.putString(ARGS_REVIEW_ID, reviewId);
         intent.putExtras(bundle);
         return intent;
