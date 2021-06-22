@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_alignParentEnd="true"
     android:orientation="horizontal">
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -31,7 +30,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="@dimen/tokonow_shimmering_divider_loader_height"
         android:layout_marginTop="@dimen/layout_lvl4"
         android:layout_below="@id/loaderImageCategory"
         android:layout_marginStart="@dimen/spacing_lvl2"
