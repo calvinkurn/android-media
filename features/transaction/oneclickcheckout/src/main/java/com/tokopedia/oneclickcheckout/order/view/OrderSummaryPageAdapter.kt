@@ -14,6 +14,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                               private val productListener: OrderProductCard.OrderProductCardListener,
                               private val preferenceListener: NewOrderPreferenceCard.OrderPreferenceCardListener,
                               private val insuranceListener: OrderInsuranceCard.OrderInsuranceCardListener,
+                              private val promoCardListener: OrderPromoCard.OrderPromoCardListener,
                               private val paymentCardListener: OrderTotalPaymentCard.OrderTotalPaymentCardListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var onboarding: OccMainOnboarding? = null
@@ -23,6 +24,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
     var shipment: OrderShipment? = null
     var payment: OrderPayment? = null
     var insurance: InsuranceData? = null
+    var promo: OrderPromo? = null
     var total: OrderTotal? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -42,6 +44,9 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
         if (viewType == OrderInsuranceCard.VIEW_TYPE) {
             return OrderInsuranceCard(CardOrderInsuranceBinding.inflate(inflater, parent, false), insuranceListener, analytics)
         }
+        if (viewType == OrderPromoCard.VIEW_TYPE) {
+            return OrderPromoCard(CardOrderPromoBinding.inflate(inflater, parent, false), promoCardListener, analytics)
+        }
         if (viewType == OrderTotalPaymentCard.VIEW_TYPE) {
             return OrderTotalPaymentCard(LayoutPaymentBinding.inflate(inflater, parent, false), paymentCardListener)
         }
@@ -49,6 +54,9 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is OrderOnboardingCard) {
+            holder.bind(onboarding!!)
+        }
         if (holder is OrderShopCard) {
             holder.setShop(shop!!, product!!.freeOngkirImg, product!!.isFreeOngkirExtra)
         }
@@ -69,13 +77,16 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
         if (holder is OrderInsuranceCard) {
             holder.setupInsurance(insurance, product!!.productId.toString())
         }
+        if (holder is OrderPromoCard) {
+            holder.setupButtonPromo(promo!!)
+        }
         if (holder is OrderTotalPaymentCard) {
             holder.setupPayment(total!!)
         }
     }
 
     override fun getItemCount(): Int {
-        if (shop != null && total != null && insurance != null) return 6
+        if (shop != null && total != null && insurance != null) return 7
         return 0
     }
 
@@ -85,7 +96,8 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
         if (position == 2) return OrderProductCard.VIEW_TYPE
         if (position == 3) return NewOrderPreferenceCard.VIEW_TYPE
         if (position == 4) return OrderInsuranceCard.VIEW_TYPE
-        if (position == 5) return OrderTotalPaymentCard.VIEW_TYPE
+        if (position == 5) return OrderPromoCard.VIEW_TYPE
+        if (position == 6) return OrderTotalPaymentCard.VIEW_TYPE
         return 0
     }
 }

@@ -120,11 +120,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private var binding by autoCleared<FragmentOrderSummaryPageBinding>()
 
     private lateinit var adapter: OrderSummaryPageAdapter
-    private var orderProductCard: OrderProductCard? = null
-    private var orderShopCard: OrderShopCard? = null
-    private lateinit var newOrderPreferenceCard: NewOrderPreferenceCard
-    private lateinit var orderInsuranceCard: OrderInsuranceCard
-    private lateinit var orderTotalPaymentCard: OrderTotalPaymentCard
+//    private var orderProductCard: OrderProductCard? = null
+//    private var orderShopCard: OrderShopCard? = null
+//    private lateinit var newOrderPreferenceCard: NewOrderPreferenceCard
+//    private lateinit var orderInsuranceCard: OrderInsuranceCard
+//    private lateinit var orderTotalPaymentCard: OrderTotalPaymentCard
 
     private var progressDialog: AlertDialog? = null
 
@@ -260,15 +260,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
         adapter = OrderSummaryPageAdapter(orderSummaryAnalytics, this, getNewOrderPreferenceCardListener(),
-                getOrderInsuranceCardListener(), getOrderTotalPaymentCardListener())
+                getOrderInsuranceCardListener(), getOrderPromoCardListener(), getOrderTotalPaymentCardListener())
         binding.rvOrderSummaryPage.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.rvOrderSummaryPage.adapter = adapter
-        orderProductCard = OrderProductCard(binding.cardOrderProduct, this, orderSummaryAnalytics)
-        orderShopCard = OrderShopCard(binding.cardOrderShop, orderSummaryAnalytics)
-        newOrderPreferenceCard = NewOrderPreferenceCard(binding.newPreferenceCard, getNewOrderPreferenceCardListener(), orderSummaryAnalytics)
+//        orderProductCard = OrderProductCard(binding.cardOrderProduct, this, orderSummaryAnalytics)
+//        orderShopCard = OrderShopCard(binding.cardOrderShop, orderSummaryAnalytics)
+//        newOrderPreferenceCard = NewOrderPreferenceCard(binding.newPreferenceCard, getNewOrderPreferenceCardListener(), orderSummaryAnalytics)
 //        orderInsuranceCard = OrderInsuranceCard(binding, getOrderInsuranceCardListener(), orderSummaryAnalytics)
-        orderTotalPaymentCard = OrderTotalPaymentCard(binding.layoutPayment, getOrderTotalPaymentCardListener())
-        binding.btnPromoCheckout.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
+//        orderTotalPaymentCard = OrderTotalPaymentCard(binding.layoutPayment, getOrderTotalPaymentCardListener())
+//        binding.btnPromoCheckout.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
     }
 
     private fun initViewModel(savedInstanceState: Bundle?) {
@@ -294,15 +294,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         } else {
                             adapter.notifyDataSetChanged()
                         }
-                        orderProductCard?.setProduct(viewModel.orderProduct)
-                        orderProductCard?.setShop(viewModel.orderShop)
-                        orderShopCard?.setShop(viewModel.orderShop, viewModel.orderProduct.freeOngkirImg, viewModel.orderProduct.isFreeOngkirExtra)
-                        orderProductCard?.initView()
+//                        orderProductCard?.setProduct(viewModel.orderProduct)
+//                        orderProductCard?.setShop(viewModel.orderShop)
+//                        orderShopCard?.setShop(viewModel.orderShop, viewModel.orderProduct.freeOngkirImg, viewModel.orderProduct.isFreeOngkirExtra)
+//                        orderProductCard?.initView()
                         showMessage(it.data)
                         if (it.data.preference.address.addressId > 0 &&
                                 it.data.preference.payment.gatewayCode.isNotEmpty()) {
                             showPreferenceCard()
-                            newOrderPreferenceCard.setPreference(it.data)
+//                            newOrderPreferenceCard.setPreference(it.data)
                             binding.layoutNoAddress.root.animateGone()
 //                            binding.mainContent.animateShow()
                             binding.rvOrderSummaryPage.show()
@@ -338,7 +338,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             } else {
                 adapter.notifyDataSetChanged()
             }
-            newOrderPreferenceCard.setShipment(it)
+//            newOrderPreferenceCard.setShipment(it)
 //            orderInsuranceCard.setupInsurance(it?.insuranceData, viewModel.orderProduct.productId.toString())
             if (it?.needPinpoint == true && orderPreference?.preference?.address != null) {
                 goToPinpoint(orderPreference?.preference?.address)
@@ -346,7 +346,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         viewModel.orderPayment.observe(viewLifecycleOwner) {
-            newOrderPreferenceCard.setPayment(it)
+//            newOrderPreferenceCard.setPayment(it)
             adapter.payment = it
             if (binding.rvOrderSummaryPage.isComputingLayout) {
                 binding.rvOrderSummaryPage.post {
@@ -366,10 +366,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             } else {
                 adapter.notifyDataSetChanged()
             }
-            orderTotalPaymentCard.setupPayment(it)
+//            orderTotalPaymentCard.setupPayment(it)
         }
 
         viewModel.orderPromo.observe(viewLifecycleOwner) {
+            adapter.promo = it
+            if (binding.rvOrderSummaryPage.isComputingLayout) {
+                binding.rvOrderSummaryPage.post {
+                    adapter.notifyDataSetChanged()
+                }
+            } else {
+                adapter.notifyDataSetChanged()
+            }
             setupButtonPromo(it)
         }
 
@@ -742,7 +750,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun showPreferenceCard() {
         binding.newPreferenceCard.root.visible()
-        orderTotalPaymentCard.setPaymentVisible(true)
+//        orderTotalPaymentCard.setPaymentVisible(true)
         binding.btnPromoCheckout.visible()
     }
 
@@ -776,6 +784,41 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         setIcon(image)
                         setButtonOnClickListener { it.dismiss() }
                     }.show(ctx, parentFragmentManager)
+                }
+            }
+        }
+    }
+
+    private fun getOrderPromoCardListener(): OrderPromoCard.OrderPromoCardListener {
+        return object : OrderPromoCard.OrderPromoCardListener {
+            override fun onClickRetryValidatePromo() {
+                viewModel.validateUsePromo()
+            }
+
+            override fun onClickPromo() {
+                viewModel.updateCartPromo { validateUsePromoRequest, promoRequest, bboCodes ->
+                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+                    intent.putExtra(ARGS_PAGE_SOURCE, PAGE_OCC)
+                    intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
+                    intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
+                    intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, bboCodes)
+
+                    val codes = validateUsePromoRequest.codes
+                    val promoCodes = ArrayList<String>()
+                    for (code in codes) {
+                        if (code != null) {
+                            promoCodes.add(code)
+                        }
+                    }
+                    if (validateUsePromoRequest.orders.isNotEmpty()) {
+                        val orderCodes = validateUsePromoRequest.orders[0]?.codes
+                                ?: mutableListOf()
+                        for (code in orderCodes) {
+                            promoCodes.add(code)
+                        }
+                    }
+                    orderSummaryAnalytics.eventClickPromoOSP(promoCodes)
+                    startActivityForResult(intent, REQUEST_CODE_PROMO)
                 }
             }
         }
@@ -909,14 +952,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         override fun chooseAddress(currentAddressId: String) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 orderSummaryAnalytics.eventClickArrowToChangeAddressOption(currentAddressId, userSession.get().userId)
-                newOrderPreferenceCard.showAddressBottomSheet(this@OrderSummaryPageFragment, getAddressCornerUseCase.get(), viewModel.addressState.value.address.state)
+//                newOrderPreferenceCard.showAddressBottomSheet(this@OrderSummaryPageFragment, getAddressCornerUseCase.get(), viewModel.addressState.value.address.state)
             }
         }
 
         override fun chooseCourier() {
             orderSummaryAnalytics.eventChangeCourierOSP(viewModel.getCurrentShipperId().toString())
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-                newOrderPreferenceCard.showCourierBottomSheet(this@OrderSummaryPageFragment)
+//                newOrderPreferenceCard.showCourierBottomSheet(this@OrderSummaryPageFragment)
             }
         }
 
@@ -927,7 +970,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 orderSummaryAnalytics.eventClickArrowToChangeDurationOption(currentSpId, userSession.get().userId)
             }
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-                newOrderPreferenceCard.showDurationBottomSheet(this@OrderSummaryPageFragment)
+//                newOrderPreferenceCard.showDurationBottomSheet(this@OrderSummaryPageFragment)
             }
         }
 
@@ -946,7 +989,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         override fun onInstallmentDetailClicked() {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-                newOrderPreferenceCard.showInstallmentDetailBottomSheet(this@OrderSummaryPageFragment)
+//                newOrderPreferenceCard.showInstallmentDetailBottomSheet(this@OrderSummaryPageFragment)
             }
         }
 
@@ -1278,7 +1321,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     override fun onDestroyView() {
-        orderProductCard?.clearJob()
+//        val childCount = binding.rvOrderSummaryPage.childCount
+//        for (index in 0 until childCount) {
+//            val childAt = binding.rvOrderSummaryPage.getChildAt(index)
+//            val childViewHolder = binding.rvOrderSummaryPage.getChildViewHolder(childAt)
+//            if (childViewHolder is OrderProductCard) {
+//                childViewHolder.clearJob()
+//            }
+//        }
+//        orderProductCard?.clearJob()
         super.onDestroyView()
     }
 

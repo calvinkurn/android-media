@@ -7,61 +7,43 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_shop"
+        android:id="@+id/tv_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/label_toko"
+        android:layout_marginTop="@dimen/dp_12"
+        android:text="@string/lbl_osp_header"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+        app:typographyType="heading_4"
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shop_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:ellipsize="end"
         android:lines="1"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintEnd_toStartOf="@+id/iv_shop"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@+id/tv_shop"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_default="wrap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_shop_badge"
+        app:layout_constraintTop_toBottomOf="@+id/tv_header"
         app:typographyType="body_3"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_shop"
+        android:id="@+id/iv_shop_badge"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/dp_12"
         android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@+id/label_error"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@+id/tv_shop_name"
-        app:layout_constraintTop_toTopOf="@+id/tv_shop_name" />
-
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/label_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:ellipsize="end"
-        android:maxWidth="@dimen/dp_120"
-        android:maxLines="2"
-        android:visibility="gone"
-        app:labelType="general_dark_red"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_header" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iu_image_fulfill"
@@ -101,6 +83,7 @@
         android:id="@+id/flow_shop_location_and_free_shipping"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:constraint_referenced_ids="iu_image_fulfill,tv_shop_location,separator_free_shipping,iu_free_shipping"
@@ -111,6 +94,6 @@
         app:flow_verticalGap="@dimen/spacing_lvl2"
         app:flow_wrapMode="chain"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/tv_shop"
-        app:layout_constraintTop_toBottomOf="@+id/tv_shop" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_shop_badge" />
 </androidx.constraintlayout.widget.ConstraintLayout>

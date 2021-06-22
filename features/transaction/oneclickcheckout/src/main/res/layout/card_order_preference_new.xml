@@ -9,6 +9,11 @@
     android:paddingBottom="@dimen/dp_10"
     app:container_color="GREEN">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/Unify_N50" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_profile_header"
         android:layout_width="match_parent"
