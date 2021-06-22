@@ -30,6 +30,7 @@ data class MiniCartProductUiModel(
         var wholesalePriceGroup: List<WholesalePrice> = emptyList(),
         var maxNotesLength: Int = 0,
         var isProductDisabled: Boolean = false,
+        var productCashbackPercentage: Int = 0,
 
         // Fields below are for analytics purpose only
         var campaignId: String = "",
@@ -74,6 +75,7 @@ data class MiniCartProductUiModel(
                 wholesalePriceGroup = this.wholesalePriceGroup,
                 maxNotesLength = this.maxNotesLength,
                 isProductDisabled = this.isProductDisabled,
+                productCashbackPercentage = this.productCashbackPercentage,
                 campaignId = this.campaignId,
                 attribution = this.attribution,
                 warehouseId = this.warehouseId,
