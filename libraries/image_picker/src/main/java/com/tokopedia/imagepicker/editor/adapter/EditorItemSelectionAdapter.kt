@@ -8,7 +8,9 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.tokopedia.imagepicker.R
 import com.tokopedia.imagepicker.editor.widget.ItemSelection
 import com.tokopedia.imagepicker.videorecorder.utils.hide
@@ -54,25 +56,32 @@ class EditorItemSelectionAdapter constructor(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
 
+        private val context by lazy { itemView.context }
+
         private val imgItemSelection = itemView.findViewById<AppCompatImageView>(R.id.img_item_selection)
         private val txtPlaceholder = itemView.findViewById<TextView>(R.id.txt_placeholder)
         private val viewSelection = itemView.findViewById<View>(R.id.view_selection)
         private val txtItem = itemView.findViewById<TextView>(R.id.txt_item)
-
-        private val context by lazy { itemView.context }
 
         fun bind(item: ItemSelection?) {
             if (item == null) return
             if (item.placeholderText.isNotEmpty()) txtPlaceholder.show()
             if (item.isSelected) viewSelection.show() else viewSelection.hide()
 
-            Glide.with(context)
-                .load(item.preview)
-                .transform(RoundedCorners(2))
-                .into(imgItemSelection)
-
             txtPlaceholder.text = item.placeholderText
             txtItem.text = item.name
+            itemPreview(item)
+        }
+
+        private fun itemPreview(item: ItemSelection) {
+            val radius = context.resources.getDimensionPixelSize(R.dimen.image_editor_rounded)
+
+            Glide.with(context)
+                .load(item.preview)
+                .apply(RequestOptions().transform(
+                    CenterCrop(),
+                    RoundedCorners(radius)
+                )).into(imgItemSelection)
         }
 
         companion object {
