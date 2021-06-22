@@ -112,4 +112,13 @@ data class LikeDislike(
         @SerializedName("likeStatus")
         @Expose
         val likeStatus: Int = 0
-)
+) {
+
+    companion object {
+        private const val LIKED = 1
+    }
+
+    fun isLiked(): Boolean {
+        return likeStatus == LIKED
+    }
+}

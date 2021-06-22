@@ -8,7 +8,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.common.data.ToggleProductReviewLike
 import com.tokopedia.review.common.domain.usecase.ToggleLikeReviewUseCase
-import com.tokopedia.review.feature.reading.data.*
+import com.tokopedia.review.feature.reading.data.ProductReview
+import com.tokopedia.review.feature.reading.data.ProductReviewDetail
+import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
+import com.tokopedia.review.feature.reading.data.ProductrevGetProductReviewList
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductRatingAndTopicsUseCase
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductReviewListUseCase
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
@@ -118,6 +121,7 @@ class ReadReviewViewModel @Inject constructor(
             this.filter.forEach {
                 if (it is FilterType.FilterWithImage) {
                     filter.remove(it)
+                    return@forEach
                 }
             }
         } else {

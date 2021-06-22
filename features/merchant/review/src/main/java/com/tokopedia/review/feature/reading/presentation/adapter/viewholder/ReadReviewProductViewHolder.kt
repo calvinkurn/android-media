@@ -18,7 +18,6 @@ import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadRev
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewAttachedImages
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewSellerResponse
-import com.tokopedia.review.feature.reading.utils.ReadReviewUtils
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -120,7 +119,7 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
     }
 
     private fun setLikeButton(reviewId: String, shopId: String, likeDislike: LikeDislike) {
-        if (likeDislike.likeStatus == ReadReviewUtils.LIKED) {
+        if (likeDislike.isLiked()) {
             likeImage?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_read_review_liked))
         } else {
             likeImage?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_read_review_like))

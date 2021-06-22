@@ -30,6 +30,7 @@
             android:id="@+id/review_gallery_basic_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,6 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:textColor="@color/Unify_Static_White_96"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/review_gallery_basic_info"
             app:typographyType="body_3" />
@@ -57,7 +59,7 @@
             android:id="@+id/review_gallery_like_icon"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
-            android:layout_marginTop="@dimen/layout_lvl3"
+            android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginEnd="@dimen/layout_lvl3"
             app:icon_color_light_enable="@color/Unify_Static_White_96"
             app:icon_enable_state="true"

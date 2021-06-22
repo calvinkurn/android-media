@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -26,6 +27,7 @@ import com.tokopedia.review.feature.gallery.presentation.di.DaggerReviewGalleryC
 import com.tokopedia.review.feature.gallery.presentation.di.ReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryImageSwipeListener
 import com.tokopedia.review.feature.gallery.presentation.viewmodel.ReviewGalleryViewModel
+import com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryExpandedReviewBottomSheet
 import com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryReviewDetailWidget
 import com.tokopedia.review.feature.reading.data.ProductReview
 import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
@@ -48,11 +50,12 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
 
     private var closeButton: IconUnify? = null
     private var menuButton: IconUnify? = null
-    private var imagesRecyclerVIew: RecyclerView? = null
+    private var imagesRecyclerView: RecyclerView? = null
     private var reviewDetail: ReviewGalleryReviewDetailWidget? = null
     private val adapter by lazy {
         ReviewGalleryImagesAdapter()
     }
+    private var expandedReviewBottomSheet: ReviewGalleryExpandedReviewBottomSheet? = null
 
     private var productReview: ProductReview = ProductReview()
     private var index: Int = 0
@@ -120,7 +123,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     private fun bindViews(view: View) {
         closeButton = view.findViewById(R.id.review_gallery_close_button)
         menuButton = view.findViewById(R.id.review_gallery_menu_button)
-        imagesRecyclerVIew = view.findViewById(R.id.review_gallery_recyclerview)
+        imagesRecyclerView = view.findViewById(R.id.review_gallery_recyclerview)
         reviewDetail = view.findViewById(R.id.review_gallery_review_detail)
     }
 
@@ -133,7 +136,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     }
 
     private fun setupRecyclerView() {
-        imagesRecyclerVIew?.apply {
+        imagesRecyclerView?.apply {
             adapter = this@ReviewGalleryFragment.adapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             setOnClickListener {
@@ -144,6 +147,8 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
                 }
             }
         }
+        val snapHelper = PagerSnapHelper()
+        snapHelper.attachToRecyclerView(imagesRecyclerView)
         adapter.setData(productReview.imageAttachments.map { it.imageUrl })
     }
 
@@ -153,12 +158,13 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
                 setPhotoCount(index, imageAttachments.size)
                 setRating(productRating)
                 setReviewerName(user.fullName)
-                setTimeStamp(reviewCreateTime)
-                setReviewMessage(message)
+                setTimeStamp(reviewCreateTimestamp)
+                setReviewMessage(message) { openExpandedReviewBottomSheet() }
                 setLikeCount(likeDislike.totalLike)
                 setLikeButtonClickListener {
                     viewModel.toggleLikeReview(productReview.feedbackID, shopId, productId, productReview.likeDislike.likeStatus)
                 }
+                setLikeButtonImage(likeDislike.isLiked())
             }
         }
     }
@@ -186,5 +192,23 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         closeButton?.show()
         menuButton?.show()
         areComponentsHidden = false
+    }
+
+    private fun openExpandedReviewBottomSheet() {
+        if (expandedReviewBottomSheet == null) {
+            with(productReview) {
+                expandedReviewBottomSheet = ReviewGalleryExpandedReviewBottomSheet.createInstance(productRating, reviewCreateTimestamp, user.fullName, message)
+                configBottomSheet()
+            }
+        }
+        activity?.supportFragmentManager?.let { expandedReviewBottomSheet?.show(it, ReviewGalleryExpandedReviewBottomSheet.REVIEW_GALLERY_EXPANDED_REVIEW_BOTTOM_SHEET_TAG) }
+    }
+
+    private fun configBottomSheet() {
+        expandedReviewBottomSheet?.apply {
+            showKnob = true
+            showCloseIcon = false
+            clearContentPadding = true
+        }
     }
 }

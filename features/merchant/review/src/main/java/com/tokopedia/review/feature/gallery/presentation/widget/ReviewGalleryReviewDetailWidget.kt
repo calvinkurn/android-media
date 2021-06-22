@@ -4,12 +4,20 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
+import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 
 class ReviewGalleryReviewDetailWidget : BaseCustomView {
+
+    companion object {
+        private const val MAX_LINES = 3
+        private const val MAX_CHAR = 140
+        private const val ALLOW_CLICK = true
+    }
 
     constructor(context: Context) : super(context) {
         init()
@@ -69,8 +77,27 @@ class ReviewGalleryReviewDetailWidget : BaseCustomView {
         }
     }
 
-    fun setReviewMessage(reviewMessage: String) {
-        reviewText?.text = reviewMessage
+    fun setLikeButtonImage(isLiked: Boolean) {
+        if (isLiked) {
+            likeButton?.setImage(IconUnify.THUMB_FILLED)
+        } else {
+            likeButton?.setImage(IconUnify.THUMB)
+        }
+    }
+
+    fun setReviewMessage(reviewMessage: String, action: () -> Unit) {
+        reviewText?.apply {
+            isEnabled = true
+            val formattingResult = ReviewUtil.reviewDescFormatter(context, reviewMessage, MAX_CHAR, ALLOW_CLICK)
+            maxLines = MAX_LINES
+            text = formattingResult.first
+            if (formattingResult.second) {
+                setOnClickListener {
+                    action.invoke()
+                }
+            }
+            show()
+        }
     }
 
 }
