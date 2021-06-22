@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageEditActionType;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.unifycomponents.Label;
 
 /**
  * Created by hendry on 19/04/18.
@@ -52,6 +53,7 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
             View view = LayoutInflater.from(context).inflate(R.layout.view_edit_image_icon, viewGroup, false);
             ImageView ivEdit = view.findViewById(R.id.iv_edit);
             TextView tvEdit = view.findViewById(R.id.tv_edit);
+            Label txtLabel = view.findViewById(R.id.txt_label);
             view.setId(tabTypeDefItem.getAction());
             switch (tabTypeDefItem) {
                 case ACTION_CROP:
@@ -65,6 +67,7 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
                 case ACTION_WATERMARK:
                     ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_crop_rotate));
                     tvEdit.setText(context.getString(R.string.watermark));
+                    txtLabel.setVisibility(View.VISIBLE);
                     break;
                 case ACTION_CROP_ROTATE:
                     ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_crop_rotate));

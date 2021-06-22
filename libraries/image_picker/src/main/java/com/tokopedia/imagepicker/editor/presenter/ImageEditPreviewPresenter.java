@@ -15,6 +15,7 @@ import com.tokopedia.utils.image.ImageProcessingUtil;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import androidx.appcompat.content.res.AppCompatResources;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -320,7 +321,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         Subscription subscription = Observable.just(watermarkBuilder)
                 .flatMap((Func1<WatermarkBuilder, Observable<Bitmap>>) builder -> {
                     return Observable.just(builder
-                            .loadWatermarkText(" " + userInfoName + " ")
+                            .loadWatermarkText(userInfoName)
                             .setTileMode(true)
                             .getWatermark()
                             .getOutputImage()
