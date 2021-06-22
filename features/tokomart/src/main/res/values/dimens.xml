@@ -11,4 +11,5 @@
     <dimen name="tokonow_shimmering_banner_rect_height">100dp</dimen>
     <dimen name="tokonow_shimmering_lego_rect_height">200dp</dimen>
     <dimen name="tokonow_shimmering_margin_bottom">20dp</dimen>
+    <dimen name="tokonow_shimmering_divider_loader_height">1dp</dimen>
 </resources>
