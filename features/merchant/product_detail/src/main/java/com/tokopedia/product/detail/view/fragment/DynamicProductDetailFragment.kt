@@ -115,7 +115,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECT
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
-import com.tokopedia.product.detail.view.activity.CourierActivity
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
@@ -132,7 +131,6 @@ import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.widget.*
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
-import com.tokopedia.product.estimasiongkir.view.activity.RatesEstimationDetailActivity
 import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingBottomSheet
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
 import com.tokopedia.product.info.view.ProductFullDescriptionActivity
@@ -800,15 +798,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
      */
     override fun onInfoClicked(appLink: String, name: String, componentTrackDataModel: ComponentTrackDataModel) {
         when (name) {
-            ProductDetailConstant.PRODUCT_SHIPPING_INFO -> {
-                val productP3Resp = viewModel.productInfoP3.value ?: ProductInfoP3()
-
-                DynamicProductDetailTracking.Click.eventShippingRateEstimationClicked(
-                        productP3Resp.addressModel?.postalCode ?: "",
-                        productP3Resp.addressModel?.districtName ?: "",
-                        viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-                onShipmentClicked()
-            }
             ProductDetailConstant.TRADE_IN -> {
                 DynamicProductDetailTracking.Click.trackTradein(viewModel.tradeInParams.usedPrice, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
                 doAtc(ProductDetailCommonConstant.TRADEIN_BUTTON)
@@ -1275,11 +1264,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun observeUpdateCart() {
         viewModel.updateCartLiveData.observe(viewLifecycleOwner) {
-            it.doSuccessOrFail({
-                view?.showToasterSuccess(it.data)
-            }) {
-                view?.showToasterError(it.message
-                        ?: "", ctaText = getString(com.tokopedia.design.R.string.oke))
+            it.doSuccessOrFail({ success ->
+                view?.showToasterSuccess(success.data)
+            }) { throwable ->
+                view?.showToasterError(
+                        throwable.message ?: "",
+                        ctaText = getString(com.tokopedia.design.R.string.oke)
+                )
+                logException(throwable)
             }
         }
     }
@@ -1310,6 +1302,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 }
             }, {
                 pdpUiUpdater?.removeComponent(ProductDetailConstant.KEY_TOP_ADS)
+                logException(it)
             })
         }
     }
@@ -1328,7 +1321,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 pdpUiUpdater?.updateDiscussionData(it.data.discussionMostHelpful)
                 updateUi()
             }, {
-                // No Op
+                logException(it)
             })
         }
     }
@@ -1417,13 +1410,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun updateButtonState() {
         viewModel.getDynamicProductInfoP1?.let {
-            val miniCartItem = if (it.basic.isTokoNow) viewModel.getMiniCartItem() else null
-            val alternateText = viewModel.p2Data.value?.alternateCopy?.firstOrNull {
-                it.cartType == ProductDetailCommonConstant.KEY_CART_TYPE_UPDATE_CART
-            }?.text ?: ProductDetailCommonConstant.TEXT_SAVE_ATC
             val cartTypeData = viewModel.getCartTypeByProductId()
+            val miniCartItem = if (it.basic.isTokoNow && cartTypeData?.availableButtons?.firstOrNull()?.isCartTypeDisabledOrRemindMe() == false) viewModel.getMiniCartItem() else null
 
-            val alternateButtonVariant = if (it.data.variant.isVariant && viewModel.isParentExistInMiniCart(it.parentProductId) && cartTypeData?.availableButtons?.firstOrNull()?.isCartTypeDisabledOrRemindMe() == false) alternateText else ""
             actionButtonView.renderData(
                     isWarehouseProduct = !it.isProductActive(),
                     hasShopAuthority = viewModel.hasShopAuthority(),
@@ -1431,7 +1420,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     hasTopAdsActive = hasTopAds(),
                     isVariant = it.data.variant.isVariant,
                     cartTypeData = cartTypeData,
-                    alternateButtonVariant = alternateButtonVariant,
                     miniCartItem = miniCartItem)
         }
         showOrHideButton()
@@ -1608,6 +1596,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 setupShopFavoriteToaster(it.data.second)
             }, {
                 onFailFavoriteShop(it)
+                logException(it)
             })
         }
     }
@@ -1625,6 +1614,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 onSuccessWarehouseProduct()
             }, {
                 onErrorWarehouseProduct(it)
+                logException(it)
             })
         }
     }
@@ -1635,6 +1625,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 onSuccessMoveToEtalase()
             }, {
                 onErrorMoveToEtalase(it)
+                logException(it)
             })
         }
     }
@@ -1659,6 +1650,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             }, {
                 pdpUiUpdater?.removeComponent(it.message ?: "")
                 updateUi()
+                logException(it)
             })
         }
 
@@ -1957,32 +1949,26 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun onSuccessGetDataP3(it: ProductInfoP3) {
-        if (it.ratesModel == null || it.ratesModel?.getServicesSize() == 0) {
-            pdpUiUpdater?.removeComponent(ProductDetailConstant.PRODUCT_SHIPPING_INFO)
-        }
-
         if (it.tickerInfo.isEmpty() && pdpUiUpdater?.tickerInfoMap?.shouldRemoveComponent() == true) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.TICKER_INFO)
         }
 
         stickyLoginView?.loadContent()
-        pdpUiUpdater?.updateDataP3(context, it)
+        pdpUiUpdater?.updateDataP3(it)
         updateUi()
     }
 
     private fun logException(t: Throwable) {
-        try {
-            if (!BuildConfig.DEBUG) {
-                val errorMessage = String.format(
-                        getString(R.string.on_error_p1_string_builder),
-                        viewModel.userSessionInterface.userId,
-                        viewModel.userSessionInterface.email,
-                        t.message
-                )
-                FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage))
-            }
-        } catch (ex: IllegalStateException) {
-            ex.printStackTrace()
+        if (!BuildConfig.DEBUG) {
+            val errorMessage = String.format(
+                    getString(R.string.on_error_p1_string_builder),
+                    viewModel.userSessionInterface.userId,
+                    viewModel.userSessionInterface.email,
+                    t.message
+            )
+            FirebaseCrashlytics.getInstance().recordException(Exception(errorMessage, t))
+        } else {
+            t.printStackTrace()
         }
     }
 
@@ -2221,21 +2207,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    private fun onShipmentClicked() {
-        if (viewModel.isUserSessionActive) {
-            val productP3value = viewModel.productInfoP3.value
-            if (!productP3value?.ratesModel?.services.isNullOrEmpty()) {
-                gotoRateEstimation()
-            } else {
-                goToCourier()
-            }
-        } else {
-            goToCourier()
-        }
-
-        activity?.overridePendingTransition(0, 0)
-    }
-
     private fun updateCartNotification() {
         viewModel.updateCartCounerUseCase(::onSuccessUpdateCartCounter)
     }
@@ -2425,39 +2396,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 val shopEtalasePickerIntent: Intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
                 shopEtalasePickerIntent.putExtra(EXTRA_BUNDLE, bundle)
                 startActivityForResult(shopEtalasePickerIntent, ProductDetailConstant.REQUEST_CODE_ETALASE)
-            }
-        }
-    }
-
-    private fun gotoRateEstimation() {
-        viewModel.getDynamicProductInfoP1?.let { productInfo ->
-            if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
-                context?.let { context ->
-                    val shopInfo = viewModel.getShopInfo()
-                    startActivity(RatesEstimationDetailActivity.createIntent(
-                            context,
-                            shopInfo.shopCore.domain,
-                            productInfo.basic.weight.toFloat(),
-                            productInfo.basic.weightUnit,
-                            if (viewModel.getMultiOriginByProductId().isFulfillment)
-                                viewModel.getMultiOriginByProductId().getOrigin() else null,
-                            viewModel.getBebasOngkirDataByProductId().imageURL.isNotEmpty(),
-                            shopInfo.shopCore.shopID,
-                            productInfo.basic.productID
-                    ))
-                }
-            }
-        }
-    }
-
-    private fun goToCourier() {
-        activity?.let {
-            viewModel.getDynamicProductInfoP1?.let { productInfo ->
-                if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
-                    startActivity(CourierActivity.createIntent(it,
-                            productInfo.basic.productID,
-                            viewModel.getShopInfo().shipments))
-                }
             }
         }
     }
@@ -3407,6 +3345,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 viewModel.updateNotifyMeData()
             }, {
                 onFailNotifyMe(it)
+                logException(it)
             })
         }
     }

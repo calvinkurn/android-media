@@ -26,6 +26,7 @@ import com.tokopedia.autocomplete.suggestion.SuggestionViewUpdateListener;
 import com.tokopedia.autocomplete.util.UrlParamHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.model.SearchParameter;
+import com.tokopedia.discovery.common.utils.UrlParamUtils;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
@@ -33,6 +34,7 @@ import com.tokopedia.user.session.UserSession;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.FROM_APP_SHORTCUTS;
 import static com.tokopedia.utils.view.DarkModeUtil.isDarkMode;
@@ -171,11 +173,20 @@ public class AutoCompleteActivity extends BaseActivity
         this.searchParameter = new SearchParameter(searchParameter);
 
         String query = searchParameter.getSearchQuery();
-        AutocompleteTracking.eventClickSubmit(query);
+        sendTrackingSubmitQuery(searchParameter, query);
 
         clearFocusSearchView();
         moveToSearchPage();
         return true;
+    }
+
+    private void sendTrackingSubmitQuery(@NotNull SearchParameter searchParameter, String query) {
+        Map<String, String> mapParameter = searchParameter.getSearchParameterHashMap();
+
+        if (UrlParamUtils.isTokoNow(mapParameter))
+            AutocompleteTracking.eventClickSubmitTokoNow(query);
+        else
+            AutocompleteTracking.eventClickSubmit(query);
     }
 
     private void clearFocusSearchView() {

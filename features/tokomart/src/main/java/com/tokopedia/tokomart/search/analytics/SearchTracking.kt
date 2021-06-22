@@ -76,7 +76,7 @@ object SearchTracking {
     }
 
     object Category {
-        const val TOKONOW_TOP_NAV = "tokonow - top nCLICK_CATEGORY_FILTERav"
+        const val TOKONOW_TOP_NAV = "tokonow - top nav"
         const val TOKONOW_SEARCH_RESULT = "tokonow - search result"
     }
 

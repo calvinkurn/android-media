@@ -375,6 +375,7 @@ fun getQueryCartRevamp(): String {
                   }
                   shop {
                     shop_alert_message
+                    is_tokonow
                     shop_id
                     admin_ids
                     shop_name

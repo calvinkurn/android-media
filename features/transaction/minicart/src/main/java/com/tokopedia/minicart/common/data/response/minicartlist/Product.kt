@@ -51,4 +51,6 @@ data class Product(
         val category: String = "",
         @SerializedName("product_tracker_data")
         val productTrackerData: ProductTrackerData = ProductTrackerData(),
+        @SerializedName("product_cashback")
+        val productCashback: String = ""
 )

@@ -24,6 +24,7 @@ import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KE
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_DIMENSION_104
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_DIMENSION_38
+import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_DIMENSION_49
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_DIMENSION_79
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_DIMENSION_82
 import com.tokopedia.tokomart.common.analytics.TokonowCommonAnalyticConstants.KEY.KEY_ITEM_ID
@@ -141,9 +142,14 @@ class HomeAnalytics {
         val dataLayer = getEcommerceDataLayer(
                 action = EVENT_ACTION_CLICK_CATEGORY_ON_CATEGORY,
                 category = EVENT_CATEGORY_HOME_PAGE,
-                affinityLabel = "",
+                affinityLabel = "null",
                 userId = userId,
-                promotions = arrayListOf()
+                promotions = arrayListOf(
+                        ecommerceDataLayerCategoryClicked(
+                            categoryId = categoryId,
+                            position = position
+                        )
+                )
         )
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
@@ -165,7 +171,21 @@ class HomeAnalytics {
         return Bundle().apply {
             putString(KEY_CREATIVE_NAME, channelModel.trackingAttributionModel.galaxyAttribution)
             putString(KEY_CREATIVE_SLOT, (position + 1).toString())
-            putString(KEY_ITEM_ID, "0_" + channelModel.id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId)
+            putString(KEY_ITEM_ID, "0_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType + "_" + channelModel.trackingAttributionModel.categoryId)
+            putString(KEY_ITEM_NAME, NAME_PROMOTION)
+        }
+    }
+
+    private fun ecommerceDataLayerCategoryClicked(position: Int, categoryId: String): Bundle {
+        val nullString = "null"
+        return Bundle().apply {
+            putString(KEY_CREATIVE_NAME, nullString)
+            putString(KEY_CREATIVE_SLOT, (position + 1).toString())
+            putString(KEY_DIMENSION_49, nullString)
+            putString(KEY_DIMENSION_38, nullString)
+            putString(KEY_DIMENSION_79, nullString)
+            putString(KEY_DIMENSION_82, nullString)
+            putString(KEY_ITEM_ID, "0_" + categoryId + "_" + nullString + "_" + nullString)
             putString(KEY_ITEM_NAME, NAME_PROMOTION)
         }
     }

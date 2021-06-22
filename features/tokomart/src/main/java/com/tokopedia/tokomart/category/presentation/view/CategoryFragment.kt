@@ -48,12 +48,6 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
         }
     }
 
-    override fun onSearchBarClick(hint: String) {
-        CategoryTracking.sendSearchBarClickEvent(getViewModel().categoryL1)
-
-        super.onSearchBarClick(hint)
-    }
-
     override fun getBaseAutoCompleteApplink() =
             super.getBaseAutoCompleteApplink() + "?" +
                     "${SearchApiConst.NAVSOURCE}=$TOKONOW_DIRECTORY"
@@ -101,6 +95,7 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
                 productItemDataView,
                 getViewModel().categoryL1,
                 getUserId(),
+                getViewModel().categoryIdTracking,
         )
     }
 
@@ -109,6 +104,7 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
                 productItemDataView,
                 getViewModel().categoryL1,
                 getUserId(),
+                getViewModel().categoryIdTracking,
         )
 
         super.onProductClick(productItemDataView)

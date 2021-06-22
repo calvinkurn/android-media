@@ -57,12 +57,6 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     override fun getNavToolbarHint() =
             listOf(HintData(searchViewModel.query, searchViewModel.query))
 
-    override fun onSearchBarClick(hint: String) {
-        SearchTracking.sendSearchBarClickEvent(hint)
-
-        super.onSearchBarClick(hint)
-    }
-
     override fun getBaseAutoCompleteApplink() =
             super.getBaseAutoCompleteApplink() + "?" +
                     "${SearchApiConst.Q}=${searchViewModel.query}" + "&" +

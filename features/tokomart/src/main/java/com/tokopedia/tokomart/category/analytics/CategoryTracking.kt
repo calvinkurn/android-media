@@ -88,7 +88,7 @@ object CategoryTracking {
 
     object Misc {
         const val PRODUCT_ID = "productId"
-        const val TOKONOW_CATEGORY_ORGANIC = "/tokonow - category - organic"
+        const val TOKONOW_CATEGORY_ORGANIC = "/tokonow - category - %s"
     }
 
     fun sendGeneralEvent(dataLayer: Map<String, Any>) {
@@ -205,6 +205,7 @@ object CategoryTracking {
             productItemDataView: ProductItemDataView,
             categoryId: String,
             userId: String,
+            categoryIdTracking: String,
     ) {
         val map = DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
@@ -217,14 +218,16 @@ object CategoryTracking {
                 PRODUCT_ID, productItemDataView.id,
                 ECOMMERCE, DataLayer.mapOf(
                     CURRENCYCODE, IDR,
-                    IMPRESSIONS, DataLayer.listOf(productItemDataView.getAsImpressionClickDataLayer())
+                    IMPRESSIONS, DataLayer.listOf(
+                        productItemDataView.getAsImpressionClickDataLayer(categoryIdTracking)
+                    )
                 )
         ) as HashMap<String, Any>
 
         trackingQueue.putEETracking(map)
     }
 
-    private fun ProductItemDataView.getAsImpressionClickDataLayer(): Any {
+    private fun ProductItemDataView.getAsImpressionClickDataLayer(categoryIdTracking: String): Any {
         return DataLayer.mapOf(
                 "brand", NONE_OTHER,
                 "category", NONE_OTHER,
@@ -233,7 +236,7 @@ object CategoryTracking {
                 "price", priceInt,
                 "variant", NONE_OTHER,
                 "position", position,
-                "list", TOKONOW_CATEGORY_ORGANIC
+                "list", String.format(TOKONOW_CATEGORY_ORGANIC, categoryIdTracking)
         )
     }
 
@@ -241,6 +244,7 @@ object CategoryTracking {
             productItemDataView: ProductItemDataView,
             categoryId: String,
             userId: String,
+            categoryIdTracking: String,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
@@ -255,7 +259,9 @@ object CategoryTracking {
                 ECOMMERCE, DataLayer.mapOf(
                     CLICK, DataLayer.mapOf(
                         ACTION_FIELD, DataLayer.mapOf(LIST, TOKONOW_CATEGORY_ORGANIC),
-                        PRODUCTS, DataLayer.listOf(productItemDataView.getAsImpressionClickDataLayer())
+                        PRODUCTS, DataLayer.listOf(
+                            productItemDataView.getAsImpressionClickDataLayer(categoryIdTracking)
+                        )
                     )
                 ),
             )

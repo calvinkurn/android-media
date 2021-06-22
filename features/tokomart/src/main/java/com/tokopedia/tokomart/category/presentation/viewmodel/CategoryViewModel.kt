@@ -62,6 +62,8 @@ class CategoryViewModel @Inject constructor (
         abTestPlatformWrapper,
 ) {
 
+    val categoryIdTracking: String
+
     private var navigation: TokonowCategoryDetail.Navigation? = null
 
     init {
@@ -69,10 +71,16 @@ class CategoryViewModel @Inject constructor (
             val categoryFilterKeyWithExclude = "${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}"
             queryParamMutable[categoryFilterKeyWithExclude] = categoryL2
         }
+
+        categoryIdTracking = getCategoryIdForTracking()
     }
 
     override val tokonowSource: String
         get() = TOKONOW_DIRECTORY
+
+    private fun getCategoryIdForTracking() =
+            if (categoryL2.isNotEmpty()) "$categoryL1/$categoryL2"
+            else categoryL1
 
     override fun loadFirstPage() {
         getCategoryFirstPageUseCase.cancelJobs()

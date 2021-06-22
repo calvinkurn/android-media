@@ -171,14 +171,14 @@ class MiniCartWidget @JvmOverloads constructor(
         val data = globalEvent.data
         if (data != null) {
             // Goes here if failed but get response from BE
-            handleFailedUpdateCartWithOutOfService(view, data, fragmentManager, context)
+            handleFailedUpdateCartWithOutOfService(view, data, fragmentManager, context, globalEvent)
         } else {
             // Goes here if failed and get no response from BE
             handleFailedUpdateCartWithThrowable(view, globalEvent, fragmentManager, context)
         }
     }
 
-    private fun handleFailedUpdateCartWithOutOfService(view: View?, data: Any, fragmentManager: FragmentManager, context: Context) {
+    private fun handleFailedUpdateCartWithOutOfService(view: View?, data: Any, fragmentManager: FragmentManager, context: Context, globalEvent: GlobalEvent) {
         if (data is Data) {
             if (data.outOfService.id.isNotBlank() && data.outOfService.id != "0") {
                 // Prioritize to show out of service data
@@ -197,10 +197,14 @@ class MiniCartWidget @JvmOverloads constructor(
                 // Show toaster error if have no out of service data
                 analytics.eventClickBuyThenGetToasterError(data.error)
                 var ctaText = "Oke"
-                if (data.toasterAction.showCta) {
+                if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
                     ctaText = data.toasterAction.text
                 }
-                showToaster(view, data.error, Toaster.TYPE_ERROR, ctaText)
+                if (data.toasterAction.showCta) {
+                    showToaster(view, data.error, Toaster.TYPE_ERROR, ctaText, isShowCta = true)
+                } else {
+                    showToaster(view, data.error, Toaster.TYPE_ERROR, isShowCta = false)
+                }
             }
         }
     }

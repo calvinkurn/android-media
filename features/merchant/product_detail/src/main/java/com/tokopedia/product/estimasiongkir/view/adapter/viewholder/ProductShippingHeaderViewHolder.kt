@@ -32,6 +32,7 @@ class ProductShippingHeaderViewHolder(view: View,
     private val txtShippingTo: ChooseAddressWidget? = itemView.findViewById(R.id.txt_shipping_header_to)
     private val txtFreeOngkirPrice: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_pdp_shipping_bo_price)
     private val txtFreeOngkirEstimation: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_pdp_shipping_bo_estimation)
+    private val txtTokoNow: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_pdp_shipping_tokonow)
     private val txtWeight: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_pdp_shipping_weight)
     private val txtTokoCabang: com.tokopedia.unifyprinciples.Typography? = itemView.findViewById(R.id.txt_shipping_tokocabang)
     private val icTokoCabang: IconUnify? = itemView.findViewById(R.id.pdp_ic_location_from)
@@ -42,22 +43,17 @@ class ProductShippingHeaderViewHolder(view: View,
         txtShippingTo?.bindChooseAddress(chooseAddressListener)
 
         renderTokoCabang(element)
-        renderBo(element.shouldShowFreeOngkir(), element.freeOngkirEstimation, element.freeOngkirImageUrl, element.freeOngkirPrice)
+        renderBo(element.shouldShowFreeOngkir(), element.freeOngkirEstimation, element.freeOngkirImageUrl, element.freeOngkirPrice, element.shouldShowTxtTokoNow(), element.freeOngkirTokoNowText)
         renderWeight(element.weight)
     }
 
     private fun renderTokoCabang(element: ProductShippingHeaderDataModel) = with(itemView) {
-        if (element.isFulfillment && element.boType == ProductDetailConstant.BEBAS_ONGKIR_EXTRA) {
+        if (element.boType == ProductDetailConstant.BO_TOKONOW) {
+            icShippingLine?.setMargin(0, 0, 0, 0)
+            renderGeneralContentTokoCabang(element.tokoCabangContent, element.tokoCabangTitle)
+        } else if (element.isFulfillment && element.boType == ProductDetailConstant.BEBAS_ONGKIR_EXTRA) {
             icShippingLine?.setMargin(0, 20.toDp(), 0, 20.toDp())
-            txtTokoCabang?.shouldShowWithAction(element.tokoCabangContent.isNotEmpty()) {
-                val linkHelper = HtmlLinkHelper(context, element.tokoCabangContent)
-                txtTokoCabang.text = linkHelper.spannedString
-                txtTokoCabang.movementMethod = LinkMovementMethod.getInstance()
-                linkHelper.urlList.getOrNull(0)?.onClick = {
-                    listener.openUspBottomSheet(element.freeOngkirImageUrl, element.uspTokoCabangImgUrl)
-                }
-            }
-            txtShippingFrom?.text = HtmlLinkHelper(context, context.getString(R.string.pdp_bold_html_builder, element.tokoCabangTitle)).spannedString
+            renderGeneralContentTokoCabang(element.tokoCabangContent, element.tokoCabangTitle, element.freeOngkirImageUrl, element.uspTokoCabangImgUrl)
             icTokoCabang?.loadImage(element.tokoCabangIcon)
         } else {
             icShippingLine?.setMargin(0, 0, 0, 0)
@@ -67,18 +63,55 @@ class ProductShippingHeaderViewHolder(view: View,
         }
     }
 
+    private fun renderGeneralContentTokoCabang(tokoCabangContent: String, tokoCabangTitle: String, freeOngkirImageUrl: String = "", uspTokoCabangImgUrl: String = "") = with(itemView) {
+        txtTokoCabang?.shouldShowWithAction(tokoCabangContent.isNotEmpty()) {
+            val linkHelper = HtmlLinkHelper(context, tokoCabangContent)
+            txtTokoCabang.text = linkHelper.spannedString
+            txtTokoCabang.movementMethod = LinkMovementMethod.getInstance()
+            linkHelper.urlList.getOrNull(0)?.onClick = {
+                listener.openUspBottomSheet(freeOngkirImageUrl, uspTokoCabangImgUrl)
+            }
+        }
+        txtShippingFrom?.text = HtmlLinkHelper(context, context.getString(R.string.pdp_bold_html_builder, tokoCabangTitle)).spannedString
+    }
+
     private fun renderWeight(weightFormatted: String) = with(itemView) {
         txtWeight?.text = HtmlLinkHelper(context, context.getString(R.string.pdp_shipping_weight_builder, weightFormatted)).spannedString
     }
 
-    private fun renderBo(isFreeOngkir: Boolean, freeOngkirEstimation: String, freeOngkirImageUrl: String, freeOngkirPrice: String) = with(itemView) {
+    private fun renderBo(isFreeOngkir: Boolean, freeOngkirEstimation: String, freeOngkirImageUrl: String, freeOngkirPrice: String, shouldShowTxtTokoNow: Boolean, freeOngkirTokoNowText: String) = with(itemView) {
+        if (shouldShowTxtTokoNow) {
+            renderBoTokoNow(shouldShowTxtTokoNow, freeOngkirEstimation, freeOngkirPrice, freeOngkirTokoNowText)
+        } else {
+            renderBoNormal(isFreeOngkir, freeOngkirEstimation, freeOngkirImageUrl, freeOngkirPrice)
+        }
+    }
+
+    private fun renderBoNormal(isFreeOngkir: Boolean, freeOngkirEstimation: String, freeOngkirImageUrl: String, freeOngkirPrice: String) = with(itemView) {
         txtFreeOngkirPrice?.shouldShowWithAction(isFreeOngkir && freeOngkirPrice.isNotEmpty()) {
             txtFreeOngkirPrice.text = freeOngkirPrice
         }
+
         imgFreeOngkir?.shouldShowWithAction(isFreeOngkir && freeOngkirImageUrl.isNotEmpty()) {
             imgFreeOngkir.loadImage(freeOngkirImageUrl)
         }
         txtFreeOngkirEstimation?.shouldShowWithAction(isFreeOngkir && freeOngkirEstimation.isNotEmpty()) {
+            txtFreeOngkirEstimation.text = freeOngkirEstimation
+        }
+    }
+
+    private fun renderBoTokoNow(shouldShowTxtTokoNow: Boolean, freeOngkirEstimation: String, freeOngkirPrice: String, freeOngkirTokoNowText: String) = with(itemView) {
+        txtFreeOngkirPrice?.shouldShowWithAction(shouldShowTxtTokoNow && freeOngkirPrice.isNotEmpty()) {
+            txtFreeOngkirPrice.text = freeOngkirPrice
+        }
+
+        txtTokoNow?.shouldShowWithAction(freeOngkirTokoNowText.isNotEmpty()) {
+            txtTokoNow.text = freeOngkirTokoNowText
+        }
+
+        imgFreeOngkir?.hide()
+
+        txtFreeOngkirEstimation?.shouldShowWithAction(shouldShowTxtTokoNow && freeOngkirEstimation.isNotEmpty()) {
             txtFreeOngkirEstimation.text = freeOngkirEstimation
         }
     }

@@ -1,4 +1,4 @@
-package com.tkpd.atc_variant.views.viewholder.item
+package com.tkpd.atcvariant.view.viewholder.item
 
 import android.view.View
 import android.view.ViewGroup

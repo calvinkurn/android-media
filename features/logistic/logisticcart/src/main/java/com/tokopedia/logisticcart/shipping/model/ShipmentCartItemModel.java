@@ -95,6 +95,7 @@ public class ShipmentCartItemModel implements Parcelable {
     private boolean isShippingBorderRed;
     private boolean isDisableChangeCourier;
     private boolean autoCourierSelection;
+    private boolean hasGeolocation;
 
     // Courier Selection Error
     private String courierSelectionErrorTitle;
@@ -769,6 +770,18 @@ public class ShipmentCartItemModel implements Parcelable {
 
     public void setAutoCourierSelection(boolean autoCourierSelection) {
         this.autoCourierSelection = autoCourierSelection;
+    }
+
+    public boolean hasGeolocation() {
+        return hasGeolocation;
+    }
+
+    public void setHasGeolocation(boolean hasGeolocation) {
+        this.hasGeolocation = hasGeolocation;
+    }
+
+    public boolean isCustomPinpointError() {
+        return isDisableChangeCourier && !hasGeolocation;
     }
 
     public String getCourierSelectionErrorTitle() {
