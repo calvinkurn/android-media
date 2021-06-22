@@ -69,6 +69,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private var reviewHeader: ReadReviewHeader? = null
     private var statisticsBottomSheet: ReadReviewStatisticsBottomSheet? = null
     private var loadingView: View? = null
+    private var listOnlyLoading: View? = null
     private var networkError: GlobalError? = null
 
     private val readReviewFilterFactory by lazy {
@@ -130,6 +131,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         clearAllData()
         viewModel.setFilterWithImage(isActive)
         reviewHeader?.updateFilterWithImage()
+        showListOnlyLoading()
     }
 
     override fun onFilterWithTopicClicked(topics: List<ProductTopic>, index: Int) {
@@ -148,6 +150,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     override fun onFilterSubmitted(selectedFilter: List<ListItemUnify>, filterType: SortFilterBottomSheetType, index: Int) {
         clearAllData()
         viewModel.setFilter(selectedFilter, filterType)
+        showListOnlyLoading()
         reviewHeader?.updateFilter(selectedFilter, filterType, index)
     }
 
@@ -155,6 +158,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         clearAllData()
         reviewHeader?.updateSelectedSort(selectedSort.listTitleText)
         viewModel.setSort(selectedSort.listTitleText)
+        showListOnlyLoading()
     }
 
     override fun onReportOptionClicked(reviewId: String, shopId: String) {
@@ -203,6 +207,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     override fun hideLoading() {
         super.hideLoading()
         loadingView?.hide()
+        hideListOnlyLoading()
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
@@ -216,6 +221,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private fun bindViews(view: View) {
         reviewHeader = view.findViewById(R.id.read_review_header)
         loadingView = view.findViewById(R.id.read_review_loading)
+        listOnlyLoading = view.findViewById(R.id.read_review_list_only_loading)
         networkError = view.findViewById(R.id.read_review_network_error)
     }
 
@@ -287,6 +293,14 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     private fun hideError() {
         networkError?.hide()
+    }
+
+    private fun showListOnlyLoading() {
+        listOnlyLoading?.show()
+    }
+
+    private fun hideListOnlyLoading() {
+        listOnlyLoading?.hide()
     }
 
     private fun getReviewStatistics(): List<ProductReviewDetail> {

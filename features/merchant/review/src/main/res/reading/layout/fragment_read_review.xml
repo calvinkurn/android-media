@@ -37,6 +37,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
+                <include
+                    android:id="@+id/read_review_list_only_loading"
+                    layout="@layout/partial_read_review_list_only_loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+
             </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
             <include
