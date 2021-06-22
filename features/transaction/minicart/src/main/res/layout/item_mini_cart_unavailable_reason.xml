@@ -15,4 +15,15 @@
         app:typographyType="heading_6"
         tools:text="Produk Dilarang" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_disabled_sub_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_disabled_title"
+        app:typographyType="body_3"
+        tools:text="Tidak dapat dibeli di platform Android" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

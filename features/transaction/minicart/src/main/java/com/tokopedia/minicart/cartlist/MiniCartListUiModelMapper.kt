@@ -98,7 +98,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
         miniCartData.data.unavailableSection.forEach { unavailableSection ->
             // Add unavailable reason
-            val unavailableReasonUiModel = mapUnavailableReasonUiModel(unavailableSection.title)
+            val unavailableReasonUiModel = mapUnavailableReasonUiModel(unavailableSection.title, unavailableSection.unavailableDescription)
             miniCartUnavailableSectionUiModels.add(unavailableReasonUiModel)
             unavailableSection.unavailableGroup.forEach { unavailableGroup ->
                 // Add unavailable product
@@ -261,9 +261,10 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-    private fun mapUnavailableReasonUiModel(title: String): MiniCartUnavailableReasonUiModel {
+    private fun mapUnavailableReasonUiModel(title: String, unavailableDescription: String): MiniCartUnavailableReasonUiModel {
         return MiniCartUnavailableReasonUiModel().apply {
             reason = title
+            description = unavailableDescription
         }
     }
 
