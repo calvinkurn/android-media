@@ -2455,20 +2455,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 deeplinkUrl = deeplinkUrl,
                 isStockAvailable = viewModel.getDynamicProductInfoP1?.getFinalStock() ?: "0",
                 boType = boType,
-                affiliateUniqueId = "$affiliateUniqueId - $uuid"
+                affiliateUniqueId = if(affiliateUniqueId.isNotBlank() ) "$affiliateUniqueId - $uuid" else ""
         )
-        if(affiliateUniqueId.isNotBlank()){
-            context?.let {
-                DynamicProductDetailTracking.Iris.eventAffiliateLinkClickIris(
-                        context = it,
-                        affiliateUniqueId = affiliateUniqueId,
-                        uuid = uuid,
-                        recordId = UUID.randomUUID().toString(),
-                        irisSessionId = irisSessionId,
-                        userId = viewModel.userId,
-                        productId = viewModel.getDynamicProductInfoP1?.basic?.productID)
-            }
-        }
     }
 
     private fun openFtInstallmentBottomSheet(installmentData: FtInstallmentCalculationDataResponse) {

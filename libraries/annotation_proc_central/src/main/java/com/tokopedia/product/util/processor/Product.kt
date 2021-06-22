@@ -85,7 +85,7 @@ data class Product(
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_81)
         val dimension81: String,
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_90)
-        val dimension90: String,
+        val dimension90: String?,
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_98)
         val dimension98: String,
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_113)
