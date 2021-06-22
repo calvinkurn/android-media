@@ -10,6 +10,7 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +30,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.htmltags.HtmlUtil
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import kotlinx.android.synthetic.main.mvc_tokomember_follow.view.*
 
 class MvcFollowViewContainer @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -133,6 +135,8 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
     private var btnFirst: UnifyButton
     private var collapsableContainer : LinearLayout
     private var iconBackground: AppCompatImageView
+    private var iconBackgroundContainer: FrameLayout
+
     var tvList : Typography
     private var tvSubTitle : Typography
     var btnSecond: UnifyButton
@@ -151,6 +155,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         tvSubTitle = findViewById(R.id.tvSubTitle)
         iconBackground = findViewById(R.id.iconBackground)
         containerContent = findViewById(R.id.container_content)
+        iconBackgroundContainer = findViewById(R.id.iconContainer)
 
         if (context.isDarkMode()){
             iconBackground.setColorFilter(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.dark_N75))
@@ -201,6 +206,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
                 btnSecond.text = context.resources.getString(R.string.mvc_jadi_member)
             }
             FollowWidgetType.MEMBERSHIP_CLOSE -> {
+                setAdjustableMargin32()
                 collapsableContainer.visibility = View.VISIBLE
                 containerContent.visibility = View.GONE
                 btnSecond.text = context.resources.getString(R.string.mvc_mulai_belanja)
@@ -320,5 +326,13 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         marginLayoutParams.bottomMargin =
             containerContent.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
         containerContent.layoutParams = marginLayoutParams
+    }
+
+    private fun setAdjustableMargin32() {
+        val marginLayoutParams = iconBackgroundContainer.layoutParams as ViewGroup.MarginLayoutParams
+        marginLayoutParams.bottomMargin =
+            icon.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl4)
+        iconBackgroundContainer.layoutParams = marginLayoutParams
+
     }
 }
