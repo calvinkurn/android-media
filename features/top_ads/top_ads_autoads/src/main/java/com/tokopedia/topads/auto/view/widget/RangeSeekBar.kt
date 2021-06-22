@@ -30,7 +30,7 @@ class RangeSeekBar: SeekBar, SeekBar.OnSeekBarChangeListener {
     var value: Int = 0
         get() = range.min + progress * range.increment
         set(value) {
-            progress = ((value - range.min) / range.increment)
+            progress = (value - range.min) / range.increment
             field = value
         }
 
