@@ -9,7 +9,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.tracking.ProductAddChooseImageTracking
 import com.tokopedia.product.addedit.tracking.ProductAddEditImageTracking
@@ -19,8 +18,8 @@ import com.tokopedia.user.session.UserSession
 
 
 object ImagePickerAddEditNavigation {
-    fun getIntent(context: Context, imageUrlOrPathList: List<String>, isAdding: Boolean): Intent {
-        val builder = createImagePickerBuilder(context, ArrayList(imageUrlOrPathList))
+    fun getIntent(context: Context, imageUrlOrPathList: List<String>, maxImageCount: Int, isAdding: Boolean): Intent {
+        val builder = createImagePickerBuilder(context, ArrayList(imageUrlOrPathList), maxImageCount)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.IMAGE_PICKER)
         intent.putImagePickerBuilder(builder)
 
@@ -29,7 +28,10 @@ object ImagePickerAddEditNavigation {
     }
 
     @SuppressLint("WrongConstant")
-    private fun createImagePickerBuilder(context: Context, selectedImagePathList: ArrayList<String>?): ImagePickerBuilder {
+    private fun createImagePickerBuilder(context: Context, selectedImagePathList: ArrayList<String>?, maxImageCount: Int): ImagePickerBuilder {
+        val listPlaceholderImage = List(maxImageCount) {
+            R.drawable.product_add_edit_ic_image_placeholder
+        }
         return ImagePickerBuilder.getSquareImageBuilder(context)
                 .apply {
                     this.title = context.getString(R.string.action_pick_photo)
@@ -41,15 +43,9 @@ object ImagePickerAddEditNavigation {
                     }
                     this.imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
                             usePrimaryImageString = true,
-                            maximumNoPick = AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS,
+                            maximumNoPick = maxImageCount,
                             initialSelectedImagePathList = selectedImagePathList ?: arrayListOf(),
-                            placeholderImagePathResList = arrayListOf(
-                                    com.tokopedia.product.addedit.R.drawable.ic_utama,
-                                    com.tokopedia.product.addedit.R.drawable.ic_depan,
-                                    com.tokopedia.product.addedit.R.drawable.ic_samping,
-                                    com.tokopedia.product.addedit.R.drawable.ic_atas,
-                                    com.tokopedia.product.addedit.R.drawable.ic_detail
-                            )
+                            placeholderImagePathResList = ArrayList(listPlaceholderImage)
                     )
                 }
     }

@@ -16,21 +16,6 @@ import org.junit.Test
 
 class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
 
-    private var wsMineResponseText: WebSocketResponse = WebSocketResponse()
-    private var wsSellerResponseText: WebSocketResponse = WebSocketResponse()
-
-    override fun setupResponse() {
-        super.setupResponse()
-        wsMineResponseText = AndroidFileUtil.parse(
-                "ws_response_text.json",
-                WebSocketResponse::class.java
-        )
-        wsSellerResponseText = AndroidFileUtil.parse(
-                "buyer/ws_opposite_with_label.json",
-                WebSocketResponse::class.java
-        )
-    }
-
     @Test
     fun sent_text_to_ws_and_got_response_from_ws() {
         // Given
@@ -97,12 +82,6 @@ class TopchatRoomBuyerWebSocketTest : BaseBuyerTopchatRoomTest() {
         onView(withRecyclerView(R.id.recycler_view).atPositionOnView(
                 0, R.id.txt_info
         )).check(matches(not(isDisplayed())))
-    }
-
-    protected fun WebSocketResponse.setLabel(label: String): WebSocketResponse {
-        jsonObject?.remove("label")
-        jsonObject?.addProperty("label", label)
-        return this
     }
 
 }

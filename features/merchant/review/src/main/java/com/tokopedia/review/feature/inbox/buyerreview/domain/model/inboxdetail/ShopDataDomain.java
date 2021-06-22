@@ -6,15 +6,15 @@ package com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail;
 
 public class ShopDataDomain {
 
-    private int shopId;
-    private int shopUserId;
+    private long shopId;
+    private long shopUserId;
     private String domain;
     private String shopName;
     private String shopUrl;
     private String logo;
     private ShopReputationDomain shopReputation;
 
-    public ShopDataDomain(int shopId, int shopUserId, String domain, String shopName,
+    public ShopDataDomain(long shopId, long shopUserId, String domain, String shopName,
                           String shopUrl, String logo, ShopReputationDomain shopReputation) {
         this.shopId = shopId;
         this.shopUserId = shopUserId;
@@ -25,11 +25,11 @@ public class ShopDataDomain {
         this.shopReputation = shopReputation;
     }
 
-    public int getShopId() {
+    public long getShopId() {
         return shopId;
     }
 
-    public int getShopUserId() {
+    public long getShopUserId() {
         return shopUserId;
     }
 

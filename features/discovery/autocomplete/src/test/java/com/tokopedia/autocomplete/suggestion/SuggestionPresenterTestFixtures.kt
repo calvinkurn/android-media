@@ -71,4 +71,8 @@ internal open class SuggestionPresenterTestFixtures {
 
         return visitableList.find { it is BaseSuggestionDataView && it.type == type} as T
     }
+
+    protected fun `Given presenter will return searchParameter`(searchParameter: Map<String, String>) {
+        suggestionPresenter.setSearchParameter(searchParameter as HashMap<String, String>)
+    }
 }
