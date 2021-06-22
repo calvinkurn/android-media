@@ -65,6 +65,8 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation project(rootProject.ext.libraries.unitTest)
 
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+
 }
 
 project.ext {
