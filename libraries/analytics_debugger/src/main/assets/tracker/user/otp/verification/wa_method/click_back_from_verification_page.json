@@ -1,5 +1,5 @@
 {
-  "readme": "Success verification with sms method",
+  "readme": "Click back from verification page",
   "mode": "subset",
   "query": [
     {
@@ -29,6 +29,13 @@
       "eventCategory": "otp page",
       "eventAction": "click metode otp",
       "eventLabel": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickOtp",
+      "eventCategory": "otp page",
+      "eventAction": "click button back",
+      "eventLabel": ".+",
       "sessionIris": ".*"
     }
   ]

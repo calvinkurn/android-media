@@ -1,4 +1,4 @@
-package com.tokopedia.otp.verification
+package com.tokopedia.otp.verification.base
 
 import android.content.Context
 import android.content.Intent
@@ -25,10 +25,6 @@ import com.tokopedia.otp.stub.verification.view.activity.VerificationActivityStu
 import com.tokopedia.otp.verification.domain.data.OtpRequestPojo
 import com.tokopedia.otp.verification.domain.data.OtpValidatePojo
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListPojo
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.setMain
 import org.hamcrest.CoreMatchers
 import org.hamcrest.core.StringContains.containsString
 import org.junit.After
@@ -114,7 +110,6 @@ abstract class VerificationTest {
 
     protected open lateinit var activity: VerificationActivityStub
     protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
-    private lateinit var otpComponent: OtpComponentStub
 
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     private val applicationContext: Context
@@ -123,10 +118,8 @@ abstract class VerificationTest {
 
     protected val gtmLogDbSource = GtmLogDBSource(context)
 
-    @ExperimentalCoroutinesApi
     @Before
     open fun before() {
-        Dispatchers.setMain(TestCoroutineDispatcher())
         otpComponent = OtpComponentStubBuilder.getComponent(applicationContext, context)
         otpComponent.inject(this)
         gtmLogDbSource.deleteAll().subscribe()
@@ -157,7 +150,7 @@ abstract class VerificationTest {
         sendOtp2FAUseCase.response = if (isSuccess) sendSmsVerificationMethod2FASuccess else sendSmsVerificationMethod2FAFailed
     }
 
-    protected fun setupSendSmsVerificationMethodResponse(isSuccess: Boolean) {
+    protected fun setupSendOtpVerificationMethodResponse(isSuccess: Boolean) {
         sendOtpUseCase.response = if (isSuccess) sendSmsVerificationMethodSuccess else sendSmsVerificationMethodFailed
     }
 
@@ -253,5 +246,18 @@ abstract class VerificationTest {
         waitOnView(withText(CoreMatchers.containsString("Kirim ulang")), 35000, 500)
                 .check(matches(isDisplayed()))
                 .perform(clickClickableSpan("Kirim ulang"))
+        sleep(2000)
+    }
+
+    protected fun clickChooseAnotherOtpMethod() {
+        sleep(2000)
+        waitOnView(withText(CoreMatchers.containsString("gunakan metode verifikasi lain.")), 35000, 500)
+                .check(matches(isDisplayed()))
+                .perform(clickClickableSpan("gunakan metode verifikasi lain."))
+        sleep(2000)
+    }
+
+    companion object {
+        lateinit var otpComponent: OtpComponentStub
     }
 }

@@ -1,5 +1,5 @@
 {
-  "readme": "Success verification with sms method",
+  "readme": "Choose another otp method",
   "mode": "subset",
   "query": [
     {
@@ -30,6 +30,24 @@
       "eventAction": "click metode otp",
       "eventLabel": ".*",
       "sessionIris": ".*"
+    },
+    {
+      "event": "clickOtp",
+      "eventCategory": "otp page",
+      "eventAction": "click gunakan metode lain",
+      "eventLabel": ".+",
+      "sessionIris": ".*"
+    },
+    {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": ".+",
+      "appsflyerId": ".+",
+      "shopId": ".*",
+      "screenName": "change method",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
     }
   ]
 }

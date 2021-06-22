@@ -1,8 +1,8 @@
 {
   "OTPValidate": {
     "success": false,
-    "message": "Failed",
-    "errorMessage": "Failed",
+    "message": "",
+    "errorMessage": "Kode verifikasi salah",
     "validateToken": "",
     "cookieList": []
   }

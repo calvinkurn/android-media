@@ -2,12 +2,10 @@ package com.tokopedia.otp.stub.verification.view.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.otp.common.di.OtpComponent
-import com.tokopedia.otp.stub.common.UserSessionStub
 import com.tokopedia.otp.stub.common.di.OtpComponentStub
-import com.tokopedia.otp.stub.common.di.OtpComponentStubBuilder
 import com.tokopedia.otp.stub.verification.view.fragment.*
+import com.tokopedia.otp.verification.base.VerificationTest
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
@@ -22,10 +20,7 @@ class VerificationActivityStub : VerificationActivity() {
 
     override fun inflateFragment() { }
 
-    override fun initializeOtpComponent(): OtpComponent =
-            OtpComponentStubBuilder.getComponent(application as BaseMainApplication, this).also {
-                otpComponentStub = it
-            }
+    override fun initializeOtpComponent(): OtpComponent = VerificationTest.otpComponent
 
     fun setupTestFragment(
             otpComponentStub: OtpComponentStub

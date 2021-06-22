@@ -1,12 +1,16 @@
 package com.tokopedia.otp.verification.choose_method
 
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.filters.LargeTest
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.otp.verification.VerificationTest
-import com.tokopedia.otp.verification.sms_method.SmsVerificationMethodTest
+import com.tokopedia.otp.verification.base.VerificationTest
 import org.junit.Test
+import org.junit.runner.RunWith
 
+@LargeTest
+@RunWith(AndroidJUnit4ClassRunner::class)
 class ChooseOtpMethodTest : VerificationTest() {
 
     @Test
