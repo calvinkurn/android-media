@@ -186,8 +186,8 @@ public class FlightAnalytics {
                         dashboardViewModel.getFlightPassengerViewModel().getChildren(),
                         dashboardViewModel.getFlightPassengerViewModel().getInfant(),
                         dashboardViewModel.getFlightClass().getTitle(),
-                        FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getDepartureDate()),
-                        dashboardViewModel.isOneWay() ? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getReturnDate()))
+                        FlightDateUtil.Companion.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getDepartureDate()),
+                        dashboardViewModel.isOneWay() ? "" : String.format(" - %s", FlightDateUtil.Companion.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getReturnDate()))
                 ));
         params.put(SCREEN_NAME, screenName);
         params.put(CURRENT_SITE, FLIGHT_CURRENT_SITE);
@@ -247,16 +247,16 @@ public class FlightAnalytics {
                 passDataViewModel.getFlightPassengerModel().getChildren(),
                 passDataViewModel.getFlightPassengerModel().getInfant(),
                 passDataViewModel.getFlightClass().getTitle(),
-                FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getDepartureDate()),
-                passDataViewModel.isOneWay() ? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getReturnDate()))
+                FlightDateUtil.Companion.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getDepartureDate()),
+                passDataViewModel.isOneWay() ? "" : String.format(" - %s", FlightDateUtil.Companion.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getReturnDate()))
         ));
         mapModel.put("from", (passDataViewModel.getDepartureAirport().getAirportCode() == null || passDataViewModel.getDepartureAirport().getAirportCode().isEmpty()) ?
                 passDataViewModel.getDepartureAirport().getCityCode() : passDataViewModel.getDepartureAirport().getAirportCode());
         mapModel.put("destination", (passDataViewModel.getArrivalAirport().getAirportCode() == null || passDataViewModel.getArrivalAirport().getAirportCode().isEmpty()) ?
                 passDataViewModel.getArrivalAirport().getCityCode() : passDataViewModel.getArrivalAirport().getAirportCode());
-        mapModel.put("departureDate", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getDepartureDate()));
+        mapModel.put("departureDate", FlightDateUtil.Companion.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getDepartureDate()));
         mapModel.put("departureDateFormatted", passDataViewModel.getDepartureDate());
-        mapModel.put("returnDate", passDataViewModel.isOneWay() ? "" : FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getReturnDate()));
+        mapModel.put("returnDate", passDataViewModel.isOneWay() ? "" : FlightDateUtil.Companion.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, passDataViewModel.getReturnDate()));
         mapModel.put("returnDateFormatted", passDataViewModel.isOneWay() ? "" : passDataViewModel.getReturnDate());
         mapModel.put("returnTicket", passDataViewModel.isOneWay() ? "false" : "true");
         mapModel.put("passenger", passDataViewModel.getFlightPassengerModel().getAdult() + passDataViewModel.getFlightPassengerModel().getChildren() +
@@ -359,8 +359,8 @@ public class FlightAnalytics {
                 searchPassDataViewModel.getFlightPassengerModel().getChildren(),
                 searchPassDataViewModel.getFlightPassengerModel().getInfant(),
                 searchPassDataViewModel.getFlightClass().getTitle(),
-                FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, searchPassDataViewModel.getDepartureDate()),
-                searchPassDataViewModel.isOneWay() ? "" : String.format(" - %s", FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, searchPassDataViewModel.getReturnDate()))
+                FlightDateUtil.Companion.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, searchPassDataViewModel.getDepartureDate()),
+                searchPassDataViewModel.isOneWay() ? "" : String.format(" - %s", FlightDateUtil.Companion.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, searchPassDataViewModel.getReturnDate()))
         ));
         mapModel.put(SCREEN_NAME, Screen.SEARCH);
         mapModel.put(CURRENT_SITE, FLIGHT_CURRENT_SITE);
@@ -491,7 +491,7 @@ public class FlightAnalytics {
         Object product = DataLayer.mapOf(
                 EnhanceEccomerce.NAME, journeyViewModel.getDepartureAirportCity() + "-" + journeyViewModel.getArrivalAirportCity(),
                 EnhanceEccomerce.PRICE, totalAdultPrice + totalChildPrice + totalInfantPrice,
-                EnhanceEccomerce.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, journeyViewModel.getRouteList().get(0).getDepartureTimestamp()),
+                EnhanceEccomerce.DIMENSION66, FlightDateUtil.Companion.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, journeyViewModel.getRouteList().get(0).getDepartureTimestamp()),
                 EnhanceEccomerce.DIMENSION67, searchPassDataViewModel.isOneWay() ? "oneway" : "roundtrip",
                 EnhanceEccomerce.DIMENSION68, searchPassDataViewModel.getFlightClass().getTitle().toLowerCase(),
                 EnhanceEccomerce.DIMENSION69, "",
@@ -538,7 +538,7 @@ public class FlightAnalytics {
         Object product = DataLayer.mapOf(
                 EnhanceEccomerce.NAME, journeyViewModel.getDepartureAirportCity() + "-" + journeyViewModel.getArrivalAirportCity(),
                 EnhanceEccomerce.PRICE, totalAdultPrice + totalChildPrice + totalInfantPrice,
-                EnhanceEccomerce.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, journeyViewModel.getRouteList().get(0).getDepartureTimestamp()),
+                EnhanceEccomerce.DIMENSION66, FlightDateUtil.Companion.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, journeyViewModel.getRouteList().get(0).getDepartureTimestamp()),
                 EnhanceEccomerce.DIMENSION67, searchPassDataViewModel.isOneWay() ? "oneway" : "roundtrip",
                 EnhanceEccomerce.DIMENSION68, searchPassDataViewModel.getFlightClass().getTitle().toLowerCase(),
                 EnhanceEccomerce.DIMENSION69, "",
@@ -773,8 +773,8 @@ public class FlightAnalytics {
         int totalPriceChild = flightViewModel.getChildNumericPrice() * flightViewModel.getCountChild();
         int totalPriceInfant = flightViewModel.getInfantNumericPrice() * flightViewModel.getCountInfant();
 
-        long layoverDayDiff = FlightDateUtil.countDayDifference(FlightDateUtil.YYYYMMDD, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, flightViewModel.getRouteList().get(0).getDepartureTimestamp()),
-                FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, flightViewModel.getRouteList().get(flightViewModel.getRouteList().size() - 1).getArrivalTimestamp()));
+        long layoverDayDiff = FlightDateUtil.countDayDifference(FlightDateUtil.YYYYMMDD, FlightDateUtil.Companion.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, flightViewModel.getRouteList().get(0).getDepartureTimestamp()),
+                FlightDateUtil.Companion.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, flightViewModel.getRouteList().get(flightViewModel.getRouteList().size() - 1).getArrivalTimestamp()));
         String dayDiffString = layoverDayDiff > 0 ? String.format(" +%s", layoverDayDiff) : "";
 
         products.add(DataLayer.mapOf(
@@ -784,7 +784,7 @@ public class FlightAnalytics {
                 EnhanceEccomerce.BRAND, flightViewModel.getRouteList().get(0).getAirlineName(),
                 EnhanceEccomerce.CATEGORY, Label.FLIGHT,
                 EnhanceEccomerce.QUANTITY, flightViewModel.getCountAdult() + flightViewModel.getCountChild() + flightViewModel.getCountInfant(),
-                EnhanceEccomerce.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, flightViewModel.getRouteList().get(0).getDepartureTimestamp()),
+                EnhanceEccomerce.DIMENSION66, FlightDateUtil.Companion.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, flightViewModel.getRouteList().get(0).getDepartureTimestamp()),
                 EnhanceEccomerce.DIMENSION67, isOneWay ? "oneway" : "roundtrip",
                 EnhanceEccomerce.DIMENSION68, flightClass,
                 EnhanceEccomerce.DIMENSION69, "",

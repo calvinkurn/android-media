@@ -2,19 +2,22 @@ package com.tokopedia.notifcenter.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.inboxcommon.analytic.InboxAnalyticCommon.createGeneralEvent
 import com.tokopedia.notifcenter.data.entity.ProductData
-import com.tokopedia.notifcenter.data.entity.UserInfo
 import com.tokopedia.notifcenter.data.viewbean.BaseNotificationItemViewBean
 import com.tokopedia.notifcenter.data.viewbean.MultipleProductCardViewBean
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * @author : Steven 03/05/19
  */
-class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics(), NotificationTracker {
+class NotificationUpdateAnalytics @Inject constructor(
+    private val userSessionInterface: UserSessionInterface
+): NotificationAnalytics(), NotificationTracker {
 
     private val seenNotifications = HashSet<String>()
     private val seenProductCards = HashSet<String>()
@@ -64,6 +67,11 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
 
         // Other
         const val ECOMMERCE = "ecommerce"
+        const val ATTR_USER_ID = "userId"
+        const val ATTR_PRODUCT_ID = "productId"
+        const val ATTR_SHOP_ID = "shopId"
+        const val BUSINESS_UNIT_COMM = "communication"
+        const val CURRENT_SITE = "tokopediamarketplace"
     }
 
     fun trackTroubleshooterGearClicked(userId: String, shopId: String) {
@@ -382,15 +390,23 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     override fun trackNotificationClick(notification: NotificationItemViewBean) {
         val label = getImpressionWithoutLocationLabel(
                 notification.templateKey,
-                notification.notificationId,
-                notification.getAtcProduct()?.productId
+                notification.notificationId
         )
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_NAME_CLICK_NOTIF_CENTER,
-                CATEGORY_NOTIF_CENTER,
-                EVENT_ACTION_CLICK_NOTIF_LIST,
-                label
-        ))
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = EVENT_NAME_CLICK_NOTIF_CENTER,
+                eventAction = EVENT_ACTION_CLICK_NOTIF_LIST,
+                eventCategory = CATEGORY_NOTIF_CENTER,
+                eventLabel = label,
+                businessUnit = BUSINESS_UNIT_COMM,
+                currentSite = CURRENT_SITE,
+                additionalAttribute = mapOf(
+                    ATTR_PRODUCT_ID to notification.getAtcProduct()?.productId.toString(),
+                    ATTR_SHOP_ID to notification.getAtcProduct()?.shop?.id.toString(),
+                    ATTR_USER_ID to userSessionInterface.userId
+                )
+            )
+        )
     }
     // #NC3
     override fun trackClickFilterRequest(filter: String) {
@@ -670,7 +686,9 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
         )
     }
 
-    override fun saveNotificationImpression(notification: NotificationItemViewBean) {
+    override fun saveNotificationImpression(
+        notification: NotificationItemViewBean
+    ) {
         val notificationId = notification.notificationId
         val isNotAlreadyTracked = seenNotifications.add(notificationId)
         if (isNotAlreadyTracked) {
@@ -678,30 +696,50 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
         }
     }
 
-    private fun trackNotificationImpression(notification: NotificationItemViewBean) {
+    private fun trackNotificationImpression(
+        notification: NotificationItemViewBean
+    ) {
         val label = getImpressionWithoutLocationLabel(
                 notification.templateKey,
-                notification.notificationId,
-                notification.getAtcProduct()?.productId
+                notification.notificationId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        NAME_EVENT_VIEW_NOTIF,
-                        CATEGORY_NOTIF_CENTER,
-                        ACTION_VIEW_NOTIF_LIST,
-                        label
+            createGeneralEvent(
+                event = NAME_EVENT_VIEW_NOTIF,
+                eventAction = ACTION_VIEW_NOTIF_LIST,
+                eventCategory = CATEGORY_NOTIF_CENTER,
+                eventLabel = label,
+                businessUnit = BUSINESS_UNIT_COMM,
+                currentSite = CURRENT_SITE,
+                additionalAttribute = mapOf(
+                    ATTR_PRODUCT_ID to notification.getAtcProduct()?.productId.toString(),
+                    ATTR_SHOP_ID to notification.getAtcProduct()?.shop?.id.toString(),
+                    ATTR_USER_ID to userSessionInterface.userId
                 )
+            )
         )
     }
 
-    fun trackOnClickLongerContentBtn(templateKey: String, notificationId: String) {
+    fun trackOnClickLongerContentBtn(
+        templateKey: String,
+        notificationId: String,
+        productId: String,
+        shopId: String
+    ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        EVENT_NAME_CLICK_NOTIF_CENTER,
-                        CATEGORY_NOTIF_CENTER,
-                        ACTION_CLICK_LONGER_CONTENT_BUTTON,
-                        "$templateKey - $notificationId"
+            createGeneralEvent(
+                event = EVENT_NAME_CLICK_NOTIF_CENTER,
+                eventAction = ACTION_CLICK_LONGER_CONTENT_BUTTON,
+                eventCategory = CATEGORY_NOTIF_CENTER,
+                eventLabel = "$templateKey - $notificationId",
+                businessUnit = BUSINESS_UNIT_COMM,
+                currentSite = CURRENT_SITE,
+                additionalAttribute = mapOf(
+                    ATTR_PRODUCT_ID to productId,
+                    ATTR_SHOP_ID to shopId,
+                    ATTR_USER_ID to userSessionInterface.userId
                 )
+            )
         )
     }
 

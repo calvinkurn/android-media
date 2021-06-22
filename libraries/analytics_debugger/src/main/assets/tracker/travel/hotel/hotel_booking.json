@@ -8,6 +8,7 @@
       "clientId": ".+",
       "currentSite": "tokopediadigitalhotel",
       "isLoggedInStatus": ".+",
+      "theme": "light|dark",
       "appsflyerId": ".+",
       "shopId": ".*",
       "screenName": "/hotel/bookingroom",

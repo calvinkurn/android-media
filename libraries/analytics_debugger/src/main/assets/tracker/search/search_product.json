@@ -14,7 +14,8 @@
       "categoryIdMapping": ".+",
       "categoryNameMapping": ".+",
       "relatedKeyword": ".+ - .+",
-      "sessionIris": ".+"
+      "sessionIris": ".+",
+      "pageSource": ".*"
     },
     {
       "event": "view_item_list",
@@ -36,7 +37,8 @@
           "index": "\\d*.\\d*",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "dimension40": "/searchproduct - topads productlist",
-          "dimension83": "bebas ongkir extra|bebas ongkir|none / other"
+          "dimension83": "bebas ongkir extra|bebas ongkir|none / other",
+          "dimension90": ".*"
         }
       ]
     },
@@ -91,7 +93,8 @@
           "index": "\\d*.\\d*",
           "price": "\\d*.\\d*|\\d.\\d+E\\d",
           "dimension40": ".*",
-          "dimension83": "bebas ongkir extra|bebas ongkir|none / other"
+          "dimension83": "bebas ongkir extra|bebas ongkir|none / other",
+          "dimension90": ".*"
         }
       ]
     },
