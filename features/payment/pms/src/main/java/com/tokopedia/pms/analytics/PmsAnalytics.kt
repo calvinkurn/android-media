@@ -81,7 +81,7 @@ class PmsAnalytics @Inject constructor(
         const val BUSINESS_UNIT_PAYMENT = "Payment"
         const val CURRENT_SITE_PAYMENT = "tokopedia"
 
-        const val SCREEN_NAME = "Pms page"
+        const val SCREEN_NAME = "PMS page"
         const val EVENT_NAME = "clickPMS"
         const val ACTION_TAP_THREE_DOTS = "tap three dots"
 
