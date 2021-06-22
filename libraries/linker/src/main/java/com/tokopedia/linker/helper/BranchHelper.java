@@ -1,8 +1,10 @@
 package com.tokopedia.linker.helper;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
@@ -14,11 +16,15 @@ import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.PaymentData;
 import com.tokopedia.linker.model.UserData;
 import com.tokopedia.linker.validation.BranchHelperValidation;
+import com.tokopedia.track.TrackApp;
+
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
@@ -98,6 +104,8 @@ public class BranchHelper {
 
             if (branchIOPayment.isNewBuyer()) {
                 sendMarketPlaceFirstTxnEvent(context, branchIOPayment, userData.getUserId(), revenuePrice, shippingPrice);
+                //Firebase first transaction event
+                sendFirebaseFirstTransactionEvent(context, branchIOPayment, userData.getUserId(), revenuePrice, shippingPrice);
             }
             new BranchHelperValidation().validatePurchaseEvent(branchIOPayment, revenuePrice, shippingPrice);
         } catch (Exception ex) {
@@ -230,6 +238,22 @@ public class BranchHelper {
                 .addCustomDataProperty(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isMonthlyNewBuyer()));
         branchEvent.logEvent(context);
         saveBranchEvent(branchEvent);
+    }
+
+    public static void sendFirebaseFirstTransactionEvent(Context context, PaymentData branchIOPayment, String userId, double revenuePrice, double shippingPrice){
+        Map<String, Object> eventDataMap = new HashMap<>();
+        eventDataMap.put("order_id", branchIOPayment.getOrderId());
+        eventDataMap.put("currency", CurrencyType.IDR);
+        eventDataMap.put("shipping_price", shippingPrice);
+        eventDataMap.put("revenue", revenuePrice);
+        eventDataMap.put(LinkerConstants.KEY_PAYMENT, branchIOPayment.getPaymentId());
+        eventDataMap.put(LinkerConstants.KEY_PRODUCTTYPE, branchIOPayment.getProductType());
+        eventDataMap.put(LinkerConstants.KEY_USERID, userId);
+        eventDataMap.put(LinkerConstants.KEY_NEW_BUYER, String.valueOf(branchIOPayment.isNewBuyer()));
+        eventDataMap.put(LinkerConstants.KEY_MONTHLY_NEW_BUYER, String.valueOf(branchIOPayment.isMonthlyNewBuyer()));
+        eventDataMap.put("event", "marketplace_first_txn");
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventDataMap);
+        Log.d("First_Txn_Firebase", new JSONObject(eventDataMap).toString());
     }
 
     private static void saveBranchEvent(BranchEvent branchEvent) {
