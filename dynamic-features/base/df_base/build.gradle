@@ -119,6 +119,7 @@ dependencies {
     implementation project(rootProject.ext.features.paymentSetting)
     implementation project(rootProject.ext.features.instantDebitBca)
     implementation project(rootProject.ext.features.pms)
+    implementation project(rootProject.ext.features.withdraw)
 
     //Promo
     implementation project(rootProject.ext.features.promoCheckout)
@@ -155,6 +156,7 @@ dependencies {
 
     //Order Management
     implementation project(rootProject.ext.features.ordermanagementhistory)
+    implementation project(rootProject.ext.features.buyerorderdetail)
 
     //Library
     implementation project(rootProject.ext.libraries.imagePicker)

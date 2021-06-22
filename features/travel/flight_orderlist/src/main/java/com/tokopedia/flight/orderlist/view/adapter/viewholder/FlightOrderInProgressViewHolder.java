@@ -1,8 +1,9 @@
 package com.tokopedia.flight.orderlist.view.adapter.viewholder;
 
+import android.view.View;
+
 import androidx.annotation.LayoutRes;
 import androidx.appcompat.widget.AppCompatTextView;
-import android.view.View;
 
 import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.flight.orderlist.R;
@@ -60,7 +61,7 @@ public class FlightOrderInProgressViewHolder extends FlightOrderBaseViewHolder<F
     public void bind(FlightOrderInProcessViewModel element) {
         this.item = element;
         tvTitle.setText(element.getTitle());
-        tvOrderDate.setText(TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.FORMAT_DATE, element.getCreateTime()));
+        tvOrderDate.setText(TravelDateUtil.Companion.formatDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.FORMAT_DATE, element.getCreateTime()));
         tvOrderId.setText(String.format("%s %s", itemView.getContext().getString(R.string.flight_order_order_id_prefix), element.getId()));
         if (element.getOrderJourney().size() > 0) {
             renderArrow(element.getOrderJourney());

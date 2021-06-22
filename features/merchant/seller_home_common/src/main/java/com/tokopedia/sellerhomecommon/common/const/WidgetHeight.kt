@@ -18,6 +18,7 @@ object WidgetHeight {
     private const val BAR_CHART = 320f
     private const val MULTI_LINE_GRAPH = 352f
     private const val ANNOUNCEMENT = 80f
+    private const val RECOMMENDATION = 252f
     private const val SECTION = 42f
 
     fun getWidgetHeight(widgetType: String): Float {
@@ -34,6 +35,7 @@ object WidgetHeight {
             WidgetType.BAR_CHART -> BAR_CHART
             WidgetType.MULTI_LINE_GRAPH -> MULTI_LINE_GRAPH
             WidgetType.ANNOUNCEMENT -> ANNOUNCEMENT
+            WidgetType.RECOMMENDATION -> RECOMMENDATION
             else -> 0f
         }
     }
