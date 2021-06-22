@@ -32,8 +32,8 @@ object BitmapHelper {
             textAlign = Paint.Align.LEFT
 
             // text alpha
-            if (properties.alpha in 0..255) {
-                alpha = properties.alpha
+            if (properties.textAlpha in 0..255) {
+                alpha = properties.textAlpha
             }
 
             // text shadow properties
@@ -49,8 +49,8 @@ object BitmapHelper {
             }
 
             // font properties
-            if (properties.fontTypeId != 0) {
-                typeface = ResourcesCompat.getFont(context, properties.fontTypeId)
+            if (properties.fontName.isNotEmpty()) {
+                typeface = com.tokopedia.unifyprinciples.getTypeface(context, properties.fontName)
             }
         }
 
@@ -101,7 +101,7 @@ object BitmapHelper {
         var bitmapResult = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
 
         if (boundWidth > 0 && bitmapHeight > 0) {
-            bitmapResult = createBitmap(boundWidth, bitmapHeight)
+            bitmapResult = Bitmap.createBitmap(boundWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
         }
 
         // create the bitmap canvas
@@ -114,12 +114,22 @@ object BitmapHelper {
     }
 
     fun Bitmap.resizeBitmap(size: Float, background: Bitmap): Bitmap {
-        val scale = (background.width * size) / this.width
-        val matrix = Matrix()
+        val bitmapWidth = this.width
+        val bitmapHeight = this.height
+        val scale = (background.width * size) / bitmapWidth
 
+        val matrix = Matrix()
         matrix.postScale(scale, scale)
 
-        return this.createBitmap(matrix = matrix)
+        return Bitmap.createBitmap(
+            this,
+            0,
+            0,
+            bitmapWidth,
+            bitmapHeight,
+            matrix,
+            true
+        )
     }
 
     fun Bitmap.resizeBitmap(maxImageSize: Int): Bitmap {

@@ -14,21 +14,22 @@ data class TextAndImage(
 
     // base properties
     override var position: Position = imageDefault.position,
-    override var alpha: Int = 150,
 
     // image properties
     override var image: Bitmap? = imageDefault.image,
     override var imageDrawable: Int = imageDefault.imageDrawable,
     override var context: Context? = imageDefault.context,
     override var imageSize: Double = imageDefault.imageSize,
+    override var imageAlpha: Int = 100,
 
     // text properties
     override var text: String = textDefault.text,
     override var textColor: Int = textDefault.textColor,
+    override var textAlpha: Int = textDefault.textAlpha,
     override var textSize: Int = textDefault.textSize,
     override var backgroundColor: Int = textDefault.backgroundColor,
     override var textStyle: Paint.Style = textDefault.textStyle,
-    override var fontTypeId: Int = textDefault.fontTypeId,
+    override var fontName: String = textDefault.fontName,
     override var textShadowBlurRadius: Float = textDefault.textShadowBlurRadius,
     override var textShadowXOffset: Float = textDefault.textShadowXOffset,
     override var textShadowYOffset: Float = textDefault.textShadowYOffset,
