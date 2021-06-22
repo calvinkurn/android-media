@@ -3016,6 +3016,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+    override fun gotoTokoNow() {
+        RouteManager.route(context, ApplinkConstInternalTokopediaNow.INTERNAL_TOKOPEDIA_NOW)
+    }
+
     private fun onShopFavoriteClick(componentTrackDataModel: ComponentTrackDataModel? = null, isNplFollowType: Boolean = false) {
         if (viewModel.getShopInfo().isShopInfoNotEmpty()) {
             doActionOrLogin({
