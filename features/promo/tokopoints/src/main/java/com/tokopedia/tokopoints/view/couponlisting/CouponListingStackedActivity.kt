@@ -55,6 +55,7 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
         forDeeplink()
         super.onCreate(savedInstanceState)
         val userSession = UserSession(this)
+        updateTitle(getString(R.string.tp_label_my_coupon_new))
         component.inject(this)
         addObserver()
         if (!userSession.isLoggedIn) {
@@ -93,7 +94,6 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
             finish()
             return
         }
-        updateTitle(getString(R.string.tp_label_my_coupon_new))
         server_error_view.setErrorButtonClickListener(View.OnClickListener {
             mPresenter.getFilter()
         })
