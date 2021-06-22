@@ -3,7 +3,6 @@ package com.tokopedia.hotel.screenshot.booking
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import android.widget.RelativeLayout
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.intent.Intents
@@ -11,6 +10,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiSelector
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.booking.presentation.activity.mock.HotelBookingMockResponseConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -19,7 +20,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.hotel.R
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.setupDarkModeTest
-import kotlinx.android.synthetic.main.fragment_hotel_booking.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,6 +29,7 @@ import org.junit.Test
  */
 abstract class BaseHotelBookingScreenshotTesting {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     @get:Rule
     var activityRule: IntentsTestRule<HotelBookingActivity> = object : IntentsTestRule<HotelBookingActivity>(HotelBookingActivity::class.java) {
@@ -58,7 +59,7 @@ abstract class BaseHotelBookingScreenshotTesting {
             CommonActions.takeScreenShotVisibleViewInScreen(activityRule.activity.window.decorView, filePrefix(), "top")
         }
 
-        Thread.sleep(3000)
+        uiDevice.findObject(UiSelector().description(activityRule.activity.getString(R.string.hotel_order_detail_title))).waitForExists(10000)
 
         CommonActions.findViewAndScreenShot(R.id.hotel_detail_container, filePrefix(), "detail-container")
         CommonActions.findViewAndScreenShot(R.id.booking_room_duration_info, filePrefix(), "duration-info")

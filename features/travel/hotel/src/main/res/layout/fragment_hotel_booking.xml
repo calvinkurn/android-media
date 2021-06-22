@@ -42,7 +42,8 @@
                 android:paddingLeft="@dimen/layout_lvl2"
                 android:paddingTop="@dimen/layout_lvl2"
                 android:paddingRight="@dimen/layout_lvl2"
-                android:paddingBottom="@dimen/layout_lvl3">
+                android:paddingBottom="@dimen/layout_lvl3"
+                android:contentDescription="@string/hotel_order_detail_title">
 
                 <LinearLayout
                     android:id="@+id/hotel_info_container"
