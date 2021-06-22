@@ -1,4 +1,4 @@
-    package com.tokopedia.topads.common.view.adapter.keyword.viewholder
+package com.tokopedia.topads.common.view.adapter.keyword.viewholder
 
 import android.view.View
 import com.tokopedia.adapterdelegate.BaseViewHolder
