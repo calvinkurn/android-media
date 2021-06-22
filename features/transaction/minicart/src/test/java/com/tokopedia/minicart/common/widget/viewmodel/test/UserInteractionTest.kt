@@ -7,6 +7,7 @@ import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.common.domain.usecase.*
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.mockk
 import io.mockk.spyk
@@ -25,13 +26,14 @@ class UserInteractionTest {
     private val deleteCartUseCase: DeleteCartUseCase = mockk()
     private val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
     private val updateCartUseCase: UpdateCartUseCase = mockk()
+    private val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
 
     @get: Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() {
-        viewModel = MiniCartViewModel(dispatcher, getMiniCartListSimplifiedUseCase, getMiniCartListUseCase, deleteCartUseCase, undoDeleteCartUseCase, updateCartUseCase, uiModelMapper)
+        viewModel = MiniCartViewModel(dispatcher, getMiniCartListSimplifiedUseCase, getMiniCartListUseCase, deleteCartUseCase, undoDeleteCartUseCase, updateCartUseCase, seamlessLoginUsecase, uiModelMapper)
     }
 
     @Test
