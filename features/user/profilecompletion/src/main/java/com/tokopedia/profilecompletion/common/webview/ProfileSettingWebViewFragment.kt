@@ -4,7 +4,6 @@ import android.app.Activity
 import android.os.Bundle
 import android.webkit.WebView
 import androidx.fragment.app.Fragment
-import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewActivity.Companion.VALUE_QUERY_PARAM
 import com.tokopedia.webview.BaseWebViewFragment
 
 
@@ -26,10 +25,12 @@ class ProfileSettingWebViewFragment: BaseWebViewFragment() {
     }
 
     private fun isUrlAppLinkSuccessChangeEmail(url: String): Boolean {
-        return url.isNotEmpty() && url == VALUE_QUERY_PARAM
+        return url.isNotEmpty() && url == APPLINK
     }
 
     companion object {
+        private const val APPLINK = "tokopedia-android-internal://success-change-email"
+
         fun instance(bundle: Bundle): Fragment {
             val fragment = ProfileSettingWebViewFragment()
             fragment.arguments = bundle

@@ -556,7 +556,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
             appendPath(UrlSettingProfileConst.USER_PATH_URL)
             appendPath(UrlSettingProfileConst.PROFILE_PATH_URL)
             appendPath(UrlSettingProfileConst.EMAIL_PATH_URL)
-            appendQueryParameter(ProfileSettingWebViewActivity.KEY_QUERY_PARAM, ProfileSettingWebViewActivity.VALUE_QUERY_PARAM)
         }.build().toString()
 
         val intent = ProfileSettingWebViewActivity.createIntent(requireContext(), url)
