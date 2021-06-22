@@ -39,7 +39,7 @@ class FlightSearchCache(context: Context) {
         val expiredTimeString = sharedPrefs.getString(BACKGROUND_REFRESH_TIME, "") ?: ""
         return if (expiredTimeString.isNotEmpty()) {
             val expiredTime = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, expiredTimeString)
-            FlightDateUtil.getCurrentDate().after(expiredTime)
+            FlightDateUtil.currentDate.after(expiredTime)
         } else {
             false
         }

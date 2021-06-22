@@ -8,7 +8,7 @@ import com.tokopedia.flight.cancellation.data.FlightCancellationPassengerEntity
 import com.tokopedia.flight.cancellation.data.FlightCancellationReasonDataCacheSource
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
-import com.tokopedia.flight.common.util.FlightPassengerTitleType
+import com.tokopedia.flight.common.view.enum.FlightPassengerTitle
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -126,9 +126,9 @@ class FlightCancellationGetPassengerUseCase @Inject constructor(
 
     private fun getTitleString(typeId: Int): String {
         return when (typeId) {
-            FlightPassengerTitleType.TUAN -> context.getString(R.string.mister)
-            FlightPassengerTitleType.NYONYA -> context.getString(R.string.misiz)
-            FlightPassengerTitleType.NONA -> context.getString(R.string.miss)
+            FlightPassengerTitle.TUAN.id -> context.getString(R.string.mister)
+            FlightPassengerTitle.NYONYA.id -> context.getString(R.string.misiz)
+            FlightPassengerTitle.NONA.id -> context.getString(R.string.miss)
             else -> context.getString(R.string.mister)
         }
     }
