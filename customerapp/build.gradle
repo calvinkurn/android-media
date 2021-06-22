@@ -121,7 +121,6 @@ android {
             renderscript.srcDirs = ['src/main/java']
             res.srcDirs = ['src/main/res']
             assets.srcDirs = ['assets', 'src/main/assets', 'src/main/assets/']
-            jniLibs.srcDirs = ["jniLibs"]
         }
 
         String sharedTestDir = 'src/sharedTest/java'
