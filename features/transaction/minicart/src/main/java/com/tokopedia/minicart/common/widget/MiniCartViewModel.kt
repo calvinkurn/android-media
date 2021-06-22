@@ -137,7 +137,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     private fun onSuccessGetCartList(miniCartData: MiniCartData, isFirstLoad: Boolean) {
-        if (isFirstLoad && miniCartData.data.outOfService.id != "0") {
+        if (isFirstLoad && miniCartData.data.outOfService.id.isNotBlank() && miniCartData.data.outOfService.id != "0") {
             _globalEvent.value = GlobalEvent(
                     state = GlobalEvent.STATE_FAILED_LOAD_MINI_CART_LIST_BOTTOM_SHEET,
                     data = miniCartData
