@@ -6,8 +6,10 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.bottomsheets.ProductActionBottomSheet
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -16,6 +18,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -39,6 +42,7 @@ class ProductPostTagViewHolderNew(
     private lateinit var freeShipping: ImageView
     private lateinit var divider: View
     private lateinit var star: IconUnify
+    private lateinit var menuBtn: IconUnify
 
     override fun bind(item: ProductPostTagViewModelNew) {
         productLayout = itemView.findViewById(R.id.productLayout)
@@ -53,6 +57,7 @@ class ProductPostTagViewHolderNew(
         freeShipping = itemView.findViewById(R.id.freeShipping)
         divider = itemView.findViewById(R.id.divider)
         star = itemView.findViewById(R.id.star)
+        menuBtn = itemView.findViewById(R.id.menu)
         label.showWithCondition(item.isDiscount)
         productTag.showWithCondition(item.isDiscount)
         if (item.isDiscount) {
@@ -80,6 +85,25 @@ class ProductPostTagViewHolderNew(
                 adapterPosition
             )
         )
+        menuBtn.setOnClickListener {
+            val sheet = ProductActionBottomSheet.newInstance()
+            sheet.show((mainView.context as FragmentActivity).supportFragmentManager, "")
+            sheet.shareProductCB = {
+                listener.onShareProduct(
+                    item.id.toIntOrZero(),
+                    item.text,
+                    "",
+                    item.applink,
+                    item.imgUrl
+                )
+            }
+            sheet.addToCartCB = {
+                listener.onTagSheetItemBuy(item.positionInFeed, item.product, item.shopId)
+            }
+            sheet.addToWIshListCB = {
+                listener.addToWishList(item.id)
+            }
+        }
         rating.text = String.format("%.1f", item.rating.toDouble() / RATING_FORMAT)
         val soldInfoText = getString(R.string.feed_common_terjual) + " " + item.totalSold.toString()
         soldInfo.text = soldInfoText

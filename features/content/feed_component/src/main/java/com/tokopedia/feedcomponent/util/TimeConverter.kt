@@ -95,7 +95,7 @@ object TimeConverter {
         } else if (getDifference(currentTime, postDate) / HOUR_IN_A_DAY < 365) {
             sdfDay.format(postDate)
         } else {
-            sdfDay.format(monthYear)
+            monthYear.format(postDate)
         }
     }
 

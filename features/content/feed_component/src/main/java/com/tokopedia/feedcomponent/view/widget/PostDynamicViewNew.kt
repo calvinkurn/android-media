@@ -203,7 +203,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val authorType = if (author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
         val followCta =
             FollowCta(authorID = author.id, authorType = authorType, isFollow = isFollowed)
-        val startIndex = author.name.length + 2
+        val authorName = MethodChecker.fromHtml(author.name)
+        val startIndex = authorName.length + 2
         var endIndex = startIndex + 7
 
         val text = if (followers.transitionFollow) {
@@ -218,7 +219,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             context.getString(R.string.feed_header_separator) + text
         )
         val spannableString = SpannableStringBuilder("")
-        spannableString.append(author.name)
+        spannableString.append(authorName)
         if (!isFollowed || followers.transitionFollow) {
             spannableString.append(" $textToShow")
         }
@@ -271,7 +272,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
-        spannableString.setSpan(cs, 0, author.name.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(cs, 0, authorName.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         shopName.text = spannableString
         shopName.movementMethod = LinkMovementMethod.getInstance()
         followers.transitionFollow = false
@@ -457,7 +458,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         com.tokopedia.unifyprinciples.R.color.Neutral_N600
                     )
                 }
-            }, 0, caption.author.name.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+            }, 0, caption.author.name.length - 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
         }
     }
 
@@ -641,12 +642,22 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                             productTagText?.setOnClickListener {
                                 listener?.let { listener ->
-                                    listener.onTagClicked(postId, products, listener)
+                                    listener.onTagClicked(
+                                        postId,
+                                        products,
+                                        listener,
+                                        feedXCard.author.id
+                                    )
                                 }
                             }
                             productTag?.setOnClickListener {
                                 listener?.let { listener ->
-                                    listener.onTagClicked(postId, products, listener)
+                                    listener.onTagClicked(
+                                        postId,
+                                        products,
+                                        listener,
+                                        feedXCard.author.id
+                                    )
                                 }
                             }
                             setOnTouchListener { v, event ->
@@ -657,7 +668,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         addItem(imageItem)
 
                     } else {
-                        addItem(setVideoCarouselView(feedMedia, feedXCard.id, products))
+                        addItem(
+                            setVideoCarouselView(
+                                feedMedia,
+                                feedXCard.id,
+                                products,
+                                feedXCard.author.id
+                            )
+                        )
                     }
                 }
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
@@ -679,7 +697,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private fun setVideoCarouselView(
         feedMedia: FeedXMedia,
         postId: String,
-        products: List<FeedXProduct>
+        products: List<FeedXProduct>,
+        id: String
     ): View {
         val videoItem = View.inflate(context, R.layout.item_post_video_new, null)
         val param = LinearLayout.LayoutParams(
@@ -721,12 +740,22 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
             video_tag_text?.setOnClickListener {
                 listener?.let { listener ->
-                    listener.onTagClicked(postId.toIntOrZero(), products, listener)
+                    listener.onTagClicked(
+                        postId.toIntOrZero(),
+                        products,
+                        listener,
+                        id,
+                    )
                 }
             }
             video_tag_button?.setOnClickListener {
                 listener?.let { listener ->
-                    listener.onTagClicked(postId.toIntOrZero(), products, listener)
+                    listener.onTagClicked(
+                        postId.toIntOrZero(),
+                        products,
+                        listener,
+                        id
+                    )
                 }
             }
             if (canPlayVideo(feedMedia))

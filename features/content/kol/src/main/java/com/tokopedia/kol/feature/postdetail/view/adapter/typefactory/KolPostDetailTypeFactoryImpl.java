@@ -141,7 +141,6 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
 
     @Override
     public int type(KolCommentNewModel viewModel) {
-        //todo
         return 0;
     }
 

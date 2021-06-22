@@ -577,7 +577,12 @@ open class DynamicPostViewHolder(v: View,
 
         fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String, postTagItem: PostTagItem, itemPosition: Int)
 
-        fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int)
+        fun onPostTagItemBSClick(
+            positionInFeed: Int,
+            redirectUrl: String,
+            postTagItem: FeedXProduct,
+            itemPosition: Int
+        )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
 
@@ -587,13 +592,30 @@ open class DynamicPostViewHolder(v: View,
             authorType: String
         )
 
+        fun onTagSheetItemBuy(positionInFeed: Int, item: FeedXProduct, shopId: String)
+
         fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel)
 
         fun onReadMoreClicked(trackingPostModel: TrackingPostModel)
 
         fun onImageClicked(activityId: String)
 
-        fun onTagClicked(postId: Int, products: List<FeedXProduct>, listener: DynamicPostListener)
+        fun addToWishList(productId: String)
+
+        fun onTagClicked(
+            postId: Int,
+            products: List<FeedXProduct>,
+            listener: DynamicPostListener,
+            id: String
+        )
+
+        fun onShareProduct(
+            id: Int,
+            title: String,
+            description: String,
+            url: String,
+            imageUrl: String,
+        )
 
         fun onReadMoreClicked(postId: String)
     }

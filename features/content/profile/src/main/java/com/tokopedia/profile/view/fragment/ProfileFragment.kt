@@ -1035,23 +1035,30 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem, authorType: String) {
         val shop = postTagItem.shop.firstOrNull()
         feedAnalytics.eventProfileAddToCart(
-                postTagItem.id,
-                postTagItem.text,
-                postTagItem.price,
-                1,
-                shop?.shopId?.toIntOrZero() ?: -1,
-                ""
+            postTagItem.id,
+            postTagItem.text,
+            postTagItem.price,
+            1,
+            shop?.shopId?.toIntOrZero() ?: -1,
+            ""
         )
         presenter.addPostTagItemToCart(postTagItem)
     }
 
-    override fun onYoutubeThumbnailClick(positionInFeed: Int, contentPosition: Int, youtubeId: String) {
+    override fun onTagSheetItemBuy(positionInFeed: Int, item: FeedXProduct, shopId: String) {
+    }
+
+    override fun onYoutubeThumbnailClick(
+        positionInFeed: Int,
+        contentPosition: Int,
+        youtubeId: String
+    ) {
         val redirectUrl = ApplinkConst.KOL_YOUTUBE.replace(YOUTUBE_URL, youtubeId)
 
         if (context != null) {
             RouteManager.route(
-                    context,
-                    redirectUrl
+                context,
+                redirectUrl
             )
         }
         if (adapter.list[positionInFeed] is DynamicPostViewModel) {
@@ -1145,11 +1152,25 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onImageClicked(activityId: String) {
     }
 
+    override fun addToWishList(productId: String) {
+    }
+
     override fun onTagClicked(
         postId: Int,
         products: List<FeedXProduct>,
-        listener: DynamicPostViewHolder.DynamicPostListener
+        listener: DynamicPostViewHolder.DynamicPostListener,
+        id: String
     ) {
+    }
+
+    override fun onShareProduct(
+        id: Int,
+        title: String,
+        description: String,
+        url: String,
+        imageUrl: String
+    ) {
+        TODO("Not yet implemented")
     }
 
     override fun onSuccessGetPostStatistic(statisticCommissionModel: PostStatisticCommissionUiModel) {
@@ -1157,9 +1178,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             .setPostStatisticCommissionModel(statisticCommissionModel)
     }
 
-    override fun onErrorGetPostStatistic(error: Throwable, activityId: String, productIds: List<String>) {
+    override fun onErrorGetPostStatistic(
+        error: Throwable,
+        activityId: String,
+        productIds: List<String>
+    ) {
         getPostStatisticBottomSheet()
-                .setError(error, activityId, productIds)
+            .setError(error, activityId, productIds)
     }
 
     private fun initVar(savedInstanceState: Bundle?) {

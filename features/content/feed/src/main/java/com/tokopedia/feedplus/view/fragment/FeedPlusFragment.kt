@@ -609,7 +609,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         )
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
-        recyclerView.isFocusable = false
         swipeToRefresh.setOnRefreshListener(this)
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(activity)
         newFeed.setOnClickListener {
@@ -1569,18 +1568,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
         postTagItem: PostTagItem,
         authorType: String
     ) {
+    }
+
+    override fun onTagSheetItemBuy(positionInFeed: Int, postTagItem: FeedXProduct, shopId: String) {
         if (userSession.isLoggedIn) {
-            val shop = postTagItem.shop.firstOrNull()
-            feedAnalytics.eventFeedAddToCart(
-                postTagItem.id,
-                postTagItem.text,
-                postTagItem.price,
-                1,
-                shop?.shopId?.toIntOrZero() ?: -1,
-                "",
-                authorType
-            )
-            feedViewModel.doAtc(postTagItem)
+//            val shop = postTagItem.shop.firstOrNull()
+//            feedAnalytics.eventFeedAddToCart(
+//                postTagItem.id,
+//                postTagItem.text,
+//                postTagItem.price,
+//                1,
+//                shop?.shopId?.toIntOrZero() ?: -1,
+//                "",
+//                authorType
+            //          )
+            feedViewModel.doAtc(postTagItem, shopId)
         } else {
             onGoToLogin()
         }
@@ -1657,20 +1659,57 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedAnalytics.eventImageClicked(activityId)
     }
 
+    override fun addToWishList(productId: String) {
+        feedViewModel.addWishlist(productId, 0, ::onWishListFail)
+    }
+
+    private fun onWishListFail(s: String) {
+        showToast(s, Toaster.TYPE_ERROR)
+    }
+
     override fun onTagClicked(
         postId: Int,
         products: List<FeedXProduct>,
-        listener: DynamicPostViewHolder.DynamicPostListener
+        listener: DynamicPostViewHolder.DynamicPostListener,
+        id: String
     ) {
         feedAnalytics.eventTagClicked(postId.toString())
         val sheet = ProductItemInfoBottomSheet()
-        sheet.show(childFragmentManager, products, listener, postId)
+        sheet.show(childFragmentManager, products, listener, postId, id)
         sheet.closeClicked = {
             feedAnalytics.eventClickCloseProductInfoSheet(postId.toString())
         }
         sheet.disMissed = {
             feedAnalytics.eventClickGreyArea(postId.toString())
         }
+    }
+
+    override fun onShareProduct(
+        id: Int,
+        title: String,
+        description: String,
+        url: String,
+        imageUrl: String
+    ) {
+        activity?.let {
+            shareData = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
+                .setName(title)
+                .setDescription(description)
+                .setImgUri(imageUrl)
+                .setUri(url)
+                .setDeepLink(url)
+                .setType(LinkerData.FEED_TYPE)
+                .build()
+            val linkerShareData = DataMapper().getLinkerShareData(shareData)
+            LinkerManager.getInstance().executeShareRequest(
+                LinkerUtils.createShareRequest(
+                    0,
+                    linkerShareData,
+                    this
+                )
+            )
+        }
+
     }
 
     override fun onGridItemClick(

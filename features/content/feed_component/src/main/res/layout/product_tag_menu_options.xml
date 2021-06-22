@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/addToWishList"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_56"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:text="@string/feed_product_info_sheet_add_to_wishlist"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/div1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toBottomOf="@id/addToWishList" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/addToCart"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_56"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:text="@string/feed_product_info_sheet_add_to_cart"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintTop_toTopOf="@id/div1"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/div2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toBottomOf="@id/addToCart" />
+
+    <com.tokopedia.unifyprinciples.Typography xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/shareProduct"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_56"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
+        android:text="@string/feed_product_info_sheet_share_product"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintTop_toTopOf="@id/div2"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

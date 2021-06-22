@@ -43,12 +43,12 @@ object FeedScrollListenerNew {
         val rvRect = Rect()
         recyclerView.getGlobalVisibleRect(rvRect)
         val rowRect = Rect()
-        layoutManager!!.findViewByPosition(i)!!.getGlobalVisibleRect(rowRect)
+        layoutManager?.findViewByPosition(i)?.getGlobalVisibleRect(rowRect)
         val videoViewRect = Rect()
-        layoutManager.findViewByPosition(i)!!.findViewById<View>(R.id.videoPreviewImage)
-            .getGlobalVisibleRect(videoViewRect)
+        layoutManager?.findViewByPosition(i)?.findViewById<View>(R.id.videoPreviewImage)
+            ?.getGlobalVisibleRect(videoViewRect)
         val imageView =
-            layoutManager.findViewByPosition(i)!!.findViewById<View>(R.id.videoPreviewImage)
+            layoutManager?.findViewByPosition(i)?.findViewById<View>(R.id.videoPreviewImage)
         if (imageView != null) {
             val percentVideo: Int
             val visibleVideo: Int = if (rowRect.bottom >= rvRect.bottom) {
@@ -72,7 +72,6 @@ object FeedScrollListenerNew {
         }
     }
 
-
     private fun isVideoCard(list: List<Visitable<*>>, position: Int): Boolean {
         return (list.size > position && list[position] is DynamicPostUiModel
                 && (list[position] as DynamicPostUiModel).feedXCard.media.isNotEmpty() && (list[position] as DynamicPostUiModel).feedXCard.media[0].type.equals(
@@ -80,7 +79,6 @@ object FeedScrollListenerNew {
             ignoreCase = true
         ))
     }
-
 
     private fun getVideoCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
         try {

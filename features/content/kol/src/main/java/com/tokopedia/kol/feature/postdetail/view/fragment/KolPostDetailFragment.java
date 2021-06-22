@@ -1010,7 +1010,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onTagClicked(int postId, @NotNull List<FeedXProduct> products, @NotNull DynamicPostViewHolder.DynamicPostListener listener) {
+    public void onTagClicked(int postId, @NotNull List<FeedXProduct> products, @NotNull DynamicPostViewHolder.DynamicPostListener listener, @NotNull String id) {
 
     }
 
@@ -1021,6 +1021,21 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void userCarouselImpression(int positionInFeed, @NotNull List<FeedXMedia> media) {
+
+    }
+
+    @Override
+    public void onTagSheetItemBuy(int positionInFeed, @NotNull FeedXProduct item, @NotNull String shopId) {
+
+    }
+
+    @Override
+    public void addToWishList(@NotNull String productId) {
+
+    }
+
+    @Override
+    public void onShareProduct(int id, @NotNull String title, @NotNull String description, @NotNull String url, @NotNull String imageUrl) {
 
     }
 }

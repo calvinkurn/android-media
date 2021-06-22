@@ -209,8 +209,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                             showBottomSheetSellerMigration()
                         } else {
                             hideBottomSheetSellerMigration()
-                            //todo
-    //                        FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
+                            //                   FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
                         }
                     } else {
                         hideBottomSheetSellerMigration()
@@ -653,8 +652,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     }
 
-    override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem, authorType: String) {
+    override fun onPostTagItemBuyClicked(
+        positionInFeed: Int,
+        postTagItem: PostTagItem,
+        authorType: String
+    ) {
         presenter.addPostTagItemToCart(postTagItem)
+    }
+
+    override fun onTagSheetItemBuy(positionInFeed: Int, item: FeedXProduct, shopId: String) {
     }
 
     override fun onActionPopup() {
@@ -808,11 +814,25 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onImageClicked(activityId: String) {
     }
 
+    override fun addToWishList(productId: String) {
+    }
+
     override fun onTagClicked(
         postId: Int,
         products: List<FeedXProduct>,
-        listener: DynamicPostViewHolder.DynamicPostListener
+        listener: DynamicPostViewHolder.DynamicPostListener,
+        id: String
     ) {
+    }
+
+    override fun onShareProduct(
+        id: Int,
+        title: String,
+        description: String,
+        url: String,
+        imageUrl: String
+    ) {
+        TODO("Not yet implemented")
     }
 
     private fun showBottomSheetSellerMigration() {
@@ -820,8 +840,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             BottomSheetBehavior.STATE_EXPANDED
     }
 
-    private fun hideBottomSheetSellerMigration(){
-        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+    private fun hideBottomSheetSellerMigration() {
+        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state =
+            BottomSheetBehavior.STATE_HIDDEN
     }
 
     fun hideFAB() {

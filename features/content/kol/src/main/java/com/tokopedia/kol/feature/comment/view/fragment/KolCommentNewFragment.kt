@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
@@ -134,10 +135,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun onErrorDeleteComment(errorMessage: String?) {
-        view?.let {
-            Toaster.build(it, getString(R.string.kol_deleting_comment_error), Toaster.TYPE_ERROR)
-                .show()
-        }
+        showToastMessage(errorMessage ?: getString(R.string.kol_deleting_comment_error))
     }
 
     override fun onDeleteCommentKol(
@@ -196,6 +194,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun replyToUser(user: MentionableUserViewModel?) {
+
         if (user?.isShop == false) {
             val userToMention = createValidMentionText(user.toString())
             kolComment?.append(userToMention)
@@ -208,7 +207,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             ) mentionFormatBuilder.append(" ")
             mentionFormatBuilder
                 .append("@")
-                .append(user?.fullName)
+                .append(MethodChecker.fromHtml(user?.fullName))
                 .append(" ")
             kolComment?.append(mentionFormatBuilder.toString())
         }
@@ -367,7 +366,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         }
 
         showError(
-            false
+            true
         ) {
             presenter.getCommentFirstTime(
                 requireArguments().getInt(ARGS_ID)

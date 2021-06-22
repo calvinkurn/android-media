@@ -158,6 +158,11 @@
     <string name="feed_common_reason_desc_inappropriate">Mengandung pornografi</string>
     <string name="feed_common_reason_desc_others">Lainnya</string>
 
+    <!--PRODUCT_BOTTOMSSHEET -->
+    <string name="feed_product_info_sheet_add_to_wishlist">Simpan ke Wishlist</string>
+    <string name="feed_product_info_sheet_add_to_cart">Tambah ke Keranjang</string>
+    <string name="feed_product_info_sheet_share_product">Bagikan</string>
+
     <!--SHARE-->
     <string name="feed_share_default_text">Eh, %s baru aja nge-post. Cek dulu, ah~ mungkin ada update menarik.</string>
 

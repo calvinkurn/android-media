@@ -356,7 +356,7 @@ public class MainParentActivity extends BaseActivity implements
         try {
             super.onRestoreInstanceState(savedInstanceState);
         } catch (Exception e) {
-            reloadPage();
+            reloadPage(HOME_MENU);
         }
     }
 
@@ -642,7 +642,12 @@ public class MainParentActivity extends BaseActivity implements
         presenter.get().onResume();
 
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
-            //    reloadPage();
+            FragmentManager manager = getSupportFragmentManager();
+            int position = HOME_MENU;
+            if (manager.getFragments().size() > 0 && currentFragment.getClass().getName().equalsIgnoreCase(manager.getFragments().get(2).getClass().getName())) {
+                position = 1;
+            }
+            reloadPage(position);
         }
         isUserFirstTimeLogin = !userSession.get().isLoggedIn();
 
@@ -680,8 +685,9 @@ public class MainParentActivity extends BaseActivity implements
             presenter.get().onDestroy();
     }
 
-    private void reloadPage() {
+    private void reloadPage(int position) {
         finish();
+        getIntent().putExtra(ARGS_TAB_POSITION, position);
         startActivity(getIntent());
     }
 

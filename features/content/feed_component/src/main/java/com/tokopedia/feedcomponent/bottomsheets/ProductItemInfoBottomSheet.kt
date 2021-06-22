@@ -25,6 +25,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private lateinit var listProducts: List<FeedXProduct>
     private lateinit var listener: DynamicPostViewHolder.DynamicPostListener
     private var postId: Int = 0
+    private var shopId: String = "0"
     var closeClicked: (() -> Unit)? = null
     var disMissed: (() -> Unit)? = null
     private var dismissedByClosing = false
@@ -91,7 +92,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                     postTagItem.totalSold,
                     postTagItem.star,
                     postTagItem.mods,
-                    "product"
+                shopId
             )
             item.feedType = "product"
             item.postId = postId
@@ -101,10 +102,17 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         return itemList
     }
 
-    fun show(fragmentManager: FragmentManager, products: List<FeedXProduct>, dynamicPostListener: DynamicPostViewHolder.DynamicPostListener, postId: Int) {
+    fun show(
+        fragmentManager: FragmentManager,
+        products: List<FeedXProduct>,
+        dynamicPostListener: DynamicPostViewHolder.DynamicPostListener,
+        postId: Int,
+        shopId: String
+    ) {
         this.listProducts = products
         this.listener = dynamicPostListener
         this.postId = postId
+        this.shopId = shopId
         show(fragmentManager, "")
     }
 }

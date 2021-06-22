@@ -69,7 +69,6 @@ class KolCommentNewActivity : BaseSimpleActivity() {
     }
 
     override fun onBackPressed() {
-        //todo
         feedAnalytics.clickBackButtonCommentPage(postId ?: "0")
         super.onBackPressed()
     }

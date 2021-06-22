@@ -9,7 +9,7 @@ import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
@@ -46,6 +46,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -73,12 +75,15 @@ class FeedViewModel @Inject constructor(
     private val playWidgetTools: PlayWidgetTools,
     private val getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
     private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
-    private val sendReportUseCase: SendReportUseCase
+    private val sendReportUseCase: SendReportUseCase,
+    private val addWishListUseCase: AddWishListUseCase
 ) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
         const val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
         const val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"
+        private const val ERROR_CUSTOM_MESSAGE = "Terjadi kesalahan koneksi. Silakan coba lagi."
+
     }
 
     private val userId: String
@@ -306,10 +311,10 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doAtc(postTagItem: PostTagItem) {
+    fun doAtc(postTagItem: FeedXProduct, shopId: String) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
-                atc(postTagItem)
+                atc(postTagItem, shopId)
             }
             atcResp.value = Success(results)
         }) {
@@ -360,6 +365,35 @@ class FeedViewModel @Inject constructor(
         }, onError = {
             _playWidgetModel.value = Fail(it)
         })
+    }
+
+    fun addWishlist(productId: String, position: Int, onFail: (String) -> Unit) {
+        addWishListUseCase.createObservable(productId, userSession.userId,
+            object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    onFail.invoke(errorMessage ?: ERROR_CUSTOM_MESSAGE)
+                }
+
+                override fun onSuccessAddWishlist(productId: String?) {
+//                    val prodTags = postTagLive.value ?:
+//                    (postDetailLive.value as? Success)?.data?.let {
+//                        (it.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?)?.postTag
+//                    }
+//
+//                    if (prodTags == null || position >= prodTags.items.size){
+//                        onErrorRemoveWishlist(ERROR_CUSTOM_MESSAGE, productId)
+//                        return
+//                    }
+//
+//                    prodTags.items[position].isWishlisted = true
+//                    postTagLive.value = prodTags
+                }
+
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+
+                override fun onSuccessRemoveWishlist(productId: String?) {}
+
+            })
     }
 
     private fun OnboardingData.convertToViewModel(): OnboardingViewModel =
@@ -577,20 +611,22 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun atc(postTagItem: PostTagItem): AtcViewModel {
+    private fun atc(postTagItem: FeedXProduct, shopId: String): AtcViewModel {
         try {
             val data = AtcViewModel()
-            data.applink = postTagItem.applink
-            if (postTagItem.shop.isNotEmpty()) {
-                val params = AddToCartUseCase.getMinimumParams(
-                    postTagItem.id, postTagItem.shop[0].shopId,
-                    productName = postTagItem.text, price = postTagItem.price, userId = userId
-                )
-                val result = atcUseCase.createObservable(params).toBlocking().single()
-                data.isSuccess = result.data.success == 1
-                if (result.isStatusError()) {
-                    data.errorMsg = result.errorMessage.firstOrNull() ?: ""
-                }
+            data.applink = postTagItem.appLink
+
+            val params = AddToCartUseCase.getMinimumParams(
+                postTagItem.id,
+                shopId,
+                productName = postTagItem.name,
+                price = postTagItem.price.toString(),
+                userId = userId
+            )
+            val result = atcUseCase.createObservable(params).toBlocking().single()
+            data.isSuccess = result.data.success == 1
+            if (result.isStatusError()) {
+                data.errorMsg = result.errorMessage.firstOrNull() ?: ""
             }
             return data
         } catch (e: Throwable) {

@@ -27,8 +27,10 @@ object MentionTextHelper {
 
     private const val ID_NAME_DELIMITER = "|"
 
-    private const val ALLOWED_CHARS_REGEX = "[a-zA-Z \\[\\]+`~'\",.|\\{\\}!@#\\$%^&*()\\-_+=\\\\]"
-    private const val TOKENIZER_FULL_EDIT_REGEX = "($MENTION_CHAR$OPENING_MENTION_TAG\\{(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@);?\\}$CLOSING_MENTION_TAG)"
+    private const val ALLOWED_CHARS_REGEX =
+        "[a-zA-Z; \\[\\]+`~'\",.|\\{\\}!@#\\\$%^&*()?\\-_+=\\\\]"
+    private const val TOKENIZER_FULL_EDIT_REGEX =
+        "($MENTION_CHAR$OPENING_MENTION_TAG\\{(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@);?\\}$CLOSING_MENTION_TAG)"
     private const val TOKENIZER_CONTENT_ONLY_REGEX = "(?<=($MENTION_CHAR)?$OPENING_MENTION_TAG\\{)(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@)?(?=\\}$CLOSING_MENTION_TAG)"
 
     private const val READ_FULL_REGEX = "(\\{(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@)?\\})"
@@ -59,17 +61,34 @@ object MentionTextHelper {
         return "$OPENING_MENTION_TAG$mentioned$CLOSING_MENTION_TAG"
     }
 
-    fun spanText(text: CharSequence, @ColorInt mentionColor: Int, onMentionClicked: MentionSpan.OnClickListener, isFromEdit: Boolean): Spannable {
+    fun spanText(
+        text: CharSequence,
+        @ColorInt mentionColor: Int,
+        onMentionClicked: MentionSpan.OnClickListener,
+        isFromEdit: Boolean
+    ): Spannable {
         val spannableString = SpannableStringBuilder(text)
-        val matcher = if (isFromEdit) tokenizerFullEditPattern.matcher(text) else readFullPattern.matcher(text)
+        val matcher =
+            if (isFromEdit) tokenizerFullEditPattern.matcher(text) else readFullPattern.matcher(text)
         while (matcher.find()) {
             val textToBeReplaced = matcher.group()
-            val mentionSpan = getMentionSpanFromTag(textToBeReplaced, mentionColor, matcher.start(), onMentionClicked, isFromEdit)
+            val mentionSpan = getMentionSpanFromTag(
+                textToBeReplaced,
+                mentionColor,
+                matcher.start(),
+                onMentionClicked,
+                isFromEdit
+            )
             if (mentionSpan != null) {
                 val startIndex = spannableString.indexOf(textToBeReplaced)
                 val endIndex = startIndex + textToBeReplaced.length
 
-                spannableString.setSpan(mentionSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannableString.setSpan(
+                    mentionSpan,
+                    startIndex,
+                    endIndex,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
 
                 if (isFromEdit) {
                     spannableString.replace(
