@@ -60,4 +60,6 @@
     <dimen name="product_manage_campaign_stock_ticker_custom_margin">12dp</dimen>
     <dimen name="fontvs">12sp</dimen>
     <dimen name="divider_height">1dp</dimen>
+    <dimen name="product_manage_sort_filter_shimmer_width">86dp</dimen>
+    <dimen name="product_manage_sort_filter_shimmer_height">32dp</dimen>
 </resources>

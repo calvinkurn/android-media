@@ -366,7 +366,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         @JvmStatic
         fun getCallingIntentOpenBrowser(context: Context?, extras: Bundle): Intent? {
             val webUrl = extras.getString(KEY_URL, getInstance().WEB).decode()
-            val ext = extras.getBoolean(KEY_EXT, false)
+            val ext = extras.getString(KEY_EXT, "false").toBoolean()
             val webUri = Uri.parse(webUrl)
 
             val destinationIntent = Intent(Intent.ACTION_VIEW)

@@ -105,6 +105,10 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
         bottomActionNextView.setEnabled(viewModel.isTitleValid(title))
     }
 
+    override fun onTitleInputHasFocus() {
+        analytic.clickTitleInputArea()
+    }
+
     /**
      * Tag Recommendation List View Component
      */
