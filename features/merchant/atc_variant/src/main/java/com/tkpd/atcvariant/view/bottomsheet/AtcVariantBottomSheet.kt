@@ -213,7 +213,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         viewModel.initialData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> adapter.submitList(it.data)
-                is Fail -> showError(it.throwable)
+                is Fail -> {
+                    val throwable = it.throwable
+                    showError(throwable)
+                    logException(throwable)
+                }
             }
         })
     }
