@@ -20,8 +20,8 @@ class PmsListPageRobot {
     var cassavaTestRule = CassavaTestRule(false)
 
     fun clickHtpTest(position: Int) {
-        onView(allOf(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)))
-            .check(matches(isDisplayed())).perform(click())
+       /* onView(allOf(withId(com.tokopedia.unifycomponents.R.id.bottom_sheet_close)))
+            .check(matches(isDisplayed())).perform(click())*/
         val viewInteraction =
             onView(allOf(withId(R.id.recycler_view))).check(matches(isDisplayed()))
         viewInteraction.perform(
@@ -105,13 +105,15 @@ class PmsListPageRobot {
         assertThat(cassavaTestRule.validate(queryId), hasAllSuccess())
     }
 
-    fun validateMap(map: List<Map<String, Any>>) {
-        assertThat(cassavaTestRule.validate(map), hasAllSuccess())
-    }
-
     fun actionClickView(resId: Int) {
         val viewInteraction =
             onView(allOf(withId(resId))).check(matches(isDisplayed()))
+        viewInteraction.perform(click())
+    }
+
+    fun actionClickViewFromText(text: Int) {
+        val viewInteraction =
+            onView(allOf(withText(text))).check(matches(isDisplayed()))
         viewInteraction.perform(click())
     }
 }
