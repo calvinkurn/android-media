@@ -94,4 +94,18 @@ fun collapse(v: View) {
     v.startAnimation(a)
 }
 
+fun setAdjustableMargin3(view: View) {
+    val marginLayoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
+    marginLayoutParams.bottomMargin =
+        view.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+    view.layoutParams = marginLayoutParams
+}
+
+fun setAdjustableMargin0(view: View) {
+    val marginLayoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
+    marginLayoutParams.bottomMargin =
+        view.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0)
+    view.layoutParams = marginLayoutParams
+}
+
 data class MvcTokomemberBmViewData(val imageUrls: List<String>, val messages: List<String>, val buttonText: String)

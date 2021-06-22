@@ -135,7 +135,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
     private var btnFirst: UnifyButton
     private var collapsableContainer : LinearLayout
     private var iconBackground: AppCompatImageView
-    private var iconBackgroundContainer: FrameLayout
+    var iconBackgroundContainer: FrameLayout
 
     var tvList : Typography
     private var tvSubTitle : Typography
@@ -206,7 +206,6 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
                 btnSecond.text = context.resources.getString(R.string.mvc_jadi_member)
             }
             FollowWidgetType.MEMBERSHIP_CLOSE -> {
-                setAdjustableMargin32()
                 collapsableContainer.visibility = View.VISIBLE
                 containerContent.visibility = View.GONE
                 btnSecond.text = context.resources.getString(R.string.mvc_mulai_belanja)
@@ -326,13 +325,5 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         marginLayoutParams.bottomMargin =
             containerContent.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
         containerContent.layoutParams = marginLayoutParams
-    }
-
-    private fun setAdjustableMargin32() {
-        val marginLayoutParams = iconBackgroundContainer.layoutParams as ViewGroup.MarginLayoutParams
-        marginLayoutParams.bottomMargin =
-            icon.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl4)
-        iconBackgroundContainer.layoutParams = marginLayoutParams
-
     }
 }

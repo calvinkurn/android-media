@@ -40,11 +40,13 @@ class FollowViewHolder (itemView: View,val mvcDetailViewContract: MvcDetailViewC
         mvcFollowContainer.twoActionView.tvList.setOnClickListener {
             if (!followWidget.isCollapsed) {
                 expand(mvcFollowContainer.twoActionView.containerContent)
+                setAdjustableMargin3(mvcFollowContainer.twoActionView.iconBackgroundContainer)
                 mvcFollowContainer.twoActionView.tvList.text = itemView.context.resources.getString(R.string.mvc_text_expand)
                 followWidget.isCollapsed = !followWidget.isCollapsed
                 Tracker.clickLihatExpand(shopId, UserSession(itemView.context).userId, mvcSource)
             } else {
                 collapse(mvcFollowContainer.twoActionView.containerContent)
+                setAdjustableMargin0(mvcFollowContainer.twoActionView.iconBackgroundContainer)
                 mvcFollowContainer.twoActionView.tvList.text = itemView.context.resources.getString(R.string.mvc_text_collapse)
                 followWidget.isCollapsed = !followWidget.isCollapsed
             }
