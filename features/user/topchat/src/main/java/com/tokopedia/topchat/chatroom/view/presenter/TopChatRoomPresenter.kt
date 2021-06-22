@@ -910,8 +910,8 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun getBackground() {
         chatBackgroundUseCase.getBackground(
-            ::onLoadBackgroundFromCache, ::onSuccessLoadBackground, ::onErrorLoadBackground
-        )
+            ::onLoadBackgroundFromCache, ::onSuccessLoadBackground
+        ) {}
     }
 
     override fun addProductToCart(
@@ -973,10 +973,6 @@ open class TopChatRoomPresenter @Inject constructor(
         if (needToUpdate) {
             view?.renderBackground(url)
         }
-    }
-
-    private fun onErrorLoadBackground(throwable: Throwable) {
-        throwable.printStackTrace()
     }
 
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
