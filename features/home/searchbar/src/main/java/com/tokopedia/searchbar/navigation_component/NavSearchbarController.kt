@@ -5,6 +5,7 @@ import android.view.View
 import android.view.View.VISIBLE
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.core.widget.addTextChangedListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.data.HintData
@@ -22,7 +23,11 @@ class NavSearchbarController(val view: View,
                              val searchbarClickCallback: ((hint: String)-> Unit)?,
                              val searchbarImpressionCallback: ((hint: String)-> Unit)?,
                              val topNavComponentListener: TopNavComponentListener,
-                             val disableDefaultGtmTracker: Boolean = false
+                             val disableDefaultGtmTracker: Boolean = false,
+                             val navSearchbarInterface: ((text: CharSequence?,
+                                                      start: Int,
+                                                      count: Int,
+                                                      after: Int) -> Unit)? = null
 ) : CoroutineScope {
     init {
         view.layout_search.visibility = VISIBLE
@@ -50,6 +55,30 @@ class NavSearchbarController(val view: View,
         }
         etSearch.setSingleLine()
         etSearch.ellipsize = TextUtils.TruncateAt.END
+    }
+
+    fun startHintAnimation() {
+        if (::animationJob.isInitialized) {
+            animationJob.start()
+        }
+    }
+
+    fun stopHintAnimation() {
+        if (::animationJob.isInitialized) {
+            animationJob.cancel()
+        }
+    }
+
+    fun setEditableSearchbar(hint: String) {
+        etSearch.isEnabled = true
+        etSearch.hint = hint
+        etSearch.addTextChangedListener(
+            onTextChanged = { text, start, count, after ->
+                navSearchbarInterface?.invoke(
+                    text, start, count, after
+                )
+            }
+        )
     }
 
     private fun setHintSingle(hint: HintData) {
@@ -127,17 +156,5 @@ class NavSearchbarController(val view: View,
 
     private fun onClickHint() {
         RouteManager.route(context, applink)
-    }
-
-    fun startHintAnimation() {
-        if (::animationJob.isInitialized) {
-            animationJob.start()
-        }
-    }
-
-    fun stopHintAnimation() {
-        if (::animationJob.isInitialized) {
-            animationJob.cancel()
-        }
     }
 }
