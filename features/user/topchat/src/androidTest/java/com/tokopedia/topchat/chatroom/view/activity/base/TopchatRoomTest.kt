@@ -588,6 +588,12 @@ abstract class TopchatRoomTest {
         )
     }
 
+    protected fun assertComposedTextValue(msg: String) {
+        onView(withId(R.id.new_comment)).check(
+            matches(withText(msg))
+        )
+    }
+
     protected fun isKeyboardOpened(): Boolean {
         val rootView = activity.findViewById<View>(R.id.main)
         return isKeyboardOpened(rootView)
