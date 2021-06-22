@@ -174,9 +174,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 }
             }
             REQUEST_CODE_GET_DISTRICT_RECOM -> {
-                val discomModel = data?.getParcelableExtra<DistrictRecommendationAddress>("district_recommendation_address")
-                val latitude = data?.getDoubleExtra("latitude")
-                val longitude = data?.getDoubleExtra("longitude")
+                val discomModel = data?.getParcelableExtra<DistrictRecommendationAddress>(DISTRICT_RECOMMENDATION_ADDRESS)
+                val latitude = data?.getDoubleExtra(LATITUDE, 0.0)
+                val longitude = data?.getDoubleExtra(LONGITUDE, 0.0)
                 if (discomModel != null) {
                     viewModel.setStateChosenAddress(
                             status = 4,
@@ -500,6 +500,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
         const val REQUEST_CODE_GET_DISTRICT_RECOM = 299
         const val REQUEST_CODE_ADDRESS_LIST = 399
         const val REQUEST_CODE_LOGIN_PAGE = 499
+        const val DISTRICT_RECOMMENDATION_ADDRESS = "district_recommendation_address"
+        const val LATITUDE = "latitude"
+        const val LONGITUDE = "longitude"
 
         private const val HAS_ASKED_PERMISSION_KEY = "has_asked_permission"
         private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
