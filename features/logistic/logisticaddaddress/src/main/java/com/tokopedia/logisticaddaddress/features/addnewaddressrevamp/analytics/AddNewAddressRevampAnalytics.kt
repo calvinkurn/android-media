@@ -18,8 +18,8 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
     private const val CLICK_AKTIFKAN_LAYANAN_LOKASI_ON_BLOCK_GPS = "click aktifkan layanan lokasi on block gps"
     private const val CLICK_X_ON_BLOCK_GPS = "click x on block gps"
     private const val CLICK_ISI_ALAMAT_MANUAL = "click isi alamat manual"
-    private const val CLICK_BACK_ARROW = "click back arrrow on top left corner"
-    private const val CLICK_BACK_ARROW_BUTTON = "click back arrrow button on top left corner"
+    private const val CLICK_BACK_ARROW = "click back arrow on top left corner"
+    private const val CLICK_BACK_ARROW_BUTTON = "click back arrow button on top left corner"
     private const val IMPRESSION_BOTTOMSHEET_ALAMAT_TIDAK_TERDETEKSI = "impression bottomsheet alamat tidak terdeteksi"
     private const val CLICK_ISI_ALAMAT_MANUAL_FROM_UNDETECTED_LOC_BOTTOMSHEET ="click isi alamat manual from undetected location bottomsheet"
     private const val IMPRESSION_BOTTOMSHEET_OUT_OF_INDO = "impression out of indonesia"
@@ -40,7 +40,7 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
     private const val CLICK_BOX_JADIKAN_ALAMAT_UTAMA = "click box jadikan alamat utama"
     private const val CLICK_SIMPAN = "click simpan"
     private const val CLICK_SIMPAN_ERROR = "click simpan button, error in 1 or more field"
-    private const val CLICK_FIELD_CARI_KOTA_KECAMATAN = "click field cari kota dan kecamatan"
+    private const val CLICK_FIELD_CARI_KOTA_KECAMATAN = "click field cari kota kecamatan"
     private const val CLICK_FIELD_KOTA_KECAMATAN = "click field kota dan kecamatan"
     private const val CLICK_CHIPS_KOTA_POPULER = "click chips kota populer"
     private const val CLICK_DROPDOWN_SUGGESTION_KOTA_KECAMATAN = "click dropdown suggestion kota kecamatan"
@@ -319,7 +319,7 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .appendEvent(CLICK_PINPOINT)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(CLICK_PILIH_LOKASI_DAN_LANJUT_ISI_ALAMAT)
-                .appendEventLabel("")
+                .appendEventLabel(eventLabel)
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendUserId(userId)
@@ -352,7 +352,7 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
 
     fun onViewToasterPinpointTidakSesuai(userId: String) {
         getTracker().sendGeneralEvent(BaseTrackerBuilder()
-                .appendEvent(CLICK_PINPOINT)
+                .appendEvent(VIEW_PINPOINT_IRIS)
                 .appendEventCategory(PINPOINT_PAGE)
                 .appendEventAction(VIEW_TOASTER_PASTIKAN_PINPOINT_SESUAI_KOTA_KECAMATAN)
                 .appendEventLabel("")

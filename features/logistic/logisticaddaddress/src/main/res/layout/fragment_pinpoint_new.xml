@@ -68,7 +68,7 @@
                 android:layout_marginEnd="@dimen/unify_space_12"
                 app:centerText="true"
                 app:chipSize="medium"
-                app:chipText="Cari Ulang Alamat"
+                app:chipText="Cari Ulang"
                 app:chipType="normal" />
 
         </LinearLayout>
