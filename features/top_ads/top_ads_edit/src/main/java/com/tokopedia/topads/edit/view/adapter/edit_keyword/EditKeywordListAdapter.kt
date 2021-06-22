@@ -19,7 +19,7 @@ class EditKeywordListAdapter(val typeFactory: EditKeywordListAdapterTypeFactory)
     var items: MutableList<EditKeywordViewModel> = mutableListOf()
     var data: MutableList<String> = mutableListOf()
     var added: MutableList<Boolean> = mutableListOf()
-    var minBid: Float = 0.0f
+    var minBid: String = "0"
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EditKeywordViewHolder<EditKeywordViewModel> {
@@ -61,7 +61,7 @@ class EditKeywordListAdapter(val typeFactory: EditKeywordListAdapterTypeFactory)
         this.data.clear()
     }
 
-    fun setBid(bid: Float) {
+    fun setBid(bid: String) {
         minBid = bid
         notifyDataSetChanged()
     }

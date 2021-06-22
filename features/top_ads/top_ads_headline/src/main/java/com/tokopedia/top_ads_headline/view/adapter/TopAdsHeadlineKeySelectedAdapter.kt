@@ -18,9 +18,9 @@ class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int, key
                                        private val onBidChange: ((enable: Boolean, keywordDataItem: KeywordDataItem) -> Unit)) : RecyclerView.Adapter<TopAdsHeadlineKeySelectedAdapter.ViewHolder>() {
 
     var items: MutableList<KeywordDataItem> = mutableListOf()
-    private var minBid = 0.0f
-    private var maxBid = 0.0f
-    private var suggestedBid = 0.0f
+    private var minBid = "0"
+    private var maxBid = "0"
+    private var suggestedBid = "0"
 
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
@@ -81,10 +81,10 @@ class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int, key
         })
     }
 
-    fun setDefaultValues(maxBid: Float?, minBid: Float?, suggestionBid: Float?) {
-        this.maxBid = maxBid ?: 0.0f
-        this.minBid = minBid ?: 0.0f
-        this.suggestedBid = suggestionBid ?: 0.0f
+    fun setDefaultValues(maxBid: String?, minBid: String?, suggestionBid: String?) {
+        this.maxBid = maxBid ?: "0"
+        this.minBid = minBid ?: "0"
+        this.suggestedBid = suggestionBid ?: "0"
         notifyDataSetChanged()
     }
 }

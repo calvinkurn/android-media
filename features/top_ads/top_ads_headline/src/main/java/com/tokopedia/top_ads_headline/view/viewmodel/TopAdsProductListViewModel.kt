@@ -25,7 +25,7 @@ class TopAdsProductListViewModel @Inject constructor(private val topAdsGetListPr
         }
     }
 
-    fun getTopAdsProductList(shopId: String, keyword: String, etalaseId: String, sortBy: String, isPromoted: String, rows: Int, start: Int, tabId: Int?,
+    fun getTopAdsProductList(shopId: String, keyword: String, etalaseId: String, sortBy: String, isPromoted: String, rows: Int, start: Int, tabId: Int?, source: String,
                              onSuccess: ((List<TopAdsProductModel>, eof: Boolean) -> Unit),
                              onError: ((Throwable) -> Unit)) {
         viewModelScope.launchCatchError(
@@ -40,7 +40,7 @@ class TopAdsProductListViewModel @Inject constructor(private val topAdsGetListPr
                             onSuccess(responseInProductListMode, false)
                         }
                     } else {
-                        topAdsGetListProductUseCase.setParams(keyword, etalaseId, sortBy, isPromoted, rows, start, shopId)
+                        topAdsGetListProductUseCase.setParams(keyword, etalaseId, sortBy, isPromoted, rows, start, shopId, source)
                         val response = topAdsGetListProductUseCase.executeOnBackground()
                         onSuccess(response.topadsGetListProduct.data, response.topadsGetListProduct.eof)
                     }

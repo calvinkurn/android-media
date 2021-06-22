@@ -40,9 +40,9 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
     }
 
     private var adId = "0"
-    private var minBid = 0.0f
-    private var maxBid = 0.0f
-    private var suggestBidPerClick = 0.0f
+    private var minBid = "0"
+    private var maxBid = "0"
+    private var suggestBidPerClick = "0"
     private var validation1 = true
     private var validation2 = true
     private var currentBudget = 0
@@ -86,7 +86,7 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
                 val result = number.toInt()
                 daily_budget.textFieldInput.setText((Constants.MULTIPLIER * result).toString())
                 when {
-                    minBid == 0.0f || maxBid == 0.0f -> {
+                    minBid == "0" || maxBid == "0" -> {
                         return
                     }
                     result % (Constants.MULTIPLY_CONST.toInt()) != 0 -> {
@@ -94,16 +94,16 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
                         setMessageErrorField(getString(R.string.topads_common_50_multiply_error), Constants.MULTIPLY_CONST, true)
                     }
                     result < minBid.toFloat() -> {
-                        setMessageErrorField(getString(R.string.min_bid_error), minBid.toString(), true)
+                        setMessageErrorField(getString(R.string.min_bid_error), minBid, true)
                         validation2 = false
                     }
                     result > maxBid.toFloat() -> {
                         validation2 = false
-                        setMessageErrorField(getString(R.string.max_bid_error), maxBid.toString(), true)
+                        setMessageErrorField(getString(R.string.max_bid_error), maxBid, true)
                     }
                     else -> {
                         validation2 = true
-                        setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick.toString(), false)
+                        setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick, false)
                     }
                 }
                 actionEnable()
@@ -149,7 +149,7 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
                 daily_budget.textFieldInput.setText((Constants.MULTIPLIER * (it.priceBid)).toString())
             }
             val suggestionsDefault = ArrayList<DataSuggestions>()
-            val dummyId: MutableList<Long> = mutableListOf(it?.itemID?.toLong() ?: 0)
+            val dummyId: MutableList<String> = mutableListOf(it?.itemID ?: "")
             suggestionsDefault.add(DataSuggestions(Constants.PRODUCT, dummyId))
             viewModel.getBidInfoDefault(suggestionsDefault, this::onBidSuccessSuggestion)
         }
@@ -163,7 +163,7 @@ class EditFormWithoutGroupFragment : BaseDaggerFragment() {
         suggestBidPerClick = data[0].suggestionBid
         minBid = data[0].minBid
         maxBid = data[0].maxBid
-        setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick.toString(), false)
+        setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick, false)
     }
 
     private fun setMessageErrorField(error: String, bid: String, isError: Boolean) {

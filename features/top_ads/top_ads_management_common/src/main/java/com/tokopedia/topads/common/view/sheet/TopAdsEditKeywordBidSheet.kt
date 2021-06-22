@@ -23,15 +23,15 @@ private const val EVENT_CLICK_BUDGET_CREATE = "biaya yang diinput"
 class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
 
     private var contentView: View? = null
-    private var minBid = 0.0f
-    private var maxBid = 0.0f
-    private var suggestedBid = 0.0f
+    private var minBid = "0"
+    private var maxBid = "0"
+    private var suggestedBid = "0"
     private var position = 0
     private var name = ""
     private var fromEdit = 99
     private var userID: String = ""
     private var groupId: String = ""
-    var onSaved: ((bid: Float, pos: Int) -> Unit)? = null
+    var onSaved: ((bid: String, pos: Int) -> Unit)? = null
     private var shopID = ""
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,10 +46,10 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
                 val result = number.toInt()
                 when {
                     result < minBid.toDouble() -> {
-                        setMessageErrorField(getString(R.string.min_bid_error_new), minBid.toString(), true)
+                        setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true)
                     }
                     result > maxBid.toDouble() -> {
-                        setMessageErrorField(getString(R.string.max_bid_error_new), maxBid.toString(), true)
+                        setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true)
                     }
 
                     result % 50 != 0 -> {
@@ -82,10 +82,10 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     }
 
     private fun getDatafromArguments() {
-        minBid = arguments?.getFloat(MIN_BID) ?: 0.0f
-        maxBid = arguments?.getFloat(MAX_BID) ?: 0.0f
+        minBid = arguments?.getString(MIN_BID) ?: "0"
+        maxBid = arguments?.getString(MAX_BID) ?: "0"
         position = arguments?.getInt(ITEM_POSITION) ?: 0
-        suggestedBid = arguments?.getFloat(SUGGESTION_BID) ?: 0.0f
+        suggestedBid = arguments?.getString(SUGGESTION_BID) ?: "0"
         name = arguments?.getString(KEYWORD_NAME) ?: ""
         fromEdit = arguments?.getInt(FROM_EDIT) ?: 99
         groupId = arguments?.getString(GROUP_ID) ?: "0"
@@ -103,13 +103,13 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
             dismiss()
         }
         btnSave.setOnClickListener {
-            onSaved?.invoke(budget.textFieldInput.text.toString().removeCommaRawString().toFloat(), position)
+            onSaved?.invoke(budget.textFieldInput.text.toString().removeCommaRawString(), position)
             dismiss()
         }
-        if(suggestedBid < minBid) {
-            budget.textFieldInput.setText(minBid.toString())
+        if(suggestedBid.toIntOrZero() < minBid.toIntOrZero()) {
+            budget.textFieldInput.setText(minBid)
         } else {
-            budget.textFieldInput.setText(suggestedBid.toString())
+            budget.textFieldInput.setText(suggestedBid)
         }
         setTitle(name)
     }

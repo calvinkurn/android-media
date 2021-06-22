@@ -22,7 +22,7 @@ const val VIEW_RECOMMENDED_PRODUK = "view - rekomendasi produk"
 const val VIEW_DAILY_RECOMMENDATION_PRODUKS = "view - rekomendasi anggaran - grup iklan"
 class TopadsProductRecomAdapter(private val userSession: UserSessionInterface, var itemSelected: () -> Unit, var enableButton: (enable: Boolean) -> Unit) : RecyclerView.Adapter<TopadsProductRecomAdapter.ViewHolder>() {
     var items: MutableList<ProductRecommendation> = mutableListOf()
-    private var maxBid = 0.0f
+    private var maxBid = "0"
     private var insightRecommendationModel = mutableListOf<InsightProductRecommendationModel>()
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
@@ -53,7 +53,7 @@ class TopadsProductRecomAdapter(private val userSession: UserSessionInterface, v
         notifyDataSetChanged()
     }
 
-    fun setMaxValue(bid: Float) {
+    fun setMaxValue(bid: String) {
         maxBid = bid
         notifyDataSetChanged()
     }

@@ -55,8 +55,8 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
     lateinit var cancelBtn: UnifyButton
     lateinit var tipBtn: FloatingButtonUnify
     private var lowClickDivider = 1
-    private var minDailyBudget = 1.0f
-    private var maxDailyBudget = 1.0f
+    private var minDailyBudget = 1
+    private var maxDailyBudget = 1
     private var isEditFlow = false
     var topAdsDeposit: Int = 0
 
@@ -151,7 +151,7 @@ abstract class AutoAdsBaseBudgetFragment : BaseDaggerFragment() {
             var budget = data.minDailyBudget
             val status = requireArguments().getInt(KEY_AUTOADS_STATUS, 0)
             if (status == AutoAdsStatus.STATUS_ACTIVE || status == AutoAdsStatus.STATUS_NOT_DELIVERED) {
-                budget = requireArguments().getFloat(KEY_DAILY_BUDGET, 0.0f)
+                budget = requireArguments().getInt(KEY_DAILY_BUDGET, 0)
             }
             rangeStart.text = data.minDailyBudgetFmt
             rangeEnd.text = data.maxDailyBudgetFmt

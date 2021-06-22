@@ -25,7 +25,7 @@ class EditKeywordEmptyViewHolder(val view: View, var actionAdd: (() -> Unit)?) :
         var LAYOUT = R.layout.topads_dash_insight_empty_layout
     }
 
-    override fun bind(item: EditKeywordEmptyViewModel, added: MutableList<Boolean>, minBid: Float) {
+    override fun bind(item: EditKeywordEmptyViewModel, added: MutableList<Boolean>, minBid: String) {
         imageView.setImageDrawable(view.context.getResDrawable(R.drawable.ic_empty_keyword))
         titleText.text = view.context.getString(R.string.topads_empty_insight_title)
         descText.text = view.context.getString(R.string.topads_empty_insight_desc)

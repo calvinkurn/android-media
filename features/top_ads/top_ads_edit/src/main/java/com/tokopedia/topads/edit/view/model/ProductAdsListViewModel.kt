@@ -33,10 +33,10 @@ class ProductAdsListViewModel @Inject constructor(
     }
 
     fun productList(keyword: String, etalaseId: String, sortBy: String, isPromoted: String, rows: Int,
-                    start: Int, onSuccess: ((List<TopAdsProductModel>, eof: Boolean) -> Unit),
+                    start: Int, source: String, onSuccess: ((List<TopAdsProductModel>, eof: Boolean) -> Unit),
                     onEmpty: (() -> Unit), onError: ((Throwable) -> Unit)) {
         launch {
-            getProductUseCase.setParams(keyword, etalaseId, sortBy, isPromoted, rows, start, userSession.shopId)
+            getProductUseCase.setParams(keyword, etalaseId, sortBy, isPromoted, rows, start, userSession.shopId, source)
             getProductUseCase.execute(
                     {
                         if (it.topadsGetListProduct.data.isEmpty()) {

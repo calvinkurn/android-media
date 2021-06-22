@@ -4,5 +4,5 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class BidInfoViewHolder<in T>(view: View): RecyclerView.ViewHolder(view){
-    open fun bind(item: T, minBid: Float) {}
+    open fun bind(item: T, minBid: String) {}
 }

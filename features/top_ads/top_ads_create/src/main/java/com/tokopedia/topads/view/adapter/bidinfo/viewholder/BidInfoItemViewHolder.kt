@@ -29,7 +29,7 @@ class BidInfoItemViewHolder(val view: View, private var actionDelete: (pos: Int)
         var LAYOUT = R.layout.topads_create_layout_budget_list_item
     }
 
-    override fun bind(item: BidInfoItemViewModel, minBid: Float) {
+    override fun bind(item: BidInfoItemViewModel, minBid: String) {
         item.let {
 
             btnDelete.setOnClickListener {

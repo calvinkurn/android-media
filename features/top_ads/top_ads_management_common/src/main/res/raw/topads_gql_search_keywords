@@ -1,5 +1,5 @@
-query topAdsKeywordSearchTerm($product_ids: String!, $search_term: String!, $shop_id: Int!, $group_id: Int) {
-  topAdsKeywordSearchTerm(product_ids: $product_ids, search_term: $search_term, shop_id: $shop_id, group_id: $group_id) {
+query topAdsKeywordSearchTermV2($product_ids: String!, $search_term: String!, $shop_id: String!, $group_id: Int) {
+  topAdsKeywordSearchTermV2(product_ids: $product_ids, search_term: $search_term, shop_id: $shop_id, group_id: $group_id) {
     data {
       product_id
       keyword

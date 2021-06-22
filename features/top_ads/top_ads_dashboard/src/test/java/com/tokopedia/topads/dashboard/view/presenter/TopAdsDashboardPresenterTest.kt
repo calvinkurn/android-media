@@ -349,8 +349,8 @@ class TopAdsDashboardPresenterTest {
 
     @Test
     fun `get bid info success`() {
-        val expected = 1000.0f
-        var actual = 0.0f
+        val expected = "1000"
+        var actual = "0"
         val data = listOf(TopadsBidInfo.DataItem(maxBid = expected))
         val onSuccess: (data: List<TopadsBidInfo.DataItem>) -> Unit = {
             actual = it[0].maxBid

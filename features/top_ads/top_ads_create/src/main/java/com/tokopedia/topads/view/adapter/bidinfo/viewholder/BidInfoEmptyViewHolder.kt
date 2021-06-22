@@ -21,7 +21,7 @@ class BidInfoEmptyViewHolder(val view: View) : BidInfoViewHolder<BidInfoEmptyVie
 
 
 
-    override fun bind(item: BidInfoEmptyViewModel, minBid: Float) {
+    override fun bind(item: BidInfoEmptyViewModel, minBid: String) {
         imageView.setImageDrawable(view.context.getResDrawable(R.drawable.ic_empty_keyword))
         titleText.text = view.context.getString(R.string.topads_empty_insight_title)
         descText.text = view.context.getString(R.string.topads_empty_insight_desc)

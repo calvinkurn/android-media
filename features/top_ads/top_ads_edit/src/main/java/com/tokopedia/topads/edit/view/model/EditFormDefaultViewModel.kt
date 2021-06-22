@@ -73,9 +73,9 @@ class EditFormDefaultViewModel @Inject constructor(
                 })
     }
 
-    fun getAds(page: Int, groupId: String?, onSuccess: (List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, total: Int, perPage: Int) -> Unit) {
+    fun getAds(page: Int, groupId: String?, source: String, onSuccess: (List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, total: Int, perPage: Int) -> Unit) {
 
-        getAdsUseCase.setParams(page, groupId)
+        getAdsUseCase.setParams(page, groupId, source)
         getAdsUseCase.executeQuerySafeMode(
                 {
                     onSuccess(it.topadsGetListProductsOfGroup.data, it.topadsGetListProductsOfGroup.page.total, it.topadsGetListProductsOfGroup.page.perPage)

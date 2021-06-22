@@ -1,5 +1,5 @@
-query topadsGetListProductsOfGroupV2($shopID: String!, $page: Int!, $perPage: Int!, $type: String!, $groupID: String!) {
-  topadsGetListProductsOfGroupV2(shopID: $shopID, page: $page, perPage: $perPage, type: $type, groupID: $groupID) {
+query topadsGetListProductsOfGroupV2($shopID: String!, $page: Int!, $perPage: Int!, $type: String!, $groupID: String!, $source: String!) {
+  topadsGetListProductsOfGroupV2(shopID: $shopID, page: $page, perPage: $perPage, type: $type, groupID: $groupID, source: $source) {
        page {
          perPage
          total

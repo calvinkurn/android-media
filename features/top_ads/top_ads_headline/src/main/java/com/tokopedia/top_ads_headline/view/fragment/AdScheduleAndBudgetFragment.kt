@@ -240,15 +240,15 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
         return object : NumberTextWatcher(advertisingCost.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
-                val input = number.toFloat()
+                val input = number.toInt()
                 when {
-                    input < stepperModel?.minBid!! -> {
+                    input < stepperModel?.minBid.toDoubleOrZero() -> {
                         advertisingCost.setError(true)
                         advertisingCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), convertToCurrency(stepperModel?.minBid?.toLong()
                                 ?: 0)))
                         btnNext.isEnabled = false
                     }
-                    input > stepperModel?.maxBid!! -> {
+                    input > stepperModel?.maxBid.toDoubleOrZero() -> {
                         advertisingCost.setError(true)
                         advertisingCost.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error), convertToCurrency(stepperModel?.maxBid?.toLong()
                                 ?: 0)))
@@ -272,13 +272,13 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<HeadlineAdSteppe
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, convertToCurrency(number.toLong()))
-                val minBid: Float = if (advertisingCost.isTextFieldError) {
-                    stepperModel?.minBid ?: 0.0f
+                val minBid: String = if (advertisingCost.isTextFieldError) {
+                    stepperModel?.minBid ?: "0"
                 } else {
-                    advertisingCost.textFieldInput.text.toString().removeCommaRawString().toFloat()
+                    advertisingCost.textFieldInput.text.toString().removeCommaRawString()
                 }
                 val maxDailyBudget = MAX_DAILY_BUDGET.removeCommaRawString().toFloatOrZero()
-                if (number < (minBid * MULTIPLIER) && budgetCost.isVisible) {
+                if (number < (minBid.toDoubleOrZero() * MULTIPLIER) && budgetCost.isVisible) {
                     budgetCost.setError(true)
                     budgetCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), convertToCurrency(stepperModel?.dailyBudget?.toLong()
                             ?: 0)))

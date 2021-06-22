@@ -51,6 +51,7 @@ private const val ALL_PRODUCTS_TAB_POSITION = 1
 private const val VIEW_PILIH_PRODUK = "view - pilih produk"
 private const val CLICK_TIPS_PILIH_PRODUK = "click - tips on pilih produk page"
 private const val CLICK_SIMPAN_PILIH_PRODUK = "click - simpan on pilih produk page"
+private const val PRODUCT_NAME_HEADLINE = "android.topads_headline"
 
 class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.ProductListAdapterListener {
 
@@ -353,7 +354,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     private fun fetchTopAdsProducts() {
         viewModel.getTopAdsProductList(userSession.shopId, getKeyword(), "", getSelectedSortId(), "", ROW, start,
-                selectedTabModel?.id, this::onSuccessGetProductList, this::onError)
+                selectedTabModel?.id, PRODUCT_NAME_HEADLINE, this::onSuccessGetProductList, this::onError)
     }
 
     private fun onChipFilterClick(topAdsCategoryDataModel: TopAdsHeadlineTabModel) {

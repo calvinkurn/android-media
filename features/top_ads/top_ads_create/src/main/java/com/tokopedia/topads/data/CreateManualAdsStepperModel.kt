@@ -12,11 +12,11 @@ open class CreateManualAdsStepperModel(
         var groupName: String = "",
         var selectedProductIds: MutableList<String> = mutableListOf(),
         var selectedKeywordStage: MutableList<KeywordDataItem> = mutableListOf(),
-        var minSuggestBidKeyword: Float = 0.0f, // for keywords
-        var suggestedBidPerClick: Float = 0.0f, // for Default
+        var minSuggestBidKeyword: String = "0", // for keywords
+        var suggestedBidPerClick: String = "0", // for Default
         var finalBidPerClick: Int = -1, // Edited Bid by User
-        var maxBid: Float = 0.0f,
-        var minBid: Float = 0.0f,
+        var maxBid: String = "0",
+        var minBid: String = "0",
         var dailyBudget: Int = 0,
         var adIds: MutableList<String> = mutableListOf(),
         var adIdsPromo: MutableList<String> = mutableListOf(),

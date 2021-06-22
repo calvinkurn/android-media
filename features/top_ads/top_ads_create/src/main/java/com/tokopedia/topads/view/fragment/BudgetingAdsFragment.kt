@@ -85,11 +85,11 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: BudgetingAdsViewModel
     private lateinit var bidInfoAdapter: BidInfoAdapter
-    private var maxBid = 0.0f
-    private var minBid = 0.0f
-    private var minSuggestKeyword = 0.0f
-    private var maxSuggestKeyword = 0.0f
-    private var suggestBidPerClick = 0.0f
+    private var maxBid = "0"
+    private var minBid = "0"
+    private var minSuggestKeyword = "0"
+    private var maxSuggestKeyword = "0"
+    private var suggestBidPerClick = "0"
     private var isEnable = false
     private var userID: String = ""
     private var shopID = ""
@@ -178,7 +178,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         val sheet = TopAdsEditKeywordBidSheet.createInstance(prepareBundle(pos))
         sheet.show(childFragmentManager, "")
         sheet.onSaved = { bid, position ->
-            (bidInfoAdapter.items[position] as BidInfoItemViewModel).data.bidSuggest = bid.toString()
+            (bidInfoAdapter.items[position] as BidInfoItemViewModel).data.bidSuggest = bid
             bidInfoAdapter.notifyItemChanged(position)
         }
     }
@@ -201,8 +201,8 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     private fun prepareBundle(pos: Int): Bundle {
         val bundle = Bundle()
         bundle.putString("type", "create")
-        bundle.putFloat(MAX_BID, maxBid)
-        bundle.putFloat(MIN_BID, minBid)
+        bundle.putString(MAX_BID, maxBid)
+        bundle.putString(MIN_BID, minBid)
         bundle.putString(SUGGESTION_BID, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.bidSuggest)
         bundle.putString(KEYWORD_NAME, (bidInfoAdapter.items[pos] as BidInfoItemViewModel).data.keyword)
         bundle.putInt(ITEM_POSITION, pos)
@@ -256,9 +256,9 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val dummyId: MutableList<Long> = mutableListOf()
+        val dummyId: MutableList<String> = mutableListOf()
         val productIds = stepperModel?.selectedProductIds?.map {
-            it.toLong()
+            it
         }
         val suggestions = ArrayList<DataSuggestions>()
         suggestions.add(DataSuggestions("group", dummyId))
@@ -328,10 +328,10 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
         if (stepperModel?.finalBidPerClick != -1 && stepperModel?.finalBidPerClick != 0)
             budget.textFieldInput.setText(stepperModel?.finalBidPerClick.toString())
         else
-            budget.textFieldInput.setText(suggestBidPerClick.toString())
+            budget.textFieldInput.setText(suggestBidPerClick)
 
         if (budget.textFieldInput.text.toString().removeCommaRawString().toDouble() > minBid.toDouble() && budget.textFieldInput.text.toString().removeCommaRawString().toDouble() < maxBid.toDouble()) {
-            setMessageErrorField(getString(R.string.recommendated_bid_message_new), suggestBidPerClick.toString(), false)
+            setMessageErrorField(getString(R.string.recommendated_bid_message_new), suggestBidPerClick, false)
             isEnable = true
             actionEnable()
         }
@@ -416,12 +416,12 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                 stepperModel?.finalBidPerClick = result
                 when {
                     result < minBid.toDouble() -> {
-                        setMessageErrorField(getString(R.string.min_bid_error_new), minBid.toString(), true)
+                        setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true)
                         isEnable = false
                     }
                     result > maxBid.toDouble() -> {
                         isEnable = false
-                        setMessageErrorField(getString(R.string.max_bid_error_new), maxBid.toString(), true)
+                        setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true)
                     }
 
                     result % (FACTOR.toInt()) != 0 -> {
@@ -430,7 +430,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
                     }
                     else -> {
                         isEnable = true
-                        setMessageErrorField(getString(R.string.recommendated_bid_message_new), suggestBidPerClick.toString(), false)
+                        setMessageErrorField(getString(R.string.recommendated_bid_message_new), suggestBidPerClick, false)
                     }
                 }
                 actionEnable()
@@ -463,7 +463,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
             bidInfoAdapter.items.clear()
             stepperModel?.selectedKeywordStage?.forEach {
                 if(it.bidSuggest == "0")
-                    it.bidSuggest = minSuggestKeyword.toString()
+                    it.bidSuggest = minSuggestKeyword
                 bidInfoAdapter.items.add(BidInfoItemViewModel(it))
             }
             bidInfoAdapter.notifyDataSetChanged()

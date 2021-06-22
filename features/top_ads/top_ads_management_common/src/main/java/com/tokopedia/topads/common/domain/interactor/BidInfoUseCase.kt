@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 private const val BID_INFO: String = """
 query BidInfo(
-  ${'$'}dataSuggestions: [BidInfoDataSuggestions]!,
+  ${'$'}dataSuggestions: [BidInfoDataSuggestionsV2]!,
   ${'$'}shopId: String!,
   ${'$'}requestType: String!,
   ${'$'}source: String!

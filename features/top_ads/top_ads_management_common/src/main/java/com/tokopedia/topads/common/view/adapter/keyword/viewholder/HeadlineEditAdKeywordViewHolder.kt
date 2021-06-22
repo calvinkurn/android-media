@@ -41,7 +41,7 @@ class HeadlineEditAdKeywordViewHolder(itemView: View, var onItemClick: OnHeadlin
         deleteKeyword.setOnClickListener {
             onItemClick?.onDeleteItemClick(keywordModel)
         }
-        if (keywordModel.minimumBid != 0.0f && keywordModel.maximumBid != 0.0f) {
+        if (keywordModel.minimumBid != "0" && keywordModel.maximumBid != "0") {
             setBidInfo(keywordModel)
         }
     }
