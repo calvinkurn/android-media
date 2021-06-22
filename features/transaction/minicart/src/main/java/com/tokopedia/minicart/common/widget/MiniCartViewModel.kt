@@ -101,6 +101,10 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         return miniCartListUiModelMapper.reverseMapUiModel(miniCartListBottomSheetUiModel.value, tmpHiddenUnavailableItems)
     }
 
+    fun resetTemporaryHiddenUnavailableItems() {
+        tmpHiddenUnavailableItems.clear()
+    }
+
 
     // API Call & Callback
 
