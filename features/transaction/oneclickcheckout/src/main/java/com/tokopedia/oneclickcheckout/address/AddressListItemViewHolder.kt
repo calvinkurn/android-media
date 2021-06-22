@@ -1,7 +1,7 @@
 package com.tokopedia.oneclickcheckout.address
 
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -42,12 +42,10 @@ class AddressListItemViewHolder(private val binding: CardAddressListBinding, pri
 
     private fun setVisibility(recipientAddressModel: RecipientAddressModel) {
         if (recipientAddressModel.latitude.isNullOrEmpty() || recipientAddressModel.longitude.isNullOrEmpty()) {
-            val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_no_pin_map_address)
-            binding.imgLocationState.setImageDrawable(icon)
+            binding.imgLocationState.setImage(IconUnify.LOCATION_OFF)
             binding.tvPinpointState.text = itemView.context.getString(R.string.no_pinpoint)
         } else {
-            val icon = ContextCompat.getDrawable(itemView.context, R.drawable.ic_pin_map_address)
-            binding.imgLocationState.setImageDrawable(icon)
+            binding.imgLocationState.setImage(IconUnify.LOCATION)
             binding.tvPinpointState.text = itemView.context.getString(R.string.pinpoint)
         }
     }

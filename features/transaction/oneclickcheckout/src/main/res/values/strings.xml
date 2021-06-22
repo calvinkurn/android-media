@@ -18,7 +18,6 @@
     <string name="default_osp_error_message">Terjadi kesalahan pada server. Ulangi beberapa saat lagi</string>
 
     <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
-    <string name="lbl_default_preference">Utama</string>
     <string name="occ_lbl_main_address">Utama</string>
 
     <!--Choose Address-->
