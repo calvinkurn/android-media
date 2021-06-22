@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.login.behaviour.di
 
+import com.tokopedia.loginregister.login.behaviour.base.RegisterEmailBase
 import com.tokopedia.loginregister.login.behaviour.base.RegisterInitialBase
 import com.tokopedia.loginregister.login.behaviour.di.modules.MockLoginRegisterComponent
 import com.tokopedia.loginregister.login.behaviour.di.modules.registerinitial.MockRegisterInitialModule
@@ -19,4 +20,5 @@ import dagger.Component
 ], dependencies = [MockLoginRegisterComponent::class])
 interface RegisterInitialComponentStub: RegisterInitialComponent {
     fun inject(registerInitialBase: RegisterInitialBase)
+    fun inject(registerEmailBase: RegisterEmailBase)
 }
