@@ -106,7 +106,7 @@ class PenaltyDateFilterBottomSheet : BaseBottomSheetShopScore() {
     }
 
     private fun setupCalendarView() {
-        val initMinDate = getPastDaysPenaltyTimeStamp()
+        val initMinDate = getNPastMonthTimeStamp(3)
         val initMaxDate = Date(getNowTimeStamp())
         calendarView?.let { cpv ->
             cpv.init(initMinDate, initMaxDate, emptyList()).inMode(mode)
