@@ -730,7 +730,7 @@ class FlightAnalytics @Inject constructor(private val flightDateUtil: FlightDate
             putString(FlightAnalyticsKeys.ID, airlinePrice.airlineID)
             putString(FlightAnalyticsKeys.NAME, airlinePrice.shortName)
             putString(FlightAnalyticsKeys.CREATIVE_SLOT, position.toString())
-            putString(FlightAnalyticsKeys.CREATIVE, airlinePrice.shortName)
+            putString(FlightAnalyticsKeys.CREATIVE_NAME, airlinePrice.shortName)
             putString(FlightAnalyticsKeys.CREATIVE_URL, airlinePrice.logo)
         }
 
@@ -1196,7 +1196,6 @@ object FlightAnalyticsKeys {
     const val USER_ID = "userId"
 
     const val CREATIVE_SLOT = "creative_slot"
-    const val CREATIVE = "creative"
     const val CREATIVE_NAME = "creative_name"
     const val CREATIVE_URL = "creative_url"
 
