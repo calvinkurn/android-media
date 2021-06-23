@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
@@ -236,6 +235,16 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
                 is Fail -> {
                     hideTickerView()
+                }
+            }
+        })
+
+        /** testing purpose only*/
+        detailViewModel.getNearbyLandMarks(requireContext())
+        detailViewModel.hotelNearbyLandmarks.observe(viewLifecycleOwner,{
+            when(it){
+                is Success->{
+                    hotel_nearby_landmark_info.text = it.data.information
                 }
             }
         })

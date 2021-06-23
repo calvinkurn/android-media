@@ -3,6 +3,9 @@ package com.tokopedia.hotel.hoteldetail.data.entity
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+/**
+ * @author by astidhiyaa on 23/06/21
+ */
 data class HotelNearbyPlaces(
         @SerializedName("header")
         @Expose
@@ -12,7 +15,7 @@ data class HotelNearbyPlaces(
         val icon: String = "",
         @SerializedName("places")
         @Expose
-        val places: List<HotelNearbyLandmark.HotelSingleNearbyPlace> = listOf(),
+        val places: List<HotelSingleNearbyPlace> = listOf(),
         @SerializedName("type")
         @Expose
         val type: String = ""

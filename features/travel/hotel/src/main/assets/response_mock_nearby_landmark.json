@@ -1,0 +1,37 @@
+{
+  "result": [
+    {
+      "type": "",
+      "header": "TERDEKAT DARI SINI",
+      "icon": "",
+      "places": [
+        {
+          "name": "Stasiun MRT Sudirman",
+          "icon": "http://icon.url",
+          "location": {
+            "lat": 51.4934272979043,
+            "lon": -0.218352156248261
+          },
+          "distance": "1,25 km"
+        }
+      ]
+    },
+    {
+      "type": "",
+      "header": "Populer di AREA INI",
+      "icon": "",
+      "places": [
+        {
+          "name": "Museum MACAN",
+          "icon": "http://icon.url",
+          "location": {
+            "lat": -6.17539739608765,
+            "lon": 106.827278137207
+          },
+          "distance": "100 m"
+        }
+      ]
+    }
+  ],
+  "information": "Jarak ini dihitung berdasarkan garis lurus. Jarak sebenarnya bisa bervariasi tergantung rute yang dipilih."
+}

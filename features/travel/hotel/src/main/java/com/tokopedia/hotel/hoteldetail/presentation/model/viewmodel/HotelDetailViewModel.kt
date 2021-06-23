@@ -1,7 +1,10 @@
 package com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
@@ -12,6 +15,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
+import com.tokopedia.hotel.hoteldetail.data.entity.HotelNearbyLandmark
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDataParam
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelReviewParam
@@ -24,6 +28,8 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.IOException
+import java.nio.charset.Charset
 import javax.inject.Inject
 
 /**
@@ -38,6 +44,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
     val hotelInfoResult = MutableLiveData<Result<PropertyDetailData>>()
     val hotelReviewResult = MutableLiveData<Result<HotelReview.ReviewData>>()
     val roomListResult = MutableLiveData<Result<MutableList<HotelRoom>>>()
+    val hotelNearbyLandmarks = MutableLiveData<Result<HotelNearbyLandmark>>()
 
     private val mutableTickerData = MutableLiveData<Result<TravelTickerModel>>()
     val tickerData: LiveData<Result<TravelTickerModel>>
@@ -130,6 +137,33 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
                 room = searchParam.roomCount)))
     }
 
+    /** testing purpose only*/
+    fun getNearbyLandMarks(context: Context){
+        val g = Gson()
+        val dataResponseType = object : TypeToken<HotelNearbyLandmark>() {
+        }.type
+        val dataResponse = g.fromJson<HotelNearbyLandmark>(loadJSONFromAsset(context), dataResponseType)
+        hotelNearbyLandmarks.postValue(Success(dataResponse))
+    }
+
+    /** testing purpose only*/
+    fun loadJSONFromAsset(context: Context): String? {
+        var json: String? = null
+        try {
+            val `is` = context.assets.open(JSON_NEARBY_LANDMARK)
+            val size = `is`.available()
+            val buffer = ByteArray(size)
+            `is`.read(buffer)
+            `is`.close()
+            json = String(buffer, Charset.forName("UTF-8"))
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+            return null
+        }
+
+        return json
+    }
+
     companion object {
         const val PARAM_HOTEL_INFO_PROPERTY = "data"
 
@@ -141,6 +175,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
 
         private val TYPE_HOTEL_INFO = PropertyDetailData.Response::class.java
         private val TYPE_HOTEL_REVIEW = HotelReview.Response::class.java
-    }
 
+        val JSON_NEARBY_LANDMARK = "response_mock_nearby_landmark.json"
+    }
 }

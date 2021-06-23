@@ -469,6 +469,15 @@
                                 tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Bandung, Jawa Barat, Indonesia, 40131" />
 
                         </RelativeLayout>
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/hotel_nearby_landmark_info"
+                            android:layout_marginTop="@dimen/layout_lvl2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:text="@string/hotel_important_info_title"
+                            android:textColor="@color/Unify_N700_68"
+                            app:typographyType="small" />
                     </LinearLayout>
 
                     <LinearLayout
