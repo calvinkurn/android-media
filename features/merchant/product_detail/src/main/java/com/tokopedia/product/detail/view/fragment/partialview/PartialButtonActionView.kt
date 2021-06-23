@@ -4,7 +4,6 @@ import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -58,6 +57,7 @@ class PartialButtonActionView private constructor(val view: View,
         fun build(_view: View, _buttonListener: PartialButtonActionListener) = PartialButtonActionView(_view, _buttonListener)
 
         private const val QUANTITY_REGEX = "[^0-9]"
+        private const val TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 1000L
     }
 
     fun setButtonP1(preOrder: PreOrder?) {
@@ -193,7 +193,7 @@ class PartialButtonActionView private constructor(val view: View,
                     }
                     qtyButtonPdp?.editText?.addTextChangedListener(textWatcher)
                 })
-                .debounce(AtcConstant.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME.toLong(), TimeUnit.MILLISECONDS)
+                .debounce(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<Int>() {

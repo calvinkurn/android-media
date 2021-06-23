@@ -8,7 +8,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.data.uidata.VariantQuantityDataModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.QuantityEditorUnify
@@ -36,6 +35,7 @@ class AtcVariantQuantityViewHolder constructor(
         val LAYOUT = R.layout.atc_variant_quantity_viewholder
 
         private const val QUANTITY_REGEX = "[^0-9]"
+        private const val TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 1000L
     }
 
     private val quantityEditor = view.findViewById<QuantityEditorUnify>(R.id.qty_variant_stock)
@@ -89,7 +89,7 @@ class AtcVariantQuantityViewHolder constructor(
                     }
                     quantityEditor.editText.addTextChangedListener(textWatcher)
                 })
-                .debounce(AtcConstant.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME.toLong(), TimeUnit.MILLISECONDS)
+                .debounce(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<Int>() {
