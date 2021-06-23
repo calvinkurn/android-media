@@ -755,7 +755,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                     userId = if (userSessionInterface.userId.isEmpty()) 0 else userSessionInterface.userId.toInt(),
                                     pageName = pageName,
                                     productIDs = productIdsString,
-                                    xSource = ProductDetailConstant.DEFAULT_X_SOURCE
+                                    xSource = ProductDetailConstant.DEFAULT_X_SOURCE,
+                                    isTokonow = getDynamicProductInfoP1?.basic?.isTokoNow ?: false
                             )
                             recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground().filterChip)
                         }
@@ -763,7 +764,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                         val recomData = getRecommendationUseCase.get().createObservable(getRecommendationUseCase.get().getRecomParams(
                                 pageNumber = ProductDetailConstant.DEFAULT_PAGE_NUMBER,
                                 pageName = pageName,
-                                productIds = productIds
+                                productIds = productIds,
+                                isTokonow = getDynamicProductInfoP1?.basic?.isTokoNow ?: false
                         )).toBlocking().first()
 
                         if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {

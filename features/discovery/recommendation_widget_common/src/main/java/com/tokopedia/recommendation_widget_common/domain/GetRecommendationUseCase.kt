@@ -42,14 +42,15 @@ constructor(
                        xSource: String,
                        pageName: String,
                        productIds: List<String>): RequestParams {
-        return getRecomParams(pageNumber, xSource, pageName, productIds, "")
+        return getRecomParams(pageNumber, xSource, pageName, productIds, "", false)
     }
 
     fun getRecomParams(pageNumber: Int,
                        xSource: String = DEFAULT_VALUE_X_SOURCE,
                        pageName: String,
                        productIds: List<String>,
-                       queryParam: String = ""): RequestParams {
+                       queryParam: String = "",
+                       isTokonow: Boolean = false): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
         val newQueryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(queryParam) ?: queryParam
@@ -64,6 +65,7 @@ constructor(
         } else {
             params.putString(X_SOURCE, xSource)
         }
+        if (isTokonow) params.putBoolean(PARAM_TOKONOW, isTokonow)
         params.putInt(PAGE_NUMBER, pageNumber)
         params.putString(PAGE_NAME, pageName)
         params.putString(PRODUCT_IDS, productIdsString)
@@ -95,5 +97,6 @@ constructor(
         const val OFFICIAL_STORE = "official-store"
         const val OS = "os"
         const val CATEGORY_IDS = "categoryIDs"
+        private const val PARAM_TOKONOW = "tokoNow"
     }
 }
