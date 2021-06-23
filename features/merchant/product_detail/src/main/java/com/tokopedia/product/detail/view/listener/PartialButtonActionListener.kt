@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.listener
 
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import rx.subscriptions.CompositeSubscription
 
 /**
  * Created by Yehezkiel on 28/09/20
@@ -14,5 +15,6 @@ interface PartialButtonActionListener {
 
     fun topChatButtonClicked()
     fun editProductButtonClicked()
+    fun getRxCompositeSubcription(): CompositeSubscription
     fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem)
 }
