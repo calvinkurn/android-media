@@ -900,7 +900,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify {
-            getProductInfoP3UseCase.executeOnBackground(any(), any(), any(), any())
+            getProductInfoP3UseCase.executeOnBackground(any(), any())
         }
 
         coVerify {
@@ -918,7 +918,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns ProductInfoP2Login()
 
         coEvery {
-            getProductInfoP3UseCase.executeOnBackground(any(), any(), any(), any())
+            getProductInfoP3UseCase.executeOnBackground(any(), any())
         } returns ProductInfoP3()
 
         coEvery {
@@ -1002,7 +1002,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify {
-            getProductInfoP3UseCase.executeOnBackground(any(), any(), any(), any())
+            getProductInfoP3UseCase.executeOnBackground(any(), any())
         }
 
         coVerify(inverse = true) {
