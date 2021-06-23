@@ -31,6 +31,7 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
     public static final String SOURCE_TALK = "talk";
     public static final Integer MAX_CHECKED_DEFAULT = 3;
 
+    private String warehouseId = "0";
     private String shopId;
     private String shopName;
     private boolean isSeller;
@@ -45,6 +46,11 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
         if (getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) != null) {
             shopId = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY);
         }
+        setupWarehouseId();
+    }
+
+    private void setupWarehouseId() {
+        warehouseId = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID);
     }
 
     @Override
@@ -78,7 +84,9 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
                 maxChecked = getIntent().getIntExtra(TOKOPEDIA_ATTACH_PRODUCT_MAX_CHECKED, MAX_CHECKED_DEFAULT);
                 hiddenProducts = getIntent().getStringArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_HIDDEN);
             }
-            fragment = AttachProductFragment.newInstance(this, isSeller, source, maxChecked, hiddenProducts);
+            fragment = AttachProductFragment.newInstance(
+                    this, isSeller, source, maxChecked, hiddenProducts, warehouseId
+            );
             return fragment;
         }
     }
