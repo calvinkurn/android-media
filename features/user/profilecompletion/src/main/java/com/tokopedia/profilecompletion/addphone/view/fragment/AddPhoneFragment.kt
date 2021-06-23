@@ -64,7 +64,12 @@ open class AddPhoneFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         splitCompatInstall()
-        return inflater.inflate(R.layout.fragment_add_phone, container, false)
+        return try {
+            inflater.inflate(R.layout.fragment_add_phone, container, false)
+        } catch (e : Throwable) {
+            e.printStackTrace()
+            null
+        }
     }
 
     private fun splitCompatInstall() {

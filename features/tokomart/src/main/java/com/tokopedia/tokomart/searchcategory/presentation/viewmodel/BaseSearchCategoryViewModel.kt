@@ -161,6 +161,8 @@ abstract class BaseSearchCategoryViewModel(
     protected val quickFilterTrackingMutableLiveData = SingleLiveEvent<Pair<Option, Boolean>>()
     val quickFilterTrackingLiveData: LiveData<Pair<Option, Boolean>> = quickFilterTrackingMutableLiveData
 
+    protected val isShowErrorMutableLiveData = SingleLiveEvent<Throwable?>()
+    val isShowErrorLiveData: LiveData<Throwable?> = isShowErrorMutableLiveData
     init {
         showLoading()
         updateQueryParams()
@@ -570,6 +572,10 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun showPageContent() {
         isContentLoadingMutableLiveData.value = false
+    }
+
+    protected open fun onGetFirstPageError(throwable: Throwable) {
+        isShowErrorMutableLiveData.value = throwable
     }
 
     open fun onLoadMore() {

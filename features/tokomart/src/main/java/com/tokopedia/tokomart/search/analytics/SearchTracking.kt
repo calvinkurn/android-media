@@ -173,11 +173,9 @@ object SearchTracking {
                 USER_ID, userId,
                 ECOMMERCE, DataLayer.mapOf(
                     CLICK, DataLayer.mapOf(
-                        ACTION_FIELD, DataLayer.mapOf(
-                            LIST, TOKONOW_SEARCH_PRODUCT_ORGANIC,
-                            PRODUCTS, DataLayer.listOf(
-                                productItemDataView.getAsImpressionClickObjectDataLayer(filterSortValue)
-                            )
+                        ACTION_FIELD, DataLayer.mapOf(LIST, TOKONOW_SEARCH_PRODUCT_ORGANIC),
+                        PRODUCTS, DataLayer.listOf(
+                            productItemDataView.getAsImpressionClickObjectDataLayer(filterSortValue)
                         )
                     ),
                 )

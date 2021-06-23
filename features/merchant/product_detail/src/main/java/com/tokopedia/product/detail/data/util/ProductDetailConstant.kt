@@ -182,4 +182,6 @@ object ProductDetailConstant {
     const val ERROR_TYPE_KEY = "error_type"
     const val EXTRAS_KEY = "extras"
     const val PDP_LOG_TAG = "BUYER_FLOW_PDP"
+
+    const val DEFAULT_ATC_MAX_ORDER = 100
 }

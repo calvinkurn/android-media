@@ -19,6 +19,7 @@ import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.MiniCartListActionListener
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.common.data.response.minicartlist.Action
+import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_CHECKOUTBROWSER
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_DELETE
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_NOTES
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SIMILARPRODUCT
@@ -472,9 +473,14 @@ class MiniCartProductViewHolder(private val view: View,
                     ACTION_DELETE -> {
                         renderActionDelete(element)
                     }
-                    ACTION_SIMILARPRODUCT -> {
-                        if (element.selectedUnavailableActionId == ACTION_SIMILARPRODUCT) {
-                            renderActionSimilarProduct(it, element)
+                    ACTION_CHECKOUTBROWSER, ACTION_SIMILARPRODUCT -> {
+                        when {
+                            element.selectedUnavailableActionId == ACTION_CHECKOUTBROWSER && it.id == ACTION_CHECKOUTBROWSER -> {
+                                renderActionCheckoutInBrowser(it, element)
+                            }
+                            element.selectedUnavailableActionId == ACTION_SIMILARPRODUCT && it.id == ACTION_SIMILARPRODUCT -> {
+                                renderActionSimilarProduct(it, element)
+                            }
                         }
                     }
                 }
@@ -487,6 +493,19 @@ class MiniCartProductViewHolder(private val view: View,
         textProductUnavailableAction?.setOnClickListener {
             if (element.selectedUnavailableActionLink.isNotBlank()) {
                 listener.onShowSimilarProductClicked(element.selectedUnavailableActionLink, element)
+            }
+        }
+        textProductUnavailableAction?.context?.let {
+            textProductUnavailableAction?.setTextColor(ContextCompat.getColor(it, R.color.Unify_N700_68))
+        }
+        textProductUnavailableAction?.show()
+    }
+
+    private fun renderActionCheckoutInBrowser(action: Action, element: MiniCartProductUiModel) {
+        textProductUnavailableAction?.text = action.message
+        textProductUnavailableAction?.setOnClickListener {
+            if (element.selectedUnavailableActionLink.isNotBlank()) {
+                listener.onCheckoutInBrowserRedirectionClicked(element.selectedUnavailableActionLink, element, action)
             }
         }
         textProductUnavailableAction?.context?.let {

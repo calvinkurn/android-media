@@ -11,9 +11,11 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_ATC_MAX_ORDER
 import com.tokopedia.product.detail.view.listener.PartialButtonActionListener
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.utils.text.currency.StringUtils
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 
 
@@ -38,6 +40,7 @@ class PartialButtonActionView private constructor(val view: View,
     private var miniCartItem: MiniCartItem? = null
     private var isVariant: Boolean = false
     private var minQuantity: Int = 0
+    private var maxQuantity: Int = DEFAULT_ATC_MAX_ORDER
     private var textWatchers: TextWatcher? = null
     private var localQuantity: Int = 0
 
@@ -62,6 +65,7 @@ class PartialButtonActionView private constructor(val view: View,
                    hasTopAdsActive: Boolean,
                    isVariant: Boolean,
                    minQuantity: Int = 1,
+                   maxQuantity: Int = DEFAULT_ATC_MAX_ORDER,
                    cartTypeData: CartTypeData? = null,
                    miniCartItem: MiniCartItem? = null) {
 
@@ -74,6 +78,7 @@ class PartialButtonActionView private constructor(val view: View,
         this.miniCartItem = miniCartItem
         this.isVariant = isVariant
         this.minQuantity = minQuantity
+        this.maxQuantity = maxQuantity
         renderButton()
     }
 
@@ -146,6 +151,7 @@ class PartialButtonActionView private constructor(val view: View,
         btn_add_to_cart?.hide()
         qtyButtonPdp?.run {
             minValue = minQuantity
+            maxValue = maxQuantity
             setValue(localQuantity)
 
             if (textWatchers != null) {
@@ -157,16 +163,18 @@ class PartialButtonActionView private constructor(val view: View,
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (s.toString().toIntOrZero() < minQuantity) {
+                    val intValue = StringUtils.removePeriod(s.toString()).toIntOrZero()
+                    if (intValue < minQuantity) {
                         setValue(minQuantity)
-                    } else if (s.toString().toIntOrZero() > maxValue) {
-                        setValue(maxValue)
+                    } else if (intValue > maxQuantity) {
+                        setValue(maxQuantity)
                     }
                 }
 
                 override fun afterTextChanged(s: Editable?) {
-                    if (localQuantity != s.toString().toIntOrZero() && s.toString().isNotEmpty()) {
-                        localQuantity = s.toString().toIntOrZero()
+                    val intValue = StringUtils.removePeriod(s.toString()).toIntOrZero()
+                    if (localQuantity != intValue && intValue != 0) {
+                        localQuantity = intValue
                         buttonListener.updateQuantityNonVarTokoNow(getValue(), miniCartItem
                                 ?: MiniCartItem()
                         )

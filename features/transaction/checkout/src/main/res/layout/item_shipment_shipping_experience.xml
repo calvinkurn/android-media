@@ -165,9 +165,10 @@
                 <!--duration in eta, price in old view-->
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_selected_shipping_price_or_duration"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textColor="@color/Unify_N700_68"
+                    app:layout_constraintEnd_toStartOf="@+id/icon_chevron_choose_courier"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/layout_mvc"
                     app:typographyType="body_3"
@@ -198,6 +199,15 @@
                     app:typographyType="small"
                     app:typographyWeight="reguler"
                     tools:text="S&amp;K Berlaku" />
+
+                <View
+                    android:id="@+id/v_fill_courier"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/label_description_courier"
+                    app:layout_constraintEnd_toStartOf="@+id/icon_chevron_choose_courier"
+                    app:layout_constraintStart_toEndOf="@+id/label_description_courier_tnc"
+                    app:layout_constraintTop_toTopOf="@+id/label_description_courier" />
 
                 <ImageView
                     android:id="@+id/icon_chevron_choose_courier"

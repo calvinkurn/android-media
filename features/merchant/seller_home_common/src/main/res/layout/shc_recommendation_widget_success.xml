@@ -134,7 +134,7 @@
         android:maxLines="1"
         android:paddingStart="@dimen/layout_lvl1"
         android:text="@string/shc_more"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         android:textSize="@dimen/fontSize_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
