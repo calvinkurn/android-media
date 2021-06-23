@@ -638,10 +638,6 @@ object DeeplinkDFMapper : CoroutineScope {
      */
     @JvmStatic
     fun getDFDeeplinkIfNotInstalled(context: Context, deeplink: String): String? {
-        //KITKAT does not support dynamic feature
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-            return null
-        }
         if (deeplink.startsWith(DYNAMIC_FEATURE_INSTALL_BASE)) {
             return null
         }
