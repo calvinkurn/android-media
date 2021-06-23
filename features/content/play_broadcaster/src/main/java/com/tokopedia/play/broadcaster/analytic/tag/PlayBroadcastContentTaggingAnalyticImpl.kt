@@ -15,14 +15,6 @@ class PlayBroadcastContentTaggingAnalyticImpl @Inject constructor(
     private val shopId: String
         get() = userSession.shopId
 
-    override fun selectRecommendedTags(selectedTags: Set<String>) {
-        sendEvent(
-                eventName = KEY_TRACK_CLICK_EVENT,
-                eventAction = "click recommendation tag",
-                eventLabel = "$shopId${selectedTags.joinToString(prefix = " - ", separator = " - ")}"
-        )
-    }
-
     override fun selectRecommendedTag(channelId: String, tag: String, isChosen: Boolean) {
         if (isChosen) {
             sendEvent(
