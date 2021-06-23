@@ -58,9 +58,7 @@
     <string name="ip_title_update_post">Update Post</string>
     <string name="ip_message_update_choosen_video">Video sebelumnya akan diganti dengan video yang dipilih</string>
 
-    <string name="editor_common_new_feature">BETA</string>
+    <string name="editor_common_new_feature">Beta</string>
 
-    <string name="editor_watermark_tokopedia">Tokopedia</string>
-    <string name="editor_watermark_seller_name">Nama Toko</string>
-    <string name="editor_watermark_both">Digabung</string>
+    <string name="editor_watermark_item">Logo Tokopedia &amp; Nama Toko</string>
 </resources>

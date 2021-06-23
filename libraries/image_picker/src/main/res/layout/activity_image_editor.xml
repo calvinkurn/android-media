@@ -231,26 +231,32 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_gravity="bottom">
-
-                        <com.tokopedia.unifycomponents.UnifyButton
+                        <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/tv_edit_cancel"
-                            android:text="@string/image_picker_label_cancel"
+                            style="@style/TextView.Title"
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            app:unifyButtonVariant="text"
-                            android:layout_margin="@dimen/unify_space_16"
-                            app:unifyButtonSize="medium"/>
+                            android:gravity="center_horizontal"
+                            android:paddingRight="@dimen/dp_16"
+                            android:paddingLeft="@dimen/dp_16"
+                            android:paddingTop="@dimen/dp_20"
+                            android:paddingBottom="@dimen/dp_20"
+                            android:text="@string/image_picker_label_cancel"/>
 
-                        <com.tokopedia.unifycomponents.UnifyButton
+                        <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/tv_edit_save"
-                            android:text="@string/save"
+                            style="@style/TextView.Title.Green"
                             android:layout_width="0dp"
                             android:layout_weight="1"
-                            android:layout_margin="@dimen/unify_space_16"
                             android:layout_height="wrap_content"
-                            app:unifyButtonSize="medium"/>
-
+                            android:paddingRight="@dimen/dp_16"
+                            android:paddingLeft="@dimen/dp_16"
+                            android:paddingTop="@dimen/dp_20"
+                            android:paddingBottom="@dimen/dp_20"
+                            android:gravity="center_horizontal"
+                            android:text="@string/save"
+                            android:background="?attr/selectableItemBackground"/>
                     </LinearLayout>
                 </FrameLayout>
 
