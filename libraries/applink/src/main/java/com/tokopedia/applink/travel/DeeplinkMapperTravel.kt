@@ -13,6 +13,7 @@ object DeeplinkMapperTravel {
     private const val HOTEL_AB_TEST_KEY = "Hotel_SearchByMap_An"
     private const val HOTEL_AB_TEST_NEW_VARIANT = "new_map"
     private const val HOTEL_AB_TEST_OLD_VARIANT = "old_map"
+    private const val HOTEL_LAST_PATH_DETAIL = "detail"
 
     @JvmStatic
     fun getRegisteredNavigationTravel(context: Context, deeplink: String): String {
@@ -28,7 +29,7 @@ object DeeplinkMapperTravel {
             }
             deeplink.startsWith(ApplinkConst.HOTEL_DETAIL, true) -> {
                 val uri = Uri.parse(deeplink)
-                if(uri.lastPathSegment.equals("detail")){
+                if(uri.lastPathSegment.equals(HOTEL_LAST_PATH_DETAIL)){
                     ApplinkConstInternalTravel.HOTEL_DETAIL
                 }else{
                     ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + uri.lastPathSegment
