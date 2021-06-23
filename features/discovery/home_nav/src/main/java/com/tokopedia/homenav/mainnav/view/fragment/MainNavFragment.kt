@@ -10,7 +10,6 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ScrollView
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
@@ -21,15 +20,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation.SOURCE_ACCOUNT
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
-import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
@@ -240,7 +237,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         view?.let {
             if (homeNavMenuDataModel.sectionId == MainNavConst.Section.BU_ICON) {
                 if(homeNavMenuDataModel.applink.isNotEmpty()){
-                    RouteManager.route(context, homeNavMenuDataModel.applink)
+                    if (!handleClickFromPageSource(homeNavMenuDataModel)) {
+                        RouteManager.route(context, homeNavMenuDataModel.applink)
+                    }
                 } else {
                     NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
                             bundleOf("title" to homeNavMenuDataModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuDataModel))
@@ -251,6 +250,14 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 hitClickTrackingBasedOnId(homeNavMenuDataModel)
             }
         }
+    }
+
+    private fun handleClickFromPageSource(homeNavMenuDataModel: HomeNavMenuDataModel): Boolean {
+        if (homeNavMenuDataModel.id == ID_ALL_TRANSACTION && pageSource == ApplinkConsInternalNavigation.SOURCE_UOH) {
+            activity?.onBackPressed()
+            return true
+        }
+        return false
     }
 
     private fun hitClickTrackingBasedOnId(homeNavMenuDataModel: HomeNavMenuDataModel) {
