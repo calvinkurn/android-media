@@ -143,6 +143,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -450,6 +451,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         activityOrderHistory = arguments?.getString(PARAM_ACTIVITY_ORDER_HISTORY, "") as String
 
         uoh_navtoolbar?.let {
+            it.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
+                HintData(getString(R.string.hint_cari_transaksi) )
+            ))
             val icons = IconBuilder(
                 IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
             )
