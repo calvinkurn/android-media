@@ -62,6 +62,10 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         this.itemContext = view.context
     }
 
+    companion object {
+        const val NAME_CAMPAIGN_WIDGET = "Campaign-Widget"
+    }
+
     fun bind(carouselData: RecommendationCarouselData, adapterPosition: Int = 0, widgetListener: RecommendationCarouselWidgetListener?) {
         this.carouselData = carouselData
         this.widgetListener = widgetListener
@@ -122,8 +126,9 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private fun setData(carouselData: RecommendationCarouselData) {
         val cardList = mutableListOf<Visitable<*>>()
         var seeMoreCard: RecomCarouselSeeMoreDataModel? = null
+        val layoutName = carouselData.recommendationData.layoutType
         carouselData.recommendationData.recommendationBanner?.let {
-            if (it.imageUrl.isNotEmpty()) {
+            if (it.imageUrl.isNotEmpty() && layoutName == NAME_CAMPAIGN_WIDGET) {
                 cardList.add(RecomCarouselBannerDataModel(
                         applink = it.applink,
                         bannerBackgorundColor = it.backgroudColor,
