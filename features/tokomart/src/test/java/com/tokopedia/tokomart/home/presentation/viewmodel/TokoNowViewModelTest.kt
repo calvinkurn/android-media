@@ -32,7 +32,6 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
                         createHomeLayoutList(),
                         mapTickerData(createTicker().ticker.tickerList)
                 ),
-                isInitialLoad = true,
                 state = HomeLayoutState.SHOW
         )
         verifyGetHomeLayoutResponseSuccess(expectedResponse)
@@ -47,7 +46,7 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
 
         viewModel.getHomeLayout(hasTickerBeenRemoved = true)
 
-        viewModel.getLayoutData("1")
+        viewModel.getInitialLayoutData(1, "1", true)
 
         val expectedResponse = BannerDataModel(
                 channelModel= ChannelModel(
@@ -173,7 +172,7 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
         viewModel.getHomeLayout(true)
 
         //fetch widget one by one
-        viewModel.getLayoutData("1")
+        viewModel.getInitialLayoutData(1, "1", true)
 
         //set second mock data to replace first mock data category list
         onGetCategoryList_thenReturn(createCategoryGridListSecondFetch())
@@ -217,7 +216,7 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
         viewModel.getHomeLayout(true)
 
         //fetch widget one by one
-        viewModel.getLayoutData("1")
+        viewModel.getInitialLayoutData(1, "1", true)
 
         //set second mock data to replace first mock data category list
         onGetCategoryList_thenReturn(Exception())

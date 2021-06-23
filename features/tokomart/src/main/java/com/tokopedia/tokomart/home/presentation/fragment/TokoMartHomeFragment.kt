@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -125,6 +126,15 @@ class TokoMartHomeFragment: Fragment(),
         get() = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.tokomart_default_toolbar_status_height)
     private val spaceZero: Int
         get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
+
+    private val scrollListener by lazy {
+        object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                loadMoreLayoutData()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -268,6 +278,7 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     private fun onRefreshLayout() {
+        removeOnScrollListener()
         rvLayoutManager?.setScrollEnabled(true)
         loadLayout()
     }
@@ -402,8 +413,8 @@ class TokoMartHomeFragment: Fragment(),
                 loadHomeLayout(it.data)
             } else {
                 showEmptyState(EMPTY_STATE_FAILED_TO_FETCH_DATA)
+                resetSwipeLayout()
             }
-            resetSwipeLayout()
         }
 
         observe(viewModel.miniCart) {
@@ -456,39 +467,81 @@ class TokoMartHomeFragment: Fragment(),
 
     private fun loadHomeLayout(data: HomeLayoutListUiModel) {
         data.run {
-            needToShowHeaderBackground(state)
-            adapter.submitList(result)
-            when {
-                isLoadState -> {
-                    checkIfChooseAddressWidgetDataUpdated()
-                    checkStateNotInServiceArea(
-                            shopId = localCacheModel?.shop_id.toLongOrZero(),
-                            warehouseId = localCacheModel?.warehouse_id.toLongOrZero()
-                    )
-                    if (!isChooseAddressWidgetShowed()) {
-                        adapter.removeHomeChooseAddressWidget()
-                    }
-                }
-                isInitialLoad -> {
-                    // TO-DO: Lazy Load Data
-                    viewModel.getLayoutData(localCacheModel?.warehouse_id.orEmpty())
-                }
+            when (state) {
+                HomeLayoutState.SHOW -> onShowHomeLayout(data)
+                HomeLayoutState.HIDE -> onHideHomeLayout(data)
+                HomeLayoutState.LOADING -> onLoadingHomeLayout(data)
+                HomeLayoutState.LOAD_MORE -> showHomeLayout(data)
             }
         }
     }
 
-    private fun needToShowHeaderBackground(state: Int) {
-        when (state) {
-            HomeLayoutState.SHOW -> {
+    private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
+        showHomeLayout(data)
+        loadHeaderBackground()
+        checkAddressDataAndServiceArea()
+
+        if (!isChooseAddressWidgetShowed()) {
+            adapter.removeHomeChooseAddressWidget()
+        }
+
+        resetSwipeLayout()
+    }
+
+    private fun onHideHomeLayout(data: HomeLayoutListUiModel) {
+        showHomeLayout(data)
+        hideHeaderBackground()
+        resetSwipeLayout()
+    }
+
+    private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
+        data.run {
+            if (initialLoadFinished) {
+                addOnScrollListener()
+            } else {
+                showHomeLayout(data)
                 showHeaderBackground()
-            }
-            HomeLayoutState.HIDE -> {
-                hideHeaderBackground()
-            }
-            HomeLayoutState.LOADING -> {
-                loadHeaderBackground()
+                loadVisibleLayoutData(nextItemIndex)
+                resetSwipeLayout()
             }
         }
+    }
+
+    private fun checkAddressDataAndServiceArea() {
+        val shopId = localCacheModel?.shop_id.toLongOrZero()
+        val warehouseId = localCacheModel?.warehouse_id.toLongOrZero()
+        checkIfChooseAddressWidgetDataUpdated()
+        checkStateNotInServiceArea(shopId = shopId, warehouseId = warehouseId)
+    }
+
+    private fun showHomeLayout(data: HomeLayoutListUiModel) {
+        val items = data.result.map { it.layout }
+        adapter.submitList(items)
+    }
+
+    private fun addOnScrollListener() {
+        rvHome?.addOnScrollListener(scrollListener)
+    }
+
+    private fun removeOnScrollListener() {
+        rvHome?.removeOnScrollListener(scrollListener)
+    }
+
+    private fun loadVisibleLayoutData(index: Int) {
+        val warehouseId = localCacheModel?.warehouse_id.orEmpty()
+        val layoutManager = rvHome.layoutManager as? LinearLayoutManager
+        val firstVisibleItemIndex = layoutManager?.findFirstCompletelyVisibleItemPosition().orZero()
+        val lastVisibleItemIndex = layoutManager?.findLastCompletelyVisibleItemPosition().orZero()
+        val isVisible = index in firstVisibleItemIndex..lastVisibleItemIndex
+        viewModel.getInitialLayoutData(index, warehouseId, isVisible)
+    }
+
+    private fun loadMoreLayoutData() {
+        val warehouseId = localCacheModel?.warehouse_id.orEmpty()
+        val layoutManager = rvHome.layoutManager as? LinearLayoutManager
+        val firstVisibleItemIndex = layoutManager?.findFirstCompletelyVisibleItemPosition().orZero()
+        val lastVisibleItemIndex = layoutManager?.findLastCompletelyVisibleItemPosition().orZero()
+        viewModel.getMoreLayoutData(warehouseId, firstVisibleItemIndex, lastVisibleItemIndex)
     }
 
     private fun getHomeLayout() {

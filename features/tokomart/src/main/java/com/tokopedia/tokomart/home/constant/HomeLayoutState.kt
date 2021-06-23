@@ -6,12 +6,14 @@ import androidx.annotation.IntDef
 @IntDef(
         HomeLayoutState.SHOW,
         HomeLayoutState.LOADING,
-        HomeLayoutState.HIDE
+        HomeLayoutState.HIDE,
+        HomeLayoutState.LOAD_MORE
 )
 annotation class HomeLayoutState {
     companion object {
         const val SHOW = 1
         const val LOADING = 2
         const val HIDE = 3
+        const val LOAD_MORE = 4
     }
 }
