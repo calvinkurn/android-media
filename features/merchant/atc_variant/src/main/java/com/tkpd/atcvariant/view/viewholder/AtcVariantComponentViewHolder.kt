@@ -7,6 +7,7 @@ import com.tkpd.atcvariant.data.uidata.VariantComponentDataModel
 import com.tkpd.atcvariant.view.adapter.variantitem.AtcVariantContainerAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.common.data.views.VariantItemDecorator
 import com.tokopedia.product.detail.common.view.AtcVariantListener
@@ -50,8 +51,19 @@ class AtcVariantComponentViewHolder(private val view: View, listener: AtcVariant
 
     private fun renderTxt(element: VariantComponentDataModel) = with(view) {
         txtTokoCabang?.showWithCondition(element.isTokoCabang)
-        txtEmptyStock?.text = HtmlLinkHelper(context, getString(R.string.atc_variant_empty_stock_label)).spannedString
+        val textColor = getHexColor(com.tokopedia.unifyprinciples.R.color.Unify_R600)
+        txtEmptyStock?.text = HtmlLinkHelper(context, getString(R.string.atc_variant_empty_stock_label, textColor)).spannedString
         txtEmptyStock?.showWithCondition(element.isEmptyStock)
+    }
+
+    private fun getHexColor(resColor: Int): String {
+        val hexColor = Integer.toHexString(itemView.context.getResColor(resColor))
+        val startIndex = 2
+        return if (hexColor.length > startIndex) {
+            "#" + hexColor.substring(startIndex)
+        } else {
+            "#$hexColor"
+        }
     }
 
 }

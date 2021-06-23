@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:src="@tools:sample/avatars"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         />
 
     <androidx.constraintlayout.widget.ConstraintLayout
