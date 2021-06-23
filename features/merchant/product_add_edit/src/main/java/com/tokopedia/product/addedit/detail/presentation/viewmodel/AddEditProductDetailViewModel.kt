@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.common.util.RollenceUtil
 import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggestedPriceGet
 import com.tokopedia.product.addedit.detail.domain.usecase.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
@@ -43,6 +44,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -253,6 +255,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun validateProductNameInput(productNameInput: String) {
+        val usingNewRequest = RollenceUtil.getProductTitleRollence()
         if (productNameInput.isEmpty()) {
             // show product error when product name is empty
             val errorMessage = provider.getEmptyProductNameErrorMessage()
@@ -264,17 +267,26 @@ class AddEditProductDetailViewModel @Inject constructor(
             productNameTips?.let { productNameMessage = it }
             mIsProductNameInputError.value = false
 
-            if (productNameInput != productInputModel.detailInputModel.currentProductName) {
+            if (productNameInput.trim() != productInputModel.detailInputModel.currentProductName) {
                 // remote product name validation
                 launchCatchError(block = {
                     productNameValidationResult = withContext(dispatchers.io) {
-                        getProductTitleValidationUseCase.setParam(productNameInput)
-                        getProductTitleValidationUseCase.getDataModelOnBackground()
+                        if (usingNewRequest) {
+                            getProductTitleValidationUseCase.setParam(productNameInput)
+                            getProductTitleValidationUseCase.getDataModelOnBackground()
+                        } else {
+                            validateProductUseCase.setParamsProductName(productNameInput)
+                            validateProductUseCase.getDataModelOnBackground()
+                        }
                     }
 
                     productNameMessage = when {
                         productNameValidationResult.isBlacklistKeyword -> {
-                            provider.getTitleValidationErrorBlacklisted()
+                            if (usingNewRequest) {
+                                provider.getTitleValidationErrorBlacklisted()
+                            } else {
+                                productNameValidationResult.errorKeywords.joinToString("\n")
+                            }
                         }
                         productNameValidationResult.isTypoDetected -> {
                             provider.getTitleValidationErrorTypo()
