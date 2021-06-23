@@ -51,12 +51,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <!-- TODO: [Misael] Ini nanti background color diganti -->
     <View
         android:id="@+id/common_topupbills_favorite_number_separator"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:background="#E5E7E9"
+        android:background="@color/Unify_N75"
         app:layout_constraintStart_toStartOf="@id/common_topupbills_favorite_number_client_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
