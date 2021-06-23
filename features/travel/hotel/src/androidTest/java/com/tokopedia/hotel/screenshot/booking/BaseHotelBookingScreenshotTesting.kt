@@ -10,8 +10,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.UiSelector
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.booking.presentation.activity.mock.HotelBookingMockResponseConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -29,7 +27,6 @@ import org.junit.Test
  */
 abstract class BaseHotelBookingScreenshotTesting {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     @get:Rule
     var activityRule: IntentsTestRule<HotelBookingActivity> = object : IntentsTestRule<HotelBookingActivity>(HotelBookingActivity::class.java) {
@@ -59,7 +56,9 @@ abstract class BaseHotelBookingScreenshotTesting {
             CommonActions.takeScreenShotVisibleViewInScreen(activityRule.activity.window.decorView, filePrefix(), "top")
         }
 
-        uiDevice.findObject(UiSelector().description(activityRule.activity.getString(R.string.hotel_order_detail_title))).waitForExists(10000)
+        Thread.sleep(3000)
+        Espresso.onView(ViewMatchers.withId(R.id.hotel_booking_container)).perform(ViewActions.swipeDown())
+        Thread.sleep(3000)
 
         CommonActions.findViewAndScreenShot(R.id.hotel_detail_container, filePrefix(), "detail-container")
         CommonActions.findViewAndScreenShot(R.id.booking_room_duration_info, filePrefix(), "duration-info")

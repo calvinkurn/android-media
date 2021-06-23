@@ -252,7 +252,6 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     private fun initView() {
-        hotel_booking_container.contentDescription = getString(R.string.hotel_order_detail_title)
         hideLoadingBar()
 
         setupHotelInfo(hotelCart.property)
