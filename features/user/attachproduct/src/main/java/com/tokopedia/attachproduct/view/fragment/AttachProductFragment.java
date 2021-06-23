@@ -120,6 +120,7 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemUiM
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initSearchBar();
+        setupWarehouseId();
         super.onViewCreated(view, savedInstanceState);
 
         if (savedInstanceState != null) {
@@ -127,20 +128,20 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemUiM
             source = savedInstanceState.getString(SOURCE, "");
             maxChecked = savedInstanceState.getInt(MAX_CHECKED, MAX_CHECKED_DEFAULT);
             hiddenProducts = savedInstanceState.getStringArrayList(HIDDEN_PRODUCTS);
-            warehouseId = savedInstanceState.getString(
-                    TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID, "0"
-            );
         } else if (getArguments() != null) {
             isSeller = getArguments().getBoolean(IS_SELLER, false);
             source = getArguments().getString(SOURCE, "");
             maxChecked = getArguments().getInt(MAX_CHECKED, MAX_CHECKED_DEFAULT);
             hiddenProducts = getArguments().getStringArrayList(HIDDEN_PRODUCTS);
-            warehouseId = getArguments().getString(
-                    TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID, "0"
-            );
         }
 
         updateButtonBasedOnChecked(adapter.getCheckedCount());
+    }
+
+    private void setupWarehouseId() {
+        warehouseId = getArguments().getString(
+                TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID, "0"
+        );
     }
 
     private void initSearchBar() {

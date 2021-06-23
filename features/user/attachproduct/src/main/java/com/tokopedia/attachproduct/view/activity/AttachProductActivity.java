@@ -41,12 +41,12 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setupWarehouseId();
         super.onCreate(savedInstanceState);
         shopId = "";
         if (getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) != null) {
             shopId = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY);
         }
-        setupWarehouseId();
     }
 
     private void setupWarehouseId() {
