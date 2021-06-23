@@ -43,6 +43,7 @@ import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingCon
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Event.PRODUCT_VIEW
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Event.PROMO_CLICK
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Event.PROMO_VIEW
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.DEFAULT
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.HOME_AND_BROWSE
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.USER_ID
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
@@ -384,7 +385,8 @@ object SearchTracking {
         val id = channelModelId + "_" + channelGridId + "_" + persoType + "_" + categoryId
 
         val promoName = channelModel.trackingAttributionModel.promoName
-        val name = "/tokonow - search - $promoName"
+        val headerName = if (promoName.isEmpty()) DEFAULT else promoName
+        val name = "/tokonow - search - $headerName"
 
         return DataLayer.mapOf(
                 "id", id,

@@ -28,5 +28,6 @@ object SearchCategoryTrackingConst {
         const val TOKO_NOW = "toko now"
         const val USER_ID = "userId"
         const val HOME_AND_BROWSE = "home & browse"
+        const val DEFAULT = "default"
     }
 }
