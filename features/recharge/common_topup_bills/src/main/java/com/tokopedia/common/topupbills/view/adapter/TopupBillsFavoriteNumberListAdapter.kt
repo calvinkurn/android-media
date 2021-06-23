@@ -16,8 +16,9 @@ class TopupBillsFavoriteNumberListAdapter (
 ): RecyclerView.Adapter<TopupBillsFavoriteNumberListAdapter.FavoriteNumberViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopupBillsFavoriteNumberListAdapter.FavoriteNumberViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_topup_bills_favorit_number, parent, false)
-        return FavoriteNumberViewHolder(view)
+        val binding = ItemTopupBillsFavoritNumberBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false)
+        return FavoriteNumberViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: TopupBillsFavoriteNumberListAdapter.FavoriteNumberViewHolder, position: Int) {
@@ -30,9 +31,9 @@ class TopupBillsFavoriteNumberListAdapter (
         this.clientNumbers = clientNumbers
     }
 
-    inner class FavoriteNumberViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-
-        val binding = ItemTopupBillsFavoritNumberBinding.bind(itemView)
+    inner class FavoriteNumberViewHolder(
+            private val binding: ItemTopupBillsFavoritNumberBinding
+    ): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(favClientNumber: TopupBillsFavNumberItem) {
             val name = "Misael Jonathan"
