@@ -194,15 +194,11 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         ImageHandler.loadImageWithTarget(getContext(), featuredImageUrl, new CustomTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     try {
                         imageView.setImageBitmap(Utils.getSingletonInstance().setBlur(resource, 3.0f, getContext()));
                     } catch (Exception e) {
 
                     }
-                } else {
-                    imageView.setImageBitmap(resource);
-                }
             }
 
             @Override

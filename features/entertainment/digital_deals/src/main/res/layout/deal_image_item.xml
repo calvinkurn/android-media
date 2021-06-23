@@ -4,6 +4,7 @@
   android:layout_height="wrap_content">
   
   <ImageView
+    android:contentDescription="null"
     android:id="@+id/deal_image"
     android:layout_width="match_parent"
     android:layout_height="@dimen/image_width_deals_details_header"
@@ -11,6 +12,7 @@
     android:scaleType="fitXY" />
   
   <ImageView
+    android:contentDescription="null"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
 
