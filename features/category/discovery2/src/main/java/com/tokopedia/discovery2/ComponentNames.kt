@@ -84,5 +84,7 @@ enum class ComponentNames(val componentName: String) {
     //Category Best Seller
     CategoryBestSeller("product-card-horizontal-scroll"),
 
+    //Topads Headline View
+    TopadsHeadlineView("topads_healine"),
 
 }

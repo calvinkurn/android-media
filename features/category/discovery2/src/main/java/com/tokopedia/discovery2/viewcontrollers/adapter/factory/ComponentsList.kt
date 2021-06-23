@@ -88,4 +88,8 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     //Category Best Seller
     CategoryBestSeller(R.layout.carousel_best_seller_recycler_view, ComponentNames.CategoryBestSeller.componentName),
 
+    //Topads Headline View
+
+    TopadsHeadlineView(R.layout.topads_headline_layout, ComponentNames.TopadsHeadlineView.componentName),
+
 }

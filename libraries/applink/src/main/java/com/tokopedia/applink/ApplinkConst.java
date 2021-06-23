@@ -52,6 +52,7 @@ public interface ApplinkConst {
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
     String ADD_PATH = "add";
+    String AFFILIATE_UNIQUE_ID = "aff_unique_id";
     String PRODUCT_ADD = "tokopedia://product/add";
     String DEFAULT_RECOMMENDATION_PAGE = "tokopedia://rekomendasi/";
     String RECOMMENDATION_PAGE = "tokopedia://rekomendasi/{product_id}/?ref={ref}";
