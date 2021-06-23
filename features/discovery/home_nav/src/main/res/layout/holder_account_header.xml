@@ -243,8 +243,9 @@
             app:typographyType="body_2"
             app:layout_constraintTop_toBottomOf="@id/usr_ovo_badge"
             app:layout_constraintStart_toEndOf="@id/usr_shop_title"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:visibility="visible"
-            tools:text="toko kamu"/>
+            tools:text="toko kamu dawpdpwa dmwpamdpwa dmwopamdpowapdwa dmwpaipmdw"/>
 
         <com.tokopedia.unifycomponents.NotificationUnify
             android:id="@+id/usr_shop_notif"

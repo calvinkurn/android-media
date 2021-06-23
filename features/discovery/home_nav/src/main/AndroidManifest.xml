@@ -6,6 +6,7 @@
             android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/NavigationTheme"
+            android:launchMode="singleTop"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW"/>
