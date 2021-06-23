@@ -1,4 +1,4 @@
-package com.tkpd.atcvariant.view.viewholder.item
+package com.tokopedia.product.detail.common.view
 
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +10,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.common.R
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
-import com.tokopedia.product.detail.common.view.AtcVariantListener
-import com.tokopedia.product.detail.common.view.BaseAtcVariantItemViewHolder
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography

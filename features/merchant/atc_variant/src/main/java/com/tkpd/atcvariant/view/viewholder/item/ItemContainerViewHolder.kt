@@ -94,8 +94,7 @@ class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) 
         txtVariantCategoryName.text = context.getString(R.string.atc_variant_option_builder_1, data.name)
 
         if (data.getSelectedOption() == null) {
-            txtVariantSelectedOption.text = context.getString(R.string.atc_variant_option_builder_2, data.variantOptions.size)
-            txtVariantSelectedOption.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            txtVariantSelectedOption.text = ""
         } else {
             txtVariantSelectedOption.text = data.getSelectedOption()?.variantName
             txtVariantSelectedOption.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
