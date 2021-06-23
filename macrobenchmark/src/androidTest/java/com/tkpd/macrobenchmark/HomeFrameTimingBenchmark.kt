@@ -1,6 +1,7 @@
 package com.tkpd.macrobenchmark
 
 import android.content.Intent
+import android.net.Uri
 import androidx.benchmark.macro.CompilationMode
 import androidx.benchmark.macro.FrameTimingMetric
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
@@ -11,6 +12,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.UiDevice
+import com.tokopedia.applink.ApplinkConst
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,7 +50,8 @@ class HomeFrameTimingBenchmark {
             setupBlock = {
                 // Before starting to measure, navigate to the UI to be measured
                 val intent = Intent()
-                intent.action = ACTION
+                intent.setData(Uri.parse(ApplinkConst.HOME))
+                intent.putExtra("testenv", "testenv")
                 startActivityAndWait(intent)
             }
         ) {

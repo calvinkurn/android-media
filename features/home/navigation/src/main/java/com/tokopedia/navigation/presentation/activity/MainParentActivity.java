@@ -131,6 +131,7 @@ public class MainParentActivity extends BaseActivity implements
         MainParentStateListener
 {
 
+    public static final String TEST_ENVIRONMENT = "testenv";
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
     public static final int HOME_MENU = 0;
@@ -303,7 +304,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        if (isFirstTimeUser()) {
+        if (!isTestEnv() && isFirstTimeUser()) {
             setDefaultShakeEnable();
             routeOnboarding();
         }
@@ -318,6 +319,14 @@ public class MainParentActivity extends BaseActivity implements
         cacheManager.edit()
                 .putBoolean(getString(R.string.pref_receive_shake), true)
                 .apply();
+    }
+
+    private Boolean isTestEnv() {
+        if (getIntent().getExtras().getString(TEST_ENVIRONMENT).equals(TEST_ENVIRONMENT)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
