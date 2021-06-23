@@ -6,6 +6,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelStyle
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.tokomart.data.*
+import com.tokopedia.tokomart.home.constant.HomeLayoutItemState
 import com.tokopedia.tokomart.home.constant.HomeLayoutState
 import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokomart.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
@@ -13,6 +14,7 @@ import com.tokopedia.tokomart.home.domain.mapper.TickerMapper.mapTickerData
 import com.tokopedia.tokomart.home.presentation.fragment.TokoMartHomeFragment.Companion.SOURCE
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryItemUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyBoolean
@@ -48,14 +50,17 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
 
         viewModel.getInitialLayoutData(1, "1", true)
 
-        val expectedResponse = BannerDataModel(
+        val expectedResponse = HomeLayoutItemUiModel(
+            BannerDataModel(
                 channelModel= ChannelModel(
-                        id="2222",
-                        groupId="",
-                        style= ChannelStyle.ChannelHome,
-                        channelHeader= ChannelHeader(name="Banner Tokonow"),
-                        channelConfig=ChannelConfig(layout="banner_carousel_v2") ,
-                        layout="banner_carousel_v2")
+                    id="2222",
+                    groupId="",
+                    style= ChannelStyle.ChannelHome,
+                    channelHeader= ChannelHeader(name="Banner Tokonow"),
+                    channelConfig=ChannelConfig(layout="banner_carousel_v2") ,
+                    layout="banner_carousel_v2")
+            ),
+            HomeLayoutItemState.LOADED
         )
 
         verifyGetBannerResponseSuccess(expectedResponse)
@@ -188,16 +193,19 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
         viewModel.getCategoryGrid(model, "1")
 
         //prepare model for expectedResult
-        val expectedResponse = HomeCategoryGridUiModel(
+        val expectedResponse = HomeLayoutItemUiModel(
+            HomeCategoryGridUiModel(
                 id="11111",
                 title="Category Tokonow",
                 categoryList = listOf(HomeCategoryItemUiModel(
-                        id="1",
-                        title="Category 1",
-                        imageUrl="tokopedia://",
-                        appLink="tokoepdia://"
+                    id="1",
+                    title="Category 1",
+                    imageUrl="tokopedia://",
+                    appLink="tokoepdia://"
                 )),
                 state=HomeLayoutState.SHOW
+            ),
+            HomeLayoutItemState.LOADED
         )
 
         // verify use case called and response
@@ -232,11 +240,14 @@ class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
         viewModel.getCategoryGrid(model, "1")
 
         //prepare model for expectedResult
-        val expectedResponse = HomeCategoryGridUiModel(
+        val expectedResponse = HomeLayoutItemUiModel(
+            HomeCategoryGridUiModel(
                 id="11111",
                 title="Category Tokonow",
                 categoryList = null,
                 state=HomeLayoutState.HIDE
+            ),
+            HomeLayoutItemState.LOADED
         )
 
         // verify use case called and response
