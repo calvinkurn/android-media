@@ -188,10 +188,14 @@ abstract class BaseSearchCategoryFragment:
         navToolbar.setupSearchbar(
                 hints = getNavToolbarHint(),
                 searchbarClickCallback = ::onSearchBarClick,
+                disableDefaultGtmTracker = isDisableSearchBarDefaultGtmTracker,
         )
 
         configureToolbarBackgroundInteraction()
     }
+
+    protected open val isDisableSearchBarDefaultGtmTracker: Boolean
+        get() = false
 
     protected open fun configureToolbarBackgroundInteraction() {
         val navToolbar = navToolbar ?: return

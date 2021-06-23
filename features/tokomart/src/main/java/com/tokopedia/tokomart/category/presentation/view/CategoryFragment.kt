@@ -48,9 +48,17 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
         }
     }
 
+    override val isDisableSearchBarDefaultGtmTracker: Boolean
+        get() = true
+
     override fun getBaseAutoCompleteApplink() =
             super.getBaseAutoCompleteApplink() + "?" +
                     "${SearchApiConst.NAVSOURCE}=$TOKONOW_DIRECTORY"
+
+    override fun onSearchBarClick(hint: String) {
+        CategoryTracking.sendSearchBarClickEvent(getViewModel().categoryL1)
+        super.onSearchBarClick(hint)
+    }
 
     override val disableDefaultCartTracker: Boolean
         get() = true
