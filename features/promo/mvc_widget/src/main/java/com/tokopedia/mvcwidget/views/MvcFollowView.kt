@@ -155,7 +155,7 @@ class MvcTokomemberFollowTwoActionsView @kotlin.jvm.JvmOverloads constructor(
         tvSubTitle = findViewById(R.id.tvSubTitle)
         iconBackground = findViewById(R.id.iconBackground)
         containerContent = findViewById(R.id.container_content)
-        iconBackgroundContainer = findViewById(R.id.iconContainer)
+        iconBackgroundContainer = findViewById(R.id.fm_image)
 
         if (context.isDarkMode()){
             iconBackground.setColorFilter(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.dark_N75))

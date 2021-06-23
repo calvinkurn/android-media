@@ -23,8 +23,8 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iconBackground"
-                android:layout_width="@dimen/dp_52"
-                android:layout_height="@dimen/dp_52"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:scaleX="1.2"
                 android:scaleY="1.2"
                 app:srcCompat="@drawable/mvc_ic_squircle_new" />
@@ -67,6 +67,7 @@
                     android:id="@+id/tvSubTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_2"
                     android:layout_marginStart="@dimen/dp_9"
                     android:visibility="visible"
                     android:textColor="@color/Unify_N700"
