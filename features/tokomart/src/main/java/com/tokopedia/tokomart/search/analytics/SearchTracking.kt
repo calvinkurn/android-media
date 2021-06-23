@@ -121,12 +121,23 @@ object SearchTracking {
                 ECOMMERCE, DataLayer.mapOf(
                     CURRENCYCODE, IDR,
                     IMPRESSIONS, DataLayer.listOf(
-                        productItemDataView.getAsImpressionClickObjectDataLayer(filterSortValue)
+                        productItemDataView.getAsImpressionObjectDataLayer(filterSortValue)
                     )
                 )
         ) as HashMap<String, Any>
 
         trackingQueue.putEETracking(map)
+    }
+
+    private fun ProductItemDataView.getAsImpressionObjectDataLayer(
+            filterSortValue: String,
+    ): Any {
+        return getAsObjectDataLayerMap(filterSortValue).also {
+            it.putAll(DataLayer.mapOf(
+                    "position", position,
+                    "list", TOKONOW_SEARCH_PRODUCT_ORGANIC,
+            ))
+        }
     }
 
     private fun ProductItemDataView.getAsObjectDataLayerMap(
@@ -140,21 +151,10 @@ object SearchTracking {
                 "dimension81", SearchCategoryTrackingConst.Misc.TOKO_NOW,
                 "dimension96", boosterList,
                 "id", id,
-                "dimension40", TOKONOW_SEARCH_PRODUCT_ORGANIC,
                 "name", name,
                 "price", priceInt,
                 "variant", SearchCategoryTrackingConst.Misc.NONE_OTHER,
         )
-    }
-
-    private fun ProductItemDataView.getAsImpressionClickObjectDataLayer(
-            filterSortValue: String,
-    ): Any {
-        return getAsObjectDataLayerMap(filterSortValue).also {
-            it.putAll(DataLayer.mapOf(
-                    "position", position,
-            ))
-        }
     }
 
     fun sendProductClickEvent(
@@ -176,12 +176,22 @@ object SearchTracking {
                     CLICK, DataLayer.mapOf(
                         ACTION_FIELD, DataLayer.mapOf(LIST, TOKONOW_SEARCH_PRODUCT_ORGANIC),
                         PRODUCTS, DataLayer.listOf(
-                            productItemDataView.getAsImpressionClickObjectDataLayer(filterSortValue)
+                            productItemDataView.getAsClickObjectDataLayer(filterSortValue)
                         )
                     ),
                 )
             )
         )
+    }
+
+    private fun ProductItemDataView.getAsClickObjectDataLayer(
+            filterSortValue: String,
+    ): Any {
+        return getAsObjectDataLayerMap(filterSortValue).also {
+            it.putAll(DataLayer.mapOf(
+                    "position", position,
+            ))
+        }
     }
     
     fun sendOpenFilterPageEvent() {
