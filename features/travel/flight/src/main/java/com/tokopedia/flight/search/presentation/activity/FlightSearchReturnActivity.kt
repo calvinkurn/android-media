@@ -46,7 +46,7 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
             REQUEST_CODE_BOOKING -> {
                 if (data != null) {
                     FlightFlowUtil.actionSetResultAndClose(this, intent,
-                            data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, 0))
+                            data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA.value, 0))
                 }
             }
         }

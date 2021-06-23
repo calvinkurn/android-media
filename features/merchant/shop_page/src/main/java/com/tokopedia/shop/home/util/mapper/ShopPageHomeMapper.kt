@@ -309,7 +309,7 @@ object ShopPageHomeMapper {
                 id = it.id
                 name = it.name
                 displayedPrice = it.discountedPrice
-                originalPrice = it.price
+                originalPrice = it.displayedPrice
                 discountPercentage = it.discountPercentage
                 imageUrl = it.imageUrl
                 imageUrl300 = ""
@@ -396,7 +396,8 @@ object ShopPageHomeMapper {
                 header.ctaLink,
                 header.cover,
                 header.ratio,
-                header.isAtc
+                header.isAtc,
+                header.etalaseId
         )
     }
 

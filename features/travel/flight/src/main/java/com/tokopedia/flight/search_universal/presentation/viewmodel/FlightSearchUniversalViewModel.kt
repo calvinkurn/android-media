@@ -15,12 +15,12 @@ class FlightSearchUniversalViewModel @Inject constructor(
     : BaseViewModel(dispatcherProvider.io) {
 
     fun generatePairOfMinAndMaxDateForDeparture(): Pair<Date, Date> {
-        val minDate = FlightDateUtil.getCurrentDate()
+        val minDate = FlightDateUtil.currentDate
         val maxDate = FlightDateUtil.addTimeToSpesificDate(
                 FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_YEAR_FOR_FLIGHT),
                 Calendar.DATE,
                 MINUS_ONE_DAY)
-        val maxDateCalendar = FlightDateUtil.getCurrentCalendar()
+        val maxDateCalendar = FlightDateUtil.currentCalendar
         maxDateCalendar.time = maxDate
         maxDateCalendar.set(Calendar.HOUR_OF_DAY, DEFAULT_LAST_HOUR_IN_DAY)
         maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN)
@@ -34,7 +34,7 @@ class FlightSearchUniversalViewModel @Inject constructor(
                 FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_YEAR_FOR_FLIGHT),
                 Calendar.DATE,
                 MINUS_ONE_DAY)
-        val maxDateCalendar = FlightDateUtil.getCurrentCalendar()
+        val maxDateCalendar = FlightDateUtil.currentCalendar
         maxDateCalendar.time = maxDate
         maxDateCalendar.set(Calendar.HOUR_OF_DAY, DEFAULT_LAST_HOUR_IN_DAY)
         maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN)
@@ -51,7 +51,7 @@ class FlightSearchUniversalViewModel @Inject constructor(
 
         if (departureDate.after(oneYears)) {
             resultStringResourceId = R.string.flight_dashboard_departure_max_one_years_from_today_error
-        } else if (departureDate.before(FlightDateUtil.removeTime(FlightDateUtil.getCurrentDate()))) {
+        } else if (departureDate.before(FlightDateUtil.removeTime(FlightDateUtil.currentDate))) {
             resultStringResourceId = R.string.flight_dashboard_departure_should_atleast_today_error
         }
 

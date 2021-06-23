@@ -59,7 +59,7 @@
     <string name="hotel_delete_all_last_search">Hapus Semua</string>
     <string name="hotel_homepage_promo_title">Promo</string>
     <string name="hotel_homepage_night_counter" formatted="false"> %d malam</string>
-    <string name="hotel_homepage_guest_detail_without_child" formatted="false"> %d kamar, %d tamu</string>
+    <string name="hotel_homepage_guest_detail_without_child" formatted="false"> %1$d kamar, %2$d tamu</string>
     <string name="hotel_bottom_sheets_room_guest_title">Kamar dan Tamu</string>
     <string name="hotel_bottom_sheets_room_count_title">Kamar</string>
     <string name="hotel_bottom_sheets_adult_count_title">Tamu</string>

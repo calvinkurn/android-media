@@ -18,8 +18,10 @@ data class ProductMiniSocialProofDataModel(
         var wishlistCount: Int = 0,
         var buyerPhotosCount: Int = 0,
         var paymentVerifiedCount: Int = 0,
-        var shouldRenderSocialProof: Boolean = false
+        var shouldRenderSocialProof: Boolean = false,
+        var socialProofData: List<ProductMiniSocialProofItemDataModel> = emptyList()
 ) : DynamicPdpDataModel {
+
     companion object {
         const val RATING = "rating"
         const val TALK = "talk"
@@ -66,12 +68,6 @@ data class ProductMiniSocialProofDataModel(
         }
     }
 
-    /**
-     * Social proof mini should only show 4 of this, with hierarchy
-     * When it only contains 1 data, it will show single line social proof
-     */
-    private var socialProofData: List<ProductMiniSocialProofItemDataModel> = emptyList()
-
     fun shouldShowSingleViewSocialProof(): Boolean {
         return talkCount == 0 && ratingCount == 0 && buyerPhotosCount == 0
     }
@@ -86,10 +82,6 @@ data class ProductMiniSocialProofDataModel(
         appendChipIfNotZero(buyerPhotosCount.toFloat(), BUYER_PHOTOS, socialProofBuilder)
         appendChipIfNotZero(talkCount.toFloat(), TALK, socialProofBuilder)
         socialProofData = socialProofBuilder.take(4)
-    }
-
-    fun getSocialProofData(): List<ProductMiniSocialProofItemDataModel> {
-        return socialProofData
     }
 
     private fun appendChipIfNotZero(count: Float?, type: String, list: MutableList<ProductMiniSocialProofItemDataModel>, ratingTitle: String = ""): MutableList<ProductMiniSocialProofItemDataModel> {

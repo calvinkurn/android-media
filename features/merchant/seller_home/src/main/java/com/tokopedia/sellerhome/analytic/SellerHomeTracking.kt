@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.analytic
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.track.TrackApp
@@ -42,11 +43,13 @@ object SellerHomeTracking {
         val cardValue = model.data?.header.orEmpty()
 
         val map = TrackingHelper.createMap(
-                TrackingConstant.VIEW_SELLER_WIDGET,
+                TrackingConstant.VIEW_SELLER_HOMEPAGE_IRIS,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 arrayOf(TrackingConstant.IMPRESSION_WIDGET_LINE_GRAPH, dataKey).joinToString(" - "),
                 "$emptyStatus - $cardValue"
         )
+        map[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        map[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
         TrackingHelper.sendGeneralEvent(map)
     }
 
@@ -118,6 +121,7 @@ object SellerHomeTracking {
     }
 
     fun sendImpressionPostEvent(model: PostListWidgetUiModel, userId: String) {
+        val isEmpty = model.data?.isEmptyPost().orFalse()
         val filterType = model.postFilter.find { it.isSelected }?.value.orEmpty()
 
         val map = TrackingHelper.createMap(
@@ -134,6 +138,7 @@ object SellerHomeTracking {
     }
 
     fun sendClickPostSeeMoreEvent(model: PostListWidgetUiModel, userId: String) {
+        val isEmpty = model.data?.isEmptyPost().orFalse()
         val filterType = model.postFilter.find { it.isSelected }?.value.orEmpty()
 
         val map = TrackingHelper.createMap(
@@ -160,6 +165,7 @@ object SellerHomeTracking {
     }
 
     fun sendPostListFilterClick(model: PostListWidgetUiModel, userId: String) {
+        val isEmpty = model.data?.isEmptyPost().orFalse()
         val map = TrackingHelper.createMap(
                 TrackingConstant.CLICK_SELLER_WIDGET,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
@@ -172,6 +178,8 @@ object SellerHomeTracking {
     }
 
     fun sendPostEmptyStateCtaClick(model: PostListWidgetUiModel, userId: String) {
+        val isEmpty = model.data?.isEmptyPost().orFalse()
+
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.CLICK_HOMEPAGE,
                 category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
@@ -290,7 +298,7 @@ object SellerHomeTracking {
         val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
         val eventMap = TrackingHelper.createMap(
-                event = TrackingConstant.PROMO_VIEW,
+                event = TrackingConstant.VIEW_SELLER_HOMEPAGE_IRIS,
                 category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_PIE_CHART, model.dataKey).joinToString(" - "),
                 label = "$state - $value"
@@ -298,6 +306,8 @@ object SellerHomeTracking {
 
         val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_PIE_CHART, position))
         eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
 
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
     }
@@ -323,7 +333,7 @@ object SellerHomeTracking {
         val state = if (model.isEmpty()) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
 
         val eventMap = TrackingHelper.createMap(
-                event = TrackingConstant.PROMO_VIEW,
+                event = TrackingConstant.VIEW_SELLER_HOMEPAGE_IRIS,
                 category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 action = arrayOf(TrackingConstant.IMPRESSION_WIDGET_BAR_CHART, model.dataKey).joinToString(" - "),
                 label = "$state - $value"
@@ -331,6 +341,8 @@ object SellerHomeTracking {
 
         val promoView = mapOf(TrackingConstant.PROMOTIONS to getWidgetPromotions(listOf(model), TrackingConstant.WIDGET_BAR_CHART, position))
         eventMap[TrackingConstant.ECOMMERCE] = mapOf(TrackingConstant.PROMO_VIEW to promoView)
+        eventMap[TrackingConstant.BUSINESS_UNIT] = TrackingConstant.PHYSICAL_GOODS
+        eventMap[TrackingConstant.CURRENT_SITE] = TrackingConstant.TOKOPEDIA_SELLER
 
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
     }
