@@ -457,7 +457,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 HintData(getString(R.string.hint_cari_transaksi) )
             ))
             val icons = IconBuilder(
-                IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME)
+                IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_UOH)
             )
             if(activityOrderHistory == PARAM_HOME)
             {
