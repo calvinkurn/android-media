@@ -16,6 +16,7 @@
             android:name=".view.activity.TopupBillsFavoriteNumberActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysVisible"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.WhiteUnify" />
 
     </application>

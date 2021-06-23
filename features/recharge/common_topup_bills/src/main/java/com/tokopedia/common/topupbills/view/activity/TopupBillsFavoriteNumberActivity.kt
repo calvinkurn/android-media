@@ -4,14 +4,19 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
+import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
+import com.tokopedia.common.topupbills.di.DaggerCommonTopupBillsComponent
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
 import com.tokopedia.header.HeaderUnify
 import java.util.ArrayList
 
-class TopupBillsFavoriteNumberActivity : BaseSimpleActivity() {
+class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<CommonTopupBillsComponent> {
 
     protected lateinit var categoryId: String
     protected lateinit var clientNumberType: String
@@ -24,6 +29,10 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity() {
 
     override fun getParentViewResourceID(): Int {
         return R.id.parent_view
+    }
+
+    override fun getComponent(): CommonTopupBillsComponent {
+        return CommonTopupBillsComponentInstance.getCommonTopupBillsComponent(application)
     }
 
     override fun getToolbarResourceID(): Int {

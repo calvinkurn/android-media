@@ -1,9 +1,11 @@
 package com.tokopedia.common.topupbills.view.fragment
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.ContactsContract
 import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils
@@ -20,13 +22,20 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
+import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberListAdapter
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.ArrayList
+import javax.inject.Inject
 
 class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberClickListener {
+
+    @Inject
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     private lateinit var numberListAdapter: TopupBillsFavoriteNumberListAdapter
     private lateinit var clientNumbers: List<TopupBillsFavNumberItem>
@@ -38,7 +47,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
     private var binding: FragmentFavoriteNumberBinding? = null
 
     override fun initInjector() {
-
+        getComponent(CommonTopupBillsComponent::class.java).inject(this)
     }
 
     override fun getScreenName(): String? {
@@ -95,6 +104,49 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         binding?.commonTopupbillsFavoriteNumberRv?.run {
             layoutManager = LinearLayoutManager(activity)
             adapter = numberListAdapter
+        }
+
+        binding?.commonTopupbillsSearchNumberContactPicker?.setOnClickListener {
+            inputNumberActionType = InputNumberActionType.CONTACT
+            navigateContact()
+        }
+    }
+
+    private fun navigateContact() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            activity?.let {
+                permissionCheckerHelper.checkPermission(it,
+                        PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
+                        object : PermissionCheckerHelper.PermissionCheckListener {
+                            override fun onPermissionDenied(permissionText: String) {
+                                permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                            }
+
+                            override fun onNeverAskAgain(permissionText: String) {
+                                permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                            }
+
+                            override fun onPermissionGranted() {
+                                openContactPicker()
+                            }
+                        })
+            }
+        } else {
+            openContactPicker()
+        }
+    }
+
+    fun openContactPicker() {
+        val contactPickerIntent = Intent(
+                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+        try {
+            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
+        } catch (e: ActivityNotFoundException) {
+            view?.let {
+                // TODO: [Misael] ini errornya isi apa
+                Toaster.build(it, "Ahay Error", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+//                Toaster.build(it, getString(R.string.error_message_contact_not_found), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+            }
         }
     }
 
@@ -214,6 +266,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
     }
 
     companion object {
+        const val REQUEST_CODE_CONTACT_PICKER = 75
 
         const val ARG_PARAM_EXTRA_NUMBER_LIST = "ARG_PARAM_EXTRA_NUMBER_LIST"
         const val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"

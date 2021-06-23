@@ -50,6 +50,8 @@ class TopupBillsFavoriteNumberListAdapter (
             binding.commonTopupbillsFavoriteNumberContainer.setOnClickListener {
                 listener.onFavoriteNumberClick(favClientNumber)
             }
+
+            binding.commonTopupbillsFavoriteNumberIcon
         }
     }
 }
