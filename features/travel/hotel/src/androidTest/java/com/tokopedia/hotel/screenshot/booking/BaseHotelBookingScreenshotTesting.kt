@@ -70,7 +70,7 @@ abstract class BaseHotelBookingScreenshotTesting {
 
         CommonActions.takeScreenShotVisibleViewInScreen(activityRule.activity.window.decorView, filePrefix(), "middle")
 
-        Thread.sleep(3000)
+        Thread.sleep(6000)
 
         CommonActions.findViewAndScreenShot(R.id.contact_detail_container, filePrefix(), "contact-detail")
         CommonActions.findViewAndScreenShot(R.id.booking_pay_now_promo_container, filePrefix(), "promo-container")

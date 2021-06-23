@@ -8,4 +8,8 @@
     <color name="shop_score_progressbar_dms_yellow">#FFC400</color>
     <color name="shop_score_progressbar_dms_green_light">#82EF95</color>
     <color name="shop_score_progressbar_dms_green_dark">#4FD15A</color>
+
+    <color name="shop_score_item_parameter_dms_red">#D6001C</color>
+    <color name="shop_score_item_parameter_dms_grey">#31353B</color>
+    <color name="shop_score_item_parameter_dms_green">#03AC0E</color>
 </resources>
