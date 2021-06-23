@@ -100,6 +100,7 @@ class HomeAnalytics {
 
     fun onClickBannerPromo(position: Int, userId: String, channelModel: ChannelModel, channelGrid: ChannelGrid) {
         val dataLayer = getEcommerceDataLayer(
+                event = EVENT_SELECT_CONTENT,
                 action = EVENT_ACTION_CLICK_SLIDER_BANNER,
                 category = EVENT_CATEGORY_HOME_PAGE,
                 affinityLabel = channelModel.trackingAttributionModel.persona,
@@ -128,6 +129,7 @@ class HomeAnalytics {
         }
 
         val dataLayer = getEcommerceDataLayer(
+                event = EVENT_VIEW_ITEM,
                 action = EVENT_ACTION_IMPRESSION_SLIDER_BANNER,
                 category = EVENT_CATEGORY_HOME_PAGE,
                 affinityLabel = channelModel.trackingAttributionModel.persona,
@@ -140,6 +142,7 @@ class HomeAnalytics {
 
     fun onClickCategory(position: Int, userId: String, categoryId: String) {
         val dataLayer = getEcommerceDataLayer(
+                event = EVENT_SELECT_CONTENT,
                 action = EVENT_ACTION_CLICK_CATEGORY_ON_CATEGORY,
                 category = EVENT_CATEGORY_HOME_PAGE,
                 affinityLabel = "null",
@@ -199,8 +202,9 @@ class HomeAnalytics {
         )
     }
 
-    private fun getEcommerceDataLayer(action: String, category: String, label: String = "", affinityLabel: String = "", userId: String, promotions: ArrayList<Bundle>): Bundle {
+    private fun getEcommerceDataLayer(event: String, action: String, category: String, label: String = "", affinityLabel: String = "", userId: String, promotions: ArrayList<Bundle>): Bundle {
         return Bundle().apply {
+            putString(TrackAppUtils.EVENT, event)
             putString(TrackAppUtils.EVENT_ACTION, action)
             putString(TrackAppUtils.EVENT_CATEGORY, category)
             putString(TrackAppUtils.EVENT_LABEL, label)

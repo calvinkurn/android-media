@@ -7,15 +7,14 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductMiniShopWidgetViewHolder(
-        private val view: View,
-        private val listener: DynamicProductDetailListener
+    private val view: View,
+    private val listener: DynamicProductDetailListener
 ) : AbstractViewHolder<ProductMiniShopWidgetDataModel>(view) {
 
     companion object {
@@ -36,15 +35,13 @@ class ProductMiniShopWidgetViewHolder(
 
         if (element.shopName.isEmpty()) return
 
-        val componentTracker = getComponentTrackData(element)
-
         shopAva?.apply {
             loadImageCircle(element.shopAva)
-            setOnClickListener { listener.gotoShopDetail(componentTracker) }
+            setOnClickListener { listener.gotoTokoNow() }
         }
         shopName?.apply {
             text = MethodChecker.fromHtml(element.shopName)
-            setOnClickListener { listener.gotoShopDetail(componentTracker) }
+            setOnClickListener { listener.gotoTokoNow() }
         }
         shopLocation?.text = element.shopLocation
 
@@ -63,5 +60,4 @@ class ProductMiniShopWidgetViewHolder(
         return@with
     }
 
-    private fun getComponentTrackData(element: ProductMiniShopWidgetDataModel) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 }

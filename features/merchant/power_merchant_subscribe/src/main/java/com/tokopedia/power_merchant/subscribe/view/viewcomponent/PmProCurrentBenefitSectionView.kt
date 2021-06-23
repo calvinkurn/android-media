@@ -40,9 +40,9 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
 
     fun setOnExpandedChanged(shouldExpanded: Boolean) {
         if (shouldExpanded) {
-            icPmProExpandable.setImage(IconUnify.CHEVRON_DOWN)
-        } else {
             icPmProExpandable.setImage(IconUnify.CHEVRON_UP)
+        } else {
+            icPmProExpandable.setImage(IconUnify.CHEVRON_DOWN)
         }
     }
 

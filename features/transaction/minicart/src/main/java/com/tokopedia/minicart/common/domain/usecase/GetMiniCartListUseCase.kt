@@ -152,6 +152,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           warehouse_id
                           category_id
                           category
+                          product_cashback
                         }
                       }
                     }

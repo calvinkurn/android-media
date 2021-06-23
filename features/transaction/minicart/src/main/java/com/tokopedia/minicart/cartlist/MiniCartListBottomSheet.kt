@@ -1,7 +1,9 @@
 package com.tokopedia.minicart.cartlist
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
+import android.net.Uri
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
@@ -11,6 +13,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.abstraction.constant.TkpdCache
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -24,6 +28,7 @@ import com.tokopedia.minicart.cartlist.subpage.summarytransaction.SummaryTransac
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.data.response.minicartlist.Action
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.domain.data.RemoveFromCartDomainModel
 import com.tokopedia.minicart.common.domain.data.UndoDeleteCartDomainModel
@@ -43,6 +48,10 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                                                   var summaryTransactionBottomSheet: SummaryTransactionBottomSheet,
                                                   var analytics: MiniCartAnalytics)
     : MiniCartListActionListener {
+
+    companion object {
+        const val QUERY_APP_CLIENT_ID = "{app_client_id}"
+    }
 
     private var viewModel: MiniCartViewModel? = null
     private var bottomsheetContainer: CoordinatorLayout? = null
@@ -277,7 +286,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     private fun onFailedUpdateCartForCheckout(globalEvent: GlobalEvent, viewModel: MiniCartViewModel, fragmentManager: FragmentManager) {
         if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
             hideProgressLoading()
-            setTotalAmountLoading(true)
             viewModel.getCartList()
             bottomsheetContainer?.let { view ->
                 bottomSheetListener?.onBottomSheetFailedUpdateCartForCheckout(view, fragmentManager, globalEvent)
@@ -490,6 +498,32 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         analytics.eventClickSeeSimilarProductOnUnavailableSection(element.productId, element.errorType)
         bottomSheet?.context?.let {
             RouteManager.route(it, appLink)
+        }
+    }
+
+    override fun onCheckoutInBrowserRedirectionClicked(url: String, element: MiniCartProductUiModel, action: Action) {
+        bottomSheet?.context?.let {
+            showProgressLoading()
+            val localCacheHandler = LocalCacheHandler(it, TkpdCache.ADVERTISINGID)
+            val adsId = localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID)
+            if (adsId != null && adsId.trim { it <= ' ' }.isNotEmpty()) {
+                val newUrl = url.replace(QUERY_APP_CLIENT_ID, adsId)
+                viewModel?.generateSeamlessUrl(newUrl, ::onGenerateUrlSuccess, ::onGenerateUrlError)
+            } else {
+                hideProgressLoading()
+            }
+        }
+    }
+
+    private fun onGenerateUrlSuccess(url: String) {
+        hideProgressLoading()
+        bottomSheet?.context?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    }
+
+    private fun onGenerateUrlError(messageError: String) {
+        hideProgressLoading()
+        bottomsheetContainer?.let { view ->
+            bottomSheetListener?.showToaster(view, messageError, Toaster.TYPE_ERROR)
         }
     }
 

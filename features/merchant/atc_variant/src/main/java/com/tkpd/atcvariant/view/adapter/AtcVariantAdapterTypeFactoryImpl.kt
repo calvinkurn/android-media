@@ -1,15 +1,9 @@
 package com.tkpd.atcvariant.view.adapter
 
 import android.view.View
-import com.tkpd.atcvariant.data.uidata.VariantComponentDataModel
-import com.tkpd.atcvariant.data.uidata.VariantHeaderDataModel
-import com.tkpd.atcvariant.data.uidata.VariantQuantityDataModel
-import com.tkpd.atcvariant.data.uidata.VariantShimmeringDataModel
+import com.tkpd.atcvariant.data.uidata.*
+import com.tkpd.atcvariant.view.viewholder.*
 import com.tokopedia.product.detail.common.view.AtcVariantListener
-import com.tkpd.atcvariant.view.viewholder.AtcVariantComponentViewHolder
-import com.tkpd.atcvariant.view.viewholder.AtcVariantHeaderViewHolder
-import com.tkpd.atcvariant.view.viewholder.AtcVariantQuantityViewHolder
-import com.tkpd.atcvariant.view.viewholder.AtcVariantShimmeringViewHolder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -36,12 +30,17 @@ class AtcVariantAdapterTypeFactoryImpl(private val variantListener: AtcVariantLi
         return AtcVariantComponentViewHolder.LAYOUT
     }
 
+    override fun type(data: VariantErrorDataModel): Int {
+        return AtcVariantErrorViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             AtcVariantHeaderViewHolder.LAYOUT -> AtcVariantHeaderViewHolder(view, variantListener)
             AtcVariantQuantityViewHolder.LAYOUT -> AtcVariantQuantityViewHolder(view, variantListener)
             AtcVariantShimmeringViewHolder.LAYOUT -> AtcVariantShimmeringViewHolder(view)
             AtcVariantComponentViewHolder.LAYOUT -> AtcVariantComponentViewHolder(view, variantListener)
+            AtcVariantErrorViewHolder.LAYOUT -> AtcVariantErrorViewHolder(view, variantListener)
             else -> return super.createViewHolder(view, type)
         }
     }

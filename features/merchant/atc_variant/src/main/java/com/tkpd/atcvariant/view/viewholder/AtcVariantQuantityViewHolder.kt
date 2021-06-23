@@ -51,6 +51,7 @@ class AtcVariantQuantityViewHolder(private val view: View,
     override fun bind(element: VariantQuantityDataModel) {
         if (element.shouldShowView) {
             quantityEditor.minValue = element.minOrder
+            quantityEditor.maxValue = element.maxOrder
             quantityEditor.setValue(element.quantity)
 
             removeTextChangedListener()

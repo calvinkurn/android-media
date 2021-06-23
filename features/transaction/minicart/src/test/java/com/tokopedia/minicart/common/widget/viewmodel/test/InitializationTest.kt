@@ -6,6 +6,8 @@ import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.usecase.*
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
+import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.mockk
 import io.mockk.spyk
@@ -24,13 +26,14 @@ class InitializationTest {
     private val deleteCartUseCase: DeleteCartUseCase = mockk()
     private val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
     private val updateCartUseCase: UpdateCartUseCase = mockk()
+    private val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
 
     @get: Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() {
-        viewModel = MiniCartViewModel(dispatcher, getMiniCartListSimplifiedUseCase, getMiniCartListUseCase, deleteCartUseCase, undoDeleteCartUseCase, updateCartUseCase, uiModelMapper)
+        viewModel = MiniCartViewModel(dispatcher, getMiniCartListSimplifiedUseCase, getMiniCartListUseCase, deleteCartUseCase, undoDeleteCartUseCase, updateCartUseCase, seamlessLoginUsecase, uiModelMapper)
     }
 
     @Test
@@ -66,6 +69,32 @@ class InitializationTest {
 
         //then
         assert(viewModel.globalEvent.value?.state == 0)
+    }
+
+    @Test
+    fun `WHEN update mini cart simplified data THEN mini cart simplified data should not be null`() {
+        //given
+        val miniCartListUiModels = DataProvider.provideMiniCartSimplifiedDataAllAvailable()
+
+        //when
+        viewModel.updateMiniCartSimplifiedData(miniCartListUiModels)
+
+        //then
+        assert(viewModel.miniCartSimplifiedData.value != null)
+    }
+
+    @Test
+    fun `WHEN reset temporary hidden unavailable items THEN temporary hidden unavailable items should be emty`() {
+        //given
+        val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAllUnavailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModels)
+
+        //when
+        viewModel.toggleUnavailableItemsAccordion()
+        viewModel.resetTemporaryHiddenUnavailableItems()
+
+        //then
+        assert(viewModel.tmpHiddenUnavailableItems.size == 0)
     }
 
 }
