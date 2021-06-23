@@ -470,8 +470,17 @@
 
                         </RelativeLayout>
 
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_nearby_landmarks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipToPadding="false"
+                            android:paddingTop="@dimen/layout_lvl2"
+                            android:paddingRight="@dimen/layout_lvl2"
+                            android:paddingLeft="@dimen/layout_lvl2"/>
+
                         <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/hotel_nearby_landmark_info"
+                            android:id="@+id/tv_hotel_nearby_landmark_info"
                             android:layout_marginTop="@dimen/layout_lvl2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

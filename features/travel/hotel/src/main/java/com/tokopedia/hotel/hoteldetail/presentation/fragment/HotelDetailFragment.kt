@@ -49,10 +49,7 @@ import com.tokopedia.hotel.hoteldetail.util.HotelShare
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
-import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -244,7 +241,11 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         detailViewModel.hotelNearbyLandmarks.observe(viewLifecycleOwner,{
             when(it){
                 is Success->{
-                    hotel_nearby_landmark_info.text = it.data.information
+                    showNearbyLandmarks()
+                    tv_hotel_nearby_landmark_info.text = it.data.information
+                }
+                is Fail->{
+                    hideNearbyLandmarks()
                 }
             }
         })
@@ -681,6 +682,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         setupGlobalSearchWidget()
     }
 
+    private fun setupLayoutNearbyLandmarks(){
+
+    }
+
     private fun setupGlobalSearchWidget() {
         // setup hotel global search widget
         // add condition if checkin date & checkout date isNotEmpty, to prevent crash access hotel detail from applink
@@ -739,6 +744,16 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     private fun hideRoomNotAvailableContainerBottom() {
         container_room_not_available.visibility = View.GONE
+    }
+
+    private fun showNearbyLandmarks(){
+        rv_nearby_landmarks.visible()
+        tv_hotel_nearby_landmark_info.visible()
+    }
+
+    private fun hideNearbyLandmarks(){
+        rv_nearby_landmarks.gone()
+        tv_hotel_nearby_landmark_info.gone()
     }
 
     private fun stopTrace() {

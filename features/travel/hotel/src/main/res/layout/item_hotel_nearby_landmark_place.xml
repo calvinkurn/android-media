@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="5">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_hotel_nearby_place"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/layout_lvl2"
+        android:scaleType="centerCrop" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_hotel_nearby_place_name"
+        android:layout_weight="3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
+        tools:text="Stasiun MRT Benhil" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_hotel_nearby_place_distance"
+        android:layout_weight="2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
+        tools:text="12 km" />
+</LinearLayout>

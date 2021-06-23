@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_header_nearby_landmark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="Header" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false" />
+</LinearLayout>
