@@ -254,6 +254,9 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
             currentDistrictName = it.getString(EXTRA_DISTRICT_NAME)
             districtId = saveAddressDataModel?.districtId
+            if (districtId == null) {
+                districtId = it.getInt(EXTRA_DISTRICT_ID)
+            }
             isPolygon = it.getBoolean(EXTRA_IS_POLYGON, false)
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
             currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
@@ -720,7 +723,11 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun goToSearchPage() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
-        if (!isPositiveFlow) intent.putExtra(EXTRA_FROM_PINPOINT, true)
+        if (!isPositiveFlow) {
+            intent.putExtra(EXTRA_IS_POLYGON, isPolygon)
+            intent.putExtra(EXTRA_FROM_PINPOINT, true)
+            intent.putExtra(EXTRA_DISTRICT_ID, districtId)
+        }
         intent.putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
         intent.putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
         intent.putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
@@ -772,6 +779,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     putParcelable(EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(EXTRA_SAVE_DATA_UI_MODEL))
                     putString(EXTRA_KOTA_KECAMATAN, extra.getString(EXTRA_KOTA_KECAMATAN))
                     putBoolean(EXTRA_FROM_ADDRESS_FORM, extra.getBoolean(EXTRA_FROM_ADDRESS_FORM))
+                    putInt(EXTRA_DISTRICT_ID, extra.getInt(EXTRA_DISTRICT_ID))
                 }
             }
         }

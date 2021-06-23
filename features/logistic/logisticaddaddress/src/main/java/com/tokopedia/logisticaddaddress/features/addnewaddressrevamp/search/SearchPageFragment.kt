@@ -81,6 +81,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private var saveDataModel: SaveAddressDataModel? = null
     private var currentKotaKecamatan: String? = ""
+    private var isPolygon: Boolean = false
+    private var distrcitId: Int? = null
 
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
@@ -106,6 +108,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             isFromPinpoint = it.getBoolean(EXTRA_FROM_PINPOINT)
             currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
             saveDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
+            isPolygon = it.getBoolean(EXTRA_IS_POLYGON)
+            distrcitId = it.getInt(EXTRA_DISTRICT_ID)
         }
         if (saveDataModel != null) {
             saveDataModel?.let {
@@ -421,6 +425,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         longitude?.let { bundle.putDouble(EXTRA_LONGITUDE, it) }
         bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
         bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
+        bundle.putBoolean(EXTRA_IS_POLYGON, isPolygon)
+        distrcitId?.let { bundle.putInt(EXTRA_DISTRICT_ID, it) }
         startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, 1998)
     }
 
@@ -432,6 +438,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                     putParcelable(EXTRA_SAVE_DATA_UI_MODEL, bundle.getParcelable(EXTRA_SAVE_DATA_UI_MODEL))
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, bundle.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                     putBoolean(EXTRA_FROM_PINPOINT, bundle.getBoolean(EXTRA_FROM_PINPOINT))
+                    putBoolean(EXTRA_IS_POLYGON, bundle.getBoolean(EXTRA_IS_POLYGON))
+                    putInt(EXTRA_DISTRICT_ID, bundle.getInt(EXTRA_DISTRICT_ID))
                 }
             }
         }
