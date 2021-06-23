@@ -211,5 +211,6 @@ interface TopChatContract {
         fun getSmartReplyWidget(msgId: String)
         fun initUserLocation(userLocation: LocalCacheModel?)
         fun getProductIdPreview(): List<String>
+        fun adjustInterlocutorWarehouseId(messageId: String)
     }
 }

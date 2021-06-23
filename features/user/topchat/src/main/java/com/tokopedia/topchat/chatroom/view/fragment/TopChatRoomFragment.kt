@@ -598,8 +598,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(chatRoom.isSeller())
         presenter.getStickerGroupList(chatRoom)
-        if (!isSeller()) {
-            presenter.getSmartReplyWidget(messageId)
+        when {
+            !isSeller() -> presenter.getSmartReplyWidget(messageId)
+            isSeller() -> presenter.adjustInterlocutorWarehouseId(messageId)
         }
     }
 

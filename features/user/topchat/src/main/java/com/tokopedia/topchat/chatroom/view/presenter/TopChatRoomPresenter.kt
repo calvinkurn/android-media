@@ -59,6 +59,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.data.Resource
+import com.tokopedia.topchat.common.data.Status
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -111,6 +112,7 @@ open class TopChatRoomPresenter @Inject constructor(
         private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
         private val chatBackgroundUseCase: ChatBackgroundUseCase,
         private val chatSrwUseCase: SmartReplyQuestionUseCase,
+        private val tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
         private val sharedPref: SharedPreferences,
         private val dispatchers: CoroutineDispatchers,
         private val remoteConfig: RemoteConfig
@@ -206,6 +208,26 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun getProductIdPreview(): List<String> {
         return attachmentsPreview.filterIsInstance<SendableProductPreview>()
                 .map { it.productId }
+    }
+
+    override fun adjustInterlocutorWarehouseId(msgId: String) {
+        attachProductWarehouseId = "0"
+        launchCatchError(dispatchers.io,
+            {
+                tokoNowWHUsecase.getWarehouseId(msgId).collect {
+                    if (it.status == Status.SUCCESS) {
+                        withContext(dispatchers.main) {
+                            attachProductWarehouseId = it.data
+                                ?.chatTokoNowWarehouse
+                                ?.warehouseId ?: "0"
+                        }
+                    }
+                }
+            },
+            {
+                it.printStackTrace()
+            }
+        )
     }
 
     override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
