@@ -15,7 +15,7 @@ interface MiniCartListActionListener {
 
     fun onShowSimilarProductClicked(appLink: String, element: MiniCartProductUiModel)
 
-    fun onTobaccoLiteUrlClicked(url: String, element: MiniCartProductUiModel, action: Action)
+    fun onCheckoutInBrowserRedirectionClicked(url: String, element: MiniCartProductUiModel, action: Action)
 
     fun onShowUnavailableItemsCLicked()
 

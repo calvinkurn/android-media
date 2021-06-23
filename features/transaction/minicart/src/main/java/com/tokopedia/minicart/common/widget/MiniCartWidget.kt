@@ -128,7 +128,6 @@ class MiniCartWidget @JvmOverloads constructor(
                 }
                 GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
-                        hideProgressLoading()
                         onFailedUpdateCartForCheckout(it, fragment)
                     }
                 }
@@ -160,6 +159,7 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun onFailedUpdateCartForCheckout(globalEvent: GlobalEvent, fragment: Fragment) {
+        hideProgressLoading()
         setTotalAmountLoading(true)
         viewModel?.getLatestWidgetState()
         fragment.context?.let { context ->
@@ -190,7 +190,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
                     override fun onRefreshErrorPage() {
                         showProgressLoading()
-                        viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
+                        viewModel?.updateCart(true, globalEvent.observer)
                     }
                 })
             } else {
@@ -221,7 +221,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
                         override fun onRefreshErrorPage() {
                             showProgressLoading()
-                            viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
+                            viewModel?.updateCart(true, globalEvent.observer)
                         }
                     })
                 }

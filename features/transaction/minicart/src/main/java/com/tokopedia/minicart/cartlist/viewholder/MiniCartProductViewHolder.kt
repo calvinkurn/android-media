@@ -505,7 +505,7 @@ class MiniCartProductViewHolder(private val view: View,
         textProductUnavailableAction?.text = action.message
         textProductUnavailableAction?.setOnClickListener {
             if (element.selectedUnavailableActionLink.isNotBlank()) {
-                listener.onTobaccoLiteUrlClicked(element.selectedUnavailableActionLink, element, action)
+                listener.onCheckoutInBrowserRedirectionClicked(element.selectedUnavailableActionLink, element, action)
             }
         }
         textProductUnavailableAction?.context?.let {

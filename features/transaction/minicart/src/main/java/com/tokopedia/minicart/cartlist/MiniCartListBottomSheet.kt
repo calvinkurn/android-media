@@ -286,7 +286,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     private fun onFailedUpdateCartForCheckout(globalEvent: GlobalEvent, viewModel: MiniCartViewModel, fragmentManager: FragmentManager) {
         if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
             hideProgressLoading()
-            setTotalAmountLoading(true)
             viewModel.getCartList()
             bottomsheetContainer?.let { view ->
                 bottomSheetListener?.onBottomSheetFailedUpdateCartForCheckout(view, fragmentManager, globalEvent)
@@ -502,7 +501,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         }
     }
 
-    override fun onTobaccoLiteUrlClicked(url: String, element: MiniCartProductUiModel, action: Action) {
+    override fun onCheckoutInBrowserRedirectionClicked(url: String, element: MiniCartProductUiModel, action: Action) {
         bottomSheet?.context?.let {
             showProgressLoading()
             val localCacheHandler = LocalCacheHandler(it, TkpdCache.ADVERTISINGID)
@@ -510,6 +509,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
             if (adsId != null && adsId.trim { it <= ' ' }.isNotEmpty()) {
                 val newUrl = url.replace(QUERY_APP_CLIENT_ID, adsId)
                 viewModel?.generateSeamlessUrl(newUrl, ::onGenerateUrlSuccess, ::onGenerateUrlError)
+            } else {
+                hideProgressLoading()
             }
         }
     }
