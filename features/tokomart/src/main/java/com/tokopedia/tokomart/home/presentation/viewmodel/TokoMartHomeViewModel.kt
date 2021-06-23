@@ -109,7 +109,7 @@ class TokoMartHomeViewModel @Inject constructor(
             val item = homeLayoutItemList.getOrNull(index)
 
             if (item != null && isLayoutVisible && shouldLoadLayout(item)) {
-                updateItemStateToLoading(item)
+                setItemStateToLoading(item)
                 when (val layout = item.layout) {
                     is HomeComponentVisitable -> {
                         homeLayoutItemList = getGlobalHomeComponent(layout)
@@ -141,8 +141,7 @@ class TokoMartHomeViewModel @Inject constructor(
                 val item = homeLayoutItemList.getOrNull(index)
 
                 if (item != null && shouldLoadLayout(item)) {
-                    homeLayoutItemList = homeLayoutItemList
-                        .updateStateToLoading(item)
+                    setItemStateToLoading(item)
                     when (val layout = item.layout) {
                         is HomeComponentVisitable -> {
                             homeLayoutItemList = getGlobalHomeComponent(layout)
@@ -252,8 +251,7 @@ class TokoMartHomeViewModel @Inject constructor(
             item.layout.isNotStaticLayout()
     }
 
-    private fun updateItemStateToLoading(item: HomeLayoutItemUiModel) {
-        homeLayoutItemList = homeLayoutItemList
-            .updateStateToLoading(item)
+    private fun setItemStateToLoading(item: HomeLayoutItemUiModel) {
+        homeLayoutItemList = homeLayoutItemList.updateStateToLoading(item)
     }
 }
