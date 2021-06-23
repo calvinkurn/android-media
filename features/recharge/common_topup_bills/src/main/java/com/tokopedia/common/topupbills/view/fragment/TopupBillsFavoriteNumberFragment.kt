@@ -204,7 +204,6 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         })
 
         numberListAdapter.setNumbers(searchClientNumbers)
-        numberListAdapter.notifyDataSetChanged()
     }
 
     private fun isContain(number: String, clientNumbers: List<TopupBillsFavNumberItem>): Boolean {
@@ -262,7 +261,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
     }
 
     enum class InputNumberActionType {
-        MANUAL, CONTACT, FAVORITE, LATEST_TRANSACTION, CONTACT_HOMEPAGE
+        MANUAL, CONTACT, FAVORITE
     }
 
     companion object {

@@ -54,7 +54,7 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
         updateTitle(getString(R.string.common_topup_title_fav_number))
 
         //draw background without overdraw GPU
-        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        window.setBackgroundDrawableResource(com.tokopedia.unifyprinciples.R.color.Unify_Background)
 
         toolbar.elevation = 0f
         (toolbar as HeaderUnify).transparentMode = false

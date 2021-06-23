@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_Background"
         android:orientation="horizontal"
         android:paddingStart="@dimen/layout_lvl1"
         android:paddingEnd="@dimen/layout_lvl2"
@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Mau isi nomor yang mana, nih?"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="@dimen/spacing_lvl4"
         app:typographyType="heading_4" />
 
     <androidx.recyclerview.widget.RecyclerView

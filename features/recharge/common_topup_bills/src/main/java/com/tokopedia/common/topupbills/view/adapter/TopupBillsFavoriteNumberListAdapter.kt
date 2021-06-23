@@ -9,6 +9,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoritNumberBinding
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 
 class TopupBillsFavoriteNumberListAdapter (
         val listener: OnFavoriteNumberClickListener,
@@ -29,6 +30,7 @@ class TopupBillsFavoriteNumberListAdapter (
 
     fun setNumbers(clientNumbers: List<TopupBillsFavNumberItem>) {
         this.clientNumbers = clientNumbers
+        notifyDataSetChanged()
     }
 
     inner class FavoriteNumberViewHolder(
@@ -41,6 +43,7 @@ class TopupBillsFavoriteNumberListAdapter (
                 if (name.isNullOrEmpty()) {
                     commonTopupbillsFavoriteNumberClientName.hide()
                 } else {
+                    commonTopupbillsFavoriteNumberClientName.show()
                     commonTopupbillsFavoriteNumberClientName.text = name
                 }
                 commonTopupbillsFavoriteNumberClientNumber.text = favClientNumber.clientNumber
