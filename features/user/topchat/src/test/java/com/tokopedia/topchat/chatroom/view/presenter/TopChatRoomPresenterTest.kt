@@ -197,6 +197,9 @@ class TopChatRoomPresenterTest {
     private lateinit var chatSrwUseCase: SmartReplyQuestionUseCase
 
     @RelaxedMockK
+    private lateinit var tokoNowWHUsecase: ChatTokoNowWarehouseUseCase
+
+    @RelaxedMockK
     private lateinit var remoteConfig: RemoteConfig
 
     @SpyK
@@ -328,6 +331,7 @@ class TopChatRoomPresenterTest {
                         chatToggleBlockChat,
                         chatBackgroundUseCase,
                         chatSrwUseCase,
+                        tokoNowWHUsecase,
                         sharedPref,
                         dispatchers,
                         remoteConfig

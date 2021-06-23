@@ -50,6 +50,7 @@ class TopChatRoomPresenterStub @Inject constructor(
         chatToggleBlockChat: ChatToggleBlockChatUseCase,
         chatBackgroundUseCase: ChatBackgroundUseCase,
         chatSrwUseCase: SmartReplyQuestionUseCase,
+        tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
         sharedPref: SharedPreferences,
         dispatchers: CoroutineDispatchers,
         remoteConfig: RemoteConfig
@@ -78,6 +79,7 @@ class TopChatRoomPresenterStub @Inject constructor(
         chatToggleBlockChat,
         chatBackgroundUseCase,
         chatSrwUseCase,
+        tokoNowWHUsecase,
         sharedPref,
         dispatchers,
         remoteConfig) {
