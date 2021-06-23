@@ -10,7 +10,7 @@
         android:id="@+id/statusbar"
         android:background="@color/Unify_N0"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_lvl5"
+        android:layout_height="@dimen/dp_25"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -25,7 +25,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
-        app:toolbarPageName="OS Homepage"
         app:toolbarContentType="typeSearchbar"
         app:toolbarBackButton="none"
         app:toolbarInitialTheme="light"
