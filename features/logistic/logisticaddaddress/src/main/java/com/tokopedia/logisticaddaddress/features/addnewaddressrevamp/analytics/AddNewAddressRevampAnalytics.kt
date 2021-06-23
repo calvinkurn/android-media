@@ -773,4 +773,18 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
                 .build())
     }
 
+    /**/
+    fun onClickBackArrowKodePos(userId: String) {
+        getTracker().sendGeneralEvent(BaseTrackerBuilder()
+                .appendEvent(CLICK_ADDRESS)
+                .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
+                .appendEventAction(CLICK_BACK_ARROW_BUTTON)
+                .appendEventLabel("")
+                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendUserId(userId)
+                .build())
+    }
+
+
 }

@@ -34,6 +34,7 @@ import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
 import kotlinx.android.synthetic.main.form_add_new_address_mismatch_data_item.*
@@ -79,6 +80,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
     private var staticDimen8dp: Int? = 0
     private var districtAddressData: Address? = null
     private var isPinpoint: Boolean = false
+    private var isKodePosShown: Boolean = false
 
     private var binding by autoCleared<BottomsheetDistrictRecommendationBinding>()
 
@@ -175,6 +177,9 @@ class DiscomBottomSheetFragment : BottomSheets(),
         parentView?.findViewById<View>(com.tokopedia.purchase_platform.common.R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(com.tokopedia.purchase_platform.common.R.id.btn_close)?.setOnClickListener {
             AddNewAddressAnalytics.eventClickBackArrowOnNegativePage(isFullFlow, isLogisticLabel)
+            if (isAnaRevamp) {
+                if (isKodePosShown) AddNewAddressRevampAnalytics.onClickBackArrowKodePos(userSession.userId)
+            }
             onCloseButtonClick()
         }
     }
@@ -397,6 +402,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     override fun onZipCodeClicked(zipCode: String) {
+        isKodePosShown = true
         AddNewAddressRevampAnalytics.onClickChipsKodePosNegative(userSession.userId)
         binding.rvKodeposChips.visibility = View.GONE
         binding.etKodepos.textFieldInput.run {
@@ -404,38 +410,14 @@ class DiscomBottomSheetFragment : BottomSheets(),
             binding.btnChooseZipcode.isEnabled = true
         }
         binding.btnChooseZipcode.setOnClickListener {
-            AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
-            districtAddressData?.let { data -> actionListener.onChooseZipcode(data, zipCode, isPinpoint) }
-            dismiss()
-        }
-    }
-
-    private fun setWrapperWatcherKodePos(wrapper: TextInputLayout, textWatcher: String?): TextWatcher {
-        return object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
+            if (binding.etKodepos.textFieldInput.text.toString().length < 5) {
+                AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
+                view?.let { it -> Toaster.build(it, "Kode pos terlalu pendek, min. 5 karakter.", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+            } else {
+                AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
+                districtAddressData?.let { data -> actionListener.onChooseZipcode(data, zipCode, isPinpoint) }
+                dismiss()
             }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.length < 9 && s.isNotEmpty()) {
-                    setWrapperError(wrapper, textWatcher)
-                } else {
-                    setWrapperError(wrapper, null)
-                }
-            }
-
-            override fun afterTextChanged(text: Editable) {
-            }
-        }
-    }
-
-    private fun setWrapperError(wrapper: TextInputLayout, s: String?) {
-        if (s.isNullOrBlank()) {
-            wrapper.error = s
-            wrapper.setErrorEnabled(false)
-        } else {
-            wrapper.setErrorEnabled(true)
-            wrapper.error = s
         }
     }
 
