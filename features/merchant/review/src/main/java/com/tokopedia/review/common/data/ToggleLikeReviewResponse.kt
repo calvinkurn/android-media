@@ -18,8 +18,16 @@ data class ToggleProductReviewLike(
         val likeStatus: Int = 0,
         @SerializedName("totalLike")
         @Expose
-        val totalLike: Long = 0,
+        val totalLike: Int = 0,
         @SerializedName("totalDislike")
         @Expose
-        val totalDislike: Long = 0
-)
+        val totalDislike: Int = 0
+) {
+    companion object {
+        private const val LIKED = 1
+    }
+
+    fun isLiked(): Boolean {
+        return likeStatus == LIKED
+    }
+}

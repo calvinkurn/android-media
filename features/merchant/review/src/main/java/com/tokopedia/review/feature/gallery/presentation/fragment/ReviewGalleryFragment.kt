@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
+import com.tokopedia.review.common.data.ToggleProductReviewLike
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.feature.gallery.presentation.activity.ReviewGalleryActivity
@@ -31,6 +32,8 @@ import com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryExp
 import com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryReviewDetailWidget
 import com.tokopedia.review.feature.reading.data.ProductReview
 import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryComponent>, ReviewReportBottomSheetListener, ReviewGalleryImageSwipeListener {
@@ -171,8 +174,30 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
 
     private fun observeToggleLikeReviewResult() {
         viewModel.toggleLikeReview.observe(viewLifecycleOwner, Observer {
-
+            when(it) {
+                is Success -> onSuccessLikeReview(it.data)
+                is Fail -> onFailLikeReview()
+            }
         })
+    }
+
+    private fun onSuccessLikeReview(toggleLikeReviewResponse: ToggleProductReviewLike) {
+        with(toggleLikeReviewResponse) {
+            updateLikeCount(totalLike)
+            updateLikeButton(isLiked())
+        }
+    }
+
+    private fun onFailLikeReview() {
+        // No Op
+    }
+
+    private fun updateLikeButton(isLiked: Boolean) {
+        reviewDetail?.setLikeButtonImage(isLiked)
+    }
+
+    private fun updateLikeCount(totalLike: Int) {
+        reviewDetail?.setLikeCount(totalLike)
     }
 
     private fun goToReportReview(reviewId: String, shopId: String) {
