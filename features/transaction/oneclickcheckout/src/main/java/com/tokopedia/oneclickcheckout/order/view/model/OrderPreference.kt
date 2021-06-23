@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
+import com.tokopedia.oneclickcheckout.common.data.model.OrderItem
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 
@@ -11,4 +12,4 @@ data class OrderPreference(
         val preference: OrderProfile = OrderProfile(),
         val isValid: Boolean = false,
         val removeProfileData: OccRemoveProfileData = OccRemoveProfileData()
-)
+): OrderItem

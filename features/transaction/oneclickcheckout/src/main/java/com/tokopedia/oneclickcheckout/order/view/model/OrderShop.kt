@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.oneclickcheckout.common.data.model.OrderItem
 
 data class OrderShop(
         var shopId: Long = 0,
@@ -21,4 +22,4 @@ data class OrderShop(
         var fulfillmentBadgeUrl: String = "",
         var shopShipment: List<ShopShipment> = emptyList(),
         var errors: List<String> = emptyList()
-)
+): OrderItem

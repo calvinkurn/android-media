@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.data.get
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.oneclickcheckout.common.data.model.OrderItem
 
 data class OccMainOnboarding(
         @SerializedName("force_show_coachmark")
@@ -13,7 +14,7 @@ data class OccMainOnboarding(
         val onboardingTicker: OccOnboardingTicker = OccOnboardingTicker(),
         @SerializedName("onboarding_coachmark")
         val onboardingCoachMark: OccOnboardingCoachMark = OccOnboardingCoachMark()
-) {
+): OrderItem {
         companion object {
                 internal const val COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE = 5
         }

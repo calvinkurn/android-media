@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
+import com.tokopedia.oneclickcheckout.common.data.model.OrderItem
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 
 data class OrderProduct(
@@ -31,7 +32,7 @@ data class OrderProduct(
         var tickerMessage: ProductTickerMessage = ProductTickerMessage(),
         var purchaseProtectionPlanData: PurchaseProtectionPlanData = PurchaseProtectionPlanData(),
         var preOrderDuration: Int = 0
-) {
+): OrderItem {
 
     fun getPrice(): Long {
         var finalPrice = productPrice

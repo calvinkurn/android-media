@@ -14,12 +14,28 @@
         android:layout_height="@dimen/dp_8"
         android:background="@color/Unify_N50" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_preference_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="Pilihan Utamamu berubah, cek lagi ya"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider_top"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_profile_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="@string/lbl_osp_secondary_header"
         android:textColor="@color/Unify_N700_96"
