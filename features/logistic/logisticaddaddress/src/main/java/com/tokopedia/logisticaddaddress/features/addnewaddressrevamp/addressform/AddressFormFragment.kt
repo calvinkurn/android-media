@@ -146,6 +146,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             val isNegativeFullFlow = data?.getBooleanExtra(EXTRA_NEGATIVE_FULL_FLOW, false)
             val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
             saveDataModel = data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
+            if (saveDataModel == null) {
+                saveDataModel = data?.getParcelableExtra(EXTRA_ADDRESS_NEW)
+            }
             if (isNegativeFullFlow == true && isFromAddressForm == false) {
                 finishActivity(saveDataModel)
             } else {

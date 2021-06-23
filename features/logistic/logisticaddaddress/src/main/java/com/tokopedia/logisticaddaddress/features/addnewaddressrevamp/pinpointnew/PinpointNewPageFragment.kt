@@ -175,6 +175,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_ADDRESS_NEW, data)
                 putExtra(EXTRA_NEGATIVE_FULL_FLOW, true)
+                putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
                 putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
             })
             finish()

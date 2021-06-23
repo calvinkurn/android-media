@@ -127,7 +127,10 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         if (resultCode == Activity.RESULT_OK) {
             if(requestCode == 1998) {
                 val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
-                val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
+                var newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
+                if (newAddress == null) {
+                    newAddress = data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
+                }
                 isFromAddressForm?.let { finishActivity(newAddress, it) }
             } else if (requestCode == 1599) {
                 val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
