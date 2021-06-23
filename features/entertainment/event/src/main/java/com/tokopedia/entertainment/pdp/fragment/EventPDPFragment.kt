@@ -349,7 +349,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     widget_event_pdp_tab_section.setScrolledSection((rv_event_pdp.layoutManager
-                            as LinearLayoutManager).findFirstVisibleItemPosition())
+                            as LinearLayoutManager).findFirstCompletelyVisibleItemPosition())
                 }
             })
         }

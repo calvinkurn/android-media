@@ -76,6 +76,7 @@ class WidgetEventPDPTabSection @JvmOverloads constructor(context: Context, attrs
     }
 
     private fun translateToPosition(itemPosition: Int) {
-        (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(itemPosition+1, 0)
+        val position = if(itemPosition == 0) itemPosition else itemPosition + 1
+        (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(position, 0)
     }
 }
