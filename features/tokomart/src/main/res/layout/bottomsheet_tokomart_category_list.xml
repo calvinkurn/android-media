@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ScrollView
+        android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:nestedScrollingEnabled="true"
@@ -30,12 +30,9 @@
 
     </ScrollView>
 
-    <com.tokopedia.unifycomponents.LoaderUnify
+    <include
         android:id="@+id/loader"
-        android:layout_width="@dimen/dp_25"
-        android:layout_height="@dimen/dp_25"
-        android:layout_centerInParent="true"
-        android:visibility="visible"/>
+        layout="@layout/partial_tokonow_category_list_linearlayout_shimmering" />
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/layout_global_error_category_list"

@@ -557,7 +557,6 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun sendProductImpressionTrackingEvent(
             item: ProductItemDataView,
             suggestedRelatedKeyword: String,
-            dimension90: String,
     ) {
         val userId = getUserId()
         val eventLabel = getSearchProductTrackingEventLabel(item, suggestedRelatedKeyword)
@@ -568,7 +567,7 @@ class ProductListFragment: BaseDaggerFragment(),
             getSortFilterParamsString(it.getSearchParameterMap() as Map<String?, Any?>)
         } ?: ""
 
-        dataLayerList.add(item.getProductAsObjectDataLayer(filterSortParams, dimension90))
+        dataLayerList.add(item.getProductAsObjectDataLayer(filterSortParams))
         productItemDataViews.add(item)
 
         trackingQueue?.let {
@@ -752,7 +751,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun sendTopAdsGTMTrackingProductImpression(item: ProductItemDataView) {
         val product: Product = createTopAdsProductForTracking(item)
-        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, item.position)
+        TopAdsGtmTracker.getInstance().addSearchResultProductViewImpressions(product, item.position, item.dimension90)
     }
 
     private fun createTopAdsProductForTracking(item: ProductItemDataView): Product {
@@ -821,8 +820,8 @@ class ProductListFragment: BaseDaggerFragment(),
                 queryKey,
                 product,
                 item.position,
-                SCREEN_SEARCH_PAGE_PRODUCT_TAB,
                 getUserId(),
+                item.dimension90,
         )
     }
 
@@ -830,7 +829,6 @@ class ProductListFragment: BaseDaggerFragment(),
             item: ProductItemDataView,
             userId: String,
             suggestedRelatedKeyword: String,
-            dimension90: String,
     ) {
         val eventLabel = getSearchProductTrackingEventLabel(item, suggestedRelatedKeyword)
         val filterSortParams = searchParameter?.let {
@@ -838,7 +836,7 @@ class ProductListFragment: BaseDaggerFragment(),
         } ?: ""
 
         SearchTracking.trackEventClickSearchResultProduct(
-                item.getProductAsObjectDataLayer(filterSortParams, dimension90),
+                item.getProductAsObjectDataLayer(filterSortParams),
                 item.isOrganicAds,
                 eventLabel,
                 filterSortParams,
@@ -1592,7 +1590,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 queryKey,
                 broadMatchItemDataView.alternativeKeyword,
                 getUserId(),
-                broadMatchItem
+                broadMatchItem,
         )
     }
 
@@ -1630,7 +1628,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 queryKey,
                 broadMatchItemDataView.alternativeKeyword,
                 getUserId(),
-                broadMatchItemAsObjectDataLayer
+                broadMatchItemAsObjectDataLayer,
         )
     }
 
@@ -1964,7 +1962,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView) {
-        SearchTracking.trackEventClickBroadMatchSeeMore(queryKey, broadMatchDataView.keyword)
+        SearchTracking.trackEventClickBroadMatchSeeMore(queryKey, broadMatchDataView.keyword, broadMatchDataView.dimension90)
     }
 
     override fun trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel: BroadMatchDataView, type: String) {

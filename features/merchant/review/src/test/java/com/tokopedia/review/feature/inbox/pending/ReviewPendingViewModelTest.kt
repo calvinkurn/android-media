@@ -17,7 +17,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyLong
+import org.mockito.ArgumentMatchers.anyString
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
@@ -112,7 +112,7 @@ class ReviewPendingViewModelTest : ReviewPendingViewModelTestFixture() {
 
     @Test
     fun `when markAsSeen should execute expected usecase`() {
-        val inboxReviewId = anyLong()
+        val inboxReviewId = anyString()
 
         viewModel.markAsSeen(inboxReviewId)
 

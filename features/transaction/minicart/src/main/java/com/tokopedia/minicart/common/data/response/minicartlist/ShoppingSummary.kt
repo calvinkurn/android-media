@@ -14,5 +14,9 @@ data class ShoppingSummary(
         @SerializedName("payment_total_wording")
         val paymentTotalWording: String = "",
         @SerializedName("payment_total_value")
-        val paymentTotalValue: Long = 0L
+        val paymentTotalValue: Long = 0L,
+        @SerializedName("seller_cashback_wording")
+        val sellerCashbackWording: String = "",
+        @SerializedName("seller_cashback_value")
+        val sellerCashbackValue: Long = 0L
 )

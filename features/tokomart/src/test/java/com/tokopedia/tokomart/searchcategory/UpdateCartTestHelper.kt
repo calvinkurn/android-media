@@ -3,7 +3,6 @@ package com.tokopedia.tokomart.searchcategory
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
@@ -202,6 +201,7 @@ class UpdateCartTestHelper(
     }
 
     fun `onViewUpdateCartItems should update quantity in product list`() {
+        val miniCartSimplifiedData = SearchCategoryDummyUtils.miniCartSimplifiedData
         callback.`Given first page API will be successful`()
         `Given get mini cart simplified use case will be successful`(miniCartSimplifiedData)
         `Given view already created`()
@@ -209,6 +209,7 @@ class UpdateCartTestHelper(
         `When view update cart items`()
 
         `Then assert product quantity is updated`()
+        `Then assert mini cart widget visibility`(miniCartSimplifiedData.isShowMiniCartWidget)
     }
 
     private fun `When view update cart items`() {

@@ -1,6 +1,7 @@
 package com.tokopedia.minicart.cartlist
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.common.data.response.minicartlist.*
@@ -15,11 +16,14 @@ import kotlin.math.min
 class MiniCartListUiModelMapper @Inject constructor() {
 
     fun mapUiModel(miniCartData: MiniCartData): MiniCartListUiModel {
+        val totalProductAvailable = getTotalProductAvailable(miniCartData)
+        val totalProductUnavailable = getTotalProductUnavailable(miniCartData)
+
         return MiniCartListUiModel().apply {
             title = miniCartData.data.headerTitle
-            miniCartWidgetUiModel = mapMiniCartWidgetData(miniCartData)
-            miniCartSummaryTransactionUiModel = mapMiniCartSummaryTransactionUiModel(miniCartData)
-            visitables = mapVisitables(miniCartData)
+            miniCartWidgetUiModel = mapMiniCartWidgetData(miniCartData, totalProductAvailable, totalProductUnavailable)
+            miniCartSummaryTransactionUiModel = mapMiniCartSummaryTransactionUiModel(miniCartData, totalProductAvailable)
+            visitables = mapVisitables(miniCartData, totalProductAvailable, totalProductUnavailable)
             if (miniCartData.data.availableSection.availableGroup.isNotEmpty()) {
                 maximumShippingWeight = miniCartData.data.availableSection.availableGroup[0].shop.maximumShippingWeight
                 maximumShippingWeightErrorMessage = miniCartData.data.availableSection.availableGroup[0].shop.maximumWeightWording
@@ -27,27 +31,49 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-    private fun mapMiniCartSummaryTransactionUiModel(miniCartData: MiniCartData): MiniCartSummaryTransactionUiModel {
+    private fun getTotalProductAvailable(miniCartData: MiniCartData): Int {
+        var count = 0
+        miniCartData.data.availableSection.availableGroup.forEach { availableGroup ->
+            count += availableGroup.cartDetails.size
+        }
+
+        return count
+    }
+
+    private fun getTotalProductUnavailable(miniCartData: MiniCartData): Int {
+        var count = 0
+        miniCartData.data.unavailableSection.forEach { unavailableSection ->
+            unavailableSection.unavailableGroup.forEach { unavailableGroup ->
+                count += unavailableGroup.cartDetails.size
+            }
+        }
+
+        return count
+    }
+
+    private fun mapMiniCartSummaryTransactionUiModel(miniCartData: MiniCartData, totalProductAvailable: Int): MiniCartSummaryTransactionUiModel {
         return MiniCartSummaryTransactionUiModel().apply {
-            qty = miniCartData.data.totalProductCount
+            qty = totalProductAvailable
             totalWording = miniCartData.data.shoppingSummary.totalWording
             totalValue = miniCartData.data.shoppingSummary.totalValue
             discountTotalWording = miniCartData.data.shoppingSummary.discountTotalWording
             discountValue = miniCartData.data.shoppingSummary.discountValue
             paymentTotalWording = miniCartData.data.shoppingSummary.paymentTotalWording
             paymentTotal = miniCartData.data.shoppingSummary.paymentTotalValue
+            sellerCashbackWording = miniCartData.data.shoppingSummary.sellerCashbackWording
+            sellerCashbackValue = miniCartData.data.shoppingSummary.sellerCashbackValue
         }
     }
 
-    private fun mapMiniCartWidgetData(miniCartData: MiniCartData): MiniCartWidgetData {
+    private fun mapMiniCartWidgetData(miniCartData: MiniCartData, totalProductAvailable: Int, totalProductUnavailable: Int): MiniCartWidgetData {
         return MiniCartWidgetData().apply {
-            totalProductCount = miniCartData.data.totalProductCount
+            totalProductCount = totalProductAvailable
             totalProductPrice = miniCartData.data.totalProductPrice
-            totalProductError = miniCartData.data.totalProductError
+            totalProductError = totalProductUnavailable
         }
     }
 
-    private fun mapVisitables(miniCartData: MiniCartData): MutableList<Visitable<*>> {
+    private fun mapVisitables(miniCartData: MiniCartData, totalProductAvailable: Int, totalProductUnavailable: Int): MutableList<Visitable<*>> {
         var miniCartTickerErrorUiModel: MiniCartTickerErrorUiModel? = null
         val miniCartTickerWarningUiModel: MiniCartTickerWarningUiModel? = null
         var miniCartShopUiModel: MiniCartShopUiModel? = null
@@ -55,8 +81,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
         val miniCartUnavailableSectionUiModels: MutableList<Visitable<*>> = mutableListOf()
 
         // Add error ticker
-        if (miniCartData.data.totalProductError > 0) {
-            miniCartTickerErrorUiModel = mapTickerErrorUiModel(miniCartData.data.totalProductError)
+        if (totalProductUnavailable > 0 && totalProductAvailable > 0) {
+            miniCartTickerErrorUiModel = mapTickerErrorUiModel(totalProductUnavailable, totalProductAvailable)
         }
 
         var weightTotal = 0
@@ -82,20 +108,20 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
 
         // Add unavailable separator
-        if (miniCartData.data.totalProductError > 0) {
+        if (totalProductUnavailable > 0 && totalProductAvailable > 0) {
             val miniCartSeparatorUiModel = mapSeparatorUiModel(8)
             miniCartUnavailableSectionUiModels.add(miniCartSeparatorUiModel)
         }
 
         // Add unavailable header
-        if (miniCartData.data.totalProductError > 0) {
-            val miniCartUnavailableHeaderUiModel = mapUnavailableHeaderUiModel(miniCartData.data.totalProductError)
+        if (totalProductUnavailable > 0) {
+            val miniCartUnavailableHeaderUiModel = mapUnavailableHeaderUiModel(totalProductUnavailable)
             miniCartUnavailableSectionUiModels.add(miniCartUnavailableHeaderUiModel)
         }
 
         miniCartData.data.unavailableSection.forEach { unavailableSection ->
             // Add unavailable reason
-            val unavailableReasonUiModel = mapUnavailableReasonUiModel(unavailableSection.title)
+            val unavailableReasonUiModel = mapUnavailableReasonUiModel(unavailableSection.title, unavailableSection.unavailableDescription)
             miniCartUnavailableSectionUiModels.add(unavailableReasonUiModel)
             unavailableSection.unavailableGroup.forEach { unavailableGroup ->
                 // Add unavailable product
@@ -116,7 +142,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
 
         // Add unavailable accordion
-        if (miniCartData.data.totalProductError > 1) {
+        if (totalProductUnavailable > 1) {
             // Add unavailable accordion separator
             val miniCartSeparatorUiModel = mapSeparatorUiModel(8)
             miniCartUnavailableSectionUiModels.add(miniCartSeparatorUiModel)
@@ -220,6 +246,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             } else {
                 productQtyLeft = cartDetail.product.productWarningMessage
             }
+            productCashbackPercentage = cartDetail.product.productCashback.replace("%", "").toIntOrZero()
         }
     }
 
@@ -238,37 +265,38 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-    private fun mapTickerErrorUiModel(totalProductError: Int): MiniCartTickerErrorUiModel {
+    private fun mapTickerErrorUiModel(totalProductUnavailable: Int, totalProductAvailable: Int): MiniCartTickerErrorUiModel {
         return MiniCartTickerErrorUiModel().apply {
-            unavailableItemCount = totalProductError
-            isShowErrorActionLabel = true
+            unavailableItemCount = totalProductUnavailable
+            isShowErrorActionLabel = totalProductAvailable > 1
         }
     }
 
     fun mapTickerWarningUiModel(overWeight: Float, warningWording: String): MiniCartTickerWarningUiModel {
         return MiniCartTickerWarningUiModel().apply {
-            warningMessage = warningWording.replace("{{weight}}", overWeight.toString())
+            warningMessage = warningWording.replace("{{weight}}", "$overWeight ")
         }
     }
 
-    private fun mapUnavailableHeaderUiModel(totalProductError: Int): MiniCartUnavailableHeaderUiModel {
+    private fun mapUnavailableHeaderUiModel(totalProductUnavailable: Int): MiniCartUnavailableHeaderUiModel {
         return MiniCartUnavailableHeaderUiModel().apply {
-            unavailableItemCount = totalProductError
+            unavailableItemCount = totalProductUnavailable
         }
     }
 
-    private fun mapUnavailableReasonUiModel(title: String): MiniCartUnavailableReasonUiModel {
+    private fun mapUnavailableReasonUiModel(title: String, unavailableDescription: String): MiniCartUnavailableReasonUiModel {
         return MiniCartUnavailableReasonUiModel().apply {
             reason = title
+            description = unavailableDescription
         }
     }
 
-    fun reverseMapUiModel(miniCartListUiModel: MiniCartListUiModel?): MiniCartSimplifiedData {
+    fun reverseMapUiModel(miniCartListUiModel: MiniCartListUiModel?, tmpHiddenUnavailableItems: List<Visitable<*>>?): MiniCartSimplifiedData {
         if (miniCartListUiModel == null) {
             return MiniCartSimplifiedData()
         } else {
             return MiniCartSimplifiedData().apply {
-                val miniCartItemsMapResult = mapMiniCartItems(miniCartListUiModel.visitables)
+                val miniCartItemsMapResult = mapMiniCartItems(miniCartListUiModel.visitables, tmpHiddenUnavailableItems)
                 miniCartItems = miniCartItemsMapResult.first
                 isShowMiniCartWidget = miniCartItems.isNotEmpty()
                 miniCartWidgetData = miniCartListUiModel.miniCartWidgetUiModel
@@ -278,11 +306,16 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-    private fun mapMiniCartItems(visitables: List<Visitable<*>>): Triple<List<MiniCartItem>, Boolean, Int> {
+    private fun mapMiniCartItems(visitables: List<Visitable<*>>, tmpHiddenUnavailableItems: List<Visitable<*>>?): Triple<List<MiniCartItem>, Boolean, Int> {
+        val tmpVisitables = mutableListOf<Visitable<*>>()
+        tmpVisitables.addAll(visitables)
+        if (tmpHiddenUnavailableItems != null) {
+            tmpVisitables.addAll(tmpHiddenUnavailableItems)
+        }
         var hasAvailableItem = false
         var unavailableItemCount = 0
         val miniCartItems = mutableListOf<MiniCartItem>()
-        visitables.forEach { visitable ->
+        tmpVisitables.forEach { visitable ->
             if (visitable is MiniCartProductUiModel) {
                 val miniCartItem = MiniCartItem().apply {
                     isError = visitable.isProductDisabled
@@ -305,7 +338,6 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     productName = visitable.productName
                     productVariantName = visitable.productVariantName
                     productPrice = visitable.productPrice
-                    productQty = visitable.productQty
                 }
                 miniCartItems.add(miniCartItem)
 

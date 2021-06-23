@@ -164,6 +164,7 @@ object ProductDetailConstant {
     const val NO_BEBAS_ONGKIR = 0
     const val BEBAS_ONGKIR_NORMAL = 1
     const val BEBAS_ONGKIR_EXTRA = 2
+    const val BO_TOKONOW = 3
 
     //shipping error code
     const val SHIPPING_ERROR_WEIGHT = 50503
@@ -181,4 +182,6 @@ object ProductDetailConstant {
     const val ERROR_TYPE_KEY = "error_type"
     const val EXTRAS_KEY = "extras"
     const val PDP_LOG_TAG = "BUYER_FLOW_PDP"
+
+    const val DEFAULT_ATC_MAX_ORDER = 100
 }

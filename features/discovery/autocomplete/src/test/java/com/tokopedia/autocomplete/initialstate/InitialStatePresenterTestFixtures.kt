@@ -67,6 +67,10 @@ internal open class InitialStatePresenterTestFixtures {
         initialStatePresenter.getInitialStateData()
     }
 
+    protected fun `Given presenter will return searchParameter`(searchParameter: Map<String, String>) {
+        initialStatePresenter.setSearchParameter(searchParameter as HashMap<String, String>)
+    }
+
     protected fun `Given view already get initial state`(responseJSON: String) {
         val initialStateUniverse = responseJSON.jsonToObject<InitialStateUniverse>()
 
@@ -92,6 +96,20 @@ internal open class InitialStatePresenterTestFixtures {
     }
 
     protected fun `Then verify initial state view behavior for failed refresh`() {
+        verifyOrder {
+            initialStateView.chooseAddressData
+            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
+            initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
+            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
+            initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
+            initialStateView.showInitialStateResult(capture(slotVisitableList))
+            initialStateView.onRefreshPopularSearch()
+            initialStateView.chooseAddressData
+        }
+        confirmVerified(initialStateView)
+    }
+
+    protected fun `Then verify initial state view behavior for failed refresh dynamic`() {
         verifyOrder {
             initialStateView.chooseAddressData
             initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -135,6 +136,11 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     fun updateWidget(){
+        val textColor = chooseAddressWidgetListener?.onChangeTextColor()
+        if (textColor != null) {
+            textChosenAddress?.setTextColor(ContextCompat.getColor(context, textColor))
+
+        }
         val data = ChooseAddressUtils.getLocalizingAddressData(context)
         if (data?.city_id?.isEmpty() == true) {
             textChosenAddress?.text = data.label
@@ -281,11 +287,18 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         }
 
         /**
+         * Int Color for Text label
+         */
+        fun onChangeTextColor(): Int {
+            return com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+        }
+
+        /**
          * To differentiate feature that need warehouse loc or not
          */
         fun isSupportWarehouseLoc(): Boolean {
             return true
         }
-    }
+     }
 
 }

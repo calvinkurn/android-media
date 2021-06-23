@@ -118,4 +118,6 @@ public interface ShipmentAdapterActionListener {
     void onClickRefreshErrorLoadCourier();
 
     void onViewErrorInCourierSection(String errorMessage);
+
+    void onClickSetPinpoint(int position);
 }

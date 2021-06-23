@@ -22,6 +22,7 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
     private var htmlClickListener: ((url: String, isEmpty: Boolean) -> Unit)? = null
     private val mTablePageAdapter by lazy { TablePageAdapter() }
     private var alreadyAttachToSnapHelper = false
+    private var highestHeight = 0
 
     init {
         View.inflate(context, R.layout.shc_table_view, this)
@@ -42,7 +43,7 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     val position = mLayoutManager.findFirstCompletelyVisibleItemPosition()
-                    if (position != RecyclerView.NO_POSITION) {
+                    if (position != RecyclerView.NO_POSITION && items.size > 1) {
                         mLayoutManager.findViewByPosition(position)?.let { view ->
                             refreshTableHeight(view)
                         }
@@ -67,7 +68,7 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
     }
 
     fun addOnSlideImpressionListener(onView: (position: Int, maxPosition: Int, isEmpty: Boolean) -> Unit) {
-         this.slideImpressionListener = onView
+        this.slideImpressionListener = onView
     }
 
     fun addOnHtmlClickListener(onClick: (url: String, isEmpty: Boolean) -> Unit) {
@@ -84,7 +85,12 @@ class TableView(context: Context?, attrs: AttributeSet?) : LinearLayout(context,
 
         if (rvTableViewPage?.layoutParams?.height != view.measuredHeight) {
             rvTableViewPage?.layoutParams = (rvTableViewPage?.layoutParams as? LayoutParams)
-                    ?.also { lp -> lp.height = view.measuredHeight }
+                    ?.also { lp ->
+                        if (view.measuredHeight > highestHeight) {
+                            highestHeight = view.measuredHeight
+                            lp.height = view.measuredHeight
+                        }
+                    }
         }
     }
 }

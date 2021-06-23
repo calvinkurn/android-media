@@ -11,8 +11,6 @@ import com.tokopedia.tokomart.searchcategory.assertTitleDataView
 import com.tokopedia.tokomart.searchcategory.jsonToObject
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.verifyProductItemDataViewList
-import org.hamcrest.CoreMatchers
-import org.junit.Assert
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -65,7 +63,7 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
         val expectedProductList = categoryModel.searchProduct.data.productList
         val actualProductItemDataViewList = visitableList.filterIsInstance<ProductItemDataView>()
 
-        verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList)
+        verifyProductItemDataViewList(expectedProductList, actualProductItemDataViewList, 1)
     }
 
     private fun `Then assert get first page success interactions`(categoryModel: CategoryModel) {

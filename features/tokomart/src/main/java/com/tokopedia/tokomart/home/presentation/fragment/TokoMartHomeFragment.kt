@@ -42,6 +42,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_EXP_NAME
 import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_VARIANT_OLD
@@ -97,6 +98,9 @@ class TokoMartHomeFragment: Fragment(),
     @Inject
     lateinit var viewModel: TokoMartHomeViewModel
 
+    @Inject
+    lateinit var analytics: HomeAnalytics
+
     private val adapter by lazy {
         TokoMartHomeAdapter(
             typeFactory = TokoMartHomeAdapterTypeFactory(
@@ -121,6 +125,7 @@ class TokoMartHomeFragment: Fragment(),
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
+    private var isFirstImpressionOnBanner = false
 
     private val homeMainToolbarHeight: Int
         get() = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.tokomart_default_toolbar_status_height)
@@ -190,6 +195,7 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
+        analytics.onClickBannerPromo(position, userSession.userId, channelModel, channelGrid)
         context?.let {
             RouteManager.route(it, channelGrid.applink)
         }
@@ -208,6 +214,14 @@ class TokoMartHomeFragment: Fragment(),
         }
     }
 
+    override fun onAllCategoryClicked() {
+        analytics.onClickAllCategory()
+    }
+
+    override fun onCategoryClicked(position: Int, categoryId: String) {
+        analytics.onClickCategory(position, userSession.userId, categoryId)
+    }
+
     override fun isMainViewVisible(): Boolean = true
 
     override fun isBannerImpressed(id: String): Boolean = true
@@ -218,7 +232,14 @@ class TokoMartHomeFragment: Fragment(),
 
     override fun onPromoAllClick(channelModel: ChannelModel) {}
 
-    override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {}
+    override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
+        if (!isFirstImpressionOnBanner) {
+            isFirstImpressionOnBanner = true
+        } else {
+            analytics.onImpressBannerPromo(userSession.userId, channelModel)
+            isFirstImpressionOnBanner = false
+        }
+    }
 
     private fun initInjector() {
         DaggerTokoMartHomeComponent.builder()
@@ -324,15 +345,19 @@ class TokoMartHomeFragment: Fragment(),
 
     private fun setIconNewTopNavigation() {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                .addIcon(IconList.ID_CART) {}
+                .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
                 .addIcon(IconList.ID_NAV_GLOBAL) {}
         navToolbar?.setIcon(icons)
     }
 
     private fun setIconOldTopNavigation() {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                .addIcon(IconList.ID_CART) {}
+                .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
         navToolbar?.setIcon(icons)
+    }
+
+    private fun onClickCartButton() {
+        analytics.onClickCartButton()
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
@@ -629,18 +654,21 @@ class TokoMartHomeFragment: Fragment(),
                                     data.keyword.orEmpty()
                             )
                     ),
-                    searchbarClickCallback = {
-                        RouteManager.route(context,
-                                getAutoCompleteApplinkPattern(),
-                                SOURCE,
-                                resources.getString(R.string.tokomart_search_bar_hint),
-                                isFirstInstall().toString())
-                    },
+                    searchbarClickCallback = ::onSearchBarClick,
                     searchbarImpressionCallback = {},
                     durationAutoTransition = durationAutoTransition,
                     shouldShowTransition = shouldShowTransition()
             )
         }
+    }
+
+    private fun onSearchBarClick(hint: String) {
+        analytics.onClickSearchBar()
+        RouteManager.route(context,
+                getAutoCompleteApplinkPattern(),
+                SOURCE,
+                resources.getString(R.string.tokomart_search_bar_hint),
+                isFirstInstall().toString())
     }
 
     private fun getAutoCompleteApplinkPattern() =

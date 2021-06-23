@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.domain.model
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -14,7 +15,7 @@ data class ThanksPageResponse(
 @Parcelize
 data class ThanksPageData(
         @SerializedName("payment_id")
-        val paymentID: Long,
+        val paymentID: String,
         @SerializedName("profile_code")
         val profileCode: String,
         @SerializedName("payment_status")
@@ -258,8 +259,9 @@ data class PurchaseItem(
         val productName: String,
         @SerializedName("product_brand")
         val productBrand: String,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
-        val price: Float,
+        val price: Double,
         @SerializedName("price_str")
         val priceStr: String,
         @SerializedName("quantity")
@@ -285,13 +287,15 @@ data class PurchaseItem(
         @SerializedName("bebas_ongkir_dimension")
         val bebasOngkirDimension: String,
         @SerializedName("is_bbi")
-        val isBBIProduct: Boolean
+        val isBBIProduct: Boolean,
+        @SerializedName("category_id")
+        val categoryId: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readFloat(),
+            parcel.readDouble(),
             parcel.readString() ?: "",
             parcel.readInt(),
             parcel.readFloat(),
@@ -304,13 +308,15 @@ data class PurchaseItem(
             parcel.readString() ?: "",
             parcel.readDouble(),
             parcel.readString() ?: "",
-            parcel.readByte() == 1.toByte())
+            parcel.readByte() == 1.toByte(),
+            parcel.readString() ?: ""
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(productId)
         parcel.writeString(productName)
         parcel.writeString(productBrand)
-        parcel.writeFloat(price)
+        parcel.writeDouble(price)
         parcel.writeString(priceStr)
         parcel.writeInt(quantity)
         parcel.writeFloat(weight)
@@ -324,6 +330,7 @@ data class PurchaseItem(
         parcel.writeDouble(productPlanProtection)
         parcel.writeString(bebasOngkirDimension)
         parcel.writeByte(if (isBBIProduct) 1 else 0)
+        parcel.writeString(categoryId)
     }
 
     override fun describeContents(): Int {

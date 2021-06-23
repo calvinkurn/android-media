@@ -8,19 +8,28 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartMultiLegacyUseCase
 import com.tokopedia.buyerorder.detail.data.ActionButton
 import com.tokopedia.buyerorder.detail.data.ActionButtonList
 import com.tokopedia.buyerorder.detail.data.DataEmail
+import com.tokopedia.buyerorder.detail.data.Detail
+import com.tokopedia.buyerorder.detail.data.DetailsData
+import com.tokopedia.buyerorder.detail.data.OrderDetails
 import com.tokopedia.buyerorder.detail.data.SendEventEmail
+import com.tokopedia.buyerorder.detail.data.Title
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RechargeFavoriteRecommendationList
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo.RecommendationResponse
+import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.PersonalizedItems
+import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse
 import com.tokopedia.buyerorder.detail.domain.BuyerGetRecommendationUseCase
 import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase
 import com.tokopedia.buyerorder.detail.domain.SetActionButtonUseCase
+import com.tokopedia.buyerorder.detail.view.OrderListAnalytics
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrder
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -206,12 +215,17 @@ class OrderListDetailPresenterTest {
     @Test
     fun orderDetail_shouldReturnSuccess() {
         //given
+        val result = HashMap<Type, Any>()
+        result[RecommendationDigiPersoResponse::class.java] = RecommendationDigiPersoResponse(null)
+
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
         every {
             orderDetailsUseCase.execute(any())
         } answers {
             firstArg<Subscriber<GraphqlResponse>>().onStart()
             firstArg<Subscriber<GraphqlResponse>>().onCompleted()
-            firstArg<Subscriber<GraphqlResponse>>().onNext(GraphqlResponse(any(), any(), false))
+            firstArg<Subscriber<GraphqlResponse>>().onNext(gqlResponse)
         }
 
         //when
@@ -219,5 +233,6 @@ class OrderListDetailPresenterTest {
 
         //then
         verify { orderDetailsUseCase.execute(any()) }
+        verify { view.setRecommendation(RecommendationDigiPersoResponse(null)) }
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.View.OnClickListener
+import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -34,6 +35,7 @@ import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import java.net.SocketTimeoutException
@@ -118,15 +120,14 @@ class MiniCartWidget @JvmOverloads constructor(
                 }
                 GlobalEvent.STATE_SUCCESS_UPDATE_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
-                        context?.let {
+                        context?.let { context ->
                             hideProgressLoading()
-                            onSuccessUpdateCartForCheckout(it)
+                            onSuccessUpdateCartForCheckout(context)
                         }
                     }
                 }
                 GlobalEvent.STATE_FAILED_UPDATE_CART_FOR_CHECKOUT -> {
                     if (it.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
-                        hideProgressLoading()
                         onFailedUpdateCartForCheckout(it, fragment)
                     }
                 }
@@ -142,7 +143,7 @@ class MiniCartWidget @JvmOverloads constructor(
         hideProgressLoading()
         miniCartListBottomSheet.dismiss()
         val message = data?.removeFromCartData?.data?.message?.firstOrNull() ?: ""
-        if(message.isNotBlank()) {
+        if (message.isNotBlank()) {
             if (data?.isBulkDelete == true) {
                 showToaster(
                         message = message,
@@ -158,6 +159,7 @@ class MiniCartWidget @JvmOverloads constructor(
     }
 
     private fun onFailedUpdateCartForCheckout(globalEvent: GlobalEvent, fragment: Fragment) {
+        hideProgressLoading()
         setTotalAmountLoading(true)
         viewModel?.getLatestWidgetState()
         fragment.context?.let { context ->
@@ -169,14 +171,14 @@ class MiniCartWidget @JvmOverloads constructor(
         val data = globalEvent.data
         if (data != null) {
             // Goes here if failed but get response from BE
-            handleFailedUpdateCartWithOutOfService(view, data, fragmentManager, context)
+            handleFailedUpdateCartWithOutOfService(view, data, fragmentManager, context, globalEvent)
         } else {
             // Goes here if failed and get no response from BE
             handleFailedUpdateCartWithThrowable(view, globalEvent, fragmentManager, context)
         }
     }
 
-    private fun handleFailedUpdateCartWithOutOfService(view: View?, data: Any, fragmentManager: FragmentManager, context: Context) {
+    private fun handleFailedUpdateCartWithOutOfService(view: View?, data: Any, fragmentManager: FragmentManager, context: Context, globalEvent: GlobalEvent) {
         if (data is Data) {
             if (data.outOfService.id.isNotBlank() && data.outOfService.id != "0") {
                 // Prioritize to show out of service data
@@ -188,17 +190,21 @@ class MiniCartWidget @JvmOverloads constructor(
 
                     override fun onRefreshErrorPage() {
                         showProgressLoading()
-                        viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
+                        viewModel?.updateCart(true, globalEvent.observer)
                     }
                 })
             } else {
                 // Show toaster error if have no out of service data
                 analytics.eventClickBuyThenGetToasterError(data.error)
                 var ctaText = "Oke"
-                if (data.toasterAction.showCta) {
+                if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
                     ctaText = data.toasterAction.text
                 }
-                showToaster(view, data.error, Toaster.TYPE_ERROR, ctaText)
+                if (data.toasterAction.showCta) {
+                    showToaster(view, data.error, Toaster.TYPE_ERROR, ctaText, isShowCta = true)
+                } else {
+                    showToaster(view, data.error, Toaster.TYPE_ERROR, isShowCta = false)
+                }
             }
         }
     }
@@ -215,7 +221,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
                         override fun onRefreshErrorPage() {
                             showProgressLoading()
-                            viewModel?.updateCart(true, GlobalEvent.OBSERVER_MINI_CART_WIDGET)
+                            viewModel?.updateCart(true, globalEvent.observer)
                         }
                     })
                 }
@@ -403,6 +409,14 @@ class MiniCartWidget @JvmOverloads constructor(
             imageChevronUnavailable?.gone()
         }
         setTotalAmountLoading(false)
+        setAmountViewLayoutParams()
+    }
+
+    private fun setAmountViewLayoutParams() {
+        val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        lp.weight = 0f
+        lp.setMargins(0, 0, 4.toPx(), 0)
+        totalAmount?.amountView?.layoutParams = lp
     }
 
     private fun setTotalAmountLoading(isLoading: Boolean) {
@@ -441,6 +455,7 @@ class MiniCartWidget @JvmOverloads constructor(
             updateData(it)
             miniCartWidgetListener?.onCartItemsUpdated(it)
         }
+        viewModel?.resetTemporaryHiddenUnavailableItems()
     }
 
     override fun onBottomSheetSuccessUpdateCartForCheckout() {

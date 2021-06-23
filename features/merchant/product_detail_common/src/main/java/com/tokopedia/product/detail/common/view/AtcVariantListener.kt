@@ -17,4 +17,5 @@ interface AtcVariantListener {
     fun onVariantEmptyAndSelectedClicked(){}
 
     fun onQuantityUpdate(quantity: Int, productId: String) {}
+    fun onClickRefresh() {}
 }

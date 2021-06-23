@@ -877,7 +877,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO } == 0)
-        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 1)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.BY_ME } == 1)
@@ -900,7 +900,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify {
-            getProductInfoP3UseCase.executeOnBackground(any(), any(), any(), any())
+            getProductInfoP3UseCase.executeOnBackground(any(), any())
         }
 
         coVerify {
@@ -918,7 +918,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         } returns ProductInfoP2Login()
 
         coEvery {
-            getProductInfoP3UseCase.executeOnBackground(any(), any(), any(), any())
+            getProductInfoP3UseCase.executeOnBackground(any(), any())
         } returns ProductInfoP3()
 
         coEvery {
@@ -1002,7 +1002,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify {
-            getProductInfoP3UseCase.executeOnBackground(any(), any(), any(), any())
+            getProductInfoP3UseCase.executeOnBackground(any(), any())
         }
 
         coVerify(inverse = true) {

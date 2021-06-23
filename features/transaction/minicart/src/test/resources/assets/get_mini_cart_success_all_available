@@ -57,7 +57,7 @@
             "errors": [],
             "shop": {
               "maximum_weight_wording": "Belanjaan TokoNOW! kamu terlalu berat {{weight}} kg untuk 1x pengiriman. Coba atur ulang pesanan.",
-              "maximum_shipping_weight": 20000,
+              "maximum_shipping_weight": 1000,
               "shop_id": 11515028,
               "shop_name": "11515028tknw",
               "shop_type_info": {
@@ -127,7 +127,7 @@
                 "errors": [],
                 "product": {
                   "product_id": 1868874664,
-                  "product_weight": 1600,
+                  "product_weight": 100,
                   "product_quantity": 1,
                   "product_name": "c4rt b3ac38cf56cc0ca716bbc91f0afde3d07751f512c54f49 16",
                   "product_image": {
@@ -165,7 +165,7 @@
                 "errors": [],
                 "product": {
                   "product_id": 1868874657,
-                  "product_weight": 10000,
+                  "product_weight": 100,
                   "product_quantity": 1,
                   "product_name": "c4rt b3ac38cf56cc0ca716bbc91f0afde3d07751f512c54f49 14",
                   "product_image": {

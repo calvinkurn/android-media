@@ -10,6 +10,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.TypedValue;
 import android.view.View;
@@ -210,6 +211,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography labelSelectedShippingPriceorDuration;
     private Typography labelDescCourier;
     private Typography labelDescCourierTnc;
+    private View vFillCourier;
     private ImageView iconChevronChooseCourier;
     private ConstraintLayout layoutStateHasSelectedFreeShipping;
     private Typography labelSelectedFreeShipping;
@@ -342,6 +344,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         labelSelectedShippingPriceorDuration = itemView.findViewById(R.id.label_selected_shipping_price_or_duration);
         labelDescCourier = itemView.findViewById(R.id.label_description_courier);
         labelDescCourierTnc = itemView.findViewById(R.id.label_description_courier_tnc);
+        vFillCourier = itemView.findViewById(R.id.v_fill_courier);
         iconChevronChooseCourier = itemView.findViewById(R.id.icon_chevron_choose_courier);
         layoutStateHasSelectedFreeShipping = itemView.findViewById(R.id.layout_state_has_selected_free_shipping);
         labelSelectedFreeShipping = itemView.findViewById(R.id.label_selected_free_shipping);
@@ -824,6 +827,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         iconChevronChooseCourier.setOnClickListener(
                 getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
         );
+        labelDescCourier.setOnClickListener(
+                getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
+        );
+        vFillCourier.setOnClickListener(
+                getOnChangeCourierClickListener(shipmentCartItemModel, currentAddress)
+        );
 
         OntimeDelivery ontimeDelivery = selectedCourierItemData.getOntimeDelivery();
         CashOnDeliveryProduct codProductData = selectedCourierItemData.getCodProductData();
@@ -968,6 +977,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         } else {
             labelSingleShippingEta.setText(R.string.estimasi_tidak_tersedia);
         }
+        labelSingleShippingEta.setVisibility(View.VISIBLE);
 
         if (selectedCourierItemData.getLogPromoDesc() != null && !selectedCourierItemData.getLogPromoDesc().isEmpty()) {
             labelSingleShippingMessage.setText(MethodChecker.fromHtml(selectedCourierItemData.getLogPromoDesc()));
@@ -980,6 +990,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             labelSingleShippingMessage.setVisibility(View.GONE);
         }
 
+        layoutStateHasSelectedSingleShipping.setOnClickListener(v -> {
+            /* noop */
+        });
         layoutStateHasSelectedSingleShipping.setVisibility(View.VISIBLE);
     }
 
@@ -1002,7 +1015,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderNoSelectedCourierNormalShipping(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, RatesDataConverter ratesDataConverter) {
         if (shipmentCartItemModel.isDisableChangeCourier()) {
-            renderFailShipmentState(shipmentCartItemModel, currentAddress, ratesDataConverter);
+            if (shipmentCartItemModel.hasGeolocation()) {
+                renderFailShipmentState(shipmentCartItemModel, currentAddress, ratesDataConverter);
+            }
         } else {
             layoutTradeInShippingInfo.setVisibility(View.GONE);
             layoutStateNoSelectedShipping.setVisibility(View.VISIBLE);
@@ -1078,7 +1093,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     break;
             }
 
-            if ((shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0) || shipmentCartItemModel.isAutoCourierSelection()) {
+            if (shipmentCartItemModel.isCustomPinpointError()) {
+                renderErrorPinpointCourier();
+            } else if ((shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0) || shipmentCartItemModel.isAutoCourierSelection()) {
                 if (!hasLoadCourier) {
                     ShipmentDetailData tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
                             shipmentCartItemModel, recipientAddressModel);
@@ -1115,6 +1132,32 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 renderNoSelectedCourierNormalShipping(shipmentCartItemModel, recipientAddressModel, ratesDataConverter);
                 break;
         }
+    }
+
+    private void renderErrorPinpointCourier() {
+        llShippingOptionsContainer.setVisibility(View.VISIBLE);
+        layoutStateNoSelectedShipping.setVisibility(View.GONE);
+        llShippingExperienceStateLoading.setVisibility(View.GONE);
+        containerShippingExperience.setVisibility(View.VISIBLE);
+        containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey);
+        layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
+        layoutStateFailedShipping.setVisibility(View.GONE);
+        layoutStateHasErrorShipping.setVisibility(View.GONE);
+        layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
+
+        labelSelectedSingleShippingTitle.setText(R.string.checkout_label_set_pinpoint_title);
+        labelSelectedSingleShippingOriginalPrice.setVisibility(View.GONE);
+        labelSelectedSingleShippingDiscountedPrice.setVisibility(View.GONE);
+        labelSingleShippingEta.setVisibility(View.GONE);
+        String pinpointErrorMessage = itemView.getContext().getString(R.string.checkout_label_set_pinpoint_description) + " ";
+        String pinpointErrorAction = itemView.getContext().getString(R.string.checkout_label_set_pinpoint_action);
+        SpannableString spannableString = new SpannableString(pinpointErrorMessage + pinpointErrorAction);
+        spannableString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500_96)), pinpointErrorMessage.length(), spannableString.length(), SpannableString.SPAN_INCLUSIVE_EXCLUSIVE);
+        labelSingleShippingMessage.setText(spannableString);
+        labelSingleShippingMessage.setVisibility(View.VISIBLE);
+
+        layoutStateHasSelectedSingleShipping.setOnClickListener(v -> mActionListener.onClickSetPinpoint(getAdapterPosition()));
+        layoutStateHasSelectedSingleShipping.setVisibility(View.VISIBLE);
     }
 
     private void loadCourierStateData(ShipmentCartItemModel shipmentCartItemModel, int saveStateType, ShipmentDetailData tmpShipmentDetailData, int position) {

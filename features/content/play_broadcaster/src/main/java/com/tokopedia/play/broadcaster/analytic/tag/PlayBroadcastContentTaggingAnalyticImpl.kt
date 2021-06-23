@@ -31,6 +31,14 @@ class PlayBroadcastContentTaggingAnalyticImpl @Inject constructor(
         )
     }
 
+    override fun clickTitleInputArea() {
+        sendEvent(
+            eventName = KEY_TRACK_CLICK_EVENT,
+            eventAction = "click add title",
+            eventLabel = shopId
+        )
+    }
+
     private fun sendEvent(
             eventName: String,
             eventAction: String,

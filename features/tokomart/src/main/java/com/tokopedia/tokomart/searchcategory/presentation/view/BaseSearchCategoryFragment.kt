@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -47,6 +48,7 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.network.utils.ErrorHandler.getErrorMessage
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -54,7 +56,6 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
-import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokomart.R
@@ -73,9 +74,12 @@ import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokomart.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 abstract class BaseSearchCategoryFragment:
         BaseDaggerFragment(),
@@ -97,10 +101,14 @@ abstract class BaseSearchCategoryFragment:
         protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
     }
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     protected var searchCategoryAdapter: SearchCategoryAdapter? = null
     protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
     protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
     protected var categoryChooserBottomSheet: CategoryChooserBottomSheet? = null
+    protected var trackingQueue: TrackingQueue? = null
 
     protected var container: ConstraintLayout? = null
     protected var navToolbar: NavToolbar? = null
@@ -126,6 +134,12 @@ abstract class BaseSearchCategoryFragment:
 
             return height + padding
         }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        context?.let { trackingQueue = TrackingQueue(it) }
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -228,13 +242,24 @@ abstract class BaseSearchCategoryFragment:
         stickyView?.setMargin(0.toDp(), top, 0.toDp(), 0.toDp())
     }
 
-    protected abstract fun createNavToolbarIconBuilder(): IconBuilder
-
-    protected fun IconBuilder.addShare(): IconBuilder = this
-            .addIcon(ID_SHARE, disableRouteManager = false, disableDefaultGtmTracker = false) { }
+    protected open fun createNavToolbarIconBuilder() = IconBuilder()
+            .addCart()
+            .addGlobalNav()
 
     protected fun IconBuilder.addCart(): IconBuilder = this
-            .addIcon(ID_CART, disableRouteManager = false, disableDefaultGtmTracker = false) { }
+            .addIcon(
+                    iconId = ID_CART,
+                    disableRouteManager = false,
+                    disableDefaultGtmTracker = disableDefaultCartTracker,
+                    onClick = ::onNavToolbarCartClicked,
+            )
+
+    protected open val disableDefaultCartTracker
+        get() = false
+
+    protected open fun onNavToolbarCartClicked() {
+
+    }
 
     protected fun IconBuilder.addGlobalNav(): IconBuilder =
             if (getViewModel().hasGlobalMenu)
@@ -388,6 +413,9 @@ abstract class BaseSearchCategoryFragment:
                 .observe(this::updateHeaderBackgroundVisibility)
         getViewModel().isContentLoadingLiveData.observe(this::updateContentVisibility)
         getViewModel().isOutOfServiceLiveData.observe(this::updateOutOfServiceVisibility)
+        getViewModel().quickFilterTrackingLiveData.observe(this::sendTrackingQuickFilter)
+        getViewModel().addToCartTrackingLiveData.observe(this::sendAddToCartTrackingEvent)
+        getViewModel().isShowErrorLiveData.observe(this::showNetworkErrorHelper)
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -423,6 +451,12 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onLoadMore()
     }
 
+    protected fun getUserId(): String {
+        val userId = userSession.userId ?: ""
+
+        return if (userId.isEmpty()) "0" else userId
+    }
+
     override fun onLocalizingAddressSelected() {
         getViewModel().onLocalizingAddressSelected()
     }
@@ -437,7 +471,7 @@ abstract class BaseSearchCategoryFragment:
         )
     }
 
-    override fun onBannerClick(applink: String) {
+    override fun onBannerClick(channelModel: ChannelModel, applink: String) {
         RouteManager.route(context, applink)
     }
 
@@ -491,17 +525,16 @@ abstract class BaseSearchCategoryFragment:
         )
 
         sortFilterBottomSheet?.setResultCountText(productCountText)
-        categoryChooserBottomSheet?.setResultCountText(productCountText)
     }
 
-    private fun configureL3BottomSheet(filter: Filter?) {
+    protected open fun configureL3BottomSheet(filter: Filter?) {
         if (filter != null)
             openCategoryChooserFilterPage(filter)
         else
             dismissCategoryChooserFilterPage()
     }
 
-    private fun openCategoryChooserFilterPage(filter: Filter) {
+    protected open fun openCategoryChooserFilterPage(filter: Filter) {
         if (categoryChooserBottomSheet != null) return
 
         categoryChooserBottomSheet = CategoryChooserBottomSheet()
@@ -516,13 +549,9 @@ abstract class BaseSearchCategoryFragment:
         )
     }
 
-    private fun dismissCategoryChooserFilterPage() {
+    protected open fun dismissCategoryChooserFilterPage() {
         categoryChooserBottomSheet?.dismiss()
         categoryChooserBottomSheet = null
-    }
-
-    override fun getResultCount(selectedOption: Option) {
-        getViewModel().onViewGetProductCount(selectedOption)
     }
 
     override fun onApplyCategory(selectedOption: Option) {
@@ -544,9 +573,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     private fun updateMiniCartWidgetVisibility(isVisible: Boolean?) {
-        isVisible ?: return
-
-        miniCartWidget?.showWithCondition(isVisible)
+        miniCartWidget?.showWithCondition(isVisible == true)
     }
 
     private fun notifyAdapterItemChange(indices: List<Int>) {
@@ -584,15 +611,29 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun showSuccessATCMessage(message: String?) {
-        showToaster(message, Toaster.TYPE_NORMAL)
+        showToaster(message, Toaster.TYPE_NORMAL, getString(R.string.tokomart_lihat)) {
+            RouteManager.route(context, ApplinkConst.CART)
+        }
     }
 
-    protected open fun showToaster(message: String?, toasterType: Int) {
+    protected open fun showToaster(
+            message: String?,
+            toasterType: Int,
+            actionText: String = "",
+            clickListener: (View) -> Unit = { },
+    ) {
         val view = view ?: return
         message ?: return
         if (message.isEmpty()) return
 
-        Toaster.build(view, message, Toaster.LENGTH_LONG, toasterType).show()
+        Toaster.build(
+                view,
+                message,
+                Toaster.LENGTH_LONG,
+                toasterType,
+                actionText,
+                clickListener,
+        ).show()
     }
 
     protected open fun showErrorATCMessage(message: String?) {
@@ -647,6 +688,25 @@ abstract class BaseSearchCategoryFragment:
         constraintSet.connect(outOfServiceView.id, TOP, navToolbar.id, BOTTOM)
 
         constraintSet.applyTo(container)
+    }
+
+    protected open fun showNetworkErrorHelper(throwable: Throwable?) {
+        val context = activity ?: return
+        val view = view ?: return
+
+        NetworkErrorHelper.showEmptyState(context, view, getErrorMessage(context, throwable)) {
+            getViewModel().onViewReloadPage()
+        }
+    }
+
+    protected abstract fun sendTrackingQuickFilter(quickFilterTracking: Pair<Option, Boolean>)
+
+    protected abstract fun sendAddToCartTrackingEvent(atcData: Triple<Int, String, ProductItemDataView>)
+
+    override fun onPause() {
+        super.onPause()
+
+        trackingQueue?.sendAll()
     }
 
     override fun onResume() {

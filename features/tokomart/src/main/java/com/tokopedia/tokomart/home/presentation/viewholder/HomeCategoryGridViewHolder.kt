@@ -22,7 +22,7 @@ import com.tokopedia.unifyprinciples.Typography
 class HomeCategoryGridViewHolder(
         itemView: View,
         private val listener: HomeCategoryGridListener? = null,
-): AbstractViewHolder<HomeCategoryGridUiModel>(itemView) {
+): AbstractViewHolder<HomeCategoryGridUiModel>(itemView), HomeCategoryItemViewHolder.HomeCategoryItemListener  {
 
     companion object {
         @LayoutRes
@@ -36,7 +36,7 @@ class HomeCategoryGridViewHolder(
     private var rvCategory: RecyclerView? = null
     private var categoryShimmering: View? = null
 
-    private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(), TokoMartHomeListDiffer()) }
+    private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(homeCategoryItemListener = this), TokoMartHomeListDiffer()) }
 
     init {
         initView()
@@ -48,6 +48,10 @@ class HomeCategoryGridViewHolder(
             HomeLayoutState.LOADING -> showLoadingState(data)
             HomeLayoutState.HIDE -> showLocalLoad(data)
         }
+    }
+
+    override fun onCategoryClicked(position: Int, categoryId: String) {
+        listener?.onCategoryClicked(position, categoryId)
     }
 
     private fun initView() {
@@ -72,6 +76,7 @@ class HomeCategoryGridViewHolder(
         tvSeeAll?.setOnClickListener {
             val localCacheModel = ChooseAddressUtils.getLocalizingAddressData(itemView.context)
             RouteManager.route(itemView.context, ApplinkConstInternalTokopediaNow.CATEGORY_LIST, localCacheModel?.warehouse_id)
+            listener?.onAllCategoryClicked()
         }
 
         rvCategory?.apply {
@@ -105,5 +110,7 @@ class HomeCategoryGridViewHolder(
 
     interface HomeCategoryGridListener {
         fun onCategoryRetried()
+        fun onAllCategoryClicked()
+        fun onCategoryClicked(position: Int, categoryId: String)
     }
 }

@@ -10,7 +10,10 @@ import com.tokopedia.tokomart.R
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryItemUiModel
 import kotlinx.android.synthetic.main.item_tokomart_home_category.view.*
 
-class HomeCategoryItemViewHolder(itemView: View): AbstractViewHolder<HomeCategoryItemUiModel>(itemView) {
+class HomeCategoryItemViewHolder(
+        itemView: View,
+        private val listener: HomeCategoryItemListener? = null,
+): AbstractViewHolder<HomeCategoryItemUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -24,8 +27,13 @@ class HomeCategoryItemViewHolder(itemView: View): AbstractViewHolder<HomeCategor
                 setCacheStrategy(MediaCacheStrategy.RESOURCE)
             }
             setOnClickListener {
+                listener?.onCategoryClicked(adapterPosition, data.id)
                 RouteManager.route(context, data.appLink)
             }
         }
+    }
+
+    interface HomeCategoryItemListener {
+        fun onCategoryClicked(position: Int, categoryId: String)
     }
 }

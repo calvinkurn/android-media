@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokomart.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokomart.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokomart.category.presentation.viewholder.CategoryAisleViewHolder
+import com.tokopedia.tokomart.category.presentation.viewholder.CategoryChooseAddressViewHolder
 import com.tokopedia.tokomart.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.ChooseAddressListener
@@ -14,6 +15,7 @@ import com.tokopedia.tokomart.searchcategory.presentation.listener.ProductItemLi
 import com.tokopedia.tokomart.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokomart.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokomart.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactoryImpl
+import com.tokopedia.tokomart.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
 
 class CategoryTypeFactoryImpl(
         chooseAddressListener: ChooseAddressListener,
@@ -38,6 +40,7 @@ class CategoryTypeFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
+            BaseChooseAddressViewHolder.LAYOUT -> CategoryChooseAddressViewHolder(view, chooseAddressListener)
             CategoryAisleViewHolder.LAYOUT -> CategoryAisleViewHolder(view, categoryAisleListener)
             else -> super.createViewHolder(view, type)
         }

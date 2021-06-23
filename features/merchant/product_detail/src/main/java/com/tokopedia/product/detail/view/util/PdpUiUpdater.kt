@@ -69,9 +69,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productInstallmentPaylater: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO] as? ProductGeneralInfoDataModel
 
-    val productShipingInfoMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[ProductDetailConstant.PRODUCT_SHIPPING_INFO] as? ProductGeneralInfoDataModel
-
     val orderPriorityMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.ORDER_PRIORITY] as? ProductGeneralInfoDataModel
 
@@ -504,14 +501,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateDataP3(context: Context?, it: ProductInfoP3) {
-        updateData(ProductDetailConstant.PRODUCT_SHIPPING_INFO) {
-            productShipingInfoMap?.run {
-                subtitle = context?.getString(R.string.ongkir_pattern_string_dynamic_pdp, it.rateEstSummarizeText?.minPrice, "${it.rateEstSummarizeText?.destination}")
-                        ?: ""
-            }
-        }
-
+    fun updateDataP3(it: ProductInfoP3) {
         updateData(ProductDetailConstant.TICKER_INFO) {
             tickerInfoMap?.run {
                 if (it.tickerInfo.isNotEmpty()) {

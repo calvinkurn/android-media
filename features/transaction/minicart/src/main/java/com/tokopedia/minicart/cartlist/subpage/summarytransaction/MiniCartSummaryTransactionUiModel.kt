@@ -8,4 +8,6 @@ data class MiniCartSummaryTransactionUiModel(
         var discountValue: Long = 0,
         var paymentTotalWording: String = "",
         var paymentTotal: Long = 0,
+        var sellerCashbackWording: String = "",
+        var sellerCashbackValue: Long = 0
 )
