@@ -97,10 +97,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return orderPayment.value.bid
     }
 
-    fun getActivationSuccessToasterMsg(): String {
-        return orderPayment.value.walletData.activation.successToaster
-    }
-
     fun getActivationData(): OrderPaymentWalletActionData {
         return orderPayment.value.walletData.activation
     }

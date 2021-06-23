@@ -158,6 +158,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private var lastPurchaseProtectionCheckState = PurchaseProtectionPlanData.STATE_EMPTY
 
     private var source: String = SOURCE_OTHERS
+    private var shouldShowToaster: Boolean = false
 
     override fun getScreenName(): String {
         return this::class.java.simpleName
@@ -407,6 +408,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
                         }
                         source = SOURCE_OTHERS
+                        shouldShowToaster = false
                         refresh(isFullRefresh = it.isFullRefresh)
                     }
                 }
@@ -456,6 +458,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         priceValidationDialog.setPrimaryCTAClickListener {
                             priceValidationDialog.dismiss()
                             source = SOURCE_OTHERS
+                            shouldShowToaster = false
                             refresh()
                         }
                         priceValidationDialog.show()
@@ -617,6 +620,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         } else {
             newOnboardingCard?.gone()
         }
+
+        if (shouldShowToaster) showToasterSuccess()
     }
 
     private fun showPreferenceTicker(preference: OrderPreference) {
@@ -954,6 +959,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 Toaster.build(it, getString(R.string.message_ovo_activation_failed), type = Toaster.TYPE_ERROR, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
                             }
                             source = SOURCE_OTHERS
+                            shouldShowToaster = false
                             refresh()
                         }
                     }
@@ -969,12 +975,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     view?.let {
                         it.post {
                             source = SOURCE_OTHERS
+                            shouldShowToaster = true
                             refresh()
-                            if (isSuccess) {
-                                Toaster.build(it, viewModel.getActivationData().successToaster, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
-                            } else {
-                                Toaster.build(it, viewModel.getActivationData().errorToaster, type = Toaster.TYPE_ERROR, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
-                            }
                         }
                     }
                 }
@@ -1045,6 +1047,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun showGlobalError(type: Int) {
         globalError?.setType(type)
         globalError?.setActionClickListener {
+            shouldShowToaster = false
             refresh()
         }
         mainContent?.animateGone()
@@ -1206,6 +1209,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             OccPromptButton.ACTION_RELOAD -> {
                 dialog.dismiss()
                 source = SOURCE_OTHERS
+                shouldShowToaster = false
                 refresh()
             }
             OccPromptButton.ACTION_RETRY -> {
@@ -1246,6 +1250,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             OccPromptButton.ACTION_RELOAD -> {
                 bottomSheet.dismiss()
                 source = SOURCE_OTHERS
+                shouldShowToaster = false
                 refresh()
             }
             OccPromptButton.ACTION_RETRY -> {
@@ -1283,6 +1288,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun setSourceFromPDP() {
         source = SOURCE_PDP
+    }
+
+    private fun showToasterSuccess() {
+        view?.let {
+            it.post {
+                Toaster.build(it, viewModel.getActivationData().successToaster,
+                    actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+            }
+        }
     }
 
     companion object {
