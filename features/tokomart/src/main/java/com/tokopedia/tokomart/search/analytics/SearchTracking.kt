@@ -105,9 +105,9 @@ object SearchTracking {
     fun sendProductImpressionEvent(
             trackingQueue: TrackingQueue,
             productItemDataView: ProductItemDataView,
-            filterSortValue: String,
             keyword: String,
             userId: String,
+            filterSortValue: String,
     ) {
         val map = DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
