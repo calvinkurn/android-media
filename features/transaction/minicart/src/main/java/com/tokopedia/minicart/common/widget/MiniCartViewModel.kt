@@ -122,7 +122,11 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         getMiniCartListSimplifiedUseCase.execute(onSuccess = {
             _miniCartSimplifiedData.value = it
         }, onError = {
-            _miniCartSimplifiedData.value = MiniCartSimplifiedData()
+            if (miniCartSimplifiedData.value != null) {
+                _miniCartSimplifiedData.value = miniCartSimplifiedData.value
+            } else {
+                _miniCartSimplifiedData.value = MiniCartSimplifiedData()
+            }
         })
     }
 
