@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.gm.common.R
 import com.tokopedia.gm.common.constant.ShopLevel
+import com.tokopedia.gm.common.utils.PMCommonUtils
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import kotlinx.android.synthetic.main.view_gmc_shop_level.view.*
 
@@ -26,7 +27,7 @@ class ShopLevelView : LinearLayout {
     }
 
     fun show(shopLevel: Int) {
-        val levelLbl = context.getString(R.string.gmc_level, shopLevel.toString())
+        val levelLbl = context.getString(R.string.gmc_level, PMCommonUtils.getShopLevelFmt(shopLevel))
         tvGmcPmShopLevel.text = levelLbl
 
         val imgLevelDrawableRes = when (shopLevel) {
