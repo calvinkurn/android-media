@@ -25,6 +25,7 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.features.localizationchooseaddress_common)
+    implementation project(rootProject.ext.features.seamlessLoginCommon)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

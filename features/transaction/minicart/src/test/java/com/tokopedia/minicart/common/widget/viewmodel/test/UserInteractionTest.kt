@@ -3,9 +3,11 @@ package com.tokopedia.minicart.common.widget.viewmodel.test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.common.domain.usecase.*
 import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.common.widget.viewmodel.utils.DataProvider
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.mockk
 import io.mockk.spyk
@@ -24,13 +26,14 @@ class UserInteractionTest {
     private val deleteCartUseCase: DeleteCartUseCase = mockk()
     private val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
     private val updateCartUseCase: UpdateCartUseCase = mockk()
+    private val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
 
     @get: Rule
     var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() {
-        viewModel = MiniCartViewModel(dispatcher, getMiniCartListSimplifiedUseCase, getMiniCartListUseCase, deleteCartUseCase, undoDeleteCartUseCase, updateCartUseCase, uiModelMapper)
+        viewModel = MiniCartViewModel(dispatcher, getMiniCartListSimplifiedUseCase, getMiniCartListUseCase, deleteCartUseCase, undoDeleteCartUseCase, updateCartUseCase, seamlessLoginUsecase, uiModelMapper)
     }
 
     @Test
@@ -132,5 +135,38 @@ class UserInteractionTest {
         assert(viewModel.tmpHiddenUnavailableItems.size == 0)
     }
 
+    @Test
+    fun `WHEN close bottom sheet and get latest mini cart data with collapsed unavailable items THEN cart item count should be correct`() {
+        //given
+        val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAvailableAndUnavailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModels)
+        val unavailableItem = MiniCartProductUiModel()
+        viewModel.tmpHiddenUnavailableItems.clear()
+        viewModel.tmpHiddenUnavailableItems.add(unavailableItem)
+        viewModel.tmpHiddenUnavailableItems.add(unavailableItem)
+
+        val expectedSize = 7
+
+        //when
+        val value = viewModel.getLatestMiniCartData()
+
+        //then
+        assert(value.miniCartItems.size == expectedSize)
+    }
+
+    @Test
+    fun `WHEN close bottom sheet and get latest mini cart data without collapsed unavailable items THEN cart item count should be correct`() {
+        //given
+        val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAvailableAndUnavailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModels)
+
+        val expectedSize = 5
+
+        //when
+        val value = viewModel.getLatestMiniCartData()
+
+        //then
+        assert(value.miniCartItems.size == expectedSize)
+    }
 
 }
