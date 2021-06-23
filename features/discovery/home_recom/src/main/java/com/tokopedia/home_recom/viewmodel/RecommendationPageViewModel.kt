@@ -131,38 +131,36 @@ open class RecommendationPageViewModel @Inject constructor(
     fun getProductTopadsStatus(
             productId: String,
             queryParam: String) {
-        if (queryParam.contains(PARAM_TXSC)) {
-            launchCatchError(coroutineContext, block = {
-                var adsStatus = TopadsIsAdsQuery()
-                val job = withTimeoutOrNull(PARAM_JOB_TIMEOUT) {
-                    getTopadsIsAdsUseCase.setParams(
-                            productId = productId,
-                            productKey = "",
-                            shopDomain = "",
-                            urlParam = queryParam,
-                            pageName = ""
-                    )
-                    adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
-                    val dataList = recommendationListLiveData.value as MutableList
-                    val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel }
-                    val errorCode = adsStatus.data.status.error_code
-                    if (errorCode >= 200 && errorCode <= 300) {
-                        (productRecom as? ProductInfoDataModel)?.productDetailData?.let {
-                            val topadsProduct = adsStatus.data.productList[0]
-                            it.isTopads = topadsProduct.isCharge
-                            it.clickUrl = topadsProduct.clickUrl
-                            it.trackerImageUrl = topadsProduct.product.image.m_url
+        launchCatchError(coroutineContext, block = {
+            var adsStatus = TopadsIsAdsQuery()
+            val job = withTimeoutOrNull(PARAM_JOB_TIMEOUT) {
+                getTopadsIsAdsUseCase.setParams(
+                        productId = productId,
+                        productKey = "",
+                        shopDomain = "",
+                        urlParam = queryParam,
+                        pageName = ""
+                )
+                adsStatus = getTopadsIsAdsUseCase.executeOnBackground()
+                val dataList = recommendationListLiveData.value as MutableList
+                val productRecom = dataList?.firstOrNull { it is ProductInfoDataModel }
+                val errorCode = adsStatus.data.status.error_code
+                if (errorCode >= 200 && errorCode <= 300) {
+                    (productRecom as? ProductInfoDataModel)?.productDetailData?.let {
+                        val topadsProduct = adsStatus.data.productList[0]
+                        it.isTopads = topadsProduct.isCharge
+                        it.clickUrl = topadsProduct.clickUrl
+                        it.trackerImageUrl = topadsProduct.product.image.m_url
 
-                            val itemIndex = dataList.indexOf(productRecom)
-                            dataList[itemIndex] = productRecom
+                        val itemIndex = dataList.indexOf(productRecom)
+                        dataList[itemIndex] = productRecom
 
-                            _recommendationListLiveData.postValue(dataList)
-                        }
+                        _recommendationListLiveData.postValue(dataList)
                     }
                 }
-            }) {
-                it.printStackTrace()
             }
+        }) {
+            it.printStackTrace()
         }
     }
 
