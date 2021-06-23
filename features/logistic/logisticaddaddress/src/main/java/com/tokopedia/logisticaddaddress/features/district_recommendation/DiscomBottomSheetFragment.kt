@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.design.component.BottomSheets
@@ -252,9 +253,11 @@ class DiscomBottomSheetFragment : BottomSheets(),
 
     private fun setViewListener() {
         binding.etSearchDistrictRecommendation.apply {
-            if (isAnaRevamp) AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
             isFocusableInTouchMode = true
             requestFocus()
+            setOnClickListener {
+                if (isAnaRevamp) AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
+            }
         }
         watchTextRx(binding.etSearchDistrictRecommendation)
                 .subscribe { s ->
@@ -404,6 +407,35 @@ class DiscomBottomSheetFragment : BottomSheets(),
             AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
             districtAddressData?.let { data -> actionListener.onChooseZipcode(data, zipCode, isPinpoint) }
             dismiss()
+        }
+    }
+
+    private fun setWrapperWatcherKodePos(wrapper: TextInputLayout, textWatcher: String?): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.length < 9 && s.isNotEmpty()) {
+                    setWrapperError(wrapper, textWatcher)
+                } else {
+                    setWrapperError(wrapper, null)
+                }
+            }
+
+            override fun afterTextChanged(text: Editable) {
+            }
+        }
+    }
+
+    private fun setWrapperError(wrapper: TextInputLayout, s: String?) {
+        if (s.isNullOrBlank()) {
+            wrapper.error = s
+            wrapper.setErrorEnabled(false)
+        } else {
+            wrapper.setErrorEnabled(true)
+            wrapper.error = s
         }
     }
 

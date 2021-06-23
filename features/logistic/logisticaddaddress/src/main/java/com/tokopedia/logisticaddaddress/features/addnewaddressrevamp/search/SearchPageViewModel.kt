@@ -36,6 +36,10 @@ class SearchPageViewModel @Inject constructor(private val repo: KeroRepository,
         _autoCompleteList.value = Fail(e)
     }
 
+    fun setAddress(data: SaveAddressDataModel) {
+        this.saveAddressDataModel = data
+    }
+
     fun getAddress() : SaveAddressDataModel {
         return this.saveAddressDataModel
     }

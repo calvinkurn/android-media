@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.response.DistrictItem
 import com.tokopedia.logisticaddaddress.R
@@ -62,17 +63,20 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private var saveDataModel: SaveAddressDataModel? = null
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
-    private var currentDistrictName: String  = ""
+    private var currentDistrictName: String?  = ""
     private var labelAlamatList: Array<String> = emptyArray()
     private var staticDimen8dp: Int? = 0
     private var isPositiveFlow: Boolean = true
     /*To differentiate user pinpoint on ANA Negative*/
     private var isPinpoint: Boolean = false
+    /**/
+    private var isAlreadyPinpoint: Boolean = false
     /*To differentiate flow from logistic or not*/
     private var isLogisticLabel: Boolean = true
     private var validated: Boolean = true
     private val toppers: String = "Toppers"
-    private var currentKotaKecamatan: String = ""
+    private var currentKotaKecamatan: String? = ""
+    private var currentAlamat: String = ""
     private var isLatitudeNotEmpty: Boolean? = false
     private var isLongitudeNotEmpty: Boolean? = false
 
@@ -118,6 +122,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 if (it) currentLong = saveDataModel?.longitude?.toDouble() ?: 0.0
             }
             isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
+            currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
         }
         permissionCheckerHelper = PermissionCheckerHelper()
     }
@@ -138,15 +143,33 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             val phoneNumberOnly = removeSpecialChars(contact?.contactNumber.toString())
             binding.formAccount.etNomorHp.textFieldInput.setText(phoneNumberOnly)
         } else if (requestCode == 1998 && resultCode == Activity.RESULT_OK) {
+            val isNegativeFullFlow = data?.getBooleanExtra(EXTRA_NEGATIVE_FULL_FLOW, false)
+            val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
             saveDataModel = data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
-
-            binding.formAddressNegative.etKotaKecamatan.textFieldInput.setText(currentKotaKecamatan)
-            binding.cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
-            binding.cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
-            saveDataModel?.let {
-                currentLat = it.latitude.toDouble()
-                currentLong = it.longitude.toDouble()
+            if (isNegativeFullFlow == true && isFromAddressForm == false) {
+                finishActivity(saveDataModel)
+            } else {
+                currentKotaKecamatan = data?.getStringExtra(EXTRA_KOTA_KECAMATAN)
+                binding.formAddressNegative.etKotaKecamatan.textFieldInput.setText(currentKotaKecamatan)
+                saveDataModel?.let {
+                    if (it.latitude.isNotEmpty() || it.longitude.isNotEmpty()) {
+                        currentLat = it.latitude.toDouble()
+                        currentLong = it.longitude.toDouble()
+                        binding.cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
+                        binding.cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
+                    }
+                }
             }
+
+        }
+    }
+
+    private fun finishActivity(data: SaveAddressDataModel?) {
+        activity?.run {
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(LogisticConstant.EXTRA_ADDRESS_NEW, data)
+            })
+            finish()
         }
     }
 
@@ -241,6 +264,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
             formAccount.etNomorHp.textFieldInput.addTextChangedListener(setWrapperWatcherPhone(formAccount.etNomorHp.textFieldWrapper, getString(R.string.validate_no_ponsel_new)))
             formAccount.btnInfo.setOnClickListener {
+                if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickIconNamaPenerimaPositive(userSession.userId)
+                else AddNewAddressRevampAnalytics.onClickIconNamaPenerimaNegative(userSession.userId)
                 showBottomSheetInfoPenerima()
             }
         }
@@ -269,19 +294,23 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     checkKotaKecamatan()
                 }
 
+                formAddressNegative.etKotaKecamatan.textFieldInput.setText(currentKotaKecamatan)
                 formAddressNegative.etKotaKecamatan.textFieldInput.apply {
                     setOnFocusChangeListener { _, hasFocus ->
                         if (hasFocus) {
+                            AddNewAddressRevampAnalytics.onClickFieldKotaKecamatanNegative(userSession.userId)
                             showDistrictRecommendationBottomSheet(false)
                         }
                     }
                     setOnClickListener {
+                        AddNewAddressRevampAnalytics.onClickFieldKotaKecamatanNegative(userSession.userId)
                         showDistrictRecommendationBottomSheet(false)
                     }
                 }
                 formAddressNegative.etLabel.textFieldInput.setText("Rumah")
                 formAddressNegative.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddressNegative.etLabel.textFieldWrapper, null))
                 formAddressNegative.etAlamat.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddressNegative.etAlamat.textFieldWrapper, null))
+                currentAlamat = formAddressNegative.etAlamat.textFieldInput.text.toString()
             }
         } else {
             setOnTouchLabelAddress(ANA_POSITIVE)
@@ -446,7 +475,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         bundle.putDouble(AddAddressConstant.EXTRA_LONGITUDE, currentLong)
         bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, false)
         bundle.putString(EXTRA_DISTRICT_NAME, currentDistrictName)
+        bundle.putString(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
         bundle.putParcelable(EXTRA_SAVE_DATA_UI_MODEL, saveDataModel)
+        bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, true)
         if (!isPositiveFlow) bundle.putBoolean(EXTRA_IS_POLYGON, true)
         startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, 1998)
     }
@@ -572,12 +603,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             formAddressNegative.etLabel.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     AddNewAddressRevampAnalytics.onClickFieldLabelAlamatNegative(userSession.userId)
-                }
-            }
-
-            formAddressNegative.etKotaKecamatan.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    AddNewAddressRevampAnalytics.onClickFieldKotaKecamatanNegative(userSession.userId)
                 }
             }
 
@@ -734,6 +759,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 arguments = Bundle().apply {
                     putParcelable(EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(EXTRA_SAVE_DATA_UI_MODEL))
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
+                    putString(EXTRA_KOTA_KECAMATAN, extra.getString(EXTRA_KOTA_KECAMATAN))
                 }
             }
         }

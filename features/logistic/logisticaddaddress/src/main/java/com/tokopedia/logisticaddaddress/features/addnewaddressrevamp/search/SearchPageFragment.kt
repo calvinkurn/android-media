@@ -34,8 +34,7 @@ import com.tokopedia.logisticCommon.util.rxEditText
 import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
+import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentSearchAddressBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
@@ -76,6 +75,11 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private var bottomSheetLocUndefined: BottomSheetUnify? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private var hasRequestedLocation: Boolean = false
+    private var isPositiveFlow: Boolean = true
+
+    private var saveDataModel: SaveAddressDataModel? = null
+    private var currentKotaKecamatan: String? = ""
+
     private val requiredPermissions: Array<String>
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -93,6 +97,20 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW, true)
+            currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
+            saveDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
+        }
+        if (saveDataModel != null) {
+            saveDataModel?.let {
+                viewModel.setAddress(it)
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
@@ -105,21 +123,23 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if(requestCode == 1998) {
+                val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
                 val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
-                finishActivity(newAddress)
+                isFromAddressForm?.let { finishActivity(newAddress, it) }
             } else if (requestCode == 1599) {
                 val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
-                finishActivity(newAddress)
+                finishActivity(newAddress, false)
             }
         } else {
             showInitialLoadMessage()
         }
     }
 
-    private fun finishActivity(data: SaveAddressDataModel?) {
+    private fun finishActivity(data: SaveAddressDataModel?, isFromAddressForm: Boolean) {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(LogisticConstant.EXTRA_ADDRESS_NEW, data)
+                putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
             })
             finish()
         }
@@ -165,10 +185,19 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         binding.tvMessageSearch.text = getString(R.string.txt_message_initial_load)
         binding.tvMessageSearch.setOnClickListener {
             AddNewAddressRevampAnalytics.onClickIsiAlamatManualSearch(userSession.userId)
-            Intent(context, AddressFormActivity::class.java).apply {
-                putExtra(EXTRA_IS_POSITIVE_FLOW, false)
-                putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
-                startActivityForResult(this, 1599)
+            if (isPositiveFlow) {
+                Intent(context, AddressFormActivity::class.java).apply {
+                    putExtra(EXTRA_IS_POSITIVE_FLOW, false)
+                    putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
+                    startActivityForResult(this, 1599)
+                }
+            } else {
+                Intent(context, AddressFormActivity::class.java).apply {
+                    putExtra(EXTRA_IS_POSITIVE_FLOW, false)
+                    putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
+                    putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
+                    startActivityForResult(this, 1599)
+                }
             }
         }
     }
@@ -302,10 +331,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         return isGpsOn
     }
 
-    private fun getLastLocationClient() {
-
-    }
-
     private fun initObserver() {
         viewModel.autoCompleteList.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -353,7 +378,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 if (data != null) {
-                   goToPinpointPage(null, data.latitude, data.longitude)
+                   goToPinpointPage(null, data.latitude, data.longitude, false)
                 } else {
                     fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
                         createLocationCallback(), null)
@@ -379,22 +404,28 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     override fun onItemClicked(placeId: String) {
         AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
-        goToPinpointPage(placeId, null, null)
+        if (isPositiveFlow) goToPinpointPage(placeId, null, null, false)
+        else goToPinpointPage(placeId, null, null, true)
     }
 
-    private fun goToPinpointPage(placeId: String?, latitude: Double?, longitude: Double?) {
+    private fun goToPinpointPage(placeId: String?, latitude: Double?, longitude: Double?, isFromAddressForm: Boolean) {
         val bundle = Bundle()
         bundle.putString(EXTRA_PLACE_ID, placeId)
         latitude?.let { bundle.putDouble(EXTRA_LATITUDE, it) }
         longitude?.let { bundle.putDouble(EXTRA_LONGITUDE, it) }
-        bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, true)
+        bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
+        bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
         startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, 1998)
     }
 
     companion object {
         fun newInstance(bundle: Bundle): SearchPageFragment {
             return SearchPageFragment().apply {
-                arguments = bundle
+                arguments = Bundle().apply {
+                    putBoolean(EXTRA_IS_POSITIVE_FLOW, bundle.getBoolean(EXTRA_IS_POSITIVE_FLOW))
+                    putString(EXTRA_KOTA_KECAMATAN, bundle.getString(EXTRA_KOTA_KECAMATAN))
+                    putParcelable(EXTRA_SAVE_DATA_UI_MODEL, bundle.getParcelable(EXTRA_SAVE_DATA_UI_MODEL))
+                }
             }
         }
     }

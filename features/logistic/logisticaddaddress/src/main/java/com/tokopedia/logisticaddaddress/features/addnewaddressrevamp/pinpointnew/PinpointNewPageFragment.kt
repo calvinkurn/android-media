@@ -101,7 +101,10 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var hasRequestedLocation: Boolean = false
     /*to differentiate positive flow or negative flow*/
     private var isPositiveFlow: Boolean = true
+
+    private var isFromAddressForm: Boolean = false
     private var districtId: Int? = null
+    private var currentKotaKecamatan: String? = ""
 
     private var isPolygon: Boolean = false
 
@@ -136,9 +139,15 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == 1599 && resultCode == Activity.RESULT_OK) {
-            val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
-            finishActivity(newAddress)
+        if(resultCode == Activity.RESULT_OK) {
+            if (requestCode == 1599) {
+                val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
+                finishActivity(newAddress, false)
+            } else if (requestCode == 1995) {
+                val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
+                val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
+                isFromAddressForm?.let { finishActivity(newAddress, it) }
+            }
         }
     }
 
@@ -161,10 +170,12 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun finishActivity(data: SaveAddressDataModel?) {
+    private fun finishActivity(data: SaveAddressDataModel?, isFromAddressForm: Boolean) {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_ADDRESS_NEW, data)
+                putExtra(EXTRA_NEGATIVE_FULL_FLOW, true)
+                putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
             })
             finish()
         }
@@ -244,6 +255,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             districtId = saveAddressDataModel?.districtId
             isPolygon = it.getBoolean(EXTRA_IS_POLYGON, false)
             zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
+            currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
+            isFromAddressForm = it.getBoolean(EXTRA_FROM_ADDRESS_FORM)
         }
 
         if (!currentPlaceId.isNullOrEmpty()) {
@@ -421,13 +434,28 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 if (isPositiveFlow) {
                     AddNewAddressRevampAnalytics.onClickPilihLokasiPositive(userSession.userId, SUCCESS)
                     goToAddressForm()
+                } else {
+                    AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId, SUCCESS)
+                    setResultAddressFormNegative()
                 }
             }
 
             bottomsheetLocation.btnSecondary.setOnClickListener {
                 AddNewAddressRevampAnalytics.onClickIsiAlamatManual(userSession.userId)
-                isPositiveFlow = false
-                goToAddressForm()
+                if (isPositiveFlow) {
+                    isPositiveFlow = false
+                    goToAddressForm()
+                } else {
+                    activity?.run {
+                        setResult(Activity.RESULT_OK, Intent().apply {
+                            putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
+                            putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
+                            putExtra(EXTRA_NEGATIVE_FULL_FLOW, true)
+                        })
+                        finish()
+                    }
+                }
+
             }
 
             chipsCurrentLoc.chipImageResource = context?.let { getIconUnifyDrawable(it, IconUnify.TARGET) }
@@ -691,6 +719,9 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun goToSearchPage() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+        intent.putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
+        intent.putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
+        intent.putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
         startActivityForResult(intent, 1995)
     }
 
@@ -708,6 +739,9 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
+                putExtra(EXTRA_NEGATIVE_FULL_FLOW, false)
+                putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
+                putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
             })
             finish()
         }
@@ -734,6 +768,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     putString(EXTRA_DISTRICT_NAME, extra.getString(EXTRA_DISTRICT_NAME))
                     putBoolean(EXTRA_IS_POLYGON, extra.getBoolean(EXTRA_IS_POLYGON))
                     putParcelable(EXTRA_SAVE_DATA_UI_MODEL, extra.getParcelable(EXTRA_SAVE_DATA_UI_MODEL))
+                    putString(EXTRA_KOTA_KECAMATAN, extra.getString(EXTRA_KOTA_KECAMATAN))
+                    putBoolean(EXTRA_FROM_ADDRESS_FORM, extra.getBoolean(EXTRA_FROM_ADDRESS_FORM))
                 }
             }
         }

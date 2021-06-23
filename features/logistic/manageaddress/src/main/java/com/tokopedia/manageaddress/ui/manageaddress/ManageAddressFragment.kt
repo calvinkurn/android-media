@@ -150,6 +150,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             val addressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
             if (addressDataModel != null) {
                 setChosenAddressANA(addressDataModel)
+            } else {
+                performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "", null)
             }
         } else if (requestCode == REQUEST_CODE_PARAM_EDIT) {
             isFromEditAddress = true
