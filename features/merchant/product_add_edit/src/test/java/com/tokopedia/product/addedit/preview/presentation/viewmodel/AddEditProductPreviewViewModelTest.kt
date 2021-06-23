@@ -421,6 +421,25 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
+    fun  `When validate product name and product name unchanged Expect return success result`() = runBlocking {
+        val productName = "testing"
+
+        viewModel.setProductId("123")
+        viewModel.isEditing.getOrAwaitValue()
+        viewModel.productInputModel.value = ProductInputModel(
+                detailInputModel = DetailInputModel(currentProductName = productName)
+        )
+
+        viewModel.validateProductNameInput("not same")
+        val failedResult = viewModel.validationResult.getOrAwaitValue()
+        assertEquals(ValidationResultModel.Result.VALIDATION_ERROR, failedResult.result)
+
+        viewModel.validateProductNameInput(productName)
+        val successResult = viewModel.validationResult.getOrAwaitValue()
+        assertEquals(ValidationResultModel.Result.VALIDATION_SUCCESS, successResult.result)
+    }
+
+    @Test
     fun  `When validate product name is success Expect get the result`() = runBlocking {
         viewModel.resetValidateResult()
 
