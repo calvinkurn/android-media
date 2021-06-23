@@ -94,7 +94,17 @@ class NewOrderPreferenceCard(private val binding: CardOrderPreferenceNewBinding,
                     tvShippingDuration.visible()
                     tvShippingDurationEta.gone()
                     setMultiViewsOnClickListener(tvShippingDuration, btnChangeDuration) {
-                        listener.chooseDuration(false, shipping.getRealShipperProductId().toString())
+                        val shippingRecommendationData = shipment?.shippingRecommendationData
+                        if (shippingRecommendationData != null) {
+                            val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels)
+                            if (shippingRecommendationData.logisticPromo != null) {
+                                list.add(0, shippingRecommendationData.logisticPromo)
+                                if (shippingRecommendationData.logisticPromo.disabled && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+                                }
+                            }
+                            listener.chooseDuration(false, shipping.getRealShipperProductId().toString(), list)
+                        }
                     }
                     btnChangeDuration.visible()
                     tvShippingCourier.text = shipping.shipperName
@@ -139,7 +149,17 @@ class NewOrderPreferenceCard(private val binding: CardOrderPreferenceNewBinding,
                             tvShippingCourierEta.gone()
                         }
                         setMultiViewsOnClickListener(tvShippingCourier, tvShippingPrice, tvShippingCourierEta, btnChangeCourier) {
-                            listener.chooseDuration(false, shipping.getRealShipperProductId().toString())
+                            val shippingRecommendationData = shipment?.shippingRecommendationData
+                            if (shippingRecommendationData != null) {
+                                val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels)
+                                if (shippingRecommendationData.logisticPromo != null) {
+                                    list.add(0, shippingRecommendationData.logisticPromo)
+                                    if (shippingRecommendationData.logisticPromo.disabled && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                                        orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+                                    }
+                                }
+                                listener.chooseDuration(false, shipping.getRealShipperProductId().toString(), list)
+                            }
                         }
                     } else if (shipping.shippingEta != null) {
                         tvShippingCourier.text = "${shipping.shipperName} (${
@@ -154,7 +174,20 @@ class NewOrderPreferenceCard(private val binding: CardOrderPreferenceNewBinding,
                         tvShippingCourierEta.visible()
                         tvShippingPrice.gone()
                         setMultiViewsOnClickListener(tvShippingCourier, tvShippingPrice, tvShippingCourierEta, btnChangeCourier) {
-                            listener.chooseCourier()
+                            val shippingRecommendationData = shipment?.shippingRecommendationData
+                            if (shippingRecommendationData != null) {
+                                val list: ArrayList<RatesViewModelType> = ArrayList()
+                                for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
+                                    if (shippingDurationViewModel.isSelected) {
+                                        if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
+                                            list.add(NotifierModel())
+                                        }
+                                        list.addAll(shippingDurationViewModel.shippingCourierViewModelList)
+                                        break
+                                    }
+                                }
+                                listener.chooseCourier(list)
+                            }
                         }
                     } else {
                         tvShippingPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
@@ -162,7 +195,20 @@ class NewOrderPreferenceCard(private val binding: CardOrderPreferenceNewBinding,
                         tvShippingPrice.visible()
                         tvShippingCourierEta.gone()
                         setMultiViewsOnClickListener(tvShippingCourier, tvShippingPrice, tvShippingCourierEta, btnChangeCourier) {
-                            listener.chooseCourier()
+                            val shippingRecommendationData = shipment?.shippingRecommendationData
+                            if (shippingRecommendationData != null) {
+                                val list: ArrayList<RatesViewModelType> = ArrayList()
+                                for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
+                                    if (shippingDurationViewModel.isSelected) {
+                                        if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
+                                            list.add(NotifierModel())
+                                        }
+                                        list.addAll(shippingDurationViewModel.shippingCourierViewModelList)
+                                        break
+                                    }
+                                }
+                                listener.chooseCourier(list)
+                            }
                         }
                     }
                 } else if (shipping.serviceErrorMessage.isNotBlank() && shipping.shippingRecommendationData != null) {
@@ -191,7 +237,17 @@ class NewOrderPreferenceCard(private val binding: CardOrderPreferenceNewBinding,
                     tvShippingErrorMessage.text = span
                     tvShippingErrorMessage.visible()
                     tvShippingErrorMessage.setOnClickListener {
-                        listener.chooseDuration(true, "")
+                        val shippingRecommendationData = shipment?.shippingRecommendationData
+                        if (shippingRecommendationData != null) {
+                            val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels)
+                            if (shippingRecommendationData.logisticPromo != null) {
+                                list.add(0, shippingRecommendationData.logisticPromo)
+                                if (shippingRecommendationData.logisticPromo.disabled && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+                                }
+                            }
+                            listener.chooseDuration(true, "", list)
+                        }
                     }
                     tvShippingCourier.gone()
                     btnChangeCourier.gone()
@@ -398,7 +454,10 @@ class NewOrderPreferenceCard(private val binding: CardOrderPreferenceNewBinding,
                 }
                 setupPaymentInstallmentError(selectedTerm)
                 setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetail, btnChangeInstallment) {
-                    listener.onInstallmentDetailClicked()
+                    val creditCard = payment?.creditCard
+                    if (creditCard != null && creditCard.availableTerms.isNotEmpty()) {
+                        listener.onInstallmentDetailClicked(creditCard)
+                    }
                 }
             } else {
                 tvInstallmentType.gone()
@@ -417,7 +476,10 @@ class NewOrderPreferenceCard(private val binding: CardOrderPreferenceNewBinding,
                 tvInstallmentErrorMessage.text = binding.root.context.getString(R.string.lbl_installment_error)
                 tvInstallmentErrorAction.text = binding.root.context.getString(R.string.lbl_change_template)
                 tvInstallmentErrorAction.setOnClickListener {
-                    listener.onInstallmentDetailClicked()
+                    val creditCard = payment?.creditCard
+                    if (creditCard != null && creditCard.availableTerms.isNotEmpty()) {
+                        listener.onInstallmentDetailClicked(creditCard)
+                    }
                 }
                 tvInstallmentErrorMessage.visible()
                 tvInstallmentErrorAction.visible()
@@ -635,13 +697,13 @@ class NewOrderPreferenceCard(private val binding: CardOrderPreferenceNewBinding,
 
         fun chooseAddress(currentAddressId: String)
 
-        fun chooseCourier()
+        fun chooseCourier(list: ArrayList<RatesViewModelType>)
 
-        fun chooseDuration(isDurationError: Boolean, currentSpId: String)
+        fun chooseDuration(isDurationError: Boolean, currentSpId: String, list: ArrayList<RatesViewModelType>)
 
         fun choosePayment(preference: OrderPreference)
 
-        fun onInstallmentDetailClicked()
+        fun onInstallmentDetailClicked(creditCard: OrderPaymentCreditCard)
 
         fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm)
 

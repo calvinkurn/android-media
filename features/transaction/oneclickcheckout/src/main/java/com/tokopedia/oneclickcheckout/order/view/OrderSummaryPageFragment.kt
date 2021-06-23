@@ -45,12 +45,19 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
+import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
+import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheet
+import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheetListener
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.address.AddressListBottomSheet
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
@@ -68,6 +75,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.payment.activation.OvoActivationWebViewBottomSheet
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerActivity
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerFragment
+import com.tokopedia.oneclickcheckout.payment.creditcard.installment.InstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.OvoTopUpWebViewActivity
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
@@ -952,25 +960,54 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         override fun chooseAddress(currentAddressId: String) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 orderSummaryAnalytics.eventClickArrowToChangeAddressOption(currentAddressId, userSession.get().userId)
+                AddressListBottomSheet(getAddressCornerUseCase.get(), object : AddressListBottomSheet.AddressListBottomSheetListener {
+                    override fun onSelect(addressModel: RecipientAddressModel) {
+                        onAddressChange(addressModel)
+                    }
+
+                    override fun onAddAddress(token: Token?) {
+                        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+                            putExtra(EXTRA_IS_FULL_FLOW, true)
+                            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                            putExtra(CheckoutConstant.KERO_TOKEN, token)
+                        }, REQUEST_CODE_ADD_ADDRESS)
+                    }
+                }).show(this@OrderSummaryPageFragment, currentAddressId, viewModel.addressState.value.address.state)
 //                newOrderPreferenceCard.showAddressBottomSheet(this@OrderSummaryPageFragment, getAddressCornerUseCase.get(), viewModel.addressState.value.address.state)
             }
         }
 
-        override fun chooseCourier() {
-            orderSummaryAnalytics.eventChangeCourierOSP(viewModel.getCurrentShipperId().toString())
+        override fun chooseCourier(list: ArrayList<RatesViewModelType>) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-//                newOrderPreferenceCard.showCourierBottomSheet(this@OrderSummaryPageFragment)
+                orderSummaryAnalytics.eventChangeCourierOSP(viewModel.getCurrentShipperId().toString())
+                ShippingCourierOccBottomSheet().showBottomSheet(this@OrderSummaryPageFragment, list, object : ShippingCourierOccBottomSheetListener {
+                    override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
+                        onCourierChange(shippingCourierViewModel)
+                    }
+
+                    override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
+                        onLogisticPromoClick(data)
+                    }
+                })
             }
         }
 
-        override fun chooseDuration(isDurationError: Boolean, currentSpId: String) {
-            if (isDurationError) {
-                orderSummaryAnalytics.eventClickUbahWhenDurationError(userSession.get().userId)
-            } else if (currentSpId.isNotEmpty()) {
-                orderSummaryAnalytics.eventClickArrowToChangeDurationOption(currentSpId, userSession.get().userId)
-            }
+        override fun chooseDuration(isDurationError: Boolean, currentSpId: String, list: ArrayList<RatesViewModelType>) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-//                newOrderPreferenceCard.showDurationBottomSheet(this@OrderSummaryPageFragment)
+                if (isDurationError) {
+                    orderSummaryAnalytics.eventClickUbahWhenDurationError(userSession.get().userId)
+                } else if (currentSpId.isNotEmpty()) {
+                    orderSummaryAnalytics.eventClickArrowToChangeDurationOption(currentSpId, userSession.get().userId)
+                }
+                ShippingDurationOccBottomSheet().showBottomSheet(this@OrderSummaryPageFragment, list, object : ShippingDurationOccBottomSheetListener {
+                    override fun onDurationChosen(serviceData: ServiceData, selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
+                        onDurationChange(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
+                    }
+
+                    override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
+                        onLogisticPromoClick(data)
+                    }
+                })
             }
         }
 
@@ -987,9 +1024,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
         }
 
-        override fun onInstallmentDetailClicked() {
+        override fun onInstallmentDetailClicked(creditCard: OrderPaymentCreditCard) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-//                newOrderPreferenceCard.showInstallmentDetailBottomSheet(this@OrderSummaryPageFragment)
+                InstallmentDetailBottomSheet().show(this@OrderSummaryPageFragment, creditCard, object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                    override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
+                        onInstallmentDetailChange(installment)
+                    }
+                })
             }
         }
 
