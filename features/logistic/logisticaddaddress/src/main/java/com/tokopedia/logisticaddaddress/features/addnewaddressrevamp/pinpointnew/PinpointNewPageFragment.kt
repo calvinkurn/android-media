@@ -155,11 +155,9 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         var isAllowed = false
-        for (i in permissions.indices) {
-            if (grantResults.isNotEmpty() && grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                isAllowed = true
-                getLocation()
-            }
+        if (grantResults.size == requiredPermissions.size) {
+            isAllowed = true
+            getLocation()
         }
 
         if (isAllowed) {

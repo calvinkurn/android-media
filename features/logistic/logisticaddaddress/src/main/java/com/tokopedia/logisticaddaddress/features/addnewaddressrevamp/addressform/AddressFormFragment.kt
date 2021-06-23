@@ -15,7 +15,6 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AutoCompleteTextView
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -29,7 +28,6 @@ import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.response.DistrictItem
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUnmatchedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentAddressFormBinding
@@ -38,7 +36,6 @@ import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.domain.model.add_address.ContactData
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.LabelAlamatChipsAdapter
-import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
@@ -46,7 +43,6 @@ import com.tokopedia.logisticaddaddress.utils.AddAddressConstant
 import com.tokopedia.logisticaddaddress.utils.AddEditAddressUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -587,6 +583,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
             formAddress.etLabel.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
+                    eventShowListLabelAlamat()
                     AddNewAddressRevampAnalytics.onClickFieldLabelAlamatPositive(userSession.userId)
                 }
             }
@@ -605,6 +602,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
             formAddressNegative.etLabel.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
+                    eventShowListLabelAlamat()
                     AddNewAddressRevampAnalytics.onClickFieldLabelAlamatNegative(userSession.userId)
                 }
             }
@@ -629,13 +627,13 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             binding.formAddress.etLabel.textFieldInput.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        eventShowListLabelAlamat(type)
+                        eventShowListLabelAlamat()
                     } else {
                         binding.formAddress.rvLabelAlamatChips.visibility = View.GONE
                     }
                 }
                 setOnClickListener {
-                    eventShowListLabelAlamat(type)
+                    eventShowListLabelAlamat()
                 }
                 addTextChangedListener(object : TextWatcher {
                     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
@@ -665,13 +663,13 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             binding.formAddressNegative.etLabel.textFieldInput.apply {
                 setOnFocusChangeListener { _, hasFocus ->
                     if (hasFocus) {
-                        eventShowListLabelAlamat(type)
+                        eventShowListLabelAlamat()
                     } else {
                         binding.formAddressNegative.rvLabelAlamatChips.visibility = View.GONE
                     }
                 }
                 setOnClickListener {
-                    eventShowListLabelAlamat(type)
+                    eventShowListLabelAlamat()
                 }
                 addTextChangedListener(object : TextWatcher {
                     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
@@ -701,7 +699,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     }
 
-    private fun eventShowListLabelAlamat(type: String) {
+    private fun eventShowListLabelAlamat() {
         showLabelAlamatList()
     }
 
