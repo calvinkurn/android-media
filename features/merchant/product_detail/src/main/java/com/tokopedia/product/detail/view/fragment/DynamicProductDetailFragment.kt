@@ -366,9 +366,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         forceRefresh, isAffiliate, layoutId, isNavOld(), ChooseAddressUtils.getLocalizingAddressData(it)
                         ?: LocalCacheModel())
             }
-            productId?.let {
-                viewModel.getProductTopadsStatus(it, "")
-            }
         }
     }
 
@@ -1282,7 +1279,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 }
 
             },
-            {})
+            {
+                logException(it)
+            })
         }
     }
 
@@ -1743,6 +1742,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
             activity?.invalidateOptionsMenu()
             submitInitialList(data)
+
+            productId?.let {
+                viewModel.getProductTopadsStatus(it)
+            }
         }
     }
 

@@ -728,26 +728,22 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getProductTopadsStatus(
-            productId: String,
-            queryParam: String) {
+            productId: String) {
         launchCatchError(coroutineContext, block = {
             var adsStatus = TopadsIsAdsQuery()
             val job = withTimeoutOrNull(PARAM_JOB_TIMEOUT) {
                 getTopadsIsAdsUseCase.get().setParams(
-                        productId = productId,
-                        productKey = "",
-                        shopDomain = "",
-                        urlParam = queryParam,
-                        pageName = ""
+                        productId = productId
                 )
                 adsStatus = getTopadsIsAdsUseCase.get().executeOnBackground()
                 val errorCode = adsStatus.data.status.error_code
                 if (errorCode in 200..300 && adsStatus.data.productList[0].isCharge) {
-                    _topAdsRecomChargeData.postValue(Success(adsStatus.data.productList[0]))
+                    _topAdsRecomChargeData.postValue(adsStatus.data.productList[0].asSuccess())
                 }
             }
         }) {
             it.printStackTrace()
+            _topAdsRecomChargeData.postValue(it.asFail())
             //nothing to do since fire and forget
         }
     }
