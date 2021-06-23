@@ -1282,6 +1282,31 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertTemplateChatVisibility(isDisplayed())
     }
 
+    @Test
+    fun should_go_back_to_the_bottom_of_the_page_if_click_srw_preview_item_and_not_clear_composed_msg() {
+        // Given
+        val typedMsg = "Hi seller"
+        setupChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        inflateTestFragment()
+
+        // When
+        scrollChatToPosition(10)
+        clickComposeArea()
+        typeMessage(typedMsg)
+        clickSrwPreviewExpandCollapse()
+        clickSrwPreviewItemAt(0)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+
+        // Then
+        assertSrwBubbleContentIsVisibleAt(0)
+        assertComposedTextValue(typedMsg)
+    }
+
     // TODO: SRW should hide broadcast handler if visible
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
     // TODO: SRW bubble should removed when user receive voucher event from ws.
