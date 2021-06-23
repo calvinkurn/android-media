@@ -180,7 +180,7 @@ class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     companion object {
         const val ANIMATION_SPEED = 1F
-        private const val URL_IMG_ON_BOARDING_NEW = "https://images.tokopedia.net/img/android/user/miscall/ic_miscall_onboarding.png"
+        private const val URL_IMG_ON_BOARDING_NEW = "https://images.tokopedia.net/img/android/user/miscall/ic_miscall_onboarding_2.png"
 
         fun createInstance(bundle: Bundle?): Fragment {
             val fragment = OnboardingMiscallFragment()
