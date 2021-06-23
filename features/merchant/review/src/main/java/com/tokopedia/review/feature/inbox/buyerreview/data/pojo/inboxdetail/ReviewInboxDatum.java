@@ -11,10 +11,10 @@ public class ReviewInboxDatum {
     private ProductData productData;
     @SerializedName("review_inbox_id")
     @Expose
-    private int reviewInboxId;
+    private long reviewInboxId;
     @SerializedName("review_id")
     @Expose
-    private int reviewId;
+    private long reviewId;
     @SerializedName("review_has_reviewed")
     @Expose
     private boolean reviewHasReviewed;
@@ -39,7 +39,7 @@ public class ReviewInboxDatum {
         this.productData = productData;
     }
 
-    public int getReviewInboxId() {
+    public long getReviewInboxId() {
         return reviewInboxId;
     }
 
@@ -47,7 +47,7 @@ public class ReviewInboxDatum {
         this.reviewInboxId = reviewInboxId;
     }
 
-    public int getReviewId() {
+    public long getReviewId() {
         return reviewId;
     }
 

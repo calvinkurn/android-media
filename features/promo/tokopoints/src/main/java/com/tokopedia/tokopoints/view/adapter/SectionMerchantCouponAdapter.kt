@@ -31,6 +31,7 @@ import java.util.Arrays
 class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProductsListItem>, context: Context) : RecyclerView.Adapter<SectionMerchantCouponAdapter.CouponListViewHolder>() {
 
     val eventSet = HashSet<String?>()
+    val REWARDS_MVC_SOURCE = 3
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CouponListViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.tp_layout_mvc_item_section, parent, false)
@@ -162,7 +163,7 @@ class SectionMerchantCouponAdapter(val arrayList: MutableList<CatalogMVCWithProd
             val shopApplink = item?.shopInfo?.appLink
             val shopId = item?.shopInfo?.id
             if (shopName != null && shopApplink != null && shopId != null) {
-                it.context.startActivity(TransParentActivity.getIntent(it.context, shopId, 0, shopApplink, shopName))
+                it.context.startActivity(TransParentActivity.getIntent(it.context, shopId, REWARDS_MVC_SOURCE, shopApplink, shopName))
             }
             sendCouponClickEvent(item?.shopInfo?.name, AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON_TITLE, vh, item?.AdInfo)
         }

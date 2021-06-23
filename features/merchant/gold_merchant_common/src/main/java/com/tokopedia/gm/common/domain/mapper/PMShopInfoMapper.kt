@@ -21,6 +21,7 @@ class PMShopInfoMapper @Inject constructor() {
                 kycStatusId = response?.kycStatusId?.toIntOrNull() ?: KYCStatusId.NOT_VERIFIED,
                 shopScoreThreshold = response?.shopScoreThreshold ?: PMShopInfoUiModel.DEFAULT_PM_SHOP_SCORE_THRESHOLD,
                 shopScorePmProThreshold = response?.shopScorePmProThreshold ?: PMShopInfoUiModel.DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD,
+                shopAge = response?.shopAge.orZero(),
                 hasActiveProduct = response?.hasActiveProduct.orFalse(),
                 isEligiblePm = response?.isEligiblePm.orFalse(),
                 isEligiblePmPro = response?.isEligiblePmPro.orFalse(),

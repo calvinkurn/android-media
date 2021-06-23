@@ -43,6 +43,11 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.constant.ConstantKey
+import com.tokopedia.home.util.HomeServerLogger
+import com.tokopedia.home.util.HomeServerLogger.TYPE_CANCELLED_INIT_FLOW
+import com.tokopedia.home.util.HomeServerLogger.TYPE_REVAMP_EMPTY_UPDATE
+import com.tokopedia.home.util.HomeServerLogger.TYPE_REVAMP_ERROR_INIT_FLOW
+import com.tokopedia.home.util.HomeServerLogger.TYPE_REVAMP_ERROR_REFRESH
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelShop
@@ -549,11 +554,12 @@ open class HomeRevampViewModel @Inject constructor(
             homeRateLimit.reset(HOME_LIMITER_KEY)
             _updateNetworkLiveData.postValue(Result.error(it, null))
 
-            ServerLogger.log(Priority.P2, "HOME_STATUS",
-                    mapOf("type" to "revamp_error_refresh",
-                            "reason" to (it.message ?: "").take(ConstantKey.HomeTimber.MAX_LIMIT),
-                            "data" to Log.getStackTraceString(it).take(ConstantKey.HomeTimber.MAX_LIMIT)
-                    ))
+            HomeServerLogger.logWarning(
+                type = TYPE_REVAMP_ERROR_REFRESH,
+                throwable = it,
+                reason = (it.message ?: "").take(ConstantKey.HomeTimber.MAX_LIMIT),
+                data = Log.getStackTraceString(it).take(ConstantKey.HomeTimber.MAX_LIMIT)
+            )
         }
     }
 
@@ -962,10 +968,18 @@ open class HomeRevampViewModel @Inject constructor(
 
     }
 
-    private inline fun <reified T> findWidgetList(actionOnFound: (List<T>) -> Unit) {
-        homeDataModel.list.withIndex().filterIsInstance<T>().let {
-            actionOnFound.invoke(it)
+    private inline fun <reified T> findWidgetList(predicate: (T?) -> Boolean = {true}, actionOnFound: (List<IndexedValue<T>>) -> Unit) {
+        val listFound = mutableListOf<IndexedValue<T>>()
+        homeDataModel.list.withIndex().filter { it.value is T && predicate.invoke(it.value as? T) }.let {
+            it.forEach { indexedValue ->
+                if (indexedValue.value is T) {
+                    (indexedValue as? IndexedValue<T>)?.let { findValue ->
+                        listFound.add(findValue)
+                    }
+                }
+            }
         }
+        actionOnFound.invoke(listFound)
     }
 
     private inline fun <reified T> widgetIsAvailable(predicate: (T) -> Boolean = {true}): Boolean {
@@ -1310,20 +1324,25 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     private fun getDisplayTopAdsHeader(){
-        findWidget<FeaturedShopDataModel> { featuredShopDataModel, index ->
-            launchCatchError(coroutineContext, block={
-                getDisplayHeadlineAds.get().createParams(featuredShopDataModel.channelModel.widgetParam)
-                val data = getDisplayHeadlineAds.get().executeOnBackground()
-                if(data.isEmpty()){
-                    deleteWidget(featuredShopDataModel, index)
-                } else {
-                    updateWidget(featuredShopDataModel.copy(
+        findWidgetList<FeaturedShopDataModel> { indexedFeaturedShopModelList ->
+            indexedFeaturedShopModelList.forEach { model ->
+                val featuredShopDataModel = model.value
+                val index = model.index
+
+                launchCatchError(coroutineContext, block={
+                    getDisplayHeadlineAds.get().createParams(featuredShopDataModel.channelModel.widgetParam)
+                    val data = getDisplayHeadlineAds.get().executeOnBackground()
+                    if(data.isEmpty()){
+                        deleteWidget(featuredShopDataModel, index)
+                    } else {
+                        updateWidget(featuredShopDataModel.copy(
                             channelModel = featuredShopDataModel.channelModel.copy(
-                                    channelGrids = mappingTopAdsHeaderToChannelGrid(data)
+                                channelGrids = mappingTopAdsHeaderToChannelGrid(data)
                             )), index)
+                    }
+                }){
+                    deleteWidget(featuredShopDataModel, index)
                 }
-            }){
-                deleteWidget(featuredShopDataModel, index)
             }
         }
     }
@@ -1489,14 +1508,19 @@ open class HomeRevampViewModel @Inject constructor(
                     _isRequestNetworkLiveData.postValue(Event(false))
                     onRefreshState = false
                     if (homeNewDataModel.list.isEmpty()) {
-                        ServerLogger.log(Priority.P2, "HOME_STATUS",
-                                mapOf("type" to "revamp_empty_update",
-                                        "reason" to "Visitables is empty",
-                                        "isProcessingDynamicChannel" to homeNewDataModel.isProcessingDynamicChannle.toString(),
-                                        "isProcessingAtf" to homeNewDataModel.isProcessingAtf.toString(),
-                                        "isFirstPage" to homeNewDataModel.isFirstPage.toString(),
-                                        "isCache" to homeNewDataModel.isCache.toString()
-                                ))
+                        val error = "type:" + "revamp_empty_update; " +
+                                "reason:" + "Visitable is empty; " +
+                                "isProcessingDynamicChannel:" + homeNewDataModel.isProcessingDynamicChannle.toString() + ";" +
+                                "isProcessingAtf:" + homeNewDataModel.isProcessingAtf.toString() + ";" +
+                                "isFirstPage:" + homeNewDataModel.isFirstPage.toString() + ";" +
+                                "isCache:" + homeNewDataModel.isCache.toString()
+
+                        HomeServerLogger.logWarning(
+                            type = TYPE_REVAMP_EMPTY_UPDATE,
+                            throwable = MessageErrorException(error),
+                            reason = error,
+                            data = error
+                        )
                     }
                     updateHomeData(homeNewDataModel)
 
@@ -1508,12 +1532,12 @@ open class HomeRevampViewModel @Inject constructor(
                     }
                     _trackingLiveData.postValue(Event(homeNewDataModel.list.filterIsInstance<HomeVisitable>()))
                 } else if (onRefreshState) {
-                    if (homeDataModel?.list?.size?:0 > 1) {
+                    if (homeNewDataModel?.list?.size?:0 > 1) {
                         _isRequestNetworkLiveData.postValue(Event(false))
                         takeTicker = false
                     }
-                    if (homeDataModel?.list?.size?:0 > 0) {
-                        homeDataModel?.let { updateHomeData(it) }
+                    if (homeNewDataModel?.list?.size?:0 > 0) {
+                        homeNewDataModel?.let { updateHomeData(it) }
                     }
                     refreshHomeData()
                 }
@@ -1521,19 +1545,21 @@ open class HomeRevampViewModel @Inject constructor(
         }) {
             _updateNetworkLiveData.postValue(Result.error(error = it, data = null))
             val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
-            ServerLogger.log(Priority.P2, "HOME_STATUS",
-                    mapOf("type" to "revamp_error_init_flow",
-                            "reason" to (it.message ?: "".take(ConstantKey.HomeTimber.MAX_LIMIT)),
-                            "data" to stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
-                    ))
+            HomeServerLogger.logWarning(
+                type = TYPE_REVAMP_ERROR_INIT_FLOW,
+                throwable = it,
+                reason = (it.message ?: "".take(ConstantKey.HomeTimber.MAX_LIMIT)),
+                data = stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
+            )
         }.invokeOnCompletion {
             _updateNetworkLiveData.postValue(Result.error(error = Throwable(), data = null))
             val stackTrace = if (it != null) Log.getStackTraceString(it) else ""
-            ServerLogger.log(Priority.P2, "HOME_STATUS",
-                    mapOf("type" to "revamp_cancelled_init_flow",
-                            "reason" to (it?.message ?: "No error propagated").take(ConstantKey.HomeTimber.MAX_LIMIT),
-                            "data" to stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
-                    ))
+            HomeServerLogger.logWarning(
+                type = TYPE_CANCELLED_INIT_FLOW,
+                throwable = it,
+                reason = (it?.message ?: "No error propagated").take(ConstantKey.HomeTimber.MAX_LIMIT),
+                data = stackTrace.take(ConstantKey.HomeTimber.MAX_LIMIT)
+            )
             homeFlowDataCancelled = true
         }
     }

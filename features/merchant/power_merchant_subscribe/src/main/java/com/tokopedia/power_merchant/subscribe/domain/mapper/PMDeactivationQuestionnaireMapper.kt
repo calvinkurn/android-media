@@ -1,7 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.domain.mapper
 
-import com.tokopedia.power_merchant.subscribe.data.model.Question
-import com.tokopedia.power_merchant.subscribe.data.model.QuestionnaireData
+import com.tokopedia.power_merchant.subscribe.domain.model.Question
+import com.tokopedia.power_merchant.subscribe.domain.model.QuestionnaireData
 import com.tokopedia.power_merchant.subscribe.view.model.DeactivationQuestionnaireUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.QuestionnaireOptionUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.QuestionnaireUiModel
