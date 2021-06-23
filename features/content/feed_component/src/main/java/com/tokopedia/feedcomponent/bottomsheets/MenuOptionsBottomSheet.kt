@@ -46,9 +46,14 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        delete.showWithCondition(canBeDeleted)
         report.showWithCondition(isReportable)
+
+        div1.showWithCondition(canBeUnFollow)
         follow.showWithCondition(canBeUnFollow)
+
+        div2.showWithCondition(canBeDeleted)
+        delete.showWithCondition(canBeDeleted)
+
         follow.setOnClickListener {
             onFollow?.invoke()
             dismiss()

@@ -38,7 +38,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.bottomsheets.MenuOptionsBottomSheet
@@ -228,6 +228,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     @Inject
     internal lateinit var userSession: UserSessionInterface
 
+    private val productTagBS by lazy {
+        ProductItemInfoBottomSheet()
+    }
+
     private val userIdInt: Int
         get() {
             return userSession.userId.toIntOrZero()
@@ -399,7 +403,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         }
                     }
                     is Fail -> {
-                        val message = it.throwable.localizedMessage ?: ""
+                        val message = getString(R.string.default_request_error_unknown)
                         showToast(message, Toaster.TYPE_ERROR)
                     }
                 }
@@ -417,7 +421,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         }
                     }
                     is Fail -> {
-                        val message = it.throwable.localizedMessage ?: ""
+                        val message = getString(R.string.feed_like_error_message)
                         showToast(message, Toaster.TYPE_ERROR)
                     }
                 }
@@ -435,7 +439,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         }
                     }
                     is Fail -> {
-                        val message = it.throwable.localizedMessage ?: ""
+                        val message = getString(R.string.default_request_error_unknown)
                         showToast(message, Toaster.TYPE_ERROR)
                     }
                 }
@@ -453,7 +457,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         }
                     }
                     is Fail -> {
-                        val message = it.throwable.localizedMessage ?: ""
+                        val message = getString(R.string.default_request_error_unknown)
                         showToast(message, Toaster.TYPE_ERROR)
                     }
                 }
@@ -465,7 +469,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         val data = it.data
                         when {
                             data.isSuccess -> {
-                                onAddToCartSuccess()
+                                Toaster.build(
+                                    requireView(),
+                                    getString(R.string.feed_added_to_cart),
+                                    Toaster.LENGTH_LONG,
+                                    Toaster.TYPE_NORMAL,
+                                    getString(R.string.feed_go_to_cart),
+                                    View.OnClickListener {
+                                        onAddToCartSuccess()
+                                    }).show()
                             }
                             data.errorMsg.isNotEmpty() -> {
                                 showToast(data.errorMsg, Toaster.TYPE_ERROR)
@@ -498,7 +510,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         }
                     }
                     is Fail -> {
-                        val message = it.throwable.localizedMessage ?: ""
+                        val message = getString(R.string.default_request_error_unknown)
                         showToast(message, Toaster.TYPE_ERROR)
                     }
                 }
@@ -1075,18 +1087,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun createDeleteDialog(rowNumber: Int, id: Int): Dialog {
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+    private fun createDeleteDialog(rowNumber: Int, id: Int) {
+        val dialog =
+            DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.feed_delete_post))
-        dialog.setDesc(getString(R.string.feed_after_delete_cant))
-        dialog.setBtnOk(getString(R.string.feed_delete))
-        dialog.setBtnCancel(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
-        dialog.setOnOkClickListener {
+        dialog.setDescription(getString(R.string.feed_after_delete_cant))
+        dialog.setPrimaryCTAText(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
+        dialog.setSecondaryCTAText(getString(R.string.feed_delete))
+        dialog.setPrimaryCTAClickListener {
+            dialog.dismiss()
+        }
+        dialog.setSecondaryCTAClickListener {
             feedViewModel.doDeletePost(id, rowNumber)
             dialog.dismiss()
         }
-        dialog.setOnCancelClickListener { dialog.dismiss() }
-        return dialog
+        dialog.show()
     }
 
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
@@ -1351,7 +1366,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             feedAnalytics.evenClickMenu(postId.toString())
             val sheet = MenuOptionsBottomSheet.newInstance(
                 reportable, isFollowed,
-                isDeletable = false
+                deletable
             )
             sheet.show((context as FragmentActivity).supportFragmentManager, "")
             sheet.onReport = {
@@ -1387,6 +1402,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     ) else onGoToLogin()
             }
             sheet.onDelete = {
+                createDeleteDialog(positionInFeed, postId)
                 feedAnalytics.eventClickThreeDotsOption(postId.toString(), "Hapus")
 
             }
@@ -1572,16 +1588,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onTagSheetItemBuy(positionInFeed: Int, postTagItem: FeedXProduct, shopId: String) {
         if (userSession.isLoggedIn) {
-//            val shop = postTagItem.shop.firstOrNull()
-//            feedAnalytics.eventFeedAddToCart(
-//                postTagItem.id,
-//                postTagItem.text,
-//                postTagItem.price,
-//                1,
-//                shop?.shopId?.toIntOrZero() ?: -1,
-//                "",
-//                authorType
-            //          )
+            productTagBS.dismiss()
             feedViewModel.doAtc(postTagItem, shopId)
         } else {
             onGoToLogin()
@@ -1660,11 +1667,24 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun addToWishList(productId: String) {
-        feedViewModel.addWishlist(productId, 0, ::onWishListFail)
+        productTagBS.dismiss()
+        feedViewModel.addWishlist(productId, 0, ::onWishListFail, ::onWishListSuccess)
     }
 
     private fun onWishListFail(s: String) {
         showToast(s, Toaster.TYPE_ERROR)
+    }
+
+    private fun onWishListSuccess() {
+        Toaster.build(
+            requireView(),
+            getString(R.string.feed_added_to_wishlist),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_NORMAL,
+            getString(R.string.feed_go_to_wishlist),
+            View.OnClickListener {
+                onAddToCartSuccess()
+            }).show()
     }
 
     override fun onTagClicked(
@@ -1674,12 +1694,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
         id: String
     ) {
         feedAnalytics.eventTagClicked(postId.toString())
-        val sheet = ProductItemInfoBottomSheet()
-        sheet.show(childFragmentManager, products, listener, postId, id)
-        sheet.closeClicked = {
+        productTagBS.show(childFragmentManager, products, listener, postId, id)
+        productTagBS.closeClicked = {
             feedAnalytics.eventClickCloseProductInfoSheet(postId.toString())
         }
-        sheet.disMissed = {
+        productTagBS.disMissed = {
             feedAnalytics.eventClickGreyArea(postId.toString())
         }
     }
@@ -1691,6 +1710,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         url: String,
         imageUrl: String
     ) {
+        productTagBS.dismiss()
         activity?.let {
             shareData = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
                 .setName(title)

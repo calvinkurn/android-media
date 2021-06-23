@@ -6,57 +6,61 @@ import com.tokopedia.kotlin.model.ImpressHolder
 
 data class FeedXCard(
     @SerializedName("__typename")
-        var typename: String = "",
+    var typename: String = "",
 
-        //FeedXCardBanners Data Type
+    //FeedXCardBanners Data Type
     @SerializedName("id")
-        var id: String = "",
+    var id: String = "",
     @SerializedName("publishedAt")
-        var publishedAt: String = "",
+    var publishedAt: String = "",
     @SerializedName("reportable")
-        var reportable:Boolean = true,
+    var reportable: Boolean = true,
+    @SerializedName("editable")
+    var editable: Boolean = true,
+    @SerializedName("deletable")
+    var deletable: Boolean = false,
     @SerializedName("mods")
-        var mods: List<String> = emptyList(),
+    var mods: List<String> = emptyList(),
 
-        //FeedXCardTopAds Data Type
+    //FeedXCardTopAds Data Type
     @SerializedName("promos")
-        var promos: List<String> = emptyList(),
+    var promos: List<String> = emptyList(),
     @SerializedName("author")
-        var author: FeedXAuthor = FeedXAuthor(),
+    var author: FeedXAuthor = FeedXAuthor(),
     @SerializedName("items")
-        var items: List<FeedXCardDataItem> = emptyList(),
+    var items: List<FeedXCardDataItem> = emptyList(),
 
-        //FeedXCardPlaceHolder Data Type
+    //FeedXCardPlaceHolder Data Type
     @SerializedName("type")
-        var type: String = "",
+    var type: String = "",
 
-        //FeedXCardProductsHighlight Data Type
+    //FeedXCardProductsHighlight Data Type
     @SerializedName("products")
-        var products: List<FeedXProduct> = emptyList(),
+    var products: List<FeedXProduct> = emptyList(),
     @SerializedName("subTitle")
-        var subTitle: String = "",
+    var subTitle: String = "",
     @SerializedName("text")
-        var text: String = "",
+    var text: String = "",
     @SerializedName("title")
-        var title: String = "",
+    var title: String = "",
     @SerializedName("like")
-        var like: FeedXLike = FeedXLike(),
+    var like: FeedXLike = FeedXLike(),
     @SerializedName("comments", alternate = ["comm"])
-        var comments: FeedXComments = FeedXComments(),
+    var comments: FeedXComments = FeedXComments(),
     @SerializedName("share", alternate = ["sh"])
-        var share: FeedXShare = FeedXShare(),
+    var share: FeedXShare = FeedXShare(),
     @SerializedName("followers", alternate = ["fol"])
-        var followers: FeedXFollowers = FeedXFollowers(),
+    var followers: FeedXFollowers = FeedXFollowers(),
 
-        //FeedXCardPost Data Type
+    //FeedXCardPost Data Type
     @SerializedName("appLink")
-        var appLink: String = "",
+    var appLink: String = "",
     @SerializedName("webLink")
-        var webLink: String = "",
+    var webLink: String = "",
     @SerializedName("actionButtonLabel")
-        var actionButtonLabel: String = "",
+    var actionButtonLabel: String = "",
     @SerializedName("actionButtonOperationWeb")
-        var actionButtonOperationWeb: String = "",
+    var actionButtonOperationWeb: String = "",
     @SerializedName("actionButtonOperationApp")
     var actionButtonOperationApp: String = "",
     @SerializedName("media")

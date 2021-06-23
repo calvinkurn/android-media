@@ -21,8 +21,8 @@ object FeedScrollListenerNew {
     fun onFeedScrolled(recyclerView: RecyclerView, list: List<Visitable<*>>) {
         if (canAutoplayVideo(recyclerView)) {
             val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
-            val firstPosition = layoutManager!!.findFirstVisibleItemPosition()
-            val lastPosition = layoutManager.findLastVisibleItemPosition()
+            val firstPosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
+            val lastPosition = layoutManager?.findLastVisibleItemPosition() ?: 0
             for (i in firstPosition..lastPosition) {
                 if (isVideoCard(list, i)) {
                     val item = getVideoCardViewModel(list, i)
@@ -82,7 +82,7 @@ object FeedScrollListenerNew {
 
     private fun getVideoCardViewModel(list: List<Visitable<*>>, position: Int): FeedXMedia? {
         try {
-            return (list[position] as DynamicPostUiModel).feedXCard.media[0]
+            return (list[position] as DynamicPostUiModel).feedXCard.media.firstOrNull()
         } catch (e: Exception) {
             e.localizedMessage
         }

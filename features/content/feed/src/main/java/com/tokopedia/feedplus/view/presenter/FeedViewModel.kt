@@ -367,26 +367,21 @@ class FeedViewModel @Inject constructor(
         })
     }
 
-    fun addWishlist(productId: String, position: Int, onFail: (String) -> Unit) {
-        addWishListUseCase.createObservable(productId, userSession.userId,
+    fun addWishlist(
+        productId: String,
+        position: Int,
+        onFail: (String) -> Unit,
+        onSuccess: () -> Unit
+    ) {
+        addWishListUseCase.createObservable(
+            productId, userSession.userId,
             object : WishListActionListener {
                 override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
                     onFail.invoke(errorMessage ?: ERROR_CUSTOM_MESSAGE)
                 }
 
                 override fun onSuccessAddWishlist(productId: String?) {
-//                    val prodTags = postTagLive.value ?:
-//                    (postDetailLive.value as? Success)?.data?.let {
-//                        (it.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?)?.postTag
-//                    }
-//
-//                    if (prodTags == null || position >= prodTags.items.size){
-//                        onErrorRemoveWishlist(ERROR_CUSTOM_MESSAGE, productId)
-//                        return
-//                    }
-//
-//                    prodTags.items[position].isWishlisted = true
-//                    postTagLive.value = prodTags
+                    onSuccess.invoke()
                 }
 
                 override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}

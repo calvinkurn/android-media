@@ -15,13 +15,14 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:text="@string/feed_component_report_it"
         android:textColor="@color/Red_R600"
-        app:typographyType="heading_5" />
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/div1"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/feed_component_dp_0.5"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:background="@color/Unify_N75" />
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/dp_16" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/follow"
@@ -32,13 +33,14 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:text="@string/feed_component_unfollow"
         android:textColor="@color/Unify_N700_96"
-        app:typographyType="heading_5" />
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/div2"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/feed_component_dp_0.5"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:background="@color/Unify_N75" />
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/dp_16" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/delete"
@@ -50,7 +52,8 @@
         android:text="@string/feed_delete_comment"
         android:textColor="@color/Unify_N700_96"
         android:visibility="gone"
-        app:typographyType="heading_5"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
         tools:visibility="visible" />
 
 </LinearLayout>

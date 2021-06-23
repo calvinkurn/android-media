@@ -40,6 +40,8 @@ import com.tokopedia.unifyprinciples.Typography
 import java.net.URLEncoder
 
 const val SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+var PARAM_SHOP_ID = "{shop_id}"
+
 
 class KolCommentNewCardView : LinearLayout {
 
@@ -107,7 +109,7 @@ class KolCommentNewCardView : LinearLayout {
             val profileUrl = element.userUrl
             listener?.onAvatarClicked(
                 if (!profileUrl.isNullOrEmpty()) profileUrl
-                else constructProfileApplink(element.userId ?: "0"),
+                else constructProfileApplink(element.isShop, element.userId ?: "0"),
                 element.isShop
             )
         }
@@ -233,8 +235,12 @@ class KolCommentNewCardView : LinearLayout {
         get() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
 
 
-    private fun constructProfileApplink(userId: String): String {
-        return ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId)
+    private fun constructProfileApplink(isShop: Boolean, userId: String): String {
+        return if (!isShop) {
+            ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId)
+        } else {
+            ApplinkConst.SHOP.replace(PARAM_SHOP_ID, userId)
+        }
     }
 
     interface Listener {

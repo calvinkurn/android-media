@@ -93,7 +93,7 @@ class ProductPostTagViewHolderNew(
                     item.id.toIntOrZero(),
                     item.text,
                     "",
-                    item.applink,
+                    item.weblink,
                     item.imgUrl
                 )
             }

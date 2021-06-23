@@ -166,8 +166,10 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
 
         list.clear()
         list.addAll(newList)
+        hasStableIds()
+        notifyDataSetChanged()
 
-        diffResult.dispatchUpdatesTo(this)
+        //    diffResult.dispatchUpdatesTo(this)
     }
 
     fun removePlayWidget() {
@@ -189,13 +191,8 @@ class FeedPlusAdapter(private val typeFactory: FeedPlusTypeFactory, val loadList
         updateList(shimmerItems)
     }
 
-    fun removeShimmer(){
-        clearData()
-    }
-
     interface OnLoadListener {
         fun onLoad(totalCount: Int)
-
     }
 
     interface OnScrollListener : OnLoadListener {

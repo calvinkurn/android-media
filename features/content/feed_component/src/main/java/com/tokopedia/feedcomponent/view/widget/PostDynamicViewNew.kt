@@ -173,6 +173,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.id.toIntOrZero(),
             feedXCard.author,
             feedXCard.reportable,
+            feedXCard.deletable,
             feedXCard.followers
         )
     }
@@ -181,6 +182,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         activityId: Int,
         author: FeedXAuthor,
         reportable: Boolean,
+        deletable: Boolean,
         followers: FeedXFollowers
     ) {
         val isFollowed = followers.isFollowed
@@ -290,7 +292,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 positionInFeed,
                 activityId,
                 reportable,
-                true,
+                deletable,
                 true,
                 isFollowed,
                 author.id,

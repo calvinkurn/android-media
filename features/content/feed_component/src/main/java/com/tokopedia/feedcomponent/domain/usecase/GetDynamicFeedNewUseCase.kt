@@ -48,6 +48,8 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         actionButtonOperationWeb
         actionButtonOperationApp
         reportable
+        editable
+        deletable
         media {
           id
           type
