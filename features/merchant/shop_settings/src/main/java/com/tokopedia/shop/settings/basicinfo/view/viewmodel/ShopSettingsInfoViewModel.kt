@@ -14,8 +14,8 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
-import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
-import com.tokopedia.shop.settings.basicinfo.domain.CheckOfficialStoreTypeUseCase
+import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopOsUseCase
+import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -29,7 +29,7 @@ import javax.inject.Inject
 
 
 class ShopSettingsInfoViewModel @Inject constructor (
-        private val checkOsMerchantUseCase: CheckOfficialStoreTypeUseCase,
+        private val checkOsMerchantUseCase: GqlGetIsShopOsUseCase,
         private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
         private val getShopStatusUseCase: GetPMStatusUseCase,
         private val updateShopScheduleUseCase: UpdateShopScheduleUseCase,
@@ -38,8 +38,8 @@ class ShopSettingsInfoViewModel @Inject constructor (
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
-    private val _checkOsMerchantTypeData = MutableLiveData<Result<CheckShopIsOfficialModel>>()
-    val checkOsMerchantTypeData: LiveData<Result<CheckShopIsOfficialModel>>
+    private val _checkOsMerchantTypeData = MutableLiveData<Result<GetIsShopOfficialStore>>()
+    val checkOsMerchantTypeData: LiveData<Result<GetIsShopOfficialStore>>
         get() = _checkOsMerchantTypeData
 
     private val _shopBasicData = MutableLiveData<Result<ShopBasicDataModel>>()
@@ -142,8 +142,7 @@ class ShopSettingsInfoViewModel @Inject constructor (
     fun validateOsMerchantType(shopId: Int) {
         launchCatchError(block = {
             withContext(dispatchers.io) {
-                checkOsMerchantUseCase.params = CheckOfficialStoreTypeUseCase
-                        .createRequestParam(shopId)
+                checkOsMerchantUseCase.params = GqlGetIsShopOsUseCase.createParams(shopId)
                 val osMerchantChecker = checkOsMerchantUseCase.executeOnBackground()
                 osMerchantChecker.let {
                     _checkOsMerchantTypeData.postValue(Success(it))

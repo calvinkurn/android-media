@@ -334,7 +334,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         shopSettingsInfoViewModel.checkOsMerchantTypeData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    it.data.getIsOfficial.let { osData ->
+                    it.data.let { osData ->
                         val errMessage = osData.messageError
                         val isOS = osData.data.isOfficial
                         val expiration = osData.data.expiredDate
