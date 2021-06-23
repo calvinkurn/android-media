@@ -18,7 +18,7 @@ import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.booking.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
-import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.view.BaseFlightActivity
@@ -60,7 +60,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
         setupSearchToolbarText()
     }
 
-    override fun getScreenName(): String = FlightAnalytics.Screen.SEARCH
+    override fun getScreenName(): String = FlightAnalyticsScreenName.SEARCH
 
     override fun getLayoutRes(): Int = R.layout.activity_flight_search
 
