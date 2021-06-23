@@ -19,7 +19,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.*
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.coachmark.util.ViewHelper
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.dialog.DialogUnify
@@ -753,42 +752,49 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 //        }
 //    }
 
-    private fun getRemoveProfileTickerSharedPreference(): SharedPreferences? {
-        return context?.applicationContext?.getSharedPreferences(SP_KEY_REMOVE_PROFILE_TICKER, Context.MODE_PRIVATE)
-    }
+//    private fun getRemoveProfileTickerSharedPreference(): SharedPreferences? {
+//        return context?.applicationContext?.getSharedPreferences(SP_KEY_REMOVE_PROFILE_TICKER, Context.MODE_PRIVATE)
+//    }
 
     private fun showNewOnboarding(onboarding: OccMainOnboarding) {
         view?.let {
             it.post {
-                val scrollview = binding.nestedScrollView
-                val coachMarkItems = ArrayList<CoachMark2Item>()
-                for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
-                    val newView: View = when (onboarding.coachmarkType) {
-                        COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE -> generateNewCoachMarkAnchorForNewBuyerRemoveProfile(it, detailIndexed.index)
-                        else -> binding.tvHeader2
+                try {
+                    val scrollview = binding.rvOrderSummaryPage
+                    val childViewHolder = scrollview.findViewHolderForAdapterPosition(adapter.products.size + 2) as? NewOrderPreferenceCard
+                            ?: return@post
+                    val coachMarkItems = ArrayList<CoachMark2Item>()
+                    for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
+                        val newView: View = when (onboarding.coachmarkType) {
+                            COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE -> generateNewCoachMarkAnchorForNewBuyerRemoveProfile(childViewHolder, detailIndexed.index)
+                            else -> binding.tvHeader2
+                        }
+                        coachMarkItems.add(CoachMark2Item(newView, detailIndexed.value.title, detailIndexed.value.message, CoachMark2.POSITION_TOP))
                     }
-                    coachMarkItems.add(CoachMark2Item(newView, detailIndexed.value.title, detailIndexed.value.message, CoachMark2.POSITION_TOP))
-                }
-                val coachMark = CoachMark2(it.context)
-                coachMark.setStepListener(object : CoachMark2.OnStepListener {
-                    override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                        triggerCoachMarkAnalytics(onboarding, currentIndex)
+                    val coachMark = CoachMark2(it.context)
+                    coachMark.setStepListener(object : CoachMark2.OnStepListener {
+                        override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+//                            triggerCoachMarkAnalytics(onboarding, currentIndex)
+                        }
+                    })
+                    coachMark.onFinishListener = {
+                        when (onboarding.coachmarkType) {
+                            COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE -> orderSummaryAnalytics.eventClickDoneOnCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
+                        }
                     }
-                })
-                coachMark.onFinishListener = {
-                    when (onboarding.coachmarkType) {
-                        COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE -> orderSummaryAnalytics.eventClickDoneOnCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
+                    // manual scroll first item
+                    val firstView = coachMarkItems.firstOrNull()?.anchorView
+                    firstView?.post {
+//                        val relativeLocation = IntArray(2)
+//                        ViewHelper.getRelativePositionRec(firstView, scrollview, relativeLocation)
+                        scrollview.scrollToPosition(adapter.products.size + 1)
+//                        scrollview.scrollTo(0, relativeLocation.last())
+                        coachMark.showCoachMark(coachMarkItems, null)
+                        // trigger first analytics
+//                        triggerCoachMarkAnalytics(onboarding, 0)
                     }
-                }
-                // manual scroll first item
-                val firstView = coachMarkItems.firstOrNull()?.anchorView
-                firstView?.post {
-                    val relativeLocation = IntArray(2)
-                    ViewHelper.getRelativePositionRec(firstView, scrollview, relativeLocation)
-                    scrollview.scrollTo(0, relativeLocation.last())
-//                    coachMark.showCoachMark(coachMarkItems, scrollview)
-                    // trigger first analytics
-                    triggerCoachMarkAnalytics(onboarding, 0)
+                } catch (t: Throwable) {
+                    t.printStackTrace()
                 }
             }
         }
@@ -804,10 +810,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun generateNewCoachMarkAnchorForNewBuyerRemoveProfile(view: View, index: Int): View {
+    private fun generateNewCoachMarkAnchorForNewBuyerRemoveProfile(view: NewOrderPreferenceCard, index: Int): View {
         return when (index) {
-            1 -> binding.newPreferenceCard.btnChangeAddress
-            else -> binding.newPreferenceCard.tvProfileHeader
+            1 -> view.binding.btnChangeAddress
+            else -> view.binding.tvProfileHeader
         }
     }
 
@@ -1016,6 +1022,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun getNewOrderPreferenceCardListener(): NewOrderPreferenceCard.OrderPreferenceCardListener = object : NewOrderPreferenceCard.OrderPreferenceCardListener {
+
+        override fun getRemoveProfileTickerSharedPreference(): SharedPreferences? {
+            return context?.applicationContext?.getSharedPreferences(SP_KEY_REMOVE_PROFILE_TICKER, Context.MODE_PRIVATE)
+        }
 
         override fun onAddAddress(token: Token?) {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
@@ -1462,7 +1472,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         private const val SAVE_HAS_DONE_ATC = "has_done_atc"
 
-        private const val SP_KEY_REMOVE_PROFILE_TICKER = "occ_remove_profile_ticker"
+        const val SP_KEY_REMOVE_PROFILE_TICKER = "occ_remove_profile_ticker"
 
         @JvmStatic
         fun newInstance(productId: String?): OrderSummaryPageFragment {
