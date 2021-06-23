@@ -280,14 +280,14 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                     val pmStatus = it.data
                     userSession.setIsGoldMerchant(pmStatus.isPowerMerchant())
 
-                    if (!pmStatus.isPowerMerchant()) {
-                        showRegularMerchantMembership(pmStatus)
-                    } else {
+                    if (pmStatus.isPowerMerchant()) {
                         shopBasicDataModel?.isOfficialStore?.let { isOfficialStore ->
                             if (!isOfficialStore) {
                                 showPowerMerchant()
                             }
                         }
+                    } else {
+                        showRegularMerchantMembership(pmStatus)
                     }
                 }
                 is Fail -> {
