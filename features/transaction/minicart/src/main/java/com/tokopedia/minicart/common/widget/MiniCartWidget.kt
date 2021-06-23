@@ -455,6 +455,7 @@ class MiniCartWidget @JvmOverloads constructor(
             updateData(it)
             miniCartWidgetListener?.onCartItemsUpdated(it)
         }
+        viewModel?.resetTemporaryHiddenUnavailableItems()
     }
 
     override fun onBottomSheetSuccessUpdateCartForCheckout() {
