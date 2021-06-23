@@ -131,6 +131,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     private fun initializeCartData(viewModel: MiniCartViewModel) {
         adapter?.clearAllElements()
+        bottomSheet?.setTitle("")
         showLoading()
         setTotalAmountLoading(true)
         viewModel.getCartList(isFirstLoad = true)
@@ -360,7 +361,12 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 rvMiniCartList?.setPadding(0, 0, 0, rvMiniCartList?.resources?.getDimensionPixelOffset(R.dimen.dp_64)
                         ?: 0)
             } else {
-                rvMiniCartList?.setPadding(0, 0, 0, 0)
+                if (bottomSheet?.isFullpage == true) {
+                    rvMiniCartList?.setPadding(0, 0, 0, rvMiniCartList?.resources?.getDimensionPixelOffset(R.dimen.dp_24)
+                            ?: 0)
+                } else {
+                    rvMiniCartList?.setPadding(0, 0, 0, 0)
+                }
             }
         }
     }
