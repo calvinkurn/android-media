@@ -633,35 +633,16 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         setupContentMargin(false)
                         if(containerEmptyResultState.isVisible){
                             googleMap.uiSettings.setAllGesturesEnabled(false)
-                            mapHotelSearchMap.setOnTouchListener(object : View.OnTouchListener {
-                                override fun onTouch(v: View, motionEvent: MotionEvent): Boolean {
-                                    when (motionEvent.action) {
-                                        MotionEvent.ACTION_DOWN -> v.performClick()
-                                    }
-                                    return true
-                                }
-                            })
-                            mapHotelSearchMap.setOnClickListener {
-                                collapseBottomSheet()
-                            }
-                            googleMap.setOnMapClickListener {
-                                collapseBottomSheet()
-                            }
+                           enabledMapsClick()
                         }else{
-                            googleMap.uiSettings.isZoomGesturesEnabled = true
-                            googleMap.uiSettings.isRotateGesturesEnabled = false
-                            googleMap.uiSettings.isScrollGesturesEnabled = true
-                            googleMap.uiSettings.isTiltGesturesEnabled = false
+                            enabledMapsGesture()
                         }
                     }
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_IN))
                         setupContentMargin(false)
 
-                        googleMap.uiSettings.isZoomGesturesEnabled = true
-                        googleMap.uiSettings.isRotateGesturesEnabled = false
-                        googleMap.uiSettings.isScrollGesturesEnabled = true
-                        googleMap.uiSettings.isTiltGesturesEnabled = false
+                        enabledMapsGesture()
 
                         if (!isViewFullMap) {
                             trackingHotelUtil.searchViewFullMap(context,
@@ -835,21 +816,33 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
             googleMap.setOnMarkerClickListener(this)
             googleMap.setOnCameraMoveStartedListener(this)
+            enabledMapsClick()
+        }
+    }
 
-            mapHotelSearchMap.setOnTouchListener(object : View.OnTouchListener {
-                override fun onTouch(v: View, motionEvent: MotionEvent): Boolean {
-                    when (motionEvent.action) {
-                        MotionEvent.ACTION_DOWN -> v.performClick()
-                    }
-                    return true
+    fun enabledMapsClick(){
+        mapHotelSearchMap.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View, motionEvent: MotionEvent): Boolean {
+                when (motionEvent.action) {
+                    MotionEvent.ACTION_DOWN -> v.performClick()
                 }
-            })
-            mapHotelSearchMap.setOnClickListener {
-                collapseBottomSheet()
+                return true
             }
-            googleMap.setOnMapClickListener {
-                collapseBottomSheet()
-            }
+        })
+        mapHotelSearchMap.setOnClickListener {
+            collapseBottomSheet()
+        }
+        googleMap.setOnMapClickListener {
+            collapseBottomSheet()
+        }
+    }
+
+    fun enabledMapsGesture(){
+        if(::googleMap.isInitialized){
+            googleMap.uiSettings.isZoomGesturesEnabled = true
+            googleMap.uiSettings.isRotateGesturesEnabled = false
+            googleMap.uiSettings.isScrollGesturesEnabled = true
+            googleMap.uiSettings.isTiltGesturesEnabled = false
         }
     }
 
