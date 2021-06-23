@@ -110,11 +110,11 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
 
     override fun onTopAdsImageViewClicked(applink: String?) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerClick(viewModel.components, UserSession(fragment.context).userId,
-                viewModel.position, topAdsModel.bannerId ?: "", "")
+                viewModel.position, topAdsModel.bannerId ?: "", topAdsModel.shopId)
     }
 
     override fun onTopAdsImageViewImpression(viewUrl: String) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerImpression(viewModel.components, UserSession(fragment.context).userId,
-                viewModel.position, topAdsModel.bannerId ?: "", "")
+                viewModel.position, topAdsModel.bannerId ?: "", topAdsModel.shopId)
     }
 }
