@@ -832,8 +832,10 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         mapHotelSearchMap.setOnClickListener {
             collapseBottomSheet()
         }
-        googleMap.setOnMapClickListener {
-            collapseBottomSheet()
+        if(::googleMap.isInitialized) {
+            googleMap.setOnMapClickListener {
+                collapseBottomSheet()
+            }
         }
     }
 
