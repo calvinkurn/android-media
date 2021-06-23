@@ -830,11 +830,8 @@ abstract class BaseSearchCategoryViewModel(
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
             sendAddToCartTracking(quantity, it.data.cartId, productItem)
-            onAddToCartSuccess(
-                    productItem,
-                    it.data.quantity,
-                    it.errorMessage.joinToString(separator = ", "),
-            )
+            updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+            onAddToCartSuccess(productItem, it.data.quantity, )
         }, {
             onAddToCartFailed(it)
         })
@@ -844,13 +841,12 @@ abstract class BaseSearchCategoryViewModel(
         addToCartTrackingMutableLiveData.value = Triple(quantity, cartId, productItem)
     }
 
-    private fun onAddToCartSuccess(
-            productItem: ProductItemDataView,
-            quantity: Int,
-            successMessage: String,
-    ) {
+    private fun updateCartMessageSuccess(successMessage: String) {
+        successATCMessageMutableLiveData.value = successMessage
+    }
+
+    private fun onAddToCartSuccess(productItem: ProductItemDataView, quantity: Int) {
         updateProductNonVariantQuantity(productItem, quantity)
-        updateCartMessageSuccess(successMessage)
         refreshMiniCart()
     }
 
@@ -861,25 +857,18 @@ abstract class BaseSearchCategoryViewModel(
         productItem.nonVariantATC?.quantity = quantity
     }
 
-    private fun updateCartMessageSuccess(successMessage: String) {
-        successATCMessageMutableLiveData.value = successMessage
-    }
-
     private fun onAddToCartFailed(throwable: Throwable) {
         errorATCMessageMutableLiveData.value = throwable.message ?: ""
     }
 
-    private fun updateCart(
-            productItem: ProductItemDataView,
-            quantity: Int,
-    ) {
+    private fun updateCart(productItem: ProductItemDataView, quantity: Int) {
         val miniCartItem = cartItemsNonVariant?.find { it.productId == productItem.id }
                 ?: return
         miniCartItem.quantity = quantity
         updateCartUseCase.setParams(listOf(miniCartItem))
         updateCartUseCase.execute({
             sendTrackingUpdateQuantity(quantity, productItem)
-            onAddToCartSuccess(productItem, quantity, it.data.message)
+            onAddToCartSuccess(productItem, quantity)
         }, {
             onAddToCartFailed(it)
         })
