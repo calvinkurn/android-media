@@ -473,17 +473,6 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click simpan",
-      "event": "clickSellerBroadcast",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "\\d+",
-      "sessionIris": ".*",
-      "currentSite": ".*",
-      "shopId": ".*",
-      "userId": ".*",
-      "businessUnit": "play"
-    },
-    {
       "eventAction": "click pilih ulang product",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",

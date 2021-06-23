@@ -302,7 +302,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         otherMenuViewModel.getShopOperational()
                     }
                     is Fail -> {
-                        SellerHomeErrorHandler.logExceptionToCrashlytics(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
+                        SellerHomeErrorHandler.logException(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
                         showSettingShopInfoState(SettingResponseState.SettingError)
                     }
                 }
@@ -329,7 +329,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         observe(otherMenuViewModel.shopPeriodType) {
             when (it) {
                 is Success -> {
-                    setPerformanceMenu(it.data)
+                    setTrackerPerformanceMenu(it.data.isNewSeller)
                 }
                 is Fail -> {}
             }
@@ -337,38 +337,16 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         otherMenuViewModel.getShopPeriodType()
     }
 
-    private fun setPerformanceMenu(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
-        if (shopInfoPeriodUiModel.periodType.isNotBlank()) {
-            if (shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD || shopInfoPeriodUiModel.periodType == END_PERIOD) {
-                val shopPerformanceData = adapter.list.filterIsInstance<MenuItemUiModel>().find {
-                    it.onClickApplink == ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
-                }
-
-                if (shopPerformanceData != null) {
-                    return
-                } else {
-                    val promotionItem = adapter.list.filterIsInstance<MenuItemUiModel>().find {
-                        it.onClickApplink == ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
-                    }
-                    val promotionIndex = adapter.list.indexOfFirst { it == promotionItem }
-                    val performanceData = MenuItemUiModel(
-                            resources.getString(R.string.setting_menu_performance),
-                            null,
-                            ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
-                            eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
-                            iconUnify = IconUnify.PERFORMANCE,
-                    )
-                    performanceData.clickSendTracker = {
-                        settingPerformanceTracker.clickItemEntryPointPerformance(shopInfoPeriodUiModel.isNewSeller)
-                    }
-                    if (promotionIndex != -1) {
-                        adapter.addElement(promotionIndex + 1, performanceData)
-                        adapter.notifyItemRangeInserted(promotionIndex, 1)
-                        settingPerformanceTracker.impressItemEntryPointPerformance(shopInfoPeriodUiModel.isNewSeller)
-                    }
-                }
-            }
-        } else return
+    private fun setTrackerPerformanceMenu(isNewSeller: Boolean) {
+        val shopPerformanceData = adapter.list.filterIsInstance<MenuItemUiModel>().find {
+            it.onClickApplink == ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
+        }
+        if (shopPerformanceData != null) {
+            settingPerformanceTracker.impressItemEntryPointPerformance(isNewSeller)
+        }
+        shopPerformanceData?.clickSendTracker = {
+            settingPerformanceTracker.clickItemEntryPointPerformance(isNewSeller)
+        }
     }
 
     private fun observeShopOperationalHour() {
@@ -377,7 +355,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 is Success -> otherMenuViewHolder?.showOperationalHourLayout(it.data)
                 is Fail -> {
                     otherMenuViewHolder?.onErrorGetSettingShopInfoData()
-                    SellerHomeErrorHandler.logExceptionToCrashlytics(
+                    SellerHomeErrorHandler.logException(
                         it.throwable,
                         ERROR_GET_SHOP_OPERATIONAL_HOUR
                     )
@@ -394,28 +372,30 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                         clickApplink = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD,
                         iconUnify = IconUnify.GRAPH),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_ads_and_shop_promotion),
-                        null,
-                        ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
+                        title = resources.getString(R.string.setting_menu_ads_and_shop_promotion),
+                        clickApplink = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
                         eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION,
                         iconUnify = IconUnify.PROMO_ADS),
+                MenuItemUiModel(
+                        title = resources.getString(R.string.setting_menu_performance),
+                        clickApplink = ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
+                        eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
+                        iconUnify = IconUnify.PERFORMANCE,
+                ),
                 SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_discussion),
-                        null,
-                        ApplinkConst.TALK,
+                        title = resources.getString(R.string.setting_menu_discussion),
+                        clickApplink = ApplinkConst.TALK,
                         eventActionSuffix = SettingTrackingConstant.DISCUSSION,
                         iconUnify = IconUnify.DISCUSSION),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_review),
-                        null,
-                        ApplinkConst.REPUTATION,
+                        title = resources.getString(R.string.setting_menu_review),
+                        clickApplink = ApplinkConst.REPUTATION,
                         eventActionSuffix = SettingTrackingConstant.REVIEW,
                         iconUnify = IconUnify.STAR),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_complaint),
-                        null,
-                        null,
+                        title = resources.getString(R.string.setting_menu_complaint),
+                        clickApplink = null,
                         eventActionSuffix = SettingTrackingConstant.COMPLAINT,
                         iconUnify = IconUnify.PRODUCT_INFO
                 ) {
@@ -425,20 +405,20 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 },
                 DividerUiModel(),
                 PrintingMenuItemUiModel(
-                        resources.getString(R.string.setting_menu_product_package),
-                        IconUnify.PACKAGE
+                        title = resources.getString(R.string.setting_menu_product_package),
+                        iconUnify = IconUnify.PACKAGE
                 ) { goToPrintingPage() },
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_finance_service),
-                        null,
+                        title = resources.getString(R.string.setting_menu_finance_service),
+                        clickApplink = null,
                         eventActionSuffix = SettingTrackingConstant.FINANCIAL_SERVICE,
                         iconUnify = IconUnify.FINANCE
                 ) {
                     RouteManager.route(context, ApplinkConst.LAYANAN_FINANSIAL)
                 },
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_seller_education_center),
-                        null,
+                        title = resources.getString(R.string.setting_menu_seller_education_center),
+                        clickApplink = null,
                         eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
                         iconUnify = IconUnify.SHOP_INFO
                 ) {
@@ -447,16 +427,14 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     context?.startActivity(intent)
                 },
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_tokopedia_care),
-                        null,
-                        ApplinkConst.CONTACT_US_NATIVE,
+                        title = resources.getString(R.string.setting_menu_tokopedia_care),
+                        clickApplink = ApplinkConst.CONTACT_US_NATIVE,
                         eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
                         iconUnify = IconUnify.CALL_CENTER),
                 DividerUiModel(DividerType.THIN_PARTIAL),
                 MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_setting),
-                        null,
-                        null,
+                        title = resources.getString(R.string.setting_menu_setting),
+                        clickApplink = null,
                         eventActionSuffix = SettingTrackingConstant.SETTINGS,
                         iconUnify = IconUnify.SETTING
                 ) {

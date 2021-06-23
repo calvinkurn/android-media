@@ -103,13 +103,13 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
         const val REVIEW_INCENTIVE_MINIMUM_THRESHOLD = 40
 
-        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: Long, utmSource: String) = CreateReviewFragment().also {
+        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, isEditMode: Boolean, feedbackId: String, utmSource: String) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
                 putString(REPUTATION_ID, reviewId)
                 putInt(REVIEW_CLICK_AT, reviewClickAt)
                 putBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, isEditMode)
-                putLong(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
+                putString(ReviewConstants.PARAM_FEEDBACK_ID, feedbackId)
                 putString(ReviewConstants.PARAM_UTM_SOURCE, utmSource)
             }
         }
@@ -127,11 +127,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
     private var shouldPlayAnimation: Boolean = true
     private var reviewClickAt: Int = 0
-    private var reputationId: Long = 0
-    private var productId: Long = 0
+    private var reputationId: String = ""
+    private var productId: String = ""
     private var shopId: String = ""
     private var isEditMode: Boolean = false
-    private var feedbackId: Long = 0
+    private var feedbackId: String = ""
     private var utmSource: String = ""
     private var shouldShowThankYouBottomSheet = false
 
@@ -201,11 +201,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
         CreateReviewTracking.openScreen(screenName)
 
         arguments?.let {
-            productId = it.getString(PRODUCT_ID_REVIEW, "").toLongOrZero()
+            productId = it.getString(PRODUCT_ID_REVIEW, "")
             reviewClickAt = it.getInt(REVIEW_CLICK_AT, 0)
-            reputationId = it.getString(REPUTATION_ID, "").toLongOrZero()
+            reputationId = it.getString(REPUTATION_ID, "")
             isEditMode = it.getBoolean(ReviewConstants.PARAM_IS_EDIT_MODE, false)
-            feedbackId = it.getLong(ReviewConstants.PARAM_FEEDBACK_ID, 0)
+            feedbackId = it.getString(ReviewConstants.PARAM_FEEDBACK_ID, "")
             utmSource = it.getString(ReviewConstants.PARAM_UTM_SOURCE, "")
         }
 
@@ -290,7 +290,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             override fun onClick(position: Int) {
                 CreateReviewTracking.reviewOnRatingChangedTracker(
                         getOrderId(),
-                        productId.toString(10),
+                        productId,
                         (position).toString(10),
                         true,
                         isEditMode,
@@ -331,9 +331,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
             }
         })
 
-        createReviewAnonymousCheckbox?.setOnClickListener {
-            if (createReviewAnonymousCheckbox?.isChecked == true) {
-                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), isEditMode, feedbackId.toString())
+        createReviewAnonymousCheckbox.setOnClickListener {
+            if (createReviewAnonymousCheckbox.isChecked) {
+                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId, isEditMode, feedbackId.toString())
             }
             clearFocusAndHideSoftInput(view)
         }
@@ -392,7 +392,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun onExpandButtonClicked(text: String) {
-        CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId.toString())
+        CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId)
         if (incentiveHelper.isBlank()) incentiveHelper = context?.getString(R.string.review_create_text_area_eligible) ?: ""
         textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(this, text, incentiveHelper, createReviewViewModel.isUserEligible())
         (textAreaBottomSheet as BottomSheetUnify).setTitle(createReviewTextAreaTitle?.text.toString())
@@ -400,7 +400,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun onCollapseButtonClicked(text: String) {
-        CreateReviewTracking.onCollapseTextBoxClicked(getOrderId(), productId.toString())
+        CreateReviewTracking.onCollapseTextBoxClicked(getOrderId(), productId)
         textAreaBottomSheet?.dismiss()
     }
 
@@ -414,7 +414,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun trackWhenHasFocus(textLength: Int) {
-        CreateReviewTracking.reviewOnMessageChangedTracker(getOrderId(), productId.toString(), textLength == 0, isEditMode, feedbackId.toString())
+        CreateReviewTracking.reviewOnMessageChangedTracker(getOrderId(), productId, textLength == 0, isEditMode, feedbackId.toString())
         setHelperText(textLength)
     }
 
@@ -427,8 +427,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun onReviewScoreClicked(score: Int): Boolean {
-        CreateReviewTracking.eventClickSmiley(getOrderId(), productId.toString())
-        createReviewScore?.onScoreSelected(score)
+        CreateReviewTracking.eventClickSmiley(getOrderId(), productId)
+        createReviewScore.onScoreSelected(score)
         return true
     }
 
@@ -458,7 +458,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
                     CreateReviewTracking.reviewOnImageUploadTracker(
                             getOrderId(),
-                            productId.toString(10),
+                            productId,
                             true,
                             selectedImage.size.toString(10),
                             isEditMode,
@@ -487,7 +487,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         createReviewViewModel.getReviewDetails(feedbackId)
     }
 
-    private fun getIncentiveOvoData(productId: Long = 0, reputationId: Long = 0) {
+    private fun getIncentiveOvoData(productId: String = "", reputationId: String = "") {
         createReviewViewModel.getProductIncentiveOvo(productId, reputationId)
     }
 
@@ -495,7 +495,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         val reviewMessage = createReviewExpandableTextArea?.getText().orEmpty()
         CreateReviewTracking.reviewOnSubmitTracker(
                 getOrderId(),
-                productId.toString(10),
+                productId,
                 reviewClickAt.toString(10),
                 reviewMessage.isEmpty(),
                 createReviewViewModel.getSelectedImagesUrl().size.toString(10),
@@ -509,14 +509,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 showToasterError(getString(R.string.review_edit_blank_error))
                 return
             }
-            createReviewViewModel.editReview(feedbackId, 
-                    reputationId, 
-                    productId, 
-                    shopId.toLongOrZero(),
-                    createReviewScore?.getScore().orZero(), 
-                    animatedReviewPicker.getReviewClickAt(), 
-                    reviewMessage, 
-                    createReviewAnonymousCheckbox?.isChecked == true)
+            createReviewViewModel.editReview(feedbackId, reputationId, productId, shopId,
+                    createReviewScore.getScore(), animatedReviewPicker.getReviewClickAt(), reviewMessage, createReviewAnonymousCheckbox.isChecked)
         } else {
             if (!isReviewComplete() && isUserEligible()) {
                 showReviewIncompleteDialog()
@@ -534,8 +528,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun submitNewReview() {
         val reviewMessage = createReviewExpandableTextArea?.getText().orEmpty()
         createReviewViewModel.submitReview(animatedReviewPicker.getReviewClickAt(),
-                reviewMessage, 
-                createReviewScore?.getScore().orZero(), 
+                reviewMessage,
+                createReviewScore?.getScore().orZero(),
                 createReviewAnonymousCheckbox?.isChecked == true,
                 utmSource)
     }
@@ -573,7 +567,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         stopNetworkRequestPerformanceMonitoring()
         startRenderPerformanceMonitoring()
         with(data.productrevGetForm) {
-            updateProductId(productData.productID)
+            updateProductId(productData.productIDStr)
             when {
                 !validToReview -> {
                     finishIfRoot(false, getString(R.string.review_pending_invalid_to_review))
@@ -587,9 +581,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
             hideShimmering()
             showLayout()
 
-            CreateReviewTracking.reviewOnViewTracker(orderID, productId.toString())
+            CreateReviewTracking.reviewOnViewTracker(orderID, productId)
 
-            shopId = shopData.shopID.toString()
+            shopId = shopData.shopIDStr
             setProductDetail(productData.productName, productData.productVariant.variantName, productData.productImageURL)
             setReputation(reputation, shopData.shopName)
         }
@@ -797,7 +791,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 imgAnimationView.playAnimation()
             }
 
-            lottieCompositionLottieTask.addFailureListener { throwable -> 
+            lottieCompositionLottieTask.addFailureListener { throwable ->
                 logToCrashlytics(throwable)
             }
         }
@@ -931,7 +925,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         createReviewExpandableTextArea?.apply {
             setListener(this@CreateReviewFragment)
             addOnImpressionListener(ImpressHolder()) {
-                CreateReviewTracking.reviewOnScoreVisible(getOrderId(), productId.toString())
+                CreateReviewTracking.reviewOnScoreVisible(getOrderId(), productId)
             }
         }
     }
@@ -943,9 +937,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun initAnonymousText() {
-        createReviewAnonymousText?.setOnClickListener {
-            if (createReviewAnonymousCheckbox?.isChecked == true) {
-                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId.toString(10), isEditMode, feedbackId.toString())
+        createReviewAnonymousText.setOnClickListener {
+            if (createReviewAnonymousCheckbox.isChecked) {
+                CreateReviewTracking.reviewOnAnonymousClickTracker(getOrderId(), productId, isEditMode, feedbackId)
             }
         }
     }
@@ -1001,7 +995,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun updateProductId(productId: Long) {
+    private fun updateProductId(productId: String) {
         this.productId = productId
     }
 
@@ -1043,10 +1037,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun getThankYouFormTrackerData(): ThankYouBottomSheetTrackerData {
-        return ThankYouBottomSheetTrackerData(reputationId.toString(), getOrderId(), productId.toString(), createReviewViewModel.getUserId(), getFeedbackId())
+        return ThankYouBottomSheetTrackerData(reputationId, getOrderId(), productId, createReviewViewModel.getUserId(), getFeedbackId())
     }
 
     private fun getFeedbackId(): String {
-        return (createReviewViewModel.submitReviewResult.value as? com.tokopedia.review.common.data.Success)?.data ?: ""
+        return (createReviewViewModel.submitReviewResult.value as? Success)?.data ?: ""
     }
 }

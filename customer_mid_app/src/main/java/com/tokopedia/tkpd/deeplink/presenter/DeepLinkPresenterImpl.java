@@ -281,6 +281,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openLoginByQr(uriData);
                     screenName = "";
                     break;
+                case DeepLinkChecker.POWER_MERCHANT:
+                    openPowerMechant(uriData);
+                    screenName = "";
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -462,6 +466,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         intent.putExtra(KEY_TITLE, "Invoice");
         context.startActivity(intent);
         context.finish();
+    }
+
+    private void openPowerMechant(Uri uriData) {
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.POWER_MERCHANT_SUBSCRIBE);
+        viewListener.goToPage(intent);
     }
 
     @Override
