@@ -11,11 +11,6 @@ import android.webkit.URLUtil;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -44,6 +39,11 @@ import com.tokopedia.utils.image.ImageProcessingUtil;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import static com.tokopedia.imagepicker.common.BuilderConstantKt.EXTRA_IMAGE_EDITOR_BUILDER;
 import static com.tokopedia.imagepicker.common.ResultConstantKt.PICKER_RESULT_PATHS;
@@ -690,12 +690,11 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
 
         if (imageEditPreviewFragment == null) return;
 
-        String tokopedia = getString(R.string.editor_watermark_tokopedia);
         String preview = edittedImagePaths.get(currentImageIndex).get(getCurrentStepForCurrentImage());
         String userInfoName = userSession.hasShop() ? userSession.getShopName() : userSession.getName();
 
         items.add(new ItemSelection(
-                tokopedia + " + " + userInfoName,
+                getString(R.string.editor_watermark_item),
                 preview,
                 userInfoName,
                 Constant.TYPE_WATERMARK_TOPED, true)
@@ -1100,7 +1099,8 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     @Override
     public boolean isInEditCropMode() {
         return isInEditMode && (currentEditActionType == ImageEditActionType.ACTION_CROP
-                || currentEditActionType == ImageEditActionType.ACTION_CROP_ROTATE);
+                || currentEditActionType == ImageEditActionType.ACTION_CROP_ROTATE
+                || currentEditActionType == ImageEditActionType.ACTION_WATERMARK);
     }
 
     public void trackOpen() {

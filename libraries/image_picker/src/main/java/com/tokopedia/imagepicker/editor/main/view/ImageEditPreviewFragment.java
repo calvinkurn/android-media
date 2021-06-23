@@ -18,10 +18,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
-import com.tokopedia.imagepicker.editor.main.Constant;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
-import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
@@ -271,17 +268,11 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
         Bitmap bitmap = gestureCropImageView.getViewBitmap();
 
-        if (bitmap == null) return;
-
-        WatermarkBuilder watermarkBuilder = WatermarkBuilder
-                .create(requireContext(), bitmap)
-                .setTileMode(true);
-
         String userInfo = userSession.hasShop() ?
                 userSession.getShopName() :
                 userSession.getName();
 
-        imageEditPreviewPresenter.setTokopediaWatermark(userInfo, watermarkBuilder);
+        imageEditPreviewPresenter.setTokopediaWatermark(userInfo, bitmap);
     }
 
     public int getImageIndex() {
