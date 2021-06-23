@@ -419,6 +419,8 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().isOutOfServiceLiveData.observe(this::updateOutOfServiceVisibility)
         getViewModel().quickFilterTrackingLiveData.observe(this::sendTrackingQuickFilter)
         getViewModel().addToCartTrackingLiveData.observe(this::sendAddToCartTrackingEvent)
+        getViewModel().increaseQtyTrackingLiveData.observe(this::sendIncreaseQtyTrackingEvent)
+        getViewModel().decreaseQtyTrackingLiveData.observe(this::sendDecreaseQtyTrackingEvent)
         getViewModel().isShowErrorLiveData.observe(this::showNetworkErrorHelper)
     }
 
@@ -693,6 +695,10 @@ abstract class BaseSearchCategoryFragment:
 
         constraintSet.applyTo(container)
     }
+
+    protected abstract fun sendIncreaseQtyTrackingEvent(productId: String)
+
+    protected abstract fun sendDecreaseQtyTrackingEvent(productId: String)
 
     protected open fun showNetworkErrorHelper(throwable: Throwable?) {
         val context = activity ?: return

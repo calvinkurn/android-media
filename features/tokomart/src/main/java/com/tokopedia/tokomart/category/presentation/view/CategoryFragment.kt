@@ -187,4 +187,12 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
 
         super.onProductChooseVariantClicked(productItemDataView)
     }
+
+    override fun sendIncreaseQtyTrackingEvent(productId: String) {
+        CategoryTracking.sendIncreaseQtyEvent(getViewModel().categoryL1)
+    }
+
+    override fun sendDecreaseQtyTrackingEvent(productId: String) {
+        CategoryTracking.sendDecreaseQtyEvent(getViewModel().categoryL1)
+    }
 }

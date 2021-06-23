@@ -163,6 +163,7 @@ abstract class BaseSearchCategoryViewModel(
 
     protected val isShowErrorMutableLiveData = SingleLiveEvent<Throwable?>()
     val isShowErrorLiveData: LiveData<Throwable?> = isShowErrorMutableLiveData
+
     init {
         showLoading()
         updateQueryParams()
