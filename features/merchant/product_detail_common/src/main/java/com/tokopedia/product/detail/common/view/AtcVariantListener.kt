@@ -18,4 +18,5 @@ interface AtcVariantListener {
 
     fun onQuantityUpdate(quantity: Int, productId: String) {}
     fun onClickRefresh() {}
+    fun isTokonow(): Boolean = false
 }

@@ -166,7 +166,7 @@ object AtcCommonMapper {
 
         return listOf(cartTypeData?.availableButtons?.firstOrNull()?.copy(
                 cartType = ProductDetailCommonConstant.KEY_CHECK_WISHLIST,
-                color = remindMeAlternateCopy?.color ?: ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN,
+                color = remindMeAlternateCopy?.color ?: ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GRAY,
                 text = remindMeAlternateCopy?.text ?: ProductDetailCommonConstant.TEXT_REMIND_ME
         ) ?: return null)
     }

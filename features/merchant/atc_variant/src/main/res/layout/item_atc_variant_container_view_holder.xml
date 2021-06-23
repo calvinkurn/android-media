@@ -55,7 +55,7 @@
         android:id="@+id/rv_atc_variant"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_12"
         android:clipToPadding="false"
         android:orientation="horizontal"
         android:paddingStart="@dimen/dp_16"
