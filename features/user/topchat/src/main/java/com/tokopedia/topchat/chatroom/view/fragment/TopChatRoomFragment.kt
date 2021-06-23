@@ -776,11 +776,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun onAttachProductClicked() {
-        val intent = TopChatInternalRouter.Companion.getAttachProductIntent(activity as Activity,
-                shopId.toString(),
-                "",
-                getUserSession().shopId == shopId.toString())
-        startActivityForResult(intent, TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE)
+        context?.let {
+            val intent = TopChatInternalRouter.Companion.getAttachProductIntent(
+                context = it,
+                shopId = shopId.toString(),
+                shopName = "",
+                isSeller = isSeller(),
+                warehouseId = presenter.attachProductWarehouseId
+            )
+            startActivityForResult(intent, TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE)
+        }
     }
 
     override fun clearEditText() {

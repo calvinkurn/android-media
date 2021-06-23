@@ -122,6 +122,8 @@ open class TopChatRoomPresenter @Inject constructor(
     var thisMessageId: String = ""
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
+    var attachProductWarehouseId = "0"
+        private set
     private var userLocationInfo = LocalCacheModel()
 
     private lateinit var webSocketUrl: String
@@ -198,6 +200,7 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun initUserLocation(userLocation: LocalCacheModel?) {
         userLocation ?: return
         this.userLocationInfo = userLocation
+        this.attachProductWarehouseId = userLocation.warehouse_id
     }
 
     override fun getProductIdPreview(): List<String> {
