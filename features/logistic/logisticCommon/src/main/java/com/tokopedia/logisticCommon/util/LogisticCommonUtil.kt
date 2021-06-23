@@ -4,7 +4,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 
 object LogisticCommonUtil {
 
-    const val ANA_REVAMP_ROLLENCE_KEY = "ana_revamp_apps"
+    const val ANA_REVAMP_ROLLENCE_KEY = "revamp_ana"
     const val ANA_REVAMP_VARIANT = "ana_revamp"
 
     /**
