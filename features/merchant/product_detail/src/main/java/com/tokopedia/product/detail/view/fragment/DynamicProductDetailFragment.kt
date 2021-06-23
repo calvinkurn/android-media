@@ -439,6 +439,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.addToCartLiveData.removeObservers(this)
         viewModel.discussionMostHelpful.removeObservers(this)
         viewModel.flush()
+        compositeSubscription.clear()
         super.onDestroy()
     }
 

@@ -69,7 +69,10 @@ class AtcVariantQuantityViewHolder constructor(
         }
         textWatcher = null
 
-        compositeSubscription.remove(quantityDebounceSubscription)
+        if (quantityDebounceSubscription != null) {
+            compositeSubscription.remove(quantityDebounceSubscription)
+        }
+        quantityDebounceSubscription = null
     }
 
     private fun initTextWatcherDebouncer(element: VariantQuantityDataModel) {
