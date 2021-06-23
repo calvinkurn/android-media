@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -38,6 +39,7 @@ import com.tokopedia.review.feature.reading.presentation.viewmodel.ReadReviewVie
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewFilterBottomSheet
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -66,6 +68,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     @Inject
     lateinit var viewModel: ReadReviewViewModel
 
+    private var reviewReadingCoordinatorLayout: CoordinatorLayout? = null
     private var reviewHeader: ReadReviewHeader? = null
     private var statisticsBottomSheet: ReadReviewStatisticsBottomSheet? = null
     private var loadingView: View? = null
@@ -193,21 +196,19 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
-        showLoading()
+        showFullPageLoading()
+        showListOnlyLoading()
         observeRatingAndTopics()
         observeProductReviews()
         observeToggleLikeReview()
     }
 
-    override fun showLoading() {
-        super.showLoading()
-        loadingView?.show()
-    }
-
-    override fun hideLoading() {
-        super.hideLoading()
-        loadingView?.hide()
-        hideListOnlyLoading()
+    override fun loadInitialData() {
+        isLoadingInitialData = true
+        adapter.clearAllElements()
+        showFullPageLoading()
+        getProductIdFromArguments()
+        loadData(defaultInitialPage)
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
@@ -219,6 +220,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun bindViews(view: View) {
+        reviewReadingCoordinatorLayout = view.findViewById(R.id.read_review_coordinator_layout)
         reviewHeader = view.findViewById(R.id.read_review_header)
         loadingView = view.findViewById(R.id.read_review_loading)
         listOnlyLoading = view.findViewById(R.id.read_review_list_only_loading)
@@ -231,7 +233,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     private fun observeRatingAndTopics() {
         viewModel.ratingAndTopic.observe(viewLifecycleOwner, Observer {
-            hideLoading()
+            hideFullPageLoading()
             when (it) {
                 is Success -> onSuccessGetRatingAndTopic(it.data)
                 is Fail -> onFailGetRatingAndTopic()
@@ -241,7 +243,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     private fun observeProductReviews() {
         viewModel.productReviews.observe(viewLifecycleOwner, Observer {
-            hideLoading()
+            hideListOnlyLoading()
             when (it) {
                 is Success -> onSuccessGetProductReviews(it.data)
                 is Fail -> onFailGetProductReviews()
@@ -284,11 +286,24 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun onFailGetProductReviews() {
-        showError()
+        if (currentPage == 0) return
+        showToasterError(getString(R.string.review_reading_connection_error)) { loadData(currentPage) }
     }
 
     private fun showError() {
-        networkError?.show()
+        networkError?.apply {
+     
+            setActionClickListener {
+                loadInitialData()
+            }
+            show()
+        }
+    }
+
+    private fun showToasterError(message: String, action: () -> Unit) {
+        reviewReadingCoordinatorLayout?.let {
+            Toaster.build(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR, getString(R.string.review_refresh), View.OnClickListener { action.invoke() }).show()
+        }
     }
 
     private fun hideError() {
@@ -301,6 +316,14 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     private fun hideListOnlyLoading() {
         listOnlyLoading?.hide()
+    }
+
+    private fun showFullPageLoading() {
+        loadingView?.show()
+    }
+
+    private fun hideFullPageLoading() {
+        loadingView?.hide()
     }
 
     private fun getReviewStatistics(): List<ProductReviewDetail> {
