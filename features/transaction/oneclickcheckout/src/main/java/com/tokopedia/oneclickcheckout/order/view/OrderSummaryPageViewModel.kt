@@ -46,15 +46,19 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                                                     private val orderSummaryAnalytics: OrderSummaryAnalytics) : BaseViewModel(executorDispatchers.immediate) {
 
     var orderCart: OrderCart = OrderCart()
-    val orderProduct: OrderProduct
-        get() = orderCart.product
-    val orderShop: OrderShop
-        get() = orderCart.shop
 
     var validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = null
     var lastValidateUsePromoRequest: ValidateUsePromoRequest? = null
     var orderPromo: OccMutableLiveData<OrderPromo> = OccMutableLiveData(OrderPromo())
         private set
+
+    val orderShop: OrderShop
+        get() = orderCart.shop
+    val orderShopData: OccMutableLiveData<OrderShop> = OccMutableLiveData(OrderShop())
+
+    val orderProduct: OrderProduct
+        get() = orderCart.product
+    val orderProducts: OccMutableLiveData<List<OrderProduct>> = OccMutableLiveData(emptyList())
 
     var _orderPreference: OrderPreference = OrderPreference()
     val orderPreference: OccMutableLiveData<OccState<OrderPreference>> = OccMutableLiveData(OccState.Loading)
@@ -105,6 +109,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             addressState.value = result.addressState
             revampData = result.revampData
             orderCart = result.orderCart
+            orderShopData.value = orderShop
+            orderProducts.value = listOf(orderProduct)
             _orderPreference = result.orderPreference
             orderPreference.value = if (result.throwable == null && !isInvalidAddressState(result.orderPreference.preference, result.addressState)) {
                 OccState.FirstLoad(_orderPreference)
