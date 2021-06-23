@@ -143,6 +143,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -230,6 +231,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var gson = Gson()
     private val REQUEST_CODE_LOGIN = 288
     private val MIN_KEYWORD_CHARACTER_COUNT = 3
+    private var activityOrderHistory = ""
 
     @SuppressLint("SimpleDateFormat")
     private val monthStringDateFormat = SimpleDateFormat("dd MMM yyyy")
@@ -241,10 +243,15 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     companion object {
+        const val PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history"
+        const val PARAM_HOME = "home"
         @JvmStatic
         fun newInstance(bundle: Bundle): UohListFragment {
             return UohListFragment().apply {
-                arguments = bundle
+                arguments = bundle.apply {
+                    putString(PARAM_ACTIVITY_ORDER_HISTORY, this.getString(
+                        PARAM_ACTIVITY_ORDER_HISTORY))
+                }
             }
         }
 
@@ -440,6 +447,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun prepareLayout() {
         refreshHandler = RefreshHandler(swipe_refresh_layout, this)
         refreshHandler?.setPullEnabled(true)
+        activityOrderHistory = arguments?.getString(PARAM_ACTIVITY_ORDER_HISTORY, "") as String
 
         uoh_navtoolbar?.let {
             val icons = IconBuilder(
@@ -449,6 +457,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 addIcon(IconList.ID_NAV_GLOBAL) {}
             }
             it.setIcon(icons)
+            if(activityOrderHistory != PARAM_HOME) it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+
         }
 
         uohItemAdapter = UohItemAdapter().apply {
