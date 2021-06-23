@@ -415,9 +415,8 @@ class PlayUserInteractionFragment @Inject constructor(
     //endregion
 
     fun maxTopOnChatMode(maxTopPosition: Int) {
-        if (!playViewModel.bottomInsets.isKeyboardShown) return
-
         mMaxTopChatMode = maxTopPosition
+        if (!playViewModel.bottomInsets.isKeyboardShown) return
         scope.launch(dispatchers.immediate) {
              invalidateChatListBounds(maxTopPosition = maxTopPosition)
         }

@@ -101,6 +101,8 @@ class PortraitChatListHeightManager(
 
         val bottomBounds = sendChatView.globalVisibleRect.top
         val topBounds = immersiveBoxView.globalVisibleRect.bottom
+        require(bottomBounds > topBounds)
+
         val nonOffsetOccupiedHeight = productFeaturedView.visibleHeight + pinnedVoucherView.visibleHeight + pinnedMessageView.visibleHeight
         val offsetOccupiedHeight = productFeaturedView.marginLp.bottomMargin + pinnedVoucherView.marginLp.bottomMargin + pinnedMessageView.marginLp.bottomMargin
 
@@ -132,6 +134,6 @@ class PortraitChatListHeightManager(
             = ChatHeightMapKey(videoOrientation, maxTop, hasQuickReply, hasProductFeatured, hasPinnedVoucher)
 
     companion object {
-        private const val CONSISTENCY_THRESHOLD = 3
+        private const val CONSISTENCY_THRESHOLD = 5
     }
 }
