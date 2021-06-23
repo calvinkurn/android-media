@@ -54,9 +54,19 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     override fun onCreate(savedInstanceState: Bundle?) {
         forDeeplink()
         super.onCreate(savedInstanceState)
+        try {
+            setupLayout(savedInstanceState)
+        } catch (e: Exception) {
+            finish()
+            return
+        }
         val userSession = UserSession(this)
         updateTitle(getString(R.string.tp_label_my_coupon_new))
         component.inject(this)
+        server_error_view.setErrorButtonClickListener(View.OnClickListener {
+            mPresenter.getFilter()
+        })
+        initViews()
         addObserver()
         if (!userSession.isLoggedIn) {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
@@ -87,18 +97,6 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
         })
     }
 
-    override fun setupLayout(savedInstanceState: Bundle?) {
-        try {
-            setContentView(layoutRes)
-        } catch (e: Exception) {
-            finish()
-            return
-        }
-        server_error_view.setErrorButtonClickListener(View.OnClickListener {
-            mPresenter.getFilter()
-        })
-        initViews()
-    }
     override fun getLayoutRes(): Int {
         return R.layout.tp_activity_stacked_coupon_list
     }
