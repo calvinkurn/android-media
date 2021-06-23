@@ -79,6 +79,11 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             const val STATUS_BAR_LIGHT = 0
             const val STATUS_BAR_DARK = 1
         }
+
+        object SearchBarType {
+            const val TYPE_CLICK = 0
+            const val TYPE_EDITABLE = 1
+        }
     }
 
     //public variable
@@ -308,7 +313,12 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                        searchbarImpressionCallback: ((hint: String) -> Unit)? = null,
                        durationAutoTransition: Long = 0,
                        shouldShowTransition: Boolean = true,
-                       disableDefaultGtmTracker: Boolean = false
+                       disableDefaultGtmTracker: Boolean = false,
+                       searchbarType: Int = SearchBarType.TYPE_CLICK,
+                       navSearchbarInterface: ((text: CharSequence?,
+                                                start: Int,
+                                                count: Int,
+                                                after: Int) -> Unit)? = null
     ) {
         showSearchbar()
 
@@ -320,9 +330,15 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 searchbarClickCallback = searchbarClickCallback,
                 searchbarImpressionCallback = searchbarImpressionCallback,
                 topNavComponentListener = this,
-                disableDefaultGtmTracker = disableDefaultGtmTracker
+                disableDefaultGtmTracker = disableDefaultGtmTracker,
+                navSearchbarInterface = navSearchbarInterface
         )
-        navSearchBarController.setHint(hints, shouldShowTransition, durationAutoTransition)
+        if (searchbarType == SearchBarType.TYPE_CLICK) {
+            navSearchBarController.setHint(hints, shouldShowTransition, durationAutoTransition)
+        } else if (searchbarType == SearchBarType.TYPE_EDITABLE) {
+            val hint = hints.getOrNull(0)
+            navSearchBarController.setEditableSearchbar(hint?.placeholder?:"")
+        }
     }
 
     fun setBadgeCounter(iconId: Int, counter: Int) {
