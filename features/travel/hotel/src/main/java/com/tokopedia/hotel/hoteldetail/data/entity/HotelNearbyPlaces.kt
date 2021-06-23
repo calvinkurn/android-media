@@ -15,7 +15,7 @@ data class HotelNearbyPlaces(
         val icon: String = "",
         @SerializedName("places")
         @Expose
-        val places: List<HotelSingleNearbyPlace> = listOf(),
+        val places: List<HotelItemNearbyPlace> = listOf(),
         @SerializedName("type")
         @Expose
         val type: String = ""

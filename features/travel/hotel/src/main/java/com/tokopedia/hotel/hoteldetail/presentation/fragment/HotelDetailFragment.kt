@@ -32,9 +32,7 @@ import com.tokopedia.hotel.common.util.TRACKING_HOTEL_PDP
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchActivity
 import com.tokopedia.hotel.globalsearch.presentation.widget.HotelGlobalSearchWidget
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
-import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
-import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
-import com.tokopedia.hotel.hoteldetail.data.entity.PropertySafetyBadge
+import com.tokopedia.hotel.hoteldetail.data.entity.*
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity.Companion.PDP_SCREEN_NAME
@@ -42,6 +40,7 @@ import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailAllFacil
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailMainFacilityAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailReviewAdapter
+import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelNearbyPlacesSectionAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelDetailAllFacilityModel
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
@@ -101,6 +100,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     private lateinit var detailReviewAdapter: HotelDetailReviewAdapter
     private lateinit var mainFacilityAdapter: HotelDetailMainFacilityAdapter
+    private lateinit var nearbyLandmarks: HotelNearbyPlacesSectionAdapter
 
     private var loadingProgressDialog: ProgressDialog? = null
     private var isTickerValid = false
@@ -241,8 +241,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         detailViewModel.hotelNearbyLandmarks.observe(viewLifecycleOwner,{
             when(it){
                 is Success->{
-                    showNearbyLandmarks()
-                    tv_hotel_nearby_landmark_info.text = it.data.information
+                    setupLayoutNearbyLandmarks(it.data)
                 }
                 is Fail->{
                     hideNearbyLandmarks()
@@ -682,8 +681,20 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         setupGlobalSearchWidget()
     }
 
-    private fun setupLayoutNearbyLandmarks(){
-
+    private fun setupLayoutNearbyLandmarks(dataList: HotelNearbyLandmark){
+        if (dataList.result.isNotEmpty()){
+            showNearbyLandmarks()
+            tv_hotel_nearby_landmark_info.text = dataList.information
+            if (!::nearbyLandmarks.isInitialized) {
+                nearbyLandmarks = HotelNearbyPlacesSectionAdapter(dataList.result)
+            }
+            val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            rv_nearby_landmarks.layoutManager = layoutManager
+            rv_nearby_landmarks.isNestedScrollingEnabled = false
+            rv_nearby_landmarks.adapter = nearbyLandmarks
+        }else{
+            hideNearbyLandmarks()
+        }
     }
 
     private fun setupGlobalSearchWidget() {

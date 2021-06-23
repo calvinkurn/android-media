@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by astidhiyaa on 23/06/21
  */
-data class HotelSingleNearbyPlace(
+data class HotelItemNearbyPlace(
         @SerializedName("distance")
         @Expose
         val distance: String = "",

@@ -11,7 +11,7 @@ data class HotelNearbyLandmark(
         @Expose
         val result: List<HotelNearbyPlaces> = listOf(),
 
-    @SerializedName("information")
-    @Expose
-    val information: String = ""
+        @SerializedName("information")
+        @Expose
+        val information: String = ""
 )
