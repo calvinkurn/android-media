@@ -4,12 +4,13 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tkpd.atcvariant.R
 import com.tkpd.atcvariant.data.uidata.VariantComponentDataModel
-import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tkpd.atcvariant.view.adapter.variantitem.AtcVariantContainerAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.common.data.views.VariantItemDecorator
+import com.tokopedia.product.detail.common.view.AtcVariantListener
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -49,6 +50,7 @@ class AtcVariantComponentViewHolder(private val view: View, listener: AtcVariant
 
     private fun renderTxt(element: VariantComponentDataModel) = with(view) {
         txtTokoCabang?.showWithCondition(element.isTokoCabang)
+        txtEmptyStock?.text = HtmlLinkHelper(context, getString(R.string.atc_variant_empty_stock_label)).spannedString
         txtEmptyStock?.showWithCondition(element.isEmptyStock)
     }
 

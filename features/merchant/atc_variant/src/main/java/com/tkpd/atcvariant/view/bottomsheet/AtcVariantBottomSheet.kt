@@ -432,6 +432,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         doAtc(atcKey)
     }
 
+    override fun isTokonow(): Boolean {
+        return sharedViewModel.aggregatorParams.value?.isTokoNow ?: false
+    }
+
     private fun goToImagePreview(listOfImage: ArrayList<String>) {
         context?.let {
             startActivity(ImagePreviewActivity.getCallingIntent(it, listOfImage, arrayListOf("variant")))
