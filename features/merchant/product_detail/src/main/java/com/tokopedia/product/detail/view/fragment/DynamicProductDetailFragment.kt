@@ -2045,23 +2045,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         productVariant = viewModel.variantData ?: ProductVariant(),
                         warehouseResponse = viewModel.p2Data.value?.nearestWarehouseInfo ?: mapOf(),
                         cartRedirection = viewModel.p2Data.value?.cartRedirection ?: mapOf(),
-                        miniCart = viewModel.p2Data.value?.miniCart
+                        miniCart = viewModel.p2Data.value?.miniCart,
+                        alternateCopy = viewModel.p2Data.value?.alternateCopy
                 ) { data, code ->
                     startActivityForResult(data, code)
                 }
             }
         }
-//                AtcVariantHelper.goToAtcVariant(
-//                        context = it,
-//                        productId = viewModel.getDynamicProductInfoP1!!.basic.productID,
-//                        pageSource = "tokonow",
-//                        shopId = viewModel.getDynamicProductInfoP1!!.basic.shopID,
-//                        isTokoNow = true
-//                ) { data, code ->
-//                    startActivityForResult(data, code)
-//                }
-//            }
-//        }
     }
 
     private fun renderVariant(data: ProductVariant?, shouldRenderNewVariant: Boolean) {
