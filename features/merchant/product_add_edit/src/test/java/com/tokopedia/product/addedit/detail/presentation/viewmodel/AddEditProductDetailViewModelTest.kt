@@ -1117,6 +1117,17 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `when getMaxProductPhotos, expect correct max product picture`() {
+        every { userSession.isShopOfficialStore } returns true
+        var maxPicture = viewModel.getMaxProductPhotos()
+        assertEquals(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS_OS, maxPicture)
+
+        every { userSession.isShopOfficialStore } returns false
+        maxPicture = viewModel.getMaxProductPhotos()
+        assertEquals(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS, maxPicture)
+    }
+
+    @Test
     fun `when is not shop admin or not shop owner, stock message should be empty`() {
         every { userSession.isShopAdmin } returns false
         every { userSession.isShopOwner } returns false
