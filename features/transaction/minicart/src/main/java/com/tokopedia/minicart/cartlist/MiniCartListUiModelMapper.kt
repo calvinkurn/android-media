@@ -246,7 +246,10 @@ class MiniCartListUiModelMapper @Inject constructor() {
             } else {
                 productQtyLeft = cartDetail.product.productWarningMessage
             }
-            productCashbackPercentage = cartDetail.product.productCashback.replace("%", "").toIntOrZero()
+            productCashbackPercentage = cartDetail.product.productCashback
+                    .replace(" ", "")
+                    .replace("%", "").toIntOrZero()
+
         }
     }
 
