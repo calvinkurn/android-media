@@ -2423,8 +2423,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     private fun resetSelectAllCheckBox() {
         if (checkBoxSelectAll.isChecked) {
             checkBoxSelectAll.isChecked = false
-            checkBoxSelectAll.setIndeterminate(false)
         }
+        checkBoxSelectAll.setIndeterminate(false)
     }
 
     private fun renderProductCount() {
