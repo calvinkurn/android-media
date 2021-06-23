@@ -77,6 +77,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private var hasRequestedLocation: Boolean = false
     private var isPositiveFlow: Boolean = true
 
+    private var isFromPinpoint: Boolean = false
+
     private var saveDataModel: SaveAddressDataModel? = null
     private var currentKotaKecamatan: String? = ""
 
@@ -100,7 +102,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW, true)
+            isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
+            isFromPinpoint = it.getBoolean(EXTRA_FROM_PINPOINT)
             currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
             saveDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
         }
@@ -185,17 +188,17 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         binding.tvMessageSearch.text = getString(R.string.txt_message_initial_load)
         binding.tvMessageSearch.setOnClickListener {
             AddNewAddressRevampAnalytics.onClickIsiAlamatManualSearch(userSession.userId)
-            if (isPositiveFlow) {
+            if (!isPositiveFlow && isFromPinpoint) {
                 Intent(context, AddressFormActivity::class.java).apply {
                     putExtra(EXTRA_IS_POSITIVE_FLOW, false)
                     putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
+                    putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
                     startActivityForResult(this, 1599)
                 }
             } else {
                 Intent(context, AddressFormActivity::class.java).apply {
                     putExtra(EXTRA_IS_POSITIVE_FLOW, false)
                     putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
-                    putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
                     startActivityForResult(this, 1599)
                 }
             }
@@ -378,7 +381,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 if (data != null) {
-                   goToPinpointPage(null, data.latitude, data.longitude, false)
+                   goToPinpointPage(null, data.latitude, data.longitude, false, true)
                 } else {
                     fusedLocationClient?.requestLocationUpdates(AddNewAddressUtils.getLocationRequest(),
                         createLocationCallback(), null)
@@ -404,11 +407,11 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     override fun onItemClicked(placeId: String) {
         AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
-        if (isPositiveFlow) goToPinpointPage(placeId, null, null, false)
-        else goToPinpointPage(placeId, null, null, true)
+        if (!isPositiveFlow && isFromPinpoint) goToPinpointPage(placeId, null, null, true, false)
+        else goToPinpointPage(placeId, null, null, false, true)
     }
 
-    private fun goToPinpointPage(placeId: String?, latitude: Double?, longitude: Double?, isFromAddressForm: Boolean) {
+    private fun goToPinpointPage(placeId: String?, latitude: Double?, longitude: Double?, isFromAddressForm: Boolean, isPositiveFlow: Boolean) {
         val bundle = Bundle()
         bundle.putString(EXTRA_PLACE_ID, placeId)
         latitude?.let { bundle.putDouble(EXTRA_LATITUDE, it) }
@@ -422,9 +425,10 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         fun newInstance(bundle: Bundle): SearchPageFragment {
             return SearchPageFragment().apply {
                 arguments = Bundle().apply {
-                    putBoolean(EXTRA_IS_POSITIVE_FLOW, bundle.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                     putString(EXTRA_KOTA_KECAMATAN, bundle.getString(EXTRA_KOTA_KECAMATAN))
                     putParcelable(EXTRA_SAVE_DATA_UI_MODEL, bundle.getParcelable(EXTRA_SAVE_DATA_UI_MODEL))
+                    putBoolean(EXTRA_IS_POSITIVE_FLOW, bundle.getBoolean(EXTRA_IS_POSITIVE_FLOW))
+                    putBoolean(EXTRA_FROM_PINPOINT, bundle.getBoolean(EXTRA_FROM_PINPOINT))
                 }
             }
         }

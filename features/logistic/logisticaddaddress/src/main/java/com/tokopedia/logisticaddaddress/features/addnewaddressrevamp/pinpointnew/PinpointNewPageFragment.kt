@@ -719,6 +719,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun goToSearchPage() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+        if (!isPositiveFlow) intent.putExtra(EXTRA_FROM_PINPOINT, true)
         intent.putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
         intent.putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
         intent.putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
