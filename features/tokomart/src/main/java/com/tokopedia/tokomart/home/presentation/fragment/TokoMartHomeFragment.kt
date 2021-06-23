@@ -555,8 +555,8 @@ class TokoMartHomeFragment: Fragment(),
     private fun loadVisibleLayoutData(index: Int) {
         val warehouseId = localCacheModel?.warehouse_id.orEmpty()
         val layoutManager = rvHome.layoutManager as? LinearLayoutManager
-        val firstVisibleItemIndex = layoutManager?.findFirstCompletelyVisibleItemPosition().orZero()
-        val lastVisibleItemIndex = layoutManager?.findLastCompletelyVisibleItemPosition().orZero()
+        val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
+        val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
         val isVisible = index in firstVisibleItemIndex..lastVisibleItemIndex
         viewModel.getInitialLayoutData(index, warehouseId, isVisible)
     }
@@ -564,8 +564,8 @@ class TokoMartHomeFragment: Fragment(),
     private fun loadMoreLayoutData() {
         val warehouseId = localCacheModel?.warehouse_id.orEmpty()
         val layoutManager = rvHome.layoutManager as? LinearLayoutManager
-        val firstVisibleItemIndex = layoutManager?.findFirstCompletelyVisibleItemPosition().orZero()
-        val lastVisibleItemIndex = layoutManager?.findLastCompletelyVisibleItemPosition().orZero()
+        val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
+        val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
         viewModel.getMoreLayoutData(warehouseId, firstVisibleItemIndex, lastVisibleItemIndex)
     }
 
