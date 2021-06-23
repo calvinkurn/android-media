@@ -139,9 +139,11 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemUiM
     }
 
     private void setupWarehouseId() {
-        warehouseId = getArguments().getString(
-                TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID, "0"
-        );
+        if (getArguments() != null) {
+            warehouseId = getArguments().getString(
+                    TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID, "0"
+            );
+        }
     }
 
     private void initSearchBar() {

@@ -51,6 +51,9 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
 
     private void setupWarehouseId() {
         warehouseId = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID);
+        if (warehouseId != null && warehouseId.isEmpty()) {
+            warehouseId = "0";
+        }
     }
 
     @Override
