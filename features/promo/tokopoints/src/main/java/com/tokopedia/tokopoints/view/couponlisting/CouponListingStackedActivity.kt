@@ -4,13 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
 import android.view.View
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -28,13 +28,11 @@ import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedFragment.Companion.REQUEST_CODE_STACKED_ADAPTER
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedFragment.Companion.REQUEST_CODE_STACKED_IN_ADAPTER
 import com.tokopedia.tokopoints.view.model.CouponFilterItem
-import com.tokopedia.user.session.UserSession
-
-import javax.inject.Inject
-
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TAB_SETUP_DELAY_MS
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.tp_activity_stacked_coupon_list.*
+import javax.inject.Inject
 
 class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivityContract.View, HasComponent<TokopointBundleComponent> {
     private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
@@ -54,19 +52,8 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     override fun onCreate(savedInstanceState: Bundle?) {
         forDeeplink()
         super.onCreate(savedInstanceState)
-        try {
-            setupLayout(savedInstanceState)
-        } catch (e: Exception) {
-            finish()
-            return
-        }
         val userSession = UserSession(this)
-        updateTitle(getString(R.string.tp_label_my_coupon_new))
         component.inject(this)
-        server_error_view.setErrorButtonClickListener(View.OnClickListener {
-            mPresenter.getFilter()
-        })
-        initViews()
         addObserver()
         if (!userSession.isLoggedIn) {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
@@ -95,6 +82,28 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
                 }
             }
         })
+    }
+
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        //Intermittent crash on Marshmallow
+        try {
+            setContentView(layoutRes)
+        } catch (e: Exception) {
+            finish()
+            return
+        }
+        toolbar = findViewById<View>(toolbarResourceID) as Toolbar
+        setSupportActionBar(toolbar)
+        if (supportActionBar != null) {
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayShowTitleEnabled(true)
+            supportActionBar?.title = this.title
+        }
+        updateTitle(getString(R.string.tp_label_my_coupon_new))
+        server_error_view.setErrorButtonClickListener(View.OnClickListener {
+            mPresenter.getFilter()
+        })
+        initViews()
     }
 
     override fun getLayoutRes(): Int {
