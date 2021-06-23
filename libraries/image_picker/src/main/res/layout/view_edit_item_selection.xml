@@ -9,9 +9,10 @@
 
     <FrameLayout
         android:id="@+id/selection_container"
-        android:layout_width="@dimen/image_editor_thumbnail_width"
-        android:layout_height="@dimen/image_editor_thumbnail_width"
+        android:layout_width="@dimen/image_editor_main_height"
+        android:layout_height="@dimen/image_editor_main_height"
         android:layout_margin="@dimen/dp_1"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -60,12 +61,11 @@
         android:layout_marginTop="@dimen/unify_space_4"
         android:gravity="center_horizontal"
         android:textColor="@color/Unify_N700"
-        app:typographyType="body_3"
-        android:maxWidth="@dimen/unify_space_64"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/selection_container"
-        tools:text="Item" />
+        app:typographyType="body_3"
+        tools:text="Nama Menu Item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

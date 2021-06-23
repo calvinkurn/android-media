@@ -66,7 +66,7 @@ data class Watermark (
         if (watermarkText == null) return
 
         createWatermark(
-            bitmap = watermarkText.text.textAsBitmap(context, watermarkText).combine(null),
+            bitmap = watermarkText.text.textAsBitmap(context, watermarkText),
             config = watermarkText
         )
     }
@@ -136,28 +136,58 @@ data class Watermark (
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
-    private fun Bitmap.combine(secondBitmap: Bitmap?): Bitmap {
-        val spaceThreshold = 2
-        val width: Int
-        val height: Int
+    private fun Bitmap.combine(other: Bitmap): Bitmap {
+        val thresholdSpace = this.width / 2
+        val otherBitmap = other.addPadding(thresholdSpace, 0, thresholdSpace, 0)
 
-        val other = secondBitmap ?: Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888)
+        val width = this.width + otherBitmap.width
+        val height = maxOf(this.height, otherBitmap.height)
 
-        if (this.width > other.width) {
-            width = (this.width + other.width) * spaceThreshold
-            height = this.height
-        } else {
-            width = (other.width + other.width) * spaceThreshold
-            height = this.height
+        val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(resultBitmap)
+
+        canvas.drawBitmap(this, 0f, 0f, null)
+        canvas.drawBitmap(otherBitmap, this.width.toFloat(), 0f, null)
+
+        return resultBitmap
+    }
+
+    private fun Bitmap.addPadding(
+        left:Int = 0,
+        top:Int = 0,
+        right:Int = 0,
+        bottom:Int = 0
+    ):Bitmap {
+        val bitmap = Bitmap.createBitmap(
+            width + left + right, // width in pixels
+            height + top + bottom, // height in pixels
+            Bitmap.Config.ARGB_8888
+        )
+
+        val canvas = Canvas(bitmap)
+
+        // clear color from bitmap drawing area
+        // this is very important for transparent bitmap borders
+        // this will keep bitmap transparency
+        Paint().apply {
+            xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+            canvas.drawRect(
+                Rect(left,top,bitmap.width - right,bitmap.height - bottom),
+                this
+            )
         }
 
-        val combinedBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val combinedCanvas = Canvas(combinedBitmap)
+        // finally, draw bitmap on canvas
+        Paint().apply {
+            canvas.drawBitmap(
+                this@addPadding, // bitmap
+                0f + left, // left
+                0f + top, // top
+                this // paint
+            )
+        }
 
-        combinedCanvas.drawBitmap(this, 0f, 0f, null)
-        combinedCanvas.drawBitmap(other, this.width.toFloat() * spaceThreshold, 0f, null)
-
-        return combinedBitmap
+        return bitmap
     }
 
 }

@@ -47,7 +47,7 @@ class ItemSelectionWidget : FrameLayout {
         recyclerView = findViewById(R.id.lst_item)
     }
 
-    fun setData(items: List<ItemSelection>, listener: EditorItemSelectionAdapter.EditorItemSelectionListener) {
+    fun setData(items: List<ItemSelection>, listener: EditorItemSelectionAdapter.EditorItemSelectionListener?) {
         adapter = EditorItemSelectionAdapter(items, listener)
 
         recyclerView?.layoutManager = LinearLayoutManager(

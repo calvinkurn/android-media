@@ -91,7 +91,7 @@ open class WatermarkBuilder {
 
         this.watermarkTextAndImage = TextAndImage().apply {
             this.image = bitmap
-            this.text = text
+            this.text = text.take(10)
         }
     }
 

@@ -266,36 +266,22 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         lastStateImage = gestureCropImageView.getViewBitmap();
     }
 
-    public void setWatermark(int watermarkType) {
-        // first, reset the watermark state to back to default
+    public void setWatermark() {
         cancelWatermark();
+
         Bitmap bitmap = gestureCropImageView.getViewBitmap();
 
         if (bitmap == null) return;
 
-        // preparing the watermark builder
         WatermarkBuilder watermarkBuilder = WatermarkBuilder
                 .create(requireContext(), bitmap)
                 .setTileMode(true);
-        /*
-         * get user info,
-         * the main purpose is to enable user info watermark by
-         * set the user info as user name if the user is buyer.
-         * */
-        String userInfo;
 
-        if (userSession.hasShop()) {
-            userInfo = userSession.getShopName();
-        } else {
-            userInfo = userSession.getName();
-        }
+        String userInfo = userSession.hasShop() ?
+                userSession.getShopName() :
+                userSession.getName();
 
-        if (watermarkType == Constant.TYPE_WATERMARK_TOPED) {
-            imageEditPreviewPresenter.setTokopediaWatermark(userInfo, watermarkBuilder);
-        } else if (watermarkType == Constant.TYPE_WATERMARK_USER_INFO) {
-
-            imageEditPreviewPresenter.setUserInfoNameWatermark(userInfo, watermarkBuilder);
-        }
+        imageEditPreviewPresenter.setTokopediaWatermark(userInfo, watermarkBuilder);
     }
 
     public int getImageIndex() {
@@ -576,6 +562,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     }
 
     public void cancelWatermark() {
+        if (lastStateImage == null) return;
         gestureCropImageView.setImageBitmap(lastStateImage);
     }
 

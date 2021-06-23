@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <HorizontalScrollView android:layout_width="wrap_content"
-    android:layout_height="@dimen/image_editor_main_height"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/image_editor_main_height"
     android:layout_gravity="center_horizontal"
     android:clipChildren="false"
     android:clipToPadding="false"

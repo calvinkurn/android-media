@@ -685,30 +685,24 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     }
 
     private void setupWatermarkWidget() {
+        List<ItemSelection> items = new ArrayList<>();
         ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
 
-        List<ItemSelection> items = new ArrayList<>();
+        if (imageEditPreviewFragment == null) return;
 
         String tokopedia = getString(R.string.editor_watermark_tokopedia);
         String preview = edittedImagePaths.get(currentImageIndex).get(getCurrentStepForCurrentImage());
         String userInfoName = userSession.hasShop() ? userSession.getShopName() : userSession.getName();
 
         items.add(new ItemSelection(
-                tokopedia,
-                preview,
-                tokopedia,
-                Constant.TYPE_WATERMARK_TOPED,
-                false)
-        );
-
-        items.add(new ItemSelection(
                 tokopedia + " + " + userInfoName,
                 preview,
                 userInfoName,
-                Constant.TYPE_WATERMARK_USER_INFO, false)
+                Constant.TYPE_WATERMARK_TOPED, true)
         );
 
-        watermarkItemSelection.setData(items, imageEditPreviewFragment::setWatermark);
+        watermarkItemSelection.setData(items, null);
+        imageEditPreviewFragment.setWatermark();
     }
 
     @Override

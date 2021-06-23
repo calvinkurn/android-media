@@ -18,7 +18,7 @@ import com.tokopedia.imagepicker.videorecorder.utils.show
 
 class EditorItemSelectionAdapter constructor(
     private val items: List<ItemSelection> = mutableListOf(),
-    private val listener: EditorItemSelectionListener
+    private val listener: EditorItemSelectionListener? = null
 ) : RecyclerView.Adapter<EditorItemSelectionAdapter.EditorItemSelectionViewHolder>() {
 
     private var selectedPosition = 0
@@ -46,7 +46,7 @@ class EditorItemSelectionAdapter constructor(
         items[position].isSelected = true
         selectedPosition = position
 
-        listener.onItemSelected(item.itemType)
+        listener?.onItemSelected(item.itemType)
         notifyDataSetChanged()
     }
 
@@ -68,7 +68,7 @@ class EditorItemSelectionAdapter constructor(
             if (item.placeholderText.isNotEmpty()) txtPlaceholder.show()
             if (item.isSelected) viewSelection.show() else viewSelection.hide()
 
-            txtPlaceholder.text = item.placeholderText
+            txtPlaceholder.text = item.placeholderText.take(6)
             txtItem.text = item.name
             itemPreview(item)
         }
