@@ -113,7 +113,7 @@ class FlightOrderDetailWebCheckInViewHolder(view: View,
             if (element.webCheckIn.webUrl.isNotEmpty()) {
                 val checkInOpenDate = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, element.webCheckIn.startTime)
                 val checkInCloseDate = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, element.webCheckIn.endTime)
-                val currentTime = FlightDateUtil.getCurrentDate()
+                val currentTime = FlightDateUtil.currentDate
 
                 when {
                     currentTime.before(checkInOpenDate) -> {

@@ -22,7 +22,8 @@
             android:layout_marginBottom="@dimen/dimen_stc_minus2dp"
             android:theme="?toolbarTheme"
             app:subtitleTextAppearance="?subtitleTextAppearance"
-            app:titleTextAppearance="?titleTextAppearance" />
+            app:titleTextAppearance="?titleTextAppearance"
+            app:unify_header_is_show_shadow="false" />
     </LinearLayout>
 
     <com.tokopedia.unifycomponents.TabsUnify

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parentViewShcItemPost"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:maxHeight="@dimen/shc_dimen_74dp"
+    android:paddingStart="@dimen/layout_lvl1"
+    android:paddingTop="@dimen/shc_dimen_6dp"
+    android:paddingEnd="@dimen/layout_lvl1"
+    android:paddingBottom="@dimen/shc_dimen_6dp"
+    tools:background="@drawable/shc_bg_ripple_radius_4dp">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgPost"
+        android:layout_width="@dimen/shc_dimen_56dp"
+        android:layout_height="@dimen/shc_dimen_56dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/shc_content_desc_image_post"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_placeholder="@android:color/transparent"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPostTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/shc_dimen_12dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/imgPost"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Tips Sukses Kak Irfan: Bisnis Bermanfaat Untuk Diri Sendiri" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPostDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvPostTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvPostTitle"
+        app:layout_constraintVertical_bias="0.0"
+        app:typographyType="small"
+        tools:text="Info" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

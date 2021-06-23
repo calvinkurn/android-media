@@ -304,7 +304,7 @@ class FlightFilterViewModelTest {
         coEvery {
             flightSearchStatisticsUseCase.execute(any())
         } returns FlightSearchStatisticModel(0, 1000, 60, 90,
-                listOf(), null, listOf(), listOf(), listOf(), false,
+                listOf(), listOf(), listOf(), listOf(), listOf(), false,
                 true, true, false, true)
         flightFilterViewModel.init(0, FlightFilterModel())
 
@@ -410,7 +410,7 @@ class FlightFilterViewModelTest {
         //given
         val statistics = FlightSearchStatisticModel(30, 100000, 60, 90,
                 listOf(), listOf(), listOf(), listOf(), listOf(), false, true, true,
-        false, true)
+                false, true)
         coEvery {
             flightSearchStatisticsUseCase.execute(any())
         } returns statistics

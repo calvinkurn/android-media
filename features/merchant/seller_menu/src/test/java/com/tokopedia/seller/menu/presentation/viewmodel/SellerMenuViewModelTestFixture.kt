@@ -153,8 +153,8 @@ open class SellerMenuViewModelTestFixture {
             isAutoTopUp: Boolean = true,
             shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",
             shopType: PowerMerchantStatus = PowerMerchantStatus.Active,
-            shopScore: Int = 70,
-            shopAge: Int = 65
+            shopScore: Long = 70,
+            shopAge: Long = 65
     ): ShopInfoUiModel {
         val userShopInfoWrapper = UserShopInfoWrapper(shopType = shopType)
         val shopInfoResponse = PartialShopSettingSuccessInfo(

@@ -781,7 +781,7 @@ class FlightHomepageViewModelTest {
     @Test
     fun generatePairOfMinAndMaxDateForDeparture_shouldReturnPairDate() {
         // given
-        val maxDateCalendar = FlightDateUtil.getCurrentCalendar()
+        val maxDateCalendar = FlightDateUtil.currentCalendar
         maxDateCalendar.time = FlightDateUtil.addTimeToSpesificDate(
                 FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
                 Calendar.DATE,
@@ -800,7 +800,7 @@ class FlightHomepageViewModelTest {
     @Test
     fun generatePairOfMinAndMaxDateForReturn_shouldReturnPairDate() {
         // given
-        val departureDate = FlightDateUtil.getCurrentDate()
+        val departureDate = FlightDateUtil.currentDate
 
         // when
         val pair = flightHomepageViewModel.generatePairOfMinAndMaxDateForReturn(departureDate)
