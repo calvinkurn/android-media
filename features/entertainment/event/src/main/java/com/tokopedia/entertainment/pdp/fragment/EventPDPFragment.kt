@@ -348,8 +348,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             rv_event_pdp.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    widget_event_pdp_tab_section.setScrolledSection((rv_event_pdp.layoutManager
-                            as LinearLayoutManager).findFirstCompletelyVisibleItemPosition())
+                    widget_event_pdp_tab_section.setScrolledSection(checkVisibilityItem())
                 }
             })
         }
@@ -539,6 +538,11 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     fun showShareLoading() {
         event_pdp_pb.show()
+    }
+
+    private fun checkVisibilityItem(): Int{
+        return (rv_event_pdp.layoutManager
+                as LinearLayoutManager).findFirstCompletelyVisibleItemPosition()
     }
 
     companion object {
