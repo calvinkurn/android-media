@@ -141,7 +141,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final int CART_MENU = 3;
     public static final int ACCOUNT_MENU = 4;
     public static final int RECOMENDATION_LIST = 5;
-    public static final int UOH_MENU = 4;
+    public static final int UOH_MENU = 3;
     public static final String DEFAULT_NO_SHOP = "0";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
