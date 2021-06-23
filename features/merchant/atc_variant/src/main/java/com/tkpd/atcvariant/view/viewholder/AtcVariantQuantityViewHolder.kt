@@ -13,7 +13,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.utils.text.currency.StringUtils
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
@@ -35,6 +34,8 @@ class AtcVariantQuantityViewHolder constructor(
 
     companion object {
         val LAYOUT = R.layout.atc_variant_quantity_viewholder
+
+        private const val QUANTITY_REGEX = "[^0-9]"
     }
 
     private val quantityEditor = view.findViewById<QuantityEditorUnify>(R.id.qty_variant_stock)
@@ -82,7 +83,8 @@ class AtcVariantQuantityViewHolder constructor(
                         }
 
                         override fun afterTextChanged(s: Editable) {
-                            subscriber.onNext(StringUtils.removePeriod(s.toString()).toIntOrZero())
+                            val quantityInt: Int = s.toString().replace(QUANTITY_REGEX.toRegex(), "").toIntOrZero()
+                            subscriber.onNext(quantityInt)
                         }
                     }
                     quantityEditor.editText.addTextChangedListener(textWatcher)
@@ -112,11 +114,14 @@ class AtcVariantQuantityViewHolder constructor(
             quantityEditor?.setValue(quantityEditor.minValue)
         } else if (quantity > quantityEditor.maxValue) {
             quantityEditor?.setValue(quantityEditor.maxValue)
-        }
-        if (element.quantity != quantity) {
-            element.quantity = quantityEditor.getValue()
-            listener.onQuantityUpdate(quantityEditor.getValue(), element.productId)
-            quantityEditor.setValue(quantityEditor.getValue())
+        } else {
+            if (element.quantity != quantity) {
+                element.quantity = quantityEditor.getValue()
+                listener.onQuantityUpdate(quantityEditor.getValue(), element.productId)
+
+                //fire again to update + and - button
+                quantityEditor.setValue(quantityEditor.getValue())
+            }
         }
     }
 

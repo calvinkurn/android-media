@@ -2808,6 +2808,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+    override fun getRxCompositeSubcription(): CompositeSubscription {
+        return compositeSubscription
+    }
+
     /**
      * ProductDetailInfoBottomSheet Listener
      */
