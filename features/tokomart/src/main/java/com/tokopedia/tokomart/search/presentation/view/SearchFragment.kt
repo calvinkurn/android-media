@@ -72,8 +72,6 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         super.observeViewModel()
 
         getViewModel().generalSearchEventLiveData.observe(this::sendTrackingGeneralEvent)
-        getViewModel().increaseQtyTrackingLiveData.observe(this::sendIncreaseQtyTrackingEvent)
-        getViewModel().decreaseQtyTrackingLiveData.observe(this::sendDecreaseQtyTrackingEvent)
     }
 
     private fun sendTrackingGeneralEvent(dataLayer: Map<String, Any>) {
@@ -95,11 +93,11 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
         )
     }
 
-    private fun sendIncreaseQtyTrackingEvent(productId: String) {
+    override fun sendIncreaseQtyTrackingEvent(productId: String) {
         SearchTracking.sendIncreaseQtyEvent(searchViewModel.query, productId)
     }
 
-    private fun sendDecreaseQtyTrackingEvent(productId: String) {
+    override fun sendDecreaseQtyTrackingEvent(productId: String) {
         SearchTracking.sendDecreaseQtyEvent(searchViewModel.query, productId)
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.tokomart.category.analytics
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.ADD_QUANTITY_ON_BOTTOM_SHEET
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.APPLY_CATEGORY_FILTER
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_APPLY_FILTER
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_BANNER
@@ -18,6 +19,7 @@ import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_S
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.CLICK_SEMUA_KATEGORI
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.IMPRESSION_BANNER
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.IMPRESSION_PRODUCT
+import com.tokopedia.tokomart.category.analytics.CategoryTracking.Action.REMOVE_QUANTITY_ON_BOTTOM_SHEET
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Category.TOKONOW_CATEGORY_PAGE
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Category.TOP_NAV_TOKONOW_CATEGORY_PAGE
 import com.tokopedia.tokomart.category.analytics.CategoryTracking.Event.CLICK_TOP_NAV
@@ -43,6 +45,7 @@ import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingCon
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Event.PRODUCT_VIEW
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Event.PROMO_CLICK
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Event.PROMO_VIEW
+import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.DEFAULT
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.HOME_AND_BROWSE
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.NONE_OTHER
 import com.tokopedia.tokomart.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKO_NOW
@@ -79,6 +82,8 @@ object CategoryTracking {
         const val APPLY_CATEGORY_FILTER = "apply category filter"
         const val ADD_TO_CART = "add to cart"
         const val CLICK_PILIH_VARIANT_BUTTON = "click pilih variant button"
+        const val ADD_QUANTITY_ON_BOTTOM_SHEET = "add quantity on bottom sheet"
+        const val REMOVE_QUANTITY_ON_BOTTOM_SHEET = "remove quantity on bottom sheet"
     }
 
     object Category {
@@ -158,7 +163,8 @@ object CategoryTracking {
         val id = channelModelId + "_" + channelGridId + "_" + persoType + "_" + categoryId
 
         val promoName = channelModel.trackingAttributionModel.promoName
-        val name = "/tokonow - category - $promoName"
+        val headerName = if (promoName.isEmpty()) DEFAULT else promoName
+        val name = "/tokonow - category - $headerName"
 
         return DataLayer.mapOf(
                 "id", id,
@@ -398,6 +404,30 @@ object CategoryTracking {
         sendGeneralEvent(DataLayer.mapOf(
                 EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_PILIH_VARIANT_BUTTON,
+                EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
+                EVENT_LABEL, categoryId,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+        ))
+    }
+
+
+
+    fun sendIncreaseQtyEvent(categoryId: String) {
+        sendGeneralEvent(DataLayer.mapOf(
+                EVENT, EVENT_CLICK_TOKONOW,
+                EVENT_ACTION, ADD_QUANTITY_ON_BOTTOM_SHEET,
+                EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
+                EVENT_LABEL, categoryId,
+                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
+                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+        ))
+    }
+
+    fun sendDecreaseQtyEvent(categoryId: String) {
+        sendGeneralEvent(DataLayer.mapOf(
+                EVENT, EVENT_CLICK_TOKONOW,
+                EVENT_ACTION, REMOVE_QUANTITY_ON_BOTTOM_SHEET,
                 EVENT_CATEGORY, TOKONOW_CATEGORY_PAGE,
                 EVENT_LABEL, categoryId,
                 KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
