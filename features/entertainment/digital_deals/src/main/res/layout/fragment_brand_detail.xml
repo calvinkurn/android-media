@@ -37,8 +37,7 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_160"
-                    android:background="@drawable/background_blur_deal" />
+                    android:layout_height="@dimen/dp_160" />
 
 
                 <LinearLayout
