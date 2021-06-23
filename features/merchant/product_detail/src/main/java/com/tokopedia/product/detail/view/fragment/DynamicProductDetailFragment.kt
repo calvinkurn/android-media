@@ -355,6 +355,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         observeTopAdsImageData()
         observeVideoDetail()
         observeShippingAddressChanged()
+        observeTopAdsIsChargeData()
     }
 
     override fun loadData(forceRefresh: Boolean) {
@@ -364,6 +365,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId),
                         forceRefresh, isAffiliate, layoutId, isNavOld(), ChooseAddressUtils.getLocalizingAddressData(it)
                         ?: LocalCacheModel())
+            }
+            productId?.let {
+                viewModel.getProductTopadsStatus(it, "")
             }
         }
     }
@@ -435,6 +439,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.toggleTeaserNotifyMe.removeObservers(this)
         viewModel.addToCartLiveData.removeObservers(this)
         viewModel.discussionMostHelpful.removeObservers(this)
+        viewModel.topAdsRecomChargeData.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -1254,6 +1259,30 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             }, {
                 pdpUiUpdater?.removeComponent(ProductDetailConstant.KEY_TOP_ADS)
             })
+        }
+    }
+
+    private fun observeTopAdsIsChargeData() {
+        viewLifecycleOwner.observe(viewModel.topAdsRecomChargeData) {data ->
+            data.doSuccessOrFail({topAdsData ->
+                context?.let {
+                    TopAdsUrlHitter(it).hitImpressionUrl(
+                            this::class.java.name,
+                            topAdsData.data.product.image.m_url,
+                            topAdsData.data.product.id,
+                            topAdsData.data.product.name,
+                            topAdsData.data.product.image.m_ecs)
+
+                    TopAdsUrlHitter(it).hitClickUrl(
+                            this::class.java.name,
+                            topAdsData.data.product.image.m_url,
+                            topAdsData.data.product.id,
+                            topAdsData.data.product.name,
+                            topAdsData.data.product.image.m_ecs)
+                }
+
+            },
+            {})
         }
     }
 

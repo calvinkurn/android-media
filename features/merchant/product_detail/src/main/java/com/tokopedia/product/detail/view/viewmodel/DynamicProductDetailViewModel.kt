@@ -59,10 +59,14 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantCategory
@@ -72,10 +76,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Lazy
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import rx.Observer
 import rx.Subscriber
 import rx.Subscription
@@ -106,6 +107,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val toggleNotifyMeUseCase: Lazy<ToggleNotifyMeUseCase>,
                                                              private val discussionMostHelpfulUseCase: Lazy<DiscussionMostHelpfulUseCase>,
                                                              private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
+                                                             private val getTopadsIsAdsUseCase: Lazy<GetTopadsIsAdsUseCase>,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.main) {
 
     companion object {
@@ -116,6 +118,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         private const val REMOVE_WISHLIST = "false"
         private const val P2_LOGIN_ERROR_TYPE = "error_p2_login"
         private const val P2_DATA_ERROR_TYPE = "error_p2_data"
+        private const val PARAM_JOB_TIMEOUT = 1000L
     }
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -189,6 +192,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _topAdsImageView: MutableLiveData<Result<ArrayList<TopAdsImageViewModel>>> = MutableLiveData()
     val topAdsImageView: LiveData<Result<ArrayList<TopAdsImageViewModel>>>
         get() = _topAdsImageView
+
+    private val _topAdsRecomChargeData = MutableLiveData<Result<TopAdsGetDynamicSlottingDataProduct>>()
+    val topAdsRecomChargeData: LiveData<Result<TopAdsGetDynamicSlottingDataProduct>>
+        get() = _topAdsRecomChargeData
 
     var videoTrackerData: Pair<Long, Long>? = null
 
@@ -717,6 +724,31 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     filterData = selectOrDeselectAnnotationChip(recommendationDataModel.filterData, annotationChip.recommendationFilterChip.name, annotationChip.recommendationFilterChip.isActivated)
             ))
             _statusFilterTopAdsProduct.postValue(throwable.asFail())
+        }
+    }
+
+    fun getProductTopadsStatus(
+            productId: String,
+            queryParam: String) {
+        launchCatchError(coroutineContext, block = {
+            var adsStatus = TopadsIsAdsQuery()
+            val job = withTimeoutOrNull(PARAM_JOB_TIMEOUT) {
+                getTopadsIsAdsUseCase.get().setParams(
+                        productId = productId,
+                        productKey = "",
+                        shopDomain = "",
+                        urlParam = queryParam,
+                        pageName = ""
+                )
+                adsStatus = getTopadsIsAdsUseCase.get().executeOnBackground()
+                val errorCode = adsStatus.data.status.error_code
+                if (errorCode in 200..300 && adsStatus.data.productList[0].isCharge) {
+                    _topAdsRecomChargeData.postValue(Success(adsStatus.data.productList[0]))
+                }
+            }
+        }) {
+            it.printStackTrace()
+            //nothing to do since fire and forget
         }
     }
 
