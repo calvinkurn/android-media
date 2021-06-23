@@ -20,6 +20,8 @@ import com.tokopedia.minicart.common.domain.usecase.*
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import kotlinx.coroutines.*
+import java.text.NumberFormat
+import java.util.*
 import javax.inject.Inject
 
 class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispatchers,
@@ -621,7 +623,8 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                 }
             } else {
                 val updatedTickerWarning = tickerWarning.deepCopy()
-                updatedTickerWarning.warningMessage = warningWording.replace("{{weight}}", "$overWeight ")
+                val formattedOverWeight = NumberFormat.getNumberInstance(Locale("in", "id")).format(overWeight)
+                updatedTickerWarning.warningMessage = warningWording.replace(MiniCartListUiModelMapper.PLACEHOLDER_OVERWEIGHT_VALUE, "$formattedOverWeight ")
                 visitables[tickerWarningIndex] = updatedTickerWarning
             }
         } else {
