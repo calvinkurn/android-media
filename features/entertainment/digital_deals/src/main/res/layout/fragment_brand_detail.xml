@@ -134,7 +134,7 @@
                 app:srcCompat="@drawable/empty_search_illustration_big" />
 
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
@@ -160,7 +160,7 @@
         android:focusable="true"
         android:visibility="gone">
 
-        <ProgressBar
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/prog_bar"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"

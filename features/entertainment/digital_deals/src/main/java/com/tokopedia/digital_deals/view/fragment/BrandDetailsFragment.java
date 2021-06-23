@@ -42,6 +42,7 @@ import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -67,7 +68,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     private RecyclerView recyclerViewDeals;
     private View progressBarLayout;
 
-    private ProgressBar progBar;
+    private LoaderUnify progBar;
     private LinearLayout noContent;
     @Inject
     public BrandDetailsPresenter mPresenter;
