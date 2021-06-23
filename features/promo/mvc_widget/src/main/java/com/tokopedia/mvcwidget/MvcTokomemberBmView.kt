@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Transformation
+import android.widget.FrameLayout
 import androidx.core.view.ViewCompat
 
 const val COLLAPSES_SPEED = 0.5
@@ -48,7 +49,7 @@ inline fun View.doOnNextLayout(crossinline action: (view: View) -> Unit) {
     })
 }
 
-fun expand(v: View) {
+fun expand(v: View, iconBackgroundContainer: FrameLayout) {
     val matchParentMeasureSpec =
         View.MeasureSpec.makeMeasureSpec((v.parent as View).width, View.MeasureSpec.EXACTLY)
     val wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
@@ -62,6 +63,12 @@ fun expand(v: View) {
             v.layoutParams.height =
                 if (interpolatedTime == 1f) ViewGroup.LayoutParams.WRAP_CONTENT else (targetHeight * interpolatedTime).toInt()
             v.requestLayout()
+
+             val marginLayoutParams = iconBackgroundContainer.layoutParams as ViewGroup.MarginLayoutParams
+             marginLayoutParams.bottomMargin =
+                 iconBackgroundContainer.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+             iconBackgroundContainer.layoutParams = marginLayoutParams
+             iconBackgroundContainer.requestLayout()
         }
 
         override fun willChangeBounds(): Boolean {
@@ -73,7 +80,7 @@ fun expand(v: View) {
     v.startAnimation(a)
 }
 
-fun collapse(v: View) {
+fun collapse(v: View, iconBackgroundContainer: FrameLayout) {
     val initialHeight = v.measuredHeight
     val a: Animation = object : Animation() {
         override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
@@ -82,6 +89,12 @@ fun collapse(v: View) {
             } else {
                 v.layoutParams.height = initialHeight - (initialHeight * interpolatedTime).toInt()
                 v.requestLayout()
+
+                val marginLayoutParams = iconBackgroundContainer.layoutParams as ViewGroup.MarginLayoutParams
+                marginLayoutParams.bottomMargin =
+                    iconBackgroundContainer.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl0)
+                iconBackgroundContainer.layoutParams = marginLayoutParams
+                iconBackgroundContainer.requestLayout()
             }
         }
 
