@@ -9,10 +9,7 @@ import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.view.custom.MaximumHeightRecyclerView
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
-import com.tokopedia.play_common.util.extension.awaitMeasured
-import com.tokopedia.play_common.util.extension.globalVisibleRect
-import com.tokopedia.play_common.util.extension.marginLp
-import com.tokopedia.play_common.util.extension.visibleHeight
+import com.tokopedia.play_common.util.extension.*
 import kotlinx.coroutines.*
 
 /**
@@ -37,31 +34,37 @@ class PortraitChatListHeightManager(
 
     override suspend fun invalidateHeightNonChatMode(
             videoOrientation: VideoOrientation,
-            videoPlayer: PlayVideoPlayerUiModel
+            videoPlayer: PlayVideoPlayerUiModel,
+            forceInvalidate: Boolean,
+            hasProductFeatured: Boolean,
+            hasPinnedVoucher: Boolean
     ) {
-        val key = getKey(videoOrientation, null, null)
+        val key = getKey(videoOrientation, null, null, hasProductFeatured, hasPinnedVoucher)
         val value = chatListHeightMap[key]
-        if (value != null && value.height.orZero() > 0f && value.consistency >= CONSISTENCY_THRESHOLD) {
+        if (value != null && value.height.orZero() > 0f && value.consistency >= CONSISTENCY_THRESHOLD && !forceInvalidate) {
             rvChatList.setMaxHeight(value.height)
             return
         }
 
         try {
-            val measuredHeight = if (videoOrientation.isHorizontal) measureHorizontalVideoNonChatMode()
+            val measuredHeight = if (videoOrientation.isHorizontal) measureHorizontalVideoNonChatMode(forceInvalidate)
             else measurePinnedVerticalVideo()
 
-            val currentHeight = chatListHeightMap[key]
-            chatListHeightMap[key] = if (currentHeight != null && currentHeight.height == measuredHeight) {
-                currentHeight.copy(consistency = currentHeight.consistency + 1)
-            } else {
-                ChatHeightMapValue(measuredHeight, consistency = 0)
+            if (!forceInvalidate) {
+                val currentHeight = chatListHeightMap[key]
+                chatListHeightMap[key] = if (currentHeight != null && currentHeight.height == measuredHeight) {
+                    currentHeight.copy(consistency = currentHeight.consistency + 1)
+                } else {
+                    ChatHeightMapValue(measuredHeight, consistency = 0)
+                }
             }
+
             rvChatList.setMaxHeight(measuredHeight)
         } catch (e: Throwable) {}
     }
 
     override suspend fun invalidateHeightChatMode(videoOrientation: VideoOrientation, videoPlayer: PlayVideoPlayerUiModel, maxTopPosition: Int, hasQuickReply: Boolean) {
-        val key = getKey(videoOrientation, maxTopPosition, hasQuickReply)
+        val key = getKey(videoOrientation, maxTopPosition, hasQuickReply, null, null)
         val value = chatListHeightMap[key]
         if (value != null && value.height.orZero() > 0f && value.consistency >= CONSISTENCY_THRESHOLD) {
             rvChatList.setMaxHeight(value.height)
@@ -82,9 +85,14 @@ class PortraitChatListHeightManager(
         } catch (e: Throwable) {}
     }
 
-    private suspend fun measureHorizontalVideoNonChatMode(): Float = coroutineScope {
+    private suspend fun measureHorizontalVideoNonChatMode(forceInvalidation: Boolean): Float = coroutineScope {
         val immersiveBoxLayout = asyncCatchError(block = { measureWithTimeout { immersiveBoxView.awaitMeasured() } }) {}
-        val pinnedViewLayout = asyncCatchError(block = { measureWithTimeout { pinnedMessageView.awaitMeasured() } }) {}
+        val pinnedViewLayout = asyncCatchError(block = {
+            measureWithTimeout {
+                if (forceInvalidation) pinnedMessageView.awaitNextGlobalLayout()
+                pinnedMessageView.awaitMeasured()
+            }
+        }) {}
         val sendChatViewLayout = asyncCatchError(block = { measureWithTimeout { sendChatView.awaitMeasured() } }) {}
         val productFeaturedViewLayout = asyncCatchError(block = { measureWithTimeout { productFeaturedView.awaitMeasured() } }) {}
         val pinnedVoucherViewLayout = asyncCatchError(block = { measureWithTimeout { pinnedVoucherView.awaitMeasured() } }) {}
@@ -104,16 +112,6 @@ class PortraitChatListHeightManager(
     private suspend fun measureHorizontalVideoChatMode(maxTopPosition: Int, hasQuickReply: Boolean) = coroutineScope {
         val sendChatViewLayout = asyncCatchError(block = { measureWithTimeout { sendChatView.awaitMeasured() } }) {}
         val quickReplyViewLayout = asyncCatchError(block = { measureWithTimeout { quickReplyView.awaitMeasured() } }) {}
-//        val quickReplyViewTotalHeight = run {
-//            val height = if (hasQuickReply) {
-//                if (quickReplyView.height <= 0) {
-//                    quickReplyView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-//                    quickReplyView.measuredHeight
-//                } else quickReplyView.height
-//            } else 0
-//            val marginLp = quickReplyView.layoutParams as ViewGroup.MarginLayoutParams
-//            height + marginLp.bottomMargin + marginLp.topMargin
-//        }
         awaitAll(sendChatViewLayout, quickReplyViewLayout)
 
         val bottomBounds = sendChatView.globalVisibleRect.top
@@ -130,10 +128,10 @@ class PortraitChatListHeightManager(
         maxVerticalChatHeight
     }
 
-    private fun getKey(videoOrientation: VideoOrientation, maxTop: Int?, hasQuickReply: Boolean?)
-            = ChatHeightMapKey(videoOrientation, maxTop, hasQuickReply)
+    private fun getKey(videoOrientation: VideoOrientation, maxTop: Int?, hasQuickReply: Boolean?, hasProductFeatured: Boolean?, hasPinnedVoucher: Boolean?)
+            = ChatHeightMapKey(videoOrientation, maxTop, hasQuickReply, hasProductFeatured, hasPinnedVoucher)
 
     companion object {
-        private const val CONSISTENCY_THRESHOLD = 7
+        private const val CONSISTENCY_THRESHOLD = 3
     }
 }

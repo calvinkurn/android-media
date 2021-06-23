@@ -17,10 +17,10 @@ class PlayChatListHeightManager(
     private lateinit var portraitChatListHeightManager: ChatListHeightManager
     private lateinit var landscapeChatListHeightManager: ChatListHeightManager
 
-    override suspend fun invalidateHeightNonChatMode(videoOrientation: VideoOrientation, videoPlayer: PlayVideoPlayerUiModel) {
+    override suspend fun invalidateHeightNonChatMode(videoOrientation: VideoOrientation, videoPlayer: PlayVideoPlayerUiModel, forceInvalidate: Boolean, hasProductFeatured: Boolean, hasPinnedVoucher: Boolean) {
         try {
-            if (dataSource.getScreenOrientation().isLandscape) getLandscapeManager().invalidateHeightNonChatMode(videoOrientation, videoPlayer)
-            else getPortraitManager().invalidateHeightNonChatMode(videoOrientation, videoPlayer)
+            if (dataSource.getScreenOrientation().isLandscape) getLandscapeManager().invalidateHeightNonChatMode(videoOrientation, videoPlayer, forceInvalidate, hasProductFeatured, hasPinnedVoucher)
+            else getPortraitManager().invalidateHeightNonChatMode(videoOrientation, videoPlayer, forceInvalidate, hasProductFeatured, hasPinnedVoucher)
         } catch (e: Throwable) { }
     }
 
