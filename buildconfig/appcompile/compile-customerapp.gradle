@@ -1,6 +1,6 @@
 // Sort alphabetically by name
 includeDynamicFeatureIfEnabled("customerapp")
-
+include ':features:merchant:test_fragment_df'
 include "features:common:developer_options"
 include "features:common:developer_options_noop"
 include "features:common:nps"

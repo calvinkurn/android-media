@@ -164,6 +164,7 @@ ext {
             shopShowcase                    : ":features:merchant:shop_showcase",
             shopPage                        : ":features:merchant:shop_page",
             shopSettings                    : ":features:merchant:shop_settings",
+            testFragmentDf                    : ":features:merchant:test_fragment_df",
             statistic                       : ":features:merchant:statistic",
             officialStore                  : ":features:merchant:official_store",
             voucherCreation                 : ":features:merchant:voucher_creation",
