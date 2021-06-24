@@ -59,10 +59,4 @@ class ProductDetailModule {
         return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
     }
 
-    @ProductDetailScope
-    @Provides
-    fun provideGetTopadsIsAdsUseCase(graphqlRepository: GraphqlRepository): GetTopadsIsAdsUseCase {
-        val graphqlUseCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<TopadsIsAdsQuery>(graphqlRepository)
-        return GetTopadsIsAdsUseCase(graphqlUseCase)
-    }
 }

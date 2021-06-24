@@ -502,6 +502,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             _p2Other.postValue(p2OtherDeffered.await())
 
             getTopAdsImageViewData(it.basic.productID)
+            async {
+                getProductTopadsStatus(it.basic.productID)
+            }
         }
     }
 

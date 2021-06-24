@@ -1742,10 +1742,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
             activity?.invalidateOptionsMenu()
             submitInitialList(data)
-
-            productId?.let {
-                viewModel.getProductTopadsStatus(it)
-            }
         }
     }
 
