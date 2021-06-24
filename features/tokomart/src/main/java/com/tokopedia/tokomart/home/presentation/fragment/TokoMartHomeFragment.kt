@@ -35,7 +35,6 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
-import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -132,14 +131,9 @@ class TokoMartHomeFragment: Fragment(),
     private val spaceZero: Int
         get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
 
-    private val scrollListener by lazy {
-        object: RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                loadMoreLayoutData()
-            }
-        }
-    }
+    private val loadMoreListener by lazy { createLoadMoreListener() }
+    private val navBarScrollListener by lazy { createNavBarScrollListener() }
+    private val homeComponentScrollListener by lazy { createHomeComponentScrollListener() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -269,6 +263,10 @@ class TokoMartHomeFragment: Fragment(),
         viewModel.getEmptyState(id)
     }
 
+    private fun showFailedToFetchData() {
+        showEmptyState(EMPTY_STATE_FAILED_TO_FETCH_DATA)
+    }
+
     private fun showLayout() {
         getHomeLayout()
         getMiniCart()
@@ -299,7 +297,8 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     private fun onRefreshLayout() {
-        removeOnScrollListener()
+        resetMovingPosition()
+        removeAllScrollListener()
         rvLayoutManager?.setScrollEnabled(true)
         loadLayout()
     }
@@ -323,20 +322,7 @@ class TokoMartHomeFragment: Fragment(),
             viewLifecycleOwner.lifecycle.addObserver(toolbar)
             //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder
             setHint(SearchPlaceholder(Data(null, "Cari di TokoNOW!","")))
-            rvHome?.addOnScrollListener(NavRecyclerViewScrollListener(
-                    navToolbar = toolbar,
-                    startTransitionPixel = homeMainToolbarHeight,
-                    toolbarTransitionRangePixel = resources.getDimensionPixelSize(R.dimen.tokomart_searchbar_transition_range),
-                    navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                        override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */ }
-                        override fun onSwitchToLightToolbar() { /* nothing to do */ }
-                        override fun onSwitchToDarkToolbar() {
-                            navToolbar?.hideShadow()
-                        }
-                        override fun onYposChanged(yOffset: Int) {}
-                    },
-                    fixedIconColor = TOOLBAR_LIGHT_TYPE
-            ))
+            addNavBarScrollListener()
             activity?.let {
                 toolbar.setupToolbarWithStatusBar(it)
             }
@@ -423,21 +409,22 @@ class TokoMartHomeFragment: Fragment(),
             }
 
             rvHome?.setItemViewCacheSize(20)
-            rvHome?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    evaluateHomeComponentOnScroll(recyclerView, dy)
-                }
-            })
+            addHomeComponentScrollListener()
         }
     }
 
     private fun observeLiveData() {
         observe(viewModel.homeLayoutList) {
+            removeAllScrollListener()
+
             if (it is Success) {
                 loadHomeLayout(it.data)
             } else {
-                showEmptyState(EMPTY_STATE_FAILED_TO_FETCH_DATA)
+                showFailedToFetchData()
+            }
+
+            rvHome?.post {
+                addScrollListener()
                 resetSwipeLayout()
             }
         }
@@ -477,7 +464,10 @@ class TokoMartHomeFragment: Fragment(),
     private fun resetSwipeLayout() {
         swipeLayout?.isEnabled = true
         swipeLayout?.isRefreshing = false
-        rvLayoutManager?.scrollToPosition(0)
+    }
+
+    private fun resetMovingPosition() {
+        movingPosition = 0
     }
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
@@ -491,12 +481,14 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     private fun loadHomeLayout(data: HomeLayoutListUiModel) {
-        data.run {
-            when (state) {
-                HomeLayoutState.SHOW -> onShowHomeLayout(data)
-                HomeLayoutState.HIDE -> onHideHomeLayout(data)
-                HomeLayoutState.LOADING -> onLoadingHomeLayout(data)
-                HomeLayoutState.LOAD_MORE -> showHomeLayout(data)
+        when (data.state) {
+            HomeLayoutState.SHOW -> onShowHomeLayout(data)
+            HomeLayoutState.HIDE -> onHideHomeLayout(data)
+            HomeLayoutState.LOADING -> onLoadingHomeLayout(data)
+            HomeLayoutState.LOAD_MORE -> {
+                rvHome?.post {
+                    showHomeLayout(data)
+                }
             }
         }
     }
@@ -505,30 +497,42 @@ class TokoMartHomeFragment: Fragment(),
         showHomeLayout(data)
         loadHeaderBackground()
         checkAddressDataAndServiceArea()
-
         if (!isChooseAddressWidgetShowed()) {
             adapter.removeHomeChooseAddressWidget()
         }
-
-        resetSwipeLayout()
     }
 
     private fun onHideHomeLayout(data: HomeLayoutListUiModel) {
         showHomeLayout(data)
         hideHeaderBackground()
-        resetSwipeLayout()
     }
 
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
-        data.run {
-            if (initialLoadFinished) {
-                addOnScrollListener()
-            } else {
-                showHomeLayout(data)
+        val initialLoad = data.isInitialLoad
+        val initialLoadFinished = data.isInitialLoadFinished
+
+        when {
+            initialLoad -> {
                 showHeaderBackground()
-                loadVisibleLayoutData(nextItemIndex)
-                resetSwipeLayout()
+                showHomeLayout(data)
+                loadNextItem(data)
             }
+            initialLoadFinished -> {
+                rvHome?.post {
+                    addLoadMoreListener()
+                }
+            }
+            else -> {
+                showHomeLayout(data)
+                loadNextItem(data)
+            }
+        }
+    }
+
+    private fun loadNextItem(data: HomeLayoutListUiModel) {
+        rvHome?.post {
+            val index = data.nextItemIndex
+            loadVisibleLayoutData(index)
         }
     }
 
@@ -544,12 +548,43 @@ class TokoMartHomeFragment: Fragment(),
         adapter.submitList(items)
     }
 
-    private fun addOnScrollListener() {
-        rvHome?.addOnScrollListener(scrollListener)
+    private fun addLoadMoreListener() {
+        rvHome?.addOnScrollListener(loadMoreListener)
     }
 
-    private fun removeOnScrollListener() {
-        rvHome?.removeOnScrollListener(scrollListener)
+    private fun removeLoadMoreListener() {
+        rvHome?.removeOnScrollListener(loadMoreListener)
+    }
+
+    private fun addNavBarScrollListener() {
+        navBarScrollListener?.let {
+            rvHome?.addOnScrollListener(it)
+        }
+    }
+
+    private fun removeNavBarScrollListener() {
+        navBarScrollListener?.let {
+            rvHome?.removeOnScrollListener(it)
+        }
+    }
+
+    private fun addHomeComponentScrollListener() {
+        rvHome?.addOnScrollListener(homeComponentScrollListener)
+    }
+
+    private fun removeHomeComponentScrollListener() {
+        rvHome?.removeOnScrollListener(homeComponentScrollListener)
+    }
+
+    private fun removeAllScrollListener() {
+        removeLoadMoreListener()
+        removeNavBarScrollListener()
+        removeHomeComponentScrollListener()
+    }
+
+    private fun addScrollListener() {
+        addNavBarScrollListener()
+        addHomeComponentScrollListener()
     }
 
     private fun loadVisibleLayoutData(index: Int) {
@@ -689,6 +724,48 @@ class TokoMartHomeFragment: Fragment(),
             this?.encodeToUtf8().orEmpty()
         } catch (throwable: Throwable) {
             ""
+        }
+    }
+
+    private fun createNavBarScrollListener(): NavRecyclerViewScrollListener? {
+        return navToolbar?.let { toolbar ->
+            NavRecyclerViewScrollListener(
+                navToolbar = toolbar,
+                startTransitionPixel = homeMainToolbarHeight,
+                toolbarTransitionRangePixel = resources.getDimensionPixelSize(R.dimen.tokomart_searchbar_transition_range),
+                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                    override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */
+                    }
+
+                    override fun onSwitchToLightToolbar() { /* nothing to do */
+                    }
+
+                    override fun onSwitchToDarkToolbar() {
+                        navToolbar?.hideShadow()
+                    }
+
+                    override fun onYposChanged(yOffset: Int) {}
+                },
+                fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+            )
+        }
+    }
+
+    private fun createHomeComponentScrollListener(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                evaluateHomeComponentOnScroll(recyclerView, dy)
+            }
+        }
+    }
+
+    private fun createLoadMoreListener(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                loadMoreLayoutData()
+            }
         }
     }
 }

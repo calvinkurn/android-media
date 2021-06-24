@@ -104,7 +104,7 @@ class TokoMartHomeViewModel @Inject constructor(
     fun getInitialLayoutData(index: Int, warehouseId: String, isLayoutVisible: Boolean) {
         launchCatchError(block = {
             val lastItemIndex = homeLayoutItemList.count() - 1
-            val lastItemLoaded = index == lastItemIndex
+            val lastItemLoaded = index > lastItemIndex
             val isInitialLoadFinished = lastItemLoaded || !isLayoutVisible
             val item = homeLayoutItemList.getOrNull(index)
 
@@ -124,7 +124,8 @@ class TokoMartHomeViewModel @Inject constructor(
                 result = homeLayoutItemList,
                 state = HomeLayoutState.SHOW,
                 nextItemIndex = index + 1,
-                initialLoadFinished = isInitialLoadFinished
+                isInitialLoad = index == 0,
+                isInitialLoadFinished = isInitialLoadFinished
             )
 
             withContext(dispatchers.main) {
@@ -156,7 +157,9 @@ class TokoMartHomeViewModel @Inject constructor(
                         state = HomeLayoutState.LOAD_MORE
                     )
 
-                    _homeLayoutList.postValue(Success(data))
+                    withContext(dispatchers.main) {
+                        _homeLayoutList.value = Success(data)
+                    }
                 }
             }
         }) {
