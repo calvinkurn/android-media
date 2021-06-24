@@ -703,39 +703,43 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     }
 
     private fun generateOspEeBody(promoCodes: List<String> = emptyList()): OrderSummaryPageEnhanceECommerce {
+        val products = orderProducts.value
         return OrderSummaryPageEnhanceECommerce().apply {
-            setName(orderProduct.productName)
-            setId(orderProduct.productId.toString())
-            setPrice(orderProduct.productPrice.toString())
-            setBrand(null)
-            setCategory(orderProduct.category)
-            setVariant(null)
-            setQuantity(orderProduct.quantity.orderQuantity.toString())
-            setListName(orderProduct.productTrackerData.trackerListName)
-            setAttribution(orderProduct.productTrackerData.attribution)
-            setDiscountedPrice(orderProduct.isSlashPrice)
-            setWarehouseId(orderProduct.warehouseId.toString())
-            setProductWeight(orderProduct.weight.toString())
-            setPromoCode(promoCodes)
-            setPromoDetails("")
-            setProductType("")
-            setCartId(orderCart.cartId)
-            setBuyerAddressId(_orderPreference.preference.address.addressId.toString())
-            setSpid(_orderShipment.getRealShipperProductId().toString())
-            setCodFlag(false)
-            setCornerFlag(false)
-            setIsFullfilment(orderShop.isFulfillment)
-            setShopIdDimension(orderShop.shopId.toString())
-            setShopNameDimension(orderShop.shopName)
-            setShopTypeDimension(orderShop.isOfficial, orderShop.isGold)
-            setCategoryId(orderProduct.categoryId)
-            if (_orderShipment.getRealShipperProductId() > 0) {
-                setShippingPrice(_orderShipment.getRealShippingPrice().toString())
-            } else {
-                setShippingPrice("")
+            for (orderProduct in products) {
+                setName(orderProduct.productName)
+                setId(orderProduct.productId.toString())
+                setPrice(orderProduct.productPrice.toString())
+                setBrand(null)
+                setCategory(orderProduct.category)
+                setVariant(null)
+                setQuantity(orderProduct.quantity.orderQuantity.toString())
+                setListName(orderProduct.productTrackerData.trackerListName)
+                setAttribution(orderProduct.productTrackerData.attribution)
+                setDiscountedPrice(orderProduct.isSlashPrice)
+                setWarehouseId(orderProduct.warehouseId.toString())
+                setProductWeight(orderProduct.weight.toString())
+                setPromoCode(promoCodes)
+                setPromoDetails("")
+                setProductType("")
+                setCartId(orderCart.cartId)
+                setBuyerAddressId(_orderPreference.preference.address.addressId.toString())
+                setSpid(_orderShipment.getRealShipperProductId().toString())
+                setCodFlag(false)
+                setCornerFlag(false)
+                setIsFullfilment(orderShop.isFulfillment)
+                setShopIdDimension(orderShop.shopId.toString())
+                setShopNameDimension(orderShop.shopName)
+                setShopTypeDimension(orderShop.isOfficial, orderShop.isGold)
+                setCategoryId(orderProduct.categoryId)
+                if (_orderShipment.getRealShipperProductId() > 0) {
+                    setShippingPrice(_orderShipment.getRealShippingPrice().toString())
+                } else {
+                    setShippingPrice("")
+                }
+                setShippingDuration(_orderShipment.serviceDuration)
+                setCampaignId(orderProduct.campaignId)
+                saveData()
             }
-            setShippingDuration(_orderShipment.serviceDuration)
-            setCampaignId(orderProduct.campaignId)
         }
     }
 

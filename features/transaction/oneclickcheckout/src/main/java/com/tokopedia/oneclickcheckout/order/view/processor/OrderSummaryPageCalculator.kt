@@ -19,7 +19,7 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                                                      private val executorDispatchers: CoroutineDispatchers) {
 
     private fun shouldButtonStateEnable(orderShipment: OrderShipment, orderCart: OrderCart): Boolean {
-        return (orderShipment.isValid() && orderShipment.serviceErrorMessage.isNullOrEmpty() && orderCart.shop.errors.isEmpty() && !orderCart.product.quantity.isStateError)
+        return (orderShipment.isValid() && orderShipment.serviceErrorMessage.isNullOrEmpty() && orderCart.shop.errors.isEmpty() /*&& !orderCart.product.quantity.isStateError*/)
     }
 
     private fun generateMinimumAmountPaymentErrorMessage(gatewayName: String): String {
@@ -33,29 +33,33 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
     suspend fun calculateTotal(orderCart: OrderCart, _orderPreference: OrderPreference, shipping: OrderShipment,
                                validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel?, _orderPayment: OrderPayment,
                                orderTotal: OrderTotal, forceButtonState: OccButtonState?, orderPromo: OrderPromo? = null): Pair<OrderPayment, OrderTotal> {
-        val quantity = orderCart.product.quantity
+        val hasInvalidQuantity = orderCart.products.find { it.quantity.orderQuantity <= 0 } != null
         var payment = _orderPayment
-        if (quantity.orderQuantity <= 0 || !_orderPreference.isValid) {
+        if (hasInvalidQuantity || !_orderPreference.isValid) {
             return _orderPayment to orderTotal.copy(orderCost = OrderCost(), buttonState = OccButtonState.DISABLE)
         }
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.immediate) {
-            val totalProductPrice = quantity.orderQuantity * orderCart.product.getPrice().toDouble()
-            var purchaseProtectionPriceMultiplier = quantity.orderQuantity
-            if (orderCart.product.purchaseProtectionPlanData.source.equals(PurchaseProtectionPlanData.SOURCE_READINESS, true)) {
-                purchaseProtectionPriceMultiplier = 1
+            var totalProductPrice = 0.0
+            var totalPurchaseProtectionPrice = 0
+            for (product in orderCart.products) {
+                totalProductPrice += product.quantity.orderQuantity * product.getPrice().toDouble()
+                var purchaseProtectionPriceMultiplier = product.quantity.orderQuantity
+                if (product.purchaseProtectionPlanData.source.equals(PurchaseProtectionPlanData.SOURCE_READINESS, true)) {
+                    purchaseProtectionPriceMultiplier = 1
+                }
+                totalPurchaseProtectionPrice += if (product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED) purchaseProtectionPriceMultiplier * product.purchaseProtectionPlanData.protectionPricePerProduct else 0
             }
-            val purchaseProtectionPrice = if (orderCart.product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED) purchaseProtectionPriceMultiplier * orderCart.product.purchaseProtectionPlanData.protectionPricePerProduct else 0
             val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()
             val (productDiscount, shippingDiscount, cashbacks) = calculatePromo(validateUsePromoRevampUiModel, orderPromo)
-            var subtotal = totalProductPrice + purchaseProtectionPrice + totalShippingPrice + insurancePrice
+            var subtotal = totalProductPrice + totalPurchaseProtectionPrice + totalShippingPrice + insurancePrice
             payment = calculateInstallmentDetails(payment, subtotal, if (orderCart.shop.isOfficial == 1) subtotal - productDiscount - shippingDiscount else 0.0, productDiscount + shippingDiscount)
             val fee = payment.getRealFee()
             subtotal += fee
             subtotal -= productDiscount
             subtotal -= shippingDiscount
-            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, purchaseProtectionPrice, cashbacks)
+            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, totalPurchaseProtectionPrice, cashbacks)
 
             var currentState = forceButtonState ?: orderTotal.buttonState
             if (currentState == OccButtonState.NORMAL && (!shouldButtonStateEnable(shipping, orderCart))) {

@@ -140,7 +140,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val ordersItem = Order()
         ordersItem.shopId = orderCart.shop.shopId
         ordersItem.uniqueId = orderCart.cartString
-        ordersItem.product_details = listOf(ProductDetail(orderCart.product.productId, orderCart.product.quantity.orderQuantity))
+        ordersItem.product_details = orderCart.products.map { ProductDetail(it.productId, it.quantity.orderQuantity) }
         ordersItem.isChecked = true
 
         ordersItem.shippingId = shipping.getRealShipperId()
@@ -200,7 +200,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         ordersItem.shopId = orderCart.shop.shopId
         ordersItem.uniqueId = orderCart.cartString
 
-        ordersItem.productDetails = listOf(ProductDetailsItem(orderCart.product.quantity.orderQuantity, orderCart.product.productId))
+        ordersItem.productDetails = orderCart.products.map { ProductDetailsItem(it.quantity.orderQuantity, it.productId) }
 
         ordersItem.shippingId = shipping.getRealShipperId()
         ordersItem.spId = shipping.getRealShipperProductId()
