@@ -465,7 +465,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             when {
                                 query.toString().isBlank() -> {
                                     view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
-                                    search_bar?.searchBarTextField?.text?.clear()
                                     triggerSearch()
                                 }
                                 query.toString().length in 1 until MIN_KEYWORD_CHARACTER_COUNT -> {
@@ -502,24 +501,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         uohBottomSheetKebabMenuAdapter = UohBottomSheetKebabMenuAdapter(this)
 
-        search_bar?.searchBarIcon?.setOnClickListener {
-            view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
-            search_bar?.searchBarTextField?.text?.clear()
-            triggerSearch()
-        }
-
-        search_bar?.searchBarTextField?.setOnEditorActionListener { view, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                UohUtils.hideKeyBoard(search_bar.context, view)
-                if (search_bar?.searchBarTextField?.text?.length ?: 0 < MIN_KEYWORD_CHARACTER_COUNT) {
-                    showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
-                } else {
-                    triggerSearch()
-                }
-                true
-            } else false
-        }
-
         addEndlessScrollListener()
     }
 
@@ -539,7 +520,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun triggerSearch() {
-//        search_bar?.searchBarTextField?.text?.toString()?.let { keyword ->
         searchQuery.let { keyword ->
             resetFilter()
             paramUohOrder.searchableText = keyword

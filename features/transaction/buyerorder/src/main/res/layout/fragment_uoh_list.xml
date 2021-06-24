@@ -30,20 +30,6 @@
         app:toolbarInitialTheme="light"
         app:toolbarAlwaysShowShadow="false" />
 
-    <com.tokopedia.unifycomponents.SearchBarUnify
-        android:id="@+id/search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/uoh_navtoolbar"
-        android:visibility="gone"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_12"
-        app:search_bar_placeholder="@string/hint_cari_transaksi"
-        app:search_bar_show_icon="false"/>
-
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/uoh_sort_filter"
         android:layout_width="wrap_content"
