@@ -6,10 +6,10 @@ import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
 import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.R
-import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dummy.BANNER_DATA
 import com.tokopedia.flight.dummy.TICKER_DATA
@@ -17,10 +17,11 @@ import com.tokopedia.flight.homepage.data.cache.FlightDashboardCache
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
 import com.tokopedia.flight.homepage.presentation.validator.FlightSelectPassengerValidator
-import com.tokopedia.flight.searchV4.domain.FlightSearchDeleteAllDataUseCase
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.domain.FlightSearchDeleteAllDataUseCase
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.flight.shouldBe
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -530,7 +531,7 @@ class FlightHomepageViewModelTest {
         verify {
             flightAnalytics.eventPromotionClick(position + 1,
                     bannerData,
-                    FlightAnalytics.Screen.HOMEPAGE,
+                    FlightAnalyticsScreenName.HOMEPAGE,
                     any())
         }
     }
@@ -549,7 +550,7 @@ class FlightHomepageViewModelTest {
         verify {
             flightAnalytics.eventPromotionClick(position + 1,
                     bannerData,
-                    FlightAnalytics.Screen.HOMEPAGE,
+                    FlightAnalyticsScreenName.HOMEPAGE,
                     any())
         }
     }
@@ -781,7 +782,7 @@ class FlightHomepageViewModelTest {
     @Test
     fun generatePairOfMinAndMaxDateForDeparture_shouldReturnPairDate() {
         // given
-        val maxDateCalendar = FlightDateUtil.getCurrentCalendar()
+        val maxDateCalendar = FlightDateUtil.currentCalendar
         maxDateCalendar.time = FlightDateUtil.addTimeToSpesificDate(
                 FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
                 Calendar.DATE,
@@ -800,7 +801,7 @@ class FlightHomepageViewModelTest {
     @Test
     fun generatePairOfMinAndMaxDateForReturn_shouldReturnPairDate() {
         // given
-        val departureDate = FlightDateUtil.getCurrentDate()
+        val departureDate = FlightDateUtil.currentDate
 
         // when
         val pair = flightHomepageViewModel.generatePairOfMinAndMaxDateForReturn(departureDate)
@@ -917,7 +918,7 @@ class FlightHomepageViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchClick(any(), FlightAnalytics.Screen.HOMEPAGE, any())
+            flightAnalytics.eventSearchClick(any(), FlightAnalyticsScreenName.HOMEPAGE, any())
             deleteAllFlightSearch.execute()
         }
     }
@@ -954,7 +955,7 @@ class FlightHomepageViewModelTest {
 
         // then
         coVerifySequence {
-            flightAnalytics.eventSearchClick(any(), FlightAnalytics.Screen.HOMEPAGE, any())
+            flightAnalytics.eventSearchClick(any(), FlightAnalyticsScreenName.HOMEPAGE, any())
             deleteAllFlightSearch.execute()
         }
     }
@@ -1006,7 +1007,7 @@ class FlightHomepageViewModelTest {
         verify {
             flightAnalytics.eventPromoImpression(selectedBannerData,
                     BANNER_DATA.banners[selectedBannerData],
-                    FlightAnalytics.Screen.HOMEPAGE,
+                    FlightAnalyticsScreenName.HOMEPAGE,
                     any())
         }
     }
@@ -1028,7 +1029,7 @@ class FlightHomepageViewModelTest {
         verify {
             flightAnalytics.eventPromoImpression(selectedBannerData,
                     BANNER_DATA.banners[selectedBannerData],
-                    FlightAnalytics.Screen.HOMEPAGE,
+                    FlightAnalyticsScreenName.HOMEPAGE,
                     any())
         }
     }
@@ -1058,7 +1059,7 @@ class FlightHomepageViewModelTest {
 
         verify {
             flightAnalytics.eventVideoBannerImpression(travelVideoBannerModel,
-                    FlightAnalytics.Screen.HOMEPAGE,
+                    FlightAnalyticsScreenName.HOMEPAGE,
                     any())
         }
     }
@@ -1072,7 +1073,7 @@ class FlightHomepageViewModelTest {
 
         verify {
             flightAnalytics.eventVideoBannerImpression(travelVideoBannerModel,
-                    FlightAnalytics.Screen.HOMEPAGE,
+                    FlightAnalyticsScreenName.HOMEPAGE,
                     any())
         }
     }
@@ -1087,7 +1088,7 @@ class FlightHomepageViewModelTest {
 
         verify {
             flightAnalytics.eventVideoBannerClick(travelVideoBannerModel,
-                    FlightAnalytics.Screen.HOMEPAGE,
+                    FlightAnalyticsScreenName.HOMEPAGE,
                     any())
         }
     }
@@ -1101,7 +1102,7 @@ class FlightHomepageViewModelTest {
 
         verify {
             flightAnalytics.eventVideoBannerClick(travelVideoBannerModel,
-                    FlightAnalytics.Screen.HOMEPAGE,
+                    FlightAnalyticsScreenName.HOMEPAGE,
                     any())
         }
     }

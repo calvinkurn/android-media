@@ -45,10 +45,11 @@ object ApplinkConstInternalMarketplace {
 
     // ProductDetailActivity
     const val PRODUCT_DETAIL = "$INTERNAL_MARKETPLACE/product-detail/{id}/"
+    const val PRODUCT_DETAIL_WITH_AFFILIATE_UUID = "$INTERNAL_MARKETPLACE/product-detail/{id}/?aff_unique_id={affiliate_uuid}"
     const val PRODUCT_DETAIL_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{product_id}/?is_from_explore_affiliate={isAffiliate}"
     const val PRODUCT_DETAIL_WITH_WAREHOUSE_ID = "$INTERNAL_MARKETPLACE/product-detail/{id}/?warehouse_id={whid}"
     const val PRODUCT_DETAIL_DOMAIN = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/"
-    const val PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/?aff={affiliate_string}"
+    const val PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/?aff={affiliate_string}&aff_unique_id={affiliate_uuid}"
 
     // ProductManageActivity
     const val PRODUCT_MANAGE_LIST = "$INTERNAL_MARKETPLACE/product-manage-list"
@@ -182,6 +183,18 @@ object ApplinkConstInternalMarketplace {
     const val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
 
     const val GOLD_MERCHANT_REDIRECT = "$INTERNAL_MARKETPLACE/gold-merchant-redirect"
+
+    //ShopScorePerformanceActivity
+    @JvmField
+    val SHOP_PERFORMANCE = "$INTERNAL_MARKETPLACE/shop/performance"
+
+    //ShopPenaltyActivity
+    @JvmField
+    val SHOP_PENALTY = "$INTERNAL_MARKETPLACE/shop-penalty"
+
+    //ShopPenaltyDetailPageActivity
+    @JvmField
+    val SHOP_PENALTY_DETAIL = "$INTERNAL_MARKETPLACE/shop-penalty-detail"
 
     // AttachInvoiceActivity
     const val ATTACH_INVOICE = "$INTERNAL_MARKETPLACE/user-attach-invoice"

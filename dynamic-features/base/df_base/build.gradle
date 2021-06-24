@@ -80,6 +80,7 @@ dependencies {
     implementation project(rootProject.ext.features.recharge_slice)
     implementation project(rootProject.ext.features.travel_slice)
     implementation project(rootProject.ext.features.digitalCheckout)
+    implementation project(rootProject.ext.features.rechargePdpEmoney)
 
     //Discovery
     implementation project(rootProject.ext.features.similarSearch)
@@ -118,6 +119,7 @@ dependencies {
     implementation project(rootProject.ext.features.paymentSetting)
     implementation project(rootProject.ext.features.instantDebitBca)
     implementation project(rootProject.ext.features.pms)
+    implementation project(rootProject.ext.features.withdraw)
 
     //Promo
     implementation project(rootProject.ext.features.promoCheckout)
@@ -126,7 +128,6 @@ dependencies {
 
     //Travel
     implementation project(rootProject.ext.features.travelHomepage)
-    implementation project(rootProject.ext.features.hotel)
 
     //User
     implementation project(rootProject.ext.features.settingnotif)
@@ -154,6 +155,7 @@ dependencies {
 
     //Order Management
     implementation project(rootProject.ext.features.ordermanagementhistory)
+    implementation project(rootProject.ext.features.buyerorderdetail)
 
     //Library
     implementation project(rootProject.ext.libraries.imagePicker)

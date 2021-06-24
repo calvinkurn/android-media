@@ -56,7 +56,7 @@ public class InboxReputation {
         return reputationId;
     }
 
-    public void setReputationId(int reputationId) {
+    public void setReputationId(long reputationId) {
         this.reputationId = reputationId;
     }
 

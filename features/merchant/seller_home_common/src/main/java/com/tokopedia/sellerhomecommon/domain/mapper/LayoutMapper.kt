@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.domain.model.GetLayoutResponse
 import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
@@ -11,6 +12,34 @@ import javax.inject.Inject
  */
 
 class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper): BaseResponseMapper<GetLayoutResponse, List<BaseWidgetUiModel<out BaseDataUiModel>>> {
+
+    override fun mapRemoteDataToUiData(response: GetLayoutResponse, isFromCache: Boolean): List<BaseWidgetUiModel<out BaseDataUiModel>> {
+        val widgets = response.layout?.widget.orEmpty()
+        if (widgets.isNotEmpty()) {
+            val mappedList = ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>()
+            widgets.forEach {
+                val widgetType = it.widgetType.orEmpty()
+                if (WidgetType.isValidWidget(widgetType)) {
+                    mappedList.add(when (widgetType) {
+                        WidgetType.CARD -> mapToCardWidget(it, isFromCache)
+                        WidgetType.CAROUSEL -> mapToCarouselWidget(it, isFromCache)
+                        WidgetType.DESCRIPTION -> mapToDescriptionWidget(it, isFromCache)
+                        WidgetType.LINE_GRAPH -> mapToLineGraphWidget(it, isFromCache)
+                        WidgetType.POST_LIST -> mapToPostWidget(it, isFromCache)
+                        WidgetType.PROGRESS -> mapToProgressWidget(it, isFromCache)
+                        WidgetType.TABLE -> mapToTableWidget(it, isFromCache)
+                        WidgetType.PIE_CHART -> mapToPieChartWidget(it, isFromCache)
+                        WidgetType.BAR_CHART -> mapToBarChartWidget(it, isFromCache)
+                        WidgetType.MULTI_LINE_GRAPH -> mapToMultiLineGraphWidget(it, isFromCache)
+                        WidgetType.ANNOUNCEMENT -> mapToAnnouncementWidget(it, isFromCache)
+                        WidgetType.RECOMMENDATION -> mapToRecommendationWidget(it, isFromCache)
+                        else -> mapToSectionWidget(it, isFromCache)
+                    })
+                }
+            }
+            return mappedList
+        } else throw RuntimeException("no widget found")
+    }
 
     private fun mapToCardWidget(widget: WidgetModel, fromCache: Boolean): CardWidgetUiModel {
         return CardWidgetUiModel(
@@ -101,7 +130,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 postFilter = widget.postFilter?.mapIndexed { i, filter ->
-                    PostFilterUiModel(filter.name.orEmpty(), filter.value.orEmpty(), isSelected = i == 0)
+                    WidgetFilterUiModel(filter.name.orEmpty(), filter.value.orEmpty(), isSelected = i == 0)
                 }.orEmpty(),
                 isLoaded = false,
                 isLoading = false,
@@ -144,7 +173,10 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 isLoaded = false,
                 isLoading = false,
                 isFromCache = fromCache,
-                emptyState = widget.emptyStateModel.mapToUiModel()
+                emptyState = widget.emptyStateModel.mapToUiModel(),
+                tableFilters = widget.searchTableColumnFilters?.mapIndexed { i, filter ->
+                    WidgetFilterUiModel(filter.name.orEmpty(), filter.value.orEmpty(), isSelected = i == 0)
+                }.orEmpty()
         )
     }
 
@@ -225,7 +257,7 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
         )
     }
 
-    private fun mapToAnnouncementWidget(widget: WidgetModel, isFromCache: Boolean): BaseWidgetUiModel<out BaseDataUiModel> {
+    private fun mapToAnnouncementWidget(widget: WidgetModel, isFromCache: Boolean): AnnouncementWidgetUiModel {
         return AnnouncementWidgetUiModel(
                 id = (widget.id ?: 0L).toString(),
                 widgetType = widget.widgetType.orEmpty(),
@@ -244,30 +276,22 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
         )
     }
 
-    override fun mapRemoteDataToUiData(response: GetLayoutResponse, isFromCache: Boolean): List<BaseWidgetUiModel<out BaseDataUiModel>> {
-        val widgets = response.layout?.widget.orEmpty()
-        if (widgets.isNotEmpty()) {
-            val mappedList = ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>()
-            widgets.onEach {
-                val widgetType = it.widgetType.orEmpty()
-                if (WidgetType.isValidWidget(widgetType)) {
-                    mappedList.add(when (widgetType) {
-                        WidgetType.CARD -> mapToCardWidget(it, isFromCache)
-                        WidgetType.CAROUSEL -> mapToCarouselWidget(it, isFromCache)
-                        WidgetType.DESCRIPTION -> mapToDescriptionWidget(it, isFromCache)
-                        WidgetType.LINE_GRAPH -> mapToLineGraphWidget(it, isFromCache)
-                        WidgetType.POST_LIST -> mapToPostWidget(it, isFromCache)
-                        WidgetType.PROGRESS -> mapToProgressWidget(it, isFromCache)
-                        WidgetType.TABLE -> mapToTableWidget(it, isFromCache)
-                        WidgetType.PIE_CHART -> mapToPieChartWidget(it, isFromCache)
-                        WidgetType.BAR_CHART -> mapToBarChartWidget(it, isFromCache)
-                        WidgetType.MULTI_LINE_GRAPH -> mapToMultiLineGraphWidget(it, isFromCache)
-                        WidgetType.ANNOUNCEMENT -> mapToAnnouncementWidget(it, isFromCache)
-                        else -> mapToSectionWidget(it, isFromCache)
-                    })
-                }
-            }
-            return mappedList
-        } else throw RuntimeException("no widget found")
+    private fun mapToRecommendationWidget(widget: WidgetModel, isFromCache: Boolean): RecommendationWidgetUiModel {
+        return RecommendationWidgetUiModel(
+                id = (widget.id ?: 0L).toString(),
+                widgetType = widget.widgetType.orEmpty(),
+                title = widget.title.orEmpty(),
+                subtitle = widget.subtitle.orEmpty(),
+                tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+                appLink = widget.appLink.orEmpty(),
+                dataKey = widget.dataKey.orEmpty(),
+                ctaText = widget.ctaText.orEmpty(),
+                isShowEmpty = widget.isShowEmpty.orFalse(),
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = isFromCache,
+                emptyState = widget.emptyStateModel.mapToUiModel()
+        )
     }
 }

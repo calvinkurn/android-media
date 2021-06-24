@@ -23,7 +23,7 @@
                 <data
                     android:host="@string/host_hotel"
                     android:path="@string/path_hotel_dashboard"
-                    android:scheme="@string/tokopedia_scheme" />
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
         <activity
@@ -45,7 +45,7 @@
                 <data
                     android:host="@string/host_hotel"
                     android:path="@string/path_hotel_search_result_old_srp"
-                    android:scheme="@string/tokopedia_scheme" />
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
         <activity
@@ -62,7 +62,7 @@
                 <data
                     android:host="@string/host_hotel"
                     android:path="@string/path_hotel_search_result_map"
-                    android:scheme="@string/tokopedia_scheme" />
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
         <activity
@@ -84,7 +84,7 @@
                 <data
                     android:host="@string/host_hotel"
                     android:pathPattern="@string/path_hotel_detail"
-                    android:scheme="@string/tokopedia_scheme" />
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
         <activity

@@ -9,6 +9,7 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.buyerorder.test.R
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
 import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -24,13 +25,15 @@ import org.junit.Test
 class UohRecommendationTrackingTest {
 
     companion object {
-        private const val QUERY_SUMMARY_RECOMMENDATION_UOH = "tracker/transaction/uoh_recommendation_summary.json"
         private const val KEY_UOH_ORDERS = "GetOrderHistory"
         private const val KEY_UOH_RECOMMENDATION = "productRecommendation"
     }
 
     @get:Rule
     var activityRule = IntentsTestRule(UohListActivity::class.java, false, false)
+
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
@@ -61,8 +64,7 @@ class UohRecommendationTrackingTest {
 
     @Test
     fun test_uoh_recommendation_summary() {
-        val query = getJsonDataFromAsset(context, QUERY_SUMMARY_RECOMMENDATION_UOH)
-                ?: throw AssertionError("Validator Query not found")
+        val query = "tracker/transaction/uoh_recommendation_summary.json"
 
         runBot {
             loading()
@@ -70,7 +72,7 @@ class UohRecommendationTrackingTest {
             clickAtcRecommendation()
             clickRecommendationCard()
         } submit {
-            hasPassedAnalytics(gtmLogDBSource, query)
+            hasPassedAnalytics(cassavaTestRule, query)
         }
     }
 }

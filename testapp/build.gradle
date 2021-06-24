@@ -53,8 +53,8 @@ android {
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
         applicationId "com.tokopedia.tkpd"
-        versionCode 399900000
-        versionName "3.115"
+        versionCode 391100000
+        versionName "3.110"
         vectorDrawables.useSupportLibrary = true
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -67,11 +67,14 @@ android {
     }
 }
 dependencies {
+    implementation platform(rootProject.ext.firebase.bom)
+
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
-//    implementation project(rootProject.ext.libraries.keys)
+    implementation project(rootProject.ext.libraries.keys)
+    implementation project(rootProject.ext.libraries.linker)
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
@@ -115,17 +118,7 @@ dependencies {
     //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
     //developer_options should not appear in compile-testapp-plugin.gradle if it is successfully excluded
     implementation project(rootProject.ext.features.developerOptions)
-//    implementation project(rootProject.ext.libraries.tkpddesign)
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-	implementation project(rootProject.ext.features.officialStore)
-	implementation project(rootProject.ext.features.navigation)
-	implementation project(rootProject.ext.features.homeNav)
-	implementation project(rootProject.ext.features.navigationCommon)
-	implementation project(rootProject.ext.features.rechargeComponent)
-	implementation project(rootProject.ext.features.home)
-    implementation project(rootProject.ext.features.manageaddress)
-    implementation project(rootProject.ext.features.logisticaddaddress)
-    implementation project(rootProject.ext.features.moengageWrapper)
 }

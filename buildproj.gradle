@@ -82,7 +82,6 @@ subprojects {
                 substitute module('androidx.constraintlayout:constraintlayout') with module("androidx.constraintlayout:constraintlayout:${constraintLayoutVersion}")
                 substitute module('org.apache.commons:commons-lang3') with module('org.apache.commons:commons-lang3:3.5')
                 substitute module('com.google.android.gms:play-services-base') with module("com.google.android.gms:play-services-base:${playServiceBaseVersion}")
-                substitute module('com.google.firebase:firebase-config') with module("com.google.firebase:firebase-config:${playServiceFirebaseRemoteConfig}")
                 substitute module('com.google.android.gms:play-services-measurement-base') with module("com.google.android.gms:play-services-measurement-base:${playServiceMeasurementBase}")
                 substitute module('com.google.android.gms:play-services-base') with module("com.google.android.gms:play-services-base:${playServiceBase}")
                 substitute module('org.jetbrains.kotlin:kotlin-reflect') with module("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")

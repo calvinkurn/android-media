@@ -2,9 +2,9 @@ package com.tokopedia.seller.menu.common.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -45,7 +45,6 @@ class MenuItemsViewHolder(
 
     override fun bind(element: MenuItemUiModel) {
         with(itemView) {
-            element.drawableReference?.let { settingMenuIcon?.setImageDrawable(ContextCompat.getDrawable(context, it)) }
             element.iconUnify?.let { settingMenuIcon?.setImage(it) }
             settingMenuTitle.text = element.title
             if (element.isNoIcon) {
@@ -64,6 +63,10 @@ class MenuItemsViewHolder(
                         clickAction.invoke()
                     } else {
                         RouteManager.route(context, onClickApplink)
+                    }
+
+                    if (element.iconUnify == IconUnify.PERFORMANCE) {
+                        clickSendTracker.invoke()
                     }
                 }
             }

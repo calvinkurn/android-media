@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.presenter
 
 import android.content.SharedPreferences
+import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.collection.ArrayMap
 import androidx.lifecycle.Observer
@@ -66,7 +67,10 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.device.info.DeviceInfo
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
+import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.util.ImageUtil
@@ -97,6 +101,8 @@ import org.junit.Test
 import rx.Observable
 import rx.Subscriber
 import rx.subjects.PublishSubject
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 
 class TopChatRoomPresenterTest {
 
@@ -792,7 +798,13 @@ class TopChatRoomPresenterTest {
 
         // Then
         verify(exactly = 1) {
-            sendAbleProductPreview.generateMsgObj(exMessageId, exOpponentId, exSendMessage, listInterceptor)
+            sendAbleProductPreview.generateMsgObj(
+                exMessageId,
+                exOpponentId,
+                exSendMessage,
+                listInterceptor,
+                LocalCacheModel()
+            )
         }
         verify(exactly = 1) { view.sendAnalyticAttachmentSent(sendAbleProductPreview) }
         verify(exactly = 1) { view.addDummyMessage(dummyMessage) }
@@ -1510,6 +1522,75 @@ class TopChatRoomPresenterTest {
 
     private fun verifyReadMessageSentToWs() {
         verify(exactly = 1) { RxWebSocket.send(readParam, listInterceptor) }
+    }
+
+    @Test
+    fun `check upload image using service`() {
+        //Given
+        val image = ImageUploadViewModel(
+                "123", "123", "123", "test", "123"
+        )
+
+        mockkObject(UploadImageChatService)
+        every {
+            UploadImageChatService.enqueueWork(any(), any(), any())
+        } returns Unit
+
+        every {
+            remoteConfig.getBoolean(any(), any())
+        } returns true
+
+        setFinalStatic(Build::class.java.getField("MODEL"), "samsung")
+
+        //When
+        presenter.startUploadImages(image)
+
+        //Then
+        assertTrue(UploadImageChatService.dummyMap.isNotEmpty())
+    }
+
+    @Test
+    fun `check upload image problematic device`() {
+        //Given
+        val image = mockk<ImageUploadViewModel>(relaxed = true)
+        every {
+            remoteConfig.getBoolean(any(), any())
+        } returns true
+
+        setFinalStatic(Build::class.java.getField("MODEL"), "iris88")
+
+        //When
+        presenter.startUploadImages(image)
+
+        //Then
+        verify { view.addDummyMessage(image) }
+    }
+
+    @Throws(Exception::class) //For mocking Build class
+    fun setFinalStatic(field: Field, newValue: Any) {
+        field.isAccessible = true
+
+        val modifiersField = Field::class.java.getDeclaredField("modifiers")
+        modifiersField.isAccessible = true
+        modifiersField.setInt(field, field.modifiers and Modifier.FINAL.inv())
+
+        field.set(null, newValue)
+    }
+
+    @Test
+    fun `check upload image failed to get remote config`() {
+        //Given
+        val image = mockk<ImageUploadViewModel>()
+        val exception = mockk<Exception>("Oops!")
+        every {
+            remoteConfig.getBoolean(any(), any())
+        } throws exception
+
+        //When
+        presenter.startUploadImages(image)
+
+        //Then
+        verify { view.addDummyMessage(image) }
     }
 
 }
