@@ -80,7 +80,8 @@ data class CartItemData(
             var initialPriceBeforeDrop: Long = 0,
             var productInformation: List<String> = emptyList(),
             var productAlertMessage: String = "",
-            var campaignId: Int = 0
+            var campaignId: Int = 0,
+            var isTokoNow: Boolean = false
     ) : Parcelable
 
     @Parcelize

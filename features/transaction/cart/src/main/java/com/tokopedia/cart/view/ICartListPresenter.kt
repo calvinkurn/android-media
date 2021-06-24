@@ -35,7 +35,7 @@ interface ICartListPresenter {
 
     fun processUndoDeleteCartItem(cartIds: List<String>);
 
-    fun processUpdateCartData(fireAndForget: Boolean)
+    fun processUpdateCartData(fireAndForget: Boolean, onlyTokoNowProducts: Boolean = false)
 
     fun processToUpdateAndReloadCartData(cartId: String, getCartState: Int = GET_CART_STATE_DEFAULT)
 
