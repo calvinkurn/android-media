@@ -69,7 +69,8 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHol
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.HomeViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_tokomart_home.*
+import kotlinx.android.synthetic.main.fragment_tokopedianow_home.*
+
 import java.util.*
 import javax.inject.Inject
 

@@ -18,7 +18,6 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffe
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeCategoryGridUiModel
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_tokomart_home_category_grid.view.*
 
 class HomeCategoryGridViewHolder(
         itemView: View,

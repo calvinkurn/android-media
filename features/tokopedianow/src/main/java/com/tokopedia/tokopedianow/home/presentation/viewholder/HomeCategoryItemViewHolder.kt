@@ -8,7 +8,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeCategoryItemUiModel
-import kotlinx.android.synthetic.main.item_tokomart_home_category.view.*
+import kotlinx.android.synthetic.main.item_tokopedianow_home_category.view.*
 
 class HomeCategoryItemViewHolder(
         itemView: View,
