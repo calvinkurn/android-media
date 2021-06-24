@@ -140,7 +140,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
             val phoneNumberOnly = removeSpecialChars(contact?.contactNumber.toString())
             binding.formAccount.etNomorHp.textFieldInput.setText(phoneNumberOnly)
-        } else if (requestCode == 1998 && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == REQUEST_PINPONT_PAGE && resultCode == Activity.RESULT_OK) {
             val isNegativeFullFlow = data?.getBooleanExtra(EXTRA_NEGATIVE_FULL_FLOW, false)
             val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
             saveDataModel = data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
@@ -255,7 +255,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 formAccount.etNamaPenerima.textFieldInput.setText(userSession.name)
                 formAccount.infoNameLayout.visibility = View.GONE
             } else if (userSession.name.contains(toppers, ignoreCase = true)) {
-                formAccount.etNamaPenerima.textFieldWrapper.helperText = "Ini akan jadi nama akunmu, bisa diubah nanti."
+                formAccount.etNamaPenerima.textFieldWrapper.helperText = getString(R.string.helper_nama_penerima)
             }
             formAccount.etNamaPenerima.textFieldInput.addTextChangedListener(setWrapperWatcher(formAccount.etNamaPenerima.textFieldWrapper, null))
             formAccount.etNomorHp.textFieldInput.setText(userSession.phoneNumber)
@@ -488,7 +488,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         bundle.putParcelable(EXTRA_SAVE_DATA_UI_MODEL, saveDataModel)
         bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, true)
         if (!isPositiveFlow) bundle.putBoolean(EXTRA_IS_POLYGON, true)
-        startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, 1998)
+        startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, REQUEST_PINPONT_PAGE)
     }
 
     private fun onNavigateToContact() {
@@ -559,10 +559,12 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     }
 
                     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                        if (s.contains("0")) {
-                            filters = arrayOf(InputFilter.LengthFilter(14))
-                        } else {
-                            filters = arrayOf(InputFilter.LengthFilter(15))
+                        if (s.isNotEmpty()) {
+                            if (s.first().toString() == "0") {
+                                filters = arrayOf(InputFilter.LengthFilter(14))
+                            } else {
+                                filters = arrayOf(InputFilter.LengthFilter(15))
+                            }
                         }
                     }
 
@@ -769,6 +771,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
         const val EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW"
         const val REQUEST_CODE_CONTACT_PICKER = 99
+
+        const val REQUEST_PINPONT_PAGE = 1998
 
         const val SUCCESS = "success"
         const val NOT_SUCCESS = "not success"

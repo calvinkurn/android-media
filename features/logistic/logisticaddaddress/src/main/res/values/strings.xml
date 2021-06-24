@@ -175,6 +175,8 @@
     <!--Search Page-->
     <string name="txt_hint_search">Tulis nama jalan/gedung/perumahan</string>
     <string name="txt_message_initial_load">Mau cara lain? Isi alamat secara manual</string>
+    <string name="txt_location_not_detected">Lokasi tidak terdeteksi</string>
+    <string name="txt_info_location_not_detected">Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu.</string>
 
     <!--PinpointNew Page-->
     <string name="title_pinpoint_new">Tentukan Pinpoint Lokasi</string>
@@ -184,6 +186,10 @@
     <string name="btn_aktifkan_layanan_lokasi">Aktifkan Layanan Lokasi</string>
     <string name="tv_location_unmacted">Nama lokasi tidak sesuai alamatmu?</string>
     <string name="tv_location_unmacted_detail">Tenang, kamu akan isi alamat nanti. Pastikan pinpoint sudah sesuai dulu.</string>
+    <string name="txt_toaster_pinpoint_unmatched">Pastikan pinpoint sesuai kota &amp; kecamatan pilihanmu.</string>
+    <string name="out_of_indonesia_desc_new">Saat ini, Tokopedia belum melayani pengiriman ke luar Indonesia. Pilih ulang lokasimu, ya.</string>
+    <string name="undetected_location_new">Yaah, alamatmu tidak terdeteksi</string>
+    <string name="undetected_location_desc_new">Tenang, kamu tetap bisa pilih lokasi ini dengan melengkapi alamat secara manual.</string>
 
     <!--Address Form-->
     <string name="title_address_form">Detail Alamat</string>
@@ -199,4 +205,5 @@
     <string name="tv_info_lebih_lanjut">Info lebih lanjut</string>
     <string name="cb_jadikan_alamat_utama">Jadikan alamat utama</string>
     <string name="btn_simpan">Simpan</string>
+    <string name="helper_nama_penerima">Ini akan jadi nama akunmu, bisa diubah nanti.</string>
 </resources>

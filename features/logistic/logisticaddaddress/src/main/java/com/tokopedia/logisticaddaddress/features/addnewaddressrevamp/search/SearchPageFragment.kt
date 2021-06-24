@@ -133,14 +133,14 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            if(requestCode == 1998) {
+            if(requestCode == REQUEST_PINPOINT_PAGE) {
                 val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
                 var newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
                 if (newAddress == null) {
                     newAddress = data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
                 }
                 isFromAddressForm?.let { finishActivity(newAddress, it) }
-            } else if (requestCode == 1599) {
+            } else if (requestCode == REQUEST_ADDRESS_FORM_PAGE) {
                 val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
                 finishActivity(newAddress, false)
             }
@@ -165,35 +165,24 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         for (permission in permissions) {
             if (!isPermissionAccessed) {
                 if (activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permission) } == true) {
-                    Toast.makeText(context, "denied", Toast.LENGTH_SHORT).show()
+                    //no-op
                 } else {
                     if (activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(context, "allowed", Toast.LENGTH_SHORT).show()
                         isAllowed = true
                         getLocation()
                         isPermissionAccessed = true
                     } else {
-                        Toast.makeText(context, "never ask again", Toast.LENGTH_SHORT).show()
                         showBottomSheetLocUndefined(true)
                     }
                 }
             }
         }
 
-      /*  if (grantResults.size == requiredPermissions.size) {
-            isAllowed = true
-            getLocation()
-        }
-*/
         if (isAllowed) {
             AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
         } else {
             AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
         }
-
-      /*  if (grantResults.size == requiredPermissions.size) {
-            getLocation()
-        }*/
     }
 
     override fun onDestroy() {
@@ -219,13 +208,13 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                     putExtra(EXTRA_IS_POSITIVE_FLOW, false)
                     putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
                     putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
-                    startActivityForResult(this, 1599)
+                    startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
                 }
             } else {
                 Intent(context, AddressFormActivity::class.java).apply {
-                    putExtra(EXTRA_IS_POSITIVE_FLOW, false)
+                    putExtra(EXTRA_IS_POSITIVE_FLOW, true)
                     putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
-                    startActivityForResult(this, 1599)
+                    startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
                 }
             }
         }
@@ -261,7 +250,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private fun setViewListener() {
         fusedLocationClient = FusedLocationProviderClient(requireActivity())
-        //loading dsb
         binding.rlSearchCurrentLocation.setOnClickListener {
             AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
             if (AddNewAddressUtils.isGpsEnabled(context)) {
@@ -305,8 +293,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private fun setupBottomSheetLocUndefined(viewBinding: BottomsheetLocationUndefinedBinding, isDontAskAgain: Boolean) {
         viewBinding.run {
             imgLocUndefined.setImageUrl(LOCATION_NOT_FOUND)
-            tvLocUndefined.text = "Lokasi tidak terdeteksi"
-            tvInfoLocUndefined.text = "Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu."
+            tvLocUndefined.text = getString(R.string.txt_location_not_detected)
+            tvInfoLocUndefined.text = getString(R.string.txt_info_location_not_detected)
             btnActivateLocation.setOnClickListener {
                 AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiSearch(userSession.userId)
                 if (!isDontAskAgain) {
@@ -464,11 +452,14 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         bundle.putBoolean(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
         bundle.putBoolean(EXTRA_IS_POLYGON, isPolygon)
         distrcitId?.let { bundle.putInt(EXTRA_DISTRICT_ID, it) }
-        startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, 1998)
+        startActivityForResult(context?.let { PinpointNewPageActivity.createIntent(it, bundle) }, REQUEST_PINPOINT_PAGE)
     }
 
     companion object {
         private const val RESULT_PERMISSION_CODE = 1234
+
+        private const val REQUEST_ADDRESS_FORM_PAGE = 1599
+        private const val REQUEST_PINPOINT_PAGE = 1998
 
         fun newInstance(bundle: Bundle): SearchPageFragment {
             return SearchPageFragment().apply {

@@ -105,7 +105,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var hasRequestedLocation: Boolean = false
     /*to differentiate positive flow or negative flow*/
     private var isPositiveFlow: Boolean = true
-    /*to differentiate flow from address form*/
 
     private var isPermissionAccessed: Boolean = false
 
@@ -141,7 +140,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareMap(savedInstanceState)
-        prepareLayout()
         setViewListener()
         initData()
         initObserver()
@@ -149,10 +147,10 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(resultCode == Activity.RESULT_OK) {
-            if (requestCode == 1599) {
+            if (requestCode == REQUEST_ADDRESS_FORM_PAGE) {
                 val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
                 finishActivity(newAddress, false)
-            } else if (requestCode == 1995) {
+            } else if (requestCode == REQUEST_SEARCH_PAGE) {
                 val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
                 val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
                 isFromAddressForm?.let { finishActivity(newAddress, it) }
@@ -167,25 +165,18 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         for (permission in permissions) {
             if (!isPermissionAccessed) {
                 if (activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permission) } == true) {
-                    Toast.makeText(context, "denied", Toast.LENGTH_SHORT).show()
+                    //no-op
                 } else {
                     if (activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(context, "allowed", Toast.LENGTH_SHORT).show()
                         isAllowed = true
                         getLocation()
                         isPermissionAccessed = true
                     } else {
-                        Toast.makeText(context, "never ask again", Toast.LENGTH_SHORT).show()
                         showBottomSheetLocUndefined(true)
                     }
                 }
             }
         }
-
-        /*if (grantResults.size == requiredPermissions.size) {
-            isAllowed = true
-            getLocation()
-        }*/
 
         if (isAllowed) {
             AddNewAddressRevampAnalytics.onClickAllowLocationPinpoint(userSession.userId)
@@ -328,6 +319,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         viewModel.districtLocation.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    binding?.mapsEmpty?.visibility = View.GONE
+                    binding?.mapViews?.visibility = View.VISIBLE
                     onSuccessPlaceGetDistrict(it.data)
                 }
 
@@ -448,11 +441,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         binding?.mapViews?.getMapAsync(this)
     }
 
-    private fun prepareLayout() {
-        //prepare bottomsheet etc
-
-    }
-
     private fun setViewListener() {
         fusedLocationClient = FusedLocationProviderClient(requireActivity())
 
@@ -518,7 +506,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun requestPermissionLocation() {
-        requestPermissions(requiredPermissions, 9876)
+        requestPermissions(requiredPermissions, REQUEST_CODE_PERMISSION)
     }
 
     private fun allPermissionsGranted(): Boolean {
@@ -576,8 +564,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private fun setupBottomSheetLocUndefined(viewBinding: BottomsheetLocationUndefinedBinding, isDontAskAgain: Boolean) {
         viewBinding.run {
             imgLocUndefined.setImageUrl(LOCATION_NOT_FOUND)
-            tvLocUndefined.text = "Lokasi tidak terdeteksi"
-            tvInfoLocUndefined.text = "Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu."
+            tvLocUndefined.text = getString(R.string.txt_location_not_detected)
+            tvInfoLocUndefined.text = getString(R.string.txt_info_location_not_detected)
             btnActivateLocation.setOnClickListener {
                 AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiPinpoint(userSession.userId)
                 if (!isDontAskAgain) {
@@ -716,7 +704,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
                     AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId, NOT_SUCCESS)
                 }
-                view?.let { view -> Toaster.build(view, "Pastikan pinpoint sesuai kota & kecamatan pilihanmu.", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                view?.let { view -> Toaster.build(view, getString(R.string.txt_toaster_pinpoint_unmatched), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
             } else {
                 binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
                     AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId, SUCCESS)
@@ -749,8 +737,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             AddNewAddressRevampAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
             binding?.bottomsheetLocation?.run {
                 imgInvalidLoc.setImageUrl(IMAGE_OUTSIDE_INDONESIA)
-                tvInvalidLoc.text = "Lokasi di luar jangkauan"
-                tvInvalidLocDetail.text = "Saat ini, Tokopedia belum melayani pengiriman ke luar Indonesia. Pilih ulang lokasimu, ya."
+                tvInvalidLoc.text = getString(R.string.out_of_indonesia_title)
+                tvInvalidLocDetail.text = getString(R.string.out_of_indonesia_desc_new)
             }
         } else {
             AddNewAddressRevampAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(userSession.userId)
@@ -762,8 +750,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             }
             binding?.bottomsheetLocation?.run {
                 imgInvalidLoc.setImageUrl(LOCATION_NOT_FOUND)
-                tvInvalidLoc.text = "Yaah, alamatmu tidak terdeteksi"
-                tvInvalidLocDetail.text = "Tenang, kamu tetap bisa pilih lokasi ini dengan melengkapi alamat secara manual."
+                tvInvalidLoc.text = getString(R.string.undetected_location_new)
+                tvInvalidLocDetail.text = getString(R.string.undetected_location_desc_new)
             }
         }
 
@@ -785,7 +773,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         intent.putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
         intent.putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
         intent.putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveAddressDataModel)
-        startActivityForResult(intent, 1995)
+        startActivityForResult(intent, REQUEST_SEARCH_PAGE)
     }
 
     private fun goToAddressForm() {
@@ -793,7 +781,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         Intent(context, AddressFormActivity::class.java).apply {
             putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
             putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
-            startActivityForResult(this, 1599)
+            startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
         }
     }
 
@@ -812,6 +800,9 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
     companion object {
         private const val RESULT_PERMISSION_CODE = 1234
+        private const val REQUEST_CODE_PERMISSION = 9876
+        private const val REQUEST_ADDRESS_FORM_PAGE = 1599
+        private const val REQUEST_SEARCH_PAGE = 1995
 
         private const val ZOOM_LEVEL = 16f
 
