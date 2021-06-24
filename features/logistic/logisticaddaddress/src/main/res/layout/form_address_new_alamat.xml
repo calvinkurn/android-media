@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_32"
         app:text_field_label="Alamat"
-        app:text_field_counter="200"/>
+        app:text_field_counter="140"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_courier_note"
@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_32"
-        app:text_field_counter="45"
+        app:text_field_counter="25"
         app:text_field_label="Catatan Untuk Kurir (Opsional)"
         app:text_field_message="Warna rumah, patokan, pesan khusus, dll"/>
 

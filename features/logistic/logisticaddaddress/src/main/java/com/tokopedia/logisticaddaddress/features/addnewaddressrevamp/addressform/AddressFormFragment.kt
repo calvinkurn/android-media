@@ -57,6 +57,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private var bottomSheetInfoPenerima: BottomSheetUnify? = null
     private var saveDataModel: SaveAddressDataModel? = null
+    private var formattedAddress: String = ""
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
     private var currentDistrictName: String?  = ""
@@ -319,12 +320,13 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             setupRvLabelAlamatChips()
             setTextListener()
             binding.run {
+                formattedAddress = "${data?.districtName}, ${data?.cityName}, ${data?.provinceName}"
                 cardAddress.root.visible()
                 formAddress.root.visible()
                 formAddressNegative.root.gone()
                 cardAddressNegative.root.gone()
 
-                cardAddress.addressDistrict.text = "${data?.districtName}, ${data?.cityName}, ${data?.provinceName}"
+                cardAddress.addressDistrict.text = formattedAddress
 
                 formAddress.etLabel.textFieldInput.setText("Rumah")
                 formAddress.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etLabel.textFieldWrapper, null))
@@ -728,10 +730,18 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         saveDataModel?.receiverName = binding.formAccount.etNamaPenerima.textFieldInput.text.toString()
         saveDataModel?.phone = binding.formAccount.etNomorHp.textFieldInput.text.toString()
         if (isPositiveFlow) {
-            saveDataModel?.address1 = "${binding.formAddress.etAlamat.textFieldInput.text} (${binding.formAddress.etCourierNote.textFieldInput.text})"
+            if (binding.formAddress.etCourierNote.textFieldInput.text.isNotEmpty()) {
+                saveDataModel?.address1 = "${binding.formAddress.etAlamat.textFieldInput.text} $formattedAddress (${binding.formAddress.etCourierNote.textFieldInput.text})"
+            } else {
+                saveDataModel?.address1 = "${binding.formAddress.etAlamat.textFieldInput.text} $formattedAddress"
+            }
             saveDataModel?.addressName =  binding.formAddress.etLabel.textFieldInput.text.toString()
         } else {
-            saveDataModel?.address1 = "${binding.formAddressNegative.etAlamat.textFieldInput.text} (${binding.formAddressNegative.etCourierNote.textFieldInput.text})"
+            if (binding.formAddressNegative.etCourierNote.textFieldInput.text.isNotEmpty()) {
+                saveDataModel?.address1 = "${binding.formAddressNegative.etAlamat.textFieldInput.text} $formattedAddress (${binding.formAddress.etCourierNote.textFieldInput.text})"
+            } else {
+                saveDataModel?.address1 = "${binding.formAddressNegative.etAlamat.textFieldInput.text} $formattedAddress"
+            }
             saveDataModel?.addressName =  binding.formAddressNegative.etLabel.textFieldInput.text.toString()
         }
 
@@ -793,14 +803,15 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     override fun onChooseZipcode(districtAddress: Address, zipCode: String, isPinpoint: Boolean) {
-        val kotaKecamatanText = "${districtAddress?.districtName}, ${districtAddress?.cityName} $zipCode"
-        currentDistrictName = districtAddress?.districtName.toString()
+        val kotaKecamatanText = "${districtAddress.districtName}, ${districtAddress.cityName} $zipCode"
+        formattedAddress = "${districtAddress.districtName}, ${districtAddress.cityName}, ${districtAddress.provinceName}"
+        currentDistrictName = districtAddress.districtName.toString()
         binding.formAddressNegative.etKotaKecamatan.textFieldInput.run {
             setText(kotaKecamatanText)
             currentKotaKecamatan = kotaKecamatanText
         }
 
-        val selectedDistrict = "${districtAddress?.provinceName}, ${districtAddress?.cityName}, ${districtAddress?.districtName}"
+        val selectedDistrict = "${districtAddress.provinceName}, ${districtAddress.cityName}, ${districtAddress.districtName}"
         saveDataModel?.selectedDistrict = selectedDistrict
         saveDataModel?.cityId = districtAddress.cityId
         saveDataModel?.provinceId = districtAddress.provinceId

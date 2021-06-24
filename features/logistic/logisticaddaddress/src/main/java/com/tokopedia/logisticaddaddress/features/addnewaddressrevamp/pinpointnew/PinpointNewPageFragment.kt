@@ -64,6 +64,7 @@ import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LONGITUDE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.IMAGE_OUTSIDE_INDONESIA
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.MAPS_EMPTY
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -107,6 +108,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     /*to differentiate flow from address form*/
 
     private var isPermissionAccessed: Boolean = false
+
+    private var showIllustrationMap: Boolean = false
 
     private var isFromAddressForm: Boolean = false
     private var districtId: Int? = null
@@ -300,6 +303,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         viewModel.autofillDistrictData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    binding?.mapsEmpty?.visibility = View.GONE
+                    binding?.mapViews?.visibility = View.VISIBLE
                     if (it.data.messageError.isEmpty()) onSuccessAutofill(it.data.data)
                     else {
                         val msg = it.data.messageError[0]
@@ -330,7 +335,10 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     val msg = it.throwable.message.toString()
                     when {
                         msg.contains(FOREIGN_COUNTRY_MESSAGE) -> showOutOfReachBottomSheet()
-                        else -> showNotFoundLocation()
+                        else -> {
+                            showIllustrationMap = true
+                            showNotFoundLocation()
+                        }
                     }
                 }
             }
@@ -746,6 +754,12 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             }
         } else {
             AddNewAddressRevampAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(userSession.userId)
+            if (showIllustrationMap) {
+                binding?.mapsEmpty?.visibility = View.VISIBLE
+                binding?.mapViews?.visibility = View.GONE
+                binding?.mapsEmpty?.setImageUrl(MAPS_EMPTY)
+                showIllustrationMap = false
+            }
             binding?.bottomsheetLocation?.run {
                 imgInvalidLoc.setImageUrl(LOCATION_NOT_FOUND)
                 tvInvalidLoc.text = "Yaah, alamatmu tidak terdeteksi"

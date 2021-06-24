@@ -36,8 +36,15 @@
                 android:contentDescription="@string/pointer"
                 app:srcCompat="@drawable/ic_green_pointer" />
 
-
         </RelativeLayout>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/maps_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/layout_botoomsheet_loc"
+            android:contentDescription="null"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:id="@+id/btn_horizonal_layout"
