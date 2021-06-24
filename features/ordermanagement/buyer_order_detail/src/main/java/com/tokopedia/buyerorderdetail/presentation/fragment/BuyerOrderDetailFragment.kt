@@ -296,7 +296,6 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
     }
 
     private fun loadBuyerOrderDetail() {
-        bottomSheetManager.dismissBottomSheets()
         val orderId = arguments?.getString(BuyerOrderDetailCommonIntentParamKey.ORDER_ID, "").orEmpty()
         val paymentId = arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_PAYMENT_ID, "").orEmpty()
         val cart = arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, "").orEmpty()
@@ -493,17 +492,19 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         } else if (resultCode == RESULT_CODE_CANCEL_ORDER_DISABLE) {
             loadBuyerOrderDetail()
         }
-        bottomSheetManager.finishReceiveConfirmationBottomSheetLoading()
+        bottomSheetManager.dismissBottomSheets()
     }
 
     private fun handleComplaintResult() {
         swipeRefreshBuyerOrderDetail?.isRefreshing = true
         loadBuyerOrderDetail()
+        bottomSheetManager.dismissBottomSheets()
     }
 
     private fun handleResultRefreshOnly() {
         swipeRefreshBuyerOrderDetail?.isRefreshing = true
         loadBuyerOrderDetail()
+        bottomSheetManager.dismissBottomSheets()
     }
 
     private fun stopLoadTimeMonitoring() {
