@@ -361,12 +361,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 rvMiniCartList?.setPadding(0, 0, 0, rvMiniCartList?.resources?.getDimensionPixelOffset(R.dimen.dp_64)
                         ?: 0)
             } else {
-                if (bottomSheet?.isFullpage == true) {
-                    rvMiniCartList?.setPadding(0, 0, 0, rvMiniCartList?.resources?.getDimensionPixelOffset(R.dimen.dp_24)
-                            ?: 0)
-                } else {
-                    rvMiniCartList?.setPadding(0, 0, 0, 0)
-                }
+                rvMiniCartList?.setPadding(0, 0, 0, 0)
             }
         }
     }
