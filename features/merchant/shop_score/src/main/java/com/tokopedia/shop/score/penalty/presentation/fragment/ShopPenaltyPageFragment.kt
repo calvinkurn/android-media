@@ -89,7 +89,6 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
     }
 
     override fun loadInitialData() {
-        isLoadingInitialData = true
         clearAllData()
         showLoading()
         viewModelShopPenalty.getDataPenalty()
