@@ -177,9 +177,14 @@ class DiscomBottomSheetFragment : BottomSheets(),
         parentView?.findViewById<View>(com.tokopedia.purchase_platform.common.R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(com.tokopedia.purchase_platform.common.R.id.btn_close)?.setOnClickListener {
             AddNewAddressAnalytics.eventClickBackArrowOnNegativePage(isFullFlow, isLogisticLabel)
-            if (isAnaRevamp && isKodePosShown) {
-                AddNewAddressRevampAnalytics.onClickBackArrowKodePos(userSession.userId)
-                hideZipCode()
+            if (isAnaRevamp) {
+                if (isKodePosShown) {
+                    AddNewAddressRevampAnalytics.onClickBackArrowKodePos(userSession.userId)
+                    hideZipCode()
+                } else {
+                    AddNewAddressRevampAnalytics.onClickBackArrowDiscom(userSession.userId)
+                    onCloseButtonClick()
+                }
             } else {
                 onCloseButtonClick()
             }
@@ -425,6 +430,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
         }
         binding.btnChooseZipcode.setOnClickListener {
             if (binding.etKodepos.textFieldInput.text.toString().length < 5) {
+                AddNewAddressRevampAnalytics.onViewErrorToasterPilih(userSession.userId)
                 AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
                 Toaster.build(it, "Kode pos terlalu pendek, min. 5 karakter.", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
             } else {
