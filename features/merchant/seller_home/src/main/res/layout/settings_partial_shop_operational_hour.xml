@@ -49,6 +49,19 @@
         app:typographyWeight="bold"
         tools:text="07.00 - 18.00 WIB" />
 
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_sah_other_shop_operational"
+        android:layout_width="@dimen/setting_zero_dp"
+        android:layout_height="@dimen/setting_zero_dp"
+        android:gravity="center_vertical"
+        android:visibility="visible"
+        app:corners="@integer/setting_shimmer_radius"
+        app:layout_constraintWidth_percent="0.38"
+        app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guidelineRight"/>
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineLeft"
         android:layout_width="wrap_content"

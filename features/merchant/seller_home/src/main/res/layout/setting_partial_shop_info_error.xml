@@ -6,7 +6,7 @@
 
     <include
         android:id="@+id/errorShopInfoLayout"
-        layout="@layout/setting_partial_main_info_success"/>
+        layout="@layout/view_sah_other_shop_info"/>
 
     <View
         android:layout_width="match_parent"

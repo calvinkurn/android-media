@@ -50,7 +50,7 @@
 
             <include
                 android:id="@+id/shopInfoLayout"
-                layout="@layout/setting_partial_shop_info_success"
+                layout="@layout/view_sah_other_header"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <androidx.recyclerview.widget.RecyclerView

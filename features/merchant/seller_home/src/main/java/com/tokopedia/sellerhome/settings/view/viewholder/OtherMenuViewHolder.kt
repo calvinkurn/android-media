@@ -8,7 +8,9 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
+import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -57,6 +59,77 @@ class OtherMenuViewHolder(private val itemView: View,
         private const val TAB_PM_PARAM = "tab"
         private const val TAB_PM = "pm"
         private const val TAB_PM_PRO = "pm_pro"
+    }
+
+    private var shopAvatarImage: ImageUnify? = null
+    private var shopNameText: Typography? = null
+    private var shopNextButton: AppCompatImageView? = null
+
+    private var shopBadgeFollowersGroup: Group? = null
+    private var shopBadgeFollowersShimmer: LoaderTextView? = null
+    private var shopBadgeImage: AppCompatImageView? = null
+    private var shopBadgeShimmer: LoaderTextView? = null
+    private var shopFollowersText: Typography? = null
+    private var shopFollowersShimmer: LoaderTextView? = null
+
+    private var errorLocalLoad: LocalLoad? = null
+
+    private var shopStatusLayout: LinearLayout? = null
+
+    private var freeShippingLayout: FrameLayout? = null
+
+    private var operationalHourView: View? = null
+    private var operationalHourText: Typography? = null
+    private var operationalHourLabel: Label? = null
+    private var operationalHourImage: ImageView? = null
+    private var operationalHourShimmer: LoaderTextView? = null
+
+    private var saldoShimmer: LoaderTextView? = null
+    private var saldoBalanceText: Typography? = null
+
+    private var topAdsShimmer: LoaderTextView? = null
+    private var topAdsBalanceText: Typography? = null
+    private var topAdsTooltipImage: AppCompatImageView? = null
+
+    fun setupInitialLayout() {
+        initLayoutComponents()
+
+        setShopName(userSession.shopName)
+        setShopAvatar(ShopAvatarUiModel(userSession.shopAvatar))
+    }
+
+    private fun initLayoutComponents() {
+        itemView.run {
+            shopAvatarImage = findViewById(R.id.shopImage)
+            shopNameText = findViewById(R.id.shopName)
+            shopNextButton = findViewById(R.id.settingShopNext)
+
+            errorLocalLoad = findViewById(R.id.localLoadOthers)
+
+            shopBadgeFollowersGroup = findViewById(R.id.group_sah_other_badge_followers)
+            shopBadgeFollowersShimmer = findViewById(R.id.shimmer_sah_other_badge_followers)
+            shopBadgeImage = findViewById(R.id.shopBadges)
+            shopBadgeShimmer = findViewById(R.id.shimmer_sah_other_badge)
+            shopFollowersText = findViewById(R.id.shopFollowers)
+            shopFollowersShimmer = findViewById(R.id.shimmer_sah_other_followers)
+
+            shopStatusLayout = findViewById(R.id.shopStatus)
+
+            freeShippingLayout = findViewById(R.id.freeShippingLayout)
+
+            operationalHourView = findViewById(R.id.shopOperationalHour)
+            operationalHourText = findViewById(R.id.textOperationalHour)
+            operationalHourLabel = findViewById(R.id.labelShopStatus)
+            operationalHourImage = findViewById(R.id.imageOperationalHour)
+            operationalHourShimmer = findViewById(R.id.shimmer_sah_other_shop_operational)
+
+            saldoShimmer = findViewById(R.id.shimmeringBalanceValue)
+            saldoBalanceText = findViewById(R.id.balanceValue)
+
+            topAdsShimmer = findViewById(R.id.shimmer_sah_other_topads)
+            topAdsBalanceText = findViewById(R.id.tv_sah_other_topads_balance)
+            topAdsTooltipImage = findViewById(R.id.iv_sah_other_topads_tooltip)
+        }
     }
 
     fun onSuccessGetSettingShopInfoData(uiModel: SettingShopInfoUiModel) {
@@ -135,10 +208,7 @@ class OtherMenuViewHolder(private val itemView: View,
         (itemView.shopInfoLayout as? LinearLayout)?.run {
             removeAllViews()
             addView(errorLayout)
-            setOnClickAction()
         }
-        setShopName(userSession.shopName)
-        setShopAvatar(ShopAvatarUiModel(userSession.shopAvatar))
     }
 
     private fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
@@ -217,36 +287,38 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun setupSuccessLayout() {
-        val successLayout = LayoutInflater.from(context).inflate(R.layout.setting_partial_shop_info_success, null, false)
+        val successLayout = LayoutInflater.from(context).inflate(R.layout.view_sah_other_header, null, false)
         (itemView.shopInfoLayout as? LinearLayout)?.run {
             removeAllViews()
             addView(successLayout)
-            setOnClickAction()
         }
-        setShopName(userSession.shopName)
-        setShopAvatar(ShopAvatarUiModel(userSession.shopAvatar))
     }
 
     private fun setShopName(shopName: String) {
-        itemView.run {
-            shopInfoLayout.findViewById<Typography>(R.id.shopName)?.run {
-                text = MethodChecker.fromHtml(shopName)
-                setOnClickListener {
-                    listener.onShopInfoClicked()
-                    sendClickShopNameTracking()
-                }
+        shopNameText?.run {
+            text = MethodChecker.fromHtml(shopName)
+            setOnClickListener {
+                listener.onShopInfoClicked()
+                sendClickShopNameTracking()
             }
         }
     }
 
     private fun setShopAvatar(shopAvatarUiModel: ShopAvatarUiModel) {
-        itemView.shopInfoLayout.findViewById<ImageUnify>(R.id.shopImage)?.run {
+        shopAvatarImage?.run {
             urlSrc = shopAvatarUiModel.shopAvatarUrl
             sendSettingShopInfoImpressionTracking(shopAvatarUiModel, trackingListener::sendImpressionDataIris)
             setOnClickListener {
                 listener.onShopInfoClicked()
                 shopAvatarUiModel.sendSettingShopInfoClickTracking()
             }
+        }
+    }
+
+    private fun setupShopNextButton() {
+        shopNextButton?.setOnClickListener {
+            listener.onShopInfoClicked()
+            sendShopInfoClickNextButtonTracking()
         }
     }
 
@@ -262,15 +334,25 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
+    private fun setKreditTopadsBalanceLoading() {
+        topAdsShimmer?.show()
+        toggleKreditTopadsComponent(false)
+    }
+
+    private fun setKreditTopadsBalanceError() {
+        toggleKreditTopadsComponent(false)
+    }
+
     private fun setKreditTopadsBalance(topadsBalanceUiModel: TopadsBalanceUiModel) {
         itemView.findViewById<LinearLayout>(R.id.topAdsBalance).run {
-            findViewById<Typography>(R.id.topadsBalanceTitle)?.text = context.resources.getString(R.string.setting_topads_credits)
-            findViewById<Typography>(R.id.topadsBalanceValue)?.text = topadsBalanceUiModel.balanceValue
-            sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
-            findViewById<Typography>(R.id.topadsBalanceValue)?.setOnClickListener {
-                listener.onKreditTopadsClicked()
-                topadsBalanceUiModel.sendSettingShopInfoClickTracking()
+            findViewById<Typography>(R.id.tv_sah_other_topads_balance)?.run {
+                text = topadsBalanceUiModel.balanceValue
+                setOnClickListener {
+                    listener.onKreditTopadsClicked()
+                    topadsBalanceUiModel.sendSettingShopInfoClickTracking()
+                }
             }
+            sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
             val isTopAdsUser = topadsBalanceUiModel.isTopAdsUser
             val topAdsTooltipDrawable =
                     if (isTopAdsUser) {
@@ -278,11 +360,39 @@ class OtherMenuViewHolder(private val itemView: View,
                     } else {
                         ContextCompat.getDrawable(context, R.drawable.ic_topads_inactive)
                     }
-            findViewById<AppCompatImageView>(R.id.topAdsStatusTooltip)?.run {
+            findViewById<AppCompatImageView>(R.id.iv_sah_other_topads_tooltip)?.run {
                 setImageDrawable(topAdsTooltipDrawable)
                 setOnClickListener {
                     listener.onTopAdsTooltipClicked(isTopAdsUser)
                 }
+            }
+            toggleKreditTopadsComponent(true)
+        }
+    }
+
+    private fun toggleKreditTopadsComponent(isVisible: Boolean) {
+        itemView.findViewById<LinearLayout>(R.id.topAdsBalance).run {
+            findViewById<Typography>(R.id.tv_sah_other_topads_balance)?.showWithCondition(isVisible)
+            findViewById<AppCompatImageView>(R.id.iv_sah_other_topads_tooltip)?.showWithCondition(isVisible)
+        }
+    }
+
+    private fun setShopStatusError() {
+        (itemView.findViewById(R.id.shopStatus) as? LinearLayout)?.run {
+            val shopStatusLayout = LayoutInflater.from(context).inflate(R.layout.view_sah_shop_status_error, this, false)
+            removeAllViews()
+            shopStatusLayout?.let { view ->
+                addView(view)
+            }
+        }
+    }
+
+    private fun setShopStatusLoading() {
+        (itemView.findViewById(R.id.shopStatus) as? LinearLayout)?.run {
+            val shopStatusLayout = LayoutInflater.from(context).inflate(R.layout.view_sah_shop_status_loading, this, false)
+            removeAllViews()
+            shopStatusLayout?.let { view ->
+                addView(view)
             }
         }
     }
@@ -505,13 +615,6 @@ class OtherMenuViewHolder(private val itemView: View,
                 .build()
         powerMerchantProIcon.loadImage(if (goldOS?.badge?.isBlank() == true) PMProURL.ICON_URL else goldOS?.badge)
         return this
-    }
-
-    private fun View.setOnClickAction() {
-        findViewById<AppCompatImageView>(R.id.settingShopNext)?.setOnClickListener {
-            listener.onShopInfoClicked()
-            sendShopInfoClickNextButtonTracking()
-        }
     }
 
     private fun LocalLoad.setup() {

@@ -65,6 +65,35 @@
         app:typographyWeight="bold"
         tools:text="Adeedust Naiki"/>
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_sah_other_badge_followers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="shopBadges, shimmer_sah_other_badge, dot, shopFollowers, shimmer_sah_other_followers"
+        tools:visibility="gone"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_sah_other_badge_followers"
+        android:layout_width="@dimen/layout_lvl9"
+        android:layout_height="@dimen/layout_lvl2"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
+        app:layout_constraintBottom_toTopOf="@id/bottomRefer"
+        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_sah_other_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="shopBadges, shimmer_sah_other_badge"
+        tools:visibility="invisible"
+        tools:layout_width="@dimen/layout_lvl8"
+        tools:layout_height="@dimen/layout_lvl2"
+        tools:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
+        tools:layout_constraintBottom_toTopOf="@id/bottomRefer"
+        tools:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"/>
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/shopBadges"
         android:layout_width="wrap_content"
@@ -74,6 +103,14 @@
         app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
         tools:src="@tools:sample/avatars"
         tools:layout_width="@dimen/layout_lvl3"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_sah_other_badge"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/layout_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
+        app:layout_constraintBottom_toTopOf="@id/bottomRefer"
+        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/dot"
@@ -86,7 +123,7 @@
         app:typographyWeight="reguler"
         app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
-        app:layout_constraintStart_toEndOf="@id/shopBadges"/>
+        app:layout_constraintStart_toEndOf="@id/barrier_sah_other_badge"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shopFollowers"
@@ -100,6 +137,14 @@
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
         app:layout_constraintStart_toEndOf="@id/dot"
         tools:text="99 Followers"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_sah_other_followers"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/layout_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
+        app:layout_constraintBottom_toTopOf="@id/bottomRefer"
+        app:layout_constraintStart_toEndOf="@id/dot"/>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/settingShopNext"

@@ -1,61 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="@dimen/setting_balance_height"
+    android:paddingBottom="@dimen/setting_balance_padding"
+    android:background="?attr/selectableItemBackground"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/setting_balance_height"
-        android:paddingBottom="@dimen/setting_balance_padding"
-        android:background="?attr/selectableItemBackground"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_sah_other_topads_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textColor="@color/Unify_N700_96"
+        android:gravity="center_vertical"
+        android:text="@string/setting_topads_credits"
+        app:typographyType="body_2"
+        app:layout_constraintStart_toStartOf="@id/guideline_sah_other_topads_left"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/topadsBalanceTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textColor="@color/Unify_N700_96"
-            android:gravity="center_vertical"
-            app:typographyType="body_2"
-            app:layout_constraintStart_toStartOf="@id/guidelineVerticalLeft"
-            tools:text="Saldo"/>
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_sah_other_topads_tooltip"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/setting_topads_icon_margin"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/tv_sah_other_topads_title"
+        app:layout_constraintTop_toTopOf="@id/tv_sah_other_topads_title"
+        app:layout_constraintBottom_toBottomOf="@id/tv_sah_other_topads_title"/>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/topAdsStatusTooltip"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginLeft="@dimen/setting_topads_icon_margin"
-            android:layout_marginStart="@dimen/setting_topads_icon_margin"
-            app:layout_constraintStart_toEndOf="@id/topadsBalanceTitle"
-            app:layout_constraintTop_toTopOf="@id/topadsBalanceTitle"
-            app:layout_constraintBottom_toBottomOf="@id/topadsBalanceTitle"/>
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_sah_other_topads"
+        android:layout_width="@dimen/setting_zero_dp"
+        android:layout_height="@dimen/setting_zero_dp"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        app:corners="@integer/setting_shimmer_radius"
+        app:layout_constraintWidth_percent="0.38"
+        app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guideline_sah_other_topads_right"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/topadsBalanceValue"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical|end"
-            android:textColor="@color/Unify_N700_96"
-            app:layout_constraintWidth_percent="0.5"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"
-            tools:text="Rp0"/>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_sah_other_topads_balance"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|end"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintWidth_percent="0.5"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        app:layout_constraintEnd_toEndOf="@id/guideline_sah_other_topads_right"
+        tools:text="Rp0"/>
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineVerticalLeft"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.05"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_sah_other_topads_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05"/>
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineVerticalRight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.95"/>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_sah_other_topads_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

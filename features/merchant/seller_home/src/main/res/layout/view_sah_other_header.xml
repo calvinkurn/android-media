@@ -6,7 +6,10 @@
 
     <include
         android:id="@+id/successShopInfoLayout"
-        layout="@layout/setting_partial_main_info_success"/>
+        layout="@layout/view_sah_other_shop_info"/>
+
+    <include
+        layout="@layout/setting_partial_others_local_load"/>
 
     <LinearLayout
         android:id="@+id/shopStatus"
@@ -21,8 +24,7 @@
 
     <include
         android:id="@+id/shopOperationalHour"
-        layout="@layout/settings_partial_shop_operational_hour"
-        android:visibility="gone" />
+        layout="@layout/settings_partial_shop_operational_hour" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
