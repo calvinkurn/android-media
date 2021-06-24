@@ -323,10 +323,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             adapter.shop = it
             if (binding.rvOrderSummaryPage.isComputingLayout) {
                 binding.rvOrderSummaryPage.post {
-                    adapter.notifyItemChanged(1)
+                    adapter.notifyItemChanged(2)
                 }
             } else {
-                adapter.notifyItemChanged(1)
+                adapter.notifyItemChanged(2)
             }
         }
     }
@@ -339,15 +339,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             adapter.products = it
             when {
                 newSize > oldSize -> {
-                    adapter.notifyItemRangeChanged(2, oldSize)
+                    adapter.notifyItemRangeChanged(3, oldSize)
                     adapter.notifyItemRangeInserted(oldSize, newSize - oldSize)
                 }
                 newSize == oldSize -> {
-                    adapter.notifyItemRangeChanged(2, oldSize)
+                    adapter.notifyItemRangeChanged(3, oldSize)
                 }
                 newSize < oldSize -> {
-                    adapter.notifyItemRangeChanged(2, newSize)
-                    adapter.notifyItemRangeRemoved(2 + newSize, oldSize - newSize)
+                    adapter.notifyItemRangeChanged(3, newSize)
+                    adapter.notifyItemRangeRemoved(3 + newSize, oldSize - newSize)
                 }
             }
         }
@@ -363,14 +363,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     view?.also { _ ->
                         adapter.preference = it.data
                         adapter.onboarding = it.data.onboarding
+                        adapter.ticker = it.data.ticker
                         if (binding.rvOrderSummaryPage.isComputingLayout) {
                             binding.rvOrderSummaryPage.post {
-                                adapter.notifyItemChanged(0)
-                                adapter.notifyItemChanged(adapter.products.size + 2)
+                                adapter.notifyItemRangeChanged(0, 2)
+                                adapter.notifyItemChanged(adapter.products.size + 3)
                             }
                         } else {
-                            adapter.notifyItemChanged(0)
-                            adapter.notifyItemChanged(adapter.products.size + 2)
+                            adapter.notifyItemRangeChanged(0, 2)
+                            adapter.notifyItemChanged(adapter.products.size + 3)
                         }
                         showMessage(it.data)
                         if (it.data.preference.address.addressId > 0 &&
@@ -383,7 +384,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     }
                 }
                 is OccState.Loading -> {
-                    binding.mainContent.animateGone()
+//                    binding.mainContent.animateGone()
                     binding.rvOrderSummaryPage.gone()
                     binding.globalError.animateGone()
                     binding.layoutNoAddress.root.animateGone()
@@ -405,12 +406,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             adapter.shipment = it
             if (binding.rvOrderSummaryPage.isComputingLayout) {
                 binding.rvOrderSummaryPage.post {
-                    adapter.notifyItemChanged(adapter.products.size + 2)
                     adapter.notifyItemChanged(adapter.products.size + 3)
+                    adapter.notifyItemChanged(adapter.products.size + 4)
                 }
             } else {
-                adapter.notifyItemChanged(adapter.products.size + 2)
                 adapter.notifyItemChanged(adapter.products.size + 3)
+                adapter.notifyItemChanged(adapter.products.size + 4)
             }
             //            newOrderPreferenceCard.setShipment(it)
             //            orderInsuranceCard.setupInsurance(it?.insuranceData, viewModel.orderProduct.productId.toString())
@@ -426,10 +427,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             adapter.payment = it
             if (binding.rvOrderSummaryPage.isComputingLayout) {
                 binding.rvOrderSummaryPage.post {
-                    adapter.notifyItemChanged(adapter.products.size + 2)
+                    adapter.notifyItemChanged(adapter.products.size + 3)
                 }
             } else {
-                adapter.notifyItemChanged(adapter.products.size + 2)
+                adapter.notifyItemChanged(adapter.products.size + 3)
             }
         }
     }
@@ -439,10 +440,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             adapter.promo = it
             if (binding.rvOrderSummaryPage.isComputingLayout) {
                 binding.rvOrderSummaryPage.post {
-                    adapter.notifyItemChanged(adapter.products.size + 4)
+                    adapter.notifyItemChanged(adapter.products.size + 5)
                 }
             } else {
-                adapter.notifyItemChanged(adapter.products.size + 4)
+                adapter.notifyItemChanged(adapter.products.size + 5)
             }
 //            setupButtonPromo(it)
         }
@@ -453,10 +454,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             adapter.total = it
             if (binding.rvOrderSummaryPage.isComputingLayout) {
                 binding.rvOrderSummaryPage.post {
-                    adapter.notifyItemChanged(adapter.products.size + 5)
+                    adapter.notifyItemChanged(adapter.products.size + 6)
                 }
             } else {
-                adapter.notifyItemChanged(adapter.products.size + 5)
+                adapter.notifyItemChanged(adapter.products.size + 6)
             }
             //            orderTotalPaymentCard.setupPayment(it)
         }
@@ -676,13 +677,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun showMessage(orderPreference: OrderPreference) {
-        if (orderPreference.ticker != null) {
-            binding.tickerOsp.tickerTitle = orderPreference.ticker.title
-            binding.tickerOsp.setHtmlDescription(orderPreference.ticker.message)
-            binding.tickerOsp.visible()
-        } else {
-            binding.tickerOsp.gone()
-        }
+//        if (orderPreference.ticker != null) {
+//            binding.tickerOsp.tickerTitle = orderPreference.ticker.title
+//            binding.tickerOsp.setHtmlDescription(orderPreference.ticker.message)
+//            binding.tickerOsp.visible()
+//        } else {
+//            binding.tickerOsp.gone()
+//        }
 
 //        val preference = orderPreference.preference
 //        if (orderPreference.isValid) {
@@ -765,10 +766,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                             ?: return@post
                     val coachMarkItems = ArrayList<CoachMark2Item>()
                     for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
-                        val newView: View = when (onboarding.coachmarkType) {
-                            COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE -> generateNewCoachMarkAnchorForNewBuyerRemoveProfile(childViewHolder, detailIndexed.index)
-                            else -> binding.tvHeader2
-                        }
+                        val newView: View = generateNewCoachMarkAnchorForNewBuyerRemoveProfile(childViewHolder, detailIndexed.index)
                         coachMarkItems.add(CoachMark2Item(newView, detailIndexed.value.title, detailIndexed.value.message, CoachMark2.POSITION_TOP))
                     }
                     val coachMark = CoachMark2(it.context)
@@ -1208,7 +1206,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         binding.globalError.setActionClickListener {
             refresh()
         }
-        binding.mainContent.animateGone()
+//        binding.mainContent.animateGone()
         binding.rvOrderSummaryPage.gone()
         binding.layoutNoAddress.root.animateGone()
         binding.globalError.animateShow()
@@ -1263,7 +1261,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 RouteManager.route(context, ApplinkConst.HOME)
                 activity?.finish()
             }
-            binding.mainContent.animateGone()
+//            binding.mainContent.animateGone()
             binding.rvOrderSummaryPage.gone()
             binding.layoutNoAddress.root.animateGone()
             binding.globalError.animateShow()
@@ -1284,7 +1282,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             RouteManager.route(context, ApplinkConst.HOME)
             activity?.finish()
         }
-        binding.mainContent.animateGone()
+//        binding.mainContent.animateGone()
         binding.rvOrderSummaryPage.gone()
         binding.layoutNoAddress.root.animateGone()
         binding.globalError.animateShow()
@@ -1292,7 +1290,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun refresh(shouldHideAll: Boolean = true, isFullRefresh: Boolean = true) {
         if (shouldHideAll) {
-            binding.mainContent.animateGone()
+//            binding.mainContent.animateGone()
             binding.rvOrderSummaryPage.gone()
             binding.layoutNoAddress.root.animateGone()
             binding.globalError.animateGone()

@@ -9,6 +9,7 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
 import com.tokopedia.oneclickcheckout.order.view.card.*
 import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 
 class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                               private val productListener: OrderProductCard.OrderProductCardListener,
@@ -17,6 +18,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                               private val promoCardListener: OrderPromoCard.OrderPromoCardListener,
                               private val paymentCardListener: OrderTotalPaymentCard.OrderTotalPaymentCardListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    var ticker: TickerData? = null
     var onboarding: OccMainOnboarding = OccMainOnboarding()
     var shop: OrderShop = OrderShop()
     var product: OrderProduct? = null
@@ -31,6 +33,13 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         when (viewType) {
+            OrderTickerCard.VIEW_TYPE -> {
+                return OrderTickerCard(CardOrderTickerBinding.inflate(inflater, parent, false), object : OrderTickerCard.OrderTickerCardListener {
+                    override fun onCloseTicker() {
+                        ticker = null
+                    }
+                })
+            }
             OrderOnboardingCard.VIEW_TYPE -> {
                 return OrderOnboardingCard(LayoutOccOnboardingNewBinding.inflate(inflater, parent, false))
             }
@@ -58,6 +67,9 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
+            is OrderTickerCard -> {
+                holder.bind(ticker)
+            }
             is OrderOnboardingCard -> {
                 holder.bind(onboarding)
             }
@@ -65,7 +77,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                 holder.setShop(shop, product!!.freeOngkirImg, product!!.isFreeOngkirExtra)
             }
             is OrderProductCard -> {
-                holder.setProduct(products[position - 2])
+                holder.setProduct(products[position - 3])
                 holder.setShop(shop)
                 holder.initView()
             }
@@ -87,21 +99,22 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
     }
 
     override fun getItemCount(): Int {
-        return products.size + 6
+        return products.size + 7
     }
 
     override fun getItemViewType(position: Int): Int {
         val productsCount = products.size
         val bottomPosition = position - productsCount
         return when {
-            position == 0 -> OrderOnboardingCard.VIEW_TYPE
-            position == 1 -> OrderShopCard.VIEW_TYPE
-            bottomPosition < 2 -> OrderProductCard.VIEW_TYPE
-            bottomPosition == 2 -> NewOrderPreferenceCard.VIEW_TYPE
-            bottomPosition == 3 -> OrderInsuranceCard.VIEW_TYPE
-            bottomPosition == 4 -> OrderPromoCard.VIEW_TYPE
-            bottomPosition == 5 -> OrderTotalPaymentCard.VIEW_TYPE
-            else -> 0
+            position == 0 -> OrderTickerCard.VIEW_TYPE
+            position == 1 -> OrderOnboardingCard.VIEW_TYPE
+            position == 2 -> OrderShopCard.VIEW_TYPE
+            bottomPosition < 3 -> OrderProductCard.VIEW_TYPE
+            bottomPosition == 3 -> NewOrderPreferenceCard.VIEW_TYPE
+            bottomPosition == 4 -> OrderInsuranceCard.VIEW_TYPE
+            bottomPosition == 5 -> OrderPromoCard.VIEW_TYPE
+            bottomPosition == 6 -> OrderTotalPaymentCard.VIEW_TYPE
+            else -> -1
         }
     }
 }
