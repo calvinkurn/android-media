@@ -77,8 +77,6 @@ import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenterTest.Du
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
-import com.tokopedia.chat_common.data.*
-import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.util.ImageUtil
@@ -1163,6 +1161,24 @@ class TopChatRoomPresenterTest {
 
         // Then
         verify(exactly = 1) { RxWebSocket.send(msgObj, listInterceptor) }
+    }
+
+    @Test
+    fun `should send request string attachment preview`() {
+        // Given
+        val msgAttachment = CommonUtil.toJson("WebsocketVoucherPayload")
+        every {
+            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any(), any())
+        } returns msgAttachment
+
+        // When
+        presenter.addAttachmentPreview(sendAbleProductPreview)
+        presenter.sendAttachmentsAndMessage(
+            exMessageId, exSendMessage, exStartTime, exOpponentId
+        ) {}
+
+        // Then
+        verify(exactly = 1) { RxWebSocket.send(msgAttachment, listInterceptor) }
     }
 
     @Test
