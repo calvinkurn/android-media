@@ -858,7 +858,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         context?.let {
             val intent = TopChatInternalRouter.Companion.getAttachProductIntent(
                 context = it,
-            shopId = shopId.toString(),
+                shopId = shopId.toString(),
                 shopName = "",
                 isSeller = isSeller(),
                 warehouseId = presenter.attachProductWarehouseId
