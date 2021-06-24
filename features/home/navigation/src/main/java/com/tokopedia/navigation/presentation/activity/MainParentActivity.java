@@ -699,6 +699,7 @@ public class MainParentActivity extends BaseActivity implements
         } else {
             Bundle bundle = new Bundle();
             bundle.putString("source_filter", "");
+            bundle.putString(UohListFragment.PARAM_ACTIVITY_ORDER_HISTORY, UohListFragment.PARAM_HOME);
             fragmentList.add(UohListFragment.newInstance(bundle));
         }
 
