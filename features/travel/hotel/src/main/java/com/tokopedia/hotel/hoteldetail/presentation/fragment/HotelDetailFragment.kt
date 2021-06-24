@@ -55,6 +55,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mapviewer.activity.MapViewerActivity
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -186,7 +188,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
                 is Fail -> {
                     isRoomListSuccess = false
-                    showErrorView(it.throwable)
+                    view?.let { v ->
+                        Toaster.build(v, ErrorHandler.getErrorMessage(activity, it.throwable), Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                    }
                 }
             }
             isRoomListLoaded = true
@@ -314,7 +319,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     }
 
     private fun showErrorView(e: Throwable) {
-        if (!isHotelDetailSuccess && !isHotelReviewSuccess && !isRoomListSuccess) {
+        if (!isHotelDetailSuccess || !isHotelReviewSuccess) {
             stopTrace()
 
             container_content.visibility = View.GONE
@@ -322,7 +327,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
             iv_icon.setImageResource(ErrorHandlerHotel.getErrorImage(e))
             message_retry.text = ErrorHandlerHotel.getErrorTitle(context, e)
-            sub_message_retry.text = ErrorHandlerHotel.getErrorMessage(context, e)
+            sub_message_retry.text = ErrorHandler.getErrorMessage(context, e)
 
             button_retry.setOnClickListener {
                 hideErrorView()

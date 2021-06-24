@@ -440,7 +440,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun onGetListErrorWithEmptyData(throwable: Throwable?) {
         adapter.errorNetworkModel.iconDrawableRes = ErrorHandlerHotel.getErrorImage(throwable)
         adapter.errorNetworkModel.errorMessage = ErrorHandlerHotel.getErrorTitle(context, throwable)
-        adapter.errorNetworkModel.subErrorMessage = ErrorHandlerHotel.getErrorMessage(context, throwable)
+        adapter.errorNetworkModel.subErrorMessage = ErrorHandler.getErrorMessage(context, throwable)
         adapter.errorNetworkModel.onRetryListener = this
         adapter.showErrorNetwork()
     }
