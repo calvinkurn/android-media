@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.collection.ArrayMap
 import androidx.lifecycle.Observer
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -1129,6 +1130,24 @@ class TopChatRoomPresenterTest {
 
         // Then
         assert(!isEmptyAttachment)
+    }
+
+    @Test
+    fun `should send JsonObject attachment preview`() {
+        // Given
+        val msgObj = JsonObject()
+        every {
+            sendAbleProductPreview.generateMsgObj(any(), any(), any(), any(), any())
+        } returns msgObj
+
+        // When
+        presenter.addAttachmentPreview(sendAbleProductPreview)
+        presenter.sendAttachmentsAndMessage(
+            exMessageId, exSendMessage, exStartTime, exOpponentId
+        ) {}
+
+        // Then
+        verify(exactly = 1) { RxWebSocket.send(msgObj, listInterceptor) }
     }
 
     @Test
