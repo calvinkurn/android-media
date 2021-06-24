@@ -295,8 +295,7 @@ object AtcCommonMapper {
                 isCampaignActive = selectedChild?.campaign?.isActive ?: false,
                 productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted()
                         ?: "",
-                productStockWording = selectedChild?.stock?.stockWordingHTML
-                        ?: "",
+                productStock = selectedChild?.getVariantFinalStock()?.toString() ?: "",
                 productName = selectedChild?.name ?: ""
         )
         return productImage to headerData

@@ -116,6 +116,19 @@ object ProductTrackingCommon {
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
+    fun eventEcommerceAtcError(errorMessage: String, productId: String, userId: String, pageSource: String) {
+        val mapEvent = TrackAppUtils.gtmData(ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
+                "$pageSource - global variant bottomsheet",
+                ProductTrackingConstant.Action.ACTION_VIEW_ERROR_WHEN_ADD_TO_CART,
+                "not success - $errorMessage")
+        mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+        mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
+        mapEvent[ProductTrackingConstant.Tracking.PROMO_ID] = productId
+        mapEvent[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
+        mapEvent[KEY_CURRENT_SITE] = CURRENT_SITE
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
     fun eventEcommerceAddToCart(
             userId: String, cartId: String, buttonAction: Int,
             buttonText: String, productId: String, shopId: String,
