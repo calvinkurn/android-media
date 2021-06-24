@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.tokomart.searchcategory.presentation.customview.FilterChip
+<com.tokopedia.tokopedianow.searchcategory.presentation.customview.FilterChip
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/tokomartSearchCategoryCategoryFilterChip"
     android:layout_width="142dp"

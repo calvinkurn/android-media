@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.tokomart">
+    package="com.tokopedia.tokopedianow">
 
     <application>
         <activity
-            android:name=".home.presentation.activity.TokoMartHomeActivity"
+            android:name="com.tokopedia.tokopedianow.home.presentation.activity.TokoMartHomeActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/TokoNowHeaderTheme">
@@ -22,7 +22,7 @@
         </activity>
 
         <activity
-            android:name=".categorylist.presentation.activity.TokoMartCategoryListActivity"
+            android:name="com.tokopedia.tokopedianow.categorylist.presentation.activity.TokoMartCategoryListActivity"
             android:exported="true"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"
@@ -41,7 +41,7 @@
         </activity>
 
         <activity
-            android:name=".search.presentation.view.SearchActivity"
+            android:name="com.tokopedia.tokopedianow.search.presentation.view.SearchActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_tokopedia_now"
             android:windowSoftInputMode="adjustNothing"
@@ -60,7 +60,7 @@
         </activity>
 
         <activity
-            android:name=".category.presentation.view.CategoryActivity"
+            android:name="com.tokopedia.tokopedianow.category.presentation.view.CategoryActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_tokopedia_now"
             android:windowSoftInputMode="adjustNothing"
