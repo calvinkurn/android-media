@@ -54,9 +54,9 @@ class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context
     }
 
     override fun getItem(position: Int): TravelContactListModel.Contact? {
-        return try {
+        return if (suggestions.isNotEmpty() && suggestions.size > position) {
             suggestions[position]
-        } catch (t: Throwable) {
+        } else {
             null
         }
     }
