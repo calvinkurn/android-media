@@ -491,6 +491,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             else
             {
                 it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+                statusbar.visibility = View.GONE
             }
         }
 
