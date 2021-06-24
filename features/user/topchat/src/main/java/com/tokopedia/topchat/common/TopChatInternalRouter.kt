@@ -49,6 +49,7 @@ open class TopChatInternalRouter {
             intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY, shopId)
             intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, isSeller)
             intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, shopName)
+            intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT)
             intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_WAREHOUSE_ID, warehouseId)
             return intent
         }
