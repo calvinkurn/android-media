@@ -31,6 +31,7 @@ import com.tokopedia.seller.search.feature.suggestion.view.fragment.SuggestionSe
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.widget_global_search_view.view.*
 import javax.inject.Inject
 
 class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchComponent>,
@@ -47,7 +48,7 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
         GlobalSearchSellerPerformanceMonitoring(GlobalSearchSellerPerformanceMonitoringType.SEARCH_SELLER)
     }
 
-    private var searchBarView: GlobalSearchView? = null
+    private var globalSearchView: GlobalSearchView? = null
 
     private var mSuggestionView: ConstraintLayout? = null
     private var mInitialStateView: ConstraintLayout? = null
@@ -75,6 +76,11 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
                 .build()
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        SellerSearchTracking.clickBackButtonSearchEvent(userId, globalSearchView?.searchBarView?.searchBarTextField?.text?.trim().toString())
+    }
+
     private fun proceed() {
         initView()
         initSearchBarView()
@@ -87,16 +93,16 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
     }
 
     private fun initSearchBarView() {
-        searchBarView?.setActivity(this)
-        searchBarView?.setSearchViewListener(this)
-        searchBarView?.setSearchTextBoxListener(this)
+        globalSearchView?.setActivity(this)
+        globalSearchView?.setSearchViewListener(this)
+        globalSearchView?.setSearchTextBoxListener(this)
         initialStateFragment?.setHistoryViewUpdateListener(this)
         suggestionFragment?.setSuggestionViewUpdateListener(this)
         setInitialKeyword()
     }
 
     private fun initView() {
-        searchBarView = findViewById(R.id.globalSearchSeller)
+        globalSearchView = findViewById(R.id.globalSearchSeller)
         mSuggestionView = findViewById(R.id.search_suggestion_container)
         mInitialStateView = findViewById(R.id.search_initial_state_container)
         suggestionFragment = supportFragmentManager.findFragmentById(R.id.search_suggestion) as? SuggestionSearchFragment
@@ -106,7 +112,7 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
     private fun setInitialKeyword() {
         getKeywordFromIntent().let { keyword ->
             proceedSearchKeyword(keyword)
-            searchBarView?.setKeyword(keyword)
+            globalSearchView?.setKeyword(keyword)
         }
     }
 
@@ -140,17 +146,17 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
     }
 
     override fun dropKeyboardHistory() {
-        searchBarView?.clearFocus()
-        KeyboardHandler.DropKeyboard(this, searchBarView)
+        globalSearchView?.clearFocus()
+        KeyboardHandler.DropKeyboard(this, globalSearchView)
     }
 
     override fun setKeywordSearchBarView(keyword: String) {
-        searchBarView?.setKeywordSearchBar(keyword)
+        globalSearchView?.setKeywordSearchBar(keyword)
     }
 
     override fun dropKeyboardSuggestion() {
-        searchBarView?.clearFocus()
-        KeyboardHandler.DropKeyboard(this, searchBarView)
+        globalSearchView?.clearFocus()
+        KeyboardHandler.DropKeyboard(this, globalSearchView)
     }
 
     private fun setWhiteStatusBar() {
@@ -167,7 +173,7 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
                 is Success -> it.data
                 is Fail -> getString(R.string.placeholder_search_seller)
             }
-            searchBarView?.setPlaceholder(placeholder)
+            globalSearchView?.setPlaceholder(placeholder)
         }
         viewModel.getSearchPlaceholder()
     }
