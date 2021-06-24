@@ -54,7 +54,7 @@ class AtcVariantQuantityViewHolder constructor(
             quantityEditor.maxValue = element.maxOrder
             quantityEditor.setValue(element.quantity)
 
-            if(element.minOrder == element.maxOrder){
+            if (element.minOrder == element.maxOrder) {
                 quantityEditor.addButton.isEnabled = false
                 quantityEditor.subtractButton.isEnabled = false
             }
