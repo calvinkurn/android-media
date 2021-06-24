@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="@dimen/spacing_lvl4"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:visibility="gone">
 
    <com.tokopedia.globalerror.GlobalError
