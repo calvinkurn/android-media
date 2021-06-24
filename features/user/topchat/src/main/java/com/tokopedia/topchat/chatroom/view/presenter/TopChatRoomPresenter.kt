@@ -114,7 +114,7 @@ open class TopChatRoomPresenter @Inject constructor(
     private val chatBackgroundUseCase: ChatBackgroundUseCase,
     private val chatSrwUseCase: SmartReplyQuestionUseCase,
     private val tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
-        private val sharedPref: SharedPreferences,
+    private val sharedPref: SharedPreferences,
     private val dispatchers: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
