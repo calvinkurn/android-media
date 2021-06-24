@@ -17,7 +17,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -32,8 +31,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.Place
-import com.tokopedia.logisticCommon.util.rxEditText
-import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
@@ -44,7 +41,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtil
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageFragment
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LATITUDE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LONGITUDE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
@@ -54,8 +50,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
-import kotlinx.android.synthetic.main.fragment_google_map.*
-import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import javax.inject.Inject
@@ -203,19 +197,11 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         binding.tvMessageSearch.text = getString(R.string.txt_message_initial_load)
         binding.tvMessageSearch.setOnClickListener {
             AddNewAddressRevampAnalytics.onClickIsiAlamatManualSearch(userSession.userId)
-            if (!isPositiveFlow && isFromPinpoint) {
-                Intent(context, AddressFormActivity::class.java).apply {
-                    putExtra(EXTRA_IS_POSITIVE_FLOW, false)
-                    putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
-                    putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
-                    startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
-                }
-            } else {
-                Intent(context, AddressFormActivity::class.java).apply {
-                    putExtra(EXTRA_IS_POSITIVE_FLOW, true)
-                    putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
-                    startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
-                }
+            Intent(context, AddressFormActivity::class.java).apply {
+                putExtra(EXTRA_IS_POSITIVE_FLOW, false)
+                putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
+                putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
+                startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
             }
         }
     }

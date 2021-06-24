@@ -41,7 +41,7 @@ data class DefaultAddressData(
         var districtName: String = "",
         @SerializedName("status")
         var status: Int = 0,
-        @SerializedName("coountry")
+        @SerializedName("country")
         var country: String = "",
         @SerializedName("latitude")
         var latitude: String = "",
