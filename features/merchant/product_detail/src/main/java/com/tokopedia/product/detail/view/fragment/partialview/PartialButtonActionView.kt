@@ -169,6 +169,7 @@ class PartialButtonActionView private constructor(val view: View,
             }
             if (quantityDebounceSubscription != null) {
                 buttonListener.getRxCompositeSubcription().remove(quantityDebounceSubscription)
+                quantityDebounceSubscription = null
             }
 
             initTextWatcherDebouncer()

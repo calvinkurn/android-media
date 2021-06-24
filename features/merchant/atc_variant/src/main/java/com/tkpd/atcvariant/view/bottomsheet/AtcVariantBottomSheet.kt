@@ -78,7 +78,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     private var loadingProgressDialog: ProgressDialog? = null
 
     private val compositeSubscription by lazy { CompositeSubscription() }
-
     private val adapterFactory by lazy { AtcVariantAdapterTypeFactoryImpl(this, compositeSubscription) }
     private val adapter by lazy {
         val asyncDifferConfig = AsyncDifferConfig.Builder(AtcVariantDiffutil())
@@ -125,6 +124,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    override fun onDestroyView() {
+        compositeSubscription.clear()
+        super.onDestroyView()
     }
 
     private fun initLayout() {
