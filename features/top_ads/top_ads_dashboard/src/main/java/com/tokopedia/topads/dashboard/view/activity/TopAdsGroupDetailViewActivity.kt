@@ -20,6 +20,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.topads.common.data.response.GroupInfoResponse
+import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
@@ -171,6 +172,13 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
         biaya_img.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_biaya_img))
         angarran_img.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_angarran_img))
+        editpancarianBudget.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("keywordName", "Biaya Iklan Pencarian")
+            bundle.putBoolean("fromDetail", true)
+            val sheet = TopAdsEditKeywordBidSheet.createInstance(bundle)
+            sheet.show(supportFragmentManager, "")
+        }
     }
 
     private fun loadData() {

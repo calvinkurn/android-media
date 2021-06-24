@@ -5,18 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/budget"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/dailybudget_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:typographyType="body_2"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="Tentukan sendiri biaya iklan pencarian sesuai \n strategi beriklanmu."
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/budget"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
         android:focusableInTouchMode="true"
+        android:layout_marginTop="@dimen/dp_16"
         app:layout_constraintBottom_toTopOf="@id/btnSave"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dailybudget_description"
         app:text_field_append_text="@string/topads_common_per_click"
         app:text_field_input_type="number"
-        app:text_field_label="@string/topads_common_keyword_edit_bid_sheet_biaya_sheet_title"
-        app:text_field_label_static="false"
+        app:text_field_label_static="true"
         app:text_field_prepend_text="Rp"
         tools:layout_height="@dimen/dp_200" />
 

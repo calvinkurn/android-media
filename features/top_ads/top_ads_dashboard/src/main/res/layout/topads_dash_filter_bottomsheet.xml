@@ -5,6 +5,61 @@
     android:layout_height="match_parent">
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/adPlacement_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_20"
+        android:text="@string/topads_dash_ad_placement"
+        android:textColor="@color/topads_heading_color"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_1" />
+
+    <LinearLayout
+        android:id="@+id/adPlacement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/adPlacement_title">
+
+
+        <com.tokopedia.unifycomponents.ChipsUnify
+            android:id="@+id/semua"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            app:centerText="true"
+            app:chipSize="medium"
+            app:chipText="Semua"
+            app:chipType="normal" />
+
+        <com.tokopedia.unifycomponents.ChipsUnify
+            android:id="@+id/search"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            app:centerText="true"
+            app:chipSize="medium"
+            app:chipText="Iklan di Pencarian"
+            app:chipType="normal" />
+
+        <com.tokopedia.unifycomponents.ChipsUnify
+            android:id="@+id/rekomendation"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            app:centerText="true"
+            app:chipSize="medium"
+            app:chipText="Iklan di Rekomendasi"
+            app:chipType="normal" />
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/status_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -13,7 +68,7 @@
         android:text="@string/topads_dash_status"
         android:textColor="@color/topads_heading_color"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adPlacement"
         app:typographyType="body_1" />
 
     <LinearLayout
@@ -22,7 +77,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_16"
         android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/status_title">
 

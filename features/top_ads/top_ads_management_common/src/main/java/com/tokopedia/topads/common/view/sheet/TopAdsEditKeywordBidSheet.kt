@@ -3,6 +3,8 @@ package com.tokopedia.topads.common.view.sheet
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
@@ -29,6 +31,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     private var position = 0
     private var name = ""
     private var fromEdit = 99
+    private var fromDetail = false
     private var userID: String = ""
     private var groupId: String = ""
     var onSaved: ((bid: String, pos: Int) -> Unit)? = null
@@ -89,6 +92,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         name = arguments?.getString(KEYWORD_NAME) ?: ""
         fromEdit = arguments?.getInt(FROM_EDIT) ?: 99
         groupId = arguments?.getString(GROUP_ID) ?: "0"
+        fromDetail = arguments?.getBoolean(FROM_DETAIL) ?: false
     }
 
     private fun setMessageErrorField(error: String, bid: String, bool: Boolean) {
@@ -99,6 +103,13 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     }
 
     private fun initView() {
+        if(fromDetail) {
+            dailybudget_description.show()
+            budget.setMessage("Rekomendasi Rp200")
+        } else {
+            budget.textFiedlLabelText.text = "Biaya Kata kunci"
+            dailybudget_description.hide()
+        }
         setCloseClickListener {
             dismiss()
         }
@@ -123,6 +134,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         private const val ITEM_POSITION = "pos"
         private const val FROM_EDIT = "fromEdit"
         private const val GROUP_ID = "group_id"
+        private const val FROM_DETAIL = "fromDetail"
 
         fun createInstance(data: Bundle): TopAdsEditKeywordBidSheet {
             return TopAdsEditKeywordBidSheet().apply {
@@ -133,16 +145,26 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDatafromArguments()
+        if(!fromDetail) {
+            setDefaultValues()
+        } else {
+            showHeader = true
+            showCloseIcon = true
+            isKeyboardOverlap = false
+        }
         initChildLayout()
         super.onCreate(savedInstanceState)
 
     }
 
-    private fun initChildLayout() {
-        contentView = View.inflate(context, R.layout.topads_common_edit_key_bid_sheet, null)
+    private fun setDefaultValues() {
         showHeader = false
         showCloseIcon = false
         isKeyboardOverlap = false
+    }
+
+    private fun initChildLayout() {
+        contentView = View.inflate(context, R.layout.topads_common_edit_key_bid_sheet, null)
         setChild(contentView)
     }
 }

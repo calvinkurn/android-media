@@ -184,6 +184,7 @@
     <string name="topads_dash_perclick">per klik</string>
     <string name="topads_dash_choose_date">Pilih Tanggal</string>
     <string name="topads_dash_status">Status</string>
+    <string name="topads_dash_ad_placement">Penempatan Iklan</string>
     <string name="topads_dash_filter_title">Urutkan</string>
     <string name="topads_dash_filter_sheet_title">Filter dan Urutkan</string>
     <string name="topads_dash_tidak_tampil">Tidak Tampil</string>

@@ -44,7 +44,6 @@
             android:id="@+id/biaya_img"
             android:layout_width="33dp"
             android:layout_height="33dp"
-            android:layout_marginStart="@dimen/dp_24"
             android:layout_marginTop="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider" />
@@ -105,7 +104,7 @@
             android:layout_height="40dp"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_16"
-            android:background="@color/unify_N700_44"
+            android:background="@color/unify_N75"
             app:layout_constraintStart_toEndOf="@+id/editpancarianBudget"
             app:layout_constraintTop_toBottomOf="@id/divider" />
 
@@ -163,7 +162,6 @@
             android:id="@+id/angarran_img"
             android:layout_width="33dp"
             android:layout_height="33dp"
-            android:layout_marginStart="@dimen/dp_24"
             android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/biaya_img" />

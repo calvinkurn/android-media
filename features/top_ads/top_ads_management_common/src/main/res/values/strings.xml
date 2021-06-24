@@ -197,6 +197,8 @@
     <string name="topads_create_bs_desc1">Biaya iklan yang dikenakan saat calon pembeli mengklik iklanmu dari halaman pencarian seperti menggunakan kata kunci yang kamu tentukan.</string>
     <string name="topads_keyword_common_del_toaster">Kata kunci berhasil dihapus.</string>
     <string name="topads_neg_keyword_common_del_toaster">kata kunci negatif berhasil dihapus</string>
+    <string name="topads_group_detail_budget_pancarian">Biaya Iklan Pencarian</string>
+    <string name="topads_group_detail_budget_rekomendasi">Biaya Iklan Rekomendasi</string>
 
 
     <string-array name="sort_product_list_array">
