@@ -127,12 +127,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_TRANSACTION_ORDERLIST
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MODALTOKO_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDERLIST_DIGITAL_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PESAWAT_INTERNAL_ORDER
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.TRACK
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
@@ -476,7 +476,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                     it.startsWith(VERIFY_BIOMETRIC) ||
                     it.startsWith(BIOMETRIC_SETTING)
-                    }, DF_USER_FINGERPRINT, R.string.applink_fingerprint))
+                    }, DF_BASE, R.string.applink_fingerprint))
 
             add(DFP({ it.startsWith(NOTIFICATION) }, DF_BASE, R.string.title_notification_center))
             add(DFP({ it.startsWith(NOTIFICATION_BUYER) }, DF_BASE, R.string.title_notification_center))

@@ -143,6 +143,7 @@ dependencies {
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.inbox)
+    implementation project(rootProject.ext.features.loginfingerprint)
 
     //Transaction
     implementation project(rootProject.ext.features.cart)

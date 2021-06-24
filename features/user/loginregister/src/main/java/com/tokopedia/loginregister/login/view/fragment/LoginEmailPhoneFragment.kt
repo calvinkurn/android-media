@@ -709,7 +709,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         if(activity != null) {
             val icon = ContextCompat.getDrawable(
                 requireActivity(),
-                R.drawable.fingerprint_dialog_fp_icon
+                R.drawable.ic_fingerprint_thumb
             )
             fingerprint_btn?.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
         }

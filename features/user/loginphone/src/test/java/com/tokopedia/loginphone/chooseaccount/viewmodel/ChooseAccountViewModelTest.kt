@@ -1,5 +1,6 @@
 package com.tokopedia.loginphone.chooseaccount.viewmodel
 
+import FileUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -17,11 +18,12 @@ import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
@@ -57,9 +59,9 @@ class ChooseAccountViewModelTest {
     @RelaxedMockK
     lateinit var getUserInfoResponseObserver: Observer<Result<ProfileInfo>>
     @RelaxedMockK
-    lateinit var goToActivationPageObserver: Observer<MessageErrorException>
+    lateinit var goToActivationPageObserver: Observer<Result<MessageErrorException>>
     @RelaxedMockK
-    lateinit var goToSecurityQuestionObserver: Observer<String>
+    lateinit var goToSecurityQuestionObserver: Observer<Result<String>>
     @RelaxedMockK
     lateinit var showLocationAdminPopUpObserver: Observer<Result<Boolean>>
 
@@ -81,7 +83,7 @@ class ChooseAccountViewModelTest {
                 getProfileUseCase,
                 getAdminTypeUseCase,
                 rawQueries,
-                testDispatcher
+                CoroutineTestDispatchersProvider
         )
     }
 
@@ -104,7 +106,7 @@ class ChooseAccountViewModelTest {
 
     @Test
     fun `Success login token phone with sq check`() {
-        viewmodel.goToSecurityQuestion.observeForever(goToSecurityQuestionObserver)
+        viewmodel.securityQuestion.observeForever(goToSecurityQuestionObserver)
 
         coEvery { loginTokenUseCase.executeLoginPhoneNumber(any(), any()) } coAnswers {
             secondArg<LoginTokenSubscriber>().onGoToSecurityQuestion.invoke()
@@ -113,17 +115,17 @@ class ChooseAccountViewModelTest {
         viewmodel.loginTokenPhone("", "", "123")
 
         verify { goToSecurityQuestionObserver.onChanged(any()) }
-        assert(viewmodel.goToSecurityQuestion.value is String)
+        assert(viewmodel.securityQuestion.value is Success)
 
-        val result = viewmodel.goToSecurityQuestion.value as String
+        val result = (viewmodel.securityQuestion.value as Success).data
         assert(result == "123")
     }
 
     @Test
     fun `Failed login token phone`() {
         viewmodel.loginPhoneNumberResponse.observeForever(loginPhoneNumberResponseObserver)
-        viewmodel.goToActivationPage.observeForever(goToActivationPageObserver)
-        viewmodel.goToSecurityQuestion.observeForever(goToSecurityQuestionObserver)
+        viewmodel.activationPage.observeForever(goToActivationPageObserver)
+        viewmodel.securityQuestion.observeForever(goToSecurityQuestionObserver)
 
         coEvery { loginTokenUseCase.executeLoginPhoneNumber(any(), any()) } coAnswers {
             secondArg<LoginTokenSubscriber>().onErrorLoginToken.invoke(throwable)
@@ -140,7 +142,7 @@ class ChooseAccountViewModelTest {
 
     @Test
     fun `Failed login token phone and go to activation page`() {
-        viewmodel.goToActivationPage.observeForever(goToActivationPageObserver)
+        viewmodel.activationPage.observeForever(goToActivationPageObserver)
 
         coEvery { loginTokenUseCase.executeLoginPhoneNumber(any(), any()) } coAnswers {
             secondArg<LoginTokenSubscriber>().onGoToActivationPage.invoke(messageErrorException)
@@ -149,9 +151,9 @@ class ChooseAccountViewModelTest {
         viewmodel.loginTokenPhone("", "", "")
 
         verify { goToActivationPageObserver.onChanged(any()) }
-        assert(viewmodel.goToActivationPage.value is MessageErrorException)
+        assert(viewmodel.activationPage.value is Success)
 
-        val result = viewmodel.goToActivationPage.value as MessageErrorException
+        val result = (viewmodel.activationPage.value as Success).data
         assertEquals(messageErrorException, result)
     }
 
@@ -174,7 +176,7 @@ class ChooseAccountViewModelTest {
 
     @Test
     fun `Success login token fb with sq check`() {
-        viewmodel.goToSecurityQuestion.observeForever(goToSecurityQuestionObserver)
+        viewmodel.securityQuestion.observeForever(goToSecurityQuestionObserver)
 
         coEvery { loginTokenUseCase.executeLoginSocialMediaPhone(any(), any()) } coAnswers {
             secondArg<LoginFacebookSubscriber>().onGoToSecurityQuestion.invoke()
@@ -183,17 +185,17 @@ class ChooseAccountViewModelTest {
         viewmodel.loginTokenFacebook("", "", "123")
 
         verify { goToSecurityQuestionObserver.onChanged(any()) }
-        assert(viewmodel.goToSecurityQuestion.value is String)
+        assert(viewmodel.securityQuestion.value is Success)
 
-        val result = viewmodel.goToSecurityQuestion.value as String
+        val result = (viewmodel.securityQuestion.value as Success).data
         assert(result == "123")
     }
 
     @Test
     fun `Failed login token fb`() {
         viewmodel.loginPhoneNumberResponse.observeForever(loginPhoneNumberResponseObserver)
-        viewmodel.goToActivationPage.observeForever(goToActivationPageObserver)
-        viewmodel.goToSecurityQuestion.observeForever(goToSecurityQuestionObserver)
+        viewmodel.activationPage.observeForever(goToActivationPageObserver)
+        viewmodel.securityQuestion.observeForever(goToSecurityQuestionObserver)
 
         coEvery { loginTokenUseCase.executeLoginSocialMediaPhone(any(), any()) } coAnswers {
             secondArg<LoginFacebookSubscriber>().onErrorLoginToken.invoke(throwable)

@@ -7,9 +7,6 @@ import androidx.lifecycle.Observer
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.encryption.security.RsaUtils
-import com.tokopedia.loginfingerprint.domain.usecase.RegisterCheckFingerprintUseCase
-import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
-import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
@@ -19,11 +16,10 @@ import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
-import com.tokopedia.loginregister.login.domain.StatusPinUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
-import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.login.view.viewmodel.LoginEmailPhoneViewModel
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
@@ -64,12 +60,10 @@ class LoginEmailPhoneViewModelTest {
     val loginTokenUseCase = mockk<LoginTokenUseCase>(relaxed = true)
     val getProfileUseCase = mockk<GetProfileUseCase>(relaxed = true)
     val tickerInfoUseCase = mockk<TickerInfoUseCase>(relaxed = true)
-    val statusPinUseCase = mockk<StatusPinUseCase>(relaxed = true)
     val dynamicBannerUseCase = mockk<DynamicBannerUseCase>(relaxed = true)
     val userSession = mockk<UserSessionInterface>(relaxed = true)
-    val cryptographyUtils = mockk<Cryptography>(relaxed = true)
-    val verifyFingerprintUseCase = mockk<VerifyFingerprintUseCase>(relaxed = true)
     val registerCheckFingerprintUseCase = mockk<RegisterCheckFingerprintUseCase>(relaxed = true)
+    val loginFingerprintUseCase = mockk<LoginFingerprintUseCase>(relaxed = true)
 
     lateinit var viewModel: LoginEmailPhoneViewModel
 
@@ -93,7 +87,6 @@ class LoginEmailPhoneViewModelTest {
     private var goToActivationPageAfterReloginObserver = mockk<Observer<MessageErrorException>>(relaxed = true)
     private var goToSecurityAfterReloginQuestionObserver = mockk<Observer<String>>(relaxed = true)
     private var goToActivationPage = mockk<Observer<String>>(relaxed = true)
-    private var statusPinObserver = mockk<Observer<Result<StatusPinData>>>(relaxed = true)
 
     private var loginTokenV2UseCase = mockk<LoginTokenV2UseCase>(relaxed = true)
     private var getAdminTypeUseCase = mockk<GetAdminTypeUseCase>(relaxed = true)
@@ -119,14 +112,12 @@ class LoginEmailPhoneViewModelTest {
             loginTokenUseCase,
             getProfileUseCase,
             tickerInfoUseCase,
-            statusPinUseCase,
             getAdminTypeUseCase,
             loginTokenV2UseCase,
             generatePublicKeyUseCase,
             dynamicBannerUseCase,
-            verifyFingerprintUseCase,
-            cryptographyUtils,
             registerCheckFingerprintUseCase,
+            loginFingerprintUseCase,
             userSession,
             CoroutineTestDispatchersProvider
         )
@@ -149,7 +140,6 @@ class LoginEmailPhoneViewModelTest {
         viewModel.goToActivationPage.observeForever(goToActivationPage)
         viewModel.goToActivationPageAfterRelogin.observeForever(goToActivationPageAfterReloginObserver)
         viewModel.goToSecurityQuestionAfterRelogin.observeForever(goToSecurityAfterReloginQuestionObserver)
-        viewModel.getStatusPinResponse.observeForever(statusPinObserver)
     }
 
     private val throwable = Throwable("Error")
