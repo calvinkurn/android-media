@@ -286,7 +286,7 @@ class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastR
         var phoneNumber = replaceRegionPhoneCode(number)
 
         if (phoneNumber.contains(phoneHint)) {
-            phoneNumber = phoneNumber.substring(phoneNumber.length - 4, phoneNumber.length)
+            phoneNumber = phoneNumber.substring(phoneNumber.length - modeListData.otpDigit, phoneNumber.length)
             viewBound.pin?.value = phoneNumber
             validate(phoneNumber)
         }
