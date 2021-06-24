@@ -20,6 +20,8 @@ import com.tokopedia.pdpsimulation.paylater.viewModel.PayLaterViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_paylater_offers.*
+import timber.log.Timber
+import java.lang.Exception
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -50,14 +52,10 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         return inflater.inflate(R.layout.fragment_paylater_offers, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        observeViewModel()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         renderTabAndViewPager()
+        observeViewModel()
     }
 
     private fun observeViewModel() {
@@ -71,7 +69,7 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         payLaterViewModel.payLaterApplicationStatusResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onPayLaterApplicationStatusLoaded(it.data)
-                is Fail -> onPayLaterApplicationLoadingFail(it.throwable)
+                is Fail -> onPayLaterApplicationLoadingFail()
             }
         })
     }
@@ -126,14 +124,18 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onPayLaterApplicationLoadingFail(throwable: Throwable) {
+    private fun onPayLaterApplicationLoadingFail() {
         // set payLater data in view pager
-        paymentOptionViewPager.post {
-            if (payLaterViewModel.getPayLaterOptions().isNotEmpty()) {
-                payLaterOffersShimmerGroup.gone()
-                payLaterDataGroup.visible()
-                pagerAdapter.setPaymentData(payLaterViewModel.getPayLaterOptions(), arrayListOf())
+        try {
+            paymentOptionViewPager.post {
+                if (payLaterViewModel.getPayLaterOptions().isNotEmpty()) {
+                    payLaterOffersShimmerGroup.gone()
+                    payLaterDataGroup.visible()
+                    pagerAdapter.setPaymentData(payLaterViewModel.getPayLaterOptions(), arrayListOf())
+                }
             }
+        } catch (e: Exception) {
+            Timber.e(e)
         }
     }
 
