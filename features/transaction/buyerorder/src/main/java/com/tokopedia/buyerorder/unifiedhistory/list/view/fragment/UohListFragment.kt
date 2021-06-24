@@ -491,7 +491,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             else
             {
                 it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-                it.setToolbarTitle(getString(R.string.title_uoh_list))
             }
         }
 
