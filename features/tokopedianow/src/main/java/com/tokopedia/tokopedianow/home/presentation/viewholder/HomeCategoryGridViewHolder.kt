@@ -12,9 +12,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutState
-import com.tokopedia.tokopedianow.home.presentation.adapter.TokoMartHomeAdapter
-import com.tokopedia.tokopedianow.home.presentation.adapter.TokoMartHomeAdapterTypeFactory
-import com.tokopedia.tokopedianow.home.presentation.adapter.differ.TokoMartHomeListDiffer
+import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
+import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
+import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeCategoryGridUiModel
 import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
@@ -37,7 +37,7 @@ class HomeCategoryGridViewHolder(
     private var rvCategory: RecyclerView? = null
     private var categoryShimmering: View? = null
 
-    private val adapter by lazy { TokoMartHomeAdapter(TokoMartHomeAdapterTypeFactory(homeCategoryItemListener = this), TokoMartHomeListDiffer()) }
+    private val adapter by lazy { HomeAdapter(HomeAdapterTypeFactory(homeCategoryItemListener = this), HomeListDiffer()) }
 
     init {
         initView()

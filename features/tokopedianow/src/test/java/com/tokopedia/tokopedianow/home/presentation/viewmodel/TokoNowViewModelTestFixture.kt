@@ -34,7 +34,7 @@ import org.junit.Rule
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyString
 
-abstract class TokoMartHomeViewModelTestFixture {
+abstract class HomeViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var getHomeLayoutListUseCase: GetHomeLayoutListUseCase
@@ -54,12 +54,12 @@ abstract class TokoMartHomeViewModelTestFixture {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    protected lateinit var viewModel: TokoMartHomeViewModel
+    protected lateinit var viewModel: HomeViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = TokoMartHomeViewModel(
+        viewModel = HomeViewModel(
                 getHomeLayoutListUseCase,
                 getHomeLayoutDataUseCase,
                 getCategoryListUseCase,

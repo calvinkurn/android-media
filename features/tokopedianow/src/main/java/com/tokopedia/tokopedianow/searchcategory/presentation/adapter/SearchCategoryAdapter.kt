@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.base.adapter.BaseTokoMartListAdapter
+import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowListAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OnStickySingleHeaderListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
@@ -16,7 +16,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.QuickFi
 
 open class SearchCategoryAdapter(
         private val typeFactory: BaseSearchCategoryTypeFactory
-):  BaseTokoMartListAdapter<Visitable<*>,
+):  BaseTokopediaNowListAdapter<Visitable<*>,
     BaseSearchCategoryTypeFactory>(typeFactory, SearchCategoryDiffUtil()),
     StickySingleHeaderView.OnStickySingleHeaderAdapter {
 

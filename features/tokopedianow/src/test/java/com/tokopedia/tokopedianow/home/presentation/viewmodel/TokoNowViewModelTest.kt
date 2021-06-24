@@ -10,7 +10,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeLayoutState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokopedianow.home.domain.mapper.TickerMapper.mapTickerData
-import com.tokopedia.tokopedianow.home.presentation.fragment.TokoMartHomeFragment.Companion.SOURCE
+import com.tokopedia.tokopedianow.home.presentation.fragment.HomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeCategoryGridUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeCategoryItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
@@ -18,7 +18,7 @@ import org.junit.Test
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyString
 
-class TokoMartHomeViewModelTest: TokoMartHomeViewModelTestFixture() {
+class HomeViewModelTest: HomeViewModelTestFixture() {
 
     @Test
     fun `when getting homeLayout should run and give the success result`() {

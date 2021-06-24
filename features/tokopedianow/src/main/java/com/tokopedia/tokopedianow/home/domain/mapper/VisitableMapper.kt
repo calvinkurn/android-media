@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
-import com.tokopedia.tokopedianow.home.presentation.uimodel.TokoMartHomeLayoutUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 
 object VisitableMapper {
 
@@ -19,7 +19,7 @@ object VisitableMapper {
 
     private fun Visitable<*>.getVisitableId(): String? {
         return when (this) {
-            is TokoMartHomeLayoutUiModel -> visitableId
+            is HomeLayoutUiModel -> visitableId
             is HomeComponentVisitable -> visitableId()
             else -> null
         }

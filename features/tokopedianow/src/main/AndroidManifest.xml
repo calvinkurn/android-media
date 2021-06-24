@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.tokopedianow.home.presentation.activity.TokoMartHomeActivity"
+            android:name="com.tokopedia.tokopedianow.home.presentation.activity.HomeActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/TokoNowHeaderTheme">
@@ -22,7 +22,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.tokopedianow.categorylist.presentation.activity.TokoMartCategoryListActivity"
+            android:name="com.tokopedia.tokopedianow.categorylist.presentation.activity.CategoryListActivity"
             android:exported="true"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"

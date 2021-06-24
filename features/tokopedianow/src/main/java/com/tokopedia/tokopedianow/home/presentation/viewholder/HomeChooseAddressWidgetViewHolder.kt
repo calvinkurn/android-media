@@ -9,13 +9,13 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.view.TokoNowView
-import com.tokopedia.tokopedianow.home.presentation.fragment.TokoMartHomeFragment.Companion.SOURCE
+import com.tokopedia.tokopedianow.common.view.TokopediaNowView
+import com.tokopedia.tokopedianow.home.presentation.fragment.HomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
 
 class HomeChooseAddressWidgetViewHolder(
         itemView: View,
-        private val tokoNowListener: TokoNowView? = null,
+        private val tokopediaNowListener: TokopediaNowView? = null,
         private val homeChooseAddressWidgetListener: HomeChooseAddressWidgetListener? = null
 ): AbstractViewHolder<HomeChooseAddressWidgetUiModel>(itemView) {
 
@@ -33,10 +33,10 @@ class HomeChooseAddressWidgetViewHolder(
     }
 
     private fun bindChooseAddressWidget() {
-        tokoNowListener?.getFragmentPage()?.let { fragment ->
+        tokopediaNowListener?.getFragmentPage()?.let { fragment ->
             chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
                 override fun onLocalizingAddressUpdatedFromWidget() {
-                    tokoNowListener.refreshLayoutPage()
+                    tokopediaNowListener.refreshLayoutPage()
                 }
 
                 override fun onLocalizingAddressServerDown() {
@@ -44,7 +44,7 @@ class HomeChooseAddressWidgetViewHolder(
                 }
 
                 override fun onLocalizingAddressLoginSuccess() {
-                    tokoNowListener.refreshLayoutPage()
+                    tokopediaNowListener.refreshLayoutPage()
                 }
 
                 override fun getLocalizingAddressHostFragment(): Fragment = fragment

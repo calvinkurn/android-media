@@ -102,7 +102,7 @@ object HomeLayoutMapper {
 
     private fun Visitable<*>.getVisitableId(): String? {
         return when(this) {
-            is TokoMartHomeLayoutUiModel -> visitableId
+            is HomeLayoutUiModel -> visitableId
             is HomeComponentVisitable -> visitableId()
             else -> null
         }

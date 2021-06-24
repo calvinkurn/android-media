@@ -1,10 +1,10 @@
 package com.tokopedia.tokopedianow.searchcategory.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokopedianow.common.base.adapter.BaseTokoMartDiffer
+import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 
-open class SearchCategoryDiffUtil: BaseTokoMartDiffer() {
+open class SearchCategoryDiffUtil: BaseTokopediaNowDiffer() {
 
     private var oldList: List<Visitable<*>> = listOf()
     private var newList: List<Visitable<*>> = listOf()
@@ -12,7 +12,7 @@ open class SearchCategoryDiffUtil: BaseTokoMartDiffer() {
     override fun create(
             oldList: List<Visitable<*>>,
             newList: List<Visitable<*>>
-    ): BaseTokoMartDiffer {
+    ): BaseTokopediaNowDiffer {
         this.oldList = oldList
         this.newList = newList
         return this
