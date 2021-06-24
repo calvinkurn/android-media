@@ -306,11 +306,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         ).flatMap((Func1<Bitmap, Observable<Watermark>>) tokopediaLogoBitmap -> {
             // create watermark with transparent container (empty) bitmap
             Watermark watermark = WatermarkBuilder
-                    .createWithSize(
-                            getView().getContext(),
-                            mainBitmap.getWidth(),
-                            mainBitmap.getHeight()
-                    )
+                    .createWithSize(getView().getContext())
                     .setTileMode(true)
                     .loadWatermarkTextAndImage(userInfoName, tokopediaLogoBitmap)
                     .getWatermark();

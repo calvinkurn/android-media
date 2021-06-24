@@ -235,13 +235,22 @@ object BitmapHelper {
         val resultBitmap = Bitmap.createBitmap(
             widthMainBitmap,
             heightMainBitmap,
-            Bitmap.Config.ARGB_8888
+            mainBitmap.config
         )
 
-        Canvas(resultBitmap).apply {
-            drawBitmap(mainBitmap, 0f, 0f, null)
-            drawBitmap(scaledWatermarkBitmap, 0f, ((mainBitmap.height - scaledWatermarkBitmap.height) / 2).toFloat(), null)
-        }
+        val canvas = Canvas(resultBitmap)
+        canvas.drawBitmap(mainBitmap, 0f, 0f, null)
+
+        val paint = Paint()
+
+        paint.shader = BitmapShader(
+            scaledWatermarkBitmap,
+            Shader.TileMode.REPEAT,
+            Shader.TileMode.REPEAT
+        )
+
+        val bitmapShaderRect = canvas.clipBounds
+        canvas.drawRect(bitmapShaderRect, paint)
 
         return resultBitmap
     }
