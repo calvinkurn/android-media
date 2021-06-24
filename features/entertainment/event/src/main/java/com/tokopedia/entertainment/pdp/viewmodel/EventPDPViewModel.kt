@@ -16,8 +16,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
-import kotlinx.coroutines.CoroutineDispatcher
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
@@ -33,8 +33,8 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
     val eventProductDetailList: LiveData<List<EventPDPModel>>
         get() = eventProductDetaiListlMutable
 
-    private val eventProductDetailMutable = MutableLiveData<EventProductDetailEntity>()
-    val eventProductDetail: LiveData<EventProductDetailEntity>
+    private val eventProductDetailMutable = MutableLiveData<EventPDPContentCombined>()
+    val eventProductDetail: LiveData<EventPDPContentCombined>
         get() = eventProductDetailMutable
 
     private val eventHolidayMutable = MutableLiveData<List<Legend>>()
@@ -60,7 +60,7 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
             val resultHoliday = useCaseHoliday.execute()
             when (result) {
                 is Success -> {
-                    eventProductDetailMutable.value = result.data.eventProductDetailEntity
+                    eventProductDetailMutable.value = result.data
                     getDataHighlight(mapperHighlight(result.data))
                     getDataAbout(mapperAbout(result.data))
                     getDataFacilities(mapperFacilities(result.data))
@@ -147,6 +147,27 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
             updatedList[EVENT_PDP_INFORMATION_ORDER].isLoaded = true
             eventProductDetaiListlMutable.value = updatedList
         }
+    }
+
+    fun getTabsTitleData(combinedData: EventPDPContentCombined,
+                         aboutTitle: String,
+                         facilitiesTitle: String,
+                         locationTitle: String): List<EventPDPTabEntity>{
+        var index = -1
+        val listTabs: MutableList<EventPDPTabEntity> = mutableListOf()
+        if(mapperAbout(combinedData).sectionData.section.equals(aboutTitle)){
+            listTabs.add(EventPDPTabEntity(++index, aboutTitle, true))
+        }
+
+        if(mapperFacilities(combinedData).list.isNotEmpty()){
+            listTabs.add(EventPDPTabEntity(++index, facilitiesTitle, true))
+        }
+
+        if(mapperLocationDetail(combinedData).outlet.name.isNotEmpty() &&
+                mapperLocationDetail(combinedData).outlet.coordinates.isNotEmpty()){
+            listTabs.add(EventPDPTabEntity(++index, locationTitle, true))
+        }
+        return listTabs
     }
 
     private fun requestEmptyViewModels(): List<EventPDPModel> {

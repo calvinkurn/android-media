@@ -57,6 +57,7 @@ import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
+import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
@@ -1029,10 +1030,14 @@ open class TopChatRoomPresenter @Inject constructor(
 
     protected open fun isEnableUploadImageService(): Boolean {
         return try {
-            remoteConfig.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false)
+            remoteConfig.getBoolean(ENABLE_UPLOAD_IMAGE_SERVICE, false) && !isProblematicDevice()
         } catch (ex: Exception) {
             false
         }
+    }
+
+    private fun isProblematicDevice(): Boolean {
+        return PROBLEMATIC_DEVICE.contains(DeviceInfo.getModelName().toLowerCase())
     }
 
     private fun onErrorGetOrderProgress(throwable: Throwable) {}
@@ -1041,5 +1046,6 @@ open class TopChatRoomPresenter @Inject constructor(
 
     companion object {
         const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service"
+        private val PROBLEMATIC_DEVICE = listOf("iris88", "iris88_lite", "lenovo k9")
     }
 }

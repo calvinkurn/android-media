@@ -1,45 +1,42 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.gm.common.constant.PMProURL
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.performance.presentation.adapter.ItemPMProBenefitAdapter
-import com.tokopedia.shop.score.performance.presentation.adapter.ItemStatusPMProListener
-import com.tokopedia.shop.score.performance.presentation.model.SectionPotentialPMProUiModel
-import kotlinx.android.synthetic.main.item_potential_pm_pro.view.*
+import com.tokopedia.shop.score.common.setTextMakeHyperlink
+import com.tokopedia.shop.score.performance.presentation.adapter.ItemStatusPowerMerchantProListener
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMProUiModel
+import kotlinx.android.synthetic.main.item_status_power_merchant_pro.view.*
 
-class ItemStatusPMProViewHolder(view: View, private val itemStatusPMProListener: ItemStatusPMProListener):
-        AbstractViewHolder<SectionPotentialPMProUiModel>(view) {
+class ItemStatusPMProViewHolder(view: View,
+                                private val itemStatusPowerMerchantProListener: ItemStatusPowerMerchantProListener) : AbstractViewHolder<ItemStatusPMProUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_potential_pm_pro
+        val LAYOUT = R.layout.item_status_power_merchant_pro
     }
 
-    private var itemPMProBenefitAdapter: ItemPMProBenefitAdapter? = null
-
-    override fun bind(element: SectionPotentialPMProUiModel?) {
-        itemPMProBenefitAdapter = ItemPMProBenefitAdapter()
-        with(itemView) {
-            tvDescPMPro?.text = getString(R.string.desc_potential_pm_pro,
-                    element?.transitionEndDate)
-            tv_see_all_benefit_pm_pro?.setOnClickListener {
-                itemStatusPMProListener.onGotoPMProPage()
-            }
-            ic_chevron_right_benefit_pm_pro?.setOnClickListener {
-                itemStatusPMProListener.onGotoPMProPage()
-            }
-        }
-        setPotentialPMProBenefitAdapter(element)
+    override fun bind(element: ItemStatusPMProUiModel?) {
+        setupIconClickListener()
+        setupItemPowerMerchantPro()
     }
 
-    private fun setPotentialPMProBenefitAdapter(element: SectionPotentialPMProUiModel?) {
+    private fun setupItemPowerMerchantPro() {
         with(itemView) {
-            rv_shop_pm_pro_potential_benefit?.apply {
-                layoutManager = LinearLayoutManager(context)
-                adapter = itemPMProBenefitAdapter
+            ic_pm_pro_badge_current_status?.loadImage(PMProURL.ICON_URL)
+            tv_pm_pro_reputation_value?.text = getString(R.string.title_pm_pro_value)
+            tv_desc_content_pm_pro_section?.setTextMakeHyperlink(getString(R.string.desc_content_pm_pro_section)) {
+                itemStatusPowerMerchantProListener.onItemClickedPMProPage()
             }
         }
-        element?.potentialPMProPMBenefitList?.let { itemPMProBenefitAdapter?.setPotentialPMProBenefit(it) }
+    }
+
+    private fun setupIconClickListener() {
+        with(itemView) {
+            ic_pm_pro_reputation_right?.setOnClickListener {
+                itemStatusPowerMerchantProListener.onItemClickedGoToPMProActivation()
+            }
+        }
     }
 }

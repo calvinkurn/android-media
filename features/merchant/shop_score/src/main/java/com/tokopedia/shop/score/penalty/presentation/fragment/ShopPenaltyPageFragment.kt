@@ -159,10 +159,15 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         } else {
             "${startDate.second} - ${endDate.second}"
         }
-        clearAllData()
         viewModelShopPenalty.setDateFilterData(Pair(startDate.first, endDate.first))
-        viewModelShopPenalty.getDataPenalty()
-        penaltyPageAdapter.showLoading()
+        penaltyPageAdapter.apply {
+            removePenaltyListData()
+            refreshSticky()
+            removeNotFoundPenalty()
+            removeErrorStatePenalty()
+            showLoading()
+        }
+        endlessRecyclerViewScrollListener.resetState()
         penaltyPageAdapter.updateDateFilterText(date)
     }
 
