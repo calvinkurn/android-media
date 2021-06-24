@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.data.HotelTypeEnum
@@ -23,6 +22,7 @@ import com.tokopedia.hotel.search.di.DaggerHotelSearchPropertyComponent
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.activity_hotel_search_result.*
 
 class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchPropertyComponent> {
@@ -133,8 +133,8 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
     }
 
     private fun setUpTitleAndSubtitle() {
-        val checkInString = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelSearchModel.checkIn))
-        val checkOutString = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelSearchModel.checkOut))
+        val checkInString = DateUtil.dateToString(DateUtil.VIEW_FORMAT_WITHOUT_YEAR, DateUtil.stringToDate(DateUtil.YYYY_MM_DD, hotelSearchModel.checkIn))
+        val checkOutString = DateUtil.dateToString(DateUtil.VIEW_FORMAT_WITHOUT_YEAR, DateUtil.stringToDate(DateUtil.YYYY_MM_DD, hotelSearchModel.checkOut))
 
         hotel_search_header.title = hotelSearchModel.name
         hotel_search_header.subtitle = getString(R.string.template_search_subtitle,

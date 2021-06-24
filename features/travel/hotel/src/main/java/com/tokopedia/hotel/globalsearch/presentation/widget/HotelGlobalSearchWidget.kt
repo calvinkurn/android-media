@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchActivity
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.widget_hotel_global_search.view.*
 
 /**
@@ -47,10 +47,10 @@ class HotelGlobalSearchWidget @JvmOverloads constructor(context: Context, attrs:
     }
 
     fun buildView() {
-        val checkInString = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR,
-                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkInDate))
-        val checkOutString = TravelDateUtil.dateToString(TravelDateUtil.VIEW_FORMAT_WITHOUT_YEAR,
-                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkOutDate))
+        val checkInString = DateUtil.dateToString(DateUtil.VIEW_FORMAT_WITHOUT_YEAR,
+                DateUtil.stringToDate(DateUtil.YYYY_MM_DD, checkInDate))
+        val checkOutString = DateUtil.dateToString(DateUtil.VIEW_FORMAT_WITHOUT_YEAR,
+                DateUtil.stringToDate(DateUtil.YYYY_MM_DD, checkOutDate))
         tg_hotel_widget_global_search_pref.text = context.getString(R.string.template_search_subtitle,
                 checkInString, checkOutString, numOfRooms, numOfGuests)
     }

@@ -3,11 +3,11 @@ package com.tokopedia.hotel.common.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.widget_hotel_room_duration.view.*
 
 /**
@@ -28,9 +28,9 @@ class RoomDurationView @JvmOverloads constructor(context: Context, attrs: Attrib
 
     fun setRoomDates(checkInDate: String, checkOutDate: String) {
         hotel_check_in_date.text = changeDateStringFormat(checkInDate,
-                TravelDateUtil.YYYY_MM_DD, TravelDateUtil.DEFAULT_VIEW_FORMAT)
+                DateUtil.YYYY_MM_DD, DateUtil.DEFAULT_VIEW_FORMAT)
         hotel_check_out_date.text = changeDateStringFormat(checkOutDate,
-                TravelDateUtil.YYYY_MM_DD, TravelDateUtil.DEFAULT_VIEW_FORMAT)
+                DateUtil.YYYY_MM_DD, DateUtil.DEFAULT_VIEW_FORMAT)
 
         hotel_room_night_count.text = context.getString(R.string.hotel_room_night_count,
                 HotelUtils.countDayDifference(checkInDate, checkOutDate))
@@ -51,6 +51,6 @@ class RoomDurationView @JvmOverloads constructor(context: Context, attrs: Attrib
     }
 
     fun changeDateStringFormat(dateString: String, oldFormat: String, newFormat: String): String {
-        return TravelDateUtil.dateToString(newFormat, TravelDateUtil.stringToDate(oldFormat, dateString))
+        return DateUtil.dateToString(newFormat, DateUtil.stringToDate(oldFormat, dateString))
     }
 }

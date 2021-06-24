@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.detail.view.model.SimpleModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.item_flight_booking_v3_passenger.view.*
 
 /**
@@ -64,7 +64,7 @@ class FlightBookingPassengerAdapter : RecyclerView.Adapter<FlightBookingPassenge
                 val simpleViewModels = listOf<SimpleModel>().toMutableList()
                 if (passenger.passengerBirthdate.isNotEmpty()) {
                     simpleViewModels.add(SimpleModel(context.getString(R.string.flight_booking_list_passenger_birthdate_label) + " | ",
-                            TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, passenger.passengerBirthdate))))
+                            DateUtil.dateToString(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.stringToDate(DateUtil.YYYY_MM_DD, passenger.passengerBirthdate))))
                 }
                 passenger.passportNumber?.let {
                     if (it.isNotEmpty())

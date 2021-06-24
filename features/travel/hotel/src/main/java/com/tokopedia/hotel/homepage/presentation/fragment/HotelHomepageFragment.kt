@@ -24,7 +24,6 @@ import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.common.travel.widget.TravelVideoBannerWidget
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -65,6 +64,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
 import java.util.*
 import javax.inject.Inject
@@ -130,13 +130,13 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
             if (hotelHomepageModel.checkInDate.isNotBlank()) {
                 hotelHomepageModel.checkInDateFmt =
-                        TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
-                                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate))
+                        DateUtil.dateToString(DateUtil.DEFAULT_VIEW_FORMAT,
+                                DateUtil.stringToDate(DateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate))
             }
             if (hotelHomepageModel.checkOutDate.isNotBlank()) {
                 hotelHomepageModel.checkOutDateFmt =
-                        TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
-                                TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
+                        DateUtil.dateToString(DateUtil.DEFAULT_VIEW_FORMAT,
+                                DateUtil.stringToDate(DateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
             }
             if (hotelHomepageModel.checkInDate.isNotBlank() && hotelHomepageModel.checkOutDate.isNotBlank())
                 hotelHomepageModel.nightCounter = countRoomDuration()
@@ -403,8 +403,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
         val updatedCheckInCheckOutDate = HotelUtils.validateCheckInAndCheckOutDate(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
         hotelHomepageModel.checkInDate = updatedCheckInCheckOutDate.first
         hotelHomepageModel.checkOutDate = updatedCheckInCheckOutDate.second
-        hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate))
-        hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
+        hotelHomepageModel.checkInDateFmt = DateUtil.dateToString(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.stringToDate(DateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate))
+        hotelHomepageModel.checkOutDateFmt = DateUtil.dateToString(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.stringToDate(DateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
         hotelHomepageModel.nightCounter = countRoomDuration()
     }
 
@@ -475,18 +475,18 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onCheckInDateChanged(newCheckInDate: Date) {
-        hotelHomepageModel.checkInDate = TravelDateUtil.dateToString(
-                TravelDateUtil.YYYY_MM_DD, newCheckInDate)
-        hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(
-                TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckInDate)
+        hotelHomepageModel.checkInDate = DateUtil.dateToString(
+                DateUtil.YYYY_MM_DD, newCheckInDate)
+        hotelHomepageModel.checkInDateFmt = DateUtil.dateToString(
+                DateUtil.DEFAULT_VIEW_FORMAT, newCheckInDate)
 
-        if (newCheckInDate >= TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate)) {
-            val tomorrow = TravelDateUtil.addTimeToSpesificDate(newCheckInDate,
+        if (newCheckInDate >= DateUtil.stringToDate(DateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate)) {
+            val tomorrow = DateUtil.addTimeToSpesificDate(newCheckInDate,
                     Calendar.DATE, 1)
-            hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(
-                    TravelDateUtil.YYYY_MM_DD, tomorrow)
-            hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
-                    TravelDateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
+            hotelHomepageModel.checkOutDate = DateUtil.dateToString(
+                    DateUtil.YYYY_MM_DD, tomorrow)
+            hotelHomepageModel.checkOutDateFmt = DateUtil.dateToString(
+                    DateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
         }
         hotelHomepageModel.nightCounter = countRoomDuration()
 
@@ -494,10 +494,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     private fun onCheckOutDateChanged(newCheckOutDate: Date) {
-        hotelHomepageModel.checkOutDate = TravelDateUtil.dateToString(
-                TravelDateUtil.YYYY_MM_DD, newCheckOutDate)
-        hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(
-                TravelDateUtil.DEFAULT_VIEW_FORMAT, newCheckOutDate)
+        hotelHomepageModel.checkOutDate = DateUtil.dateToString(
+                DateUtil.YYYY_MM_DD, newCheckOutDate)
+        hotelHomepageModel.checkOutDateFmt = DateUtil.dateToString(
+                DateUtil.DEFAULT_VIEW_FORMAT, newCheckOutDate)
         hotelHomepageModel.nightCounter = countRoomDuration()
 
         trackRoomDates()

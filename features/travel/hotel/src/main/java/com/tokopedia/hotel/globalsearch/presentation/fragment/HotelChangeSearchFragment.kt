@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
@@ -34,6 +33,7 @@ import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchA
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.SEARCH_ID
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.SEARCH_TYPE
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
+import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.fragment_hotel_change_search.*
 import java.util.*
 
@@ -57,11 +57,11 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
             globalSearchModel.destinationType = it.getString(EXTRA_DESTINATION_TYPE) ?: ""
             globalSearchModel.destinationType
             globalSearchModel.checkInDate = it.getString(EXTRA_CHECK_IN_DATE)
-                    ?: TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 1))
-            globalSearchModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.getString(EXTRA_CHECK_IN_DATE) ?: ""))
+                    ?: DateUtil.dateToString(DateUtil.YYYY_MM_DD, DateUtil.addTimeToSpesificDate(DateUtil.getCurrentCalendar().time, Calendar.DATE, 1))
+            globalSearchModel.checkInDateFmt = DateUtil.dateToString(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.stringToDate(DateUtil.YYYY_MM_DD, it.getString(EXTRA_CHECK_IN_DATE) ?: ""))
             globalSearchModel.checkOutDate = it.getString(EXTRA_CHECK_OUT_DATE)
-                    ?: TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 2))
-            globalSearchModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.getString(EXTRA_CHECK_OUT_DATE) ?: ""))
+                    ?: DateUtil.dateToString(DateUtil.YYYY_MM_DD, DateUtil.addTimeToSpesificDate(DateUtil.getCurrentCalendar().time, Calendar.DATE, 2))
+            globalSearchModel.checkOutDateFmt = DateUtil.dateToString(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.stringToDate(DateUtil.YYYY_MM_DD, it.getString(EXTRA_CHECK_OUT_DATE) ?: ""))
             globalSearchModel.numOfGuests = it.getInt(EXTRA_NUM_OF_GUESTS)
             globalSearchModel.numOfRooms = it.getInt(EXTRA_NUM_OF_ROOMS)
             globalSearchModel.locationLong = it.getDouble(EXTRA_DESTINATION_LONG, 0.0)

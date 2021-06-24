@@ -1,0 +1,196 @@
+package com.tokopedia.utils.date
+
+import java.text.DateFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
+
+/**
+ * @author by furqan on 24/06/2021
+ *
+ * This Util will help to format object related to Date,
+ * such as Date to String, String to Date, format Date, etc
+ *
+ */
+object DateUtil {
+
+    private val DEFAULT_TIMEZONE: TimeZone = TimeZone.getTimeZone("GMT+7")
+    private val DEFAULT_LOCALE = Locale("in", "ID")
+
+    const val DEFAULT_VIEW_FORMAT = "dd MMM yyyy"
+    const val DEFAULT_VIEW_TIME_FORMAT = "dd MMM yyyy, HH:mm"
+    const val YYYY_MM_DD = "yyyy-MM-dd"
+    const val FORMAT_DATE = "EEEE, dd LLLL yyyy"
+    const val YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+    const val YYYY_MM_DD_T_HH_MM_SS = "yyyy-MM-dd'T'HH:mm:ss"
+    const val VIEW_FORMAT_WITHOUT_YEAR = "dd MMM"
+    const val YYYYMMDD = "yyyyMMdd"
+    const val HH_MM = "HH:mm"
+    const val EEE_DD_MMM_YY = "EEE, dd MMM yy"
+
+    /**
+     * Function to format string to date
+     *
+     * @param format string input format eg. "yyyy-MM-dd", there are some available format above
+     * @param input string that want to be formatted to date eg. "2021-10-10"
+     *
+     * @return Date object from String input
+     */
+    fun stringToDate(format: String, input: String): Date {
+        val fromFormat: DateFormat = SimpleDateFormat(format, DEFAULT_LOCALE)
+        return try {
+            fromFormat.parse(input) ?: throw ParseException("Failed to parse", 0)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            throw RuntimeException("Date doesn't valid ($input) with format $format")
+        }
+    }
+
+    /**
+     * Function to format date to string
+     *
+     * @param format expected result string format eg. "yyyy-MM-dd", there are some available format above
+     * @param input date object that want to be formatted to string eg. Date(2021-10-10)
+     *
+     * @return String object from Date input with selected format
+     */
+    fun dateToString(format: String, input: Date): String {
+        val formatDate: DateFormat = SimpleDateFormat(format, DEFAULT_LOCALE)
+        return formatDate.format(input)
+    }
+
+    /**
+     * Function to get current calendar
+     *
+     * @return current Calendar Instance
+     */
+    fun getCurrentCalendar(): Calendar = Calendar.getInstance()
+
+    /**
+     * Function to add some value for specific field in Date
+     *
+     * @param date date that want to be changed, eg. Date(2021-10-10)
+     * @param field field that want to be changed from date, eg. Calendar.MINUTE, Calendar.YEAR, etc
+     * @param value additional value for the selected field
+     *
+     * @return Date object
+     */
+    fun addTimeToSpesificDate(date: Date, field: Int, value: Int): Date {
+        val now = getCurrentCalendar()
+        now.time = date
+        now.add(field, value)
+        return now.time
+    }
+
+    /**
+     * Function to remove time from date, so hour, minute, second and ms will be 0
+     *
+     * @param date date that want to be changed, eg. Date(2021-10-10)
+     *
+     * @return Date object without 0 time, only date
+     */
+    fun removeTime(date: Date): Date {
+        val cal = Calendar.getInstance()
+        cal.time = date
+        cal[Calendar.HOUR_OF_DAY] = 0
+        cal[Calendar.MINUTE] = 0
+        cal[Calendar.SECOND] = 0
+        cal[Calendar.MILLISECOND] = 0
+        return cal.time
+    }
+
+    /**
+     * Function to format date based on user timezone
+     *
+     * @param currentFormat current format of date string
+     * @param newFormat expected format for date string
+     * @param dateString date in string
+     *
+     * @return String with new format
+     */
+    @JvmStatic
+    fun formatDateByUsersTimezone(currentFormat: String, newFormat: String, dateString: String): String {
+        val timeZone = TimeZone.getDefault()
+        return formatDate(currentFormat, newFormat, dateString, DEFAULT_LOCALE, DEFAULT_TIMEZONE, timeZone)
+    }
+
+    /**
+     * Function to format date
+     *
+     * @param currentFormat current format of date string
+     * @param newFormat expected format for date string
+     * @param dateString date in string
+     * @param locale User Locale, default : ID Indonesia
+     *
+     * @return String with new format
+     */
+    @JvmOverloads
+    fun formatDate(currentFormat: String, newFormat: String, dateString: String, locale: Locale = DEFAULT_LOCALE): String {
+        return try {
+            val fromFormat: DateFormat = SimpleDateFormat(currentFormat, locale)
+            fromFormat.isLenient = false
+            val toFormat: DateFormat = SimpleDateFormat(newFormat, locale)
+            toFormat.isLenient = false
+            val date = fromFormat.parse(dateString)
+            if (date != null) {
+                return toFormat.format(date)
+            } else {
+                ""
+            }
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            dateString
+        }
+    }
+
+    /**
+     * Function to format date from one timezone to another timezone
+     *
+     * @param currentFormat current format of date string
+     * @param newFormat expected format for date string
+     * @param dateString date in string
+     * @param locale User Locale, default : ID Indonesia
+     * @param fromTimeZone the date previous timezone
+     * @param toTimezone the expected timezone for new date
+     *
+     * @return String with new format
+     */
+    fun formatDate(currentFormat: String,
+                   newFormat: String,
+                   dateString: String,
+                   locale: Locale,
+                   fromTimeZone: TimeZone,
+                   toTimezone: TimeZone): String {
+        return try {
+            val fromFormat: DateFormat = SimpleDateFormat(currentFormat, locale)
+            fromFormat.timeZone = fromTimeZone
+            fromFormat.isLenient = false
+            val toFormat: DateFormat = SimpleDateFormat(newFormat, locale)
+            toFormat.isLenient = false
+            toFormat.timeZone = toTimezone
+            val date = fromFormat.parse(dateString)
+            if (date != null) {
+                toFormat.format(date)
+            } else {
+                ""
+            }
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            dateString
+        }
+    }
+
+    /**
+     * Function to format date string to UI format
+     * this function will format the date string
+     * from yyyy-MM-dd format to dd MMM yyyy format
+     *
+     * @param dateStr date in string
+     *
+     * @return String with new format
+     */
+    @JvmStatic
+    fun formatToUi(dateStr: String): String {
+        return formatDate(YYYY_MM_DD, DEFAULT_VIEW_FORMAT, dateStr)
+    }
+}

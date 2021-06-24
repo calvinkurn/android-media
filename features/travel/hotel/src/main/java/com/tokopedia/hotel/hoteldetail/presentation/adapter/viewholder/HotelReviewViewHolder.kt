@@ -3,9 +3,9 @@ package com.tokopedia.hotel.hoteldetail.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.travel.utils.TextHtmlUtils
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
+import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.item_hotel_review.view.*
 
 /**
@@ -27,8 +27,8 @@ class HotelReviewViewHolder(val view: View): AbstractViewHolder<HotelReview>(vie
 
             reviewer_name.text = review.reviewerName
             reviewer_origin_and_date.text = resources.getString(R.string.hotel_review_country_date, review.country,
-                    TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
-                            TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, review.createTime)))
+                    DateUtil.dateToString(DateUtil.DEFAULT_VIEW_FORMAT,
+                            DateUtil.stringToDate(DateUtil.YYYY_MM_DD, review.createTime)))
         }
     }
 

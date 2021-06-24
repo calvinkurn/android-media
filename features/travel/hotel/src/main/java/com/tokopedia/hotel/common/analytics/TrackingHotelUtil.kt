@@ -5,7 +5,6 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelPropertyRoom
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
@@ -21,6 +20,7 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.date.DateUtil
 import kotlin.math.roundToLong
 
 /**
@@ -645,7 +645,7 @@ class TrackingHotelUtil {
     }
 
     private fun convertDate(date: String): String =
-            TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.YYYYMMDD, date)
+            DateUtil.formatDate(DateUtil.YYYY_MM_DD, DateUtil.YYYYMMDD, date)
 
     private fun positionTracker(index: Int): Int = index + 1
 

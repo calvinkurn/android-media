@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.cancellation.domain.FlightCancellationGetPassengerUseCase
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
@@ -13,6 +12,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
 import javax.inject.Inject
 
 /**
@@ -81,9 +81,9 @@ class FlightCancellationPassengerViewModel @Inject constructor(
 
             // sort journey by departure date
             if (cancellationList.size > 1) {
-                val firstJourney = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                val firstJourney = DateUtil.stringToDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                         cancellationList[0].flightCancellationJourney.departureTime)
-                val secondJourney = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                val secondJourney = DateUtil.stringToDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                         cancellationList[1].flightCancellationJourney.departureTime)
 
                 if (firstJourney.after(secondJourney)) {
@@ -93,9 +93,9 @@ class FlightCancellationPassengerViewModel @Inject constructor(
                 }
             }
             if (selectedList.size > 1) {
-                val firstJourney = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                val firstJourney = DateUtil.stringToDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                         selectedList[0].flightCancellationJourney.departureTime)
-                val secondJourney = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                val secondJourney = DateUtil.stringToDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                         selectedList[1].flightCancellationJourney.departureTime)
 
                 if (firstJourney.after(secondJourney)) {

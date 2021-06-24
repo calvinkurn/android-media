@@ -1,6 +1,5 @@
 package com.tokopedia.flight.booking.data.mapper
 
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.booking.data.FlightCart
 import com.tokopedia.flight.booking.data.FlightCartViewEntity
 import com.tokopedia.flight.booking.data.FlightPromoViewEntity
@@ -17,6 +16,7 @@ import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
+import com.tokopedia.utils.date.DateUtil
 import java.util.*
 
 /**
@@ -63,9 +63,9 @@ class FlightBookingMapper {
                     }
                 }
 
-                var departureDateString = TravelDateUtil.dateToString(TravelDateUtil.EEE_DD_MMM_YY, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, item.departureTime))
-                departureDateString += String.format(" • %s-%s", TravelDateUtil.dateToString(TravelDateUtil.HH_MM, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, item.departureTime)),
-                        TravelDateUtil.dateToString(TravelDateUtil.HH_MM, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, item.arrivalTime)))
+                var departureDateString = DateUtil.dateToString(DateUtil.EEE_DD_MMM_YY, DateUtil.stringToDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, item.departureTime))
+                departureDateString += String.format(" • %s-%s", DateUtil.dateToString(DateUtil.HH_MM, DateUtil.stringToDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, item.departureTime)),
+                        DateUtil.dateToString(DateUtil.HH_MM, DateUtil.stringToDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, item.arrivalTime)))
                 if (item.addDayArrival > 0) departureDateString += String.format(" (+%d hari)", item.addDayArrival)
 
                 newJourney.journeyId = item.id
