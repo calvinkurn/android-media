@@ -7,7 +7,7 @@
 
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_info_courier"
+        android:id="@+id/tv_location_unmatched"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="51dp"
@@ -15,23 +15,23 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="Nama lokasi tidak sesuai alamatmu?"
+        android:text="@string/tv_location_unmacted"
         android:gravity="center"
         app:typographyType="heading_2"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_info_courier_detail"
+        android:id="@+id/tv_location_unmatched_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginStart="@dimen/dp_32"
         android:layout_marginEnd="@dimen/dp_32"
-        app:layout_constraintTop_toBottomOf="@id/tv_info_courier"
+        app:layout_constraintTop_toBottomOf="@id/tv_location_unmatched"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:textColor="@color/light_N700_68"
-        android:text="Tenang, kamu akan isi alamat nanti. Pastikan pinpoint sudah sesuai dulu."
+        android:text="@string/tv_location_unmacted_detail"
         android:gravity="center"
         app:typographyType="body_2" />
 
@@ -43,11 +43,11 @@
         android:layout_marginBottom="@dimen/unify_space_16"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
-        android:text="Mengerti"
+        android:text="@string/mismatch_btn_title"
         android:textStyle="bold"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_info_courier_detail"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_location_unmatched_detail"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

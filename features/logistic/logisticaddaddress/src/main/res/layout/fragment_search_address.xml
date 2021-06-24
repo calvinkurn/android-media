@@ -63,7 +63,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        android:text="Mau cara lain? isi alamat secara manual"
+        android:text="@string/txt_message_initial_load"
         app:typographyType="body_2"
         android:visibility="visible"/>
 

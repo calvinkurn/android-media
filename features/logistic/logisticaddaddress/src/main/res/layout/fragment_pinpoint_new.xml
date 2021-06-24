@@ -38,13 +38,29 @@
 
         </RelativeLayout>
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <RelativeLayout
             android:id="@+id/maps_empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/layout_botoomsheet_loc"
-            android:contentDescription="null"
-            android:visibility="gone"/>
+            android:layout_above="@id/layout_botoomsheet_loc">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/img_maps_empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="null"/>
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ic_location"
+                android:layout_width="@dimen/unify_space_32"
+                android:layout_height="@dimen/unify_space_40"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                app:icon_name="LOCATION_FILLED"/>
+
+        </RelativeLayout>
+
+
 
         <LinearLayout
             android:id="@+id/btn_horizonal_layout"

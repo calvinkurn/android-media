@@ -20,7 +20,7 @@
         android:paddingRight="@dimen/dp_16"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <include
             android:id="@+id/loading_list_1"
@@ -53,8 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:typographyType="body_1"
-            app:typographyWeight="bold"
-            android:text="Jalan Prof Doktor"/>
+            app:typographyWeight="bold"/>
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/btn_info"
@@ -75,7 +74,6 @@
             app:typographyType="body_3"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_address"
-            android:text="Setiabudii, blablabla"
             android:textColor="@color/Neutral_N700_44"/>
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -107,7 +105,7 @@
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_invalid_loc"
@@ -139,10 +137,10 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_ana_negative"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="@dimen/unify_space_16"
             android:layout_weight="1"
-            android:text="Isi Alamat Manual"
+            android:text="@string/btn_ana_negative"
             android:textStyle="bold"
             app:unifyButtonType="main"
             app:unifyButtonVariant="filled"/>

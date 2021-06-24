@@ -757,7 +757,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             if (showIllustrationMap) {
                 binding?.mapsEmpty?.visibility = View.VISIBLE
                 binding?.mapViews?.visibility = View.GONE
-                binding?.mapsEmpty?.setImageUrl(MAPS_EMPTY)
+                binding?.imgMapsEmpty?.setImageUrl(MAPS_EMPTY)
                 showIllustrationMap = false
             }
             binding?.bottomsheetLocation?.run {

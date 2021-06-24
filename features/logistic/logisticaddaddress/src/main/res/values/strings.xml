@@ -159,8 +159,8 @@
 
     <string-array name="labelAlamatList">
         <item>Rumah</item>
-        <item>Kantor</item>
         <item>Apartemen</item>
+        <item>Kantor</item>
         <item>Kos</item>
     </string-array>
 
@@ -180,6 +180,10 @@
     <string name="title_pinpoint_new">Tentukan Pinpoint Lokasi</string>
     <string name="btn_choose_location">Pilih Lokasi &amp; Lanjut Isi Alamat</string>
     <string name="btn_not_found_location">Tidak Ketemu? Isi Alamat Manual</string>
+    <string name="btn_ana_negative">Isi Alamat Manual</string>
+    <string name="btn_aktifkan_layanan_lokasi">Aktifkan Layanan Lokasi</string>
+    <string name="tv_location_unmacted">Nama lokasi tidak sesuai alamatmu?</string>
+    <string name="tv_location_unmacted_detail">Tenang, kamu akan isi alamat nanti. Pastikan pinpoint sudah sesuai dulu.</string>
 
     <!--Address Form-->
     <string name="title_address_form">Detail Alamat</string>
@@ -189,6 +193,10 @@
     <string name="tv_error_field">Wajib diisi</string>
     <string name="tv_title_nama_penerima_bottomsheet">Informasi nama penerima</string>
     <string name="tv_desc_nama_penerima_bottomsheet">Nama penerima akan disimpan sebagai nama &lt;b&gt;akunmu.&lt;/b&gt; Kamu bisa ubah nanti melalui halaman &lt;b&gt;Akun Saya -> Pengaturan Akun.&lt;/b&gt;</string>
-
     <string name="validate_no_ponsel_new">Min. 9 angka</string>
+    <string name="error_nama_penerima">Nama Penerima terlalu pendek, min. 2 karakter</string>
+    <string name="btn_pilih">Pilih</string>
+    <string name="tv_info_lebih_lanjut">Info lebih lanjut</string>
+    <string name="cb_jadikan_alamat_utama">Jadikan alamat utama</string>
+    <string name="btn_simpan">Simpan</string>
 </resources>

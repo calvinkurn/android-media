@@ -359,8 +359,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun setupBottomShetInfoPenerima(viewBinding: BottomsheetLocationUnmatchedBinding) {
         viewBinding.run {
-            tvInfoCourier.text = getString(R.string.tv_title_nama_penerima_bottomsheet)
-            tvInfoCourierDetail.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_desc_nama_penerima_bottomsheet)).spannedString }
+            tvLocationUnmatched.text = getString(R.string.tv_title_nama_penerima_bottomsheet)
+            tvLocationUnmatchedDetail.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_desc_nama_penerima_bottomsheet)).spannedString }
             btnClose.setOnClickListener {
                 bottomSheetInfoPenerima?.dismiss()
             }
@@ -400,6 +400,11 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             if (formAccount.etNomorHp.textFieldInput.text.toString().isEmpty()  || formAccount.etNomorHp.textFieldInput.text.toString() == " ") {
                 validated = false
                 setWrapperError(formAccount.etNomorHp.textFieldWrapper, getString(R.string.tv_error_field))
+            }
+
+            if (formAccount.etNamaPenerima.textFieldInput.text.toString().length < 2) {
+                validated = false
+                view?.let { Toaster.build(it, getString(R.string.error_nama_penerima), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
             }
         }
         return validated

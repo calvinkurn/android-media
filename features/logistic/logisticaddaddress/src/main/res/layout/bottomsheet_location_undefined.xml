@@ -50,7 +50,7 @@
         android:layout_marginStart="@dimen/unify_space_48"
         android:layout_marginEnd="@dimen/unify_space_48"
         android:layout_weight="1"
-        android:text="Aktifkan Layanan Lokasi"
+        android:text="@string/btn_aktifkan_layanan_lokasi"
         android:textStyle="bold"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"

@@ -429,7 +429,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
             binding.btnChooseZipcode.isEnabled = true
         }
         binding.btnChooseZipcode.setOnClickListener {
-            if (binding.etKodepos.textFieldInput.text.toString().length < 5) {
+            if (binding.etKodepos.textFieldInput.text.toString().length < 4) {
                 AddNewAddressRevampAnalytics.onViewErrorToasterPilih(userSession.userId)
                 AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
                 Toaster.build(it, "Kode pos terlalu pendek, min. 5 karakter.", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()

@@ -100,7 +100,7 @@
                 app:layout_constraintStart_toEndOf="@id/cb_default_loc"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:typographyType="body_1"
-                android:text="Jadikan alamat utama"/>
+                android:text="@string/cb_jadikan_alamat_utama"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -116,7 +116,7 @@
             app:unifyButtonVariant="filled"
             app:unifyButtonType="main"
             android:textStyle="bold"
-            android:text="Simpan"
+            android:text="@string/btn_simpan"
             android:textAlignment="center"/>
 
     </LinearLayout>
