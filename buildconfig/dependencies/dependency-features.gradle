@@ -145,7 +145,7 @@ ext {
             install_referral                : ":features:im:install_referral",
             moengageWrapper                 : ":features:im:moengage_wrapper",
 
-            tokoMart                        : ":features:tokomart",
+            tokopediaNow                    : ":features:tokopedianow",
 
             reviewProduct                   : ":features:merchant:review_product",
             reputationCommon                : ":features:merchant:reputation_common",
