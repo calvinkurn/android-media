@@ -126,17 +126,17 @@ class PayLaterOffersFragment : BaseDaggerFragment() {
 
     private fun onPayLaterApplicationLoadingFail() {
         // set payLater data in view pager
-        try {
-            paymentOptionViewPager.post {
-                if (payLaterViewModel.getPayLaterOptions().isNotEmpty()) {
+        paymentOptionViewPager.post {
+            if (payLaterViewModel.getPayLaterOptions().isNotEmpty()) {
+                try {
                     payLaterOffersShimmerGroup.gone()
                     payLaterDataGroup.visible()
                     pagerAdapter.setPaymentData(payLaterViewModel.getPayLaterOptions(), arrayListOf())
+                } catch (e: Exception) {
+                    Timber.e(e)
                 }
             }
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
+        } 
     }
 
     companion object {
