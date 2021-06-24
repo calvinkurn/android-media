@@ -8,7 +8,6 @@ import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.TypedValue
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
-import kotlin.math.max
 import kotlin.math.roundToInt
 
 object BitmapHelper {
@@ -225,8 +224,11 @@ object BitmapHelper {
         val heightMainBitmap = mainBitmap.height
 
         // scaled resize the watermark container
-        val scaledWatermarkBitmap = watermarkBitmap!!.resizeScaledBitmap(
-            max(widthMainBitmap, heightMainBitmap)
+        val scaledWatermarkBitmap = Bitmap.createScaledBitmap(
+            watermarkBitmap!!,
+            widthMainBitmap,
+            widthMainBitmap,
+            true
         )
 
         // merge the main bitmap with scaled watermark bitmap
@@ -238,7 +240,7 @@ object BitmapHelper {
 
         Canvas(resultBitmap).apply {
             drawBitmap(mainBitmap, 0f, 0f, null)
-            drawBitmap(scaledWatermarkBitmap, 0f, 0f, null)
+            drawBitmap(scaledWatermarkBitmap, 0f, ((mainBitmap.height - scaledWatermarkBitmap.height) / 2).toFloat(), null)
         }
 
         return resultBitmap
