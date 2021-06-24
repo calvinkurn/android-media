@@ -1,12 +1,9 @@
 package com.tokopedia.logisticaddaddress.utils
 
 import android.content.ContentResolver
-import android.content.Context
 import android.net.Uri
 import android.provider.ContactsContract
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.logisticaddaddress.domain.model.add_address.ContactData
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 
 object AddEditAddressUtil {
 
