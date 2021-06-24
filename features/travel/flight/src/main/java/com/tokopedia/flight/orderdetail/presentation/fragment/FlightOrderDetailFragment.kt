@@ -38,6 +38,7 @@ import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDet
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailViewModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.flight.resend_email.presentation.bottomsheet.FlightOrderResendEmailBottomSheet
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -116,7 +117,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                         title = errorData.title
                         message = errorData.message
                     } catch (t: Throwable) {
-                        message = getString(R.string.flight_error_pick_journey)
+                        message = ErrorHandler.getErrorMessage(requireContext(), t)
                     }
                     renderErrorView(title, message)
                 }

@@ -271,6 +271,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
             }
         })
 
+        bookingViewModel.errorCancelVoucher.observe(viewLifecycleOwner,{
+            renderErrorToast(it)
+        })
+
     }
 
     private fun setUpView() {

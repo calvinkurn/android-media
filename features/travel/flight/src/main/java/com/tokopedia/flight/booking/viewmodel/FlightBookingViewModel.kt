@@ -97,6 +97,10 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
     val flightAmenityPriceData: LiveData<List<FlightCart.PriceDetail>>
         get() = _flightAmenityPriceData
 
+    private val _errorCancelVoucher = MutableLiveData<Int>()
+    val errorCancelVoucher: LiveData<Int>
+        get() = _errorCancelVoucher
+
     //route for flightDetail
     var flightDetailModels: List<FlightDetailModel> = listOf()
 
@@ -263,7 +267,9 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 val graphqlRequest = GraphqlRequest(rawQuery, FlightCancelVoucher.Response::class.java)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightCancelVoucher>()
-        }) { }
+        }) {
+            _errorCancelVoucher.value = R.string.flight_error_cancel_voucher
+        }
     }
 
     private fun convertVerifyParamToString(bookingVerifyParam: FlightVerifyParam): String {
