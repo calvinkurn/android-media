@@ -9,16 +9,13 @@ import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.DataAddAddress
 import com.tokopedia.logisticCommon.data.response.DefaultAddressData
 import com.tokopedia.logisticCommon.data.response.KeroDistrictRecommendation
-import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
-import com.tokopedia.logisticaddaddress.domain.model.add_address.AddAddressResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class AddressFormViewModel @Inject constructor(private val repo: KeroRepository,
-                            private val getDistrictMapper: GetDistrictMapper) : ViewModel() {
+class AddressFormViewModel @Inject constructor(private val repo: KeroRepository) : ViewModel() {
 
     private val _districtDetail = MutableLiveData<Result<KeroDistrictRecommendation>>()
     val districtDetail: LiveData<Result<KeroDistrictRecommendation>>

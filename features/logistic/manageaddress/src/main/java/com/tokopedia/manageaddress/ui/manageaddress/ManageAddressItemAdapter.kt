@@ -123,7 +123,8 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
         }
 
         private fun setVisibility(peopleAddress: RecipientAddressModel) {
-            if(peopleAddress.latitude.isNullOrEmpty()|| peopleAddress.longitude.isNullOrEmpty()) {
+            if(peopleAddress.latitude.isNullOrEmpty() || peopleAddress.longitude.isNullOrEmpty() ||
+                    peopleAddress.latitude == "0.0" ||  peopleAddress.longitude == "0.0") {
                 val colorGrey = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
                 imageLocation.setImage(IconUnify.LOCATION_OFF, colorGrey, colorGrey)
                 pinpointText.text = itemView.context.getString(R.string.no_pinpoint)

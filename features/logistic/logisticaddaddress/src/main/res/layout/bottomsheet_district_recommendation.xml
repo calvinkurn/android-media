@@ -210,7 +210,7 @@
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_30"
+                android:layout_marginBottom="@dimen/dp_40"
                 app:unifyButtonVariant="filled"
                 app:unifyButtonType="main"
                 android:textStyle="bold"

@@ -81,6 +81,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
     private var districtAddressData: Address? = null
     private var isPinpoint: Boolean = false
     private var isKodePosShown: Boolean = false
+    private var postalCode: String = ""
 
     private var binding by autoCleared<BottomsheetDistrictRecommendationBinding>()
 
@@ -289,6 +290,18 @@ class DiscomBottomSheetFragment : BottomSheets(),
                 }.toCompositeSubs()
 
         binding.rvListDistrict.addOnScrollListener(mEndlessListener)
+
+        binding.btnChooseZipcode.setOnClickListener {
+            if (binding.etKodepos.textFieldInput.text.toString().length < 4) {
+                AddNewAddressRevampAnalytics.onViewErrorToasterPilih(userSession.userId)
+                AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
+                Toaster.build(it, "Kode pos terlalu pendek, min. 5 karakter.", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            } else {
+                AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
+                districtAddressData?.let { data -> actionListener.onChooseZipcode(data, postalCode, isPinpoint) }
+                dismiss()
+            }
+        }
     }
 
     override fun onDistrictItemClicked(districtModel: Address) {
@@ -346,7 +359,6 @@ class DiscomBottomSheetFragment : BottomSheets(),
         binding.llListDistrict.visibility = View.GONE
         binding.llPopularCity.visibility = View.GONE
 
-        binding.btnChooseZipcode.isEnabled = false
         binding.cardAddress.addressDistrict.text = "${data?.districtName}, ${data?.cityName}, ${data?.provinceName}"
         binding.etKodepos.textFieldInput.apply {
             setOnFocusChangeListener { _, hasFocus ->
@@ -421,24 +433,14 @@ class DiscomBottomSheetFragment : BottomSheets(),
         }
     }
 
-    override fun onZipCodeClicked(zipCode: String) {
+    override fun onZipCodeClicked(postalCode: String) {
+        this.postalCode = postalCode
         AddNewAddressRevampAnalytics.onClickChipsKodePosNegative(userSession.userId)
         binding.rvKodeposChips.visibility = View.GONE
         binding.etKodepos.textFieldInput.run {
-            setText(zipCode)
-            binding.btnChooseZipcode.isEnabled = true
+            setText(postalCode)
         }
-        binding.btnChooseZipcode.setOnClickListener {
-            if (binding.etKodepos.textFieldInput.text.toString().length < 4) {
-                AddNewAddressRevampAnalytics.onViewErrorToasterPilih(userSession.userId)
-                AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
-                Toaster.build(it, "Kode pos terlalu pendek, min. 5 karakter.", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
-            } else {
-                AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
-                districtAddressData?.let { data -> actionListener.onChooseZipcode(data, zipCode, isPinpoint) }
-                dismiss()
-            }
-        }
+
     }
 
 }
