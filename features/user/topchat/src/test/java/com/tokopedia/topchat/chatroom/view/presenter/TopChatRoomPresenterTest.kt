@@ -1116,7 +1116,10 @@ class TopChatRoomPresenterTest {
         }
 
         // When
-        presenter.followUnfollowShop(exShopId.toString(), onError, onSuccess)
+        presenter.followUnfollowShop(
+            exShopId.toString(), onError, onSuccess,
+            ToggleFavouriteShopUseCase.Action.FOLLOW
+        )
 
         // Then
         verify { onError.invoke(throwable) }
