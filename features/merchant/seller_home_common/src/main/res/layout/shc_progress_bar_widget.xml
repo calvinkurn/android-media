@@ -48,7 +48,7 @@
     <View
         android:id="@+id/progress_bar_base"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/shc_dimen_7dp"
+        android:layout_height="@dimen/layout_lvl1"
         android:background="@drawable/shc_base_progress_bar"
         app:layout_constraintBottom_toBottomOf="@id/progress_bar_current"
         app:layout_constraintTop_toTopOf="@id/progress_bar_current" />

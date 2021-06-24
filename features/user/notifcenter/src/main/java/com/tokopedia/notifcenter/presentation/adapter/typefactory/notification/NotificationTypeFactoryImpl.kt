@@ -88,7 +88,7 @@ class NotificationTypeFactoryImpl constructor(
         val item = visitables.getOrNull(position)
         if (item is NotificationUiModel) {
             return when {
-                item.isTrackHistory() && item.hasWidget() -> WidgetNotificationViewHolder.LAYOUT
+                item.isTrackHistory() -> WidgetNotificationViewHolder.LAYOUT
                 item.isTypeDefault() -> NormalNotificationViewHolder.LAYOUT
                 item.isTypeSingleProduct() -> SingleProductNotificationViewHolder.LAYOUT
                 item.isCarouselProduct() -> CarouselProductNotificationViewHolder.LAYOUT

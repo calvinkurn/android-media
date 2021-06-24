@@ -26,11 +26,7 @@ interface WidgetAdapterFactory {
 
     fun type(model: WidgetNextShopGradeUiModel): Int
 
-    fun type(model: WidgetNextUpdateUiModel): Int
-
     fun type(model: WidgetPMDeactivateUiModel): Int
-
-    fun type(model: WidgetErrorStateUiModel): Int
 
     fun type(model: WidgetTickerUiModel): Int
 

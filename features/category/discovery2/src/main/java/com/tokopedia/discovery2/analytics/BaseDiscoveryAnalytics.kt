@@ -5,6 +5,8 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -82,5 +84,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun getHostSource() : String { return ""}
     open fun getHostTrackingSource() : String {return ""}
     open fun getEventLabel() : String {return ""}
+    open fun onTopadsHeadlineImpression(cpmModel: CpmModel, adapterPosition: Int) {}
+    open fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, it: CpmData) {}
 
 }

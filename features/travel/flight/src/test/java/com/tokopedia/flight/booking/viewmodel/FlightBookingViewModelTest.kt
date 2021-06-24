@@ -353,7 +353,7 @@ class FlightBookingViewModelTest {
 
         // then
         passenger.passengerLocalId shouldBe 1
-        passenger.type shouldBe FlightBookingPassenger.ADULT
+        passenger.type shouldBe FlightBookingPassenger.ADULT.value
         passenger.flightBookingLuggageMetaViewModels.size shouldBe 0
         passenger.flightBookingMealMetaViewModels.size shouldBe 0
         passenger.headerTitle shouldBe userName
@@ -374,7 +374,7 @@ class FlightBookingViewModelTest {
 
         // then
         passenger.passengerLocalId shouldBe 1
-        passenger.type shouldBe FlightBookingPassenger.ADULT
+        passenger.type shouldBe FlightBookingPassenger.ADULT.value
         passenger.flightBookingLuggageMetaViewModels.size shouldBe 0
         passenger.flightBookingMealMetaViewModels.size shouldBe 0
         passenger.headerTitle shouldBe userName
@@ -1677,7 +1677,7 @@ class FlightBookingViewModelTest {
         // then
         val newPassengers = viewModel.getPassengerModels()
         newPassengers[0].passengerLocalId shouldBe 1
-        newPassengers[0].type shouldBe FlightBookingPassenger.ADULT
+        newPassengers[0].type shouldBe FlightBookingPassenger.ADULT.value
         newPassengers[0].flightBookingLuggageMetaViewModels.size shouldBe 0
         newPassengers[0].flightBookingMealMetaViewModels.size shouldBe 0
         newPassengers[0].headerTitle shouldBe "Penumpang dewasa"

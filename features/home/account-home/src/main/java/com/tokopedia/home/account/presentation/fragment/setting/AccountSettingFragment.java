@@ -1,8 +1,6 @@
 package com.tokopedia.home.account.presentation.fragment.setting;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,7 +16,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -305,20 +302,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         }
     }
 
-    private void intentToAddPassword() {
-        if (getActivity() != null) {
-            startActivityForResult(RouteManager.getIntent(getActivity(),
-                    ApplinkConstInternalGlobal.ADD_PASSWORD), REQUEST_ADD_PASSWORD);
-        }
-    }
-
     private void gotoAccountBank() {
         if (getActivity() != null) {
-            if (userSession.hasPassword()) {
-                startActivity(RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.SETTING_BANK));
-            } else {
-                showNoPasswordDialog();
-            }
+            startActivity(RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.SETTING_BANK));
         }
     }
 
@@ -427,24 +413,5 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private void onPushNotifClicked() {
         RouteManager.route(getContext(), ApplinkConstInternalGlobal.OTP_PUSH_NOTIF_SETTING);
-    }
-
-    private void showNoPasswordDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getResources().getString(R.string.error_bank_no_password_title));
-        builder.setMessage(getResources().getString(R.string.error_bank_no_password_content));
-        builder.setPositiveButton(getResources().getString(R.string.error_no_password_yes), (DialogInterface dialogInterface, int i) -> {
-            intentToAddPassword();
-            dialogInterface.dismiss();
-        });
-        builder.setNegativeButton(getResources().getString(R.string.error_no_password_no), (DialogInterface dialogInterface, int i) -> {
-            dialogInterface.dismiss();
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
     }
 }
