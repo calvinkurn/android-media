@@ -18,6 +18,7 @@ import com.tokopedia.tokomart.home.domain.usecase.GetHomeLayoutListUseCase
 import com.tokopedia.tokomart.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokomart.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokomart.util.getOrAwaitValue
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -34,7 +35,7 @@ import org.junit.Rule
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyString
 
-abstract class TokoMartHomeViewModelTestFixture {
+abstract class TokoNowHomeViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var getHomeLayoutListUseCase: GetHomeLayoutListUseCase
@@ -96,15 +97,15 @@ abstract class TokoMartHomeViewModelTestFixture {
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifyGetCategoryListResponseSuccess(expectedResponse: HomeCategoryGridUiModel) {
+    protected fun verifyGetCategoryListResponseSuccess(expectedResponse: HomeLayoutItemUiModel) {
         val homeLayoutList = viewModel.homeLayoutList.getOrAwaitValue()
-        val actualResponse = (homeLayoutList as Success).data.result.find { it is HomeCategoryGridUiModel }
+        val actualResponse = (homeLayoutList as Success).data.result.find { it.layout is HomeCategoryGridUiModel }
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifyGetBannerResponseSuccess(expectedResponse: BannerDataModel) {
+    protected fun verifyGetBannerResponseSuccess(expectedResponse: HomeLayoutItemUiModel) {
         val homeLayoutList = viewModel.homeLayoutList.getOrAwaitValue()
-        val actualResponse = (homeLayoutList as Success).data.result.find { it is BannerDataModel }
+        val actualResponse = (homeLayoutList as Success).data.result.find { it.layout is BannerDataModel }
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 

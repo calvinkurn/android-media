@@ -25,12 +25,13 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:ellipsize="end"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:maxLines="2"
             android:textColor="@color/Unify_N700"
             app:layout_constraintBottom_toBottomOf="@id/imageCategory"
             app:layout_constraintStart_toEndOf="@id/imageCategory"
             app:layout_constraintTop_toTopOf="@id/imageCategory"
+            app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="small"
             tools:text="Long Category Title" />
     </androidx.constraintlayout.widget.ConstraintLayout>
