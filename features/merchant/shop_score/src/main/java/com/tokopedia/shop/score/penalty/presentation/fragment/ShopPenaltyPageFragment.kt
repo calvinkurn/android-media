@@ -225,7 +225,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             hideLoading()
             when (it) {
                 is Success -> {
-                    onSuccessGetPenaltyListData(it.data.first, it.data.second)
+                    onSuccessGetPenaltyListData(it.data.first, it.data.third)
                 }
                 is Fail -> {
                     penaltyPageAdapter.setErrorStatePenalty(ItemPenaltyErrorUiModel(it.throwable))
