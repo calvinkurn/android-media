@@ -92,6 +92,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     private var rvVariantBottomSheet: RecyclerView? = null
     private var buttonActionType = 0
     private var buttonText = ""
+    private var alreadyHitQtyTrack = false
 
     fun show(fragmentManager: FragmentManager,
              tag: String,
@@ -276,6 +277,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 onSuccessTransaction(it.data)
             } else if (it is Fail) {
                 it.throwable.run {
+                    trackAtcError(message ?: "")
                     viewModel.updateActivityResult(atcSuccessMessage = "")
                     if (this is AkamaiErrorException && message != null) {
                         showToasterError(
@@ -289,6 +291,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 }
             }
         })
+    }
+
+    private fun trackAtcError(message: String) {
+        val productId = adapter.getHeaderDataModel()?.headerData?.productId ?: ""
+
+        ProductTrackingCommon.eventEcommerceAtcError(message, productId, userSessionInterface.userId, sharedViewModel.aggregatorParams.value?.pageSource
+                ?: "")
     }
 
     private fun getErrorMessage(throwable: Throwable): String {
@@ -341,10 +350,14 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 productId = productId, shopId = aggregatorParams?.shopId ?: "",
                 productName = adapter.getHeaderDataModel()?.headerData?.productName ?: "",
                 productPrice = adapter.getHeaderDataModel()?.headerData?.getFinalPrice() ?: "",
-                quantity = viewModel.getSelectedQuantity(productId), variantName = viewModel.titleVariantName.value ?: "",
-                isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment ?: false, shopType = aggregatorParams?.shopTypeString ?: "",
-                shopName = aggregatorParams?.shopName ?: "", categoryName = aggregatorParams?.categoryName ?: "",
-                categoryId = aggregatorParams?.categoryId ?: "", isFreeOngkir = aggregatorParams?.isFreeOngkir ?: false,
+                quantity = viewModel.getSelectedQuantity(productId), variantName = viewModel.titleVariantName.value
+                ?: "",
+                isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment
+                        ?: false, shopType = aggregatorParams?.shopTypeString ?: "",
+                shopName = aggregatorParams?.shopName
+                        ?: "", categoryName = aggregatorParams?.categoryName ?: "",
+                categoryId = aggregatorParams?.categoryId
+                        ?: "", isFreeOngkir = aggregatorParams?.isFreeOngkir ?: false,
                 trackerAttribution = aggregatorParams?.trackerAttribution ?: "",
                 pageSource = aggregatorParams?.pageSource ?: "")
     }
@@ -374,8 +387,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 successMessage
             viewModel.updateActivityResult(atcSuccessMessage = message)
             showToasterSuccess(message, getString(R.string.atc_variant_oke_label)) {
-                val pageSource =  sharedViewModel.aggregatorParams.value?.pageSource ?: ""
-                ProductTrackingCommon.onSeeCartVariantBottomSheetClicked(message, adapter.getHeaderDataModel()?.headerData?.productId ?: "", pageSource)
+                val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
+                ProductTrackingCommon.onSeeCartVariantBottomSheetClicked(message, adapter.getHeaderDataModel()?.headerData?.productId
+                        ?: "", pageSource)
             }
         }
     }
@@ -422,7 +436,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     override fun onVariantGuideLineClicked(url: String) {
         val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
-        ProductTrackingCommon.onVariantGuidelineClicked(adapter.getHeaderDataModel()?.headerData?.productId ?: "", pageSource)
+        ProductTrackingCommon.onVariantGuidelineClicked(adapter.getHeaderDataModel()?.headerData?.productId
+                ?: "", pageSource)
         goToImagePreview(arrayListOf(url))
     }
 
@@ -454,11 +469,18 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     override fun onVariantImageClicked(url: String) {
         val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
-        ProductTrackingCommon.onVariantImageBottomSheetClicked(adapter.getHeaderDataModel()?.headerData?.productId ?: "", pageSource)
+        ProductTrackingCommon.onVariantImageBottomSheetClicked(adapter.getHeaderDataModel()?.headerData?.productId
+                ?: "", pageSource)
         goToImagePreview(arrayListOf(url))
     }
 
-    override fun onQuantityUpdate(quantity: Int, productId: String) {
+    override fun onQuantityUpdate(quantity: Int, productId: String, oldValue: Int) {
+        if (!alreadyHitQtyTrack) {
+            alreadyHitQtyTrack = true
+            ProductTrackingCommon.onQuantityEditorClicked(productId, sharedViewModel.aggregatorParams?.value?.pageSource
+                    ?: "", oldValue, quantity)
+        }
+
         viewModel.updateQuantity(quantity, productId)
     }
 
@@ -479,7 +501,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             val pageSource = sharedData?.pageSource ?: ""
 
             if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON) {
-                ProductTrackingCommon.onRemindMeClicked(adapter.getHeaderDataModel()?.headerData?.productId ?: "", pageSource)
+                ProductTrackingCommon.onRemindMeClicked(adapter.getHeaderDataModel()?.headerData?.productId
+                        ?: "", pageSource)
                 //The possibilities this method being fire is when the user first open the bottom sheet with product not buyable
                 //Use product id from params because we dont have selected id yet here
                 viewModel.addWishlist(sharedData?.productId
@@ -488,7 +511,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             }
 
             if (buttonActionType == ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON) {
-                ProductTrackingCommon.onWishlistCheckClicked(adapter.getHeaderDataModel()?.headerData?.productId ?: "", pageSource)
+                ProductTrackingCommon.onWishlistCheckClicked(adapter.getHeaderDataModel()?.headerData?.productId
+                        ?: "", pageSource)
                 goToWishlist()
                 return@let
             }
@@ -555,7 +579,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         }
 
         val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
-        ProductTrackingCommon.onVariantPartiallySelected(variantErrorMessage, adapter.getHeaderDataModel()?.headerData?.productId ?: "", pageSource)
+        ProductTrackingCommon.onVariantPartiallySelected(variantErrorMessage, adapter.getHeaderDataModel()?.headerData?.productId
+                ?: "", pageSource)
         showToasterError(variantErrorMessage, getString(R.string.atc_variant_oke_label))
     }
 

@@ -25,8 +25,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/shop_ava"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:contentDescription="@null"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"

@@ -7,12 +7,11 @@ import com.tkpd.atcvariant.data.uidata.ProductHeaderData
 import com.tkpd.atcvariant.data.uidata.VariantHeaderDataModel
 import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_IMAGE_ONLY
 import com.tkpd.atcvariant.util.PAYLOAD_UPDATE_PRICE_ONLY
-import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -55,15 +54,15 @@ class AtcVariantHeaderViewHolder(private val view: View, private val listener: A
 
     }
 
-    private fun loadDescription(headerData: ProductHeaderData) {
+    private fun loadDescription(headerData: ProductHeaderData) = with(view) {
         if (headerData.isCampaignActive) {
             renderCampaignActive(headerData)
         } else {
             renderNoCampaign(headerData.productMainPrice)
         }
 
-        productStock.shouldShowWithAction(headerData.productStockWording != "") {
-            productStock.text = MethodChecker.fromHtml(headerData.productStockWording ?: "")
+        productStock.shouldShowWithAction(headerData.productStock.isNotEmpty() && headerData.productStock != "0") {
+            productStock.text = context.getString(R.string.atc_variant_total_stock_empty_label, headerData.productStock)
         }
     }
 

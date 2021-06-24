@@ -93,7 +93,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIds = listOf("254080", "254085"),
                 expectedSelectedProductId = "2147818576",
                 expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
-                expectedSelectedStockWording = "Stok tinggal &lt;20, beli segera!",
+                expectedSelectedStock = "10",
                 expectedSelectedOptionIdsLevelOne = "254080",
                 expectedSelectedOptionIdsLevelTwo = "254085",
                 expectedQuantity = 23,
@@ -156,7 +156,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIds = listOf("254080", "254085"),
                 expectedSelectedProductId = "2147818576",
                 expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
-                expectedSelectedStockWording = "Stok tinggal &lt;20, beli segera!",
+                expectedSelectedStock = "10",
                 expectedSelectedOptionIdsLevelOne = "254080",
                 expectedSelectedOptionIdsLevelTwo = "254085",
                 expectedQuantity = 0,
@@ -183,7 +183,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIds = listOf("254080", "254085"),
                 expectedSelectedProductId = "2147818576",
                 expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
-                expectedSelectedStockWording = "Stok tinggal &lt;20, beli segera!",
+                expectedSelectedStock = "10",
                 expectedSelectedOptionIdsLevelOne = "254080",
                 expectedSelectedOptionIdsLevelTwo = "254085",
                 expectedQuantity = 23,
@@ -208,7 +208,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIds = listOf("254083", "254087"),
                 expectedSelectedProductId = "2147818593",
                 expectedSelectedMainPrice = 3000.getCurrencyFormatted(),
-                expectedSelectedStockWording = "Stok Mau Habis",
+                expectedSelectedStock = "120",
                 expectedSelectedOptionIdsLevelOne = "254083",
                 expectedSelectedOptionIdsLevelTwo = "254087",
                 expectedQuantity = 0,
@@ -236,11 +236,12 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIds = listOf("0", "0"),
                 expectedSelectedProductId = "2147818570",
                 expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
-                expectedSelectedStockWording = "Stok tinggal &lt;20, beli segera!",
+                expectedSelectedStock = "10",
                 expectedSelectedOptionIdsLevelOne = "0",
                 expectedSelectedOptionIdsLevelTwo = "0",
                 expectedQuantity = 2,
-                expectedMinOrder = 3
+                expectedMinOrder = 3,
+                isEmptyStock = true
         )
 
         assertButton(expectedIsBuyable = false,
@@ -276,7 +277,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIds = listOf("254082", "254085"),
                 expectedSelectedProductId = "2147818586",
                 expectedSelectedMainPrice = 7000.getCurrencyFormatted(),
-                expectedSelectedStockWording = "Stok tinggal &lt;20, beli segera!",
+                expectedSelectedStock = "10",
                 expectedSelectedOptionIdsLevelOne = "254082",
                 expectedSelectedOptionIdsLevelTwo = "254085",
                 expectedQuantity = 0,
@@ -318,7 +319,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
                 expectedSelectedOptionIds = listOf(expectedLevelOneVariantIdChanged, "0"),
                 expectedSelectedProductId = "2147818570",
                 expectedSelectedMainPrice = 1000.getCurrencyFormatted(),
-                expectedSelectedStockWording = "Stok tinggal &lt;20, beli segera!",
+                expectedSelectedStock = "10",
                 expectedSelectedOptionIdsLevelOne = expectedLevelOneVariantIdChanged,
                 expectedSelectedOptionIdsLevelTwo = "0",
                 expectedQuantity = 0,
@@ -477,7 +478,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
         verifyAtcUsecase(verifyUpdateAtc = true)
         coVerify {
-            updateCartUseCase.setParams(capture(miniCartItem))
+            updateCartUseCase.setParams(capture(miniCartItem), any(), any())
         }
 
         Assert.assertNotNull(miniCartItem.captured.firstOrNull { it.productId == "2147818576" })
@@ -501,7 +502,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
         verifyAtcUsecase(verifyUpdateAtc = true)
         coVerify {
-            updateCartUseCase.setParams(capture(miniCartItem))
+            updateCartUseCase.setParams(capture(miniCartItem), any(), any())
         }
 
         Assert.assertNotNull(miniCartItem.captured.firstOrNull { it.productId == "2147818576" })

@@ -268,6 +268,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var isAutoSelectVariant = false
     private var alreadyHitSwipeTracker: DynamicProductDetailSwipeTrackingState? = null
     private var alreadyHitVideoTracker: Boolean = false
+    private var alreadyHitQtyTracker: Boolean = false
     private var shouldRefreshProductInfoBottomSheet = false
     private var shouldRefreshShippingBottomSheet = false
     private var uuid = ""
@@ -478,7 +479,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                             || pdpUiUpdater?.productSingleVariant?.isVariantError == true
                             || mapOfSelectedVariantOption == null) return@onActivityResultAtcVariant
                     pdpUiUpdater?.updateVariantSelected(mapOfSelectedVariantOption)
-                    val variantLevelOne = ProductDetailVariantLogic.determineVariant(mapOfSelectedVariantOption ?: mapOf(), viewModel.variantData)
+                    val variantLevelOne = ProductDetailVariantLogic.determineVariant(mapOfSelectedVariantOption
+                            ?: mapOf(), viewModel.variantData)
                     updateVariantDataToExistingProductData(if (variantLevelOne != null) listOf(variantLevelOne) else listOf())
                     scrollVariantToSelectedPosition()
                 }
@@ -588,7 +590,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun scrollVariantToSelectedPosition() {
         val vh = getViewHolderByPosition(getComponentPositionBeforeUpdate(pdpUiUpdater?.productSingleVariant)) as? ProductSingleVariantViewHolder
         Handler().postDelayed({
-            vh?.scrollToPosition(pdpUiUpdater?.productSingleVariant?.variantLevelOne?.getPositionOfSelected() ?: -1)
+            vh?.scrollToPosition(pdpUiUpdater?.productSingleVariant?.variantLevelOne?.getPositionOfSelected()
+                    ?: -1)
         }, 200)
     }
 
@@ -2524,7 +2527,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 deeplinkUrl = deeplinkUrl,
                 isStockAvailable = viewModel.getDynamicProductInfoP1?.getFinalStock() ?: "0",
                 boType = boType,
-                affiliateUniqueId = if(affiliateUniqueId.isNotBlank() ) "$affiliateUniqueId - $uuid" else ""
+                affiliateUniqueId = if (affiliateUniqueId.isNotBlank()) "$affiliateUniqueId - $uuid" else ""
         )
     }
 
@@ -2779,13 +2782,18 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         onShopChatClicked()
     }
 
-    override fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem) {
+    override fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem, oldValue: Int) {
         if (!viewModel.isUserSessionActive) {
             doLoginWhenUserClickButton()
             return
         }
 
         if (openShipmentBottomSheetWhenError()) return
+        if (!alreadyHitQtyTracker) {
+            alreadyHitQtyTracker = true
+            DynamicProductDetailTracking.Click.onQuantityEditorClicked(viewModel.getDynamicProductInfoP1?.basic?.productID
+                    ?: "", oldValue, quantity)
+        }
 
         viewModel.updateQuantity(quantity, miniCart)
     }
