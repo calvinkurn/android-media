@@ -542,9 +542,9 @@ class TokoMartHomeFragment: Fragment(),
     }
 
     private fun checkAddressDataAndServiceArea() {
+        checkIfChooseAddressWidgetDataUpdated()
         val shopId = localCacheModel?.shop_id.toLongOrZero()
         val warehouseId = localCacheModel?.warehouse_id.toLongOrZero()
-        checkIfChooseAddressWidgetDataUpdated()
         checkStateNotInServiceArea(shopId = shopId, warehouseId = warehouseId)
     }
 
