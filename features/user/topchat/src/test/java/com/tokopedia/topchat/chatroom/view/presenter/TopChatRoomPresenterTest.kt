@@ -103,6 +103,7 @@ import okhttp3.Interceptor
 import okhttp3.WebSocket
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -324,6 +325,7 @@ class TopChatRoomPresenterTest {
     @Before
     fun before() {
         MockKAnnotations.init(this)
+        UploadImageChatService.dummyMap.clear()
         mockSingletonObject()
         presenter = spyk(
             TopChatRoomPresenter(
@@ -368,6 +370,11 @@ class TopChatRoomPresenterTest {
         wsResponseReadMessage = WebSocketInfo(webSocket, wsResponseReadMessageString)
         wsResponseImageAttachment = WebSocketInfo(webSocket, wsResponseImageAttachmentString)
         wsResponseProductAttachment = WebSocketInfo(webSocket, wsResponseProductAttachmentString)
+    }
+
+    @After
+    fun after() {
+        UploadImageChatService.dummyMap.clear()
     }
 
     private fun mockSingletonObject() {
