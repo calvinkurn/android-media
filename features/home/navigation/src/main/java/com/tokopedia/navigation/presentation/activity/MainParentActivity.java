@@ -54,6 +54,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.coachmark.CoachMark2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker;
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker;
@@ -240,6 +241,9 @@ public class MainParentActivity extends BaseActivity implements
         startMainParentPerformanceMonitoring();
 
         super.onCreate(savedInstanceState);
+        if (isTestEnv()) {
+            CoachMark2.Companion.setCoachmmarkShowAllowed(false);
+        }
         initInjector();
         initInboxAbTest();
         initNotifcenterOnNewInboxAbTest();
