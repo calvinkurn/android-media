@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/common_topupbills_favorite_number_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingStart="@dimen/unify_space_12"
+    android:paddingEnd="@dimen/spacing_lvl2">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/common_topupbills_favorite_number_icon"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/common_topupbills_favorite_number_client_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:typographyType="heading_5"
+        tools:text="Nabilla Sabbaha"
+        app:layout_constraintStart_toEndOf="@id/common_topupbills_favorite_number_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/common_topupbills_favorite_number_client_number" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/common_topupbills_favorite_number_client_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/common_topupbills_favorite_number_icon"
+        app:layout_constraintTop_toBottomOf="@id/common_topupbills_favorite_number_client_name"
+        app:typographyType="body_3"
+        tools:text="081234567890" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/common_topupbills_favorite_number_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon_name="MENU_KEBAB_VERTICAL"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <View
+        android:id="@+id/common_topupbills_favorite_number_separator"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/Unify_N75"
+        app:layout_constraintStart_toStartOf="@id/common_topupbills_favorite_number_client_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

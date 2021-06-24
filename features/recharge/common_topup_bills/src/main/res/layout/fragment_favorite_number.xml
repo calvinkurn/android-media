@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/Unify_Background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Background"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/layout_lvl1"
+        android:paddingEnd="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/layout_lvl1">
+
+        <com.tokopedia.unifycomponents.SearchBarUnify
+            android:id="@+id/common_topupbills_search_number_input_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:search_bar_show_icon="false"
+            app:search_bar_clearable="true"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_weight="1" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/common_topupbills_search_number_contact_picker"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_gravity="end|center"
+            app:icon_name="CONTACT" />
+
+    </LinearLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mau isi nomor yang mana, nih?"
+        android:layout_margin="@dimen/spacing_lvl4"
+        app:typographyType="heading_4" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/common_topupbills_favorite_number_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_N0" />
+
+</LinearLayout>

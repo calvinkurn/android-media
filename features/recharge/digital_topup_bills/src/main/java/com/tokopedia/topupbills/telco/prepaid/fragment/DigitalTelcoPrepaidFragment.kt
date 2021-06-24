@@ -23,6 +23,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
+import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.EXPRESS_PARAM_CLIENT_NUMBER
@@ -35,7 +36,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.util.DigitalTopupBillsGqlQuery
-import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
 import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
@@ -454,8 +454,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
             telcoClientNumberWidget.clearFocusAutoComplete()
             startActivityForResult(activity?.let {
-                DigitalSearchNumberActivity.newInstance(it,
-                        ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList)
+                // TODO: [Misael] Toggle
+//                DigitalSearchNumberActivity.newInstance(it,
+//                        ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList)
+                TopupBillsFavoriteNumberActivity.getCallingIntent(it,
+                        ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList
+                )
             },
                     REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
         }
