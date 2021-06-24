@@ -1311,6 +1311,7 @@ class TopChatRoomPresenterTest {
         }
 
         // When
+        presenter.initUserLocation(null)
         presenter.initUserLocation(LocalCacheModel())
         presenter.loadAttachmentData(exMessageId.toLongOrZero(), roomModel)
 
