@@ -773,6 +773,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                     recommendationFilterChips = recomFilterList,
                                     pageName = pageName
                             )
+                            recomWidget.recommendationItemList.forEach { item ->
+                                _p2Data.value?.miniCart?.let {
+                                    item.updateItemCurrentStock(it[item.productId.toString()]?.quantity ?: 0)
+                                }
+                            }
                         }
 
                         recomWidget

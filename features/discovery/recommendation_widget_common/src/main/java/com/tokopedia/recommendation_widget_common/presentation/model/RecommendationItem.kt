@@ -46,7 +46,9 @@ data class RecommendationItem(
         // for tracker field
         val dimension61: String = "",
         val specs: List<RecommendationSpecificationLabels> = listOf(),
-        val parentID: Int = 0
+        val parentID: Int = 0,
+        val isRecomProductShowVariantAndCart:Boolean = false,
+        var currentStock: Int = 0
 ): ImpressHolder(){
 
     override fun equals(other: Any?): Boolean {
@@ -94,6 +96,9 @@ data class RecommendationItem(
         if (freeOngkirImageUrl != other.freeOngkirImageUrl) return false
         if (labelGroupList != other.labelGroupList) return false
         if (isGold != other.isGold) return false
+        if (parentID != other.parentID) return false
+        if (isRecomProductShowVariantAndCart != isRecomProductShowVariantAndCart) return false
+        if (currentStock != other.currentStock) return false
 
         return true
     }
@@ -140,11 +145,22 @@ data class RecommendationItem(
         result = HASH_CODE * result + isGold.hashCode()
         result = HASH_CODE * result + isOfficial.hashCode()
         result = HASH_CODE * result + dimension61.hashCode()
+        result = HASH_CODE * result + productId.hashCode()
+        result = HASH_CODE * result + isRecomProductShowVariantAndCart.hashCode()
+        result = HASH_CODE * result + currentStock.hashCode()
         return result
     }
 
     companion object{
         private const val HASH_CODE = 31
+    }
+
+    fun isProductHasParentID(): Boolean {
+        return parentID != 0
+    }
+
+    fun updateItemCurrentStock(currentStock: Int) {
+        this.currentStock = currentStock
     }
 
 }
