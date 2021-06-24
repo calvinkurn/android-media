@@ -54,6 +54,11 @@ class AtcVariantQuantityViewHolder constructor(
             quantityEditor.maxValue = element.maxOrder
             quantityEditor.setValue(element.quantity)
 
+            if (element.minOrder == element.maxOrder) {
+                quantityEditor.addButton.isEnabled = false
+                quantityEditor.subtractButton.isEnabled = false
+            }
+
             removeTextChangedListener()
             initTextWatcherDebouncer(element)
             txtMinOrder.text = view.context.getString(R.string.atc_variant_min_order_builder, element.minOrder)
