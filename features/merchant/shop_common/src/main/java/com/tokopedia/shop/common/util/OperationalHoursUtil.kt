@@ -97,8 +97,16 @@ object OperationalHoursUtil {
     }
 
     /**
-     * Generate wording for Shop operational hours
-     * Example : Open 24 Hours -> "Buka 24 Jam"
+     * Get minute from "17:35:00", it will return 35
+     * @return [String]
+     */
+    fun getMinuteFromFormattedTime(time: String): String {
+        return time.substring(3, 5)
+    }
+
+    /**
+     * Generate server datetime
+     * Example : "17:45:00"
      * @return [String]
      */
     fun generateServerDateTimeFormat(selectedHour: Int, selectedMinutes: Int): String {

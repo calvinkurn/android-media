@@ -440,24 +440,21 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     private fun setupEndTimePicker() {
         context?.let { ctx ->
 
-            // get selected start time from expanded child view
-            val childView = getAccordionChildViewByPosition(currentExpandedAccordionPosition)
-            val selectedHourFromTextField = OperationalHoursUtil.getHourFromFormattedTime(
-                    childView?.findViewById<TextFieldUnify>(START_TIME_TEXTFIELD_ID)?.textFieldInput?.text.toString()
-            ).toInt()
+            val minEndHour = OperationalHoursUtil.getHourFromFormattedTime(currentSelectedStartTime).toInt()
+            val minEndMinute = OperationalHoursUtil.getMinuteFromFormattedTime(currentSelectedStartTime).toInt()
 
             // create instance
             endTimePicker = DateTimePickerUnify(
                     context = ctx,
                     minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                         // set minimum end time +1 hour from start time
-                        set(Calendar.HOUR_OF_DAY, selectedHourFromTextField)
-                        set(Calendar.MINUTE, MIN_OPEN_MINUTE + 5)
+                        set(Calendar.HOUR_OF_DAY, minEndHour)
+                        set(Calendar.MINUTE, minEndMinute + 5)
                     },
                     defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                         // set default selected end time same with minimum
-                        set(Calendar.HOUR_OF_DAY, selectedHourFromTextField)
-                        set(Calendar.MINUTE, MIN_OPEN_MINUTE + 5)
+                        set(Calendar.HOUR_OF_DAY, minEndHour)
+                        set(Calendar.MINUTE, minEndMinute + 5)
                     },
                     maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                         set(Calendar.HOUR_OF_DAY, MAX_CLOSE_HOUR)
