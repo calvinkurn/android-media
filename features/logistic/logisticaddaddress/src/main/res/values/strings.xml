@@ -201,6 +201,8 @@
     <string name="tv_desc_nama_penerima_bottomsheet">Nama penerima akan disimpan sebagai nama &lt;b&gt;akunmu.&lt;/b&gt; Kamu bisa ubah nanti melalui halaman &lt;b&gt;Akun Saya -> Pengaturan Akun.&lt;/b&gt;</string>
     <string name="validate_no_ponsel_new">Min. 9 angka</string>
     <string name="error_nama_penerima">Nama Penerima terlalu pendek, min. 2 karakter</string>
+    <string name="error_label_address">Label Alamat terlalu pendek, minimum 3 karakter</string>
+    <string name="error_alamat">Alamatmu terlalu pendek, min. 3 karakter</string>
     <string name="btn_pilih">Pilih</string>
     <string name="tv_info_lebih_lanjut">Info lebih lanjut</string>
     <string name="cb_jadikan_alamat_utama">Jadikan alamat utama</string>

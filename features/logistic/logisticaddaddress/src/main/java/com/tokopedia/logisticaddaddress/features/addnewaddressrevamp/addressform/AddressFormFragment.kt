@@ -380,6 +380,16 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     validated = false
                     setWrapperError(formAddress.etAlamat.textFieldWrapper, getString(R.string.tv_error_field))
                 }
+
+                if (formAddress.etLabel.textFieldInput.text.toString().length < 3) {
+                    validated = false
+                    view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                }
+
+                if (formAddress.etAlamat.textFieldInput.text.toString().length < 3) {
+                    validated = false
+                    view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                }
             } else {
                 if (formAddressNegative.etLabel.textFieldInput.text.toString().isEmpty() || formAddressNegative.etLabel.textFieldInput.text.toString() == " ") {
                     validated = false
@@ -389,6 +399,17 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 if (formAddressNegative.etAlamat.textFieldInput.text.toString().isEmpty() || formAddressNegative.etAlamat.textFieldInput.text.toString() == " ") {
                     validated = false
                     setWrapperError(formAddressNegative.etAlamat.textFieldWrapper, getString(R.string.tv_error_field))
+                }
+
+                if (formAddressNegative.etLabel.textFieldInput.text.toString().length < 3) {
+                    validated = false
+                    view?.let { Toaster.build(it, getString(R.string.error_label_address), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                }
+
+
+                if (formAddressNegative.etAlamat.textFieldInput.text.toString().length < 3) {
+                    validated = false
+                    view?.let { Toaster.build(it, getString(R.string.error_alamat), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
             }
 
@@ -559,13 +580,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     }
 
                     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                        if (s.isNotEmpty()) {
-                            if (s.first().toString() == "0") {
-                                filters = arrayOf(InputFilter.LengthFilter(14))
-                            } else {
-                                filters = arrayOf(InputFilter.LengthFilter(15))
-                            }
-                        }
+                        filters = arrayOf(InputFilter.LengthFilter(15))
                     }
 
                 })
@@ -738,16 +753,16 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         saveDataModel?.phone = binding.formAccount.etNomorHp.textFieldInput.text.toString()
         if (isPositiveFlow) {
             if (binding.formAddress.etCourierNote.textFieldInput.text.isNotEmpty()) {
-                saveDataModel?.address1 = "${binding.formAddress.etAlamat.textFieldInput.text} $formattedAddress (${binding.formAddress.etCourierNote.textFieldInput.text})"
+                saveDataModel?.address1 = "${binding.formAddress.etAlamat.textFieldInput.text} (${binding.formAddress.etCourierNote.textFieldInput.text})"
             } else {
-                saveDataModel?.address1 = "${binding.formAddress.etAlamat.textFieldInput.text} $formattedAddress"
+                saveDataModel?.address1 = "${binding.formAddress.etAlamat.textFieldInput.text}"
             }
             saveDataModel?.addressName =  binding.formAddress.etLabel.textFieldInput.text.toString()
         } else {
             if (binding.formAddressNegative.etCourierNote.textFieldInput.text.isNotEmpty()) {
-                saveDataModel?.address1 = "${binding.formAddressNegative.etAlamat.textFieldInput.text} $formattedAddress (${binding.formAddress.etCourierNote.textFieldInput.text})"
+                saveDataModel?.address1 = "${binding.formAddressNegative.etAlamat.textFieldInput.text} (${binding.formAddress.etCourierNote.textFieldInput.text})"
             } else {
-                saveDataModel?.address1 = "${binding.formAddressNegative.etAlamat.textFieldInput.text} $formattedAddress"
+                saveDataModel?.address1 = "${binding.formAddressNegative.etAlamat.textFieldInput.text}"
             }
             saveDataModel?.addressName =  binding.formAddressNegative.etLabel.textFieldInput.text.toString()
         }
