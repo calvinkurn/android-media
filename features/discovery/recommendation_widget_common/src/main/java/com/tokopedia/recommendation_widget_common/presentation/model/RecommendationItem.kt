@@ -45,7 +45,8 @@ data class RecommendationItem(
         val isOfficial:Boolean = false,
         // for tracker field
         val dimension61: String = "",
-        val specs: List<RecommendationSpecificationLabels> = listOf()
+        val specs: List<RecommendationSpecificationLabels> = listOf(),
+        val parentID: Int = 0
 ): ImpressHolder(){
 
     override fun equals(other: Any?): Boolean {

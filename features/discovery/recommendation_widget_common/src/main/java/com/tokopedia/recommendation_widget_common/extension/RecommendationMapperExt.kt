@@ -68,7 +68,8 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                                     specTitle = it.key,
                                     specSummary = it.value
                             )
-                        }
+                        },
+                        parentID = recommendation.parentID
                 )
             },
             title = title,
