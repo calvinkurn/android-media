@@ -411,7 +411,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 cardListPosition = it.tag as Int
                 rvHorizontalPropertiesHotelSearchMap.scrollToCenterPosition(cardListPosition)
                 changeMarkerState(cardListPosition)
-                putPriceMarkerOnTop(cardListPosition)
                 if (cardListPosition != -1 &&
                         cardListPosition != lastHorizontalTrackingPositionSent &&
                         adapterCardList.data[cardListPosition] is Property && !adapterCardList.data.isNullOrEmpty()) {
@@ -775,7 +774,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     cardListPosition = getCurrentItemCardList()
                     changeMarkerState(cardListPosition)
-                    putPriceMarkerOnTop(cardListPosition)
                 }
             }
 
@@ -931,6 +929,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             if (!allMarker.isNullOrEmpty()) {
                 if (cardListPosition == position && !searchPropertiesMap.isNullOrEmpty()) {
                     allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
+                    putPriceMarkerOnTop(position)
                     if (cardListPosition == SELECTED_POSITION_INIT) {
                         googleMap.animateCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
                     } else {
