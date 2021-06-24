@@ -5,4 +5,5 @@ package com.tokopedia.navigation_common.listener;
  */
 public interface MainParentStateListener {
     boolean isNavigationRevamp();
+    boolean isTestEnvironment();
 }

@@ -322,8 +322,8 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private Boolean isTestEnv() {
-        if (getIntent().getExtras().getString(TEST_ENVIRONMENT).equals(TEST_ENVIRONMENT)) {
-            return true;
+        if (getIntent().getExtras().getString(TEST_ENVIRONMENT) != null) {
+            return getIntent().getExtras().getString(TEST_ENVIRONMENT).equals(TEST_ENVIRONMENT);
         } else {
             return false;
         }
@@ -1216,6 +1216,11 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public boolean isNavigationRevamp() {
         return isNewNavigation;
+    }
+
+    @Override
+    public boolean isTestEnvironment() {
+        return isTestEnv();
     }
 
     public void populateBottomNavigationView() {

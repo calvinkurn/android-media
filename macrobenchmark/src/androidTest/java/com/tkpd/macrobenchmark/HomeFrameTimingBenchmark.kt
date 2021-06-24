@@ -36,6 +36,7 @@ class HomeFrameTimingBenchmark {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
 
+
         /**
          * Read the docs
          * https://developer.android.com/studio/profile/macrobenchmark
@@ -45,21 +46,17 @@ class HomeFrameTimingBenchmark {
             metrics = listOf(FrameTimingMetric()),
             // Try switching to different compilation modes to see the effect
             // it has on frame timing metrics.
-            compilationMode = CompilationMode.None,
-            iterations = 2,
+            compilationMode = MacroArgs.getCompilationMode(InstrumentationRegistry.getArguments()),
+            iterations = MacroArgs.getIterations(InstrumentationRegistry.getArguments()),
             setupBlock = {
-                // Before starting to measure, navigate to the UI to be measured
-                val intent = Intent()
-                intent.setData(Uri.parse(ApplinkConst.HOME))
-                intent.putExtra("testenv", "testenv")
-                startActivityAndWait(intent)
+                MacroIntent.getHomeIntent()
             }
         ) {
             val recycler = device.findObject(By.res(PACKAGE_NAME, RESOURCE_ID))
             // Set gesture margin to avoid triggering gesture navigation
             // with input events from automation.
             recycler.setGestureMargin(device.displayWidth / 5)
-            for (i in 1..2) {
+            for (i in 1..(MacroArgs.getRecyclerViewScrollIterations(InstrumentationRegistry.getArguments()))) {
                 recycler.scroll(Direction.DOWN, 2f)
                 device.waitForIdle()
             }
@@ -72,13 +69,6 @@ class HomeFrameTimingBenchmark {
          * In this test class, the target is :testapp with package com.tokopedia.tkpd
          */
         private const val PACKAGE_NAME = "com.tokopedia.tkpd"
-
-        /**
-         * Target test intent action
-         * Target MainParentActivity activity in testapp
-         * Detail in this manifest: testapp/src/main/AndroidManifest.xml
-         */
-        private const val ACTION = "com.tokopedia.navigation.presentation.activity.MainParentActivity"
 
         /**
          * Target recyclerview

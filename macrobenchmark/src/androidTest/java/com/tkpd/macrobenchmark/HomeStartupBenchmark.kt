@@ -2,7 +2,6 @@ package com.tkpd.macrobenchmark
 
 import android.content.Intent
 import androidx.benchmark.macro.CompilationMode
-import androidx.benchmark.macro.FrameTimingMetric
 import androidx.benchmark.macro.junit4.MacrobenchmarkRule
 import androidx.benchmark.macro.StartupMode
 import androidx.benchmark.macro.StartupTimingMetric
@@ -10,9 +9,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.By
-import androidx.test.uiautomator.Direction
-import androidx.test.uiautomator.UiDevice
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,31 +30,18 @@ class HomeStartupBenchmark {
     @Test
     fun startup() = benchmarkRule.measureStartup(
         profileCompiled = false,
-        startupMode = StartupMode.COLD,
-        iterations = 3
-    ) {
-        action = ACTION
+        startupMode = MacroArgs.getStartupMode(InstrumentationRegistry.getArguments()),
+        iterations = MacroArgs.getIterations(InstrumentationRegistry.getArguments())) {
+            MacroIntent.getHomeIntent()
     }
 
     companion object {
-        /**
-         * Target test package
-         * In this test class, the target is :testapp with package com.tokopedia.tkpd
-         */
-        private const val PACKAGE_NAME = "com.tokopedia.tkpd"
-
         /**
          * Target test intent action
          * Target MainParentActivity activity in testapp
          * Detail in this manifest: testapp/src/main/AndroidManifest.xml
          */
         private const val ACTION = "com.tokopedia.navigation.presentation.activity.MainParentActivity"
-
-        /**
-         * Target recyclerview
-         * Capture view by resource id
-         */
-        private const val RESOURCE_ID = "home_fragment_recycler_view"
     }
 }
 
@@ -68,7 +51,7 @@ fun MacrobenchmarkRule.measureStartup(
     profileCompiled: Boolean,
     startupMode: StartupMode,
     iterations: Int = 3,
-    setupIntent: Intent.() -> Unit = {}
+    intent: () -> Intent
 ) = measureRepeated(
     packageName = TARGET_PACKAGE,
     metrics = listOf(StartupTimingMetric()),
@@ -81,8 +64,5 @@ fun MacrobenchmarkRule.measureStartup(
     startupMode = startupMode
 ) {
     pressHome()
-    val intent = Intent()
-    intent.setPackage(TARGET_PACKAGE)
-    setupIntent(intent)
-    startActivityAndWait(intent)
+    startActivityAndWait(intent.invoke())
 }

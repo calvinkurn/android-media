@@ -346,6 +346,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
 
+    private fun isTestEnvironment(): Boolean {
+        return try {
+            return (context as? MainParentStateListener)?.isTestEnvironment?:false
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
     private fun isNavRevamp(): Boolean {
         return try {
             return (context as? MainParentStateListener)?.isNavigationRevamp?:false
@@ -719,27 +728,29 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showCoachMark() {
-        context?.let {
-            coachMarkIsShowing = true
-            val coachMarkItem = ArrayList<CoachMark2Item>()
-            coachmark = CoachMark2(it)
+        if (!isTestEnvironment()) {
+            context?.let {
+                coachMarkIsShowing = true
+                val coachMarkItem = ArrayList<CoachMark2Item>()
+                coachmark = CoachMark2(it)
 
-            coachMarkItem.buildHomeCoachmark()
-            coachmark?.let {
-                it.setStepListener(object : CoachMark2.OnStepListener {
-                    override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                        coachMarkItem.setCoachmarkShownPref()
+                coachMarkItem.buildHomeCoachmark()
+                coachmark?.let {
+                    it.setStepListener(object : CoachMark2.OnStepListener {
+                        override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                            coachMarkItem.setCoachmarkShownPref()
+                        }
+                    })
+                    //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
+                    //will be removed along the coachmark removal in the future
+                    try {
+                        if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
+                            it.showCoachMark(step = coachMarkItem, index = 0)
+                            coachMarkItem[0].setCoachmarkShownPref()
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                })
-                //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
-                //will be removed along the coachmark removal in the future
-                try {
-                    if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
-                        it.showCoachMark(step = coachMarkItem, index = 0)
-                        coachMarkItem[0].setCoachmarkShownPref()
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
             }
         }
@@ -1790,7 +1801,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun onPageLoadTimeEnd() {
         stickyLoginView?.loadContent()
         navAbTestCondition(ifNavRevamp = {
-            if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
+            if (!isTestEnvironment() && isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
         observeHomeNotif()
         pageLoadTimeCallback?.invalidate()
