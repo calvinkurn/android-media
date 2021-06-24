@@ -3,7 +3,7 @@ package com.tokopedia.review.feature.reviewdetail.data
 import com.google.gson.annotations.SerializedName
 
 data class ProductReviewDetailOverallResponse(
-        @SerializedName("productrevGetReviewAggregateByProduct")
+        @SerializedName("productrevGetReviewAggregateByProductV2")
         val productGetReviewAggregateByProduct: ProductGetReviewAggregateByProduct = ProductGetReviewAggregateByProduct()
 ) {
     data class ProductGetReviewAggregateByProduct(

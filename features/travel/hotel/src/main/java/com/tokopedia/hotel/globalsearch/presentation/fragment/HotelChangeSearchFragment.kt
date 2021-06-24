@@ -34,8 +34,6 @@ import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchA
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.SEARCH_ID
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.SEARCH_TYPE
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
-import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_hotel_change_search.*
 import java.util.*
 
@@ -60,10 +58,10 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
             globalSearchModel.destinationType
             globalSearchModel.checkInDate = it.getString(EXTRA_CHECK_IN_DATE)
                     ?: TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 1))
-            globalSearchModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.getString(EXTRA_CHECK_IN_DATE)))
+            globalSearchModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.getString(EXTRA_CHECK_IN_DATE) ?: ""))
             globalSearchModel.checkOutDate = it.getString(EXTRA_CHECK_OUT_DATE)
                     ?: TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.addTimeToSpesificDate(TravelDateUtil.getCurrentCalendar().time, Calendar.DATE, 2))
-            globalSearchModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.getString(EXTRA_CHECK_OUT_DATE)))
+            globalSearchModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, it.getString(EXTRA_CHECK_OUT_DATE) ?: ""))
             globalSearchModel.numOfGuests = it.getInt(EXTRA_NUM_OF_GUESTS)
             globalSearchModel.numOfRooms = it.getInt(EXTRA_NUM_OF_ROOMS)
             globalSearchModel.locationLong = it.getDouble(EXTRA_DESTINATION_LONG, 0.0)

@@ -1,6 +1,5 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
-import android.graphics.Color
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -13,6 +12,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_AGE_SIXTY
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_detail_shop_performance.view.*
 
 class ItemDetailPerformanceViewHolder(view: View,
@@ -63,7 +63,7 @@ class ItemDetailPerformanceViewHolder(view: View,
 
     private fun setupItemDetailPerformance(element: ItemDetailPerformanceUiModel?) {
         with(itemView) {
-            setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            cardItemDetailShopPerformance?.setBackgroundColor(ContextCompat.getColor(context, R.color.shop_score_penalty_dms_container))
             separatorItemDetail?.showWithCondition(element?.isDividerHide == false)
 
             if (element?.isDividerHide == true) {
@@ -83,9 +83,29 @@ class ItemDetailPerformanceViewHolder(view: View,
                             StringBuilder("${element?.valueDetailPerformance} ${element?.parameterValueDetailPerformance}")
                     }
             if (element?.colorValueDetailPerformance?.isNotBlank() == true && element.valueDetailPerformance != MINUS_SIGN) {
-                tvPerformanceValue.setTextColor(Color.parseColor(element.colorValueDetailPerformance))
+                tvPerformanceValue.setTextColorUnifyParameterDetail(element.colorValueDetailPerformance)
             }
             tvPerformanceTarget?.text = getString(R.string.item_detail_performance_target, element?.targetDetailPerformance.orEmpty())
         }
+    }
+
+    private fun Typography.setTextColorUnifyParameterDetail(colorValueDetailPerformance: String) {
+
+        when (colorValueDetailPerformance) {
+            getColorHexString(R.color.shop_score_item_parameter_dms_grey) -> {
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
+            }
+            getColorHexString(R.color.shop_score_item_parameter_dms_grey) -> {
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+            }
+            getColorHexString(R.color.shop_score_item_parameter_dms_green) -> {
+                setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            }
+        }
+    }
+
+    private fun Typography.getColorHexString(idColor: Int): String {
+        val colorHexInt = ContextCompat.getColor(context, idColor)
+        return "#${Integer.toHexString(colorHexInt)}"
     }
 }

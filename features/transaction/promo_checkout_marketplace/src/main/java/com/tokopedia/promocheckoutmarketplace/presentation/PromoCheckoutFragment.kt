@@ -156,6 +156,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         private const val PREFERENCES_NAME = "promo_coachmark_preferences"
 
         private const val KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED = "KEY_PROMO_CHECKOUT_COACHMARK_IS_SHOWED"
+        private const val DESTINATION_BACK = "back"
+        private const val DESTINATION_REFRESH = "refresh"
 
         fun createInstance(pageSource: Int,
                            promoRequest: PromoRequest,
@@ -249,6 +251,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observePromoRecommendationUiModel()
         observePromoInputUiModel()
         observePromoListUiModel()
+        observeErrorStateUiModel()
         observeEmptyStateUiModel()
         observeVisitableChangeUiModel()
         observeVisitableListChangeUiModel()
@@ -285,6 +288,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun setResultIsPromoMvcLockCourierFlow(intent: Intent) {
         intent.putExtra(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, isPromoMvcLockCourierFlow)
+    }
+
+    private fun setResultErrorPromo(intent: Intent) {
+        intent.putExtra(ARGS_PROMO_ERROR, ARGS_FINISH_ERROR)
     }
 
     override fun getRecyclerViewResourceId() = R.id.promo_checkout_marketplace_module_recycler_view
@@ -497,6 +504,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         } else {
             adapter.addVisitable(it)
         }
+    }
+
+    private fun observeErrorStateUiModel() {
+        viewModel.promoErrorStateUiModel.observe(viewLifecycleOwner, Observer {
+            addOrModify(it)
+        })
     }
 
     private fun observeEmptyStateUiModel() {
@@ -1070,4 +1083,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
     }
 
+    override fun onClickErrorStateButton(destination: String) {
+        if (destination.equals(DESTINATION_BACK, true)) {
+            val intent = Intent()
+            setResultErrorPromo(intent)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        } else if (destination.equals(DESTINATION_REFRESH, true)) {
+            reloadData()
+        }
+    }
 }

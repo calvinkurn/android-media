@@ -47,7 +47,7 @@ class SellerHomeViewModelTest {
         private const val DATA_KEY_BAR_CHART = "BAR_CHART"
         private const val DATA_KEY_MULTI_LINE = "MULTI_LINE"
         private const val DATA_KEY_ANNOUNCEMENT = "ANNOUNCEMENT"
-        private const val DATA_KEY_RECOMMENDATION = "MULTI_LINE"
+        private const val DATA_KEY_RECOMMENDATION = "RECOMMENDATION"
     }
 
     @RelaxedMockK
@@ -215,6 +215,78 @@ class SellerHomeViewModelTest {
         }
 
         Assertions.assertEquals(Success(layoutList), viewModel.widgetLayout.value)
+    }
+
+    @Test
+    fun `when get widget layout and set height as 0f, should also success`() = runBlocking {
+
+        val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
+        val shopId = "123456"
+        val page = "seller-home"
+
+        val cardData = CardDataUiModel(DATA_KEY_CARD, showWidget = true)
+        val lineGraphDataUiModel = LineGraphDataUiModel(DATA_KEY_LINE_GRAPH, showWidget = true)
+        val progressDataUiModel = ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
+        val postListDataUiModel = PostListDataUiModel(DATA_KEY_POST_LIST, showWidget = true)
+        val carouselDataUiModel = CarouselDataUiModel(DATA_KEY_CAROUSEL, showWidget = true)
+        val tableDataUiModel = TableDataUiModel(DATA_KEY_TABLE, showWidget = true)
+        val pieChartDataUiModel = PieChartDataUiModel(DATA_KEY_PIE_CHART, showWidget = true)
+        val barChartDataUiModel = BarChartDataUiModel(DATA_KEY_BAR_CHART, showWidget = true)
+        val multiLineGraphDataUiModel = MultiLineGraphDataUiModel(DATA_KEY_MULTI_LINE, showWidget = true)
+        val announcementDataUiModel = AnnouncementDataUiModel(DATA_KEY_ANNOUNCEMENT, showWidget = true)
+        val recommendationDataUiModel = RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
+
+        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
+
+        every {
+            userSession.shopId
+        } returns shopId
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+        coEvery {
+            getLayoutUseCase.executeOnBackground()
+        } returns layoutList
+        coEvery {
+            getLayoutUseCase.isFirstLoad
+        } returns true
+        everyGetWidgetData_shouldSuccess(cardData, lineGraphDataUiModel, progressDataUiModel, postListDataUiModel,
+                carouselDataUiModel, tableDataUiModel, pieChartDataUiModel, barChartDataUiModel, multiLineGraphDataUiModel, announcementDataUiModel, recommendationDataUiModel)
+
+        viewModel.getWidgetLayout(0f)
+
+        coVerify {
+            userSession.shopId
+        }
+        coVerify {
+            getLayoutUseCase.executeOnBackground()
+        }
+
+        val successLayoutList = layoutList.map {
+            when (it) {
+                is CardWidgetUiModel -> it.apply { data = cardData }
+                is LineGraphWidgetUiModel -> it.apply { data = lineGraphDataUiModel }
+                is ProgressWidgetUiModel -> it.apply { data = progressDataUiModel }
+                is PostListWidgetUiModel -> it.apply { data = postListDataUiModel }
+                is CarouselWidgetUiModel -> it.apply { data = carouselDataUiModel }
+                is TableWidgetUiModel -> it.apply { data = tableDataUiModel }
+                is PieChartWidgetUiModel -> it.apply { data = pieChartDataUiModel }
+                is BarChartWidgetUiModel -> it.apply { data = barChartDataUiModel }
+                is MultiLineGraphWidgetUiModel -> it.apply { data = multiLineGraphDataUiModel }
+                is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
+                is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
+                else -> it
+            }
+        }.map {
+            it.apply {
+                isLoading = false
+            }
+        }
+
+        assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
+            successLayoutList.find { it.data == actualWidget.data } != null
+        } == true)
     }
 
     @Test
@@ -805,7 +877,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should success when get table widget data`() = runBlocking {
-        val dataKeys = listOf(Pair("x", "x"),  Pair("y", "y"))
+        val dataKeys = listOf(Pair("x", "x"), Pair("y", "y"))
         val result = listOf(TableDataUiModel(), TableDataUiModel())
 
         getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -829,7 +901,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `should failed when get table widget data`() = runBlocking {
-        val dataKeys = listOf(Pair("x", "x"),  Pair("y", "y"))
+        val dataKeys = listOf(Pair("x", "x"), Pair("y", "y"))
 
         getTableDataUseCase.params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
 
@@ -1499,7 +1571,7 @@ class SellerHomeViewModelTest {
 
         val announcementData = AnnouncementDataUiModel(dataKey = DATA_KEY_ANNOUNCEMENT, showWidget = false)
         val carouselData = CarouselDataUiModel(dataKey = DATA_KEY_CAROUSEL, showWidget = true)
-        val postData = PostListDataUiModel(dataKey = DATA_KEY_POST_LIST, items = listOf(PostUiModel()), showWidget = true)
+        val postData = PostListDataUiModel(dataKey = DATA_KEY_POST_LIST, postPagers = listOf(PostListPagerUiModel()), showWidget = true)
         val progressData = ProgressDataUiModel(dataKey = DATA_KEY_PROGRESS, showWidget = true)
         val shopId = "123456"
         val page = "seller-home"
@@ -1819,7 +1891,7 @@ class SellerHomeViewModelTest {
                         postFilter = listOf(WidgetFilterUiModel("", "", false)))
         )
 
-        val postData = PostListDataUiModel(DATA_KEY_POST_LIST, items = listOf(PostUiModel()), showWidget = true)
+        val postData = PostListDataUiModel(DATA_KEY_POST_LIST, postPagers = listOf(PostListPagerUiModel()), showWidget = true)
         val shopId = "123456"
         val page = "seller-home"
 
@@ -1841,6 +1913,62 @@ class SellerHomeViewModelTest {
         coEvery {
             getPostDataUseCase.executeOnBackground()
         } returns listOf(postData)
+
+        viewModel.getWidgetLayout(1000f)
+
+        assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_ANNOUNCEMENT } == false)
+    }
+
+    @Test
+    fun `given any table widget filter is not selected, table widget should still getting the widget data`() {
+        val layoutList: List<BaseWidgetUiModel<*>> = listOf(
+                TableWidgetUiModel(
+                        id = DATA_KEY_TABLE,
+                        widgetType = WidgetType.TABLE,
+                        title = "",
+                        subtitle = "",
+                        tooltip = TooltipUiModel("", "", true, listOf()),
+                        appLink = "",
+                        dataKey = DATA_KEY_TABLE,
+                        ctaText = "",
+                        isShowEmpty = true,
+                        data = null,
+                        isLoaded = false,
+                        isLoading = false,
+                        isFromCache = false,
+                        isNeedToBeRemoved = false,
+                        emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
+                        tableFilters = listOf(
+                                WidgetFilterUiModel(
+                                        name = "dummy-name",
+                                        value = "dummy-value",
+                                        isSelected = false
+                                )
+                        ))
+        )
+
+        val tableData = TableDataUiModel(DATA_KEY_TABLE, dataSet = listOf(TablePageUiModel()), showWidget = true)
+        val shopId = "123456"
+        val page = "seller-home"
+
+        getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
+
+        every {
+            userSession.shopId
+        } returns shopId
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+        coEvery {
+            getLayoutUseCase.executeOnBackground()
+        } returns layoutList
+        coEvery {
+            getLayoutUseCase.isFirstLoad
+        } returns true
+        coEvery {
+            getTableDataUseCase.executeOnBackground()
+        } returns listOf(tableData)
 
         viewModel.getWidgetLayout(1000f)
 
@@ -2008,7 +2136,17 @@ class SellerHomeViewModelTest {
                         isFromCache = false,
                         isNeedToBeRemoved = false,
                         emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                        tableFilters = listOf()),
+                        tableFilters = listOf(
+                                WidgetFilterUiModel(
+                                        name = "dummy-name",
+                                        value = "dummy-value",
+                                        isSelected = true
+                                ), WidgetFilterUiModel(
+                                name = "dummy-name",
+                                value = "dummy-value",
+                                isSelected = false
+                        )
+                        )),
                 PieChartWidgetUiModel(
                         id = DATA_KEY_PIE_CHART,
                         widgetType = WidgetType.PIE_CHART,

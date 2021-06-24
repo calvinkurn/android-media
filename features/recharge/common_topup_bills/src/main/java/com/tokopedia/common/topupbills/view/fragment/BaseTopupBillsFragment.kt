@@ -37,6 +37,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -179,7 +180,13 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                             navigateToPayment(it.data)
                         }
                     }
-                    is Fail -> onExpressCheckoutError(it.throwable)
+                    is Fail -> {
+                        var throwable = it.throwable
+                        if (it.throwable.message.isNullOrEmpty()) {
+                            throwable = MessageErrorException(getString(R.string.common_topup_enquiry_error))
+                        }
+                        onExpressCheckoutError(throwable)
+                    }
                 }
             }
         })
@@ -233,7 +240,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 REQUEST_CODE_CART_DIGITAL -> {
                     data?.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { message ->
                         view?.let {
-                            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+                            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -397,7 +404,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     private fun showErrorMessage(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, error.message
+            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error)
                     ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }

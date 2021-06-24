@@ -81,6 +81,10 @@ dependencies {
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 
+    androidTestImplementation project(rootProject.ext.features.topAdsSdk)
+    androidTestImplementation project(rootProject.ext.features.atc_common)
+    androidTestImplementation project(rootProject.ext.features.wishlistCommon)
+
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
     androidTestImplementation rootProject.ext.debugToolsDependencies.chuck
     androidTestImplementation project(rootProject.ext.features.shopCommon)

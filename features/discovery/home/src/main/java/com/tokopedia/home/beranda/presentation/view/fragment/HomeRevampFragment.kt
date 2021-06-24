@@ -370,7 +370,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
         if (isNavRevamp()) {
             ifNavRevamp.invoke()
-        } else if (isNavOld()) {
+        } else {
             ifNavOld.invoke()
         }
     }
@@ -1766,6 +1766,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         .setLocalCacheModel(localCacheModel)
         )
         chooseAddressWidgetInitialized = false
+        getHomeViewModel().refresh(isFirstInstall = false, forceRefresh = true)
     }
 
     override fun initializeChooseAddressWidget(chooseAddressWidget: ChooseAddressWidget, needToShowChooseAddress: Boolean) {

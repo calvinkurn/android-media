@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
+    android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:animateLayoutChanges="true">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailDropShipperLabel"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:text="@string/label_dropshipper"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_default="wrap"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailDropShipperNameValue"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailDropShipperLabel"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Leonardy" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvBuyerOrderDetailDropShipperPhoneNumberValue"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/tvBuyerOrderDetailDropShipperNameValue"
+        app:typographyType="body_3"
+        tools:text="08123456789" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.3" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
