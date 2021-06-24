@@ -24,6 +24,16 @@
             android:scaleType="centerCrop"
             tools:src="@tools:sample/avatars" />
 
+        <ImageView
+            android:id="@+id/img_item_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_1"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            tools:src="@tools:sample/avatars"
+            tools:visibility="visible" />
+
         <View
             android:id="@+id/view_selection"
             android:layout_width="match_parent"

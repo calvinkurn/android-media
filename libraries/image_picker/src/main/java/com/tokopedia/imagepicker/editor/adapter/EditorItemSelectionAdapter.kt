@@ -59,6 +59,7 @@ class EditorItemSelectionAdapter constructor(
         private val context by lazy { itemView.context }
 
         private val imgItemSelection = itemView.findViewById<AppCompatImageView>(R.id.img_item_selection)
+        private val imgItemPlaceholder = itemView.findViewById<AppCompatImageView>(R.id.img_item_placeholder)
         private val txtPlaceholder = itemView.findViewById<TextView>(R.id.txt_placeholder)
         private val viewSelection = itemView.findViewById<View>(R.id.view_selection)
         private val txtItem = itemView.findViewById<TextView>(R.id.txt_item)
@@ -70,18 +71,24 @@ class EditorItemSelectionAdapter constructor(
 
             txtPlaceholder.text = item.placeholderText.take(6)
             txtItem.text = item.name
-            itemPreview(item)
+
+            imgItemSelection.loadImage(item.preview)
+
+            if (item.placeholderResId != 0) {
+                imgItemPlaceholder.loadImage(item.placeholderResId)
+                imgItemPlaceholder.show()
+            }
         }
 
-        private fun itemPreview(item: ItemSelection) {
+        private fun AppCompatImageView.loadImage(data: Any) {
             val radius = context.resources.getDimensionPixelSize(R.dimen.image_editor_rounded)
 
             Glide.with(context)
-                .load(item.preview)
+                .load(data)
                 .apply(RequestOptions().transform(
                     CenterCrop(),
                     RoundedCorners(radius)
-                )).into(imgItemSelection)
+                )).into(this)
         }
 
         companion object {

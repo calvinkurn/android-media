@@ -13,6 +13,7 @@ data class ItemSelection(
     val name: String = "",
     val preview: String = "",
     val placeholderText: String = "",
+    val placeholderResId: Int = 0,
     val itemType: Int = 0,
     var isSelected: Boolean = false
 )
