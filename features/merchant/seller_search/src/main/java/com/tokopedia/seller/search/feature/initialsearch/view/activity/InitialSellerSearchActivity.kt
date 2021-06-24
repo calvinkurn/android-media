@@ -37,10 +37,6 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
         GlobalSearchView.GlobalSearchViewListener, GlobalSearchView.SearchTextBoxListener,
         HistoryViewUpdateListener, SuggestionViewUpdateListener, GlobalSearchSellerPerformanceMonitoringListener {
 
-    companion object {
-        const val MIN_CHARACTER_SEARCH = 3
-    }
-
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -125,8 +121,8 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
         SellerSearchTracking.clickClearSearchBoxEvent(userId)
     }
 
-    override fun onBackButtonSearchBar() {
-        SellerSearchTracking.clickBackButtonSearchEvent(userId)
+    override fun onBackButtonSearchBar(keyword: String) {
+        SellerSearchTracking.clickBackButtonSearchEvent(userId, keyword)
     }
 
     override fun setUserIdFromFragment(userId: String) {
@@ -158,9 +154,9 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
     }
 
     private fun setWhiteStatusBar() {
-        window?.decorView?.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+        window?.decorView?.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+            setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             setLightStatusBar(true)
         }
     }
@@ -186,11 +182,7 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
         if (keyword.isEmpty()) {
             initialStateFragment?.historySearch(keyword)
         } else {
-            if (keyword.length < MIN_CHARACTER_SEARCH) {
-                initialStateFragment?.onMinCharState()
-            } else {
-                suggestionFragment?.suggestionSearch(keyword)
-            }
+            suggestionFragment?.suggestionSearch(keyword)
         }
     }
 
