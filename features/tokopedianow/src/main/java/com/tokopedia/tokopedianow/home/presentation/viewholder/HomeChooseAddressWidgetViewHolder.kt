@@ -85,8 +85,8 @@ class HomeChooseAddressWidgetViewHolder(
             chooseAddressWidget?.let {
                 CoachMark2Item(
                         it,
-                        itemView.context?.getString(R.string.home_choose_address_widget_coachmark_title).orEmpty(),
-                        itemView.context?.getString(R.string.home_choose_address_widget_coachmark_description).orEmpty()
+                        itemView.context?.getString(R.string.tokopedianow_home_choose_address_widget_coachmark_title).orEmpty(),
+                        itemView.context?.getString(R.string.tokopedianow_home_choose_address_widget_coachmark_description).orEmpty()
                 )
             }
         } else {

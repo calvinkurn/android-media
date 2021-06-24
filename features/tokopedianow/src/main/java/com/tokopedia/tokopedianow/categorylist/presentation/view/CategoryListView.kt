@@ -80,7 +80,7 @@ class CategoryListView : LinearLayout {
             val verticalMargin = context.resources.getDimensionPixelSize(
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
 
-            textTitle.text = context.getString(R.string.tokomart_all_category_text_format, categoryL2.name)
+            textTitle.text = context.getString(R.string.tokopedianow_all_category_text_format, categoryL2.name)
             textTitle.setWeight(categoryL2.textWeight)
             textTitle.setTextColor(ContextCompat.getColor(context, categoryL2.textColorId))
 

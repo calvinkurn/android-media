@@ -38,7 +38,7 @@ class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs:
 
     fun setDescriptionCityName(city: String) {
         val tvDescription = findViewById<TextView?>(R.id.tokonowEmptyStateDesc2)
-        tvDescription?.text = context.getString(R.string.tokomart_common_empty_state_desc_2, city)
+        tvDescription?.text = context.getString(R.string.tokopedianow_common_empty_state_desc_2, city)
     }
 
     interface ActionListener {

@@ -101,7 +101,7 @@ class CategoryListBottomSheet : BottomSheetUnify() {
 
     private fun initView(inflater: LayoutInflater, container: ViewGroup?) {
         val itemView = inflater.inflate(R.layout.bottomsheet_tokopedianow_category_list, container)
-        menuTitle = itemView.context.getString(R.string.tokomart_category_list_bottom_sheet_title)
+        menuTitle = itemView.context.getString(R.string.tokopedianow_category_list_bottom_sheet_title)
         accordionCategoryList = itemView.findViewById(R.id.accordion_category_list)
         loader = itemView.findViewById(R.id.loader)
         globalError = itemView.findViewById(R.id.layout_global_error_category_list)
@@ -188,7 +188,7 @@ class CategoryListBottomSheet : BottomSheetUnify() {
         } else if (errorCode == ERROR_SERVER || errorCode == ERROR_MAINTENANCE){
             globalError?.let {
                 it.errorAction.show()
-                it.errorAction.text = context?.getString(R.string.tokomart_category_list_bottom_sheet_error_go_to_homepage)
+                it.errorAction.text = context?.getString(R.string.tokopedianow_category_list_bottom_sheet_error_go_to_homepage)
                 it.setActionClickListener {
                     dismiss()
                 }
@@ -205,8 +205,8 @@ class CategoryListBottomSheet : BottomSheetUnify() {
     private fun showGlobalErrorPageNotFound(){
         globalError?.let {
             it.errorIllustration.setImage(ERROR_STATE_NOT_FOUND_IMAGE_URL, 0f)
-            it.errorTitle.text = context?.getString(R.string.tokomart_category_list_bottom_sheet_error_not_found_title).orEmpty()
-            it.errorDescription.text = context?.getString(R.string.tokomart_category_list_bottom_sheet_error_not_found_desc).orEmpty()
+            it.errorTitle.text = context?.getString(R.string.tokopedianow_category_list_bottom_sheet_error_not_found_title).orEmpty()
+            it.errorDescription.text = context?.getString(R.string.tokopedianow_category_list_bottom_sheet_error_not_found_desc).orEmpty()
         }
         actionClickListenerTryAgain()
     }

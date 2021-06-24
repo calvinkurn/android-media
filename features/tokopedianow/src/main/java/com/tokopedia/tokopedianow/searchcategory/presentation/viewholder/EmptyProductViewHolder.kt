@@ -64,15 +64,15 @@ class EmptyProductViewHolder(
     }
 
     private fun bindTitle(hasActiveFilter: Boolean) {
-        val title = if (hasActiveFilter) getString(R.string.tokomart_empty_product_filter_title)
-        else getString(R.string.tokomart_empty_product_title)
+        val title = if (hasActiveFilter) getString(R.string.tokopedianow_empty_product_filter_title)
+        else getString(R.string.tokopedianow_empty_product_title)
 
         titleTextView?.text = title
     }
 
     private fun bindDescription(hasActiveFilter: Boolean) {
-        val description = if (hasActiveFilter) getString(R.string.tokomart_empty_product_filter_description)
-        else getString(R.string.tokomart_empty_product_description)
+        val description = if (hasActiveFilter) getString(R.string.tokopedianow_empty_product_filter_description)
+        else getString(R.string.tokopedianow_empty_product_description)
 
         descriptionTextView?.text = description
     }
@@ -83,7 +83,7 @@ class EmptyProductViewHolder(
         filterList.shouldShowWithAction(hasActiveFilter) {
             val optionList = combinePriceFilterIfExists(
                     element.activeFilterList,
-                    getString(R.string.tokomart_empty_product_filter_price_name)
+                    getString(R.string.tokopedianow_empty_product_filter_price_name)
             )
             filterList.adapter = Adapter(optionList, emptyProductListener)
             filterList.layoutManager = layoutManager

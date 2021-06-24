@@ -23,11 +23,11 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/loaderTextView"
-            android:layout_width="@dimen/tokonow_shimmering_category_line_width"
+            android:layout_width="@dimen/tokopedianow_shimmering_category_line_width"
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginTop="@dimen/layout_lvl1"
-            app:loader_corner_radius="@dimen/tokonow_shimmering_radius_line"
+            app:loader_corner_radius="@dimen/tokopedianow_shimmering_radius_line"
             app:loader_type="line"
             app:layout_constraintBottom_toTopOf="@+id/loaderTextView2"
             app:layout_constraintStart_toEndOf="@+id/imageCategoryShimmering"
@@ -39,7 +39,7 @@
             android:layout_height="@dimen/layout_lvl1"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginBottom="@dimen/layout_lvl1"
-            app:loader_corner_radius="@dimen/tokonow_shimmering_radius_line"
+            app:loader_corner_radius="@dimen/tokopedianow_shimmering_radius_line"
             app:loader_type="line"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageCategoryShimmering"

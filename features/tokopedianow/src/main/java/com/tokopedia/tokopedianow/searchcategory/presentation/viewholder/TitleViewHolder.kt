@@ -40,5 +40,5 @@ class TitleViewHolder(
 
     private fun getTitle(element: TitleDataView) =
             if (element.title.isNotEmpty()) element.title
-            else getString(R.string.tokomart_search_title)
+            else getString(R.string.tokopedianow_search_title)
 }

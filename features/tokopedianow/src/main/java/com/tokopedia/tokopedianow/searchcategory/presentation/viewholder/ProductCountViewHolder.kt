@@ -23,6 +23,6 @@ class ProductCountViewHolder(itemView: View): AbstractViewHolder<ProductCountDat
     override fun bind(element: ProductCountDataView?) {
         element ?: return
 
-        totalDataText?.text = getString(R.string.tokomart_search_category_product_count_template, element.totalDataText)
+        totalDataText?.text = getString(R.string.tokopedianow_search_category_product_count_template, element.totalDataText)
     }
 }

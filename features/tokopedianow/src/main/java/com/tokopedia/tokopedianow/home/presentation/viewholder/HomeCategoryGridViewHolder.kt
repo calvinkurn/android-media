@@ -94,8 +94,8 @@ class HomeCategoryGridViewHolder(
     private fun showLocalLoad(data: HomeCategoryGridUiModel) {
         llCategory?.apply {
             progressState = false
-            title?.text = itemView.context.getString(R.string.tokomart_category_is_failed_to_display_title)
-            description?.text = itemView.context.getString(R.string.tokomart_category_is_failed_to_display_description)
+            title?.text = itemView.context.getString(R.string.tokopedianow_category_is_failed_to_display_title)
+            description?.text = itemView.context.getString(R.string.tokopedianow_category_is_failed_to_display_description)
             refreshBtn?.setOnClickListener {
                 progressState = true
                 listener?.onCategoryRetried()

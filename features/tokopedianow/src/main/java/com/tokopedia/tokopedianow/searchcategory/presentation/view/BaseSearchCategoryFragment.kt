@@ -127,7 +127,7 @@ abstract class BaseSearchCategoryFragment:
     private val searchCategoryToolbarHeight: Int
         get() {
             val defaultHeight = resources
-                    .getDimensionPixelSize(R.dimen.tokomart_default_toolbar_status_height)
+                    .getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height)
 
             val height = (navToolbar?.height ?: defaultHeight)
             val padding = resources.getDimensionPixelSize(R.dimen.dp_8)
@@ -213,7 +213,7 @@ abstract class BaseSearchCategoryFragment:
             navToolbar: NavToolbar,
     ): NavRecyclerViewScrollListener {
         val toolbarTransitionRangePixel =
-                resources.getDimensionPixelSize(R.dimen.tokomart_searchbar_transition_range)
+                resources.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range)
 
         return NavRecyclerViewScrollListener(
                 navToolbar = navToolbar,
@@ -305,7 +305,7 @@ abstract class BaseSearchCategoryFragment:
 
         val params = urlParser.paramKeyValueMap
         params[SearchApiConst.BASE_SRP_APPLINK] = ApplinkConstInternalTokopediaNow.SEARCH
-        params[SearchApiConst.HINT] = resources.getString(R.string.tokomart_search_bar_hint)
+        params[SearchApiConst.HINT] = resources.getString(R.string.tokopedianow_search_bar_hint)
 
         return params
     }
@@ -617,7 +617,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun showSuccessATCMessage(message: String?) {
-        showToaster(message, Toaster.TYPE_NORMAL, getString(R.string.tokomart_lihat)) {
+        showToaster(message, Toaster.TYPE_NORMAL, getString(R.string.tokopedianow_lihat)) {
             RouteManager.route(context, ApplinkConst.CART)
         }
     }

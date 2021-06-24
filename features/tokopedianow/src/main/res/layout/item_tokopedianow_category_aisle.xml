@@ -24,7 +24,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_16"
-        android:text="@string/tokomart_category_aisle_header"
+        android:text="@string/tokopedianow_category_aisle_header"
         app:layout_constraintTop_toBottomOf="@id/tokomartSearchCategoryAisleDivider"
         app:typographyType="heading_4" />
 

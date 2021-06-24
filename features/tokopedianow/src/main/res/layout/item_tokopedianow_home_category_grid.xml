@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        android:text="@string/tokomart_see_all"
+        android:text="@string/tokopedianow_see_all"
         android:textColor="@color/unify_G500"
         app:layout_constraintBottom_toBottomOf="@id/tv_title"
         app:layout_constraintRight_toRightOf="parent"
