@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.referral.Constants;
 import com.tokopedia.referral.R;
 import com.tokopedia.referral.analytics.ReferralAnalytics;
@@ -119,7 +120,7 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
 
         referralCodeTextView.setText(code);
         welcomeMessageSubHearer.setText(Html.fromHtml(presenter.getSubHeaderFromFirebase(owner)));
-        imgAppShare.loadImage(URL_IMG_APP_SHARE);
+        JvmMediaLoader.loadImage(imgAppShare, URL_IMG_APP_SHARE);
     }
 
     @Override

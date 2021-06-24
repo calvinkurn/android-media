@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.media.loader.loadImage;
+import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
@@ -67,7 +67,7 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
         proceedWithUpgrade = view.findViewById(R.id.upgrade_btn);
         upgradeLater = view.findViewById(R.id.later_btn);
         imgOvo = view.findViewById(R.id.image_ovo);
-        imgOvo.loadImage(URL_IMG_PREMIERE_UPGRADE);
+        JvmMediaLoader.loadImage(imgOvo, URL_IMG_PREMIERE_UPGRADE);
         proceedWithUpgrade.setOnClickListener(this::onClick);
         upgradeLater.setOnClickListener(this::onClick);
         return view;
