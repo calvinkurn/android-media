@@ -24,6 +24,8 @@ import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationWr
 import com.tokopedia.flight.cancellation.presentation.viewmodel.FlightCancellationPassengerViewModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_flight_cancellation.*
 import java.util.*
 import javax.inject.Inject
@@ -76,15 +78,22 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
         super.onActivityCreated(savedInstanceState)
 
         flightCancellationPassengerViewModel.cancellationPassengerList.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if (it.isNotEmpty()) {
-                renderCancellationList(it)
-                setupNextButton()
-            } else {
-                activity?.let { mActivity ->
-                    val intent = Intent()
-                    intent.putExtra(EXTRA_IS_CANCEL_ERROR, true)
-                    mActivity.setResult(Activity.RESULT_CANCELED, intent)
-                    mActivity.finish()
+            when (it){
+                is Success ->{
+                    if (it.data.isNotEmpty()) {
+                        renderCancellationList(it.data)
+                        setupNextButton()
+                    } else {
+                        activity?.let { mActivity ->
+                            val intent = Intent()
+                            intent.putExtra(EXTRA_IS_CANCEL_ERROR, true)
+                            mActivity.setResult(Activity.RESULT_CANCELED, intent)
+                            mActivity.finish()
+                        }
+                    }
+                }
+                is Fail ->{
+                    showGetListError(it.throwable)
                 }
             }
         })
