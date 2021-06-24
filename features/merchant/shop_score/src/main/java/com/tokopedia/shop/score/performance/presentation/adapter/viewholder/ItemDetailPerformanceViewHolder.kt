@@ -1,13 +1,11 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
-import android.graphics.Color
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.ShopScoreColorUtils
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_SYMBOL
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_AGE_SIXTY
@@ -92,16 +90,22 @@ class ItemDetailPerformanceViewHolder(view: View,
     }
 
     private fun Typography.setTextColorUnifyParameterDetail(colorValueDetailPerformance: String) {
+
         when (colorValueDetailPerformance) {
-            ShopScoreColorUtils.RED_DMS -> {
+            getColorHexString(R.color.shop_score_item_parameter_dms_grey) -> {
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
             }
-            ShopScoreColorUtils.GREY_DMS -> {
+            getColorHexString(R.color.shop_score_item_parameter_dms_grey) -> {
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             }
-            ShopScoreColorUtils.GREEN_DMS -> {
+            getColorHexString(R.color.shop_score_item_parameter_dms_green) -> {
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             }
         }
+    }
+
+    private fun Typography.getColorHexString(idColor: Int): String {
+        val colorHexInt = ContextCompat.getColor(context, idColor)
+        return "#${Integer.toHexString(colorHexInt)}"
     }
 }

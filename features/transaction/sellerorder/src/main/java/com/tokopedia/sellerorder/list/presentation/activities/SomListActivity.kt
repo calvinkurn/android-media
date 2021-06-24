@@ -36,7 +36,7 @@ class SomListActivity : BaseActivity(), SomListLoadTimeMonitoringActivity {
         setContentView(R.layout.activity_som_list)
         setupStatusBar()
         window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-        setupFragment(savedInstanceState)
+        setupFragment()
     }
 
     override fun initSomListLoadTimeMonitoring() {
@@ -46,17 +46,24 @@ class SomListActivity : BaseActivity(), SomListLoadTimeMonitoringActivity {
 
     override fun getSomListLoadTimeMonitoring() = performanceMonitoringSomListPlt
 
-    private fun setupFragment(savedInstance: Bundle?) {
-        if (savedInstance == null) {
-            inflateFragment()
-        }
+    private fun setupFragment() {
+        inflateFragment()
     }
 
     private fun inflateFragment() {
+        clearFragments()
         val newFragment = getNewFragment() ?: return
         supportFragmentManager.beginTransaction()
                 .replace(R.id.parent_view, newFragment, newFragment::class.java.simpleName)
-                .commit()
+                .commitNowAllowingStateLoss()
+    }
+
+    private fun clearFragments() {
+        val transaction = supportFragmentManager.beginTransaction()
+        for (fragment in supportFragmentManager.fragments) {
+            transaction.remove(fragment)
+        }
+        transaction.commitNowAllowingStateLoss()
     }
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")

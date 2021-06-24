@@ -25,6 +25,7 @@ object Constant {
 
     object Image {
         const val PM_BG_UPSALE_PM_PRO = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_bg_upsale_pm_pro.png"
+        const val PM_BG_REGISTRATION_PM = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_bg_registration_header_pm.png"
         const val PM_BG_REGISTRATION_PM_PRO = "https://images.tokopedia.net/img/android/gold_merchant_common/pm_bg_registration_header_pm_pro.png"
     }
 }
