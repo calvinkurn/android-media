@@ -119,7 +119,9 @@ open class TopChatRoomPresenter @Inject constructor(
 
     var autoRetryConnectWs = true
     var newUnreadMessage = 0
+        private set
     var thisMessageId: String = ""
+        private set
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
     private var userLocationInfo = LocalCacheModel()
