@@ -167,10 +167,7 @@ class FlightSearchViewModel @Inject constructor(
 
             onGetSearchMeta(data, isReturnTrip)
         }) {
-            if (it is FlightSearchThrowable) {
-                mutableJourneyList.postValue(Fail(it))
-            }
-            it.printStackTrace()
+            mutableJourneyList.postValue(Fail(it))
         }
     }
 

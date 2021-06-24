@@ -133,6 +133,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                                 break
                             }
                         }
+                    }else{
+                        showGetListError(it.throwable)
                     }
                 }
             }
