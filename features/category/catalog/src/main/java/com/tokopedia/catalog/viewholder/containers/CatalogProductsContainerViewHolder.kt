@@ -1,4 +1,4 @@
-package com.tokopedia.catalog.viewholder
+package com.tokopedia.catalog.viewholder.containers
 
 import android.view.View
 import androidx.viewpager.widget.ViewPager

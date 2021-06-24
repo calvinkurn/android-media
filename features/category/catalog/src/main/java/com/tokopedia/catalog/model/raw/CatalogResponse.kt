@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 data class CatalogResponseData (
         @SerializedName( "catalogGetDetailModular")
-        val catalogGetDetailModular: CatalogGetDetailModular
+        val catalogGetDetailModular: CatalogGetDetailModular?
 ){
     data class CatalogGetDetailModular (
             @SerializedName( "basicInfo")

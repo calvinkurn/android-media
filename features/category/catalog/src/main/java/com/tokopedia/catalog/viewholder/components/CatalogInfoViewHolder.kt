@@ -1,4 +1,4 @@
-package com.tokopedia.catalog.viewholder
+package com.tokopedia.catalog.viewholder.components
 
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog.R
-import com.tokopedia.catalog.adapter.CatalogImagesAdapter
+import com.tokopedia.catalog.adapter.components.CatalogImagesAdapter
 import com.tokopedia.catalog.adapter.decorators.CatalogImagesItemDecoration
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.CatalogInfoDataModel

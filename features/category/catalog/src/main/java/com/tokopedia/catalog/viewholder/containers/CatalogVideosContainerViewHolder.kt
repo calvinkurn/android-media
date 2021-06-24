@@ -1,14 +1,12 @@
-package com.tokopedia.catalog.viewholder
+package com.tokopedia.catalog.viewholder.containers
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog.R
-import com.tokopedia.catalog.adapter.CatalogSpecificationsAdapter
-import com.tokopedia.catalog.adapter.CatalogVideosAdapter
+import com.tokopedia.catalog.adapter.components.CatalogVideosAdapter
 import com.tokopedia.catalog.listener.CatalogDetailListener
-import com.tokopedia.catalog.model.datamodel.CatalogTopSpecificationDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogVideoDataModel
 
 class CatalogVideosContainerViewHolder(private val view : View,
@@ -23,6 +21,6 @@ class CatalogVideosContainerViewHolder(private val view : View,
     override fun bind(element: CatalogVideoDataModel) {
         val videosRV = view.findViewById<RecyclerView>(R.id.catalog_videos_rv)
         videosRV.layoutManager = layoutManager
-        videosRV.adapter = CatalogVideosAdapter(element.videosList,catalogDetailListener)
+        videosRV.adapter = CatalogVideosAdapter(element.videosList, catalogDetailListener)
     }
 }
