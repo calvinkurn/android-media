@@ -348,7 +348,12 @@ class TokoMartHomeFragment: Fragment(),
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
         movingPosition += dy
-        ivHeaderBackground?.y = -(movingPosition.toFloat())
+        ivHeaderBackground?.y = if(movingPosition >= 0) {
+            -(movingPosition.toFloat())
+        } else {
+            resetMovingPosition()
+            movingPosition.toFloat()
+        }
         if (recyclerView.canScrollVertically(1) || movingPosition != 0) {
             navToolbar?.showShadow(lineShadow = true)
         } else {
