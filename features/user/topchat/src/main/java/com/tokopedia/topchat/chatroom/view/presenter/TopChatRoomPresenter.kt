@@ -27,6 +27,7 @@ import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -57,11 +58,10 @@ import com.tokopedia.topchat.chatroom.view.uimodel.StickerUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
-import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.data.Resource
-import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.data.Status
+import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -75,6 +75,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.WebSocket
@@ -217,19 +218,19 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun adjustInterlocutorWarehouseId(msgId: String) {
         attachProductWarehouseId = "0"
-        launchCatchError(dispatchers.io,
-            {
-                tokoNowWHUsecase.getWarehouseId(msgId).collect {
-                    if (it.status == Status.SUCCESS) {
-                        withContext(dispatchers.main) {
+        launchCatchError(
+            block = {
+                tokoNowWHUsecase.getWarehouseId(msgId)
+                    .flowOn(dispatchers.io)
+                    .collect {
+                        if (it.status == Status.SUCCESS) {
                             attachProductWarehouseId = it.data
                                 ?.chatTokoNowWarehouse
                                 ?.warehouseId ?: "0"
                         }
                     }
-                }
             },
-            {
+            onError = {
                 it.printStackTrace()
             }
         )

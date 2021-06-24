@@ -261,6 +261,6 @@ interface TopChatContract {
             products: List<SendablePreview>, opponentId: String,
             onSendingMessage: () -> Unit
         )
-        fun adjustInterlocutorWarehouseId(messageId: String)
+        fun adjustInterlocutorWarehouseId(msgId: String)
     }
 }
