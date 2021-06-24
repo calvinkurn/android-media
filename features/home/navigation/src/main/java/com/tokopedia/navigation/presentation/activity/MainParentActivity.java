@@ -345,11 +345,14 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private Boolean isTestEnv() {
-        if (getIntent().getExtras().getString(TEST_ENVIRONMENT) != null) {
-            return getIntent().getExtras().getString(TEST_ENVIRONMENT).equals(TEST_ENVIRONMENT);
-        } else {
-            return false;
+        if (getIntent() != null) {
+            if (getIntent().getExtras() != null) {
+                if (getIntent().getExtras().getString(TEST_ENVIRONMENT) != null) {
+                    return getIntent().getExtras().getString(TEST_ENVIRONMENT).equals(TEST_ENVIRONMENT);
+                }
+            }
         }
+        return false;
     }
 
     @Override
