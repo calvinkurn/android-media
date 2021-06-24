@@ -16,5 +16,5 @@ interface PartialButtonActionListener {
     fun topChatButtonClicked()
     fun editProductButtonClicked()
     fun getRxCompositeSubcription(): CompositeSubscription
-    fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem)
+    fun updateQuantityNonVarTokoNow(quantity: Int, miniCart: MiniCartItem, oldValue:Int)
 }

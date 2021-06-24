@@ -92,6 +92,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     private var rvVariantBottomSheet: RecyclerView? = null
     private var buttonActionType = 0
     private var buttonText = ""
+    private var alreadyHitQtyTrack = false
 
     fun show(fragmentManager: FragmentManager,
              tag: String,
@@ -473,7 +474,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         goToImagePreview(arrayListOf(url))
     }
 
-    override fun onQuantityUpdate(quantity: Int, productId: String) {
+    override fun onQuantityUpdate(quantity: Int, productId: String, oldValue: Int) {
+        if (!alreadyHitQtyTrack) {
+            alreadyHitQtyTrack = true
+            ProductTrackingCommon.onQuantityEditorClicked(productId, sharedViewModel.aggregatorParams?.value?.pageSource
+                    ?: "", oldValue, quantity)
+        }
+
         viewModel.updateQuantity(quantity, productId)
     }
 

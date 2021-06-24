@@ -222,12 +222,12 @@ class PartialButtonActionView private constructor(val view: View,
                 setValue(maxQuantity)
             } else {
                 if (localQuantity != quantity && quantity != 0) {
-                    localQuantity = quantity
                     buttonListener.updateQuantityNonVarTokoNow(
                             quantity = getValue(),
-                            miniCart = miniCartItem ?: MiniCartItem()
+                            miniCart = miniCartItem ?: MiniCartItem(),
+                            oldValue = localQuantity
                     )
-
+                    localQuantity = quantity
                     //fire again to update + and - button
                     setValue(localQuantity)
                 }
