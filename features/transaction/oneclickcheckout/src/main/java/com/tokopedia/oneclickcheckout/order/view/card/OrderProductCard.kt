@@ -153,7 +153,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 btnProtectionInfo.setOnClickListener {
                     val url = product.purchaseProtectionPlanData.protectionLinkUrl
                     if (url.isNotBlank()) {
-                        listener.onPurchaseProtectionInfoClicked(url)
+                        listener.onPurchaseProtectionInfoClicked(url, product.categoryId, product.purchaseProtectionPlanData.protectionTitle)
                     }
                 }
                 cbPurchaseProtection.isEnabled = !product.purchaseProtectionPlanData.isProtectionCheckboxDisabled
@@ -219,7 +219,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
 
         fun onProductChange(product: OrderProduct, shouldReloadRates: Boolean = true)
 
-        fun onPurchaseProtectionInfoClicked(url: String)
+        fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionTitle: String)
 
         fun onPurchaseProtectionCheckedChange(isChecked: Boolean)
 

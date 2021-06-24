@@ -1002,9 +1002,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             viewModel.updateProduct(product, shouldReloadRates)
         }
 
-        override fun onPurchaseProtectionInfoClicked(url: String) {
+        override fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionTitle: String) {
             PurchaseProtectionInfoBottomsheet(url).show(this@OrderSummaryPageFragment)
-            orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, viewModel.orderProduct.categoryId, "", viewModel.orderProduct.purchaseProtectionPlanData.protectionTitle)
+            orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, categoryId, "", protectionTitle)
         }
 
         override fun onPurchaseProtectionCheckedChange(isChecked: Boolean) {
@@ -1307,7 +1307,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putBoolean(SAVE_HAS_DONE_ATC, viewModel.orderProduct.productId > 0)
+        outState.putBoolean(SAVE_HAS_DONE_ATC, viewModel.orderProducts.value.isNotEmpty())
     }
 
     private fun onSuccessCheckout(): (CheckoutOccResult) -> Unit = { checkoutOccResult: CheckoutOccResult ->

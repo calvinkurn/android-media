@@ -129,7 +129,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             result.globalEvent?.also {
                 globalEvent.value = it
             }
-            if (orderProduct.productId > 0 && _orderPreference.preference.address.addressId > 0) {
+            if (orderCart.products.isNotEmpty() && _orderPreference.preference.address.addressId > 0) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 getRatesSuspend()
             } else if (result.throwable == null && !isInvalidAddressState(result.orderPreference.preference, result.addressState)) {
@@ -695,8 +695,10 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private fun sendViewOspEe() {
         if (!hasSentViewOspEe) {
             orderSummaryAnalytics.eventViewOrderSummaryPage(userSession.userId, _orderPreference.preference.payment.gatewayName, generateOspEeBody().build(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
-            if (orderProduct.purchaseProtectionPlanData.isProtectionAvailable) {
-                orderSummaryAnalytics.eventPPImpressionOnInsuranceSection(userSession.userId, orderProduct.categoryId, "", orderProduct.purchaseProtectionPlanData.protectionTitle)
+            for (product in orderCart.products) {
+                if (product.purchaseProtectionPlanData.isProtectionAvailable) {
+                    orderSummaryAnalytics.eventPPImpressionOnInsuranceSection(userSession.userId, product.categoryId, "", product.purchaseProtectionPlanData.protectionTitle)
+                }
             }
             hasSentViewOspEe = true
         }
