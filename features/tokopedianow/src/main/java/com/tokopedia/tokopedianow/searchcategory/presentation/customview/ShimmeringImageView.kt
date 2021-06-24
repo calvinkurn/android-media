@@ -16,7 +16,7 @@ import com.bumptech.glide.request.target.Target
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.tokopedianow.R
-import kotlinx.android.synthetic.main.layout_tokomart_shimmering_image_view.view.*
+import kotlinx.android.synthetic.main.layout_tokopedianow_shimmering_image_view.view.*
 
 class ShimmeringImageView @JvmOverloads constructor(context: Context, private val attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         FrameLayout(context, attrs, defStyleAttr){
