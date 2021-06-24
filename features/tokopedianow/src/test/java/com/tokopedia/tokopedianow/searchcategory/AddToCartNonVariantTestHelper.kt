@@ -224,7 +224,6 @@ class AddToCartNonVariantTestHelper(
         `Then assert update quantity`(
                 productUpdatedQuantity,
                 productInMiniCart,
-                updateCartSuccessMessage,
                 productInVisitable
         )
         `Then verify decrease cart quantity tracking is called`(productIdToATC)
@@ -255,11 +254,10 @@ class AddToCartNonVariantTestHelper(
     private fun `Then assert update quantity`(
             productUpdatedQuantity: Int,
             productInMiniCart: MiniCartItem,
-            updateCartSuccessMessage: String,
             productInVisitable: ProductItemDataView
     ) {
         `Then assert update cart params`(productUpdatedQuantity, productInMiniCart)
-        `Then assert cart message event`(expectedSuccessMessage = updateCartSuccessMessage)
+        `Then assert cart message event`()
         `Then assert product item quantity`(productInVisitable, productUpdatedQuantity)
         `Then assert add to cart use case is not called`()
         `Then verify mini cart is refreshed`(2)
@@ -304,7 +302,6 @@ class AddToCartNonVariantTestHelper(
         `Then assert update quantity`(
                 productUpdatedQuantity,
                 productInMiniCart,
-                updateCartSuccessMessage,
                 productInVisitable,
         )
         `Then verify increase cart quantity tracking is called`(productIdToATC)

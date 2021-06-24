@@ -1,11 +1,11 @@
-package com.tokopedia.catalog.viewholder
+package com.tokopedia.catalog.viewholder.containers
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog.R
-import com.tokopedia.catalog.adapter.CatalogSpecificationsAdapter
+import com.tokopedia.catalog.adapter.components.CatalogSpecificationsAdapter
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.CatalogTopSpecificationDataModel
 
@@ -22,7 +22,7 @@ class CatalogSpecificationsContainerViewHolder(private val view : View,
     override fun bind(element: CatalogTopSpecificationDataModel) {
         val specificationsRV = view.findViewById<RecyclerView>(R.id.catalog_specification_rv)
         specificationsRV.layoutManager = layoutManager
-        specificationsAdapter = CatalogSpecificationsAdapter(element.topSpecificationsList,catalogDetailListener)
+        specificationsAdapter = CatalogSpecificationsAdapter(element.topSpecificationsList, catalogDetailListener)
         specificationsRV.adapter = specificationsAdapter!!
     }
 }

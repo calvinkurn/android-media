@@ -9,6 +9,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
+import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -40,12 +41,13 @@ object AtcVariantHelper {
                         warehouseId: String,
                         pdpSession: String,
                         isTokoNow: Boolean,
-                        isFreeOngkir:Boolean,
+                        isFreeOngkir: Boolean,
                         isShopOwner: Boolean,
                         productVariant: ProductVariant,
                         warehouseResponse: Map<String, WarehouseInfo>,
                         cartRedirection: Map<String, CartTypeData>,
                         miniCart: Map<String, MiniCartItem>?,
+                        alternateCopy: List<AlternateCopy>?,
                         startActivitResult: (Intent, Int) -> Unit) {
 
         val cacheManager = SaveInstanceCacheManager(context, true)
@@ -69,7 +71,8 @@ object AtcVariantHelper {
                 variantAggregator = ProductVariantAggregatorUiData(
                         variantData = productVariant,
                         cardRedirection = cartRedirection,
-                        nearestWarehouse = warehouseResponse
+                        nearestWarehouse = warehouseResponse,
+                        alternateCopy = alternateCopy ?: listOf()
                 ),
                 miniCartData = miniCart,
                 categoryName = categoryName,

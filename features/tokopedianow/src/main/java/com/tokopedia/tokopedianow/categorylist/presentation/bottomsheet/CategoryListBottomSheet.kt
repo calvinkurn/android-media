@@ -195,6 +195,7 @@ class CategoryListBottomSheet : BottomSheetUnify() {
             }
         } else if(typeError == NO_CONNECTION){
             globalError?.setButtonFull(true)
+            actionClickListenerTryAgain()
         } else {
             actionClickListenerTryAgain()
         }

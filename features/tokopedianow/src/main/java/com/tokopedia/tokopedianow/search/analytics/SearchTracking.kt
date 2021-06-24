@@ -43,6 +43,7 @@ import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackin
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Event.PRODUCT_VIEW
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Event.PROMO_CLICK
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Event.PROMO_VIEW
+import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.DEFAULT
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.HOME_AND_BROWSE
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.USER_ID
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -105,9 +106,9 @@ object SearchTracking {
     fun sendProductImpressionEvent(
             trackingQueue: TrackingQueue,
             productItemDataView: ProductItemDataView,
-            filterSortValue: String,
             keyword: String,
             userId: String,
+            filterSortValue: String,
     ) {
         val map = DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
@@ -120,12 +121,23 @@ object SearchTracking {
                 ECOMMERCE, DataLayer.mapOf(
                     CURRENCYCODE, IDR,
                     IMPRESSIONS, DataLayer.listOf(
-                        productItemDataView.getAsImpressionClickObjectDataLayer(filterSortValue)
+                        productItemDataView.getAsImpressionObjectDataLayer(filterSortValue)
                     )
                 )
         ) as HashMap<String, Any>
 
         trackingQueue.putEETracking(map)
+    }
+
+    private fun ProductItemDataView.getAsImpressionObjectDataLayer(
+            filterSortValue: String,
+    ): Any {
+        return getAsObjectDataLayerMap(filterSortValue).also {
+            it.putAll(DataLayer.mapOf(
+                    "position", position,
+                    "list", TOKONOW_SEARCH_PRODUCT_ORGANIC,
+            ))
+        }
     }
 
     private fun ProductItemDataView.getAsObjectDataLayerMap(
@@ -139,21 +151,10 @@ object SearchTracking {
                 "dimension81", SearchCategoryTrackingConst.Misc.TOKO_NOW,
                 "dimension96", boosterList,
                 "id", id,
-                "dimension40", TOKONOW_SEARCH_PRODUCT_ORGANIC,
                 "name", name,
                 "price", priceInt,
                 "variant", SearchCategoryTrackingConst.Misc.NONE_OTHER,
         )
-    }
-
-    private fun ProductItemDataView.getAsImpressionClickObjectDataLayer(
-            filterSortValue: String,
-    ): Any {
-        return getAsObjectDataLayerMap(filterSortValue).also {
-            it.putAll(DataLayer.mapOf(
-                    "position", position,
-            ))
-        }
     }
 
     fun sendProductClickEvent(
@@ -175,14 +176,24 @@ object SearchTracking {
                     CLICK, DataLayer.mapOf(
                         ACTION_FIELD, DataLayer.mapOf(LIST, TOKONOW_SEARCH_PRODUCT_ORGANIC),
                         PRODUCTS, DataLayer.listOf(
-                            productItemDataView.getAsImpressionClickObjectDataLayer(filterSortValue)
+                            productItemDataView.getAsClickObjectDataLayer(filterSortValue)
                         )
                     ),
                 )
             )
         )
     }
-    
+
+    private fun ProductItemDataView.getAsClickObjectDataLayer(
+            filterSortValue: String,
+    ): Any {
+        return getAsObjectDataLayerMap(filterSortValue).also {
+            it.putAll(DataLayer.mapOf(
+                    "position", position,
+            ))
+        }
+    }
+
     fun sendOpenFilterPageEvent() {
         sendGeneralEvent(
                 DataLayer.mapOf(
@@ -384,7 +395,8 @@ object SearchTracking {
         val id = channelModelId + "_" + channelGridId + "_" + persoType + "_" + categoryId
 
         val promoName = channelModel.trackingAttributionModel.promoName
-        val name = "/tokonow - search - $promoName"
+        val headerName = if (promoName.isEmpty()) DEFAULT else promoName
+        val name = "/tokonow - search - $headerName"
 
         return DataLayer.mapOf(
                 "id", id,

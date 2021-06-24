@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.searchcategory.utils.copyParcelable
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -60,6 +62,7 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
     private fun configureViews() {
         val context = context ?: return
         val filter = filter ?: return
+        val selectedOption = selectedOption ?: return
 
         val drawable = ContextCompat.getDrawable(context, R.drawable.tokopedianow_divider_category_chooser) ?: return
         val itemDivider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
@@ -74,8 +77,16 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
                 it.addItemDecoration(itemDivider)
         }
 
+        configureButtonApplyVisibility(selectedOption.index)
         updateResultCount()
         buttonApply?.setOnClickListener(::onButtonApplyClicked)
+    }
+
+    private fun configureButtonApplyVisibility(position: Int) {
+        val shouldShowButtonApply = initialSelectedOptionIndex != position
+
+        if (shouldShowButtonApply) buttonApply?.show()
+        else buttonApply?.invisible()
     }
 
     private fun onButtonApplyClicked(view: View) {
@@ -102,6 +113,7 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
 
         updateSelectedOption(position, option)
         notifyAdapterSelection(previousPosition, position)
+        configureButtonApplyVisibility(position)
         updateResultCount()
     }
 

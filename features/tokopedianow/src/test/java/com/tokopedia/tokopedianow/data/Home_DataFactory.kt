@@ -1,12 +1,13 @@
 package com.tokopedia.tokopedianow.data
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
+import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutState
@@ -68,19 +69,21 @@ fun createHomeLayoutData(): HomeLayoutResponse {
 }
 
 fun createLoadingState(): HomeLayoutListUiModel {
-    val mutableList = mutableListOf<Visitable<*>>()
-    mutableList.add(HomeLoadingStateUiModel(id = HomeStaticLayoutId.LOADING_STATE))
+    val mutableList = mutableListOf<HomeLayoutItemUiModel>()
+    val loadingStateUiModel = HomeLoadingStateUiModel(id = HomeStaticLayoutId.LOADING_STATE)
+    mutableList.add(HomeLayoutItemUiModel(loadingStateUiModel, HomeLayoutItemState.LOADED))
     return HomeLayoutListUiModel(
             result = mutableList,
-            isLoadState = true,
             state = HomeLayoutState.LOADING
     )
 }
 
 fun createEmptyState(id: String): HomeLayoutListUiModel {
-    val mutableList = mutableListOf<Visitable<*>>()
-    mutableList.add(HomeChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID))
-    mutableList.add(HomeEmptyStateUiModel(id = id))
+    val mutableList = mutableListOf<HomeLayoutItemUiModel>()
+    val chooseAddressUiModel = HomeChooseAddressWidgetUiModel(id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID)
+    val emptyStateUiModel = HomeEmptyStateUiModel(id = id)
+    mutableList.add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
+    mutableList.add(HomeLayoutItemUiModel(emptyStateUiModel, HomeLayoutItemState.LOADED))
     return HomeLayoutListUiModel(
             mutableList,
             state = HomeLayoutState.HIDE

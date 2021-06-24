@@ -18,6 +18,7 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeCategoryGridUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.util.getOrAwaitValue
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -96,15 +97,15 @@ abstract class HomeViewModelTestFixture {
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifyGetCategoryListResponseSuccess(expectedResponse: HomeCategoryGridUiModel) {
+    protected fun verifyGetCategoryListResponseSuccess(expectedResponse: HomeLayoutItemUiModel) {
         val homeLayoutList = viewModel.homeLayoutList.getOrAwaitValue()
-        val actualResponse = (homeLayoutList as Success).data.result.find { it is HomeCategoryGridUiModel }
+        val actualResponse = (homeLayoutList as Success).data.result.find { it.layout is HomeCategoryGridUiModel }
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifyGetBannerResponseSuccess(expectedResponse: BannerDataModel) {
+    protected fun verifyGetBannerResponseSuccess(expectedResponse: HomeLayoutItemUiModel) {
         val homeLayoutList = viewModel.homeLayoutList.getOrAwaitValue()
-        val actualResponse = (homeLayoutList as Success).data.result.find { it is BannerDataModel }
+        val actualResponse = (homeLayoutList as Success).data.result.find { it.layout is BannerDataModel }
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 

@@ -131,7 +131,9 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     private fun initializeCartData(viewModel: MiniCartViewModel) {
         adapter?.clearAllElements()
+        bottomSheet?.setTitle("")
         showLoading()
+        setTotalAmountLoading(true)
         viewModel.getCartList(isFirstLoad = true)
     }
 

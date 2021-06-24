@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -34,7 +35,6 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
-import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -131,6 +131,10 @@ class HomeFragment: Fragment(),
         get() = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.tokomart_default_toolbar_status_height)
     private val spaceZero: Int
         get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
+
+    private val loadMoreListener by lazy { createLoadMoreListener() }
+    private val navBarScrollListener by lazy { createNavBarScrollListener() }
+    private val homeComponentScrollListener by lazy { createHomeComponentScrollListener() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -260,6 +264,10 @@ class HomeFragment: Fragment(),
         viewModel.getEmptyState(id)
     }
 
+    private fun showFailedToFetchData() {
+        showEmptyState(EMPTY_STATE_FAILED_TO_FETCH_DATA)
+    }
+
     private fun showLayout() {
         getHomeLayout()
         getMiniCart()
@@ -290,6 +298,8 @@ class HomeFragment: Fragment(),
     }
 
     private fun onRefreshLayout() {
+        resetMovingPosition()
+        removeAllScrollListener()
         rvLayoutManager?.setScrollEnabled(true)
         loadLayout()
     }
@@ -313,20 +323,7 @@ class HomeFragment: Fragment(),
             viewLifecycleOwner.lifecycle.addObserver(toolbar)
             //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder
             setHint(SearchPlaceholder(Data(null, "Cari di TokoNOW!","")))
-            rvHome?.addOnScrollListener(NavRecyclerViewScrollListener(
-                    navToolbar = toolbar,
-                    startTransitionPixel = homeMainToolbarHeight,
-                    toolbarTransitionRangePixel = resources.getDimensionPixelSize(R.dimen.tokomart_searchbar_transition_range),
-                    navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                        override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */ }
-                        override fun onSwitchToLightToolbar() { /* nothing to do */ }
-                        override fun onSwitchToDarkToolbar() {
-                            navToolbar?.hideShadow()
-                        }
-                        override fun onYposChanged(yOffset: Int) {}
-                    },
-                    fixedIconColor = TOOLBAR_LIGHT_TYPE
-            ))
+            addNavBarScrollListener()
             activity?.let {
                 toolbar.setupToolbarWithStatusBar(it)
             }
@@ -413,23 +410,24 @@ class HomeFragment: Fragment(),
             }
 
             rvHome?.setItemViewCacheSize(20)
-            rvHome?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    evaluateHomeComponentOnScroll(recyclerView, dy)
-                }
-            })
+            addHomeComponentScrollListener()
         }
     }
 
     private fun observeLiveData() {
         observe(viewModel.homeLayoutList) {
+            removeAllScrollListener()
+
             if (it is Success) {
                 loadHomeLayout(it.data)
             } else {
-                showEmptyState(EMPTY_STATE_FAILED_TO_FETCH_DATA)
+                showFailedToFetchData()
             }
-            resetSwipeLayout()
+
+            rvHome?.post {
+                addScrollListener()
+                resetSwipeLayout()
+            }
         }
 
         observe(viewModel.miniCart) {
@@ -467,7 +465,10 @@ class HomeFragment: Fragment(),
     private fun resetSwipeLayout() {
         swipeLayout?.isEnabled = true
         swipeLayout?.isRefreshing = false
-        rvLayoutManager?.scrollToPosition(0)
+    }
+
+    private fun resetMovingPosition() {
+        movingPosition = 0
     }
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
@@ -481,40 +482,127 @@ class HomeFragment: Fragment(),
     }
 
     private fun loadHomeLayout(data: HomeLayoutListUiModel) {
-        data.run {
-            needToShowHeaderBackground(state)
-            adapter.submitList(result)
-            when {
-                isLoadState -> {
-                    checkIfChooseAddressWidgetDataUpdated()
-                    checkStateNotInServiceArea(
-                            shopId = localCacheModel?.shop_id.toLongOrZero(),
-                            warehouseId = localCacheModel?.warehouse_id.toLongOrZero()
-                    )
-                    if (!isChooseAddressWidgetShowed()) {
-                        adapter.removeHomeChooseAddressWidget()
-                    }
-                }
-                isInitialLoad -> {
-                    // TO-DO: Lazy Load Data
-                    viewModel.getLayoutData(localCacheModel?.warehouse_id.orEmpty())
+        when (data.state) {
+            HomeLayoutState.SHOW -> onShowHomeLayout(data)
+            HomeLayoutState.HIDE -> onHideHomeLayout(data)
+            HomeLayoutState.LOADING -> onLoadingHomeLayout(data)
+            HomeLayoutState.LOAD_MORE -> {
+                rvHome?.post {
+                    showHomeLayout(data)
                 }
             }
         }
     }
 
-    private fun needToShowHeaderBackground(state: Int) {
-        when (state) {
-            HomeLayoutState.SHOW -> {
+    private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
+        showHomeLayout(data)
+        loadHeaderBackground()
+        checkAddressDataAndServiceArea()
+        if (!isChooseAddressWidgetShowed()) {
+            adapter.removeHomeChooseAddressWidget()
+        }
+    }
+
+    private fun onHideHomeLayout(data: HomeLayoutListUiModel) {
+        showHomeLayout(data)
+        hideHeaderBackground()
+    }
+
+    private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
+        val initialLoad = data.isInitialLoad
+        val initialLoadFinished = data.isInitialLoadFinished
+
+        when {
+            initialLoad -> {
                 showHeaderBackground()
+                showHomeLayout(data)
+                loadNextItem(data)
             }
-            HomeLayoutState.HIDE -> {
-                hideHeaderBackground()
+            initialLoadFinished -> {
+                rvHome?.post {
+                    addLoadMoreListener()
+                }
             }
-            HomeLayoutState.LOADING -> {
-                loadHeaderBackground()
+            else -> {
+                showHomeLayout(data)
+                loadNextItem(data)
             }
         }
+    }
+
+    private fun loadNextItem(data: HomeLayoutListUiModel) {
+        rvHome?.post {
+            val index = data.nextItemIndex
+            loadVisibleLayoutData(index)
+        }
+    }
+
+    private fun checkAddressDataAndServiceArea() {
+        val shopId = localCacheModel?.shop_id.toLongOrZero()
+        val warehouseId = localCacheModel?.warehouse_id.toLongOrZero()
+        checkIfChooseAddressWidgetDataUpdated()
+        checkStateNotInServiceArea(shopId = shopId, warehouseId = warehouseId)
+    }
+
+    private fun showHomeLayout(data: HomeLayoutListUiModel) {
+        val items = data.result.map { it.layout }
+        adapter.submitList(items)
+    }
+
+    private fun addLoadMoreListener() {
+        rvHome?.addOnScrollListener(loadMoreListener)
+    }
+
+    private fun removeLoadMoreListener() {
+        rvHome?.removeOnScrollListener(loadMoreListener)
+    }
+
+    private fun addNavBarScrollListener() {
+        navBarScrollListener?.let {
+            rvHome?.addOnScrollListener(it)
+        }
+    }
+
+    private fun removeNavBarScrollListener() {
+        navBarScrollListener?.let {
+            rvHome?.removeOnScrollListener(it)
+        }
+    }
+
+    private fun addHomeComponentScrollListener() {
+        rvHome?.addOnScrollListener(homeComponentScrollListener)
+    }
+
+    private fun removeHomeComponentScrollListener() {
+        rvHome?.removeOnScrollListener(homeComponentScrollListener)
+    }
+
+    private fun removeAllScrollListener() {
+        removeLoadMoreListener()
+        removeNavBarScrollListener()
+        removeHomeComponentScrollListener()
+    }
+
+    private fun addScrollListener() {
+        addNavBarScrollListener()
+        addHomeComponentScrollListener()
+    }
+
+    private fun loadVisibleLayoutData(index: Int) {
+        val warehouseId = localCacheModel?.warehouse_id.orEmpty()
+        val layoutManager = rvHome.layoutManager as? LinearLayoutManager
+        val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
+        val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
+        val isVisible = index in firstVisibleItemIndex..lastVisibleItemIndex
+        viewModel.getInitialLayoutData(index, warehouseId, isVisible)
+    }
+
+    private fun loadMoreLayoutData() {
+        val warehouseId = localCacheModel?.warehouse_id.orEmpty()
+        val layoutManager = rvHome.layoutManager as? LinearLayoutManager
+        val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
+        val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
+        viewModel.getMoreLayoutData(warehouseId, firstVisibleItemIndex, lastVisibleItemIndex)
     }
 
     private fun getHomeLayout() {
@@ -637,6 +725,48 @@ class HomeFragment: Fragment(),
             this?.encodeToUtf8().orEmpty()
         } catch (throwable: Throwable) {
             ""
+        }
+    }
+
+    private fun createNavBarScrollListener(): NavRecyclerViewScrollListener? {
+        return navToolbar?.let { toolbar ->
+            NavRecyclerViewScrollListener(
+                navToolbar = toolbar,
+                startTransitionPixel = homeMainToolbarHeight,
+                toolbarTransitionRangePixel = resources.getDimensionPixelSize(R.dimen.tokomart_searchbar_transition_range),
+                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                    override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */
+                    }
+
+                    override fun onSwitchToLightToolbar() { /* nothing to do */
+                    }
+
+                    override fun onSwitchToDarkToolbar() {
+                        navToolbar?.hideShadow()
+                    }
+
+                    override fun onYposChanged(yOffset: Int) {}
+                },
+                fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+            )
+        }
+    }
+
+    private fun createHomeComponentScrollListener(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                evaluateHomeComponentOnScroll(recyclerView, dy)
+            }
+        }
+    }
+
+    private fun createLoadMoreListener(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                loadMoreLayoutData()
+            }
         }
     }
 }

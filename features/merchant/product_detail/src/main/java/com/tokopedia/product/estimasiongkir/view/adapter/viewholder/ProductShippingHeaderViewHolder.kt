@@ -50,10 +50,12 @@ class ProductShippingHeaderViewHolder(view: View,
     private fun renderTokoCabang(element: ProductShippingHeaderDataModel) = with(itemView) {
         if (element.boType == ProductDetailConstant.BO_TOKONOW) {
             icShippingLine?.setMargin(0, 0, 0, 0)
-            renderGeneralContentTokoCabang(element.tokoCabangContent, element.tokoCabangTitle)
+            txtShippingFrom?.text = context.getString(R.string.pdp_shipping_from_builder, element.tokoCabangTitle).boldOrLinkText(false, context, element.tokoCabangTitle to {})
+            renderGeneralContentTokoCabang(element.tokoCabangContent)
         } else if (element.isFulfillment && element.boType == ProductDetailConstant.BEBAS_ONGKIR_EXTRA) {
             icShippingLine?.setMargin(0, 20.toDp(), 0, 20.toDp())
-            renderGeneralContentTokoCabang(element.tokoCabangContent, element.tokoCabangTitle, element.freeOngkirImageUrl, element.uspTokoCabangImgUrl)
+            renderGeneralContentTokoCabang(element.tokoCabangContent, element.freeOngkirImageUrl, element.uspTokoCabangImgUrl)
+            txtShippingFrom?.text = HtmlLinkHelper(context, context.getString(R.string.pdp_bold_html_builder, element.tokoCabangTitle)).spannedString
             icTokoCabang?.loadImage(element.tokoCabangIcon)
         } else {
             icShippingLine?.setMargin(0, 0, 0, 0)
@@ -63,7 +65,7 @@ class ProductShippingHeaderViewHolder(view: View,
         }
     }
 
-    private fun renderGeneralContentTokoCabang(tokoCabangContent: String, tokoCabangTitle: String, freeOngkirImageUrl: String = "", uspTokoCabangImgUrl: String = "") = with(itemView) {
+    private fun renderGeneralContentTokoCabang(tokoCabangContent: String, freeOngkirImageUrl: String = "", uspTokoCabangImgUrl: String = "") = with(itemView) {
         txtTokoCabang?.shouldShowWithAction(tokoCabangContent.isNotEmpty()) {
             val linkHelper = HtmlLinkHelper(context, tokoCabangContent)
             txtTokoCabang.text = linkHelper.spannedString
@@ -72,7 +74,6 @@ class ProductShippingHeaderViewHolder(view: View,
                 listener.openUspBottomSheet(freeOngkirImageUrl, uspTokoCabangImgUrl)
             }
         }
-        txtShippingFrom?.text = HtmlLinkHelper(context, context.getString(R.string.pdp_bold_html_builder, tokoCabangTitle)).spannedString
     }
 
     private fun renderWeight(weightFormatted: String) = with(itemView) {

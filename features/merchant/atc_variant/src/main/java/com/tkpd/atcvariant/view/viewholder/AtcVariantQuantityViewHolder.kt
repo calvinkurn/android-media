@@ -12,37 +12,37 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifyprinciples.Typography
+import rx.Observable
+import rx.Subscriber
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 
 /**
  * Created by Yehezkiel on 11/05/21
  */
-class AtcVariantQuantityViewHolder(private val view: View,
-                                   private val listener: AtcVariantListener) : AbstractViewHolder<VariantQuantityDataModel>(view) {
+class AtcVariantQuantityViewHolder constructor(
+        private val view: View,
+        private val listener: AtcVariantListener,
+        private val compositeSubscription: CompositeSubscription)
+    : AbstractViewHolder<VariantQuantityDataModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.atc_variant_quantity_viewholder
+
+        private const val QUANTITY_REGEX = "[^0-9]"
+        private const val TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 1000L
     }
 
     private val quantityEditor = view.findViewById<QuantityEditorUnify>(R.id.qty_variant_stock)
     private val txtMinOrder = view.findViewById<Typography>(R.id.txt_desc_quantity)
     private val container = view.findViewById<ConstraintLayout>(R.id.container_atc_variant_qty_editor)
     private var textWatcher: TextWatcher? = null
-
-    private fun showContainer() {
-        container?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
-    }
-
-    private fun hideContainer() {
-        container?.layoutParams?.height = 0
-    }
-
-    fun removeTextChangedListener() {
-        if (textWatcher != null) {
-            quantityEditor.editText.removeTextChangedListener(textWatcher)
-        }
-        textWatcher = null
-    }
+    private var quantityDebounceSubscription: Subscription? = null
 
     init {
         quantityEditor.autoHideKeyboard = true
@@ -54,33 +54,90 @@ class AtcVariantQuantityViewHolder(private val view: View,
             quantityEditor.maxValue = element.maxOrder
             quantityEditor.setValue(element.quantity)
 
-            removeTextChangedListener()
-
-            textWatcher = object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (s.toString().toIntOrZero() < element.minOrder) {
-                        quantityEditor?.setValue(element.minOrder)
-                    } else if (s.toString().toIntOrZero() > quantityEditor.maxValue) {
-                        quantityEditor?.setValue(quantityEditor.maxValue)
-                    }
-                }
-
-                override fun afterTextChanged(s: Editable) {
-                    if (element.quantity != s.toString().toIntOrZero()) {
-                        element.quantity = quantityEditor.getValue()
-                        listener.onQuantityUpdate(quantityEditor.getValue(), element.productId)
-                        quantityEditor.setValue(quantityEditor.getValue())
-                    }
-                }
+            if (element.minOrder == element.maxOrder) {
+                quantityEditor.addButton.isEnabled = false
+                quantityEditor.subtractButton.isEnabled = false
             }
-            quantityEditor.editText.addTextChangedListener(textWatcher)
+
+            removeTextChangedListener()
+            initTextWatcherDebouncer(element)
             txtMinOrder.text = view.context.getString(R.string.atc_variant_min_order_builder, element.minOrder)
             showContainer()
         } else {
             hideContainer()
         }
+    }
+
+    fun removeTextChangedListener() {
+        if (textWatcher != null) {
+            quantityEditor.editText.removeTextChangedListener(textWatcher)
+        }
+        textWatcher = null
+
+        if (quantityDebounceSubscription != null) {
+            compositeSubscription.remove(quantityDebounceSubscription)
+        }
+        quantityDebounceSubscription = null
+    }
+
+    private fun initTextWatcherDebouncer(element: VariantQuantityDataModel) {
+        quantityDebounceSubscription = Observable.create(
+                Observable.OnSubscribe<Int> { subscriber ->
+                    textWatcher = object : TextWatcher {
+                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                        }
+
+                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        }
+
+                        override fun afterTextChanged(s: Editable) {
+                            val quantityInt: Int = s.toString().replace(QUANTITY_REGEX.toRegex(), "").toIntOrZero()
+                            subscriber.onNext(quantityInt)
+                        }
+                    }
+                    quantityEditor.editText.addTextChangedListener(textWatcher)
+                })
+                .debounce(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<Int>() {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Timber.d(e)
+                    }
+
+                    override fun onNext(quantity: Int) {
+                        onNextValueQuantity(quantity, element)
+                    }
+                })
+
+        compositeSubscription.add(quantityDebounceSubscription)
+    }
+
+    private fun onNextValueQuantity(quantity: Int, element: VariantQuantityDataModel) {
+        if (quantity < quantityEditor.minValue) {
+            quantityEditor?.setValue(quantityEditor.minValue)
+        } else if (quantity > quantityEditor.maxValue) {
+            quantityEditor?.setValue(quantityEditor.maxValue)
+        } else {
+            if (element.quantity != quantity) {
+                element.quantity = quantityEditor.getValue()
+                listener.onQuantityUpdate(quantityEditor.getValue(), element.productId)
+
+                //fire again to update + and - button
+                quantityEditor.setValue(quantityEditor.getValue())
+            }
+        }
+    }
+
+    private fun showContainer() {
+        container?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+    }
+
+    private fun hideContainer() {
+        container?.layoutParams?.height = 0
     }
 }

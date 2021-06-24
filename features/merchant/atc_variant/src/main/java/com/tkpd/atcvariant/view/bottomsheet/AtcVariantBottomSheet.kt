@@ -50,6 +50,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import rx.subscriptions.CompositeSubscription
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -76,7 +77,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     private var loadingProgressDialog: ProgressDialog? = null
 
-    private val adapterFactory by lazy { AtcVariantAdapterTypeFactoryImpl(this) }
+    private val compositeSubscription by lazy { CompositeSubscription() }
+    private val adapterFactory by lazy { AtcVariantAdapterTypeFactoryImpl(this, compositeSubscription) }
     private val adapter by lazy {
         val asyncDifferConfig = AsyncDifferConfig.Builder(AtcVariantDiffutil())
                 .build()
@@ -122,6 +124,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    override fun onDestroyView() {
+        compositeSubscription.clear()
+        super.onDestroyView()
     }
 
     private fun initLayout() {
@@ -430,6 +437,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         this.buttonText = buttonText
         val atcKey = ProductCartHelper.generateButtonAction(cartType, isAtcButton)
         doAtc(atcKey)
+    }
+
+    override fun isTokonow(): Boolean {
+        return sharedViewModel.aggregatorParams.value?.isTokoNow ?: false
     }
 
     private fun goToImagePreview(listOfImage: ArrayList<String>) {

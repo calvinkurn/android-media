@@ -12,7 +12,6 @@ data class GroupShop(
         var hasUnblockingError: Boolean = false,
         var unblockingErrorMessage: String = "",
         var firstProductErrorIndex: Int = -1,
-        var productErrorCount: Int = 0,
         var shop: Shop = Shop(),
         var shopShipments: List<ShopShipment> = emptyList(),
         var products: List<Product> = emptyList(),

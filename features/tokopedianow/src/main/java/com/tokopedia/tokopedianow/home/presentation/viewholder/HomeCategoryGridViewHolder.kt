@@ -45,8 +45,8 @@ class HomeCategoryGridViewHolder(
     override fun bind(data: HomeCategoryGridUiModel) {
         when(data.state) {
             HomeLayoutState.SHOW -> showCategoryGrid(data)
-            HomeLayoutState.LOADING -> showLoadingState()
-            HomeLayoutState.HIDE -> showLocalLoad()
+            HomeLayoutState.LOADING -> showLoadingState(data)
+            HomeLayoutState.HIDE -> showLocalLoad(data)
         }
     }
 
@@ -64,10 +64,11 @@ class HomeCategoryGridViewHolder(
         }
     }
 
-    private fun showLoadingState() {
+    private fun showLoadingState(data: HomeCategoryGridUiModel) {
         llCategory?.hide()
         rvCategory?.hide()
         categoryShimmering?.show()
+        tvTitle?.text = data.title
     }
 
     private fun showCategoryGrid(data: HomeCategoryGridUiModel) {
@@ -90,7 +91,7 @@ class HomeCategoryGridViewHolder(
         rvCategory?.show()
     }
 
-    private fun showLocalLoad() {
+    private fun showLocalLoad(data: HomeCategoryGridUiModel) {
         llCategory?.apply {
             progressState = false
             title?.text = itemView.context.getString(R.string.tokomart_category_is_failed_to_display_title)
@@ -99,6 +100,7 @@ class HomeCategoryGridViewHolder(
                 progressState = true
                 listener?.onCategoryRetried()
             }
+            tvTitle?.text = data.title
         }
 
         categoryShimmering?.hide()

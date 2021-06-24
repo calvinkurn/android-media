@@ -46,6 +46,7 @@ import com.tokopedia.product.detail.data.model.restrictioninfo.BebasOngkirImage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.getAffiliateUIID
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
@@ -76,8 +77,11 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Lazy
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import rx.Observer
 import rx.Subscriber
 import rx.Subscription
@@ -454,7 +458,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "",
-                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel) {
+                     isUseOldNav: Boolean = false, userLocationLocal: LocalCacheModel, affiliateUniqueString: String = "", uuid : String = "") {
         launchCatchError(dispatcher.io, block = {
             alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
@@ -481,7 +485,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 _productLayout.postValue(it.listOfLayout.asSuccess())
             }
             // Then update the following, it will not throw anything when error
-            getProductP2()
+            getProductP2(affiliateUniqueString, uuid)
 
         }) {
             _productLayout.postValue(it.asFail())
@@ -563,13 +567,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductP2() {
+    private suspend fun getProductP2(affiliateUniqueString: String, uuid: String) {
         getDynamicProductInfoP1?.let {
             val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
                 getProductInfoP2LoginAsync(it.basic.getShopId(),
                         it.basic.productID)
             } else null
-            val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession, it.basic.shopID, it.basic.isTokoNow)
+            val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession, affiliateUniqueString, uuid, it.basic.shopID, it.basic.isTokoNow)
             val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
 
             p2DataDeffered.await().let {
@@ -984,20 +988,21 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private fun getProductInfoP2DataAsync(productId: String, pdpSession: String, shopId: String, isTokoNow: Boolean): Deferred<ProductInfoP2UiData> {
+    private fun getProductInfoP2DataAsync(productId: String, pdpSession: String, affiliateUniqueString: String, uuid: String, shopId: String, isTokoNow: Boolean): Deferred<ProductInfoP2UiData> {
         return async(dispatcher.io) {
             getP2DataAndMiniCartUseCase.get().executeOnBackground(
                     requestParams = GetProductInfoP2DataUseCase.createParams(
                             productId,
                             pdpSession,
                             generatePdpSessionWithDeviceId(),
-                            generateUserLocationRequest(userLocationCache)),
-                    isTokoNow = isTokoNow,
-                    shopId = shopId,
-                    forceRefresh = forceRefresh,
-                    setErrorLogListener = {
-                        logP2Data(it, productId, pdpSession)
-                    })
+                            generateUserLocationRequest(userLocationCache),
+                            getAffiliateUIID(affiliateUniqueString, uuid)),
+                            isTokoNow = isTokoNow,
+                            shopId = shopId,
+                            forceRefresh = forceRefresh,
+                            setErrorLogListener = {
+                                logP2Data(it, productId, pdpSession)
+                            })
         }
     }
 
