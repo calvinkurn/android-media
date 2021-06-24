@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="@dimen/layout_lvl1"
     android:paddingBottom="@dimen/spacing_lvl3">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -49,6 +50,37 @@
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="07.00 - 18.00 WIB" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_sah_other_operational_failed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="icon_sah_other_operational_failed, tv_sah_other_operational_failed"
+        tools:visibility="gone"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_sah_other_operational_failed"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:icon_name="RELOAD"
+        app:layout_constraintEnd_toStartOf="@id/tv_sah_other_operational_failed"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_sah_other_operational_failed"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:text="@string/setting_other_failed_to_load"
+        android:textColor="@color/Unify_N700_96"
+        android:visibility="gone"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmer_sah_other_shop_operational"

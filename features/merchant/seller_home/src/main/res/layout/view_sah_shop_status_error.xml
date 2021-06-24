@@ -16,17 +16,27 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.925"/>
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/shimmer_sah_shop_status"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/setting_card_height"
-        android:paddingVertical="@dimen/sah_dimen_13dp"
-        android:paddingHorizontal="@dimen/layout_lvl2"
-        app:corners="30"
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icon_sah_other_status_reload"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginVertical="@dimen/sah_dimen_13dp"
+        app:icon_name="RELOAD"
         app:layout_constraintStart_toStartOf="@id/view_sah_shop_status_error_border"
-        app:layout_constraintEnd_toEndOf="@id/view_sah_shop_status_error_border"
         app:layout_constraintTop_toTopOf="@id/view_sah_shop_status_error_border"
-        app:layout_constraintBottom_toBottomOf="@id/view_sah_shop_status_error_border"
-        app:layout_constraintWidth_percent="0.925"/>
+        app:layout_constraintBottom_toBottomOf="@id/view_sah_shop_status_error_border"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        android:text="@string/setting_other_failed_to_load"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        app:layout_constraintStart_toEndOf="@id/icon_sah_other_status_reload"
+        app:layout_constraintTop_toTopOf="@id/view_sah_shop_status_error_border"
+        app:layout_constraintBottom_toBottomOf="@id/view_sah_shop_status_error_border" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

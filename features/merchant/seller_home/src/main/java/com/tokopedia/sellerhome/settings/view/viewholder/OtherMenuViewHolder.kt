@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -69,8 +70,10 @@ class OtherMenuViewHolder(private val itemView: View,
     private var shopBadgeFollowersShimmer: LoaderTextView? = null
     private var shopBadgeImage: AppCompatImageView? = null
     private var shopBadgeShimmer: LoaderTextView? = null
+    private var shopBadgeErrorGroup: Group? = null
     private var shopFollowersText: Typography? = null
     private var shopFollowersShimmer: LoaderTextView? = null
+    private var shopFollowersErrorGroup: Group? = null
 
     private var errorLocalLoad: LocalLoad? = null
 
@@ -83,19 +86,25 @@ class OtherMenuViewHolder(private val itemView: View,
     private var operationalHourLabel: Label? = null
     private var operationalHourImage: ImageView? = null
     private var operationalHourShimmer: LoaderTextView? = null
+    private var operationalErrorGroup: Group? = null
 
+    private var saldoLayout: LinearLayout? = null
     private var saldoShimmer: LoaderTextView? = null
     private var saldoBalanceText: Typography? = null
+    private var saldoErrorGroup: Group? = null
 
+    private var topAdsLayout: ConstraintLayout? = null
     private var topAdsShimmer: LoaderTextView? = null
     private var topAdsBalanceText: Typography? = null
     private var topAdsTooltipImage: AppCompatImageView? = null
+    private var topAdsErrorGroup: Group? = null
 
     fun setupInitialLayout() {
         initLayoutComponents()
 
         setShopName(userSession.shopName)
         setShopAvatar(ShopAvatarUiModel(userSession.shopAvatar))
+        setupShopNextButton()
     }
 
     private fun initLayoutComponents() {
@@ -110,8 +119,10 @@ class OtherMenuViewHolder(private val itemView: View,
             shopBadgeFollowersShimmer = findViewById(R.id.shimmer_sah_other_badge_followers)
             shopBadgeImage = findViewById(R.id.shopBadges)
             shopBadgeShimmer = findViewById(R.id.shimmer_sah_other_badge)
+            shopBadgeErrorGroup = findViewById(R.id.group_sah_other_badge_error)
             shopFollowersText = findViewById(R.id.shopFollowers)
             shopFollowersShimmer = findViewById(R.id.shimmer_sah_other_followers)
+            shopFollowersErrorGroup = findViewById(R.id.group_sah_other_followers_error)
 
             shopStatusLayout = findViewById(R.id.shopStatus)
 
@@ -122,13 +133,18 @@ class OtherMenuViewHolder(private val itemView: View,
             operationalHourLabel = findViewById(R.id.labelShopStatus)
             operationalHourImage = findViewById(R.id.imageOperationalHour)
             operationalHourShimmer = findViewById(R.id.shimmer_sah_other_shop_operational)
+            operationalErrorGroup = findViewById(R.id.group_sah_other_operational_failed)
 
+            saldoLayout = findViewById(R.id.layout_sah_other_saldo)
             saldoShimmer = findViewById(R.id.shimmeringBalanceValue)
             saldoBalanceText = findViewById(R.id.balanceValue)
+            saldoErrorGroup = findViewById(R.id.group_shc_balance_failed)
 
+            topAdsLayout = findViewById(R.id.layout_sah_other_topads)
             topAdsShimmer = findViewById(R.id.shimmer_sah_other_topads)
             topAdsBalanceText = findViewById(R.id.tv_sah_other_topads_balance)
             topAdsTooltipImage = findViewById(R.id.iv_sah_other_topads_tooltip)
+            topAdsErrorGroup = findViewById(R.id.group_sah_other_topads_failed)
         }
     }
 
@@ -149,8 +165,8 @@ class OtherMenuViewHolder(private val itemView: View,
 
                         findViewById<LocalLoad>(R.id.localLoadOthers)?.gone()
                         findViewById<LinearLayout>(R.id.shopStatus)?.visible()
-                        findViewById<LinearLayout>(R.id.saldoBalance)?.visible()
-                        findViewById<LinearLayout>(R.id.topAdsBalance)?.visible()
+                        findViewById<LinearLayout>(R.id.layout_sah_other_saldo)?.visible()
+                        findViewById<LinearLayout>(R.id.layout_sah_other_topads)?.visible()
                     }
                     partialResponseStatus.first -> {
                         setupSuccessLayout()
@@ -166,8 +182,8 @@ class OtherMenuViewHolder(private val itemView: View,
                             setup()
                             visible()
                         }
-                        findViewById<LinearLayout>(R.id.saldoBalance)?.gone()
-                        findViewById<LinearLayout>(R.id.topAdsBalance)?.gone()
+                        findViewById<LinearLayout>(R.id.layout_sah_other_saldo)?.gone()
+                        findViewById<LinearLayout>(R.id.layout_sah_other_topads)?.gone()
                     }
                     partialResponseStatus.second -> {
                         setupSuccessLayout()
@@ -180,8 +196,8 @@ class OtherMenuViewHolder(private val itemView: View,
                             setup()
                             visible()
                         }
-                        findViewById<LinearLayout>(R.id.saldoBalance)?.visible()
-                        findViewById<LinearLayout>(R.id.topAdsBalance)?.visible()
+                        findViewById<LinearLayout>(R.id.layout_sah_other_saldo)?.visible()
+                        findViewById<LinearLayout>(R.id.layout_sah_other_topads)?.visible()
                     }
                     else -> {
                         onErrorGetSettingShopInfoData()
@@ -323,13 +339,49 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun setSaldoBalance(saldoBalanceUiModel: BalanceUiModel) {
-        itemView.findViewById<LinearLayout>(R.id.saldoBalance).run {
+        itemView.findViewById<LinearLayout>(R.id.layout_sah_other_saldo).run {
             findViewById<Typography>(R.id.balanceTitle)?.text = context.resources.getString(R.string.setting_balance)
             findViewById<Typography>(R.id.balanceValue)?.text = saldoBalanceUiModel.balanceValue
             sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)
             findViewById<Typography>(R.id.balanceValue)?.setOnClickListener {
                 listener.onSaldoClicked()
                 saldoBalanceUiModel.sendSettingShopInfoClickTracking()
+            }
+        }
+    }
+
+    private fun setSaldoBalanceLoading() {
+        saldoShimmer?.show()
+    }
+
+    private fun setKreditTopadsBalance(topadsBalanceUiModel: TopadsBalanceUiModel) {
+        topAdsLayout?.sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
+        setupKreditTopadsBalanceText(topadsBalanceUiModel)
+        setupKreditTopadsBalanceTooltip(topadsBalanceUiModel.isTopAdsUser)
+        toggleKreditTopadsComponent(true)
+    }
+
+    private fun setupKreditTopadsBalanceText(topadsBalanceUiModel: TopadsBalanceUiModel) {
+        topAdsBalanceText?.run {
+            text = topadsBalanceUiModel.balanceValue
+            setOnClickListener {
+                listener.onKreditTopadsClicked()
+                topadsBalanceUiModel.sendSettingShopInfoClickTracking()
+            }
+        }
+    }
+
+    private fun setupKreditTopadsBalanceTooltip(isTopAdsUser: Boolean) {
+        val topAdsTooltipDrawable =
+                if (isTopAdsUser) {
+                    ContextCompat.getDrawable(context, R.drawable.ic_topads_active)
+                } else {
+                    ContextCompat.getDrawable(context, R.drawable.ic_topads_inactive)
+                }
+        topAdsTooltipImage?.run {
+            setImageDrawable(topAdsTooltipDrawable)
+            setOnClickListener {
+                listener.onTopAdsTooltipClicked(isTopAdsUser)
             }
         }
     }
@@ -343,35 +395,8 @@ class OtherMenuViewHolder(private val itemView: View,
         toggleKreditTopadsComponent(false)
     }
 
-    private fun setKreditTopadsBalance(topadsBalanceUiModel: TopadsBalanceUiModel) {
-        itemView.findViewById<LinearLayout>(R.id.topAdsBalance).run {
-            findViewById<Typography>(R.id.tv_sah_other_topads_balance)?.run {
-                text = topadsBalanceUiModel.balanceValue
-                setOnClickListener {
-                    listener.onKreditTopadsClicked()
-                    topadsBalanceUiModel.sendSettingShopInfoClickTracking()
-                }
-            }
-            sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
-            val isTopAdsUser = topadsBalanceUiModel.isTopAdsUser
-            val topAdsTooltipDrawable =
-                    if (isTopAdsUser) {
-                        ContextCompat.getDrawable(context, R.drawable.ic_topads_active)
-                    } else {
-                        ContextCompat.getDrawable(context, R.drawable.ic_topads_inactive)
-                    }
-            findViewById<AppCompatImageView>(R.id.iv_sah_other_topads_tooltip)?.run {
-                setImageDrawable(topAdsTooltipDrawable)
-                setOnClickListener {
-                    listener.onTopAdsTooltipClicked(isTopAdsUser)
-                }
-            }
-            toggleKreditTopadsComponent(true)
-        }
-    }
-
     private fun toggleKreditTopadsComponent(isVisible: Boolean) {
-        itemView.findViewById<LinearLayout>(R.id.topAdsBalance).run {
+        itemView.findViewById<LinearLayout>(R.id.layout_sah_other_topads).run {
             findViewById<Typography>(R.id.tv_sah_other_topads_balance)?.showWithCondition(isVisible)
             findViewById<AppCompatImageView>(R.id.iv_sah_other_topads_tooltip)?.showWithCondition(isVisible)
         }

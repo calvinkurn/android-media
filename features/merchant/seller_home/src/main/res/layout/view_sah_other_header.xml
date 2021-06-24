@@ -20,7 +20,8 @@
         android:orientation="vertical"
         tools:layout_height="@dimen/layout_lvl6"
         tools:background="@drawable/bg_other_rounded"
-        tools:layout_margin="@dimen/layout_lvl2"/>
+        android:layout_marginTop="@dimen/layout_lvl1"
+        tools:layout_marginHorizontal="@dimen/layout_lvl2"/>
 
     <include
         android:id="@+id/freeShippingLayout"

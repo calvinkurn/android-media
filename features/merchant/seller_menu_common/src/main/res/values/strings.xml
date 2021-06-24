@@ -30,6 +30,7 @@
     <string name="setting_followers">Followers</string>
     <string name="setting_balance">Saldo</string>
     <string name="setting_topads_credits">Kredit TopAds</string>
+    <string name="setting_other_failed_to_load">Gagal Tampil</string>
 
     <string name="settings_free_shipping_title">Bebas Ongkir Aktif</string>
     <string name="settings_free_shipping_detail">Detail Bebas Ongkir</string>
