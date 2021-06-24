@@ -275,7 +275,6 @@ open class AddPhoneFragment : BaseDaggerFragment() {
             viewModel.flush()
         } catch (e: Throwable) {
             e.printStackTrace()
-            null
         }
     }
 
