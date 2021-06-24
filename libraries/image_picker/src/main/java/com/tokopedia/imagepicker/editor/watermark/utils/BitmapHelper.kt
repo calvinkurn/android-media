@@ -7,8 +7,8 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.TypedValue
-import androidx.core.content.res.ResourcesCompat
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 object BitmapHelper {
@@ -132,7 +132,7 @@ object BitmapHelper {
         )
     }
 
-    fun Bitmap.resizeBitmap(maxImageSize: Int): Bitmap {
+    fun Bitmap.resizeScaledBitmap(maxImageSize: Int): Bitmap {
         val ratio = (maxImageSize / width).toFloat()
             .coerceAtMost((maxImageSize / height).toFloat())
 
@@ -147,4 +147,100 @@ object BitmapHelper {
         )
     }
 
+    fun Bitmap.adjustRotation(orientationAngle: Double): Bitmap {
+        val matrix = Matrix()
+        matrix.setRotate(
+            orientationAngle.toFloat(),
+            (this.width / 2).toFloat(),
+            (this.height / 2).toFloat()
+        )
+
+        return Bitmap.createBitmap(this, 0, 0, this.width, this.height, matrix, true)
+    }
+
+    fun Bitmap.combine(other: Bitmap): Bitmap {
+        val thresholdSpace = 170 // space between first bitmap to other bitmap
+        val otherBitmap = other.addPadding(thresholdSpace, 0, thresholdSpace, 0)
+
+        val width = this.width + otherBitmap.width
+        val height = maxOf(this.height, otherBitmap.height)
+
+        val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(resultBitmap)
+
+        canvas.drawBitmap(this, 0f, 0f, null)
+        canvas.drawBitmap(otherBitmap, this.width.toFloat(), 0f, null)
+
+        return resultBitmap
+    }
+
+    private fun Bitmap.addPadding(
+        left:Int = 0,
+        top:Int = 0,
+        right:Int = 0,
+        bottom:Int = 0
+    ):Bitmap {
+        val bitmap = Bitmap.createBitmap(
+            width + left + right, // width in pixels
+            height + top + bottom, // height in pixels
+            Bitmap.Config.ARGB_8888
+        )
+
+        val canvas = Canvas(bitmap)
+
+        // clear color from bitmap drawing area
+        // this is very important for transparent bitmap borders
+        // this will keep bitmap transparency
+        Paint().apply {
+            xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+            canvas.drawRect(
+                Rect(left,top,bitmap.width - right,bitmap.height - bottom),
+                this
+            )
+        }
+
+        // finally, draw bitmap on canvas
+        Paint().apply {
+            canvas.drawBitmap(
+                this@addPadding, // bitmap
+                0f + left, // left
+                0f + top, // top
+                this // paint
+            )
+        }
+
+        return bitmap
+    }
+
+
+    /**
+     * This is the temporary solution for watermark feature
+     * the result will generate square (1:1) watermark, and
+     * merge into main bitmap.
+     */
+    @JvmStatic
+    fun resultWatermarkImage(watermarkBitmap: Bitmap?, mainBitmap: Bitmap): Bitmap {
+        // get the width size of main bitmap for resizing the watermark container
+        val widthMainBitmap = mainBitmap.width
+        val heightMainBitmap = mainBitmap.height
+
+        // scaled resize the watermark container
+        val scaledWatermarkBitmap = watermarkBitmap!!.resizeScaledBitmap(
+            max(widthMainBitmap, heightMainBitmap)
+        )
+
+        // merge the main bitmap with scaled watermark bitmap
+        val resultBitmap = Bitmap.createBitmap(
+            widthMainBitmap,
+            heightMainBitmap,
+            Bitmap.Config.ARGB_8888
+        )
+
+        Canvas(resultBitmap).apply {
+            drawBitmap(mainBitmap, 0f, 0f, null)
+            drawBitmap(scaledWatermarkBitmap, 0f, 0f, null)
+        }
+
+        return resultBitmap
+    }
 }

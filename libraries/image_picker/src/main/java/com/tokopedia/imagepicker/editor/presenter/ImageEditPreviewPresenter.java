@@ -9,13 +9,14 @@ import android.graphics.ColorMatrixColorFilter;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.editor.watermark.Watermark;
 import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
+import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-import androidx.appcompat.content.res.AppCompatResources;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -295,42 +296,37 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         addToComposite(subscription);
     }
 
-    public void setTokopediaWatermark(String userInfoName, WatermarkBuilder watermarkBuilder) {
-        Bitmap tokopediaBitmap = BitmapFactory.decodeResource(
-                getView().getContext().getResources(),
-                R.drawable.watermark_ic_tokopedia_logo
-        );
+    public void setTokopediaWatermark(String userInfoName, Bitmap mainBitmap) {
+        Subscription subscription = Observable.just(
+                // tokopedia's logo
+                BitmapFactory.decodeResource(
+                        getView().getContext().getResources(),
+                        R.drawable.watermark_ic_tokopedia_logo
+                )
+        ).flatMap((Func1<Bitmap, Observable<Watermark>>) tokopediaLogoBitmap -> {
+            // create watermark with transparent container (empty) bitmap
+            Watermark watermark = WatermarkBuilder
+                    .createWithSize(
+                            getView().getContext(),
+                            mainBitmap.getWidth(),
+                            mainBitmap.getHeight()
+                    )
+                    .setTileMode(true)
+                    .loadWatermarkTextAndImage(userInfoName, tokopediaLogoBitmap)
+                    .getWatermark();
 
-        Subscription subscription = Observable.just(watermarkBuilder)
-                .flatMap((Func1<WatermarkBuilder, Observable<Bitmap>>) builder -> {
-                    return Observable.just(builder
-                            .loadWatermarkTextAndImage(userInfoName, tokopediaBitmap)
-                            .getWatermark()
-                            .getOutputImage()
-                    );
-                }).subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(bitmap ->
-                                getView().onSuccessGetWatermarkImage(bitmap)
-                        );
+            return Observable.just(watermark);
+        }).flatMap((Func1<Watermark, Observable<Bitmap>>) watermark -> {
+            // merge the watermark and main bitmap
+            Bitmap resultBitmap = BitmapHelper.resultWatermarkImage(
+                    watermark.getOutputImage(),
+                    mainBitmap
+            );
 
-        addToComposite(subscription);
-    }
-
-    public void setUserInfoNameWatermark(String userInfoName, WatermarkBuilder watermarkBuilder) {
-        Subscription subscription = Observable.just(watermarkBuilder)
-                .flatMap((Func1<WatermarkBuilder, Observable<Bitmap>>) builder -> {
-                    return Observable.just(builder
-                            .loadWatermarkText(userInfoName)
-                            .setTileMode(true)
-                            .getWatermark()
-                            .getOutputImage()
-                    );
-                }).subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(bitmap ->
-                                getView().onSuccessGetWatermarkImage(bitmap)
-                        );
+            return Observable.just(resultBitmap);
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(bitmap -> getView().onSuccessGetWatermarkImage(bitmap));
 
         addToComposite(subscription);
     }

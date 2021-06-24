@@ -10,9 +10,11 @@ import com.tokopedia.imagepicker.editor.watermark.builder.Text
 import com.tokopedia.imagepicker.editor.watermark.builder.TextAndImage
 import com.tokopedia.imagepicker.editor.watermark.entity.TextAndImageUIModel
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
-import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeBitmap
+import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeScaledBitmap
 import com.tokopedia.imagepicker.editor.watermark.utils.MAX_IMAGE_SIZE
 import com.yalantis.ucrop.util.FastBitmapDrawable
+import android.graphics.Bitmap.Config.ARGB_8888 as ARGB_8888
+import android.graphics.Bitmap.createBitmap as createBitmap
 
 open class WatermarkBuilder {
 
@@ -33,7 +35,7 @@ open class WatermarkBuilder {
         this.context = context
         this.resizeBackgroundImg = resizeBackgroundImg
         if (resizeBackgroundImg) {
-            this.backgroundImg = backgroundImg.resizeBitmap(MAX_IMAGE_SIZE)
+            this.backgroundImg = backgroundImg.resizeScaledBitmap(MAX_IMAGE_SIZE)
         } else {
             this.backgroundImg = backgroundImg
         }
@@ -59,7 +61,7 @@ open class WatermarkBuilder {
         if (resizeBackgroundImg) {
             this.backgroundImg = BitmapFactory
                 .decodeResource(context.resources, backgroundDrawable)
-                .resizeBitmap(MAX_IMAGE_SIZE)
+                .resizeScaledBitmap(MAX_IMAGE_SIZE)
         } else {
             this.backgroundImg = BitmapFactory.decodeResource(
                 context.resources,
@@ -104,7 +106,7 @@ open class WatermarkBuilder {
         if (imageView.drawable != null) {
             val drawable = imageView.drawable as FastBitmapDrawable
             backgroundImg = if (resizeBackgroundImg) {
-                drawable.bitmap.resizeBitmap(MAX_IMAGE_SIZE)
+                drawable.bitmap.resizeScaledBitmap(MAX_IMAGE_SIZE)
             } else {
                 drawable.bitmap
             }
@@ -124,6 +126,12 @@ open class WatermarkBuilder {
     }
 
     companion object {
+
+        @JvmStatic
+        fun createWithSize(context: Context, width: Int, height: Int): WatermarkBuilder {
+            val bitmap = createBitmap(width + 1000, height + 1000, ARGB_8888)
+            return WatermarkBuilder(context, bitmap)
+        }
 
         @JvmStatic
         fun create(context: Context, backgroundImg: Bitmap): WatermarkBuilder {

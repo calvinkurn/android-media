@@ -7,8 +7,11 @@ import com.tokopedia.imagepicker.editor.watermark.entity.BaseWatermark
 import com.tokopedia.imagepicker.editor.watermark.entity.ImageUIModel
 import com.tokopedia.imagepicker.editor.watermark.entity.TextAndImageUIModel
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
+import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.adjustRotation
+import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.combine
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeBitmap
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.textAsBitmap
+import android.graphics.Bitmap.createBitmap as createBitmap
 
 data class Watermark (
     var context: Context,
@@ -37,11 +40,7 @@ data class Watermark (
     private fun createWatermarkTextAndImage(watermark: TextAndImageUIModel?) {
         if (watermark == null) return
 
-        val logoBitmap = watermark.image!!.resizeBitmap(
-            size = watermark.imageSize.toFloat(),
-            background = backgroundImg!!
-        )
-
+        val logoBitmap = watermark.image!!.resizeBitmap(watermark.imageSize.toFloat(), backgroundImg!!)
         val textBitmap = watermark.text.textAsBitmap(context, watermark)
 
         createWatermark(
@@ -53,11 +52,10 @@ data class Watermark (
     private fun createWatermarkImage(watermarkImg: ImageUIModel?) {
         if (watermarkImg == null) return
 
+        val bitmap = watermarkImg.image!!.resizeBitmap(watermarkImg.imageSize.toFloat(), backgroundImg!!)
+
         createWatermark(
-            bitmap = watermarkImg.image!!.resizeBitmap(
-                size = watermarkImg.imageSize.toFloat(),
-                background = backgroundImg!!
-            ),
+            bitmap = bitmap,
             config = watermarkImg
         )
     }
@@ -65,8 +63,10 @@ data class Watermark (
     private fun createWatermarkText(watermarkText: TextUIModel?) {
         if (watermarkText == null) return
 
+        val textBitmap = watermarkText.text.textAsBitmap(context, watermarkText)
+
         createWatermark(
-            bitmap = watermarkText.text.textAsBitmap(context, watermarkText),
+            bitmap = textBitmap,
             config = watermarkText
         )
     }
@@ -88,28 +88,25 @@ data class Watermark (
         }
 
         backgroundImg?.let {
-            val newBitmap = Bitmap.createBitmap(it.width, it.height, it.config)
-            val watermarkCanvas = Canvas(newBitmap)
+            val newBitmap = createBitmap(it.width, it.height, it.config)
+            val canvas = Canvas(newBitmap)
 
-            watermarkCanvas.drawBitmap(canvasBitmap!!, 0f, 0f, null)
+            canvas.drawBitmap(canvasBitmap!!, 0f, 0f, null)
 
-            val watermarkBitmap = adjustRotation(
-                bitmap,
-                config.position.rotation.toInt()
-            )
+            val hasWatermarkBitmap = bitmap.adjustRotation(config.position.rotation)
 
             if (isTitleMode) {
                 paint.shader = BitmapShader(
-                    watermarkBitmap,
+                    hasWatermarkBitmap,
                     Shader.TileMode.REPEAT,
                     Shader.TileMode.REPEAT
                 )
 
-                val bitmapShaderRect = watermarkCanvas.clipBounds
-                watermarkCanvas.drawRect(bitmapShaderRect, paint)
+                val bitmapShaderRect = canvas.clipBounds
+                canvas.drawRect(bitmapShaderRect, paint)
             } else {
-                watermarkCanvas.drawBitmap(
-                    watermarkBitmap,
+                canvas.drawBitmap(
+                    hasWatermarkBitmap,
                     (config.position.positionX * it.width).toFloat(),
                     (config.position.positionY * it.height).toFloat(),
                     paint
@@ -123,71 +120,6 @@ data class Watermark (
 
     fun setToImageView(target: ImageView) {
         target.setImageBitmap(outputImage)
-    }
-
-    private fun adjustRotation(bitmap: Bitmap, orientationAngle: Int): Bitmap {
-        val matrix = Matrix()
-        matrix.setRotate(
-            orientationAngle.toFloat(),
-            (bitmap.width / 2).toFloat(),
-            (bitmap.height / 2).toFloat()
-        )
-
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-    }
-
-    private fun Bitmap.combine(other: Bitmap): Bitmap {
-        val thresholdSpace = this.width / 2
-        val otherBitmap = other.addPadding(thresholdSpace, 0, thresholdSpace, 0)
-
-        val width = this.width + otherBitmap.width
-        val height = maxOf(this.height, otherBitmap.height)
-
-        val resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(resultBitmap)
-
-        canvas.drawBitmap(this, 0f, 0f, null)
-        canvas.drawBitmap(otherBitmap, this.width.toFloat(), 0f, null)
-
-        return resultBitmap
-    }
-
-    private fun Bitmap.addPadding(
-        left:Int = 0,
-        top:Int = 0,
-        right:Int = 0,
-        bottom:Int = 0
-    ):Bitmap {
-        val bitmap = Bitmap.createBitmap(
-            width + left + right, // width in pixels
-            height + top + bottom, // height in pixels
-            Bitmap.Config.ARGB_8888
-        )
-
-        val canvas = Canvas(bitmap)
-
-        // clear color from bitmap drawing area
-        // this is very important for transparent bitmap borders
-        // this will keep bitmap transparency
-        Paint().apply {
-            xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
-            canvas.drawRect(
-                Rect(left,top,bitmap.width - right,bitmap.height - bottom),
-                this
-            )
-        }
-
-        // finally, draw bitmap on canvas
-        Paint().apply {
-            canvas.drawBitmap(
-                this@addPadding, // bitmap
-                0f + left, // left
-                0f + top, // top
-                this // paint
-            )
-        }
-
-        return bitmap
     }
 
 }
