@@ -145,7 +145,6 @@ class HomeRevampRepositoryImpl @Inject constructor(
             } catch (e: Exception) {
                 homeData.atfData = null
                 isAtfSuccess = false
-                homeData.atfErrorString = ErrorHandler.getErrorMessage(applicationContext, e as MessageErrorException)
                 emit(Result.errorAtf(error = e, data = null))
             }
 
@@ -183,7 +182,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                     }
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
-                                    atfData.errorString = ErrorHandler.getErrorMessage(applicationContext, e as MessageErrorException)
+                                    atfData.errorString = ErrorHandler.getErrorMessage(applicationContext, MessageErrorException(e.localizedMessage))
                                 }
                                 if (nonTickerResponseFinished) {
                                     cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
@@ -211,7 +210,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
                                     atfData.content = null
-                                    atfData.errorString = ErrorHandler.getErrorMessage(applicationContext, e as MessageErrorException)
+                                    atfData.errorString = ErrorHandler.getErrorMessage(applicationContext, MessageErrorException(e.localizedMessage))
                                 }
                                 cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
                                     saveToDatabase(homeData)
@@ -235,7 +234,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                                     homeData.atfData?.isProcessingAtf = false
                                 } catch (e: Exception) {
                                     atfData.status = AtfKey.STATUS_ERROR
-                                    atfData.errorString = ErrorHandler.getErrorMessage(applicationContext, e as MessageErrorException)
+                                    atfData.errorString = ErrorHandler.getErrorMessage(applicationContext, MessageErrorException(e.localizedMessage))
                                 }
                                 cacheCondition(isCacheExistForProcess, isCacheEmptyAction = {
                                     saveToDatabase(homeData)
@@ -334,7 +333,7 @@ class HomeRevampRepositoryImpl @Inject constructor(
                      * Because there is no content that we can show, we showing error page
                      */
                     if (homeData.atfData?.dataList == null || homeData.atfData?.dataList?.isEmpty() == true) {
-                        emit(Result.errorPagination(error = e as MessageErrorException, data = null))
+                        emit(Result.errorPagination(error = MessageErrorException(e.localizedMessage), data = null))
                     }
                     saveToDatabase(homeData)
                 }

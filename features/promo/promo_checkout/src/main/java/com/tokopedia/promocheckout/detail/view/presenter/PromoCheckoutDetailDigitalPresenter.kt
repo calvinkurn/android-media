@@ -1,16 +1,15 @@
 package com.tokopedia.promocheckout.detail.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.DigitalCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.model.CheckVoucherDigital
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
-import com.tokopedia.promocheckout.detail.model.detailmodel.CouponDetailsResponse
-import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
 class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
@@ -25,7 +24,7 @@ class PromoCheckoutDetailDigitalPresenter(private val getDetailCouponMarketplace
         digitalCheckVoucherUseCase.execute(digitalCheckVoucherUseCase.createRequestParams(promoCode, promoDigitalModel), object : Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
                 view.hideProgressLoading()
-                val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
+                val checkVoucherData = objects.getSuccessData<CheckVoucherDigital.Response>().response
                 if (checkVoucherData.voucherData.success) {
                     view.onSuccessCheckPromo(digitalCheckVoucherMapper.mapData(checkVoucherData.voucherData))
                 } else {
