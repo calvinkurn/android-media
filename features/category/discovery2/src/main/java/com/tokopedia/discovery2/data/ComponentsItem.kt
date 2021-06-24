@@ -83,6 +83,7 @@ data class ComponentsItem(
         var isSticky : Boolean = false,
         var description : String? = "",
         var showFilterCount: Boolean = true,
+        var shouldRefreshComponent : Boolean? = null ,
         var verticalProductFailState: Boolean = false,
         var userAddressData: LocalCacheModel? = null,
         var horizontalProductFailState: Boolean = false,) {
