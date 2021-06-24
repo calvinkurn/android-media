@@ -454,8 +454,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         statusbar.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
         uoh_navtoolbar?.let {
             it.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
-                HintData(getString(R.string.hint_cari_transaksi) )
-            ))
+                HintData(getString(R.string.hint_cari_transaksi) )),
+                navSearchbarInterface = { query,_,_,_ ->
+                    triggerSearch(query.toString())
+                }
+            )
             val icons = IconBuilder(
                 IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_UOH)
             )
@@ -471,8 +474,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 it.setToolbarTitle(getString(R.string.title_uoh_list))
             }
-
-
         }
 
         uohItemAdapter = UohItemAdapter().apply {
@@ -517,8 +518,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         chosenEndDate = GregorianCalendar()
     }
 
-    private fun triggerSearch() {
-        search_bar?.searchBarTextField?.text?.toString()?.let { keyword ->
+    private fun triggerSearch(query: String = "") {
+        query.let { keyword ->
             resetFilter()
             paramUohOrder.searchableText = keyword
             refreshHandler?.startRefresh()
