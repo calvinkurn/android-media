@@ -73,6 +73,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private val toppers: String = "Toppers"
     private var currentKotaKecamatan: String? = ""
     private var currentAlamat: String = ""
+    private var currentKodepos: String = ""
     private var isLatitudeNotEmpty: Boolean? = false
     private var isLongitudeNotEmpty: Boolean? = false
 
@@ -156,6 +157,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                         currentLong = it.longitude.toDouble()
                         binding.cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
                         binding.cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
+                        if (saveDataModel?.postalCode?.isEmpty() == true) saveDataModel?.postalCode = currentKodepos
                     }
                 }
             }
@@ -250,8 +252,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         binding.run {
             if (userSession.name.isNotEmpty() && !userSession.name.contains(toppers, ignoreCase = true)) {
                 formAccount.etNamaPenerima.textFieldInput.setText(userSession.name)
-                formAccount.etNamaPenerima.textFieldWrapper.error = ""
                 formAccount.infoNameLayout.visibility = View.GONE
+            } else if (userSession.name.contains(toppers, ignoreCase = true)) {
+                formAccount.etNamaPenerima.textFieldWrapper.helperText = "Ini akan jadi nama akunmu, bisa diubah nanti."
             }
             formAccount.etNamaPenerima.textFieldInput.addTextChangedListener(setWrapperWatcher(formAccount.etNamaPenerima.textFieldWrapper, null))
             formAccount.etNomorHp.textFieldInput.setText(userSession.phoneNumber)
@@ -804,6 +807,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         saveDataModel?.districtId = districtAddress.districtId
         saveDataModel?.zipCodes = districtAddress.zipCodes
         saveDataModel?.postalCode = zipCode
+        currentKodepos = zipCode
 
         if (isPinpoint) goToPinpointPage()
     }

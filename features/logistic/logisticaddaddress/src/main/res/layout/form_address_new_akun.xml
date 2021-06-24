@@ -12,8 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:text_field_label="Nama Penerima"
-        app:text_field_counter="50"
-        app:text_field_message="Ini akan jadi nama akunmu, bisa diubah nanti."/>
+        app:text_field_counter="50"/>
 
     <LinearLayout
         android:id="@+id/info_name_layout"

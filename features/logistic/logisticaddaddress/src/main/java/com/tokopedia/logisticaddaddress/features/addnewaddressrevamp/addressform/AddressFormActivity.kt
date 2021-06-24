@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
@@ -16,6 +17,7 @@ import com.tokopedia.user.session.UserSessionInterface
 
 class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressRevampComponent> {
 
+    private var isPositiveFlow: Boolean? = true
     private val userSession: UserSessionInterface by lazy {
         UserSession(this)
     }
@@ -30,6 +32,7 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
         var fragment: AddressFormFragment? = null
         if (intent.extras != null) {
             val bundle = intent.extras
+            isPositiveFlow = bundle?.getBoolean(EXTRA_IS_POSITIVE_FLOW)
             fragment = AddressFormFragment.newInstance(bundle?: Bundle())
         }
         return fragment
@@ -37,7 +40,8 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
 
     override fun onBackPressed() {
         super.onBackPressed()
-        AddNewAddressRevampAnalytics.onClickBackPositive(userSession.userId)
+        if (isPositiveFlow == true) AddNewAddressRevampAnalytics.onClickBackPositive(userSession.userId)
+        else AddNewAddressRevampAnalytics.onClickBackNegative(userSession.userId)
     }
 
     companion object {

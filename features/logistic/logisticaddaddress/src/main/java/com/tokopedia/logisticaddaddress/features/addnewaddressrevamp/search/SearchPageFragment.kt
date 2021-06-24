@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.text.Editable
@@ -18,6 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -78,6 +80,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private var isPositiveFlow: Boolean = true
 
     private var isFromPinpoint: Boolean = false
+
+    private var isPermissionAccessed: Boolean = false
 
     private var saveDataModel: SaveAddressDataModel? = null
     private var currentKotaKecamatan: String? = ""
@@ -157,13 +161,30 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
         var isAllowed = false
-        if (grantResults.size == requiredPermissions.size) {
+        for (permission in permissions) {
+            if (!isPermissionAccessed) {
+                if (activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permission) } == true) {
+                    Toast.makeText(context, "denied", Toast.LENGTH_SHORT).show()
+                } else {
+                    if (activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(context, "allowed", Toast.LENGTH_SHORT).show()
+                        isAllowed = true
+                        getLocation()
+                        isPermissionAccessed = true
+                    } else {
+                        Toast.makeText(context, "never ask again", Toast.LENGTH_SHORT).show()
+                        showBottomSheetLocUndefined(true)
+                    }
+                }
+            }
+        }
+
+      /*  if (grantResults.size == requiredPermissions.size) {
             isAllowed = true
             getLocation()
         }
-
+*/
         if (isAllowed) {
             AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
         } else {
@@ -257,18 +278,23 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         }
     }
 
-    private fun showBottomSheetLocUndefined(){
+    private fun showBottomSheetLocUndefined(isDontAskAgain: Boolean){
+        isPermissionAccessed = true
         bottomSheetLocUndefined = BottomSheetUnify()
         val viewBinding = BottomsheetLocationUndefinedBinding.inflate(LayoutInflater.from(context), null, false)
-        setupBottomSheetLocUndefined(viewBinding)
+        setupBottomSheetLocUndefined(viewBinding, isDontAskAgain)
 
         bottomSheetLocUndefined?.apply {
             setCloseClickListener {
+                isPermissionAccessed = false
                 AddNewAddressRevampAnalytics.onClickXOnBlockGpsSearch(userSession.userId)
                 dismiss()
             }
             setChild(viewBinding.root)
-            setOnDismissListener { dismiss() }
+            setOnDismissListener {
+                isPermissionAccessed = false
+                dismiss()
+            }
         }
 
         childFragmentManager.let {
@@ -276,22 +302,34 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         }
     }
 
-    private fun setupBottomSheetLocUndefined(viewBinding: BottomsheetLocationUndefinedBinding) {
+    private fun setupBottomSheetLocUndefined(viewBinding: BottomsheetLocationUndefinedBinding, isDontAskAgain: Boolean) {
         viewBinding.run {
             imgLocUndefined.setImageUrl(LOCATION_NOT_FOUND)
             tvLocUndefined.text = "Lokasi tidak terdeteksi"
             tvInfoLocUndefined.text = "Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu."
             btnActivateLocation.setOnClickListener {
                 AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiSearch(userSession.userId)
-                goToSettingLocationPage()
+                if (!isDontAskAgain) {
+                    goToSettingLocationDevice()
+                } else {
+                    goToSettingLocationApps()
+                }
+
             }
         }
     }
 
-    private fun goToSettingLocationPage() {
+    private fun goToSettingLocationDevice() {
         if (context?.let { turnGPSOn(it) } == false) {
             startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
         }
+    }
+
+    private fun goToSettingLocationApps() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri: Uri = Uri.fromParts("package", requireContext().packageName, null)
+        intent.data = uri
+        activity?.startActivityForResult(intent, RESULT_PERMISSION_CODE)
     }
 
     private fun turnGPSOn(context: Context): Boolean {
@@ -385,6 +423,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private fun getLocation() {
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+                isPermissionAccessed = false
                 if (data != null) {
                    goToPinpointPage(null, data.latitude, data.longitude, false, true)
                 } else {
@@ -394,7 +433,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
             }
         } else {
-            showBottomSheetLocUndefined()
+            showBottomSheetLocUndefined(false)
         }
     }
 
@@ -429,6 +468,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     }
 
     companion object {
+        private const val RESULT_PERMISSION_CODE = 1234
+
         fun newInstance(bundle: Bundle): SearchPageFragment {
             return SearchPageFragment().apply {
                 arguments = Bundle().apply {

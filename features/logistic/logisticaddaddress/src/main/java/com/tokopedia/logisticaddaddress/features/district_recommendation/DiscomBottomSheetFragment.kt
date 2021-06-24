@@ -177,10 +177,13 @@ class DiscomBottomSheetFragment : BottomSheets(),
         parentView?.findViewById<View>(com.tokopedia.purchase_platform.common.R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(com.tokopedia.purchase_platform.common.R.id.btn_close)?.setOnClickListener {
             AddNewAddressAnalytics.eventClickBackArrowOnNegativePage(isFullFlow, isLogisticLabel)
-            if (isAnaRevamp) {
-                if (isKodePosShown) AddNewAddressRevampAnalytics.onClickBackArrowKodePos(userSession.userId)
+            if (isAnaRevamp && isKodePosShown) {
+                AddNewAddressRevampAnalytics.onClickBackArrowKodePos(userSession.userId)
+                hideZipCode()
+            } else {
+                onCloseButtonClick()
             }
-            onCloseButtonClick()
+
         }
     }
 
@@ -365,12 +368,24 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     private fun showZipCodes(data: Address) {
+        isKodePosShown = true
         ViewCompat.setLayoutDirection(binding.rvKodeposChips, ViewCompat.LAYOUT_DIRECTION_LTR)
         data.zipCodes?.let {
             binding.rvKodeposChips.visibility = View.VISIBLE
             zipCodeChipsAdapter.zipCodes = it.toMutableList()
             zipCodeChipsAdapter.notifyDataSetChanged()
         }
+    }
+
+    private fun hideZipCode() {
+        binding.llZipCode.visibility = View.GONE
+        binding.bottomChoooseZipcode.visibility = View.GONE
+        binding.layoutSearch.visibility = View.VISIBLE
+        binding.mapSearchDivider1.visibility = View.VISIBLE
+        binding.tvDescInputDistrict.visibility = View.VISIBLE
+        binding.llListDistrict.visibility = View.VISIBLE
+        binding.llPopularCity.visibility = View.VISIBLE
+        isKodePosShown = false
     }
 
     private fun openSoftKeyboard() {
@@ -402,7 +417,6 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     override fun onZipCodeClicked(zipCode: String) {
-        isKodePosShown = true
         AddNewAddressRevampAnalytics.onClickChipsKodePosNegative(userSession.userId)
         binding.rvKodeposChips.visibility = View.GONE
         binding.etKodepos.textFieldInput.run {
@@ -412,7 +426,7 @@ class DiscomBottomSheetFragment : BottomSheets(),
         binding.btnChooseZipcode.setOnClickListener {
             if (binding.etKodepos.textFieldInput.text.toString().length < 5) {
                 AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
-                view?.let { it -> Toaster.build(it, "Kode pos terlalu pendek, min. 5 karakter.", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                Toaster.build(it, "Kode pos terlalu pendek, min. 5 karakter.", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
             } else {
                 AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
                 districtAddressData?.let { data -> actionListener.onChooseZipcode(data, zipCode, isPinpoint) }

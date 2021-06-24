@@ -8,12 +8,14 @@ import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -56,6 +58,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_distr
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageFragment
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LATITUDE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_LONGITUDE
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
@@ -101,6 +104,9 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var hasRequestedLocation: Boolean = false
     /*to differentiate positive flow or negative flow*/
     private var isPositiveFlow: Boolean = true
+    /*to differentiate flow from address form*/
+
+    private var isPermissionAccessed: Boolean = false
 
     private var isFromAddressForm: Boolean = false
     private var districtId: Int? = null
@@ -155,10 +161,28 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         var isAllowed = false
-        if (grantResults.size == requiredPermissions.size) {
+        for (permission in permissions) {
+            if (!isPermissionAccessed) {
+                if (activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permission) } == true) {
+                    Toast.makeText(context, "denied", Toast.LENGTH_SHORT).show()
+                } else {
+                    if (activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED) {
+                        Toast.makeText(context, "allowed", Toast.LENGTH_SHORT).show()
+                        isAllowed = true
+                        getLocation()
+                        isPermissionAccessed = true
+                    } else {
+                        Toast.makeText(context, "never ask again", Toast.LENGTH_SHORT).show()
+                        showBottomSheetLocUndefined(true)
+                    }
+                }
+            }
+        }
+
+        /*if (grantResults.size == requiredPermissions.size) {
             isAllowed = true
             getLocation()
-        }
+        }*/
 
         if (isAllowed) {
             AddNewAddressRevampAnalytics.onClickAllowLocationPinpoint(userSession.userId)
@@ -502,6 +526,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private fun getLocation() {
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+                isPermissionAccessed = false
                 if (data != null) {
                     moveMap(getLatLng(data.latitude, data.longitude), ZOOM_LEVEL)
                     viewModel.getDistrictData(data.latitude, data.longitude)
@@ -512,22 +537,27 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
             }
         } else {
-            showBottomSheetLocUndefined()
+            showBottomSheetLocUndefined(false)
         }
     }
 
-    private fun showBottomSheetLocUndefined(){
+    private fun showBottomSheetLocUndefined(isDontAskAgain: Boolean){
+        isPermissionAccessed = true
         bottomSheetLocUndefined = BottomSheetUnify()
         val viewBinding = BottomsheetLocationUndefinedBinding.inflate(LayoutInflater.from(context), null, false)
-        setupBottomSheetLocUndefined(viewBinding)
+        setupBottomSheetLocUndefined(viewBinding, isDontAskAgain)
 
         bottomSheetLocUndefined?.apply {
             setCloseClickListener {
+                isPermissionAccessed = false
                 AddNewAddressRevampAnalytics.onClickXOnBlockGpsPinpoint(userSession.userId)
                 dismiss()
             }
             setChild(viewBinding.root)
-            setOnDismissListener { dismiss() }
+            setOnDismissListener {
+                isPermissionAccessed = false
+                dismiss()
+            }
         }
 
         childFragmentManager.let {
@@ -535,22 +565,34 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    private fun setupBottomSheetLocUndefined(viewBinding: BottomsheetLocationUndefinedBinding) {
+    private fun setupBottomSheetLocUndefined(viewBinding: BottomsheetLocationUndefinedBinding, isDontAskAgain: Boolean) {
         viewBinding.run {
             imgLocUndefined.setImageUrl(LOCATION_NOT_FOUND)
             tvLocUndefined.text = "Lokasi tidak terdeteksi"
             tvInfoLocUndefined.text = "Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu."
             btnActivateLocation.setOnClickListener {
                 AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiPinpoint(userSession.userId)
-                goToSettingLocationPage()
+                if (!isDontAskAgain) {
+                    goToSettingLocationDevice()
+                } else {
+                    goToSettingLocationApps()
+                }
             }
         }
     }
 
-    private fun goToSettingLocationPage() {
+    private fun goToSettingLocationDevice() {
         if (context?.let { turnGPSOn(it) } == false) {
             startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
         }
+    }
+
+
+    private fun goToSettingLocationApps() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri: Uri = Uri.fromParts("package", requireContext().packageName, null)
+        intent.data = uri
+        activity?.startActivityForResult(intent, RESULT_PERMISSION_CODE)
     }
 
     private fun turnGPSOn(context: Context): Boolean {
@@ -755,6 +797,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     companion object {
+        private const val RESULT_PERMISSION_CODE = 1234
+
         private const val ZOOM_LEVEL = 16f
 
         const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
