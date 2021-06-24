@@ -172,10 +172,9 @@
         android:id="@+id/btn_cast"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/view_pip_control"
         app:layout_constraintEnd_toStartOf="@id/view_pip_control"
-        app:layout_constraintTop_toTopOf="@id/view_pip_control"
-        app:layout_goneMarginEnd="@dimen/play_no_offset"
+        app:layout_constraintTop_toBottomOf="@id/view_toolbar"
+        app:layout_goneMarginEnd="@dimen/spacing_lvl2"
         app:mediaRouteButtonTint="@color/Neutral_N0"
         />
 
