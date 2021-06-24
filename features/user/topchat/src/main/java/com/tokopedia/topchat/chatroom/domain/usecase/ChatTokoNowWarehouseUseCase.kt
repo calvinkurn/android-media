@@ -13,7 +13,6 @@ open class ChatTokoNowWarehouseUseCase @Inject constructor(
     fun getWarehouseId(
         msgId: String
     ) = flow {
-        emit(Resource.loading(null))
         val param = generateParam(msgId)
         val response = gqlUseCase.apply {
             setGraphqlQuery(query)
