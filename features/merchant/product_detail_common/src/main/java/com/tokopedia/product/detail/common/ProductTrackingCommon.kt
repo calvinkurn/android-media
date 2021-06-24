@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.common
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.BUSINESS_UNIT
-import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.CURRENT_SITE
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_CURRENT_SITE
@@ -140,7 +139,7 @@ object ProductTrackingCommon {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 ProductTrackingConstant.Tracking.KEY_EVENT, "addToCart",
                 ProductTrackingConstant.Tracking.KEY_CATEGORY, "$pageSource - variant bottomsheet",
-                ProductTrackingConstant.Tracking.KEY_ACTION, "click - Beli Langsung on global variant bottomsheet",
+                ProductTrackingConstant.Tracking.KEY_ACTION, "click - tambah ke keranjang on global variant bottomsheet",
                 ProductTrackingConstant.Tracking.KEY_LABEL, if (buttonAction == ProductDetailCommonConstant.ATC_BUTTON) "" else "fitur : $generateButtonActionString",
                 KEY_PRODUCT_ID, productId,
                 ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
