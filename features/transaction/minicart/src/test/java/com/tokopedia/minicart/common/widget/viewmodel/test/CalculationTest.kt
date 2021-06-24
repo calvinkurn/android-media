@@ -253,7 +253,7 @@ class CalculationTest {
     fun `WHEN change quantity and calculate product got weight exceed limit THEN ticker warning overweight should contain over weight value`(){
         //given
         val productId = "1920796612"
-        val overWeight = "0.2"
+        val overWeight = "0,2"
         val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModels)
 
@@ -286,7 +286,7 @@ class CalculationTest {
     fun `WHEN already overweight and change quantity still overweight THEN ticker warning overweight should be updated`(){
         //given
         val productId = "1920796612"
-        val overWeight = "1.2"
+        val overWeight = "1,2"
         val miniCartListUiModels = DataProvider.provideMiniCartListUiModelAllAvailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModels)
 
