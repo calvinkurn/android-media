@@ -375,13 +375,15 @@ abstract class BaseNotification internal constructor(
          **/
         private fun getBundle(baseNotificationModel: BaseNotificationModel): Bundle {
             var bundle = Bundle()
-            baseNotificationModel.videoPushModel?.let {
-                bundle = jsonToBundle(bundle, baseNotificationModel.videoPushModel)
-            }
-            baseNotificationModel.customValues?.let {
-                if (it.isNotEmpty())
+            try {
+                baseNotificationModel.videoPushModel?.let {
                     bundle = jsonToBundle(bundle, JSONObject(it))
-            }
+                }
+                baseNotificationModel.customValues?.let {
+                    if (it.isNotEmpty())
+                        bundle = jsonToBundle(bundle, JSONObject(it))
+                }
+            }catch (e: Exception){}
             return bundle
         }
 

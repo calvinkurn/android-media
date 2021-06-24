@@ -72,7 +72,7 @@ data class BaseNotificationModel(
         var persistentButtonList: ArrayList<PersistentButton>? = null,
 
         @ColumnInfo(name = "videoPush")
-        var videoPushModel: @RawValue JSONObject? = null,
+        var videoPushModel: String? = null,
 
         @ColumnInfo(name = "subText")
         var subText: String? = null,
