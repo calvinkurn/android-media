@@ -341,15 +341,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private var chooseAddressWidgetInitialized: Boolean = false
 
-    private fun isTestEnvironment(): Boolean {
-        return try {
-            return (context as? MainParentStateListener)?.isTestEnvironment?:false
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
-
     private fun isNavRevamp(): Boolean {
         return try {
             return (context as? MainParentStateListener)?.isNavigationRevamp?:false
@@ -1847,7 +1838,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun onPageLoadTimeEnd() {
         stickyLoginView?.loadContent()
         navAbTestCondition(ifNavRevamp = {
-            if (!isTestEnvironment() && isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
+            if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
         observeHomeNotif()
         pageLoadTimeCallback?.invalidate()

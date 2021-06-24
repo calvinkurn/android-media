@@ -54,7 +54,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.coachmark.CoachMark2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker;
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker;
@@ -132,7 +131,6 @@ public class MainParentActivity extends BaseActivity implements
         MainParentStateListener
 {
 
-    public static final String TEST_ENVIRONMENT = "testenv";
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
     public static final int HOME_MENU = 0;
@@ -241,9 +239,6 @@ public class MainParentActivity extends BaseActivity implements
         startMainParentPerformanceMonitoring();
 
         super.onCreate(savedInstanceState);
-        if (isTestEnv()) {
-            CoachMark2.Companion.setCoachmmarkShowAllowed(false);
-        }
         initInjector();
         initInboxAbTest();
         initNotifcenterOnNewInboxAbTest();
@@ -327,7 +322,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        if (!isTestEnv() && isFirstTimeUser()) {
+        if (isFirstTimeUser()) {
             setDefaultShakeEnable();
             routeOnboarding();
         }
@@ -342,17 +337,6 @@ public class MainParentActivity extends BaseActivity implements
         cacheManager.edit()
                 .putBoolean(getString(R.string.pref_receive_shake), true)
                 .apply();
-    }
-
-    private Boolean isTestEnv() {
-        if (getIntent() != null) {
-            if (getIntent().getExtras() != null) {
-                if (getIntent().getExtras().getString(TEST_ENVIRONMENT) != null) {
-                    return getIntent().getExtras().getString(TEST_ENVIRONMENT).equals(TEST_ENVIRONMENT);
-                }
-            }
-        }
-        return false;
     }
 
     @Override
@@ -1246,11 +1230,6 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public boolean isNavigationRevamp() {
         return isNewNavigation;
-    }
-
-    @Override
-    public boolean isTestEnvironment() {
-        return isTestEnv();
     }
 
     public void populateBottomNavigationView() {

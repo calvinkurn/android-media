@@ -10,4 +10,11 @@ object MacroIntent {
         intent.putExtra("testenv", "testenv")
         return intent
     }
+
+    fun getHomeMacroSetupIntent(): Intent {
+        val intent = Intent()
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.setData(Uri.parse("tokopedia://setting/dev-opts/home-macrobenchmark/setup"))
+        return intent
+    }
 }
