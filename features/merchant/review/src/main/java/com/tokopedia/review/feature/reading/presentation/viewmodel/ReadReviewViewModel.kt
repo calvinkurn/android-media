@@ -150,6 +150,15 @@ class ReadReviewViewModel @Inject constructor(
         return result
     }
 
+    fun clearFilters() {
+        this.filter = mutableListOf()
+    }
+
+    fun resetToDefaultSort() {
+        this.sort = SortTypeConstants.MOST_HELPFUL_PARAM
+        resetPage()
+    }
+
     private fun getKey(map: Map<String, String>, target: String): String {
         map.keys.forEach {
             if (target == map[it]) {

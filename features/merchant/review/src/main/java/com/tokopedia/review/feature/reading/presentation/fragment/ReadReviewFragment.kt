@@ -180,6 +180,11 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_sort_title), filterOptions, this, SortFilterBottomSheetType.SortBottomSheet, listOf(), chipTitle, 0).show(it, ReadReviewFilterBottomSheet.TAG) }
     }
 
+    override fun onClearFiltersClicked() {
+        viewModel.clearFilters()
+        viewModel.resetToDefaultSort()
+    }
+
     override fun onAttachedImagesClicked(productReview: ProductReview, positionClicked: Int, shopId: String) {
         context?.let {
             val cacheManager = SaveInstanceCacheManager(it, true)

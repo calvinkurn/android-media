@@ -7,4 +7,5 @@ interface ReadReviewFilterChipsListener {
     fun onFilterWithTopicClicked(topics: List<ProductTopic>, index: Int)
     fun onFilterWithRatingClicked(index: Int)
     fun onSortClicked(chipTitle: String)
+    fun onClearFiltersClicked()
 }
