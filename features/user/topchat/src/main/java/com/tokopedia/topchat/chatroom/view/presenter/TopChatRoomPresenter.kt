@@ -552,7 +552,7 @@ open class TopChatRoomPresenter @Inject constructor(
         sendMessage: String,
         startTime: String,
         opponentId: String,
-        intention: String? = null
+        intention: String?
     ) {
         if (networkMode == MODE_WEBSOCKET) {
             topchatSendMessageWithWebsocket(
