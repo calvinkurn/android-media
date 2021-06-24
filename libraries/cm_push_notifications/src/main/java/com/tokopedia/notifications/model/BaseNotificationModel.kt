@@ -7,8 +7,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
-import org.json.JSONObject
 
 /**
  *
