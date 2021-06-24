@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhomecommon.common.WidgetListener
@@ -79,12 +80,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         private const val SCREEN_NAME = "statistic_page_fragment"
         private const val TAG_TOOLTIP = "statistic_tooltip"
         private const val TICKER_NAME = "statistic_page_ticker"
-        private const val STATISTIC_PAGE = "statistic_page_source"
+        private const val KEY_STATISTIC_PAGE = "statistic_page_source"
+        private const val KEY_SHOULD_LOAD_DATA_ON_CREATE = "key_should_load_data_on_create"
 
-        fun newInstance(page: StatisticPageUiModel): StatisticFragment {
+        fun newInstance(page: StatisticPageUiModel, shouldLoadDataOnCreate: Boolean): StatisticFragment {
             return StatisticFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(STATISTIC_PAGE, page)
+                    putParcelable(KEY_STATISTIC_PAGE, page)
+                    putBoolean(KEY_SHOULD_LOAD_DATA_ON_CREATE, shouldLoadDataOnCreate)
                 }
             }
         }
@@ -141,8 +144,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statisticPage = getPageFromArgs()
-        statisticPage?.let { page ->
-            lifecycleScope.launch(Dispatchers.Unconfined) {
+        loadInitialLayoutData {
+            statisticPage?.let { page ->
                 startLayoutNetworkPerformanceMonitoring()
                 mViewModel.getWidgetLayout(page.pageSource)
             }
@@ -382,6 +385,19 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         this.selectedWidget = widget
     }
 
+    private fun loadInitialLayoutData(action: () -> Unit) {
+        val shouldLoadDataOnCreate = arguments?.getBoolean(KEY_SHOULD_LOAD_DATA_ON_CREATE).orFalse()
+        if (shouldLoadDataOnCreate) {
+            action()
+        } else {
+            lifecycleScope.launchWhenResumed {
+                if (isVisible && isFirstLoad) {
+                    action()
+                }
+            }
+        }
+    }
+
     private fun setupView() = view?.run {
         setDefaultRange()
         setupRecyclerView()
@@ -396,20 +412,20 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
     }
 
     private fun getPageFromArgs(): StatisticPageUiModel? {
-        return arguments?.getParcelable(STATISTIC_PAGE)
+        return arguments?.getParcelable(KEY_STATISTIC_PAGE)
     }
 
     private fun setDefaultDynamicParameter() {
         statisticPage?.let { page ->
             page.dateFilters.firstOrNull { it.isSelected }.let { dateFilter ->
-               if (dateFilter != null) {
-                   mViewModel.setDateFilter(page.pageSource, defaultStartDate, defaultEndDate, dateFilter.getDateFilterType())
-               } else if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
-                       statisticPage?.pageTitle == getString(R.string.stc_buyer)) {
-                   mViewModel.setDateFilter(page.pageSource, defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_DAY)
-               } else {
-                   mViewModel.setDateFilter(page.pageSource, defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_TODAY)
-               }
+                if (dateFilter != null) {
+                    mViewModel.setDateFilter(page.pageSource, defaultStartDate, defaultEndDate, dateFilter.getDateFilterType())
+                } else if (StatisticPageHelper.getRegularMerchantStatus(userSession) ||
+                        statisticPage?.pageTitle == getString(R.string.stc_buyer)) {
+                    mViewModel.setDateFilter(page.pageSource, defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_DAY)
+                } else {
+                    mViewModel.setDateFilter(page.pageSource, defaultStartDate, defaultEndDate, DateFilterType.DATE_TYPE_TODAY)
+                }
             }
         }
     }
@@ -659,6 +675,7 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             showErrorToaster()
             globalErrorStc.gone()
         }
+        swipeRefreshStc.isRefreshing = false
         StatisticLogger.logToCrashlytics(throwable, StatisticLogger.ERROR_LAYOUT)
     }
 

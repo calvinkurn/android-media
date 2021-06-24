@@ -75,7 +75,6 @@ import javax.inject.Inject
  */
 
 
-private const val CLICK_SETUP_KEY = "click - setup keyword"
 private const val CLICK_TAMBAH_KATA_KUNCI = "click - tambah kata kunci"
 
 class EditKeywordsFragment : BaseDaggerFragment() {
@@ -207,26 +206,26 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         })
         sharedViewModel.getProuductIds().observe(viewLifecycleOwner, {
             productIds = it.joinToString(",")
+            productId = it
             if (productIds.isNotEmpty() && recommendedKeywords?.isEmpty() == true)
                 viewModelKeyword.getSuggestionKeyword(productIds, 0, ::onSuccessRecommended)
+            if (productIds.isNotEmpty()) {
+                getLatestBid()
+            }
+            getBidForKeywords()
+
         })
         sharedViewModel.getGroupId().observe(viewLifecycleOwner, {
             groupId = it
             viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
         })
-        sharedViewModel.getProuductIds().observe(viewLifecycleOwner, {
-            productId = it
-            getLatestBid()
-            val suggestions = java.util.ArrayList<DataSuggestions>()
-            val dummyId: MutableList<Long> = mutableListOf()
-            suggestions.add(DataSuggestions("group", dummyId))
-            viewModel.getBidInfo(suggestions, this::onSuccessSuggestion)
-        })
-        sharedViewModel.getAutoBidStatus().observe(viewLifecycleOwner, {
-            if (it.isEmpty() || minBid == "0") {
-                getLatestBid()
-            }
-        })
+    }
+
+    private fun getBidForKeywords() {
+        val suggestions = java.util.ArrayList<DataSuggestions>()
+        val dummyId: MutableList<Long> = mutableListOf()
+        suggestions.add(DataSuggestions("group", dummyId))
+        viewModel.getBidInfo(suggestions, this::onSuccessSuggestion)
     }
 
     private fun getLatestBid() {

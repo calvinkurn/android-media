@@ -70,7 +70,8 @@ class FlightCalendarRoundTripWidget : SelectionRangeCalendarWidget() {
 
             activity?.run {
                 fareCalendarViewModel.getFareFlightCalendar(mapFareParam, minCalendarDate, maxCalendarDate,
-                        true, TravelDateUtil.dateToString(TRAVEL_CAL_YYYY_MM_DD, minDate))
+                        true, TravelDateUtil.dateToString(TRAVEL_CAL_YYYY_MM_DD, minDate
+                        ?: TravelDateUtil.getCurrentCalendar().time))
             }
 
             fareCalendarViewModel.fareFlightCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {

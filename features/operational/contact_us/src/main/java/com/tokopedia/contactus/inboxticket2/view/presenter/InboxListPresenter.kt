@@ -2,7 +2,6 @@ package com.tokopedia.contactus.inboxticket2.view.presenter
 
 import android.app.Activity.RESULT_CANCELED
 import android.content.Intent
-import android.text.Spanned
 import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,7 +25,6 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.InboxBottomSheetFragme
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.htmltags.HtmlUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -308,4 +306,7 @@ class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
         }
     }
 
+    override fun showSerVicePriorityBottomSheet() {
+        mView?.showSerVicePriorityBottomSheet()
+    }
 }

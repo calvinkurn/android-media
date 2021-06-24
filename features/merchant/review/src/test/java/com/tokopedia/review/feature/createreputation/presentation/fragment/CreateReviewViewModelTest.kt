@@ -24,8 +24,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockkObject
 import org.junit.Assert
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import java.util.concurrent.CountDownLatch
@@ -45,9 +44,13 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `when no images should return false`() {
+    fun `when no images should return false and return 0 count`() {
+        val expectedImageCount = 0
+
         viewModel.clearImageData()
+
         assertFalse(viewModel.isImageNotEmpty())
+        assertEquals(viewModel.getImageCount(), expectedImageCount)
     }
 
     @Test
@@ -111,32 +114,24 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     @Test
     fun `should success when get product incentive ovo`() {
-        coEvery {
-            getProductIncentiveOvo.getIncentiveOvo()
-        } returns ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse())
+        val expectedResponse = ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse())
+
+        onGetOvoIncentive_thenReturn(expectedResponse)
 
         viewModel.getProductIncentiveOvo()
 
-        coVerify {
-            getProductIncentiveOvo.getIncentiveOvo()
-        }
-
+        verifyOvoIncentiveUseCaseCalled()
         assertTrue(viewModel.isUserEligible())
         assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Success)
     }
 
     @Test
     fun `should fail when get product incentive ovo`() {
-        coEvery {
-            getProductIncentiveOvo.getIncentiveOvo()
-        } throws Throwable()
+        onGetOvoIncentiveError_thenReturn(Throwable())
 
         viewModel.getProductIncentiveOvo()
 
-        coVerify {
-            getProductIncentiveOvo.getIncentiveOvo()
-        }
-
+        verifyOvoIncentiveUseCaseCalled()
         assertFalse(viewModel.isUserEligible())
         assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Fail)
     }
@@ -369,6 +364,20 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `when getAfterEditImageList contains image from storage should add all images`() {
+        val imagePickerResult = mutableListOf("picture1", "picture2", "picture3", "picture4", "storage/pic")
+        val originalImageUrl = mutableListOf("picture1", "picture2", "picture3", "picture4")
+
+        val expectedData = mutableListOf(ImageReviewUiModel("picture1"),
+                ImageReviewUiModel("picture2"), ImageReviewUiModel("picture3"),
+                ImageReviewUiModel("picture4"), ImageReviewUiModel("storage/pic"))
+
+        val actualData = viewModel.getAfterEditImageList(imagePickerResult, originalImageUrl)
+
+        Assert.assertEquals(expectedData, actualData)
+    }
+
+    @Test
     fun `when editReview with images should execute expected usecases`() {
         val expectedResponse = ProductRevEditReviewResponseWrapper(ProductRevSuccessIndicator(success = true))
         val expectedUploadResponse = UploadResult.Success("success")
@@ -431,6 +440,56 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `when getReviewTemplates is not empty should execute expected usecase and indicate that template is available`() {
+        val expectedResponse = ProductrevGetReviewTemplateResponseWrapper(ProductrevGetReviewTemplate(templates = listOf("template1", "template2")))
+
+        onGetReviewTemplate_thenReturn(expectedResponse)
+
+        viewModel.getReviewTemplates(productId)
+
+        verifyGetReviewTemplateUseCaseCalled()
+        verifyReviewTemplatesSuccess(Success(expectedResponse.productrevGetPersonalizedReviewTemplate.templates))
+        assertTrue(viewModel.isTemplateAvailable())
+    }
+
+    @Test
+    fun `when getReviewTemplates is not empty but product is incentive eligible should execute expected usecase and indicate that template is not available`() {
+        val expectedResponse = ProductrevGetReviewTemplateResponseWrapper(ProductrevGetReviewTemplate(templates = listOf("template1", "template2")))
+        val expectedIncentivesResponse = ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse())
+
+        onGetReviewTemplate_thenReturn(expectedResponse)
+        onGetOvoIncentive_thenReturn(expectedIncentivesResponse)
+
+        viewModel.getReviewTemplates(productId)
+        viewModel.getProductIncentiveOvo()
+
+        verifyGetReviewTemplateUseCaseCalled()
+        verifyReviewTemplatesSuccess(Success(expectedResponse.productrevGetPersonalizedReviewTemplate.templates))
+        verifyOvoIncentiveUseCaseCalled()
+        assertFalse(viewModel.isTemplateAvailable())
+        assertTrue(viewModel.isUserEligible())
+        assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Success)
+    }
+
+    @Test
+    fun `when getReviewTemplates is not empty and product is not incentive eligible should execute expected usecase and indicate that template is available`() {
+        val expectedResponse = ProductrevGetReviewTemplateResponseWrapper(ProductrevGetReviewTemplate(templates = listOf("template1", "template2")))
+        val expectedIncentivesResponse = null
+
+        onGetReviewTemplate_thenReturn(expectedResponse)
+        onGetOvoIncentive_thenReturn(expectedIncentivesResponse)
+
+        viewModel.getReviewTemplates(productId)
+        viewModel.getProductIncentiveOvo()
+
+        verifyGetReviewTemplateUseCaseCalled()
+        verifyReviewTemplatesSuccess(Success(expectedResponse.productrevGetPersonalizedReviewTemplate.templates))
+        verifyOvoIncentiveValueEquals(expectedIncentivesResponse)
+        assertTrue(viewModel.isTemplateAvailable())
+        assertFalse(viewModel.isUserEligible())
+    }
+
+    @Test
     fun `when getReviewTemplates error should still execute expected usecase and return error`() {
         val expectedResponse = Throwable()
 
@@ -440,6 +499,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         verifyGetReviewTemplateUseCaseCalled()
         verifyReviewTemplatesError(Fail(expectedResponse))
+        assertFalse(viewModel.isTemplateAvailable())
     }
 
     @Test
@@ -496,6 +556,16 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
         viewModel.clearImageData()
         viewModel.getImageList(images)
+
+        Assert.assertEquals(expectedImageCount, viewModel.getImageCount())
+    }
+
+    @Test
+    fun `when getImageCount contains only one ImageReviewUiModel should return 1`() {
+        val expectedImageCount = 1
+
+        viewModel.clearImageData()
+        viewModel.getImageList(listOf(images.first()))
 
         Assert.assertEquals(expectedImageCount, viewModel.getImageCount())
     }
@@ -561,6 +631,18 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         } returns ProductRevGetForm()
     }
 
+    private fun onGetOvoIncentive_thenReturn(productrevOvoDomain: ProductRevIncentiveOvoDomain?) {
+        coEvery {
+            getProductIncentiveOvo.getIncentiveOvo()
+        } returns productrevOvoDomain
+    }
+
+    private fun onGetOvoIncentiveError_thenReturn(throwable: Throwable) {
+        coEvery {
+            getProductIncentiveOvo.getIncentiveOvo()
+        } throws throwable
+    }
+
     private fun verifySubmitReviewSuccess(viewState: com.tokopedia.review.common.data.Success<String>) {
         viewModel.submitReviewResult.verifyReviewSuccessEquals(viewState)
     }
@@ -611,6 +693,16 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
 
     private fun verifyProgressBarValueEquals(progressBarState: CreateReviewProgressBarState) {
         viewModel.progressBarState.verifyValueEquals(progressBarState)
+    }
+
+    private fun verifyOvoIncentiveUseCaseCalled() {
+        coVerify {
+            getProductIncentiveOvo.getIncentiveOvo()
+        }
+    }
+
+    private fun verifyOvoIncentiveValueEquals(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain?) {
+        viewModel.incentiveOvo.verifyValueEquals(productRevIncentiveOvoDomain)
     }
 
     private fun <T> LiveData<T>.observeAwaitValue(): T? {
