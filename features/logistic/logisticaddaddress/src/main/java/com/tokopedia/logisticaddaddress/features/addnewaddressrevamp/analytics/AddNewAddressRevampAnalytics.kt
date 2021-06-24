@@ -8,6 +8,7 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
     private const val CLICK_SEARCH = "clickSearch"
     private const val CLICK_PINPOINT = "clickPinpoint"
     private const val VIEW_PINPOINT_IRIS = "viewPinPointIris"
+    private const val VIEW_ADDRESS_IRIS = "viewAddressIris"
     private const val CLICK_ADDRESS = "clickAddress"
 
     private const val CLICK_FIELD_CARI_LOKASI = "click field cari lokasi"
@@ -763,8 +764,8 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
 
     fun onViewErrorToasterPilih(userId: String) {
         getTracker().sendGeneralEvent(BaseTrackerBuilder()
-                .appendEvent(CLICK_ADDRESS)
-                .appendEventCategory("$ANA_NEGATIVE, $KOTA_KECAMATAN_PAGE")
+                .appendEvent(VIEW_ADDRESS_IRIS)
+                .appendEventCategory("$ANA_NEGATIVE, $KODE_POST_PAGE")
                 .appendEventAction(VIEW_ERROR_TOASTER_KODE_POS)
                 .appendEventLabel("")
                 .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)

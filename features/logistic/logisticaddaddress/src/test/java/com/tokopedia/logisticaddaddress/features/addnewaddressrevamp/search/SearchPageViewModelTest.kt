@@ -1,3 +1,0 @@
-package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search
-
-class SearchPageViewModelTest
