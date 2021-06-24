@@ -691,13 +691,16 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         if (imageEditPreviewFragment == null) return;
 
         String preview = edittedImagePaths.get(currentImageIndex).get(getCurrentStepForCurrentImage());
-        String userInfoName = userSession.hasShop() ? userSession.getShopName() : userSession.getName();
 
-        items.add(new ItemSelection(
-                getString(R.string.editor_watermark_item),
-                preview,
-                userInfoName,
-                Constant.TYPE_WATERMARK_TOPED, true)
+        items.add(
+                new ItemSelection(
+                        getString(R.string.editor_watermark_item),
+                        preview,
+                        "",
+                        R.drawable.watermark_bg_item_selection,
+                        Constant.TYPE_WATERMARK_TOPED,
+                        true
+                )
         );
 
         watermarkItemSelection.setData(items, null);
