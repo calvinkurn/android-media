@@ -277,7 +277,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         }
                       }
                     },
-                     ... on pdpDataBestSellerInfo {
+                     ... on pdpDataOneLiner {
                        productID
                        content
                        linkText
