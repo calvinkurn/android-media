@@ -8,7 +8,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <include
-        layout="@layout/partial_tokonow_home_category_shimmering"/>
+        layout="@layout/partial_tokopedianow_home_category_shimmering"/>
     <include
-        layout="@layout/partial_tokonow_home_category_shimmering"/>
+        layout="@layout/partial_tokopedianow_home_category_shimmering"/>
 </LinearLayout>

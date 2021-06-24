@@ -15,7 +15,7 @@ class CategoryActivity: BaseSearchCategoryActivity(), HasComponent<CategoryCompo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tokomart_search_category)
+        setContentView(R.layout.activity_tokopedianow_search_category)
 
         val fragment = CategoryFragment.create()
 

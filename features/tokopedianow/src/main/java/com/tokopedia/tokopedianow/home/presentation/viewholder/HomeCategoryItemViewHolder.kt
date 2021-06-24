@@ -17,7 +17,7 @@ class HomeCategoryItemViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokomart_home_category
+        val LAYOUT = R.layout.item_tokopedianow_home_category
     }
 
     override fun bind(data: HomeCategoryItemUiModel) {

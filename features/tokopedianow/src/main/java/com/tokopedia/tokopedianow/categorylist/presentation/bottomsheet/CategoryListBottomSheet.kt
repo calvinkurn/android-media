@@ -100,7 +100,7 @@ class CategoryListBottomSheet : BottomSheetUnify() {
     }
 
     private fun initView(inflater: LayoutInflater, container: ViewGroup?) {
-        val itemView = inflater.inflate(R.layout.bottomsheet_tokomart_category_list, container)
+        val itemView = inflater.inflate(R.layout.bottomsheet_tokopedianow_category_list, container)
         menuTitle = itemView.context.getString(R.string.tokomart_category_list_bottom_sheet_title)
         accordionCategoryList = itemView.findViewById(R.id.accordion_category_list)
         loader = itemView.findViewById(R.id.loader)

@@ -32,7 +32,7 @@
 
     <include
         android:id="@+id/loader"
-        layout="@layout/partial_tokonow_category_list_linearlayout_shimmering" />
+        layout="@layout/partial_tokopedianow_category_list_linearlayout_shimmering" />
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/layout_global_error_category_list"

@@ -26,7 +26,7 @@ class EmptyProductViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokomart_search_category_empty_product
+        val LAYOUT = R.layout.item_tokopedianow_search_category_empty_product
     }
 
     private val titleTextView: Typography? = itemView.findViewById(
@@ -138,7 +138,7 @@ class EmptyProductViewHolder(
 
         companion object {
             @LayoutRes
-            val LAYOUT = R.layout.item_tokomart_search_category_empty_state_chip
+            val LAYOUT = R.layout.item_tokopedianow_search_category_empty_state_chip
         }
 
         private val chip: ChipsUnify? = itemView.findViewById(R.id.tokonowSearchCategoryEmptyStateFilterChip)

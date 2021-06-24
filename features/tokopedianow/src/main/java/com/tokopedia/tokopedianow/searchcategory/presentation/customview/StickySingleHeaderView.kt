@@ -64,7 +64,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
             it.clipToPadding = false
             it.clipChildren = false
             it.layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            it.background = MethodChecker.getDrawable(context, R.drawable.tokomart_bg_shadow_bottom)
+            it.background = MethodChecker.getDrawable(context, R.drawable.tokopedianow_bg_shadow_bottom)
             it.visibility = View.GONE
             addView(mHeaderContainer)
         }

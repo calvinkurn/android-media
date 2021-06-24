@@ -216,6 +216,6 @@ class BannerViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokomart_search_category_banner
+        val LAYOUT = R.layout.item_tokopedianow_search_category_banner
     }
 }

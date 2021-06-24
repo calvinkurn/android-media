@@ -10,7 +10,7 @@ import com.tokopedia.tokopedianow.home.presentation.fragment.HomeFragment
 class HomeActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tokomart_home)
+        setContentView(R.layout.activity_tokopedianow_home)
         setStatusBarColor()
         setBackgroundColor()
         attachFragment()

@@ -21,7 +21,7 @@ class ProductItemViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokomart_search_category_product
+        val LAYOUT = R.layout.item_tokopedianow_search_category_product
     }
 
     private val productCard: ProductCardGridView? =

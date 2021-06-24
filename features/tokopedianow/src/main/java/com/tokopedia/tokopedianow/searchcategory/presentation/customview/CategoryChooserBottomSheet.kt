@@ -46,7 +46,7 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
         setTitle(filter?.subTitle ?: "")
         setCloseClickListener { dismiss() }
 
-        categoryChooserView = View.inflate(context, R.layout.bottom_sheet_tokomart_category_chooser, null)
+        categoryChooserView = View.inflate(context, R.layout.bottomsheet_tokopedianow_category_chooser, null)
         setChild(categoryChooserView)
     }
 
@@ -61,7 +61,7 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
         val context = context ?: return
         val filter = filter ?: return
 
-        val drawable = ContextCompat.getDrawable(context, R.drawable.tokomart_divider_category_chooser) ?: return
+        val drawable = ContextCompat.getDrawable(context, R.drawable.tokopedianow_divider_category_chooser) ?: return
         val itemDivider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         itemDivider.setDrawable(drawable)
 
@@ -130,7 +130,7 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryChooserViewHolder {
             val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_tokomart_category_chooser, parent, false)
+                    .inflate(R.layout.item_tokopedianow_category_chooser, parent, false)
 
             return CategoryChooserViewHolder(view, optionRadioListener)
         }

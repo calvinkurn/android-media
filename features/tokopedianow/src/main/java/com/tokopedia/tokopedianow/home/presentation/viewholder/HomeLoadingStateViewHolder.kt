@@ -12,7 +12,7 @@ class HomeLoadingStateViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokonow_home_loading_state
+        val LAYOUT = R.layout.item_tokopedianow_home_loading_state
     }
 
     override fun bind(element: HomeLoadingStateUiModel?) { /* to do : nothing */ }

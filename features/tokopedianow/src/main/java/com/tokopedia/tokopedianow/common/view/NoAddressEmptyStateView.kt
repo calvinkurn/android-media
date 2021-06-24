@@ -16,7 +16,7 @@ class NoAddressEmptyStateView @JvmOverloads constructor(context: Context, attrs:
     private var returnButton: UnifyButton? = null
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.layout_tokomart_empty_state_no_address, this, true)
+        LayoutInflater.from(context).inflate(R.layout.layout_tokopedianow_empty_state_no_address, this, true)
         changeAddressButton = findViewById<UnifyButton>(R.id.tokonowEmptyStateButtonChangeAddress)
         returnButton = findViewById<UnifyButton>(R.id.tokonowEmptyStateButtonReturn)
         initRemoteView()

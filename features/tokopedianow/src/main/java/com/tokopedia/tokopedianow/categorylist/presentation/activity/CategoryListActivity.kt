@@ -13,7 +13,7 @@ class CategoryListActivity: BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_toko_now_category_list)
+        setContentView(R.layout.activity_tokopedianow_category_list)
 
         val warehouseId = intent?.data?.getQueryParameter(PARAM_WAREHOUSE_ID).orEmpty()
         val fragment = CategoryListFragment.newInstance(warehouseId)

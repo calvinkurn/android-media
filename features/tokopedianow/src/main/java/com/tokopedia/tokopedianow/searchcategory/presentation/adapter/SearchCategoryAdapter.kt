@@ -20,7 +20,7 @@ open class SearchCategoryAdapter(
     BaseSearchCategoryTypeFactory>(typeFactory, SearchCategoryDiffUtil()),
     StickySingleHeaderView.OnStickySingleHeaderAdapter {
 
-    protected open val notFullSpanLayout = listOf(R.layout.item_tokomart_search_category_product)
+    protected open val notFullSpanLayout = listOf(R.layout.item_tokopedianow_search_category_product)
     var onStickySingleHeaderListener: OnStickySingleHeaderListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {

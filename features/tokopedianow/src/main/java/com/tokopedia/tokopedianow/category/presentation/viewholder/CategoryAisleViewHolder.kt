@@ -20,7 +20,7 @@ class CategoryAisleViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokomart_category_aisle
+        val LAYOUT = R.layout.item_tokopedianow_category_aisle
     }
 
     override fun bind(aisle: CategoryAisleDataView) {

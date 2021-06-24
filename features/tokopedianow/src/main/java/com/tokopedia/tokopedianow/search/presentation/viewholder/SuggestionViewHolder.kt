@@ -18,7 +18,7 @@ class SuggestionViewHolder(
     companion object {
         @JvmField
         @LayoutRes
-        val LAYOUT = R.layout.item_tokomart_search_suggestion
+        val LAYOUT = R.layout.item_tokopedianow_search_suggestion
     }
 
     private val suggestionText: Typography? =

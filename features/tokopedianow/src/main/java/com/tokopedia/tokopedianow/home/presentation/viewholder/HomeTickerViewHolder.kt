@@ -19,7 +19,7 @@ class HomeTickerViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokonow_home_ticker
+        val LAYOUT = R.layout.item_tokopedianow_home_ticker
         const val PREFIX_LINK = "tokopedia"
     }
 

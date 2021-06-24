@@ -11,7 +11,7 @@ class ProductCountViewHolder(itemView: View): AbstractViewHolder<ProductCountDat
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokomart_search_category_product_count
+        val LAYOUT = R.layout.item_tokopedianow_search_category_product_count
     }
 
     private var totalDataText: Typography? = null

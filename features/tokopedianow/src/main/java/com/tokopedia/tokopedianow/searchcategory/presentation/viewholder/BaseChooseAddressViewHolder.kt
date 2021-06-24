@@ -17,7 +17,7 @@ abstract class BaseChooseAddressViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokomart_search_category_choose_address
+        val LAYOUT = R.layout.item_tokopedianow_search_category_choose_address
     }
 
     private var chooseAddressWidget: ChooseAddressWidget? = null

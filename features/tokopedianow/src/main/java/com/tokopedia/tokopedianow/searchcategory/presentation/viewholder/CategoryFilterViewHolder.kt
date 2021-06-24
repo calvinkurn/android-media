@@ -22,7 +22,7 @@ class CategoryFilterViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokomart_search_category_category_filter
+        val LAYOUT = R.layout.item_tokopedianow_search_category_category_filter
     }
 
     private val filterRecyclerView: RecyclerView? = itemView.findViewById(
@@ -83,7 +83,7 @@ class CategoryFilterViewHolder(
 
         companion object {
             @LayoutRes
-            val LAYOUT = R.layout.item_tokomart_search_category_category_filter_chips
+            val LAYOUT = R.layout.item_tokopedianow_search_category_category_filter_chips
         }
 
         private val filterChip: FilterChip? = itemView.findViewById(

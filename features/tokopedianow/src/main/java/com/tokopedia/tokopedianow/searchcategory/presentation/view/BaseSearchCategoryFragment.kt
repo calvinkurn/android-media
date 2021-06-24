@@ -147,7 +147,7 @@ abstract class BaseSearchCategoryFragment:
             savedInstanceState: Bundle?,
     ): View? {
         return inflater.inflate(
-                R.layout.fragment_tokomart_search_category,
+                R.layout.fragment_tokopedianow_search_category,
                 container,
                 false
         )

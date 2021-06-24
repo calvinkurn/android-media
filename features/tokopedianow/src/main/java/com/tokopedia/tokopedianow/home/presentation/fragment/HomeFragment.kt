@@ -141,7 +141,7 @@ class HomeFragment: Fragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_tokomart_home, container, false)
+        return inflater.inflate(R.layout.fragment_tokopedianow_home, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -266,12 +266,12 @@ class HomeFragment: Fragment(),
 
     private fun loadHeaderBackground() {
         ivHeaderBackground?.show()
-        ivHeaderBackground?.loadImage(R.drawable.tokomart_ic_header_background_shimmering)
+        ivHeaderBackground?.loadImage(R.drawable.tokopedianow_ic_header_background_shimmering)
     }
 
     private fun showHeaderBackground() {
         ivHeaderBackground?.show()
-        ivHeaderBackground?.loadImage(R.drawable.tokomart_ic_header_background)
+        ivHeaderBackground?.loadImage(R.drawable.tokopedianow_ic_header_background)
     }
 
     private fun hideHeaderBackground() {

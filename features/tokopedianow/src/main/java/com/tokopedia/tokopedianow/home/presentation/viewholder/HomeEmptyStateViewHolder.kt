@@ -23,7 +23,7 @@ class HomeEmptyStateViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokonow_home_empty_state
+        val LAYOUT = R.layout.item_tokopedianow_home_empty_state
         const val SHIPPING_CHOOSE_ADDRESS_TAG = "SHIPPING_CHOOSE_ADDRESS_TAG"
     }
 

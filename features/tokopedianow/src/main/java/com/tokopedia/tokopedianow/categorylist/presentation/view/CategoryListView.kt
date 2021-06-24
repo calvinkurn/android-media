@@ -53,7 +53,7 @@ class CategoryListView : LinearLayout {
     }
 
     private fun createCategoryItemView(categoryLevel1: CategoryListItemUiModel, categoryL2: CategoryListChildUiModel): View {
-        return LayoutInflater.from(context).inflate(R.layout.item_tokomart_category_list, this, false).apply {
+        return LayoutInflater.from(context).inflate(R.layout.item_tokopedianow_category_list, this, false).apply {
             val textTitle = findViewById<Typography>(R.id.textTitle)
             val imageCategory = findViewById<ImageUnify>(R.id.imageCategory)
 
@@ -75,7 +75,7 @@ class CategoryListView : LinearLayout {
     }
 
     private fun createCategoryTextView(categoryLevel1: CategoryListItemUiModel, categoryL2: CategoryListChildUiModel): View {
-        return LayoutInflater.from(context).inflate(R.layout.item_tokomart_category_list, this, false).apply {
+        return LayoutInflater.from(context).inflate(R.layout.item_tokopedianow_category_list, this, false).apply {
             val textTitle = findViewById<Typography>(R.id.textTitle)
             val verticalMargin = context.resources.getDimensionPixelSize(
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)

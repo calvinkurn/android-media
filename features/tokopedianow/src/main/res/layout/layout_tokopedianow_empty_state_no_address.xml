@@ -36,7 +36,7 @@
         app:layout_constraintBottom_toBottomOf="@id/tokonowEmptyStateDesc1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tokonowEmptyStateDesc1"
-        app:srcCompat="@drawable/tokomart_ic_empty_state_watch" />
+        app:srcCompat="@drawable/tokopedianow_ic_empty_state_watch" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tokonowEmptyStateDesc1"
@@ -59,7 +59,7 @@
         app:layout_constraintBottom_toBottomOf="@id/tokonowEmptyStateDesc2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tokonowEmptyStateDesc2"
-        app:srcCompat="@drawable/tokomart_ic_empty_state_map" />
+        app:srcCompat="@drawable/tokopedianow_ic_empty_state_map" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tokonowEmptyStateDesc2"

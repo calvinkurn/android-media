@@ -33,7 +33,7 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
     }
 
     private fun init(){
-        View.inflate(context, R.layout.layout_tokomart_shimmering_image_view, this)
+        View.inflate(context, R.layout.layout_tokopedianow_shimmering_image_view, this)
         loaderImageView = LoaderImageView(context, attrs)
         this.addView(loaderImageView)
     }

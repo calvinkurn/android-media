@@ -16,7 +16,7 @@ class TitleViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokomart_search_category_title
+        val LAYOUT = R.layout.item_tokopedianow_search_category_title
     }
 
     private var titleText: Typography? = null

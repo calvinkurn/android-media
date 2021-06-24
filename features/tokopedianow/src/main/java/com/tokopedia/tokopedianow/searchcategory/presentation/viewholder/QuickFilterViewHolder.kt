@@ -16,7 +16,7 @@ class QuickFilterViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokomart_search_category_quick_filter
+        val LAYOUT = R.layout.item_tokopedianow_search_category_quick_filter
     }
 
     private var unifySortFilter: SortFilter? = null
