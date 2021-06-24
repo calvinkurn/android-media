@@ -79,7 +79,7 @@ class ShopInfoViewHolder(
 
                         localLoadOthers?.gone()
                         shopStatus?.visible()
-                        saldoBalance?.visible()
+                        layout_sah_other_saldo?.visible()
                     }
                     partialResponseStatus.first -> {
                         showNameAndAvatar()
@@ -96,7 +96,7 @@ class ShopInfoViewHolder(
                             setup()
                             visible()
                         }
-                        saldoBalance?.gone()
+                        layout_sah_other_saldo?.gone()
                     }
                     partialResponseStatus.second -> {
                         showNameAndAvatar()
@@ -109,7 +109,7 @@ class ShopInfoViewHolder(
                             setup()
                             visible()
                         }
-                        saldoBalance?.visible()
+                        layout_sah_other_saldo?.visible()
                     }
                 }
                 showShopScore(uiModel)
@@ -191,7 +191,7 @@ class ShopInfoViewHolder(
     }
 
     private fun setSaldoBalance(saldoBalanceUiModel: BalanceUiModel) {
-        itemView.saldoBalance.run {
+        itemView.layout_sah_other_saldo.run {
             balanceTitle?.text = context.resources.getString(R.string.setting_balance)
             balanceValue?.text = saldoBalanceUiModel.balanceValue
             sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)

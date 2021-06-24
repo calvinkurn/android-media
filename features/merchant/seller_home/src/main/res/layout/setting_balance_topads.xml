@@ -39,7 +39,8 @@
         app:layout_constraintHeight_percent="0.3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/guideline_sah_other_topads_right"/>
+        app:layout_constraintEnd_toEndOf="@id/guideline_sah_other_topads_right"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_sah_other_topads_balance"

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -15,12 +17,16 @@
         android:id="@+id/shopStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+        android:orientation="vertical"
+        tools:layout_height="@dimen/layout_lvl6"
+        tools:background="@drawable/bg_other_rounded"
+        tools:layout_margin="@dimen/layout_lvl2"/>
 
     <include
         android:id="@+id/freeShippingLayout"
         android:visibility="gone"
-        layout="@layout/setting_partial_free_shipping" />
+        layout="@layout/setting_partial_free_shipping"
+        tools:visibility="visible"/>
 
     <include
         android:id="@+id/shopOperationalHour"
@@ -34,11 +40,11 @@
         layout="@layout/setting_partial_others_local_load"/>
 
     <include
-        android:id="@+id/saldoBalance"
+        android:id="@+id/layout_sah_other_saldo"
         layout="@layout/setting_balance"/>
 
     <include
-        android:id="@+id/topAdsBalance"
+        android:id="@+id/layout_sah_other_topads"
         layout="@layout/setting_balance_topads"/>
 
     <com.tokopedia.unifycomponents.DividerUnify

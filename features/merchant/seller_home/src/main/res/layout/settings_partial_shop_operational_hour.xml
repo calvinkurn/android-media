@@ -25,7 +25,8 @@
         app:labelType="general_light_green"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/textShopStatus"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Buka"/>
 
     <ImageView
         android:id="@+id/imageOperationalHour"
