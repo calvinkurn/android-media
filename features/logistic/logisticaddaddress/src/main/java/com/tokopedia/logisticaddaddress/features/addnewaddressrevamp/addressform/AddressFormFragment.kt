@@ -461,7 +461,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.length < 9 && s.isNotEmpty()) {
+                if (s.isNotEmpty() && s.length < 9) {
                     setWrapperError(wrapper, textWatcher)
                 } else {
                     setWrapperError(wrapper, null)

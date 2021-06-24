@@ -3,9 +3,7 @@ package com.tokopedia.logisticaddaddress.features.district_recommendation.adapte
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.meituan.robust.patch.annotaion.Add
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistrictRecommendationItemBinding
 import com.tokopedia.logisticaddaddress.databinding.ItemDistrictRecommendationRevampBinding
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.unifycomponents.HtmlLinkHelper

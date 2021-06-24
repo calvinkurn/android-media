@@ -1,15 +1,11 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
-import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.logisticaddaddress.databinding.ItemDistrictSearchPageBinding
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 
 class AutoCompleteListAdapter(private var listener: AutoCompleteItemListener): RecyclerView.Adapter<AutoCompleteListAdapter.AutoCompleteListViewHolder>() {
@@ -21,7 +17,8 @@ class AutoCompleteListAdapter(private var listener: AutoCompleteItemListener): R
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AutoCompleteListViewHolder {
-        return AutoCompleteListViewHolder(parent.inflateLayout(R.layout.item_district_search_page))
+        val binding = ItemDistrictSearchPageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return AutoCompleteListViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -38,10 +35,10 @@ class AutoCompleteListAdapter(private var listener: AutoCompleteItemListener): R
         notifyDataSetChanged()
     }
 
-    inner class AutoCompleteListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        private val placeName = itemView.findViewById<Typography>(R.id.search_place_name)
-        private val placeAddress = itemView.findViewById<Typography>(R.id.search_place_address)
-        private val rlAutoCompleteItem = itemView.findViewById<RelativeLayout>(R.id.rl_autocomplete_item)
+    inner class AutoCompleteListViewHolder(binding: ItemDistrictSearchPageBinding): RecyclerView.ViewHolder(binding.root) {
+        private val placeName = binding.searchPlaceName
+        private val placeAddress = binding.searchPlaceAddress
+        private val rlAutoCompleteItem = binding.rlAutocompleteItem
 
         fun bindData(data: SuggestedPlace) {
             TextAndContentDescriptionUtil.setTextAndContentDescription(placeName, data.mainText, placeName.context.getString(R.string.content_desc_place_name))
