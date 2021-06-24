@@ -120,6 +120,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         private const val P2_DATA_ERROR_TYPE = "error_p2_data"
         private const val PARAM_JOB_TIMEOUT = 1000L
     }
+    val CODE_200 = 200
+    val CODE_300 = 300
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
     val productLayout: LiveData<Result<List<DynamicPdpDataModel>>>
@@ -230,6 +232,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     var deviceId: String = userSessionInterface.deviceId ?: ""
 
+
     init {
         _productInfoP3.addSource(_p2Data) { p2Data ->
             launchCatchError(context = dispatcher.io, block = {
@@ -263,6 +266,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         addToCartOcsUseCase.get().unsubscribe()
         toggleNotifyMeUseCase.get().cancelJobs()
         discussionMostHelpfulUseCase.get().cancelJobs()
+        getTopadsIsAdsUseCase.get().cancelJobs()
     }
 
     fun getUserLocationCache(): LocalCacheModel {
@@ -740,7 +744,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 )
                 adsStatus = getTopadsIsAdsUseCase.get().executeOnBackground()
                 val errorCode = adsStatus.data.status.error_code
-                if (errorCode in 200..300 && adsStatus.data.productList[0].isCharge) {
+                if (errorCode in CODE_200..CODE_300 && adsStatus.data.productList[0].isCharge) {
                     _topAdsRecomChargeData.postValue(adsStatus.data.productList[0].asSuccess())
                 }
             }

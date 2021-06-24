@@ -51,7 +51,7 @@ import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -1416,6 +1416,27 @@ class DynamicProductDetailViewModelTest {
 
         Assert.assertTrue(viewModel.discussionMostHelpful.value is Fail)
     }
+
+    //getProductTopadsStatus
+    @Test
+    fun `when get topads status then verify success response and enable to charge`() = runBlockingTest {
+        val productId = "12345"
+        val expectedResponse = TopadsIsAdsQuery(
+                TopAdsGetDynamicSlottingData(
+                        productList = listOf(TopAdsGetDynamicSlottingDataProduct(isCharge = true)),
+                        status = TopadsStatus(
+                                error_code = 200,
+                                message = "OK"
+                        )
+                ))
+        coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns  expectedResponse
+
+        viewModel.getProductTopadsStatus(productId)
+        coVerify { getTopadsIsAdsUseCase.executeOnBackground()}
+
+        Assert.assertTrue(expectedResponse.data.status.error_code in viewModel.CODE_200 .. viewModel.CODE_300 && expectedResponse.data.productList[0].isCharge)
+    }
+
     //======================================END OF PDP SECTION=======================================//
     //==============================================================================================//
 
@@ -1453,6 +1474,10 @@ class DynamicProductDetailViewModelTest {
 
         verify {
             moveProductToEtalaseUseCase.cancelJobs()
+        }
+
+        verify {
+            getTopadsIsAdsUseCase.cancelJobs()
         }
 
         verify {
