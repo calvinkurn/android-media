@@ -97,8 +97,8 @@ class UpdateCartUseCase @Inject constructor(@ApplicationContext private val grap
         private const val PARAM_VALUE_ID = "id"
 
         val QUERY = """
-        mutation update_cart_v2(${'$'}carts: [ParamsCartUpdateCartV2Type], ${'$'}lang: String,  ${'$'}chosen_address: ChosenAddressParam) {
-            update_cart_v2(carts: ${'$'}carts, lang: ${'$'}lang, chosen_address: ${'$'}chosen_address) {
+        mutation update_cart_v2(${'$'}carts: [ParamsCartUpdateCartV2Type], ${'$'}lang: String, ${'$'}source: String,  ${'$'}chosen_address: ChosenAddressParam) {
+            update_cart_v2(carts: ${'$'}carts, lang: ${'$'}lang, source: ${'$'}source, chosen_address: ${'$'}chosen_address) {
                 error_message
                 status
                 data {

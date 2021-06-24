@@ -75,6 +75,8 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                     total_value
                     discount_total_wording
                     discount_value
+                    seller_cashback_wording
+                    seller_cashback_value
                     payment_total_wording
                     payment_total_value
                   }
