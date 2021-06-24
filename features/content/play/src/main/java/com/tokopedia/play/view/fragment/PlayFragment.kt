@@ -216,6 +216,14 @@ class PlayFragment @Inject constructor(
         fragmentUserInteractionView.setScaledVideoBottomBounds(bottomMostBounds)
     }
 
+    override fun onAnimationStart(isHidingInsets: Boolean) {
+        fragmentUserInteractionView.startAnimateInsets(isHidingInsets)
+    }
+
+    override fun onAnimationFinish(isHidingInsets: Boolean) {
+        fragmentUserInteractionView.finishAnimateInsets(isHidingInsets)
+    }
+
     fun onFirstTopBoundsCalculated() {
         isFirstTopBoundsCalculated = true
         if (playViewModel.videoPlayer.isYouTube) {

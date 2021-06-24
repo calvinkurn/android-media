@@ -337,19 +337,6 @@ class PlayViewModel @Inject constructor(
 
         stateHandler.observeForever(stateHandlerObserver)
 
-//        _observablePinned.addSource(_observablePinnedMessage) {
-//            _observablePinned.value = getPinnedModel(
-//                    pinnedMessage = it,
-//                    pinnedProduct = _observablePinnedProduct.value,
-//            )
-//        }
-//        _observablePinned.addSource(_observablePinnedProduct) {
-//            _observablePinned.value = getPinnedModel(
-//                    pinnedMessage = _observablePinnedMessage.value,
-//                    pinnedProduct = it,
-//            )
-//        }
-
         _observableChatList.value = mutableListOf()
     }
 
@@ -461,9 +448,9 @@ class PlayViewModel @Inject constructor(
 
     private fun getDefaultBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> {
         val currentBottomInsetsMap = _observableBottomInsetsState.value
-        val defaultKeyboardState = currentBottomInsetsMap?.get(BottomInsetsType.Keyboard)?.isHidden ?: false
-        val defaultProductSheetState = currentBottomInsetsMap?.get(BottomInsetsType.ProductSheet)?.isHidden ?: false
-        val defaultVariantSheetState = currentBottomInsetsMap?.get(BottomInsetsType.VariantSheet)?.isHidden ?: false
+        val defaultKeyboardState = currentBottomInsetsMap?.get(BottomInsetsType.Keyboard)?.isHidden ?: true
+        val defaultProductSheetState = currentBottomInsetsMap?.get(BottomInsetsType.ProductSheet)?.isHidden ?: true
+        val defaultVariantSheetState = currentBottomInsetsMap?.get(BottomInsetsType.VariantSheet)?.isHidden ?: true
         return mapOf(
                 BottomInsetsType.Keyboard to BottomInsetsState.Hidden(defaultKeyboardState),
                 BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(defaultProductSheetState),

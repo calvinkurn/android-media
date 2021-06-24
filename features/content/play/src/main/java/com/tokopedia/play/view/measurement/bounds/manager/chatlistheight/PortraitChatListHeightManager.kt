@@ -10,7 +10,8 @@ import com.tokopedia.play.view.custom.MaximumHeightRecyclerView
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play_common.util.extension.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 
 /**
  * Created by jegul on 02/09/20
@@ -31,6 +32,9 @@ class PortraitChatListHeightManager(
     private val videoChatMargin = container.resources.getDimensionPixelOffset(R.dimen.play_landscape_video_chat_margin)
     private val maxVerticalChatHeight = container.resources.getDimension(R.dimen.play_chat_vertical_max_height)
     private val differencesHorizontalChatMode = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl6)
+
+    private var sendChatTopNonChatMode: Int? = null
+    private var immersiveBoxBottomNonChatMode: Int? = null
 
     override suspend fun invalidateHeightNonChatMode(
             videoOrientation: VideoOrientation,
@@ -86,22 +90,38 @@ class PortraitChatListHeightManager(
     }
 
     private suspend fun measureHorizontalVideoNonChatMode(forceInvalidation: Boolean): Float = coroutineScope {
-        val immersiveBoxLayout = asyncCatchError(block = { measureWithTimeout { immersiveBoxView.awaitMeasured() } }) {}
+        val immersiveBoxLayout = asyncCatchError(block = {
+            if (immersiveBoxView.visibility == View.VISIBLE) measureWithTimeout { immersiveBoxView.awaitMeasured() }
+        }) {}
         val pinnedViewLayout = asyncCatchError(block = {
-            measureWithTimeout {
+            if (pinnedMessageView.visibility == View.VISIBLE) measureWithTimeout {
                 if (forceInvalidation) pinnedMessageView.awaitNextGlobalLayout()
                 pinnedMessageView.awaitMeasured()
             }
         }) {}
-        val sendChatViewLayout = asyncCatchError(block = { measureWithTimeout { sendChatView.awaitMeasured() } }) {}
-        val productFeaturedViewLayout = asyncCatchError(block = { measureWithTimeout { productFeaturedView.awaitMeasured() } }) {}
-        val pinnedVoucherViewLayout = asyncCatchError(block = { measureWithTimeout { pinnedVoucherView.awaitMeasured() } }) {}
+        val sendChatViewLayout = asyncCatchError(block = {
+            if (sendChatView.visibility == View.VISIBLE) measureWithTimeout { sendChatView.awaitMeasured() }
+        }) {}
+        val productFeaturedViewLayout = asyncCatchError(block = {
+            if (productFeaturedView.visibility == View.VISIBLE) measureWithTimeout { productFeaturedView.awaitMeasured() }
+        }) {}
+        val pinnedVoucherViewLayout = asyncCatchError(block = {
+            if (pinnedVoucherView.visibility == View.VISIBLE) measureWithTimeout { pinnedVoucherView.awaitMeasured() }
+        }) {}
 
         awaitAll(immersiveBoxLayout, pinnedViewLayout, sendChatViewLayout, productFeaturedViewLayout, pinnedVoucherViewLayout)
 
-        val bottomBounds = sendChatView.globalVisibleRect.top
-        val topBounds = immersiveBoxView.globalVisibleRect.bottom
-        require(bottomBounds > topBounds)
+        val suggestedBottomBounds = sendChatView.globalVisibleRect.top
+        val suggestedTopBounds = immersiveBoxView.globalVisibleRect.bottom
+        val (bottomBounds, topBounds) = if (suggestedBottomBounds < suggestedTopBounds) {
+            val cachedBottomBounds = sendChatTopNonChatMode ?: error("Bottom bounds is invalid and no cache")
+            val cachedTopBounds = immersiveBoxBottomNonChatMode ?: error("Top bounds is invalid and no cache")
+            cachedBottomBounds to cachedTopBounds
+        } else {
+            if (sendChatTopNonChatMode == null) sendChatTopNonChatMode = suggestedBottomBounds
+            if (immersiveBoxBottomNonChatMode == null) immersiveBoxBottomNonChatMode = suggestedTopBounds
+            suggestedBottomBounds to suggestedTopBounds
+        }
 
         val nonOffsetOccupiedHeight = productFeaturedView.visibleHeight + pinnedVoucherView.visibleHeight + pinnedMessageView.visibleHeight
         val offsetOccupiedHeight = productFeaturedView.marginLp.bottomMargin + pinnedVoucherView.marginLp.bottomMargin + pinnedMessageView.marginLp.bottomMargin

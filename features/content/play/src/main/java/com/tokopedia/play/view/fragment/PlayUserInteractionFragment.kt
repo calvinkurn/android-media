@@ -422,6 +422,23 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
+    fun onStartAnimateInsets(isHidingInsets: Boolean) {
+        view?.hide()
+    }
+
+    //TODO("Find better logic to improve this code")
+    fun onFinishAnimateInsets(isHidingInsets: Boolean) {
+        /**
+         * The first one is to handle fast changes when insets transition from show to hide
+         */
+        if (isHidingInsets) scope.launch(dispatchers.immediate) { invalidateChatListBounds() }
+        view?.show()
+        /**
+         * The second one is to handle edge cases when somehow any interaction has changed while insets is shown
+         */
+        if (isHidingInsets) scope.launch { invalidateChatListBounds() }
+    }
+
     private fun initAnalytic() {
         productAnalyticHelper = ProductAnalyticHelper(analytic)
     }
@@ -681,26 +698,16 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver { map ->
-            if (!playViewModel.isFreezeOrBanned) view?.hide()
-
             if (playViewModel.videoOrientation.isVertical) triggerImmersive(false)
 
             val keyboardState = map[BottomInsetsType.Keyboard]
                 if (keyboardState != null && !keyboardState.isPreviousStateSame) {
                     when (keyboardState) {
-                        is BottomInsetsState.Hidden -> {
-                            if (!map.isAnyShown) playFragment.onBottomInsetsViewHidden()
-                            scope.launch(dispatchers.immediate) { invalidateChatListBounds() }
-                        }
                         is BottomInsetsState.Shown -> {
                             pushParentPlayByKeyboardHeight(keyboardState.estimatedInsetsHeight)
                         }
                     }
                 }
-
-            view?.postDelayed({
-                view?.show()
-            }, PlayVideoScalingManager.ANIMATION_DURATION)
 
             if (map.isKeyboardShown) dismissToaster()
 
