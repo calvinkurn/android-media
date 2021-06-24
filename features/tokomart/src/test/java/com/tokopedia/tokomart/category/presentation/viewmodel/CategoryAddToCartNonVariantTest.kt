@@ -21,6 +21,7 @@ class CategoryAddToCartNonVariantTest: CategoryTestFixtures(), Callback {
                 addToCartUseCase,
                 updateCartUseCase,
                 getMiniCartListSimplifiedUseCase,
+                userSession,
                 this,
         )
     }
@@ -57,5 +58,10 @@ class CategoryAddToCartNonVariantTest: CategoryTestFixtures(), Callback {
     @Test
     fun `add to cart to update quantity failed`() {
         addToCartTestHelper.`add to cart to update quantity failed`()
+    }
+
+    @Test
+    fun `test ATC non login should redirect to cart page`() {
+        addToCartTestHelper.`test ATC non login should redirect to login page`()
     }
 }

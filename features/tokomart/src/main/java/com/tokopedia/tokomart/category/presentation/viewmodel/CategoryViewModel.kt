@@ -26,6 +26,7 @@ import com.tokopedia.tokomart.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.tokomart.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -49,6 +50,7 @@ class CategoryViewModel @Inject constructor (
         getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
+        userSession: UserSessionInterface,
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
         queryParamMap,
@@ -60,6 +62,7 @@ class CategoryViewModel @Inject constructor (
         getWarehouseUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
+        userSession,
 ) {
 
     val categoryIdTracking: String

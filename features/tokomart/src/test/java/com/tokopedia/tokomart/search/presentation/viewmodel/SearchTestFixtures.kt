@@ -16,6 +16,7 @@ import com.tokopedia.tokomart.util.SearchCategoryDummyUtils.dummyChooseAddressDa
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.CapturingSlot
 import io.mockk.every
 import io.mockk.mockk
@@ -40,6 +41,9 @@ open class SearchTestFixtures {
     protected val getWarehouseUseCase = mockk<GetChosenAddressWarehouseLocUseCase>(relaxed = true)
     protected val chooseAddressWrapper = mockk<ChooseAddressWrapper>(relaxed = true)
     protected val abTestPlatformWrapper = mockk<ABTestPlatformWrapper>(relaxed = true)
+    protected val userSession = mockk<UserSessionInterface>(relaxed = true).also {
+        every { it.isLoggedIn } returns true
+    }
     protected lateinit var searchViewModel: SearchViewModel
 
     @Before
@@ -70,6 +74,7 @@ open class SearchTestFixtures {
                 getWarehouseUseCase,
                 chooseAddressWrapper,
                 abTestPlatformWrapper,
+                userSession,
         )
     }
 
