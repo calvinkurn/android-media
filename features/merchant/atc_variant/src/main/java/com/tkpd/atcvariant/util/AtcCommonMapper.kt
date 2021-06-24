@@ -198,7 +198,7 @@ object AtcCommonMapper {
                         position = idCounter,
                         listOfVariantCategory = processedVariant,
                         mapOfSelectedVariant = initialSelectedVariant,
-                        isEmptyStock = totalStock == 0,
+                        isEmptyStock = totalStock == 0 || selectedChild?.isBuyable == false,
                         isTokoCabang = selectedProductFulfillment)
         ).also {
             idCounter += 1

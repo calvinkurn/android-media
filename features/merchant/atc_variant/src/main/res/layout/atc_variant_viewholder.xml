@@ -22,6 +22,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="4dp"
+        android:paddingBottom="16dp"
         android:text="@string/atc_variant_toko_cabang_label"
         android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
@@ -34,7 +35,9 @@
         android:layout_height="wrap_content"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
         android:visibility="gone"
+        tools:text="Stok habis. Klik Ingatkan Saya untuk aktifkan pengingat ketika barang kembali tersedia."
         app:typographyType="body_3"
         tools:visibility="visible" />
 
