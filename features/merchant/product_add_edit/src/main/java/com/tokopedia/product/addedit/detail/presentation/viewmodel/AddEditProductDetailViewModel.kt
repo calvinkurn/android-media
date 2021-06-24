@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.common.util.RollenceUtil
 import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggestedPriceGet
 import com.tokopedia.product.addedit.detail.domain.usecase.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
@@ -70,6 +69,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     var isReloadingShowCase = false
     var isFirstMoved = false
     var shouldUpdateVariant = false
+    var usingNewProductTitleRequest = false
 
     var productInputModel = ProductInputModel()
     val hasVariants get() = productInputModel.variantInputModel.selections.isNotEmpty()
@@ -80,7 +80,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     var productShowCases: MutableList<ShowcaseItemPicker> = mutableListOf()
 
     var isAddingWholeSale = false
-
     var isAddingValidationWholeSale = false
 
     private var isMultiLocationShop = false
@@ -255,7 +254,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun validateProductNameInput(productNameInput: String) {
-        val usingNewRequest = RollenceUtil.getProductTitleRollence()
         if (productNameInput.isEmpty()) {
             // show product error when product name is empty
             val errorMessage = provider.getEmptyProductNameErrorMessage()
@@ -271,7 +269,7 @@ class AddEditProductDetailViewModel @Inject constructor(
                 // remote product name validation
                 launchCatchError(block = {
                     productNameValidationResult = withContext(dispatchers.io) {
-                        if (usingNewRequest) {
+                        if (usingNewProductTitleRequest) {
                             getProductTitleValidationUseCase.setParam(productNameInput)
                             getProductTitleValidationUseCase.getDataModelOnBackground()
                         } else {
@@ -282,7 +280,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
                     productNameMessage = when {
                         productNameValidationResult.isBlacklistKeyword -> {
-                            if (usingNewRequest) {
+                            if (usingNewProductTitleRequest) {
                                 provider.getTitleValidationErrorBlacklisted()
                             } else {
                                 productNameValidationResult.errorKeywords.joinToString("\n")

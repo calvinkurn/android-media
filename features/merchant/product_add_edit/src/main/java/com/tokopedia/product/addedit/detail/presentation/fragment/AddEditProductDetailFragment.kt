@@ -319,6 +319,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             setRawInputType(InputType.TYPE_CLASS_TEXT)
         }
         if (RollenceUtil.getProductTitleRollence()) {
+            viewModel.usingNewProductTitleRequest = true
             setupProductNameValidationBottomsheet()
         }
 
