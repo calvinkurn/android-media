@@ -17,7 +17,7 @@ import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_BANNE
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_CATEGORY_FILTER
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_CHOOSE_VARIANT_ON_PRODUCT_CARD
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_FILTER_OPTION
-import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_FUZZY_KEYWORDS_REPLACE
+import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_FUZZY_KEYWORDS_SUGGESTION
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_PRODUCT
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_QUICK_FILTER
 import com.tokopedia.tokomart.search.analytics.SearchTracking.Action.CLICK_REMOVE_QUANTITY
@@ -65,7 +65,7 @@ object SearchTracking {
         const val CLICK_QUICK_FILTER = "click - quick filter"
         const val CLICK_APPLY_FILTER = "click - apply filter"
         const val CLICK_CATEGORY_FILTER = "click - category filter"
-        const val CLICK_FUZZY_KEYWORDS_REPLACE = "click - fuzzy keywords - replace"
+        const val CLICK_FUZZY_KEYWORDS_SUGGESTION = "click - fuzzy keywords - suggestion"
         const val CLICK_TAMBAH_KE_KERANJANG = "click - tambah ke keranjang"
         const val CLICK_ADD_QUANTITY = "click - add quantity"
         const val CLICK_REMOVE_QUANTITY = "click - remove quantity"
@@ -263,7 +263,7 @@ object SearchTracking {
         sendGeneralEvent(
                 DataLayer.mapOf(
                     EVENT, EVENT_CLICK_TOKONOW,
-                    EVENT_ACTION, CLICK_FUZZY_KEYWORDS_REPLACE,
+                    EVENT_ACTION, CLICK_FUZZY_KEYWORDS_SUGGESTION,
                     EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
                     EVENT_LABEL, "$originalKeyword - $fuzzyKeyword",
                     KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
