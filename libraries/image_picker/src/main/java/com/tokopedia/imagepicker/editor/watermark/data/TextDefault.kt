@@ -16,6 +16,6 @@ open class TextDefault(
     override var textShadowXOffset: Float = 0f,
     override var textShadowYOffset: Float = 0f,
     override var textAlpha: Int = 120,
-    override var textSize: Int = 16,
+    override var textSize: Int = 22,
     override var text: String = "".takeAndEllipsizeOf(),
 ) : TextUIModel, PositionDefault()
