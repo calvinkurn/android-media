@@ -110,7 +110,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             revampData = result.revampData
             orderCart = result.orderCart
             orderShopData.value = orderShop
-            orderProducts.value = listOf(orderProduct)
+            orderProducts.value = orderCart.products
             _orderPreference = result.orderPreference
             orderPreference.value = if (result.throwable == null && !isInvalidAddressState(result.orderPreference.preference, result.addressState)) {
                 OccState.FirstLoad(_orderPreference)

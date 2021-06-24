@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.ContainerUnify
+        android:id="@+id/container_occ_onboarding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -37,7 +38,14 @@
     </com.tokopedia.unifycomponents.ContainerUnify>
 
     <View
+        android:id="@+id/divider_occ_onboarding"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
         android:background="@color/Unify_N50" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_occ_onboarding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="container_occ_onboarding,divider_occ_onboarding"/>
 </LinearLayout>

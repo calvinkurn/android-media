@@ -33,11 +33,11 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
                         cbInsurance.isEnabled = false
                         forceSetChecked(cbInsurance, true)
                         listener.onInsuranceChecked(true)
-                        root.visible()
+                        groupInsurance.visible()
                     }
                     InsuranceConstant.INSURANCE_TYPE_NO -> {
                         listener.onInsuranceChecked(false)
-                        root.gone()
+                        groupInsurance.gone()
                     }
                     InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
                         tvInsurance.setText(com.tokopedia.purchase_platform.common.R.string.label_shipment_insurance)
@@ -49,11 +49,11 @@ class OrderInsuranceCard(private val binding: CardOrderInsuranceBinding, private
                             forceSetChecked(cbInsurance, false)
                             listener.onInsuranceChecked(false)
                         }
-                        root.visible()
+                        groupInsurance.visible()
                     }
                 }
             } else {
-                root.gone()
+                groupInsurance.gone()
             }
         }
     }

@@ -29,6 +29,13 @@ class GetOccCartMapper @Inject constructor() {
                 tickerMessage = mapProductTickerMessage(data.tickerMessage)
                 purchaseProtectionPlanData = mapPurchaseProtectionPlanData(cart.purchaseProtectionPlanDataResponse)
             }
+            products = listOf(
+                    generateOrderProduct(cart.product).apply {
+                        quantity = mapQuantity(data)
+                        tickerMessage = mapProductTickerMessage(data.tickerMessage)
+                        purchaseProtectionPlanData = mapPurchaseProtectionPlanData(cart.purchaseProtectionPlanDataResponse)
+                    }
+            )
             shop = generateOrderShop(cart)
             kero = OrderKero(data.keroToken, data.keroDiscomToken, data.keroUnixTime)
         }

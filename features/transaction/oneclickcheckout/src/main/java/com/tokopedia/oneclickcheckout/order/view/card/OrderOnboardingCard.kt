@@ -14,11 +14,11 @@ class OrderOnboardingCard(private val binding: LayoutOccOnboardingNewBinding): R
 
     fun bind(onboarding: OccMainOnboarding) {
         if (onboarding.isShowOnboardingTicker) {
-            binding.root.visible()
+            binding.groupOccOnboarding.visible()
             binding.ivNewOccOnboarding.setImageUrl(onboarding.onboardingTicker.image)
             binding.tvNewOccOnboardingMessage.text = onboarding.onboardingTicker.message
         } else {
-            binding.root.gone()
+            binding.groupOccOnboarding.gone()
         }
     }
 }

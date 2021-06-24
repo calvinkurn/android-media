@@ -49,7 +49,21 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             val address = orderPreference.preference.address
             val orderShop = orderCart.shop
             val orderProduct = orderCart.product
+            val orderProducts = orderCart.products
             val orderKero = orderCart.kero
+
+            var totalWeight = 0.0
+            var totalWeightActual = 0.0
+            var totalValue = 0L
+            var productFInsurance = 0
+            orderProducts.forEach {
+                totalWeight += it.quantity.orderQuantity * it.weight
+                totalWeightActual += it.quantity.orderQuantity * it.weightActual
+                totalValue += it.quantity.orderQuantity * it.getPrice()
+                if (it.productFinsurance == 1) {
+                    productFInsurance = 1
+                }
+            }
 
             originDistrictId = orderShop.districtId
             originPostalCode = orderShop.postalCode
@@ -65,14 +79,14 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             ut = orderKero.keroUT
             insurance = 1
             isPreorder = orderProduct.isPreOrder != 0
-            categoryIds = orderProduct.categoryId
+            categoryIds = orderProducts.joinToString(",") { it.categoryId }
             uniqueId = orderCart.cartString
             addressId = address.addressId.toString()
-            products = listOf(Product(orderProduct.productId, orderProduct.isFreeOngkir, orderProduct.isFreeOngkirExtra))
-            weightInKilograms = orderProduct.quantity.orderQuantity * orderProduct.weight / 1000.0
-            weightActualInKilograms = orderProduct.quantity.orderQuantity * orderProduct.weightActual / 1000.0
-            productInsurance = orderProduct.productFinsurance
-            orderValue = orderProduct.quantity.orderQuantity * orderProduct.getPrice()
+            products = orderProducts.map { Product(it.productId, it.isFreeOngkir, it.isFreeOngkirExtra) }
+            weightInKilograms = totalWeight / 1000.0
+            weightActualInKilograms = totalWeightActual / 1000.0
+            productInsurance = productFInsurance
+            orderValue = totalValue
             isFulfillment = orderShop.isFulfillment
             preOrderDuration = orderProduct.preOrderDuration
         }
