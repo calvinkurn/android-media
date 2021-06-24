@@ -13,10 +13,8 @@ import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.params.*
 import com.tokopedia.hotel.search.presentation.adapter.viewholder.FilterSelectionViewHolder
 import com.tokopedia.hotel.search.usecase.SearchPropertyUseCase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -88,10 +86,8 @@ class HotelSearchResultViewModel @Inject constructor(
         searchParam.filters = getSelectedFilter().toMutableList()
         isFilter = searchParam.filters.isNotEmpty()
 
-        launchCatchError(block = {
+        launch {
             liveSearchResult.postValue(searchPropertyUseCase.execute(searchQuery, searchParam))
-        }){
-            liveSearchResult.postValue(Fail(it))
         }
     }
 

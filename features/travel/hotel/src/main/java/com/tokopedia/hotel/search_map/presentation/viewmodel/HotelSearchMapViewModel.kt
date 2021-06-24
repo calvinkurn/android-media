@@ -26,7 +26,6 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -114,10 +113,8 @@ class HotelSearchMapViewModel @Inject constructor(
         searchParam.filters = getSelectedFilter().toMutableList()
         isFilter = searchParam.filters.isNotEmpty()
 
-        launchCatchError(block =  {
+        launch {
             liveSearchResult.postValue(searchPropertyUseCase.execute(searchQuery, searchParam))
-        }){
-            liveSearchResult.postValue(Fail(it))
         }
     }
 

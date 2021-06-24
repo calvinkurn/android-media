@@ -6,9 +6,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartData
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.usecase.HotelAddToCartUseCase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -23,10 +22,8 @@ class HotelRoomDetailViewModel @Inject constructor(
     val addCartResponseResult = MutableLiveData<Result<HotelAddCartData.Response>>()
 
     fun addToCart(rawQuery: String, hotelAddCartParam: HotelAddCartParam) {
-        launchCatchError(block =  {
+        launch {
             addCartResponseResult.postValue(useCase.execute(rawQuery, hotelAddCartParam))
-        }){
-            addCartResponseResult.postValue(Fail(it))
         }
     }
 }
