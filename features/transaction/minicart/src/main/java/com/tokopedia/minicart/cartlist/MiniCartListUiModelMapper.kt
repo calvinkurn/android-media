@@ -254,7 +254,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
             }
             productCashbackPercentage = cartDetail.product.productCashback
                     .replace(" ", "")
-                    .replace("%", "").toIntOrZero()
+                    .replace("%", "")
+                    .toIntOrZero()
         }
     }
 
