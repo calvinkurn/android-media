@@ -1,7 +1,6 @@
 package com.tokopedia.minicart.cartlist
 
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
-import com.tokopedia.minicart.common.data.response.minicartlist.Action
 
 interface MiniCartListActionListener {
 
@@ -14,8 +13,6 @@ interface MiniCartListActionListener {
     fun onNotesChanged(productId: String, newNotes: String)
 
     fun onShowSimilarProductClicked(appLink: String, element: MiniCartProductUiModel)
-
-    fun onCheckoutInBrowserRedirectionClicked(url: String, element: MiniCartProductUiModel, action: Action)
 
     fun onShowUnavailableItemsCLicked()
 
