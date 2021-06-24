@@ -48,8 +48,13 @@ class ShopSettingsOperationalHoursListAdapter(
         }
 
         fun bind(item: ShopOperationalHour) {
+            val hoursText = OperationalHoursUtil.generateDatetime(item.startTime, item.endTime)
             tvOpsHourDay?.text = OperationalHoursUtil.getDayName(item.day)
-            tvOpsHourTime?.text = OperationalHoursUtil.generateDatetime(item.startTime, item.endTime).substring(4)
+            tvOpsHourTime?.text = if (hoursText != OperationalHoursUtil.HOLIDAY) {
+                hoursText.substring(4)
+            } else {
+                hoursText
+            }
         }
     }
 

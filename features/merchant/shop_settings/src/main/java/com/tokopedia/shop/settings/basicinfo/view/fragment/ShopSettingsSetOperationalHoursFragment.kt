@@ -237,6 +237,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
             when (OperationalHoursUtil.generateDatetime(opsHour.startTime, opsHour.endTime)) {
                 OperationalHoursUtil.ALL_DAY -> {
                     allDayRadioButton.isChecked = true
+                    currentSelectedRadioOption = ALL_DAY_OPTION
                     renderAccordionContent(
                             isShowCopyOption = false, // hide copy option if 24 hours
                             isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
@@ -250,6 +251,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                 }
                 OperationalHoursUtil.HOLIDAY -> {
                     holidayRadioButton.isChecked = true
+                    currentSelectedRadioOption = HOLIDAY_OPTION
                     renderAccordionContent(
                             isShowCopyOption = false, // hide copy option if holiday option
                             isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
@@ -263,6 +265,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                 }
                 else -> {
                     chooseRadioButton.isChecked = true
+                    currentSelectedRadioOption = CHOOSE_HOUR_OPTION
                     renderAccordionContent(
                             isShowCopyOption = true, // show copy option if choose times
                             isChooseTimeRadioButtonChecked = chooseRadioButton.isChecked,
@@ -448,13 +451,13 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     context = ctx,
                     minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                         // set minimum end time +1 hour from start time
-                        set(Calendar.HOUR_OF_DAY, selectedHourFromTextField+1)
-                        set(Calendar.MINUTE, MIN_OPEN_MINUTE)
+                        set(Calendar.HOUR_OF_DAY, selectedHourFromTextField)
+                        set(Calendar.MINUTE, MIN_OPEN_MINUTE + 5)
                     },
                     defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                         // set default selected end time same with minimum
-                        set(Calendar.HOUR_OF_DAY, selectedHourFromTextField+1)
-                        set(Calendar.MINUTE, MIN_OPEN_MINUTE)
+                        set(Calendar.HOUR_OF_DAY, selectedHourFromTextField)
+                        set(Calendar.MINUTE, MIN_OPEN_MINUTE + 5)
                     },
                     maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                         set(Calendar.HOUR_OF_DAY, MAX_CLOSE_HOUR)
@@ -521,6 +524,11 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
 
                 // set new startTime info to selected textField
                 setNewStartTimeInfo(selectedChildView, selectedHour, selectedMinute)
+
+                // update endTime to +1 hour after, to avoid endTime < startTime
+                val oneHourAheadAfterSelectedStartTime = (selectedHour.toIntOrZero() + 1).toString()
+                setNewEndTimeInfo(selectedChildView, oneHourAheadAfterSelectedStartTime, selectedMinute)
+                updateEndTimeByPosition(currentExpandedAccordionPosition, oneHourAheadAfterSelectedStartTime, selectedMinute)
 
                 // set new updated startTime for selected day
                 updateStartTimeByPosition(currentExpandedAccordionPosition, selectedHour, selectedMinute)
