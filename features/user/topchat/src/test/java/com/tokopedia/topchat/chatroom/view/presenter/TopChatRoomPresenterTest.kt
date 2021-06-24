@@ -457,6 +457,25 @@ class TopChatRoomPresenterTest {
     }
 
     @Test
+    fun `onMessage ws event reply when response has different msgId`() {
+        // Given
+        every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
+        every { getChatUseCase.isInTheMiddleOfThePage() } returns false
+        val wsChatPojo = mockkParseResponse(wsResponseReplyText)
+        val wsChatVisitable = mockkWsMapper(wsChatPojo)
+
+        // When
+        presenter.connectWebSocket("123")
+        websocketServer.onNext(wsResponseReplyText)
+
+        // Then
+        assertThat(presenter.newUnreadMessage, equalTo(0))
+        verify(exactly = 0) { view.hideUnreadMessage() }
+        verify(exactly = 0) { view.onReceiveMessageEvent(wsChatVisitable) }
+        verify(exactly = 0) { RxWebSocket.send(readParam, listInterceptor) }
+    }
+
+    @Test
     fun `should remove SRW bubble if receive image attachment event`() {
         // Given
         every { webSocketUtil.getWebSocketInfo(any(), any()) } returns websocketServer
