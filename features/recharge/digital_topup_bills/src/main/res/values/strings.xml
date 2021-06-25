@@ -28,4 +28,5 @@
     <string name="telco_reset_filter">Reset</string>
     <string name="telco_save_filter">Simpan</string>
     <string name="telco_pick_product">Pilih</string>
+    <string name="digital_client_label">Nomor Telepon</string>
 </resources>
