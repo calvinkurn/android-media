@@ -394,7 +394,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun onSuccessPlaceGetDistrict(data: GetDistrictDataUiModel) {
-        if (data.postalCode.isEmpty() && data.districtId == 0) {
+        if (data.postalCode.isEmpty() || data.districtId == 0) {
             currentLat = data.latitude.toDouble()
             currentLong = data.longitude.toDouble()
             moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
