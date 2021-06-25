@@ -5,14 +5,24 @@ import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.AtcConstant
-import com.tokopedia.cart.domain.usecase.FollowShopUseCase
+import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cart.domain.usecase.*
+import com.tokopedia.cart.view.CartListPresenter
+import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -60,12 +70,14 @@ class CartModule {
         return CheckoutAnalyticsCart(context)
     }
 
+    // for seamless login usecase
     @Provides
     @CartScope
     fun provideResources(@ApplicationContext context: Context): Resources {
         return context.resources
     }
 
+    // for seamless login usecase
     @Provides
     @CartScope
     fun provideGraphqlRepository(): GraphqlRepository {
@@ -75,6 +87,41 @@ class CartModule {
     @Provides
     @CartScope
     fun provideExecutorSchedulers(): ExecutorSchedulers = DefaultSchedulers
+
+    @Provides
+    @CartScope
+    fun provideICartListPresenter(getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase,
+                                  deleteCartUseCase: DeleteCartUseCase,
+                                  undoDeleteCartUseCase: UndoDeleteCartUseCase,
+                                  updateCartUseCase: UpdateCartUseCase,
+                                  compositeSubscription: CompositeSubscription,
+                                  addWishListUseCase: AddWishListUseCase,
+                                  addCartToWishlistUseCase: AddCartToWishlistUseCase,
+                                  removeWishListUseCase: RemoveWishListUseCase,
+                                  updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
+                                  userSessionInterface: UserSessionInterface,
+                                  clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+                                  getRecentViewUseCase: GetRecommendationUseCase,
+                                  getWishlistUseCase: GetWishlistUseCase,
+                                  getRecommendationUseCase: GetRecommendationUseCase,
+                                  addToCartUseCase: AddToCartUseCase,
+                                  addToCartExternalUseCase: AddToCartExternalUseCase,
+                                  seamlessLoginUsecase: SeamlessLoginUsecase,
+                                  updateCartCounterUseCase: UpdateCartCounterUseCase,
+                                  updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
+                                  validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+                                  setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
+                                  followShopUseCase: FollowShopUseCase,
+                                  schedulers: ExecutorSchedulers): ICartListPresenter {
+        return CartListPresenter(getCartListSimplifiedUseCase, deleteCartUseCase,
+                undoDeleteCartUseCase, updateCartUseCase, compositeSubscription, addWishListUseCase,
+                addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
+                seamlessLoginUsecase, updateCartCounterUseCase, updateCartAndValidateUseUseCase,
+                validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase, followShopUseCase, schedulers
+        )
+    }
 
     @Provides
     @CartScope

@@ -67,6 +67,7 @@ import com.tokopedia.cart.view.compoundview.CartToolbar
 import com.tokopedia.cart.view.compoundview.CartToolbarListener
 import com.tokopedia.cart.view.compoundview.CartToolbarView
 import com.tokopedia.cart.view.compoundview.CartToolbarWithBackView
+import com.tokopedia.cart.view.decorator.CartItemDecoration
 import com.tokopedia.cart.view.di.DaggerCartComponent
 import com.tokopedia.cart.view.mapper.RecentViewMapper
 import com.tokopedia.cart.view.mapper.ViewHolderDataMapper
@@ -155,7 +156,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var dPresenter: ICartListPresenter
 
     @Inject
-    lateinit var cartItemDecoration: RecyclerView.ItemDecoration
+    lateinit var cartItemDecoration: CartItemDecoration
 
     @Inject
     lateinit var cartPageAnalytics: CheckoutAnalyticsCart

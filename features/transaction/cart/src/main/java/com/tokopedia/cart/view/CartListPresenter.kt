@@ -107,10 +107,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun detachView() {
         compositeSubscription.unsubscribe()
         addWishListUseCase.unsubscribe()
-        addCartToWishlistUseCase.unsubscribe()
-        getRecentViewUseCase.unsubscribe()
         removeWishListUseCase.unsubscribe()
-        getRecommendationUseCase.unsubscribe()
         view = null
     }
 
@@ -1052,10 +1049,12 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         view?.showItemLoading()
         val requestParam = getRecentViewUseCase.getRecomParams(
                 1, RECENT_VIEW_XSOURCE, PAGE_NAME_RECENT_VIEW, allProductIds, "")
-        getRecentViewUseCase.createObservable(requestParam)
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
-                .subscribe(GetRecentViewSubscriber(view))
+        compositeSubscription.add(
+                getRecentViewUseCase.createObservable(requestParam)
+                        .subscribeOn(schedulers.io)
+                        .observeOn(schedulers.main)
+                        .subscribe(GetRecentViewSubscriber(view))
+        )
     }
 
     override fun processGetWishlistData() {
@@ -1078,10 +1077,12 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         view?.showItemLoading()
         val requestParam = getRecommendationUseCase.getRecomParams(
                 page, "recom_widget", "cart", allProductIds, "")
-        getRecommendationUseCase.createObservable(requestParam)
-                .subscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
-                .subscribe(GetRecommendationSubscriber(view))
+        compositeSubscription.add(
+                getRecommendationUseCase.createObservable(requestParam)
+                        .subscribeOn(schedulers.io)
+                        .observeOn(schedulers.main)
+                        .subscribe(GetRecommendationSubscriber(view))
+        )
     }
 
     override fun processAddToCart(productModel: Any) {
@@ -1223,11 +1224,13 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     override fun doValidateUse(promoRequest: ValidateUsePromoRequest) {
         val requestParams = RequestParams.create()
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
-        validateUsePromoRevampUseCase.createObservable(requestParams)
-                .subscribeOn(schedulers.io)
-                .unsubscribeOn(schedulers.io)
-                .observeOn(schedulers.main)
-                .subscribe(ValidateUseSubscriber(view, this))
+        compositeSubscription.add(
+                validateUsePromoRevampUseCase.createObservable(requestParams)
+                        .subscribeOn(schedulers.io)
+                        .unsubscribeOn(schedulers.io)
+                        .observeOn(schedulers.main)
+                        .subscribe(ValidateUseSubscriber(view, this))
+        )
     }
 
     override fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest) {
