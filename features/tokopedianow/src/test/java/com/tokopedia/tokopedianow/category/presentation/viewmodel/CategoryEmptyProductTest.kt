@@ -13,7 +13,7 @@ class CategoryEmptyProductTest: CategoryTestFixtures(), EmptyProductTestHelper.C
 
     override fun setUp() {
         super.setUp()
-        emptyProductTestHelper = EmptyProductTestHelper(categoryViewModel, this)
+        emptyProductTestHelper = EmptyProductTestHelper(tokoNowCategoryViewModel, this)
     }
 
     override fun `Given first page product list is empty`() {

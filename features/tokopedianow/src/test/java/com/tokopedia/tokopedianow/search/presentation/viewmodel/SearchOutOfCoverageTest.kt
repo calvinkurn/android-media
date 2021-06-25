@@ -29,11 +29,11 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
     }
 
     private fun `Then assert shop id`(shopId: String) {
-        assertThat(searchViewModel.shopIdLiveData.value, shouldBe(shopId))
+        assertThat(tokoNowSearchViewModel.shopIdLiveData.value, shouldBe(shopId))
     }
 
     private fun `Then assert warehouse id`(warehouseId: String) {
-        assertThat(searchViewModel.warehouseId, shouldBe(warehouseId))
+        assertThat(tokoNowSearchViewModel.warehouseId, shouldBe(warehouseId))
     }
 
     private fun `Then assert first page API is called`() {
@@ -113,7 +113,7 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
     }
 
     private fun `Then assert out of service is shown`() {
-        assertThat(searchViewModel.isOutOfServiceLiveData.value, shouldBe(true))
+        assertThat(tokoNowSearchViewModel.isOutOfServiceLiveData.value, shouldBe(true))
     }
 
     @Test

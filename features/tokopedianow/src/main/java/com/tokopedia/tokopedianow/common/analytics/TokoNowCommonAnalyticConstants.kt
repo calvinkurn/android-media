@@ -1,6 +1,6 @@
 package com.tokopedia.tokopedianow.common.analytics
 
-object TokopediaNowCommonAnalyticConstants {
+object TokoNowCommonAnalyticConstants {
 
     object EVENT{
         const val EVENT_CLICK_TOKONOW = "clickTokoNow"

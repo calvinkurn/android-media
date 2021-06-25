@@ -19,26 +19,26 @@ import com.tokopedia.tokopedianow.search.di.SearchComponent
 import com.tokopedia.tokopedianow.search.presentation.listener.SuggestionListener
 import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactoryImpl
-import com.tokopedia.tokopedianow.search.presentation.viewmodel.SearchViewModel
+import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import javax.inject.Inject
 
-class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
+class TokoNowSearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
 
     companion object {
 
         @JvmStatic
-        fun create(): SearchFragment {
-            return SearchFragment()
+        fun create(): TokoNowSearchFragment {
+            return TokoNowSearchFragment()
         }
     }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var searchViewModel: SearchViewModel
+    private lateinit var tokoNowSearchViewModel: TokoNowSearchViewModel
 
     override val toolbarPageName = "TokoNow Search"
 
@@ -50,16 +50,16 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
 
     private fun initViewModel() {
         activity?.let {
-            searchViewModel = ViewModelProvider(it, viewModelFactory).get(SearchViewModel::class.java)
+            tokoNowSearchViewModel = ViewModelProvider(it, viewModelFactory).get(TokoNowSearchViewModel::class.java)
         }
     }
 
     override fun getNavToolbarHint() =
-            listOf(HintData(searchViewModel.query, searchViewModel.query))
+            listOf(HintData(tokoNowSearchViewModel.query, tokoNowSearchViewModel.query))
 
     override fun getBaseAutoCompleteApplink() =
             super.getBaseAutoCompleteApplink() + "?" +
-                    "${SearchApiConst.Q}=${searchViewModel.query}" + "&" +
+                    "${SearchApiConst.Q}=${tokoNowSearchViewModel.query}" + "&" +
                     "${SearchApiConst.NAVSOURCE}=$TOKONOW"
 
     override fun getScreenName() = ""
@@ -94,11 +94,11 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     }
 
     override fun sendIncreaseQtyTrackingEvent(productId: String) {
-        SearchTracking.sendIncreaseQtyEvent(searchViewModel.query, productId)
+        SearchTracking.sendIncreaseQtyEvent(tokoNowSearchViewModel.query, productId)
     }
 
     override fun sendDecreaseQtyTrackingEvent(productId: String) {
-        SearchTracking.sendDecreaseQtyEvent(searchViewModel.query, productId)
+        SearchTracking.sendDecreaseQtyEvent(tokoNowSearchViewModel.query, productId)
     }
 
     override fun createTypeFactory() = SearchTypeFactoryImpl(
@@ -115,7 +115,7 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
         get() = MiniCartAnalytics.Page.SEARCH_PAGE
 
-    override fun getViewModel() = searchViewModel
+    override fun getViewModel() = tokoNowSearchViewModel
 
     override fun onSuggestionClicked(suggestionDataView: SuggestionDataView) {
         val context = context ?: return
@@ -129,7 +129,7 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     override fun onGoToGlobalSearch() {
         super.onGoToGlobalSearch()
 
-        val queryParams = "${SearchApiConst.Q}=${searchViewModel.query}"
+        val queryParams = "${SearchApiConst.Q}=${tokoNowSearchViewModel.query}"
         val applinkToSearchResult = "${ApplinkConstInternalDiscovery.SEARCH_RESULT}?$queryParams"
 
         RouteManager.route(context, applinkToSearchResult)
@@ -151,7 +151,7 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     }
 
     private fun getQueryParamWithoutExcludes(): Map<String, String> {
-        return FilterHelper.createParamsWithoutExcludes(searchViewModel.queryParam)
+        return FilterHelper.createParamsWithoutExcludes(tokoNowSearchViewModel.queryParam)
     }
 
     override fun onProductClick(productItemDataView: ProductItemDataView) {
@@ -191,7 +191,7 @@ class SearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
     }
 
     override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
-        SearchTracking.sendChooseVariantEvent(searchViewModel.query, productItemDataView.id)
+        SearchTracking.sendChooseVariantEvent(tokoNowSearchViewModel.query, productItemDataView.id)
 
         super.onProductChooseVariantClicked(productItemDataView)
     }

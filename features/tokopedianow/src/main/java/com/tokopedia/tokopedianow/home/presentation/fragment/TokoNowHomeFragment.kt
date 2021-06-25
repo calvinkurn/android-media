@@ -51,7 +51,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
-import com.tokopedia.tokopedianow.common.view.TokopediaNowView
+import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
@@ -66,7 +66,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiMode
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
-import com.tokopedia.tokopedianow.home.presentation.viewmodel.HomeViewModel
+import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_tokopedianow_home.*
@@ -74,8 +74,8 @@ import kotlinx.android.synthetic.main.fragment_tokopedianow_home.*
 import java.util.*
 import javax.inject.Inject
 
-class HomeFragment: Fragment(),
-        TokopediaNowView,
+class TokoNowHomeFragment: Fragment(),
+        TokoNowView,
         HomeChooseAddressWidgetViewHolder.HomeChooseAddressWidgetListener,
         HomeTickerViewHolder.HomeTickerListener,
         HomeCategoryGridViewHolder.HomeCategoryGridListener,
@@ -90,14 +90,14 @@ class HomeFragment: Fragment(),
         const val SOURCE = "tokonow"
         const val SOURCE_TRACKING = "tokonow page"
 
-        fun newInstance() = HomeFragment()
+        fun newInstance() = TokoNowHomeFragment()
     }
 
     @Inject
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var viewModel: HomeViewModel
+    lateinit var viewModelTokoNow: TokoNowHomeViewModel
 
     @Inject
     lateinit var analytics: HomeAnalytics
@@ -206,7 +206,7 @@ class HomeFragment: Fragment(),
     override fun onCategoryRetried() {
         val item = adapter.getItem(HomeCategoryGridUiModel::class.java)
         if (item is HomeCategoryGridUiModel) {
-            viewModel.getCategoryGrid(item, localCacheModel?.warehouse_id.orEmpty())
+            viewModelTokoNow.getCategoryGrid(item, localCacheModel?.warehouse_id.orEmpty())
         }
     }
 
@@ -248,7 +248,7 @@ class HomeFragment: Fragment(),
         context?.let {
             when {
                 shopId == 0L -> {
-                    viewModel.getChooseAddress(SOURCE)
+                    viewModelTokoNow.getChooseAddress(SOURCE)
                 }
                 warehouseId == 0L -> {
                     showEmptyState(EMPTY_STATE_NO_ADDRESS)
@@ -262,7 +262,7 @@ class HomeFragment: Fragment(),
 
     private fun showEmptyState(id: String) {
         rvLayoutManager?.setScrollEnabled(false)
-        viewModel.getEmptyState(id)
+        viewModelTokoNow.getEmptyState(id)
     }
 
     private fun showFailedToFetchData() {
@@ -410,7 +410,7 @@ class HomeFragment: Fragment(),
     private fun setupRecyclerView() {
         context?.let {
             with(rvHome) {
-                adapter = this@HomeFragment.adapter
+                adapter = this@TokoNowHomeFragment.adapter
                 rvLayoutManager = CustomLinearLayoutManager(it)
                 layoutManager = rvLayoutManager
             }
@@ -421,7 +421,7 @@ class HomeFragment: Fragment(),
     }
 
     private fun observeLiveData() {
-        observe(viewModel.homeLayoutList) {
+        observe(viewModelTokoNow.homeLayoutList) {
             removeAllScrollListener()
 
             if (it is Success) {
@@ -436,13 +436,13 @@ class HomeFragment: Fragment(),
             }
         }
 
-        observe(viewModel.miniCart) {
+        observe(viewModelTokoNow.miniCart) {
             if(it is Success) {
                 setupMiniCart(it.data)
             }
         }
 
-        observe(viewModel.chooseAddress) {
+        observe(viewModelTokoNow.chooseAddress) {
             if (it is Success) {
                 it.data.let { chooseAddressData ->
                     ChooseAddressUtils.updateLocalizingAddressDataFromOther(
@@ -600,7 +600,7 @@ class HomeFragment: Fragment(),
         val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
         val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
         val isVisible = index in firstVisibleItemIndex..lastVisibleItemIndex
-        viewModel.getInitialLayoutData(index, warehouseId, isVisible)
+        viewModelTokoNow.getInitialLayoutData(index, warehouseId, isVisible)
     }
 
     private fun loadMoreLayoutData() {
@@ -608,24 +608,24 @@ class HomeFragment: Fragment(),
         val layoutManager = rvHome.layoutManager as? LinearLayoutManager
         val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
         val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
-        viewModel.getMoreLayoutData(warehouseId, firstVisibleItemIndex, lastVisibleItemIndex)
+        viewModelTokoNow.getMoreLayoutData(warehouseId, firstVisibleItemIndex, lastVisibleItemIndex)
     }
 
     private fun getHomeLayout() {
-        viewModel.getHomeLayout(hasTickerBeenRemoved)
+        viewModelTokoNow.getHomeLayout(hasTickerBeenRemoved)
     }
 
     private fun getMiniCart()  {
-        viewModel.getMiniCart(listOf(localCacheModel?.shop_id.orEmpty()))
+        viewModelTokoNow.getMiniCart(listOf(localCacheModel?.shop_id.orEmpty()))
     }
 
     private fun loadLayout() {
-        viewModel.getLoadingState()
+        viewModelTokoNow.getLoadingState()
     }
 
     //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder
     private fun getSearchHint() {
-        viewModel.getKeywordSearch(isFirstInstall(), userSession.deviceId, userSession.userId)
+        viewModelTokoNow.getKeywordSearch(isFirstInstall(), userSession.deviceId, userSession.userId)
     }
 
     private fun checkIfChooseAddressWidgetDataUpdated() {

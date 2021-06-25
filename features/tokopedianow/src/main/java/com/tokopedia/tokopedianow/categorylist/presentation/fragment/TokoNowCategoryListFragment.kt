@@ -6,15 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.categorylist.presentation.activity.CategoryListActivity.Companion.PARAM_WAREHOUSE_ID
-import com.tokopedia.tokopedianow.categorylist.presentation.bottomsheet.CategoryListBottomSheet
+import com.tokopedia.tokopedianow.categorylist.presentation.activity.TokoNowCategoryListActivity.Companion.PARAM_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.categorylist.presentation.bottomsheet.TokoNowCategoryListBottomSheet
 
-class CategoryListFragment: Fragment() {
+class TokoNowCategoryListFragment: Fragment() {
 
     companion object {
 
-        fun newInstance(warehouseId: String): CategoryListFragment {
-            return CategoryListFragment().apply {
+        fun newInstance(warehouseId: String): TokoNowCategoryListFragment {
+            return TokoNowCategoryListFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_WAREHOUSE_ID, warehouseId)
                 }
@@ -33,7 +33,7 @@ class CategoryListFragment: Fragment() {
 
     private fun showCategoryListBottomSheet() {
         val warehouseId = arguments?.getString(PARAM_WAREHOUSE_ID).orEmpty()
-        CategoryListBottomSheet.newInstance(warehouseId)
+        TokoNowCategoryListBottomSheet.newInstance(warehouseId)
             .show(childFragmentManager)
     }
 }

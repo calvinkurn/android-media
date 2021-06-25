@@ -17,7 +17,7 @@ class SearchAddToCartNonVariantTest: SearchTestFixtures(), Callback {
         super.setUp()
 
         addToCartTestHelper = AddToCartNonVariantTestHelper(
-                searchViewModel,
+                tokoNowSearchViewModel,
                 addToCartUseCase,
                 updateCartUseCase,
                 getMiniCartListSimplifiedUseCase,

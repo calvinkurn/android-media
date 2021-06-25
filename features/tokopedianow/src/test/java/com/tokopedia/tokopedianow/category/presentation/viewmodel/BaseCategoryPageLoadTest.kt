@@ -100,6 +100,6 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
     }
 
     protected fun `Then assert has next page value`(expectedHasNextPage: Boolean) {
-        assertThat(categoryViewModel.hasNextPageLiveData.value!!, shouldBe(expectedHasNextPage))
+        assertThat(tokoNowCategoryViewModel.hasNextPageLiveData.value!!, shouldBe(expectedHasNextPage))
     }
 }

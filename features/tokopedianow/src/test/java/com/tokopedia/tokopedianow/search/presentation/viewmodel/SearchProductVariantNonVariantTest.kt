@@ -21,7 +21,7 @@ class SearchProductVariantNonVariantTest: SearchTestFixtures() {
 
         `When view created`()
 
-        val visitableList = searchViewModel.visitableListLiveData.value!!
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
         val productItemDataViewList = visitableList.filterIsInstance<ProductItemDataView>()
 
         val productNonVariant = searchModel.searchProduct.data.productList[1]
@@ -50,7 +50,7 @@ class SearchProductVariantNonVariantTest: SearchTestFixtures() {
 
         `When view created`()
 
-        val visitableList = searchViewModel.visitableListLiveData.value!!
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
         val productItemDataViewList = visitableList.filterIsInstance<ProductItemDataView>()
 
         val productItemDataViewVariant = productItemDataViewList[2]

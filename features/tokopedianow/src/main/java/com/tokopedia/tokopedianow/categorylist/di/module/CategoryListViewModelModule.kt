@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokopedianow.categorylist.di.scope.CategoryListScope
-import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.CategoryListViewModel
+import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -19,6 +19,6 @@ abstract class CategoryListViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(CategoryListViewModel::class)
-    internal abstract fun tokoMartCategoryListViewModel(viewModel: CategoryListViewModel): ViewModel
+    @ViewModelKey(TokoNowCategoryListViewModel::class)
+    internal abstract fun tokoMartCategoryListViewModel(viewModelTokoNow: TokoNowCategoryListViewModel): ViewModel
 }

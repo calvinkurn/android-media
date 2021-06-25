@@ -24,7 +24,7 @@ class SearchSuggestionTest: SearchTestFixtures() {
 
         `When view created`()
 
-        val visitableList = searchViewModel.visitableListLiveData.value!!
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
         visitableList[SUGGESTION_DATA_VIEW_POSITION].assertSuggestionDataView(
                 searchModel.searchProduct.data.suggestion,
         )

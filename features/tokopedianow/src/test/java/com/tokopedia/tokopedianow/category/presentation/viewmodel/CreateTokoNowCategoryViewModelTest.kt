@@ -8,7 +8,7 @@ import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
-class CreateCategoryViewModelTest:
+class CreateTokoNowCategoryViewModelTest:
         CategoryTestFixtures(),
         CreateSearchCategoryViewModelTestHelper.Callback {
 
@@ -23,7 +23,7 @@ class CreateCategoryViewModelTest:
         `Given category view model`()
     }
 
-    override fun getViewModel() = categoryViewModel
+    override fun getViewModel() = tokoNowCategoryViewModel
 
     @Test
     fun `test create category view model`() {
@@ -38,24 +38,24 @@ class CreateCategoryViewModelTest:
 
     private fun `Then assert query param has default sort`() {
         assertThat(
-                categoryViewModel.queryParam[SearchApiConst.OB],
+                tokoNowCategoryViewModel.queryParam[SearchApiConst.OB],
                 shouldBe(DEFAULT_VALUE_OF_PARAMETER_SORT)
         )
     }
 
     private fun `Then assert category ids`() {
         assertThat(
-                categoryViewModel.categoryL1,
+                tokoNowCategoryViewModel.categoryL1,
                 shouldBe(defaultCategoryL1)
         )
         assertThat(
-                categoryViewModel.categoryL2,
+                tokoNowCategoryViewModel.categoryL2,
                 shouldBe(defaultCategoryL2)
         )
     }
 
     private fun `Then assert category id for tracking`(defaultCategoryL1: String) {
-        assertThat(categoryViewModel.categoryIdTracking, shouldBe(defaultCategoryL1))
+        assertThat(tokoNowCategoryViewModel.categoryIdTracking, shouldBe(defaultCategoryL1))
     }
 
     @Test
@@ -71,13 +71,13 @@ class CreateCategoryViewModelTest:
 
     private fun `Then assert query param has exclude sc category L2`(categoryL2: String) {
         assertThat(
-                categoryViewModel.queryParam["${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}"],
+                tokoNowCategoryViewModel.queryParam["${OptionHelper.EXCLUDE_PREFIX}${SearchApiConst.SC}"],
                 shouldBe(categoryL2)
         )
     }
 
     private fun `Then assert content is loading`() {
-        assertThat(categoryViewModel.isContentLoadingLiveData.value, shouldBe(true))
+        assertThat(tokoNowCategoryViewModel.isContentLoadingLiveData.value, shouldBe(true))
     }
 
     @Test

@@ -20,7 +20,7 @@ class CategoryFilterPageTest: CategoryTestFixtures(), Callback {
         super.setUp()
 
         filterPageTestHelper = FilterPageTestHelper(
-                categoryViewModel,
+                tokoNowCategoryViewModel,
                 getFilterUseCase,
                 getProductCountUseCase,
                 this,

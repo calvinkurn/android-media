@@ -45,7 +45,7 @@ open class CategoryTestFixtures {
     protected val userSession = mockk<UserSessionInterface>(relaxed = true).also {
         every { it.isLoggedIn } returns true
     }
-    protected lateinit var categoryViewModel: CategoryViewModel
+    protected lateinit var tokoNowCategoryViewModel: TokoNowCategoryViewModel
 
     @Before
     open fun setUp() {
@@ -66,7 +66,7 @@ open class CategoryTestFixtures {
             categoryL2: String = defaultCategoryL2,
             queryParamMap: Map<String, String> = defaultQueryParamMap,
     ) {
-        categoryViewModel = CategoryViewModel(
+        tokoNowCategoryViewModel = TokoNowCategoryViewModel(
                 CoroutineTestDispatchersProvider,
                 categoryL1,
                 categoryL2,
@@ -113,10 +113,10 @@ open class CategoryTestFixtures {
     }
 
     protected fun `Given view already created`() {
-        categoryViewModel.onViewCreated()
+        tokoNowCategoryViewModel.onViewCreated()
     }
 
     protected fun `When view created`() {
-        categoryViewModel.onViewCreated()
+        tokoNowCategoryViewModel.onViewCreated()
     }
 }

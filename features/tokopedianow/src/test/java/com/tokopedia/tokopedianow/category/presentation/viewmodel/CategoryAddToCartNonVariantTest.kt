@@ -17,7 +17,7 @@ class CategoryAddToCartNonVariantTest: CategoryTestFixtures(), Callback {
         super.setUp()
 
         addToCartTestHelper = AddToCartNonVariantTestHelper(
-                categoryViewModel,
+                tokoNowCategoryViewModel,
                 addToCartUseCase,
                 updateCartUseCase,
                 getMiniCartListSimplifiedUseCase,

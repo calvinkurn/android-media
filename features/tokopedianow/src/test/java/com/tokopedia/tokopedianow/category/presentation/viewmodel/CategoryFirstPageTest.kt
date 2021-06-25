@@ -24,7 +24,7 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
 
         `When view created`()
 
-        val visitableList = categoryViewModel.visitableListLiveData.value!!
+        val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
 
         `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(1))
         `Then assert first page visitables`(visitableList, categoryModel)
@@ -46,7 +46,7 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
             categoryModel: CategoryModel,
     ) {
         val categoryTitle = categoryModel.categoryDetail.data.name
-        val mapParameter = categoryViewModel.queryParam
+        val mapParameter = tokoNowCategoryViewModel.queryParam
 
         visitableList[0].assertChooseAddressDataView()
         visitableList[1].assertBannerDataView()
@@ -75,15 +75,15 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
     private fun `Then assert auto complete applink from API`(categoryModel: CategoryModel) {
         val expectedApplink = categoryModel.searchProduct.data.autocompleteApplink
 
-        assertThat(categoryViewModel.autoCompleteApplink, shouldBe(expectedApplink))
+        assertThat(tokoNowCategoryViewModel.autoCompleteApplink, shouldBe(expectedApplink))
     }
 
     private fun `Then assert header background is shown`() {
-        assertThat(categoryViewModel.isHeaderBackgroundVisibleLiveData.value, shouldBe(true))
+        assertThat(tokoNowCategoryViewModel.isHeaderBackgroundVisibleLiveData.value, shouldBe(true))
     }
 
     private fun `Then assert content is not loading`() {
-        assertThat(categoryViewModel.isContentLoadingLiveData.value, shouldBe(false))
+        assertThat(tokoNowCategoryViewModel.isContentLoadingLiveData.value, shouldBe(false))
     }
 
     @Test
@@ -93,7 +93,7 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
 
         `When view created`()
 
-        val visitableList = categoryViewModel.visitableListLiveData.value!!
+        val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
 
         `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(1))
         `Then assert first page visitables`(visitableList, categoryModel)

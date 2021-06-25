@@ -22,7 +22,7 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
 
         `When view load more`()
 
-        val visitableList = searchViewModel.visitableListLiveData.value!!
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
 
         `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(2))
         `Then assert load more page data`(searchModelPage1, searchModelPage2, visitableList)
@@ -39,7 +39,7 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
     }
 
     private fun `When view load more`() {
-        searchViewModel.onLoadMore()
+        tokoNowSearchViewModel.onLoadMore()
     }
 
     private fun `Then assert load more page data`(
@@ -73,7 +73,7 @@ class SearchLoadMoreTest: BaseSearchPageLoadTest() {
 
         `When view load more`()
 
-        val visitableList = searchViewModel.visitableListLiveData.value!!
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
 
         `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(2))
         `Then assert load more page data`(searchModelPage1, searchModelPage2, visitableList)

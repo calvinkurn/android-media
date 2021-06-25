@@ -31,7 +31,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
 
         `When view created`()
 
-        val categoryFilterVisitable = categoryViewModel.visitableListLiveData.value.getCategoryFilterDataView()
+        val categoryFilterVisitable = tokoNowCategoryViewModel.visitableListLiveData.value.getCategoryFilterDataView()
         `Then assert category filter isSelected`(selectedFilterOption, categoryFilterVisitable)
     }
 
@@ -59,7 +59,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
         `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
         `Given view already created`()
 
-        val categoryFilterVisitable = categoryViewModel.visitableListLiveData.value.getCategoryFilterDataView()
+        val categoryFilterVisitable = tokoNowCategoryViewModel.visitableListLiveData.value.getCategoryFilterDataView()
         val selectedCategoryFilter = categoryFilterVisitable.categoryFilterItemList[1]
 
         `When category filter selected`(selectedCategoryFilter, true)
@@ -75,7 +75,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
             selectedCategoryFilter: CategoryFilterItemDataView,
             isSelected: Boolean
     ) {
-        categoryViewModel.onViewClickCategoryFilterChip(selectedCategoryFilter.option, isSelected)
+        tokoNowCategoryViewModel.onViewClickCategoryFilterChip(selectedCategoryFilter.option, isSelected)
     }
 
     private fun `Then verify get search first page is called twice`() {
@@ -110,7 +110,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
         `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
         `Given view already created`()
 
-        val categoryFilterVisitable = categoryViewModel.visitableListLiveData.value.getCategoryFilterDataView()
+        val categoryFilterVisitable = tokoNowCategoryViewModel.visitableListLiveData.value.getCategoryFilterDataView()
         val selectedQuickFilter = categoryFilterVisitable.categoryFilterItemList[selectedCategoryFilterIndex]
 
         `When category filter selected`(selectedQuickFilter, false)
@@ -143,7 +143,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
         `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
         `Given view already created`()
 
-        val categoryFilterVisitable = categoryViewModel.visitableListLiveData.value.getCategoryFilterDataView()
+        val categoryFilterVisitable = tokoNowCategoryViewModel.visitableListLiveData.value.getCategoryFilterDataView()
         val selectedCategoryFilter = categoryFilterVisitable.categoryFilterItemList[1]
 
         `When category filter selected`(selectedCategoryFilter, true)

@@ -5,7 +5,7 @@ import com.tokopedia.tokopedianow.home.di.module.HomeModule
 import com.tokopedia.tokopedianow.home.di.module.HomeUseCaseModule
 import com.tokopedia.tokopedianow.home.di.module.HomeViewModelModule
 import com.tokopedia.tokopedianow.home.di.scope.HomeScope
-import com.tokopedia.tokopedianow.home.presentation.fragment.HomeFragment
+import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import dagger.Component
 
 @HomeScope
@@ -19,5 +19,5 @@ import dagger.Component
 )
 interface HomeComponent {
 
-    fun inject(fragment: HomeFragment)
+    fun inject(fragmentTokoNow: TokoNowHomeFragment)
 }

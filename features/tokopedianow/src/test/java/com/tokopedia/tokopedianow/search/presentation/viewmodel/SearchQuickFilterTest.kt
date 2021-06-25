@@ -38,7 +38,7 @@ class SearchQuickFilterTest: SearchTestFixtures() {
     }
 
     private fun `Then assert quick filter key has exclude prefix`() {
-        val quickFilterVisitable = searchViewModel.visitableListLiveData.value.getQuickFilterDataView()
+        val quickFilterVisitable = tokoNowSearchViewModel.visitableListLiveData.value.getQuickFilterDataView()
         val actualQuickFilterKeyWithCategoryOption =
                 quickFilterVisitable.quickFilterItemList[0].filter.options[0].key
 
@@ -61,7 +61,7 @@ class SearchQuickFilterTest: SearchTestFixtures() {
 
         `When view created`()
 
-        val quickFilterVisitable = searchViewModel.visitableListLiveData.value.getQuickFilterDataView()
+        val quickFilterVisitable = tokoNowSearchViewModel.visitableListLiveData.value.getQuickFilterDataView()
         `Then assert quick filter selected type`(selectedFilterOption, quickFilterVisitable)
     }
 
@@ -94,7 +94,7 @@ class SearchQuickFilterTest: SearchTestFixtures() {
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
         `Given view already created`()
 
-        val quickFilterVisitable = searchViewModel.visitableListLiveData.value.getQuickFilterDataView()
+        val quickFilterVisitable = tokoNowSearchViewModel.visitableListLiveData.value.getQuickFilterDataView()
         val selectedQuickFilter = quickFilterVisitable.quickFilterItemList[1]
 
         `When quick filter selected`(selectedQuickFilter)
@@ -132,7 +132,7 @@ class SearchQuickFilterTest: SearchTestFixtures() {
             selectedQuickFilter: SortFilterItemDataView,
             isApplied: Boolean
     ) {
-        val quickFilterTracking = searchViewModel.quickFilterTrackingLiveData.value!!
+        val quickFilterTracking = tokoNowSearchViewModel.quickFilterTrackingLiveData.value!!
 
         assertThat(quickFilterTracking.first, shouldBe(selectedQuickFilter.firstOption))
         assertThat(quickFilterTracking.second, shouldBe(isApplied))
@@ -152,7 +152,7 @@ class SearchQuickFilterTest: SearchTestFixtures() {
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
         `Given view already created`()
 
-        val quickFilterVisitable = searchViewModel.visitableListLiveData.value.getQuickFilterDataView()
+        val quickFilterVisitable = tokoNowSearchViewModel.visitableListLiveData.value.getQuickFilterDataView()
         val selectedQuickFilter = quickFilterVisitable.quickFilterItemList[selectedQuickFilterIndex]
 
         `When quick filter selected`(selectedQuickFilter)
@@ -181,7 +181,7 @@ class SearchQuickFilterTest: SearchTestFixtures() {
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
         `Given view already created`()
 
-        val quickFilterVisitable = searchViewModel.visitableListLiveData.value.getQuickFilterDataView()
+        val quickFilterVisitable = tokoNowSearchViewModel.visitableListLiveData.value.getQuickFilterDataView()
         val selectedQuickFilter = quickFilterVisitable.quickFilterItemList[0]
 
         `When quick filter selected`(selectedQuickFilter)
@@ -190,7 +190,7 @@ class SearchQuickFilterTest: SearchTestFixtures() {
     }
 
     private fun `Then assert L3 Bottomsheet filter is open with filter`(selectedFilter: Filter) {
-        val isL3FilterPageOpen = searchViewModel.isL3FilterPageOpenLiveData.value
+        val isL3FilterPageOpen = tokoNowSearchViewModel.isL3FilterPageOpenLiveData.value
 
         assertThat(isL3FilterPageOpen, shouldBe(selectedFilter))
     }

@@ -16,7 +16,7 @@ class CategoryUpdateCartTest: CategoryTestFixtures(), Callback {
         super.setUp()
 
         updateCartTestHelper = UpdateCartTestHelper(
-                categoryViewModel,
+                tokoNowCategoryViewModel,
                 getMiniCartListSimplifiedUseCase,
                 this,
         )
@@ -45,7 +45,7 @@ class CategoryUpdateCartTest: CategoryTestFixtures(), Callback {
     }
 
     private fun `When view resumed`() {
-        categoryViewModel.onViewResumed()
+        tokoNowCategoryViewModel.onViewResumed()
     }
 
     private fun `Then assert get mini cart list is not called`() {

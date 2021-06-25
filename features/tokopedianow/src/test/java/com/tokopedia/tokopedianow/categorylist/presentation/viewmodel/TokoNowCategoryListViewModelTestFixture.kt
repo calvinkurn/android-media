@@ -17,7 +17,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 
-abstract class CategoryListViewModelTestFixture {
+abstract class TokoNowCategoryListViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var getCategoryListUseCase: GetCategoryListUseCase
@@ -25,24 +25,24 @@ abstract class CategoryListViewModelTestFixture {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    protected lateinit var viewModel: CategoryListViewModel
+    protected lateinit var viewModelTokoNow: TokoNowCategoryListViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = CategoryListViewModel(
+        viewModelTokoNow = TokoNowCategoryListViewModel(
                 getCategoryListUseCase,
                 CoroutineTestDispatchersProvider
         )
     }
 
     protected fun verifyGetCategoryListResponseSuccess(expectedResponse: List<CategoryListItemUiModel>) {
-        val actualResponse = viewModel.categoryList.getOrAwaitValue()
+        val actualResponse = viewModelTokoNow.categoryList.getOrAwaitValue()
         Assert.assertEquals(expectedResponse, CategoryListMapper.mapToUiModel((actualResponse as Success).data.data))
     }
 
     protected fun verifyGetCategoryListResponseFail() {
-        val actualResponse = viewModel.categoryList.getOrAwaitValue()
+        val actualResponse = viewModelTokoNow.categoryList.getOrAwaitValue()
         Assert.assertTrue(actualResponse is Fail)
     }
 

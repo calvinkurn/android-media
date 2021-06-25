@@ -17,7 +17,7 @@ class SearchCategoryChooserFilterTest: SearchTestFixtures(), CategoryChooserFilt
         super.setUp()
 
         categoryChooserFilterPageTestHelper = CategoryChooserFilterTestHelper(
-                searchViewModel,
+                tokoNowSearchViewModel,
                 this,
         )
     }

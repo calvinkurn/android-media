@@ -79,7 +79,7 @@ class CategoryChooseAddressTest: CategoryTestFixtures() {
     }
 
     private fun `When localizing address selected`() {
-        categoryViewModel.onLocalizingAddressSelected()
+        tokoNowCategoryViewModel.onLocalizingAddressSelected()
     }
 
     private fun `Then assert request params contains new address`(
@@ -111,7 +111,7 @@ class CategoryChooseAddressTest: CategoryTestFixtures() {
     }
 
     private fun `When view resumed`() {
-        categoryViewModel.onViewResumed()
+        tokoNowCategoryViewModel.onViewResumed()
     }
 
     @Test

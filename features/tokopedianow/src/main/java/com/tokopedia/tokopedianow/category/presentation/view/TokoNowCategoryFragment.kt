@@ -14,25 +14,25 @@ import com.tokopedia.tokopedianow.category.di.CategoryComponent
 import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryTypeFactoryImpl
-import com.tokopedia.tokopedianow.category.presentation.viewmodel.CategoryViewModel
+import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import javax.inject.Inject
 
-class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
+class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
 
     companion object {
 
         @JvmStatic
-        fun create(): CategoryFragment {
-            return CategoryFragment()
+        fun create(): TokoNowCategoryFragment {
+            return TokoNowCategoryFragment()
         }
     }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var categoryViewModel: CategoryViewModel
+    private lateinit var tokoNowCategoryViewModel: TokoNowCategoryViewModel
 
     override val toolbarPageName = "TokoNow Category"
 
@@ -44,7 +44,7 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
 
     private fun initViewModel() {
         activity?.let {
-            categoryViewModel = ViewModelProvider(it, viewModelFactory).get(CategoryViewModel::class.java)
+            tokoNowCategoryViewModel = ViewModelProvider(it, viewModelFactory).get(TokoNowCategoryViewModel::class.java)
         }
     }
 
@@ -84,7 +84,7 @@ class CategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListener {
             categoryAisleListener = this,
     )
 
-    override fun getViewModel() = categoryViewModel
+    override fun getViewModel() = tokoNowCategoryViewModel
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
         get() = MiniCartAnalytics.Page.CATEGORY_PAGE

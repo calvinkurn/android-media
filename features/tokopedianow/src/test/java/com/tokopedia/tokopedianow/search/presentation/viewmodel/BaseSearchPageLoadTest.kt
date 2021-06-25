@@ -60,7 +60,7 @@ open class BaseSearchPageLoadTest: SearchTestFixtures() {
     }
 
     protected fun `Then assert has next page value`(expectedHasNextPage: Boolean) {
-        assertThat(searchViewModel.hasNextPageLiveData.value!!, shouldBe(expectedHasNextPage))
+        assertThat(tokoNowSearchViewModel.hasNextPageLiveData.value!!, shouldBe(expectedHasNextPage))
     }
 
     protected fun `Then assert visitable list end with loading more model`(visitableList: List<Visitable<*>>) {

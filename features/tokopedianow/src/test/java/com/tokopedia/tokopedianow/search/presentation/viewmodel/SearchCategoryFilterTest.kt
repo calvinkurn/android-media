@@ -36,7 +36,7 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
 
         `When view created`()
 
-        val visitableList = searchViewModel.visitableListLiveData.value
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value
         val quickFilterVisitable = visitableList.getCategoryFilterDataView()
         `Then assert category filter isSelected`(selectedFilterOption, quickFilterVisitable)
     }
@@ -65,7 +65,7 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
         `Given view already created`()
 
-        val visitableList = searchViewModel.visitableListLiveData.value
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value
         val categoryFilterVisitable = visitableList.getCategoryFilterDataView()
         val selectedCategoryFilter = categoryFilterVisitable.categoryFilterItemList[1]
 
@@ -82,7 +82,7 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
             selectedCategoryFilter: CategoryFilterItemDataView,
             isSelected: Boolean
     ) {
-        searchViewModel.onViewClickCategoryFilterChip(selectedCategoryFilter.option, isSelected)
+        tokoNowSearchViewModel.onViewClickCategoryFilterChip(selectedCategoryFilter.option, isSelected)
     }
 
     private fun `Then verify get search first page is called twice`() {
@@ -118,7 +118,7 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
         `Given view already created`()
 
-        val visitableList = searchViewModel.visitableListLiveData.value
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value
         val categoryFilterVisitable = visitableList.getCategoryFilterDataView()
         val categoryFilterItemList = categoryFilterVisitable.categoryFilterItemList
         val selectedQuickFilter = categoryFilterItemList[selectedCategoryFilterIndex]
@@ -155,7 +155,7 @@ class SearchCategoryFilterTest: SearchTestFixtures() {
         `Given get search first page use case will be successful`(searchModel, requestParamsSlot)
         `Given view already created`()
 
-        val visitableList = searchViewModel.visitableListLiveData.value
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value
         val categoryFilterVisitable = visitableList.getCategoryFilterDataView()
         val selectedCategoryFilter = categoryFilterVisitable.categoryFilterItemList[1]
 

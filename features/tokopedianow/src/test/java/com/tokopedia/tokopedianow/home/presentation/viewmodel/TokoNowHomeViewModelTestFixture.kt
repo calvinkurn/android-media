@@ -35,7 +35,7 @@ import org.junit.Rule
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyString
 
-abstract class HomeViewModelTestFixture {
+abstract class TokoNowHomeViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var getHomeLayoutListUseCase: GetHomeLayoutListUseCase
@@ -55,12 +55,12 @@ abstract class HomeViewModelTestFixture {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    protected lateinit var viewModel: HomeViewModel
+    protected lateinit var viewModelTokoNow: TokoNowHomeViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = HomeViewModel(
+        viewModelTokoNow = TokoNowHomeViewModel(
                 getHomeLayoutListUseCase,
                 getHomeLayoutDataUseCase,
                 getCategoryListUseCase,
@@ -73,54 +73,54 @@ abstract class HomeViewModelTestFixture {
     }
 
     protected fun verifyGetHomeLayoutResponseSuccess(expectedResponse: HomeLayoutListUiModel) {
-        val actualResponse = viewModel.homeLayoutList.getOrAwaitValue()
+        val actualResponse = viewModelTokoNow.homeLayoutList.getOrAwaitValue()
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
     }
 
     protected fun verifyMiniCartResponseSuccess(expectedResponse: MiniCartSimplifiedData) {
-        val actualResponse = viewModel.miniCart.getOrAwaitValue()
+        val actualResponse = viewModelTokoNow.miniCart.getOrAwaitValue()
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
     }
 
     protected fun verifyMiniCartNullResponse() {
-        val actualResponse = viewModel.miniCart.value
+        val actualResponse = viewModelTokoNow.miniCart.value
         Assert.assertNull(actualResponse)
     }
 
     protected fun verfifyGetChooseAddressSuccess(expectedResponse: GetStateChosenAddressResponse) {
-        val actualResponse = viewModel.chooseAddress.getOrAwaitValue()
+        val actualResponse = viewModelTokoNow.chooseAddress.getOrAwaitValue()
         Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
     }
 
     protected fun verifyKeywordSearchResponseSuccess(expectedResponse: SearchPlaceholder) {
-        val actualResponse = viewModel.keywordSearch.getOrAwaitValue()
+        val actualResponse = viewModelTokoNow.keywordSearch.getOrAwaitValue()
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
     protected fun verifyGetCategoryListResponseSuccess(expectedResponse: HomeLayoutItemUiModel) {
-        val homeLayoutList = viewModel.homeLayoutList.getOrAwaitValue()
+        val homeLayoutList = viewModelTokoNow.homeLayoutList.getOrAwaitValue()
         val actualResponse = (homeLayoutList as Success).data.result.find { it.layout is HomeCategoryGridUiModel }
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
     protected fun verifyGetBannerResponseSuccess(expectedResponse: HomeLayoutItemUiModel) {
-        val homeLayoutList = viewModel.homeLayoutList.getOrAwaitValue()
+        val homeLayoutList = viewModelTokoNow.homeLayoutList.getOrAwaitValue()
         val actualResponse = (homeLayoutList as Success).data.result.find { it.layout is BannerDataModel }
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
     protected fun verifyGetHomeLayoutResponseFail() {
-        val actualResponse = viewModel.homeLayoutList.getOrAwaitValue()
+        val actualResponse = viewModelTokoNow.homeLayoutList.getOrAwaitValue()
         Assert.assertTrue(actualResponse is Fail)
     }
 
     protected fun verifyMiniCartFail() {
-        val actualResponse = viewModel.miniCart.getOrAwaitValue()
+        val actualResponse = viewModelTokoNow.miniCart.getOrAwaitValue()
         Assert.assertTrue(actualResponse is Fail)
     }
 
     protected fun verifyGetChooseAddressFail() {
-        val actualResponse = viewModel.chooseAddress.getOrAwaitValue()
+        val actualResponse = viewModelTokoNow.chooseAddress.getOrAwaitValue()
         Assert.assertTrue(actualResponse is Fail)
     }
 

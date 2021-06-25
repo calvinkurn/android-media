@@ -1,11 +1,11 @@
 package com.tokopedia.tokopedianow.search.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokopedianow.common.analytics.TokopediaNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
-import com.tokopedia.tokopedianow.common.analytics.TokopediaNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
-import com.tokopedia.tokopedianow.common.analytics.TokopediaNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
-import com.tokopedia.tokopedianow.common.analytics.TokopediaNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
-import com.tokopedia.tokopedianow.common.analytics.TokopediaNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKONOW_TOP_NAV
@@ -37,7 +37,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
         `When view created`()
 
-        val visitableList = searchViewModel.visitableListLiveData.value!!
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
 
         `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(1))
         `Then assert first page visitables`(visitableList, searchModel)
@@ -58,7 +58,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
             visitableList: List<Visitable<*>>,
             searchModel: SearchModel,
     ) {
-        val mapParameter = searchViewModel.queryParam
+        val mapParameter = tokoNowSearchViewModel.queryParam
 
         visitableList[0].assertChooseAddressDataView()
         visitableList[1].assertBannerDataView()
@@ -88,15 +88,15 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
     private fun `Then assert auto complete applink from API`(searchModel: SearchModel) {
         val expectedApplink = searchModel.searchProduct.data.autocompleteApplink
 
-        assertThat(searchViewModel.autoCompleteApplink, shouldBe(expectedApplink))
+        assertThat(tokoNowSearchViewModel.autoCompleteApplink, shouldBe(expectedApplink))
     }
 
     private fun `Then assert header background is shown`() {
-        assertThat(searchViewModel.isHeaderBackgroundVisibleLiveData.value, shouldBe(true))
+        assertThat(tokoNowSearchViewModel.isHeaderBackgroundVisibleLiveData.value, shouldBe(true))
     }
 
     private fun `Then assert content is not loading`() {
-        assertThat(searchViewModel.isContentLoadingLiveData.value, shouldBe(false))
+        assertThat(tokoNowSearchViewModel.isContentLoadingLiveData.value, shouldBe(false))
     }
 
     private fun `Then assert general search tracking`(searchModel: SearchModel) {
@@ -112,7 +112,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
                 "|$HASIL_PENCARIAN_DI_TOKONOW" +
                 "|$totalData"
 
-        val generalSearch = searchViewModel.generalSearchEventLiveData.value!!
+        val generalSearch = tokoNowSearchViewModel.generalSearchEventLiveData.value!!
 
         assertThat(generalSearch[EVENT], shouldBe(EVENT_CLICK_TOKONOW))
         assertThat(generalSearch[EVENT_ACTION], shouldBe(GENERAL_SEARCH))
@@ -129,7 +129,7 @@ class SearchFirstPageTest: BaseSearchPageLoadTest() {
 
         `When view created`()
 
-        val visitableList = searchViewModel.visitableListLiveData.value!!
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
 
         `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(1))
         `Then assert first page visitables`(visitableList, searchModel)

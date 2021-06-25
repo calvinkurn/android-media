@@ -9,14 +9,14 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.view.TokopediaNowView
-import com.tokopedia.tokopedianow.home.presentation.fragment.HomeFragment.Companion.SOURCE
-import com.tokopedia.tokopedianow.home.presentation.fragment.HomeFragment.Companion.SOURCE_TRACKING
+import com.tokopedia.tokopedianow.common.view.TokoNowView
+import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
+import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE_TRACKING
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
 
 class HomeChooseAddressWidgetViewHolder(
         itemView: View,
-        private val tokopediaNowListener: TokopediaNowView? = null,
+        private val tokoNowListener: TokoNowView? = null,
         private val homeChooseAddressWidgetListener: HomeChooseAddressWidgetListener? = null
 ): AbstractViewHolder<HomeChooseAddressWidgetUiModel>(itemView) {
 
@@ -34,10 +34,10 @@ class HomeChooseAddressWidgetViewHolder(
     }
 
     private fun bindChooseAddressWidget() {
-        tokopediaNowListener?.getFragmentPage()?.let { fragment ->
+        tokoNowListener?.getFragmentPage()?.let { fragment ->
             chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
                 override fun onLocalizingAddressUpdatedFromWidget() {
-                    tokopediaNowListener.refreshLayoutPage()
+                    tokoNowListener.refreshLayoutPage()
                 }
 
                 override fun onLocalizingAddressServerDown() {
@@ -45,7 +45,7 @@ class HomeChooseAddressWidgetViewHolder(
                 }
 
                 override fun onLocalizingAddressLoginSuccess() {
-                    tokopediaNowListener.refreshLayoutPage()
+                    tokoNowListener.refreshLayoutPage()
                 }
 
                 override fun getLocalizingAddressHostFragment(): Fragment = fragment

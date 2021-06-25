@@ -13,7 +13,7 @@ class SearchErrorHandlingTest: SearchTestFixtures(), Callback {
         super.setUp()
 
         errorHandlingTestHelper = ErrorHandlingTestHelper(
-                searchViewModel,
+                tokoNowSearchViewModel,
                 this
         )
     }

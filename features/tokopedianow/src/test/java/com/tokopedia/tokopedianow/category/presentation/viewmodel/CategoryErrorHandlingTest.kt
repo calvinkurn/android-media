@@ -13,7 +13,7 @@ class CategoryErrorHandlingTest: CategoryTestFixtures(), Callback {
         super.setUp()
 
         errorHandlingTestHelper = ErrorHandlingTestHelper(
-                categoryViewModel,
+                tokoNowCategoryViewModel,
                 this
         )
     }

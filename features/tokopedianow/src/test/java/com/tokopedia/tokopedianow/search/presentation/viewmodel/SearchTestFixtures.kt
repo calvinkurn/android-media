@@ -44,7 +44,7 @@ open class SearchTestFixtures {
     protected val userSession = mockk<UserSessionInterface>(relaxed = true).also {
         every { it.isLoggedIn } returns true
     }
-    protected lateinit var searchViewModel: SearchViewModel
+    protected lateinit var tokoNowSearchViewModel: TokoNowSearchViewModel
 
     @Before
     open fun setUp() {
@@ -61,7 +61,7 @@ open class SearchTestFixtures {
     }
 
     protected fun `Given search view model`(queryParamMap: Map<String, String> = defaultQueryParamMap) {
-        searchViewModel = SearchViewModel(
+        tokoNowSearchViewModel = TokoNowSearchViewModel(
                 CoroutineTestDispatchersProvider,
                 queryParamMap,
                 getSearchFirstPageUseCase,
@@ -104,10 +104,10 @@ open class SearchTestFixtures {
     )
 
     protected fun `Given view already created`() {
-        searchViewModel.onViewCreated()
+        tokoNowSearchViewModel.onViewCreated()
     }
 
     protected fun `When view created`() {
-        searchViewModel.onViewCreated()
+        tokoNowSearchViewModel.onViewCreated()
     }
 }

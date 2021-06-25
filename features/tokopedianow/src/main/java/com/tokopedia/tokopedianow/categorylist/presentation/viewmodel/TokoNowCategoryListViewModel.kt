@@ -12,7 +12,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class CategoryListViewModel @Inject constructor(
+class TokoNowCategoryListViewModel @Inject constructor(
     private val getCategoryListUseCase: GetCategoryListUseCase,
     dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.io) {

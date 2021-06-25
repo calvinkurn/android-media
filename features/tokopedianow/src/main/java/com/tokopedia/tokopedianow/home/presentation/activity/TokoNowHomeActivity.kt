@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.home.presentation.fragment.HomeFragment
+import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 
-class HomeActivity: BaseActivity() {
+class TokoNowHomeActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tokopedianow_home)
@@ -19,7 +19,7 @@ class HomeActivity: BaseActivity() {
     private fun attachFragment() {
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.fragment_container, HomeFragment.newInstance())
+                .replace(R.id.fragment_container, TokoNowHomeFragment.newInstance())
                 .commit()
     }
 

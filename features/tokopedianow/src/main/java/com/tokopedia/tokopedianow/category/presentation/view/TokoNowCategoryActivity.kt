@@ -11,13 +11,13 @@ import com.tokopedia.tokopedianow.category.di.CategoryParamModule
 import com.tokopedia.tokopedianow.category.di.DaggerCategoryComponent
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryActivity
 
-class CategoryActivity: BaseSearchCategoryActivity(), HasComponent<CategoryComponent> {
+class TokoNowCategoryActivity: BaseSearchCategoryActivity(), HasComponent<CategoryComponent> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tokopedianow_search_category)
 
-        val fragment = CategoryFragment.create()
+        val fragment = TokoNowCategoryFragment.create()
 
         supportFragmentManager.beginTransaction()
                 .replace(R.id.parent_view, fragment)

@@ -15,7 +15,7 @@ class SearchUpdateCartTest: SearchTestFixtures(), UpdateCartTestHelper.Callback 
         super.setUp()
 
         updateCartTestHelper = UpdateCartTestHelper(
-                searchViewModel,
+                tokoNowSearchViewModel,
                 getMiniCartListSimplifiedUseCase,
                 this,
         )
@@ -42,7 +42,7 @@ class SearchUpdateCartTest: SearchTestFixtures(), UpdateCartTestHelper.Callback 
     }
 
     private fun `When view resumed`() {
-        searchViewModel.onViewResumed()
+        tokoNowSearchViewModel.onViewResumed()
     }
 
     private fun `Then assert get mini cart list is not called`() {

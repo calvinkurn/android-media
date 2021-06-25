@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.search.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.tokopedianow.search.presentation.view.SearchFragment
+import com.tokopedia.tokopedianow.search.presentation.view.TokoNowSearchFragment
 import com.tokopedia.tokopedianow.searchcategory.di.UserSessionModule
 import dagger.Component
 
@@ -16,5 +16,5 @@ import dagger.Component
         dependencies = [BaseAppComponent::class])
 interface SearchComponent {
 
-    fun inject(searchFragment: SearchFragment)
+    fun inject(tokoNowSearchFragment: TokoNowSearchFragment)
 }

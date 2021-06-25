@@ -79,7 +79,7 @@ class SearchChooseAddressTest: SearchTestFixtures() {
     }
 
     private fun `When localizing address selected`() {
-        searchViewModel.onLocalizingAddressSelected()
+        tokoNowSearchViewModel.onLocalizingAddressSelected()
     }
 
     private fun `Then assert request params contains new address`(
@@ -111,7 +111,7 @@ class SearchChooseAddressTest: SearchTestFixtures() {
     }
 
     private fun `When view resumed`() {
-        searchViewModel.onViewResumed()
+        tokoNowSearchViewModel.onViewResumed()
     }
 
     @Test

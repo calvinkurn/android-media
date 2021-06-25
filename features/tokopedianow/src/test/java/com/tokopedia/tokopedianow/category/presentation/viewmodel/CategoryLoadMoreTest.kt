@@ -22,7 +22,7 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
 
         `When view load more`()
 
-        val visitableList = categoryViewModel.visitableListLiveData.value!!
+        val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
         `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(2))
         `Then assert load more page data`(categoryModelPage1, categoryModelPage2, visitableList)
         `Then assert visitable list footer`(visitableList, categoryModelPage1.categoryDetail.data.navigation)
@@ -38,7 +38,7 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
     }
 
     private fun `When view load more`() {
-        categoryViewModel.onLoadMore()
+        tokoNowCategoryViewModel.onLoadMore()
     }
 
     private fun `Then assert load more page data`(
@@ -73,7 +73,7 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
 
         `When view load more`()
 
-        val visitableList = categoryViewModel.visitableListLiveData.value!!
+        val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
         `Then assert request params map`(createExpectedMandatoryTokonowQueryParams(2))
         `Then assert load more page data`(categoryModelPage1, categoryModelPage2, visitableList)
         `Then assert visitable list end with loading more model`(visitableList)

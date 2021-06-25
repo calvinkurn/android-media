@@ -30,7 +30,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import javax.inject.Named
 
-class CategoryViewModel @Inject constructor (
+class TokoNowCategoryViewModel @Inject constructor (
         baseDispatcher: CoroutineDispatchers,
         @param:Named(TOKONOW_CATEGORY_L1)
         val categoryL1: String,

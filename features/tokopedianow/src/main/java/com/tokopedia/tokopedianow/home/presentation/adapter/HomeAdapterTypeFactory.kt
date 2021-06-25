@@ -8,13 +8,13 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
-import com.tokopedia.tokopedianow.common.view.TokopediaNowView
+import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.*
 
 class HomeAdapterTypeFactory(
-        private val tokopediaNowListener: TokopediaNowView? = null,
+        private val tokoNowListener: TokoNowView? = null,
         private val homeTickerListener: HomeTickerViewHolder.HomeTickerListener? = null,
         private val homeChooseAddressWidgetListener: HomeChooseAddressWidgetViewHolder.HomeChooseAddressWidgetListener? = null,
         private val homeCategoryGridlistener: HomeCategoryGridViewHolder.HomeCategoryGridListener? = null,
@@ -52,9 +52,9 @@ class HomeAdapterTypeFactory(
             // region Toko Mart Home Component
             HomeCategoryGridViewHolder.LAYOUT -> HomeCategoryGridViewHolder(view, homeCategoryGridlistener)
             HomeCategoryItemViewHolder.LAYOUT -> HomeCategoryItemViewHolder(view, homeCategoryItemListener)
-            HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, tokopediaNowListener, homeChooseAddressWidgetListener)
+            HomeChooseAddressWidgetViewHolder.LAYOUT -> HomeChooseAddressWidgetViewHolder(view, tokoNowListener, homeChooseAddressWidgetListener)
             HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view, homeTickerListener)
-            HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokopediaNowListener)
+            HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowListener)
             HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)
             // endregion
 

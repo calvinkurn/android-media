@@ -7,7 +7,7 @@ import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
-class CreateSearchViewModelTest:
+class CreateTokoNowSearchViewModelTest:
         SearchTestFixtures(),
         CreateSearchCategoryViewModelTestHelper.Callback {
 
@@ -22,7 +22,7 @@ class CreateSearchViewModelTest:
         `Given search view model`()
     }
 
-    override fun getViewModel() = searchViewModel
+    override fun getViewModel() = tokoNowSearchViewModel
 
     @Test
     fun `test create search view model`() {
@@ -35,18 +35,18 @@ class CreateSearchViewModelTest:
     }
 
     private fun `Then assert keyword from parameter`() {
-        assertThat(searchViewModel.query, shouldBe(defaultKeyword))
+        assertThat(tokoNowSearchViewModel.query, shouldBe(defaultKeyword))
     }
 
     private fun `Then assert query param has default sort`() {
         assertThat(
-                searchViewModel.queryParam[SearchApiConst.OB],
+                tokoNowSearchViewModel.queryParam[SearchApiConst.OB],
                 shouldBe(DEFAULT_VALUE_OF_PARAMETER_SORT)
         )
     }
 
     private fun `Then assert content is loading`() {
-        assertThat(searchViewModel.isContentLoadingLiveData.value, shouldBe(true))
+        assertThat(tokoNowSearchViewModel.isContentLoadingLiveData.value, shouldBe(true))
     }
 
     @Test

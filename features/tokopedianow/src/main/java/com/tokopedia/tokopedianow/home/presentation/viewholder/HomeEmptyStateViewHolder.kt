@@ -9,16 +9,16 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
-import com.tokopedia.tokopedianow.common.view.TokopediaNowView
+import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
-import com.tokopedia.tokopedianow.home.presentation.activity.HomeActivity
-import com.tokopedia.tokopedianow.home.presentation.fragment.HomeFragment.Companion.SOURCE
+import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
+import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeEmptyStateUiModel
 
 class HomeEmptyStateViewHolder(
         itemView: View,
-        private val tokopediaNowListener: TokopediaNowView? = null,
+        private val tokoNowListener: TokoNowView? = null,
 ) : AbstractViewHolder<HomeEmptyStateUiModel>(itemView) {
 
     companion object {
@@ -52,7 +52,7 @@ class HomeEmptyStateViewHolder(
             }
 
             override fun onReturnClick() {
-                (itemView.context as? HomeActivity)?.finish()
+                (itemView.context as? TokoNowHomeActivity)?.finish()
             }
         }
     }
@@ -63,7 +63,7 @@ class HomeEmptyStateViewHolder(
             override fun getLocalizingAddressHostSourceBottomSheet(): String = SOURCE
 
             override fun onAddressDataChanged() {
-                tokopediaNowListener?.refreshLayoutPage()
+                tokoNowListener?.refreshLayoutPage()
             }
 
             override fun onLocalizingAddressServerDown() { /* to do : nothing */ }
@@ -72,7 +72,7 @@ class HomeEmptyStateViewHolder(
 
             override fun onDismissChooseAddressBottomSheet() { /* to do : nothing */ }
         })
-        tokopediaNowListener?.getFragmentManagerPage()?.let {
+        tokoNowListener?.getFragmentManagerPage()?.let {
             chooseAddressBottomSheet.show(it, SHIPPING_CHOOSE_ADDRESS_TAG)
         }
     }
@@ -81,7 +81,7 @@ class HomeEmptyStateViewHolder(
         emptyStateNoAddress?.hide()
         emptyStateFailedToFetchData?.show()
         emptyStateFailedToFetchData?.setActionClickListener {
-            tokopediaNowListener?.refreshLayoutPage()
+            tokoNowListener?.refreshLayoutPage()
         }
     }
 }

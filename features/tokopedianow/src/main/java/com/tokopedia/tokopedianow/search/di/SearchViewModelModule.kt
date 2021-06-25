@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokopedianow.search.domain.usecase.GetSearchUseCaseModule
-import com.tokopedia.tokopedianow.search.presentation.viewmodel.SearchViewModel
+import com.tokopedia.tokopedianow.search.presentation.viewmodel.TokoNowSearchViewModel
 import com.tokopedia.tokopedianow.searchcategory.di.GraphqlModule
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetFilterUseCaseModule
 import com.tokopedia.tokopedianow.searchcategory.domain.usecase.GetProductCountUseCaseModule
@@ -27,6 +27,6 @@ abstract class SearchViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(SearchViewModel::class)
-    internal abstract fun searchViewModel(viewModel: SearchViewModel): ViewModel
+    @ViewModelKey(TokoNowSearchViewModel::class)
+    internal abstract fun searchViewModel(viewModelTokoNow: TokoNowSearchViewModel): ViewModel
 }

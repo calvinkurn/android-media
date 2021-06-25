@@ -13,7 +13,7 @@ class SearchEmptyProductTest: SearchTestFixtures(), EmptyProductTestHelper.Callb
 
     override fun setUp() {
         super.setUp()
-        emptyProductTestHelper = EmptyProductTestHelper(searchViewModel, this)
+        emptyProductTestHelper = EmptyProductTestHelper(tokoNowSearchViewModel, this)
     }
 
     override fun `Given first page product list is empty`() {

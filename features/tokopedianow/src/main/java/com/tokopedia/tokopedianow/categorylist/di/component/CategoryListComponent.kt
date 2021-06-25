@@ -5,7 +5,7 @@ import com.tokopedia.tokopedianow.categorylist.di.module.CategoryListModule
 import com.tokopedia.tokopedianow.categorylist.di.module.CategoryListUseCaseModule
 import com.tokopedia.tokopedianow.categorylist.di.module.CategoryListViewModelModule
 import com.tokopedia.tokopedianow.categorylist.di.scope.CategoryListScope
-import com.tokopedia.tokopedianow.categorylist.presentation.bottomsheet.CategoryListBottomSheet
+import com.tokopedia.tokopedianow.categorylist.presentation.bottomsheet.TokoNowCategoryListBottomSheet
 import dagger.Component
 
 @CategoryListScope
@@ -19,5 +19,5 @@ import dagger.Component
 )
 interface CategoryListComponent {
 
-    fun inject(fragment: CategoryListBottomSheet)
+    fun inject(fragment: TokoNowCategoryListBottomSheet)
 }

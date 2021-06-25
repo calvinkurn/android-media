@@ -23,15 +23,15 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.analytic.CategoryListAnalytics
 import com.tokopedia.tokopedianow.categorylist.di.component.DaggerCategoryListComponent
 import com.tokopedia.tokopedianow.categorylist.domain.mapper.CategoryListMapper
-import com.tokopedia.tokopedianow.categorylist.presentation.activity.CategoryListActivity.Companion.PARAM_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.categorylist.presentation.activity.TokoNowCategoryListActivity.Companion.PARAM_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.categorylist.presentation.uimodel.CategoryListItemUiModel
 import com.tokopedia.tokopedianow.categorylist.presentation.view.CategoryListView
 import com.tokopedia.tokopedianow.categorylist.presentation.view.CategoryListView.CategoryListListener
-import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.CategoryListViewModel
-import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.CategoryListViewModel.Companion.ERROR_MAINTENANCE
-import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.CategoryListViewModel.Companion.ERROR_PAGE_FULL
-import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.CategoryListViewModel.Companion.ERROR_PAGE_NOT_FOUND
-import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.CategoryListViewModel.Companion.ERROR_SERVER
+import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel
+import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel.Companion.ERROR_MAINTENANCE
+import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel.Companion.ERROR_PAGE_FULL
+import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel.Companion.ERROR_PAGE_NOT_FOUND
+import com.tokopedia.tokopedianow.categorylist.presentation.viewmodel.TokoNowCategoryListViewModel.Companion.ERROR_SERVER
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
@@ -39,14 +39,14 @@ import com.tokopedia.usecase.coroutines.Success
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class CategoryListBottomSheet : BottomSheetUnify() {
+class TokoNowCategoryListBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val ERROR_STATE_NOT_FOUND_IMAGE_URL = "https://images.tokopedia.net/img/error_page_400_category_list.png"
-        private val TAG = CategoryListBottomSheet::class.simpleName
+        private val TAG = TokoNowCategoryListBottomSheet::class.simpleName
 
-        fun newInstance(warehouseId: String): CategoryListBottomSheet {
-            return CategoryListBottomSheet().apply {
+        fun newInstance(warehouseId: String): TokoNowCategoryListBottomSheet {
+            return TokoNowCategoryListBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_WAREHOUSE_ID, warehouseId)
                 }
@@ -55,7 +55,7 @@ class CategoryListBottomSheet : BottomSheetUnify() {
     }
 
     @Inject
-    lateinit var viewModel: CategoryListViewModel
+    lateinit var viewModelTokoNow: TokoNowCategoryListViewModel
 
     @Inject
     lateinit var analytics: CategoryListAnalytics
@@ -113,7 +113,7 @@ class CategoryListBottomSheet : BottomSheetUnify() {
     }
 
     private fun observeLiveData() {
-        observe(viewModel.categoryList) {
+        observe(viewModelTokoNow.categoryList) {
             if (it is Success) {
                 if(it.data.header.errorCode.isNullOrEmpty()){
                     showCategoryList(CategoryListMapper.mapToUiModel(it.data.data))
@@ -128,7 +128,7 @@ class CategoryListBottomSheet : BottomSheetUnify() {
 
     private fun getCategoryList() {
         val warehouseId = arguments?.getString(PARAM_WAREHOUSE_ID).orEmpty()
-        viewModel.getCategoryList(warehouseId)
+        viewModelTokoNow.getCategoryList(warehouseId)
         showLoader()
     }
 
