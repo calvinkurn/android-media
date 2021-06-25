@@ -120,7 +120,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
             navigateContact()
         }
 
-        binding?.commonTopupbillsFavoriteNumberTitle?.run {
+        binding?.commonTopupbillsFavoriteNumberClue?.run {
             if (clientNumbers.isNullOrEmpty()) hide() else show()
         }
     }
