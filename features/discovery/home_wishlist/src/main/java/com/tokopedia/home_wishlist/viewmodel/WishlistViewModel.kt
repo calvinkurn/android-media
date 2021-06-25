@@ -774,7 +774,7 @@ open class WishlistViewModel @Inject constructor(
                                         RemoveWishlistActionData(
                                                 message = errorMessage ?: "",
                                                 isSuccess = false,
-                                                productId = productId?.toInt() ?: 0
+                                                productId = productId ?: ""
                                         )
                                 )
                             }
