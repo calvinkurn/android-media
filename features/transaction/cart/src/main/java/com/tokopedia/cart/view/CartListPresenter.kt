@@ -182,7 +182,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
     }
 
-    override fun processUpdateCartData(fireAndForget: Boolean) {
+    override fun processUpdateCartData(fireAndForget: Boolean, onlyTokoNowProducts: Boolean) {
         view?.let {
             if (!fireAndForget) {
                 it.showProgressLoading()
@@ -196,7 +196,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 it.getAllSelectedCartDataList() ?: emptyList()
             }
 
-            val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
+            val updateCartRequestList = getUpdateCartRequest(cartItemDataList, onlyTokoNowProducts)
             if (updateCartRequestList.isNotEmpty()) {
                 val requestParams = RequestParams.create()
                 requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
@@ -249,14 +249,16 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
     }
 
-    private fun getUpdateCartRequest(cartItemDataList: List<CartItemData>): ArrayList<UpdateCartRequest> {
+    private fun getUpdateCartRequest(cartItemDataList: List<CartItemData>, onlyTokoNowProducts: Boolean = false): ArrayList<UpdateCartRequest> {
         val updateCartRequestList = ArrayList<UpdateCartRequest>()
         for (cartItemData in cartItemDataList) {
-            val updateCartRequest = UpdateCartRequest()
-            updateCartRequest.cartId = cartItemData.originData?.cartId?.toString() ?: "0"
-            updateCartRequest.notes = cartItemData.updatedData?.remark
-            updateCartRequest.quantity = cartItemData.updatedData?.quantity ?: 0
-            updateCartRequestList.add(updateCartRequest)
+            if (!onlyTokoNowProducts || (onlyTokoNowProducts && cartItemData.originData?.isTokoNow == true)) {
+                val updateCartRequest = UpdateCartRequest()
+                updateCartRequest.cartId = cartItemData.originData?.cartId?.toString() ?: "0"
+                updateCartRequest.notes = cartItemData.updatedData?.remark
+                updateCartRequest.quantity = cartItemData.updatedData?.quantity ?: 0
+                updateCartRequestList.add(updateCartRequest)
+            }
         }
         return updateCartRequestList
     }

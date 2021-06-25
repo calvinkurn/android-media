@@ -424,6 +424,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.cartString = availableGroup.cartString
             it.warehouseId = availableGroup.warehouse.warehouseId
             it.listPromoCheckout = listPromoCheckout
+            it.isTokoNow = availableGroup.shop.isTokoNow
         }
     }
 
@@ -435,6 +436,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.shopTypeInfoData = mapShopTypeInfo(unavailableGroup.shop)
             it.cartString = unavailableGroup.cartString
             it.warehouseId = unavailableGroup.warehouse.warehouseId
+            it.isTokoNow = unavailableGroup.shop.isTokoNow
         }
     }
 
