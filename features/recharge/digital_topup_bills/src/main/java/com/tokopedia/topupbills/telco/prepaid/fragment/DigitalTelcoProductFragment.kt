@@ -290,6 +290,13 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 telcoTelcoProductView.selectProductFromFavNumber(favNumber.productId)
             }
         })
+
+        sharedModelPrepaid.seamlessFavNumberSelected.observe(viewLifecycleOwner, Observer { favNumber ->
+            val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
+            if (activeCategory == titleProduct) {
+                telcoTelcoProductView.selectProductFromFavNumber(favNumber.productId.toString())
+            }
+        })
     }
 
     private fun onErrorProductList(error: Throwable? = null) {

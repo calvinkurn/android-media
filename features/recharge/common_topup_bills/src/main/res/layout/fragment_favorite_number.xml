@@ -35,9 +35,10 @@
     </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/common_topupbills_favorite_number_clue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mau isi nomor yang mana, nih?"
+        android:text="@string/common_topup_fav_number_clue"
         android:layout_margin="@dimen/spacing_lvl4"
         app:typographyType="heading_4" />
 

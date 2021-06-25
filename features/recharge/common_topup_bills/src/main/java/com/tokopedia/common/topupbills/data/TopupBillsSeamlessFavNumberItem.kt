@@ -1,4 +1,4 @@
-package com.tokopedia.common.topupbills.analytics
+package com.tokopedia.common.topupbills.data
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName

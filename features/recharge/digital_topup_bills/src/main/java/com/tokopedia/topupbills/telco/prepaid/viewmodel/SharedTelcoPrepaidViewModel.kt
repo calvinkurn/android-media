@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -47,6 +48,10 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     val favNumberSelected: LiveData<TopupBillsFavNumberItem>
         get() = _favNumberSelected
 
+    private val _seamlessFavNumberSelected = MutableLiveData<TopupBillsSeamlessFavNumberItem>()
+    val seamlessFavNumberSelected: LiveData<TopupBillsSeamlessFavNumberItem>
+        get() = _seamlessFavNumberSelected
+
     private val _showTotalPrice = MutableLiveData<Boolean>()
     val showTotalPrice: LiveData<Boolean>
         get() = _showTotalPrice
@@ -87,6 +92,10 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         _favNumberSelected.postValue(favNumber)
     }
 
+    fun setSeamlessFavNumberSelected(favNumber: TopupBillsSeamlessFavNumberItem) {
+        _seamlessFavNumberSelected.postValue(favNumber)
+    }
+
     fun setVisibilityTotalPrice(show: Boolean) {
         _showTotalPrice.postValue(show)
     }
@@ -123,7 +132,9 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
                 _productList.postValue(Fail(MessageErrorException()))
             } else {
                 _productList.postValue(Success(data.rechargeCatalogProductDataData.productInputList))
-                setFavNumberSelected(TopupBillsFavNumberItem(productId = autoSelectProductId.toString()))
+                // TODO: [Misael] Toggle disini?
+//                setFavNumberSelected(TopupBillsFavNumberItem(productId = autoSelectProductId.toString()))
+                setSeamlessFavNumberSelected(TopupBillsSeamlessFavNumberItem(productId = autoSelectProductId))
             }
         }) {
             _loadingProductList.postValue(false)

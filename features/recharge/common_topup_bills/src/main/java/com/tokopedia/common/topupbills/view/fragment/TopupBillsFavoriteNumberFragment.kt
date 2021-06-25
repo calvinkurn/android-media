@@ -20,13 +20,16 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
+import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberListAdapter
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.ArrayList
@@ -38,7 +41,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     private lateinit var numberListAdapter: TopupBillsFavoriteNumberListAdapter
-    private lateinit var clientNumbers: List<TopupBillsFavNumberItem>
+    private lateinit var clientNumbers: List<TopupBillsSeamlessFavNumberItem>
     private lateinit var clientNumberType: String
 
     private var number: String = ""
@@ -92,6 +95,11 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
                 }
             }
         }
+        if (clientNumbers.isEmpty()) {
+            binding?.commonTopupbillsFavoriteNumberClue?.hide()
+        } else {
+            binding?.commonTopupbillsFavoriteNumberClue?.show()
+        }
         numberListAdapter = TopupBillsFavoriteNumberListAdapter(this, clientNumbers)
 
         binding?.commonTopupbillsSearchNumberInputView?.run {
@@ -143,9 +151,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
             startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
         } catch (e: ActivityNotFoundException) {
             view?.let {
-                // TODO: [Misael] ini errornya isi apa
-                Toaster.build(it, "Ahay Error", Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
-//                Toaster.build(it, getString(R.string.error_message_contact_not_found), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+                Toaster.build(it, getString(R.string.common_topup_contact_not_found), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
             }
         }
     }
@@ -194,9 +200,9 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
     }
 
     private fun filterData(query: String) {
-        val searchClientNumbers = ArrayList<TopupBillsFavNumberItem>()
+        val searchClientNumbers = ArrayList<TopupBillsSeamlessFavNumberItem>()
         if (!TextUtils.isEmpty(query) and !isContain(query, clientNumbers)) {
-            searchClientNumbers.add(TopupBillsFavNumberItem(query, isFavorite = false))
+            searchClientNumbers.add(TopupBillsSeamlessFavNumberItem(clientNumber = query, isFavorite = false))
         }
 
         searchClientNumbers.addAll(clientNumbers.filter {
@@ -206,12 +212,12 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         numberListAdapter.setNumbers(searchClientNumbers)
     }
 
-    private fun isContain(number: String, clientNumbers: List<TopupBillsFavNumberItem>): Boolean {
+    private fun isContain(number: String, clientNumbers: List<TopupBillsSeamlessFavNumberItem>): Boolean {
         return clientNumbers.any { it.clientNumber.equals(number, ignoreCase = true) }
     }
 
-    private fun findNumber(number: String, clientNumbers: List<TopupBillsFavNumberItem>): TopupBillsFavNumberItem? {
-        var foundClientNumber: TopupBillsFavNumberItem? = null
+    private fun findNumber(number: String, clientNumbers: List<TopupBillsSeamlessFavNumberItem>): TopupBillsSeamlessFavNumberItem? {
+        var foundClientNumber: TopupBillsSeamlessFavNumberItem? = null
         for (orderClientNumber in clientNumbers) {
             if (orderClientNumber.clientNumber.equals(number, ignoreCase = true)) {
                 foundClientNumber = orderClientNumber
@@ -234,7 +240,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         KeyboardHandler.hideSoftKeyboard(activity)
     }
 
-    override fun onFavoriteNumberClick(clientNumber: TopupBillsFavNumberItem) {
+    override fun onFavoriteNumberClick(clientNumber: TopupBillsSeamlessFavNumberItem) {
         if (!::inputNumberActionType.isInitialized || inputNumberActionType != InputNumberActionType.CONTACT) {
             val checkNumber = findNumber(clientNumber.clientNumber, numberListAdapter.clientNumbers)
             inputNumberActionType = if (checkNumber != null && checkNumber.isFavorite) {
@@ -272,7 +278,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
 
         fun newInstance(clientNumberType: String, number: String,
-                        numberList: List<TopupBillsFavNumberItem>): Fragment {
+                        numberList: List<TopupBillsSeamlessFavNumberItem>): Fragment {
             val fragment = TopupBillsFavoriteNumberFragment()
             val bundle = Bundle()
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumberType)

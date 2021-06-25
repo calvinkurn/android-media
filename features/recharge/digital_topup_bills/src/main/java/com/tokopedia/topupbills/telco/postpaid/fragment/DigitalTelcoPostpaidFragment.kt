@@ -18,8 +18,11 @@ import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
+import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
@@ -27,6 +30,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
@@ -77,6 +81,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
 
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
+    private val seamlessFavNumberList = mutableListOf<TopupBillsSeamlessFavNumberItem>()
 
     override var menuId = TelcoComponentType.TELCO_POSTPAID
     override var categoryId = TelcoCategoryType.CATEGORY_PASCABAYAR
@@ -296,9 +301,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
             override fun onClientNumberHasFocus(clientNumber: String) {
                 postpaidClientNumberWidget.clearFocusAutoComplete()
+                // TODO: [Misael] toggle disini
                 startActivityForResult(activity?.let {
-                    DigitalSearchNumberActivity.newInstance(it,
-                            ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList)
+//                    DigitalSearchNumberActivity.newInstance(it,
+//                            ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList)
+                    TopupBillsFavoriteNumberActivity.getCallingIntent(it,
+                            ClientNumberType.TYPE_INPUT_TEL, clientNumber, seamlessFavNumberList)
                 },
                         REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             }
@@ -463,6 +471,16 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.clearFocusAutoComplete()
     }
 
+    override fun handleCallbackSeamlessSearchNumber(orderClientNumber: TopupBillsSeamlessFavNumberItem, inputNumberActionTypeIndex: Int) {
+        inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
+        postpaidClientNumberWidget.setInputNumber(orderClientNumber.clientNumber)
+        postpaidClientNumberWidget.clearFocusAutoComplete()
+    }
+
+    override fun handleCallbackSeamlessSearchNumberCancel() {
+        postpaidClientNumberWidget.clearFocusAutoComplete()
+    }
+
     override fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation) {
         inputNumberActionType = InputNumberActionType.LATEST_TRANSACTION
         postpaidClientNumberWidget.setInputNumber(topupBillsRecommendation.clientNumber)
@@ -480,6 +498,11 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun errorSetFavNumbers() {
         performanceMonitoringStopTrace()
+    }
+
+    override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
+        performanceMonitoringStopTrace()
+        seamlessFavNumberList.addAll(data.favoriteNumbers)
     }
 
     private fun performanceMonitoringStopTrace() {

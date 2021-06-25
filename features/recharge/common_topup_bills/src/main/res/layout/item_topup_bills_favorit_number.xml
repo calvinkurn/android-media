@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_goneMarginBottom="@dimen/unify_space_12"
         app:typographyType="heading_5"
         tools:text="Nabilla Sabbaha"
         app:layout_constraintStart_toEndOf="@id/common_topupbills_favorite_number_icon"

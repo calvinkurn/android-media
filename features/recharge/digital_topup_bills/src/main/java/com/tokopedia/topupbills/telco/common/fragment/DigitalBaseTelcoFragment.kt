@@ -189,9 +189,12 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     if (data != null) {
                         val inputNumberActionType = data.getIntExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
                         val orderClientNumber = data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER)
-                        handleCallbackSearchNumber(orderClientNumber as TopupBillsFavNumberItem, inputNumberActionType)
+                        // TODO: [Misael] toggle disini
+//                        handleCallbackSearchNumber(orderClientNumber as TopupBillsFavNumberItem, inputNumberActionType)
+                        handleCallbackSeamlessSearchNumber(orderClientNumber as TopupBillsSeamlessFavNumberItem, inputNumberActionType)
                     } else {
-                        handleCallbackSearchNumberCancel()
+//                        handleCallbackSearchNumberCancel()
+                        handleCallbackSeamlessSearchNumberCancel()
                     }
                 } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
                     if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
@@ -289,6 +292,10 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         setFavNumbers(data)
     }
 
+    override fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber) {
+        setSeamlessFavNumbers(data)
+    }
+
     override fun onEnquiryError(error: Throwable) {
         //do nothing
     }
@@ -298,6 +305,11 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     override fun onFavoriteNumbersError(error: Throwable) {
+        errorSetFavNumbers()
+    }
+
+    override fun onSeamlessFavoriteNumbersError(error: Throwable) {
+        // TODO: [Misael] mau isi apa ni
         errorSetFavNumbers()
     }
 
@@ -394,11 +406,17 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected abstract fun setFavNumbers(data: TopupBillsFavNumber)
 
+    protected abstract fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber)
+
     protected abstract fun errorSetFavNumbers()
 
     protected abstract fun handleCallbackSearchNumber(orderClientNumber: TopupBillsFavNumberItem, inputNumberActionTypeIndex: Int)
 
     protected abstract fun handleCallbackSearchNumberCancel()
+
+    protected abstract fun handleCallbackSeamlessSearchNumber(orderClientNumber: TopupBillsSeamlessFavNumberItem, inputNumberActionTypeIndex: Int)
+
+    protected abstract fun handleCallbackSeamlessSearchNumberCancel()
 
     protected abstract fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation)
 
