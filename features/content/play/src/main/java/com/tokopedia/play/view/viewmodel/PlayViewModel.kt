@@ -950,19 +950,6 @@ class PlayViewModel @Inject constructor(
         stopPlayer()
         onKeyboardHidden()
     }
-
-//    private fun getPinnedModel(
-//            pinnedMessage: PlayPinnedUiModel.PinnedMessage?,
-//            pinnedProduct: PlayPinnedUiModel.PinnedProduct?,
-//    ): PlayPinnedUiModel {
-//        return if (
-//                pinnedProduct?.shouldShow == true &&
-//                (pinnedProduct.productTags is PlayProductTagsUiModel.Incomplete ||
-//                        pinnedProduct.productTags is PlayProductTagsUiModel.Complete && pinnedProduct.productTags.productList.isNotEmpty())
-//        ) pinnedProduct
-//        else if (pinnedMessage?.shouldShow == true) pinnedMessage
-//        else PlayPinnedUiModel.NoPinned
-//    }
     //endregion
 
     private suspend fun handleWebSocketResponse(response: WebSocketAction, channelId: String, socketCredential: SocketCredential) {
