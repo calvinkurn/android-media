@@ -748,7 +748,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun setSaveAddressDataModel() {
-        saveDataModel?.address2 = "$currentLat,$currentLong"
+        if (currentLat != 0.0 && currentLong != 0.0) saveDataModel?.address2 = "$currentLat,$currentLong"
         saveDataModel?.receiverName = binding.formAccount.etNamaPenerima.textFieldInput.text.toString()
         saveDataModel?.phone = binding.formAccount.etNomorHp.textFieldInput.text.toString()
         if (isPositiveFlow) {
@@ -758,6 +758,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 saveDataModel?.address1 = "${binding.formAddress.etAlamat.textFieldInput.text}"
             }
             saveDataModel?.addressName =  binding.formAddress.etLabel.textFieldInput.text.toString()
+            saveDataModel?.isAnaPositive = PARAM_ANA_POSITIVE
         } else {
             if (binding.formAddressNegative.etCourierNote.textFieldInput.text.isNotEmpty()) {
                 saveDataModel?.address1 = "${binding.formAddressNegative.etAlamat.textFieldInput.text} (${binding.formAddressNegative.etCourierNote.textFieldInput.text})"
@@ -765,6 +766,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 saveDataModel?.address1 = "${binding.formAddressNegative.etAlamat.textFieldInput.text}"
             }
             saveDataModel?.addressName =  binding.formAddressNegative.etLabel.textFieldInput.text.toString()
+            saveDataModel?.isAnaPositive = PARAM_ANA_NEGATIVE
         }
 
 
@@ -788,6 +790,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         const val REQUEST_CODE_CONTACT_PICKER = 99
 
         const val REQUEST_PINPONT_PAGE = 1998
+        const val PARAM_ANA_POSITIVE = "1"
+        const val PARAM_ANA_NEGATIVE = "0"
 
         const val SUCCESS = "success"
         const val NOT_SUCCESS = "not success"
