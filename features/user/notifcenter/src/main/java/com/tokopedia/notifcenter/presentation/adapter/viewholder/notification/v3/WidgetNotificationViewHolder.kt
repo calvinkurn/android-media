@@ -262,10 +262,10 @@ class WidgetNotificationViewHolder constructor(
             element.widget.message.isNotEmpty() || element.shortDescHtml.isNotEmpty()
         ) {
             bindMessageMargin(element)
-            val widgetMessage = if (element.noWidgetWithTrackHistory()) {
-                element.shortDescHtml
-            } else {
+            val widgetMessage = if (element.hasWidgetMsg()) {
                 element.widgetMessageHtml
+            } else {
+                element.shortDescHtml
             }
             message.text = widgetMessage
         }
