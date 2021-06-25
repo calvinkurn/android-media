@@ -3533,7 +3533,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 LoggerConstant.TAG_MARKETPLACE_CHECKOUT_FLOW_ERROR,
                 mapOf(
                         LoggerConstant.KEY_TYPE to LoggerConstant.TYPE_LOAD_CART_PAGE_ERROR,
-                        LoggerConstant.KEY_MESSAGE to (errorMessage ?: "unknown exception")
+                        LoggerConstant.KEY_MESSAGE to (errorMessage ?: "unknown exception"),
+                        LoggerConstant.KEY_STACK_TRACE to throwable.stackTrace.toString().substring(0, 50)
                 )
         )
     }
@@ -3552,7 +3553,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 mapOf(
                         LoggerConstant.KEY_TYPE to LoggerConstant.TYPE_UPDATE_CART_FOR_CHECKOUT_ERROR,
                         LoggerConstant.KEY_MESSAGE to (errorMessage ?: "unknown exception"),
-                        LoggerConstant.KEY_PRODUCT_ID_LIST to productIdList.joinToString(",")
+                        LoggerConstant.KEY_PRODUCT_ID_LIST to productIdList.joinToString(","),
+                        LoggerConstant.KEY_STACK_TRACE to throwable.stackTrace.toString().substring(0, 50)
                 )
         )
     }
