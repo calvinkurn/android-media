@@ -47,22 +47,22 @@ import javax.inject.Inject
  * @author anggaprasetiyo on 18/01/18.
  */
 
-class CartListPresenter @Inject constructor(private val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase?,
-                                            private val deleteCartUseCase: DeleteCartUseCase?,
-                                            private val undoDeleteCartUseCase: UndoDeleteCartUseCase?,
-                                            private val updateCartUseCase: UpdateCartUseCase?,
+class CartListPresenter @Inject constructor(private val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase,
+                                            private val deleteCartUseCase: DeleteCartUseCase,
+                                            private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
+                                            private val updateCartUseCase: UpdateCartUseCase,
                                             private val compositeSubscription: CompositeSubscription,
-                                            private val addWishListUseCase: AddWishListUseCase?,
-                                            private val addCartToWishlistUseCase: AddCartToWishlistUseCase?,
-                                            private val removeWishListUseCase: RemoveWishListUseCase?,
-                                            private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase?,
+                                            private val addWishListUseCase: AddWishListUseCase,
+                                            private val addCartToWishlistUseCase: AddCartToWishlistUseCase,
+                                            private val removeWishListUseCase: RemoveWishListUseCase,
+                                            private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
                                             private val userSessionInterface: UserSessionInterface,
-                                            private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase?,
-                                            private val getRecentViewUseCase: GetRecommendationUseCase?,
-                                            private val getWishlistUseCase: GetWishlistUseCase?,
-                                            private val getRecommendationUseCase: GetRecommendationUseCase?,
-                                            private val addToCartUseCase: AddToCartUseCase?,
-                                            private val addToCartExternalUseCase: AddToCartExternalUseCase?,
+                                            private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+                                            private val getRecentViewUseCase: GetRecommendationUseCase,
+                                            private val getWishlistUseCase: GetWishlistUseCase,
+                                            private val getRecommendationUseCase: GetRecommendationUseCase,
+                                            private val addToCartUseCase: AddToCartUseCase,
+                                            private val addToCartExternalUseCase: AddToCartExternalUseCase,
                                             private val seamlessLoginUsecase: SeamlessLoginUsecase,
                                             private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                             private val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
@@ -106,11 +106,11 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     override fun detachView() {
         compositeSubscription.unsubscribe()
-        addWishListUseCase?.unsubscribe()
-        addCartToWishlistUseCase?.unsubscribe()
-        getRecentViewUseCase?.unsubscribe()
-        removeWishListUseCase?.unsubscribe()
-        getRecommendationUseCase?.unsubscribe()
+        addWishListUseCase.unsubscribe()
+        addCartToWishlistUseCase.unsubscribe()
+        getRecentViewUseCase.unsubscribe()
+        removeWishListUseCase.unsubscribe()
+        getRecommendationUseCase.unsubscribe()
         view = null
     }
 
@@ -130,11 +130,11 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 it.showProgressLoading()
             }
 
-            val params = getCartListSimplifiedUseCase?.buildParams(cartId, getCartState)
+            val params = getCartListSimplifiedUseCase.buildParams(cartId, getCartState)
             val requestParams = RequestParams.create()
             requestParams.putObject(GetCartListSimplifiedUseCase.PARAM_GET_CART, params)
-            compositeSubscription.add(getCartListSimplifiedUseCase?.createObservable(requestParams)
-                    ?.subscribe(GetCartListDataSubscriber(view, this, initialLoad))
+            compositeSubscription.add(getCartListSimplifiedUseCase.createObservable(requestParams)
+                    .subscribe(GetCartListDataSubscriber(view, this, initialLoad))
             )
         }
     }
@@ -161,8 +161,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val requestParams = RequestParams.create()
             requestParams.putObject(DeleteCartUseCase.PARAM_REMOVE_CART_REQUEST, removeCartRequest)
 
-            compositeSubscription.add(deleteCartUseCase?.createObservable(requestParams)
-                    ?.subscribe(DeleteCartItemSubscriber(view, this, toBeDeletedCartIds,
+            compositeSubscription.add(deleteCartUseCase.createObservable(requestParams)
+                    .subscribe(DeleteCartItemSubscriber(view, this, toBeDeletedCartIds,
                             removeAllItem, forceExpandCollapsedUnavailableItems, addWishList, isFromGlobalCheckbox)))
         }
     }
@@ -177,8 +177,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val requestParams = RequestParams.create()
             requestParams.putObject(UndoDeleteCartUseCase.PARAM_UNDO_REMOVE_CART_REQUEST, undoDeleteCartRequest)
 
-            compositeSubscription.add(undoDeleteCartUseCase?.createObservable(requestParams)
-                    ?.subscribe(UndoDeleteCartItemSubscriber(it)))
+            compositeSubscription.add(undoDeleteCartUseCase.createObservable(requestParams)
+                    .subscribe(UndoDeleteCartItemSubscriber(it)))
         }
     }
 
@@ -204,13 +204,13 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 if (fireAndForget) {
                     // Trigger use case without composite subscription, because this should continue even after view destroyed
                     requestParams.putString(UpdateCartUseCase.PARAM_KEY_SOURCE, UpdateCartUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES)
-                    updateCartUseCase?.createObservable(requestParams)?.subscribe({/* no-op */ }, {/* no-op */ })
+                    updateCartUseCase.createObservable(requestParams).subscribe({/* no-op */ }, {/* no-op */ })
                     return@let
                 } else {
                     requestParams.putString(UpdateCartUseCase.PARAM_KEY_SOURCE, "")
                     compositeSubscription.add(
-                            updateCartUseCase?.createObservable(requestParams)
-                                    ?.subscribe(UpdateCartSubscriber(view, this))
+                            updateCartUseCase.createObservable(requestParams)
+                                    .subscribe(UpdateCartSubscriber(view, this))
                     )
                 }
             } else {
@@ -236,12 +236,12 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
                 requestParams.putString(UpdateCartUseCase.PARAM_KEY_SOURCE, UpdateCartUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES)
 
-                val cartParams = getCartListSimplifiedUseCase?.buildParams(cartId, getCartState)
+                val cartParams = getCartListSimplifiedUseCase.buildParams(cartId, getCartState)
                 requestParams.putObject(GetCartListSimplifiedUseCase.PARAM_GET_CART, cartParams)
 
                 compositeSubscription.add(
-                        updateAndReloadCartUseCase?.createObservable(requestParams)
-                                ?.subscribe(UpdateAndReloadCartSubscriber(it, this))
+                        updateAndReloadCartUseCase.createObservable(requestParams)
+                                .subscribe(UpdateAndReloadCartSubscriber(it, this))
                 )
             } else {
                 it.hideProgressLoading()
@@ -509,11 +509,11 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     }
 
     override fun processAddToWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
-        addWishListUseCase?.createObservable(productId, userId, wishListActionListener)
+        addWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
 
     override fun processRemoveFromWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
-        removeWishListUseCase?.createObservable(productId, userId, wishListActionListener)
+        removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
 
     override fun processAddCartToWishlist(productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean) {
@@ -524,8 +524,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val requestParams = RequestParams.create()
             requestParams.putObject(AddCartToWishlistUseCase.PARAM_ADD_CART_TO_WISHLIST_REQUEST, addCartToWishlistRequest)
 
-            compositeSubscription.add(addCartToWishlistUseCase?.createObservable(requestParams)
-                    ?.subscribe(AddCartToWishlistSubscriber(it, this, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)))
+            compositeSubscription.add(addCartToWishlistUseCase.createObservable(requestParams)
+                    .subscribe(AddCartToWishlistSubscriber(it, this, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)))
         }
     }
 
@@ -1048,12 +1048,12 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     override fun processGetRecentViewData(allProductIds: List<String>) {
         view?.showItemLoading()
-        val requestParam = getRecentViewUseCase?.getRecomParams(
+        val requestParam = getRecentViewUseCase.getRecomParams(
                 1, RECENT_VIEW_XSOURCE, PAGE_NAME_RECENT_VIEW, allProductIds, "")
-        getRecentViewUseCase?.createObservable(requestParam ?: RequestParams.EMPTY)
-                ?.subscribeOn(schedulers.io)
-                ?.observeOn(schedulers.main)
-                ?.subscribe(GetRecentViewSubscriber(view))
+        getRecentViewUseCase.createObservable(requestParam)
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .subscribe(GetRecentViewSubscriber(view))
     }
 
     override fun processGetWishlistData() {
@@ -1067,19 +1067,19 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         requestParams.putAll(variables)
 
         compositeSubscription.add(
-                getWishlistUseCase?.createObservable(requestParams)
-                        ?.subscribe(GetWishlistSubscriber(view))
+                getWishlistUseCase.createObservable(requestParams)
+                        .subscribe(GetWishlistSubscriber(view))
         )
     }
 
     override fun processGetRecommendationData(page: Int, allProductIds: List<String>) {
         view?.showItemLoading()
-        val requestParam = getRecommendationUseCase?.getRecomParams(
+        val requestParam = getRecommendationUseCase.getRecomParams(
                 page, "recom_widget", "cart", allProductIds, "")
-        getRecommendationUseCase?.createObservable(requestParam ?: RequestParams.EMPTY)
-                ?.subscribeOn(schedulers.io)
-                ?.observeOn(schedulers.main)
-                ?.subscribe(GetRecommendationSubscriber(view))
+        getRecommendationUseCase.createObservable(requestParam)
+                .subscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .subscribe(GetRecommendationSubscriber(view))
     }
 
     override fun processAddToCart(productModel: Any) {
@@ -1151,11 +1151,11 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val requestParams = RequestParams.create()
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
         compositeSubscription.add(
-                addToCartUseCase?.createObservable(requestParams)
-                        ?.subscribeOn(schedulers.io)
-                        ?.unsubscribeOn(schedulers.io)
-                        ?.observeOn(schedulers.main)
-                        ?.subscribe(AddToCartSubscriber(view, this, productModel))
+                addToCartUseCase.createObservable(requestParams)
+                        .subscribeOn(schedulers.io)
+                        .unsubscribeOn(schedulers.io)
+                        .observeOn(schedulers.main)
+                        .subscribe(AddToCartSubscriber(view, this, productModel))
         )
     }
 
@@ -1165,11 +1165,11 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         requestParams.putLong(AddToCartExternalUseCase.PARAM_PRODUCT_ID, productId)
         requestParams.putString(AddToCartExternalUseCase.PARAM_USER_ID, userSessionInterface.userId)
         compositeSubscription.add(
-                addToCartExternalUseCase?.createObservable(requestParams)
-                        ?.subscribeOn(schedulers.io)
-                        ?.unsubscribeOn(schedulers.io)
-                        ?.observeOn(schedulers.main)
-                        ?.subscribe(AddToCartExternalSubscriber(view))
+                addToCartExternalUseCase.createObservable(requestParams)
+                        .subscribeOn(schedulers.io)
+                        .unsubscribeOn(schedulers.io)
+                        .observeOn(schedulers.main)
+                        .subscribe(AddToCartExternalSubscriber(view))
         )
     }
 
@@ -1208,8 +1208,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 requestParams.putString(UpdateCartUseCase.PARAM_KEY_SOURCE, UpdateCartUseCase.PARAM_VALUE_SOURCE_UPDATE_QTY_NOTES)
 
                 compositeSubscription.add(
-                        updateCartUseCase?.createObservable(requestParams)
-                                ?.subscribe(UpdateCartForPromoSubscriber(view))
+                        updateCartUseCase.createObservable(requestParams)
+                                .subscribe(UpdateCartForPromoSubscriber(view))
                 )
             } else {
                 it.hideProgressLoading()
@@ -1259,10 +1259,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     override fun doClearRedPromosBeforeGoToCheckout(promoCodeList: ArrayList<String>) {
         view?.showItemLoading()
-        clearCacheAutoApplyStackUseCase?.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList)
+        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList)
         compositeSubscription.add(
-                clearCacheAutoApplyStackUseCase?.createObservable(RequestParams.create())
-                        ?.subscribe(ClearRedPromosBeforeGoToCheckoutSubscriber(view))
+                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
+                        .subscribe(ClearRedPromosBeforeGoToCheckoutSubscriber(view))
         )
     }
 
@@ -1271,10 +1271,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val codes = arrayListOf<String>()
             it.codes.forEach { code -> code?.let { codes.add(code) } }
             it.orders.forEach { order -> order?.codes?.let { code -> codes.addAll(code) } }
-            clearCacheAutoApplyStackUseCase?.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, codes)
+            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, codes)
             compositeSubscription.add(
                     // Do nothing on subscribe
-                    clearCacheAutoApplyStackUseCase?.createObservable(RequestParams.create())?.subscribe()
+                    clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
             )
             setLastApplyNotValid()
             setValidateUseLastResponse(ValidateUsePromoRevampUiModel())
