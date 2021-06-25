@@ -424,7 +424,7 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    private fun setSaldoBalance(saldoBalanceUiModel: BalanceUiModel) {
+    fun setSaldoBalance(saldoBalanceUiModel: BalanceUiModel) {
         saldoBalanceText?.run {
             text = saldoBalanceUiModel.balanceValue
             setOnClickListener {
@@ -438,13 +438,13 @@ class OtherMenuViewHolder(private val itemView: View,
         saldoLayout?.sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)
     }
 
-    private fun setSaldoBalanceLoading() {
+    fun setSaldoBalanceLoading() {
         saldoShimmer?.show()
         saldoBalanceText?.gone()
         saldoErrorGroup?.gone()
     }
 
-    private fun setSaldoBalanceError() {
+    fun setSaldoBalanceError() {
         saldoErrorGroup?.run {
             show()
             setOnClickListener {
@@ -455,10 +455,9 @@ class OtherMenuViewHolder(private val itemView: View,
         saldoBalanceText?.gone()
     }
 
-    private fun setKreditTopadsBalance(topadsBalanceUiModel: TopadsBalanceUiModel) {
+    fun setKreditTopadsBalance(topadsBalanceUiModel: TopadsBalanceUiModel) {
         topAdsLayout?.sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
         setupKreditTopadsBalanceText(topadsBalanceUiModel)
-        setupKreditTopadsBalanceTooltip(topadsBalanceUiModel.isTopAdsUser)
         topAdsBalanceText?.show()
     }
 
@@ -472,7 +471,7 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    private fun setupKreditTopadsBalanceTooltip(isTopAdsUser: Boolean) {
+    fun setupKreditTopadsBalanceTooltip(isTopAdsUser: Boolean) {
         val topAdsTooltipDrawable =
                 if (isTopAdsUser) {
                     ContextCompat.getDrawable(context, R.drawable.ic_topads_active)
@@ -487,14 +486,14 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    private fun setKreditTopadsBalanceLoading() {
+    fun setKreditTopadsBalanceLoading() {
         topAdsShimmer?.show()
         topAdsTooltipImage?.gone()
         topAdsBalanceText?.gone()
         topAdsErrorGroup?.gone()
     }
 
-    private fun setKreditTopadsBalanceError() {
+    fun setKreditTopadsBalanceError() {
         topAdsErrorGroup?.run {
             show()
             setOnClickListener {

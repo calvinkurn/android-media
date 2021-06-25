@@ -2,14 +2,14 @@ package com.tokopedia.seller.menu.common.view.uimodel.shopinfo
 
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.seller.menu.common.view.uimodel.base.BalanceType
-import com.tokopedia.seller.menu.common.view.uimodel.base.SettingSuccess
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingResponse
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.user.session.UserSessionInterface
 
 data class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingResponse,
                              private val partialTopAdsInfo: PartialSettingResponse,
-                             private val userSession: UserSessionInterface): SettingSuccess() {
+                             private val userSession: UserSessionInterface): SettingResponseState.SettingSuccess() {
 
     val partialResponseStatus by lazy {
         Pair(
@@ -42,7 +42,7 @@ data class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingRes
 
     val topadsBalanceUiModel by lazy {
         (partialTopAdsInfo as? PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo)?.let {
-            TopadsBalanceUiModel(it.isTopAdsAutoTopup, it.topAdsBalance.getCurrencyFormatted())
+            TopadsBalanceUiModel(it.topAdsBalance.getCurrencyFormatted())
         }
     }
 }

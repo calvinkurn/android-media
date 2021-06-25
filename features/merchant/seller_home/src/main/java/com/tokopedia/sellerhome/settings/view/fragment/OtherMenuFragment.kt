@@ -27,9 +27,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.gm.common.constant.END_PERIOD
-import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
-import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -40,6 +37,7 @@ import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.*
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.BalanceUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
@@ -299,11 +297,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     is Success -> {
                         showSettingShopInfoState(result.data)
                         otherMenuViewModel.getFreeShippingStatus()
-                        otherMenuViewModel.getShopOperational()
                     }
                     is Fail -> {
                         SellerHomeErrorHandler.logException(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
-                        showSettingShopInfoState(SettingResponseState.SettingError)
+                        showSettingShopInfoState(SettingResponseState.SettingError(result.throwable))
                     }
                 }
             })
@@ -313,6 +310,26 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
         observeFreeShippingStatus()
         observeShopOperationalHour()
+    }
+
+    private fun observeBalanceLiveData() {
+        otherMenuViewModel.balanceInfoLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is SettingResponseState.SettingSuccess -> {
+                    if (it is BalanceUiModel) {
+                        otherMenuViewHolder?.setSaldoBalance(it)
+                    } else {
+                        otherMenuViewHolder?.setSaldoBalanceError()
+                    }
+                }
+                is SettingResponseState.SettingError -> {
+                    otherMenuViewHolder?.setSaldoBalanceError()
+                }
+                is SettingResponseState.SettingLoading -> {
+                    otherMenuViewHolder?.setSaldoBalanceLoading()
+                }
+            }
+        }
     }
 
     private fun observeFreeShippingStatus() {
@@ -350,18 +367,23 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun observeShopOperationalHour() {
-        otherMenuViewModel.shopOperational.observe(viewLifecycleOwner, Observer {
+        otherMenuViewModel.shopOperationalLiveData.observe(viewLifecycleOwner) {
             when(it) {
-                is Success -> otherMenuViewHolder?.showOperationalHourLayout(it.data)
-                is Fail -> {
-                    otherMenuViewHolder?.onErrorGetSettingShopInfoData()
+                is SettingResponseState.SettingSuccess -> {
+                    otherMenuViewHolder?.showOperationalHourLayout(it.data)
+                }
+                is SettingResponseState.SettingLoading -> {
+                    otherMenuViewHolder?.showOperationalHourLayoutLoading()
+                }
+                is SettingResponseState.SettingError -> {
+                    otherMenuViewHolder?.showOperationalHourLayoutError()
                     SellerHomeErrorHandler.logException(
-                        it.throwable,
-                        ERROR_GET_SHOP_OPERATIONAL_HOUR
+                            it.throwable,
+                            ERROR_GET_SHOP_OPERATIONAL_HOUR
                     )
                 }
             }
-        })
+        }
     }
 
     private fun populateAdapterData() {
@@ -455,9 +477,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         showSettingShopInfoState(SettingResponseState.SettingLoading)
     }
 
+    //TODO: Remove this
     private fun showSettingShopInfoState(settingResponseState: SettingResponseState) {
         when(settingResponseState) {
-            is SettingSuccess -> {
+            is SettingResponseState.SettingSuccess -> {
                 if (settingResponseState is SettingShopInfoUiModel) {
                     otherMenuViewHolder?.onSuccessGetSettingShopInfoData(settingResponseState)
                 }
