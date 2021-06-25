@@ -83,6 +83,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
         private const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
         private const val ERROR_GET_SHOP_OPERATIONAL_HOUR = "Error when get operational hour in other setting."
+        // TODO: Add more custom error message
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
@@ -291,45 +292,33 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun observeLiveData() {
-        with(otherMenuViewModel) {
-            settingShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
-                when(result) {
-                    is Success -> {
-                        showSettingShopInfoState(result.data)
-                        otherMenuViewModel.getFreeShippingStatus()
-                    }
-                    is Fail -> {
-                        SellerHomeErrorHandler.logException(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
-                        showSettingShopInfoState(SettingResponseState.SettingError(result.throwable))
-                    }
-                }
-            })
-            isToasterAlreadyShown.observe(viewLifecycleOwner, Observer { isToasterAlreadyShown ->
-                canShowErrorToaster = !isToasterAlreadyShown
-            })
-        }
-        observeFreeShippingStatus()
+//        with(otherMenuViewModel) {
+//            settingShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
+//                when(result) {
+//                    is Success -> {
+//                        showSettingShopInfoState(result.data)
+//                        otherMenuViewModel.getFreeShippingStatus()
+//                    }
+//                    is Fail -> {
+//                        SellerHomeErrorHandler.logException(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
+//                        showSettingShopInfoState(SettingResponseState.SettingError(result.throwable))
+//                    }
+//                }
+//            })
+//            isToasterAlreadyShown.observe(viewLifecycleOwner, Observer { isToasterAlreadyShown ->
+//                canShowErrorToaster = !isToasterAlreadyShown
+//            })
+//        }
+        observeIsAllError()
+        observeMultipleErrorToaster()
+        observeShopBadge()
+        observeShopTotalFollowers()
+        observeShopBadgeFollowersLoading()
+        observeShopStatus()
         observeShopOperationalHour()
-    }
-
-    private fun observeBalanceLiveData() {
-        otherMenuViewModel.balanceInfoLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is SettingResponseState.SettingSuccess -> {
-                    if (it is BalanceUiModel) {
-                        otherMenuViewHolder?.setSaldoBalance(it)
-                    } else {
-                        otherMenuViewHolder?.setSaldoBalanceError()
-                    }
-                }
-                is SettingResponseState.SettingError -> {
-                    otherMenuViewHolder?.setSaldoBalanceError()
-                }
-                is SettingResponseState.SettingLoading -> {
-                    otherMenuViewHolder?.setSaldoBalanceLoading()
-                }
-            }
-        }
+        observeSaldoBalance()
+        observeKreditTopAds()
+        observeFreeShippingStatus()
     }
 
     private fun observeFreeShippingStatus() {
@@ -366,6 +355,84 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
+    private fun observeIsAllError() {
+        otherMenuViewModel.shouldShowAllError.observe(viewLifecycleOwner) {
+            // Todo: Show local load and error view
+        }
+    }
+
+    private fun observeMultipleErrorToaster() {
+        otherMenuViewModel.shouldShowMultipleErrorToaster.observe(viewLifecycleOwner) {
+            // TODO: show interdeminate toaster
+        }
+    }
+
+    private fun observeShopBadgeFollowersLoading() {
+        otherMenuViewModel.shopBadgeFollowersShimmerLiveData.observe(viewLifecycleOwner) {
+            otherMenuViewHolder?.setBadgeFollowersLoading(it)
+        }
+    }
+
+    private fun observeShopBadge() {
+        otherMenuViewModel.shopBadgeLiveData.observe(viewLifecycleOwner) {
+            when(it) {
+                is SettingResponseState.SettingSuccess -> {
+                    otherMenuViewHolder?.setShopBadge(it.data)
+                }
+                is SettingResponseState.SettingLoading -> {
+                    otherMenuViewHolder?.setShopBadgeLoading()
+                }
+                is SettingResponseState.SettingError -> {
+                    otherMenuViewHolder?.setShopBadgeError()
+                    SellerHomeErrorHandler.logException(
+                            it.throwable,
+                            ""
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeShopTotalFollowers() {
+        otherMenuViewModel.shopTotalFollowersLiveData.observe(viewLifecycleOwner) {
+            when(it) {
+                is SettingResponseState.SettingSuccess -> {
+                    otherMenuViewHolder?.setShopTotalFollowers(it.data)
+                }
+                is SettingResponseState.SettingLoading -> {
+                    otherMenuViewHolder?.setShopTotalFollowersLoading()
+                }
+                is SettingResponseState.SettingError -> {
+                    otherMenuViewHolder?.setShopTotalFollowersError()
+                    SellerHomeErrorHandler.logException(
+                            it.throwable,
+                            ""
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeShopStatus() {
+        otherMenuViewModel.userShopInfoLiveData.observe(viewLifecycleOwner) {
+            when(it) {
+                is SettingResponseState.SettingSuccess -> {
+                    otherMenuViewHolder?.setShopStatusType(it.data)
+                }
+                is SettingResponseState.SettingLoading -> {
+                    otherMenuViewHolder?.setShopStatusLoading()
+                }
+                is SettingResponseState.SettingError -> {
+                    otherMenuViewHolder?.setShopStatusError()
+                    SellerHomeErrorHandler.logException(
+                            it.throwable,
+                            ""
+                    )
+                }
+            }
+        }
+    }
+
     private fun observeShopOperationalHour() {
         otherMenuViewModel.shopOperationalLiveData.observe(viewLifecycleOwner) {
             when(it) {
@@ -380,6 +447,46 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     SellerHomeErrorHandler.logException(
                             it.throwable,
                             ERROR_GET_SHOP_OPERATIONAL_HOUR
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeSaldoBalance() {
+        otherMenuViewModel.balanceInfoLiveData.observe(viewLifecycleOwner) {
+            when(it) {
+                is SettingResponseState.SettingSuccess -> {
+                    otherMenuViewHolder?.setSaldoBalance(it.data)
+                }
+                is SettingResponseState.SettingLoading -> {
+                    otherMenuViewHolder?.setSaldoBalanceLoading()
+                }
+                is SettingResponseState.SettingError -> {
+                    otherMenuViewHolder?.setSaldoBalanceError()
+                    SellerHomeErrorHandler.logException(
+                            it.throwable,
+                            ""
+                    )
+                }
+            }
+        }
+    }
+
+    private fun observeKreditTopAds() {
+        otherMenuViewModel.kreditTopAdsLiveData.observe(viewLifecycleOwner) {
+            when(it) {
+                is SettingResponseState.SettingSuccess -> {
+                    otherMenuViewHolder?.setKreditTopadsBalance(it.data)
+                }
+                is SettingResponseState.SettingLoading -> {
+                    otherMenuViewHolder?.setKreditTopadsBalanceLoading()
+                }
+                is SettingResponseState.SettingError -> {
+                    otherMenuViewHolder?.setKreditTopadsBalanceError()
+                    SellerHomeErrorHandler.logException(
+                            it.throwable,
+                            ""
                     )
                 }
             }
@@ -478,12 +585,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     //TODO: Remove this
-    private fun showSettingShopInfoState(settingResponseState: SettingResponseState) {
+    private fun showSettingShopInfoState(settingResponseState: SettingResponseState<*>) {
         when(settingResponseState) {
             is SettingResponseState.SettingSuccess -> {
-                if (settingResponseState is SettingShopInfoUiModel) {
-                    otherMenuViewHolder?.onSuccessGetSettingShopInfoData(settingResponseState)
-                }
+
             }
             is SettingResponseState.SettingLoading -> otherMenuViewHolder?.onLoadingGetSettingShopInfoData()
             is SettingResponseState.SettingError -> {

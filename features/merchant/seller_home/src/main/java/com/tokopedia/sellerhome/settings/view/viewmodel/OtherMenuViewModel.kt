@@ -20,9 +20,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.BalanceType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.BalanceUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.TopadsBalanceUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalUiModel
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
@@ -71,19 +69,19 @@ class OtherMenuViewModel @Inject constructor(
     private val _isFreeShippingActive = MutableLiveData<Boolean>()
     private val _shopPeriodType = MutableLiveData<Result<ShopInfoPeriodUiModel>>()
 
-    private val _shopBadgeLiveData = MutableLiveData<SettingResponseState<String>>()
-    private val _shopTotalFollowersLiveData = MutableLiveData<SettingResponseState<Long>>()
-    private val _userShopInfoLiveData = MutableLiveData<SettingResponseState<UserShopInfoWrapper>>()
+    private val _shopBadgeLiveData = MutableLiveData<SettingResponseState<ShopBadgeUiModel>>()
+    private val _shopTotalFollowersLiveData = MutableLiveData<SettingResponseState<ShopFollowersUiModel>>()
+    private val _userShopInfoLiveData = MutableLiveData<SettingResponseState<ShopStatusUiModel>>()
     private val _shopOperationalLiveData = MutableLiveData<SettingResponseState<ShopOperationalUiModel>>()
     private val _balanceInfoLiveData = MutableLiveData<SettingResponseState<BalanceUiModel>>()
     private val _kreditTopAdsLiveData = MutableLiveData<SettingResponseState<TopadsBalanceUiModel>>()
     private val _isTopAdsAutoTopupLiveData = MutableLiveData<SettingResponseState<Boolean>>()
 
-    val shopBadgeLiveData: LiveData<SettingResponseState<String>>
+    val shopBadgeLiveData: LiveData<SettingResponseState<ShopBadgeUiModel>>
         get() = _shopBadgeLiveData
-    val shopTotalFollowersLiveData: LiveData<SettingResponseState<Long>>
+    val shopTotalFollowersLiveData: LiveData<SettingResponseState<ShopFollowersUiModel>>
         get() = _shopTotalFollowersLiveData
-    val userShopInfoLiveData: LiveData<SettingResponseState<UserShopInfoWrapper>>
+    val userShopInfoLiveData: LiveData<SettingResponseState<ShopStatusUiModel>>
         get() = _userShopInfoLiveData
     val shopOperationalLiveData: LiveData<SettingResponseState<ShopOperationalUiModel>>
         get() = _shopOperationalLiveData
@@ -217,7 +215,7 @@ class OtherMenuViewModel @Inject constructor(
                         getShopBadgeUseCase.params = GetShopBadgeUseCase.createRequestParams(userSession.shopId.toIntOrZero())
                         getShopBadgeUseCase.executeOnBackground()
                     }
-                    _shopBadgeLiveData.value = SettingResponseState.SettingSuccess(badgeUrl)
+                    _shopBadgeLiveData.value = SettingResponseState.SettingSuccess(ShopBadgeUiModel(badgeUrl))
                 },
                 onError = {
                     _shopBadgeLiveData.value = SettingResponseState.SettingError(it)
@@ -233,7 +231,7 @@ class OtherMenuViewModel @Inject constructor(
                         getShopTotalFollowersUseCase.params = GetShopTotalFollowersUseCase.createRequestParams(userSession.shopId.toIntOrZero())
                         getShopTotalFollowersUseCase.executeOnBackground()
                     }
-                    _shopTotalFollowersLiveData.value = SettingResponseState.SettingSuccess(totalFollowers)
+                    _shopTotalFollowersLiveData.value = SettingResponseState.SettingSuccess(ShopFollowersUiModel(totalFollowers))
                 },
                 onError = {
                     _shopTotalFollowersLiveData.value = SettingResponseState.SettingError(it)
@@ -249,7 +247,7 @@ class OtherMenuViewModel @Inject constructor(
                         getUserShopInfoUseCase.params = GetUserShopInfoUseCase.createRequestParams(userSession.shopId.toIntOrZero())
                         getUserShopInfoUseCase.executeOnBackground()
                     }
-                    _userShopInfoLiveData.value = SettingResponseState.SettingSuccess(userShopInfoWrapper)
+                    _userShopInfoLiveData.value = SettingResponseState.SettingSuccess(ShopStatusUiModel(userShopInfoWrapper, userSession))
                 },
                 onError = {
                     _userShopInfoLiveData.value = SettingResponseState.SettingError(it)

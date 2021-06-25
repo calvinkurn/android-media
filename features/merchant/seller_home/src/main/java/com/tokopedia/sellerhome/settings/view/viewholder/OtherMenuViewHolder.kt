@@ -505,7 +505,7 @@ class OtherMenuViewHolder(private val itemView: View,
         topAdsBalanceText?.gone()
     }
 
-    private fun setShopStatusError() {
+    fun setShopStatusError() {
         shopStatusContainer?.run {
             val shopStatusLayout = LayoutInflater.from(context).inflate(R.layout.view_sah_shop_status_error, this, false)?.apply {
                 setOnClickListener {
@@ -519,7 +519,7 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    private fun setShopStatusLoading() {
+    fun setShopStatusLoading() {
         shopStatusContainer?.run {
             val shopStatusLayout = LayoutInflater.from(context).inflate(R.layout.view_sah_shop_status_loading, this, false)
             removeAllViews()
@@ -529,7 +529,7 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    private fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
+    fun setShopStatusType(shopStatusUiModel: ShopStatusUiModel) {
         val shopType = shopStatusUiModel.userShopInfoWrapper.shopType
         showShopStatusHeader(shopType)
         val layoutInflater = shopType?.shopTypeLayoutRes?.let { LayoutInflater.from(context).inflate(it, null, false) }
