@@ -467,7 +467,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             for (trackingDetail in lastApplyPromoData.trackingDetails) {
                 for (shopGroupAvailableData in shopGroupAvailableDataList) {
                     val cartItemDataList = shopGroupAvailableData.cartItemDataList
-                    cartItemDataList?.let {
+                    cartItemDataList.let {
                         for (cartItemHolderData in cartItemDataList) {
                             val originData = cartItemHolderData.cartItemData?.originData
                             if (originData?.productId.equals(trackingDetail.productId.toString(), ignoreCase = true)) {

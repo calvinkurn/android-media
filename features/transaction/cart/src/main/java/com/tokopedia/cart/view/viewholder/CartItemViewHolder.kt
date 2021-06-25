@@ -163,8 +163,8 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
     private fun renderSelection(data: CartItemHolderData, parentPosition: Int) {
         val cbSelectItem = binding.cbSelectItem
-        cbSelectItem.isEnabled = data.cartItemData?.isError == false
-        cbSelectItem.isChecked = data.cartItemData?.isError == false && data.isSelected
+        cbSelectItem.isEnabled = data.cartItemData.isError == false
+        cbSelectItem.isChecked = data.cartItemData.isError == false && data.isSelected
         cbSelectItem.skipAnimation()
 
         var prevIsChecked: Boolean = cbSelectItem.isChecked
@@ -176,7 +176,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
                 cbChangeJob = GlobalScope.launch(Dispatchers.Main) {
                     delay(500L)
                     if (isChecked == prevIsChecked && isChecked != data.isSelected) {
-                        if (data.cartItemData?.isError == false) {
+                        if (!data.cartItemData.isError) {
                             data.isSelected = isChecked
                             if (adapterPosition != RecyclerView.NO_POSITION) {
                                 actionListener?.onCartItemCheckChanged(adapterPosition, parentPosition, data.isSelected)
@@ -205,12 +205,12 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     }
 
     private fun renderProductName(data: CartItemHolderData) {
-        binding.textProductName.text = Html.fromHtml(data.cartItemData?.originData?.productName ?: "")
+        binding.textProductName.text = Html.fromHtml(data.cartItemData.originData?.productName ?: "")
         binding.textProductName.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
     }
 
     private fun renderImage(data: CartItemHolderData) {
-        data.cartItemData?.originData?.productImage?.let {
+        data.cartItemData.originData?.productImage?.let {
             binding.iuImageProduct.loadImage(it)
         }
         binding.iuImageProduct.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
@@ -218,7 +218,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
     private fun sendAnalyticsInformationLabel(data: CartItemHolderData) {
         if (informationLabel.isNotEmpty()) {
-            sendAnalyticsShowInformation(informationLabel, data.cartItemData?.originData?.productId
+            sendAnalyticsShowInformation(informationLabel, data.cartItemData.originData?.productId
                     ?: "")
         }
     }
@@ -226,7 +226,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     private fun renderProductProperties(data: CartItemHolderData) {
         val layoutProductInfo = binding.layoutProductInfo
         layoutProductInfo.gone()
-        val productInformationList = data.cartItemData?.originData?.productInformation
+        val productInformationList = data.cartItemData.originData?.productInformation
         if (productInformationList?.isNotEmpty() == true) {
             layoutProductInfo.removeAllViews()
             productInformationList.forEach {
@@ -242,7 +242,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
             layoutProductInfo.show()
         }
 
-        if (data.cartItemData?.originData?.wholesalePrice ?: 0 > 0) {
+        if (data.cartItemData.originData?.wholesalePrice ?: 0 > 0) {
             val wholesaleLabel = itemView.context.getString(R.string.label_wholesale_product)
             val productInfo = createProductInfoText(wholesaleLabel)
             layoutProductInfo.addView(productInfo)
@@ -265,8 +265,8 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     }
 
     private fun renderProductPropertyIncidentLabel(data: CartItemHolderData) {
-        if (data.cartItemData?.originData?.productAlertMessage?.isNotEmpty() == true) {
-            binding.textIncident.text = data.cartItemData?.originData?.productAlertMessage
+        if (data.cartItemData.originData?.productAlertMessage?.isNotEmpty() == true) {
+            binding.textIncident.text = data.cartItemData.originData?.productAlertMessage
             binding.textIncident.show()
         } else {
             binding.textIncident.gone()
@@ -274,34 +274,34 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     }
 
     private fun renderPrice(data: CartItemHolderData) {
-        if (data.cartItemData?.originData?.wholesalePriceFormatted != null) {
-            binding.textProductPrice.text = data.cartItemData?.originData?.wholesalePriceFormatted ?: ""
+        if (data.cartItemData.originData?.wholesalePriceFormatted != null) {
+            binding.textProductPrice.text = data.cartItemData.originData?.wholesalePriceFormatted ?: ""
         } else {
             binding.textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    data.cartItemData?.originData?.pricePlan
+                    data.cartItemData.originData?.pricePlan
                             ?: 0.toDouble(), false).removeDecimalSuffix()
         }
     }
 
     private fun renderSlashPrice(data: CartItemHolderData) {
-        val hasPriceOriginal = data.cartItemData?.originData?.priceOriginal != 0L
-        val hasWholesalePrice = data.cartItemData?.originData?.wholesalePrice != 0L
-        val hasPriceDrop = data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > 0 &&
-                data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0 > data.cartItemData?.originData?.pricePlan?.toLong() ?: 0
+        val hasPriceOriginal = data.cartItemData.originData?.priceOriginal != 0L
+        val hasWholesalePrice = data.cartItemData.originData?.wholesalePrice != 0L
+        val hasPriceDrop = data.cartItemData.originData?.initialPriceBeforeDrop ?: 0 > 0 &&
+                data.cartItemData.originData?.initialPriceBeforeDrop ?: 0 > data.cartItemData.originData?.pricePlan?.toLong() ?: 0
         if (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) {
-            if (data.cartItemData?.originData?.slashPriceLabel?.isNotBlank() == true) {
+            if (data.cartItemData.originData?.slashPriceLabel?.isNotBlank() == true) {
                 // Slash price
                 renderSlashPriceFromCampaign(data)
-            } else if (data.cartItemData?.originData?.initialPriceBeforeDrop != 0L) {
-                val wholesalePrice = data.cartItemData?.originData?.wholesalePrice ?: 0
-                if (wholesalePrice > 0 && wholesalePrice.toDouble() < data.cartItemData?.originData?.pricePlan ?: 0.0) {
+            } else if (data.cartItemData.originData?.initialPriceBeforeDrop != 0L) {
+                val wholesalePrice = data.cartItemData.originData?.wholesalePrice ?: 0
+                if (wholesalePrice > 0 && wholesalePrice.toDouble() < data.cartItemData.originData?.pricePlan ?: 0.0) {
                     // Wholesale
                     renderSlashPriceFromWholesale(data)
                 } else {
                     // Price drop
                     renderSlashPriceFromPriceDrop(data)
                 }
-            } else if (data.cartItemData?.originData?.wholesalePrice != 0L) {
+            } else if (data.cartItemData.originData?.wholesalePrice != 0L) {
                 // Wholesale
                 renderSlashPriceFromWholesale(data)
             }
@@ -315,30 +315,30 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     }
 
     private fun renderSlashPriceFromWholesale(data: CartItemHolderData) {
-        val priceDropValue = data.cartItemData?.originData?.initialPriceBeforeDrop ?: 0
-        val pricePlan = data.cartItemData?.originData?.pricePlanInt ?: 0
+        val priceDropValue = data.cartItemData.originData?.initialPriceBeforeDrop ?: 0
+        val pricePlan = data.cartItemData.originData?.pricePlanInt ?: 0
         val originalPrice = if (priceDropValue > pricePlan) pricePlan else priceDropValue
         binding.textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice, false).removeDecimalSuffix()
     }
 
     private fun renderSlashPriceFromPriceDrop(data: CartItemHolderData) {
-        binding.textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData?.originData?.initialPriceBeforeDrop
+        binding.textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData.originData?.initialPriceBeforeDrop
                 ?: 0, false).removeDecimalSuffix()
     }
 
     private fun renderSlashPriceFromCampaign(data: CartItemHolderData) {
-        binding.textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData?.originData?.priceOriginal
+        binding.textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData.originData?.priceOriginal
                 ?: 0, false).removeDecimalSuffix()
-        binding.labelSlashPricePercentage.text = data.cartItemData?.originData?.slashPriceLabel
+        binding.labelSlashPricePercentage.text = data.cartItemData.originData?.slashPriceLabel
         binding.labelSlashPricePercentage.show()
         informationLabel.add(LABEL_DISCOUNT)
     }
 
     private fun renderWarningMessage(data: CartItemHolderData) {
-        if (data.cartItemData?.originData?.warningMessage?.isNotBlank() == true) {
-            binding.textQtyLeft.text = data.cartItemData?.originData?.warningMessage ?: ""
+        if (data.cartItemData.originData?.warningMessage?.isNotBlank() == true) {
+            binding.textQtyLeft.text = data.cartItemData.originData?.warningMessage ?: ""
             binding.textQtyLeft.show()
-            actionListener?.onCartItemShowRemainingQty(data.cartItemData?.originData?.productId
+            actionListener?.onCartItemShowRemainingQty(data.cartItemData.originData?.productId
                     ?: "")
         } else {
             binding.textQtyLeft.gone()
