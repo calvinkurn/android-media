@@ -56,7 +56,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             hideErrorInputNumber()
         }
 
-        inputNumberField.textFiedlLabelText.text = "ASKOPDKASPKPDOAK"
         inputNumberField.textFiedlLabelText.setTextColor(Color.RED)
 
         inputNumberField.textFieldInput.run {
@@ -127,6 +126,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun setContactName(contactName: String) {
+        // TODO: [Misael] Jangan lupa nnti balik kesini, bug ni ga keganti textnya
         val validatedLabel = validateContactName(contactName)
         inputNumberField.textFiedlLabelText.text = validatedLabel
     }
