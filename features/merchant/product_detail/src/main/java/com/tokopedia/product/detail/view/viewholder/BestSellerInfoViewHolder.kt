@@ -18,8 +18,8 @@ import kotlinx.android.synthetic.main.item_best_seller_info.view.top_separator
 class BestSellerInfoViewHolder(val view: View, private val listener: DynamicProductDetailListener) :
     AbstractViewHolder<BestSellerInfoDataModel>(view) {
 
-    var bestSellerInfoTitleText: Typography? = view.findViewById(R.id.best_seller_info_title)
-    var bestSellerInfoDescriptionText: Typography? =
+    private var bestSellerInfoTitleText: Typography? = view.findViewById(R.id.best_seller_info_title)
+    private var bestSellerInfoDescriptionText: Typography? =
         view.findViewById(R.id.best_seller_info_description)
 
     companion object {
