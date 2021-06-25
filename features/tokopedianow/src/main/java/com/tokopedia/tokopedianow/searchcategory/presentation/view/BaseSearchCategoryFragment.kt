@@ -678,6 +678,7 @@ abstract class BaseSearchCategoryFragment:
 
         noAddressEmptyStateView = NoAddressEmptyStateView(context).also {
             it.id = View.generateViewId()
+            it.setDescriptionCityName(getString(R.string.tokomart_city_name_empty_state_no_address))
             it.actionListener = this
 
             container.addView(it)
