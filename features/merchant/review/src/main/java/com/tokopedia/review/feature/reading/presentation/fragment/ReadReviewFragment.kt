@@ -10,6 +10,8 @@ import android.view.ViewTreeObserver
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
@@ -19,6 +21,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
@@ -30,6 +33,7 @@ import com.tokopedia.review.feature.gallery.presentation.activity.ReviewGalleryA
 import com.tokopedia.review.feature.reading.data.*
 import com.tokopedia.review.feature.reading.di.DaggerReadReviewComponent
 import com.tokopedia.review.feature.reading.di.ReadReviewComponent
+import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewAdapter
 import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewAdapterTypeFactory
 import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewItemListener
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
@@ -39,6 +43,7 @@ import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilt
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterChipsListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
+import com.tokopedia.review.feature.reading.presentation.uimodel.ToggleLikeUiModel
 import com.tokopedia.review.feature.reading.presentation.viewmodel.ReadReviewViewModel
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewFilterBottomSheet
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
@@ -80,7 +85,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private var statisticsBottomSheet: ReadReviewStatisticsBottomSheet? = null
     private var loadingView: View? = null
     private var listOnlyLoading: View? = null
-    private var networkError: GlobalError? = null
+    private var globalError: GlobalError? = null
+    private var emptyFilteredState: View? = null
 
     private val readReviewFilterFactory by lazy {
         ReadReviewSortFilterFactory()
@@ -96,6 +102,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun getAdapterTypeFactory(): ReadReviewAdapterTypeFactory {
         return ReadReviewAdapterTypeFactory(this, this)
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<ReadReviewUiModel, ReadReviewAdapterTypeFactory> {
+        return ReadReviewAdapter(adapterTypeFactory)
     }
 
     override fun getScreenName(): String {
@@ -126,8 +136,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         activity?.supportFragmentManager?.let { ReviewReportBottomSheet.newInstance(reviewId, shopId, this).show(it, ReviewReportBottomSheet.TAG) }
     }
 
-    override fun onLikeButtonClicked(reviewId: String, shopId: String, likeStatus: Int) {
-        viewModel.toggleLikeReview(reviewId, shopId, likeStatus)
+    override fun onLikeButtonClicked(reviewId: String, shopId: String, likeStatus: Int, index: Int) {
+        viewModel.toggleLikeReview(reviewId, shopId, likeStatus, index)
     }
 
     override fun onChevronClicked() {
@@ -274,7 +284,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         reviewHeader = view.findViewById(R.id.read_review_header)
         loadingView = view.findViewById(R.id.read_review_loading)
         listOnlyLoading = view.findViewById(R.id.read_review_list_only_loading)
-        networkError = view.findViewById(R.id.read_review_network_error)
+        globalError = view.findViewById(R.id.read_review_network_error)
+        emptyFilteredState = view.findViewById(R.id.read_review_list_empty)
     }
 
     private fun getProductReview(page: Int) {
@@ -304,17 +315,17 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private fun observeToggleLikeReview() {
         viewModel.toggleLikeReview.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> {
-                    // No Op
-                }
-                is Fail -> {
-
-                }
+                is Success -> updateLike(it.data)
+                is Fail -> logToCrashlytics(it.throwable)
             }
         })
     }
 
     private fun onSuccessGetRatingAndTopic(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
+        if (ratingAndTopics.rating.totalRating == 0) {
+            showPageNotFound()
+            return
+        }
         reviewHeader?.apply {
             setRatingData(ratingAndTopics.rating)
             setListener(this@ReadReviewFragment)
@@ -333,6 +344,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         startRenderPerformanceMonitoring()
         hideError()
         with(productrevGetProductReviewList) {
+            if (productrevGetProductReviewList.reviewList.isEmpty()) {
+                showEmpty()
+                return
+            }
             renderList(viewModel.mapProductReviewToReadReviewUiModel(reviewList, shopInfo.shopID, shopInfo.name), hasNext)
         }
     }
@@ -343,7 +358,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun showError() {
-        networkError?.apply {
+        globalError?.apply {
 
             setActionClickListener {
                 loadInitialData()
@@ -359,7 +374,9 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun hideError() {
-        networkError?.hide()
+        if (globalError?.getErrorType() == GlobalError.NO_CONNECTION) {
+            globalError?.hide()
+        }
     }
 
     private fun showListOnlyLoading() {
@@ -378,6 +395,25 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         loadingView?.hide()
     }
 
+    private fun showFilteredEmpty() {
+        emptyFilteredState?.show()
+    }
+
+    private fun hideFilteredEmpty() {
+        emptyFilteredState?.show()
+    }
+
+    private fun showPageNotFound() {
+        globalError?.apply {
+            setType(GlobalError.PAGE_NOT_FOUND)
+            show()
+        }
+    }
+
+    private fun updateLike(toggleLikeUiModel: ToggleLikeUiModel) {
+        (adapter as? ReadReviewAdapter)?.updateLikeStatus(toggleLikeUiModel.itemIndex, toggleLikeUiModel.totalLike, toggleLikeUiModel.likeStatus)
+    }
+
     private fun getReviewStatistics(): List<ProductReviewDetail> {
         return viewModel.getReviewStatistics()
     }
@@ -391,6 +427,14 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_REVIEW_ID, reviewId)
         intent.putExtra(ApplinkConstInternalMarketplace.ARGS_SHOP_ID, shopId.toIntOrZero())
         startActivity(intent)
+    }
+
+    private fun logToCrashlytics(throwable: Throwable) {
+        if (!BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().recordException(throwable)
+        } else {
+            throwable.printStackTrace()
+        }
     }
 
 }

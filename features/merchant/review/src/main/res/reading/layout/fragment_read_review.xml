@@ -49,6 +49,13 @@
                     android:layout_height="match_parent"
                     android:visibility="gone" />
 
+                <include
+                    android:id="@+id/read_review_list_empty"
+                    layout="@layout/partial_read_review_empty_filtered"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
@@ -67,7 +74,6 @@
             android:gravity="center"
             android:visibility="gone"
             android:background="@color/Unify_N0"
-
             app:globalerrors_type="NO_CONNECTION"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

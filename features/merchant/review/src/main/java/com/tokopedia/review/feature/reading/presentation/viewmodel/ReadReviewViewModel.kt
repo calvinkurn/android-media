@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.review.common.data.ToggleProductReviewLike
 import com.tokopedia.review.common.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.review.feature.reading.data.ProductReview
 import com.tokopedia.review.feature.reading.data.ProductReviewDetail
@@ -18,6 +17,7 @@ import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadRev
 import com.tokopedia.review.feature.reading.presentation.uimodel.FilterType
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
+import com.tokopedia.review.feature.reading.presentation.uimodel.ToggleLikeUiModel
 import com.tokopedia.review.feature.reading.utils.ReadReviewUtils
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -44,8 +44,8 @@ class ReadReviewViewModel @Inject constructor(
     val productReviews: LiveData<Result<ProductrevGetProductReviewList>>
         get() = _productReviews
 
-    private val _toggleLikeReview = MutableLiveData<Result<ToggleProductReviewLike>>()
-    val toggleLikeReview: LiveData<Result<ToggleProductReviewLike>>
+    private val _toggleLikeReview = MutableLiveData<Result<ToggleLikeUiModel>>()
+    val toggleLikeReview: LiveData<Result<ToggleLikeUiModel>>
         get() = _toggleLikeReview
 
     private val currentPage = MutableLiveData<Int>()
@@ -88,12 +88,12 @@ class ReadReviewViewModel @Inject constructor(
         }
     }
 
-    fun toggleLikeReview(reviewId: String, shopId: String, likeStatus: Int) {
+    fun toggleLikeReview(reviewId: String, shopId: String, likeStatus: Int, index: Int) {
         launchCatchError(block = {
             toggleLikeReviewUseCase.setParams(reviewId, shopId, productId.value
                     ?: "", ReadReviewUtils.invertLikeStatus(likeStatus))
             val data = toggleLikeReviewUseCase.executeOnBackground()
-            _toggleLikeReview.postValue(Success(data.toggleProductReviewLike))
+            _toggleLikeReview.postValue(Success(ToggleLikeUiModel(data.toggleProductReviewLike.likeStatus, data.toggleProductReviewLike.totalLike, index)))
         }) {
             _toggleLikeReview.postValue(Fail(it))
         }

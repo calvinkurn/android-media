@@ -5,6 +5,7 @@ import com.tokopedia.review.common.data.ToggleProductReviewLike
 import com.tokopedia.review.feature.reading.data.*
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
+import com.tokopedia.review.feature.reading.presentation.uimodel.ToggleLikeUiModel
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
@@ -138,15 +139,18 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
     fun `when toggleLike should call toggleLikeReviewUseCase and return expected results`() {
         val reviewId = anyString()
         val shopId = anyString()
-        val likeStatus = anyInt()
-        val expectedResponse = ToggleLikeReviewResponse()
+        val likeStatus = 1
+        val totalLike = 1
+        val index = anyInt()
+        val expectedResponse = ToggleLikeReviewResponse(ToggleProductReviewLike(likeStatus = likeStatus, totalLike = 1))
+        val expectedValue = ToggleLikeUiModel(likeStatus, totalLike, index)
 
         onToggleLikeReviewSuccess_thenReturn(expectedResponse)
 
-        viewModel.toggleLikeReview(reviewId, shopId, likeStatus)
+        viewModel.toggleLikeReview(reviewId, shopId, likeStatus, index)
 
         verifyToggleLikeDislikeUseCaseExecuted()
-        verifyToggleLikeReviewSuccessEquals(Success(expectedResponse.toggleProductReviewLike))
+        verifyToggleLikeReviewSuccessEquals(Success(expectedValue))
     }
 
     @Test
@@ -154,11 +158,12 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         val reviewId = anyString()
         val shopId = anyString()
         val likeStatus = anyInt()
+        val index = anyInt()
         val expectedResponse = Throwable()
 
         onToggleLikeReviewFail_thenReturn(expectedResponse)
 
-        viewModel.toggleLikeReview(reviewId, shopId, likeStatus)
+        viewModel.toggleLikeReview(reviewId, shopId, likeStatus, index)
 
         verifyToggleLikeDislikeUseCaseExecuted()
         verifyToggleLikeReviewErrorEquals(Fail(expectedResponse))
@@ -234,7 +239,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         viewModel.productReviews.verifyErrorEquals(expectedErrorValue)
     }
 
-    private fun verifyToggleLikeReviewSuccessEquals(expectedSuccessValue: Success<ToggleProductReviewLike>) {
+    private fun verifyToggleLikeReviewSuccessEquals(expectedSuccessValue: Success<ToggleLikeUiModel>) {
         viewModel.toggleLikeReview.verifySuccessEquals(expectedSuccessValue)
     }
 
