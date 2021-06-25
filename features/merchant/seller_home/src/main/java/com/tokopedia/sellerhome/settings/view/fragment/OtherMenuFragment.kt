@@ -267,6 +267,30 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
+    override fun onShopBadgeRefresh() {
+        otherMenuViewModel.getShopBadge()
+    }
+
+    override fun onShopTotalFollowersRefresh() {
+        otherMenuViewModel.getShopTotalFollowers()
+    }
+
+    override fun onUserInfoRefresh() {
+        otherMenuViewModel.getUserShopInfo()
+    }
+
+    override fun onOperationalHourRefresh() {
+        otherMenuViewModel.getShopOperational()
+    }
+
+    override fun onSaldoBalanceRefresh() {
+        otherMenuViewModel.getBalanceInfo()
+    }
+
+    override fun onKreditTopAdsRefresh() {
+        otherMenuViewModel.getKreditTopAds()
+    }
+
     private fun setupBottomSheetLayout(isTopAdsActive: Boolean) : View? {
         val bottomSheetInfix: String
         val bottomSheetDescription: String

@@ -256,7 +256,7 @@ class OtherMenuViewHolder(private val itemView: View,
         shopBadgeErrorGroup?.run {
             show()
             setOnClickListener {
-                // TODO: Reload data
+                listener.onShopBadgeRefresh()
             }
         }
         shopBadgeImage?.gone()
@@ -289,7 +289,7 @@ class OtherMenuViewHolder(private val itemView: View,
         shopFollowersErrorGroup?.run {
             show()
             setOnClickListener {
-                // TODO: Refresh data
+                listener.onShopTotalFollowersRefresh()
             }
         }
         shopFollowersText?.gone()
@@ -373,7 +373,7 @@ class OtherMenuViewHolder(private val itemView: View,
         operationalErrorGroup?.run {
             show()
             setOnClickListener {
-                // TODO: Refresh data
+                listener.onOperationalHourRefresh()
             }
         }
         operationalHourShimmer?.gone()
@@ -448,7 +448,7 @@ class OtherMenuViewHolder(private val itemView: View,
         saldoErrorGroup?.run {
             show()
             setOnClickListener {
-                // TODO: Refresh data
+                listener.onSaldoBalanceRefresh()
             }
         }
         saldoShimmer?.gone()
@@ -497,7 +497,7 @@ class OtherMenuViewHolder(private val itemView: View,
         topAdsErrorGroup?.run {
             show()
             setOnClickListener {
-                // TODO: Refresh data
+                listener.onKreditTopAdsRefresh()
             }
         }
         topAdsShimmer?.gone()
@@ -509,7 +509,7 @@ class OtherMenuViewHolder(private val itemView: View,
         shopStatusContainer?.run {
             val shopStatusLayout = LayoutInflater.from(context).inflate(R.layout.view_sah_shop_status_error, this, false)?.apply {
                 setOnClickListener {
-                    // TODO: Reload data
+                    listener.onUserInfoRefresh()
                 }
             }
             removeAllViews()
@@ -767,6 +767,12 @@ class OtherMenuViewHolder(private val itemView: View,
         fun onStatusBarNeedDarkColor(isDefaultDark: Boolean)
         fun onTopAdsTooltipClicked(isTopAdsActive: Boolean)
         fun onFreeShippingClicked()
+        fun onShopBadgeRefresh()
+        fun onShopTotalFollowersRefresh()
+        fun onUserInfoRefresh()
+        fun onOperationalHourRefresh()
+        fun onSaldoBalanceRefresh()
+        fun onKreditTopAdsRefresh()
     }
 
 }
