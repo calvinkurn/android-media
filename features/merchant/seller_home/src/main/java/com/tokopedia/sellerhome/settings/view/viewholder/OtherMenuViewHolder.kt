@@ -68,6 +68,7 @@ class OtherMenuViewHolder(private val itemView: View,
 
     private var shopBadgeFollowersGroup: Group? = null
     private var shopBadgeFollowersShimmer: LoaderTextView? = null
+    private var shopBadgeFollowersDot: Typography? = null
     private var shopBadgeImage: AppCompatImageView? = null
     private var shopBadgeShimmer: LoaderTextView? = null
     private var shopBadgeErrorGroup: Group? = null
@@ -77,7 +78,7 @@ class OtherMenuViewHolder(private val itemView: View,
 
     private var errorLocalLoad: LocalLoad? = null
 
-    private var shopStatusLayout: LinearLayout? = null
+    private var shopStatusContainer: LinearLayout? = null
 
     private var freeShippingLayout: FrameLayout? = null
 
@@ -117,6 +118,7 @@ class OtherMenuViewHolder(private val itemView: View,
 
             shopBadgeFollowersGroup = findViewById(R.id.group_sah_other_badge_followers)
             shopBadgeFollowersShimmer = findViewById(R.id.shimmer_sah_other_badge_followers)
+            shopBadgeFollowersDot = findViewById(R.id.dot)
             shopBadgeImage = findViewById(R.id.shopBadges)
             shopBadgeShimmer = findViewById(R.id.shimmer_sah_other_badge)
             shopBadgeErrorGroup = findViewById(R.id.group_sah_other_badge_error)
@@ -124,7 +126,7 @@ class OtherMenuViewHolder(private val itemView: View,
             shopFollowersShimmer = findViewById(R.id.shimmer_sah_other_followers)
             shopFollowersErrorGroup = findViewById(R.id.group_sah_other_followers_error)
 
-            shopStatusLayout = findViewById(R.id.shopStatus)
+            shopStatusContainer = findViewById(R.id.shopStatus)
 
             freeShippingLayout = findViewById(R.id.freeShippingLayout)
 
@@ -227,31 +229,75 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    private fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
-        itemView.shopInfoLayout.findViewById<AppCompatImageView>(R.id.shopBadges)?.run {
+    fun setBadgeFollowersLoading(isLoading: Boolean) {
+        shopBadgeFollowersShimmer?.showWithCondition(isLoading)
+        shopBadgeFollowersGroup?.showWithCondition(!isLoading)
+    }
+
+    fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
+        shopBadgeImage?.run {
             ImageHandler.LoadImage(this, shopBadgeUiModel.shopBadgeUrl)
             setOnClickListener {
                 listener.onShopBadgeClicked()
                 shopBadgeUiModel.sendSettingShopInfoClickTracking()
             }
         }
+        shopBadgeShimmer?.gone()
+        shopBadgeErrorGroup?.gone()
+    }
+
+    fun setShopBadgeLoading() {
+        shopBadgeShimmer?.show()
+        shopBadgeImage?.gone()
+        shopBadgeErrorGroup?.gone()
+    }
+
+    fun setShopBadgeError() {
+        shopBadgeErrorGroup?.run {
+            show()
+            setOnClickListener {
+                // TODO: Reload data
+            }
+        }
+        shopBadgeImage?.gone()
+        shopBadgeShimmer?.gone()
     }
 
     fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
         val shouldShowFollowers = shopTotalFollowersUiModel.shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
         val followersVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
-        itemView.shopInfoLayout.findViewById<Typography>(R.id.shopFollowers)?.run {
+        shopFollowersText?.run {
             visibility = followersVisibility
             text = StringBuilder("${shopTotalFollowersUiModel.shopFollowers} ${context.resources.getString(R.string.setting_followers)}")
             setOnClickListener {
                 shopTotalFollowersUiModel.sendSettingShopInfoClickTracking()
                 listener.onFollowersCountClicked()
             }
+            show()
         }
+        shopFollowersShimmer?.gone()
+        shopFollowersErrorGroup?.gone()
+    }
+
+    fun setShopTotalFollowersLoading() {
+        shopFollowersShimmer?.show()
+        shopFollowersText?.gone()
+        shopFollowersErrorGroup?.gone()
+    }
+
+    fun setShopTotalFollowersError() {
+        shopFollowersErrorGroup?.run {
+            show()
+            setOnClickListener {
+                // TODO: Refresh data
+            }
+        }
+        shopFollowersText?.gone()
+        shopFollowersShimmer?.gone()
     }
 
     fun setupFreeShippingLayout() {
-        itemView.shopInfoLayout.findViewById<FrameLayout>(R.id.freeShippingLayout)?.apply {
+        freeShippingLayout?.run {
             setOnClickListener {
                 listener.onFreeShippingClicked()
                 freeShippingTracker.trackFreeShippingClick()
@@ -263,36 +309,76 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     fun hideFreeShippingLayout() {
-        itemView.shopInfoLayout.findViewById<FrameLayout>(R.id.freeShippingLayout)?.hide()
+        freeShippingLayout?.hide()
     }
 
     fun showOperationalHourLayout(shopOperational: ShopOperationalUiModel) {
-        itemView.findViewById<View>(R.id.shopOperationalHour)?.run {
-            val timeLabel = shopOperational.timeLabel
-            val shopOperationalStatus = itemView.context.getString(shopOperational.status)
+        setupOperationalHourText(shopOperational)
 
-            findViewById<Typography>(R.id.textOperationalHour)?.text = if(timeLabel != null) {
+        val shopOperationalStatus = itemView.context.getString(shopOperational.status)
+        setupOperationalHourLabel(shopOperationalStatus, shopOperational)
+        setupOperationalHourClick(shopOperationalStatus, shopOperational)
+        setupOperationalHourImage(shopOperational)
+
+        operationalHourShimmer?.hide()
+        operationalErrorGroup?.hide()
+    }
+
+    private fun setupOperationalHourText(shopOperational: ShopOperationalUiModel) {
+        val timeLabel = shopOperational.timeLabel
+        operationalHourText?.run {
+            text = if(timeLabel != null) {
                 context.getString(timeLabel)
             } else {
                 shopOperational.time
             }
-            findViewById<Label>(R.id.labelShopStatus)?.apply {
-                text = shopOperationalStatus
-                setLabelType(shopOperational.labelType)
-            }
-            findViewById<ImageView>(R.id.imageOperationalHour)?.apply {
-                setImageDrawable(ContextCompat.getDrawable(context, shopOperational.icon))
-            }
+            show()
+        }
+    }
 
-            if (shopOperational.hasShopSettingsAccess) {
+    private fun setupOperationalHourLabel(shopOperationalStatus: String, shopOperational: ShopOperationalUiModel) {
+        operationalHourLabel?.run {
+            text = shopOperationalStatus
+            setLabelType(shopOperational.labelType)
+            show()
+        }
+    }
+
+    private fun setupOperationalHourClick(shopOperationalStatus: String, shopOperational: ShopOperationalUiModel) {
+        if (shopOperational.hasShopSettingsAccess) {
+            operationalHourView?.run {
                 setOnClickListener {
                     shopOperationalTracker.trackClickShopOperationalHour(shopOperationalStatus)
                     RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
                 }
             }
-
-            visibility = View.VISIBLE
         }
+    }
+
+    private fun setupOperationalHourImage(shopOperational: ShopOperationalUiModel) {
+        operationalHourImage?.run {
+            setImageDrawable(ContextCompat.getDrawable(context, shopOperational.icon))
+            show()
+        }
+    }
+
+    fun showOperationalHourLayoutLoading() {
+        operationalHourShimmer?.show()
+        operationalErrorGroup?.gone()
+        operationalHourImage?.gone()
+        operationalHourLabel?.gone()
+    }
+
+    fun showOperationalHourLayoutError() {
+        operationalErrorGroup?.run {
+            show()
+            setOnClickListener {
+                // TODO: Refresh data
+            }
+        }
+        operationalHourShimmer?.gone()
+        operationalHourImage?.gone()
+        operationalHourLabel?.gone()
     }
 
     private fun setDotVisibility(shopFollowers: Long) {
@@ -339,26 +425,41 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun setSaldoBalance(saldoBalanceUiModel: BalanceUiModel) {
-        itemView.findViewById<LinearLayout>(R.id.layout_sah_other_saldo).run {
-            findViewById<Typography>(R.id.balanceTitle)?.text = context.resources.getString(R.string.setting_balance)
-            findViewById<Typography>(R.id.balanceValue)?.text = saldoBalanceUiModel.balanceValue
-            sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)
-            findViewById<Typography>(R.id.balanceValue)?.setOnClickListener {
+        saldoBalanceText?.run {
+            text = saldoBalanceUiModel.balanceValue
+            setOnClickListener {
                 listener.onSaldoClicked()
                 saldoBalanceUiModel.sendSettingShopInfoClickTracking()
             }
+            show()
         }
+        saldoShimmer?.gone()
+        saldoErrorGroup?.gone()
+        saldoLayout?.sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)
     }
 
     private fun setSaldoBalanceLoading() {
         saldoShimmer?.show()
+        saldoBalanceText?.gone()
+        saldoErrorGroup?.gone()
+    }
+
+    private fun setSaldoBalanceError() {
+        saldoErrorGroup?.run {
+            show()
+            setOnClickListener {
+                // TODO: Refresh data
+            }
+        }
+        saldoShimmer?.gone()
+        saldoBalanceText?.gone()
     }
 
     private fun setKreditTopadsBalance(topadsBalanceUiModel: TopadsBalanceUiModel) {
         topAdsLayout?.sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
         setupKreditTopadsBalanceText(topadsBalanceUiModel)
         setupKreditTopadsBalanceTooltip(topadsBalanceUiModel.isTopAdsUser)
-        toggleKreditTopadsComponent(true)
+        topAdsBalanceText?.show()
     }
 
     private fun setupKreditTopadsBalanceText(topadsBalanceUiModel: TopadsBalanceUiModel) {
@@ -388,23 +489,30 @@ class OtherMenuViewHolder(private val itemView: View,
 
     private fun setKreditTopadsBalanceLoading() {
         topAdsShimmer?.show()
-        toggleKreditTopadsComponent(false)
+        topAdsTooltipImage?.gone()
+        topAdsBalanceText?.gone()
+        topAdsErrorGroup?.gone()
     }
 
     private fun setKreditTopadsBalanceError() {
-        toggleKreditTopadsComponent(false)
-    }
-
-    private fun toggleKreditTopadsComponent(isVisible: Boolean) {
-        itemView.findViewById<LinearLayout>(R.id.layout_sah_other_topads).run {
-            findViewById<Typography>(R.id.tv_sah_other_topads_balance)?.showWithCondition(isVisible)
-            findViewById<AppCompatImageView>(R.id.iv_sah_other_topads_tooltip)?.showWithCondition(isVisible)
+        topAdsErrorGroup?.run {
+            show()
+            setOnClickListener {
+                // TODO: Refresh data
+            }
         }
+        topAdsShimmer?.gone()
+        topAdsTooltipImage?.gone()
+        topAdsBalanceText?.gone()
     }
 
     private fun setShopStatusError() {
-        (itemView.findViewById(R.id.shopStatus) as? LinearLayout)?.run {
-            val shopStatusLayout = LayoutInflater.from(context).inflate(R.layout.view_sah_shop_status_error, this, false)
+        shopStatusContainer?.run {
+            val shopStatusLayout = LayoutInflater.from(context).inflate(R.layout.view_sah_shop_status_error, this, false)?.apply {
+                setOnClickListener {
+                    // TODO: Reload data
+                }
+            }
             removeAllViews()
             shopStatusLayout?.let { view ->
                 addView(view)
@@ -413,7 +521,7 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun setShopStatusLoading() {
-        (itemView.findViewById(R.id.shopStatus) as? LinearLayout)?.run {
+        shopStatusContainer?.run {
             val shopStatusLayout = LayoutInflater.from(context).inflate(R.layout.view_sah_shop_status_loading, this, false)
             removeAllViews()
             shopStatusLayout?.let { view ->
@@ -492,7 +600,7 @@ class OtherMenuViewHolder(private val itemView: View,
             }
             else -> null
         }
-        (itemView.findViewById(R.id.shopStatus) as? LinearLayout)?.run {
+        shopStatusContainer?.run {
             removeAllViews()
             shopStatusLayout?.let { view ->
                 addView(view)
