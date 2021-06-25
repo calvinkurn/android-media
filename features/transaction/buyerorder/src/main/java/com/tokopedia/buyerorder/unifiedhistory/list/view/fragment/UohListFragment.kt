@@ -455,10 +455,12 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         statusbar.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
         uoh_navtoolbar?.let {
+            var timer: CountDownTimer? = null
             it.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
                 HintData(getString(R.string.hint_cari_transaksi) )),
                 navSearchbarInterface = { query,_,_,_ ->
-                    object : CountDownTimer(500, 1000) {
+                    if (timer != null) timer!!.cancel()
+                    timer = object : CountDownTimer(1000, 1000) {
                         override fun onTick(l: Long) {}
                         override fun onFinish() {
                             searchQuery = query.toString()
