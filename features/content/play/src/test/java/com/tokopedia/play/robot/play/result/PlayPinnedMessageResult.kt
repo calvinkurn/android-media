@@ -1,16 +1,16 @@
 package com.tokopedia.play.robot.play.result
 
-import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
+import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
 import org.assertj.core.api.Assertions
 
 /**
  * Created by jegul on 10/02/21
  */
-class PlayPinnedResult(
-        private val result: PlayPinnedUiModel
+class PlayPinnedMessageResult(
+        private val result: PinnedMessageUiModel
 ) {
 
-    fun isEqualTo(expected: PlayPinnedUiModel): PlayPinnedResult {
+    fun isEqualTo(expected: PinnedMessageUiModel): PlayPinnedMessageResult {
         Assertions
                 .assertThat(result)
                 .isEqualTo(expected)
