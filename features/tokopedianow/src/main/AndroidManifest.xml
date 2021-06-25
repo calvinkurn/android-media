@@ -7,7 +7,7 @@
             android:name="com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/TokopediaNowHeaderTheme">
+            android:theme="@style/TokoNowHeaderTheme">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -45,7 +45,7 @@
             android:screenOrientation="portrait"
             android:label="@string/title_tokopedia_now"
             android:windowSoftInputMode="adjustNothing"
-            android:theme="@style/TokopediaNowHeaderTheme">
+            android:theme="@style/TokoNowHeaderTheme">
 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -64,7 +64,7 @@
             android:screenOrientation="portrait"
             android:label="@string/title_tokopedia_now"
             android:windowSoftInputMode="adjustNothing"
-            android:theme="@style/TokopediaNowHeaderTheme">
+            android:theme="@style/TokoNowHeaderTheme">
 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
