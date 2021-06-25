@@ -12,6 +12,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.salam.DeeplinkMapperSalam
 import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 
 /**
  * Created by Irfan Khoirul on 2019-10-08.
@@ -48,7 +50,7 @@ object DeeplinkMapperMarketplace {
     fun getShopPageInternalAppLink(ctx: Context, uri: Uri, deeplink: String, internalAppLink: String, shopId: String):String {
         return if (isSpecialShop(shopId) && uri.pathSegments.size == 1) {
             DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop(deeplink, ctx)
-        } else if(isTokoNowShopId(shopId)){
+        } else if(isTokopediaNowShopId(shopId)){
             ApplinkConstInternalTokopediaNow.HOME
         } else {
             internalAppLink
@@ -59,8 +61,12 @@ object DeeplinkMapperMarketplace {
         return shopId == ApplinkConst.SALAM_UMRAH_SHOP_ID
     }
 
-    private fun isTokoNowShopId(shopId: String): Boolean {
-        return shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID
+    private fun isTokopediaNowShopId(shopId: String): Boolean {
+        return if(TokopediaUrl.getInstance().TYPE == Env.LIVE) {
+            shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_1 || shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
+        } else {
+            shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_STAGING
+        }
     }
 
 }
