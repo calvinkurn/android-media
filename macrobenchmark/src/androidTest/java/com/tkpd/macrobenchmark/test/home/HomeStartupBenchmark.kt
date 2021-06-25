@@ -49,7 +49,7 @@ class HomeStartupBenchmark(private val startupMode: StartupMode) {
         @Parameterized.Parameters(name = "mode={0}")
         @JvmStatic
         fun parameters(): List<Array<Any>> {
-            return listOf(StartupMode.COLD, StartupMode.WARM)
+            return listOf(StartupMode.COLD, StartupMode.WARM, StartupMode.HOT)
                 .map { arrayOf(it) }
         }
     }
