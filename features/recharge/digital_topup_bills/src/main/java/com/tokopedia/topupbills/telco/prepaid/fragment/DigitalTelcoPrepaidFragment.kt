@@ -623,7 +623,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 //        telcoClientNumberWidget.clearFocusAutoComplete()
 //    }
 
-    override fun handleCallbackSearchNumber(clientNumber: String, productId: String, categoryId: String, inputNumberActionTypeIndex: Int) {
+    override fun handleCallbackAnySearchNumber(clientNumber: String, productId: String, categoryId: String, inputNumberActionTypeIndex: Int) {
         inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
         autoSelectTabProduct = true
         if (productId.isNotEmpty() && categoryId.toIntOrNull() ?: 0 == this@DigitalTelcoPrepaidFragment.categoryId) {

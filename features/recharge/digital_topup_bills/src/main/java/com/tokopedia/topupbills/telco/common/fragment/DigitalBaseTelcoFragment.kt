@@ -190,13 +190,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                         val inputNumberActionType = data.getIntExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
                         if (isSeamlessFavoriteNumber) {
                             val orderClientNumber = data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSeamlessFavNumberItem
-                            handleCallbackSearchNumber(
+                            handleCallbackAnySearchNumber(
                                     orderClientNumber.clientNumber, orderClientNumber.productId.toString(),
                                     orderClientNumber.categoryId.toString(), inputNumberActionType
                             )
                         } else {
                             val orderClientNumber = data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsFavNumberItem
-                            handleCallbackSearchNumber(
+                            handleCallbackAnySearchNumber(
                                     orderClientNumber.clientNumber, orderClientNumber.productId,
                                     orderClientNumber.categoryId, inputNumberActionType
                             )
@@ -418,7 +418,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected abstract fun errorSetFavNumbers()
 
-    protected abstract fun handleCallbackSearchNumber(clientNumber: String, productId: String, categoryId: String, inputNumberActionTypeIndex: Int)
+    protected abstract fun handleCallbackAnySearchNumber(clientNumber: String, productId: String, categoryId: String, inputNumberActionTypeIndex: Int)
 
     protected abstract fun handleCallbackAnySearchNumberCancel()
 

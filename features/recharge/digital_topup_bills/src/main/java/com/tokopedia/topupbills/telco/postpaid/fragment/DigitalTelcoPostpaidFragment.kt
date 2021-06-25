@@ -471,7 +471,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.setInputNumber(contactNumber)
     }
 
-    override fun handleCallbackSearchNumber(clientNumber: String, productId: String, categoryId: String, inputNumberActionTypeIndex: Int) {
+    override fun handleCallbackAnySearchNumber(clientNumber: String, productId: String, categoryId: String, inputNumberActionTypeIndex: Int) {
         inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
         postpaidClientNumberWidget.setInputNumber(clientNumber)
         postpaidClientNumberWidget.clearFocusAutoComplete()
