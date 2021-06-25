@@ -3074,15 +3074,23 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void logOnErrorLoadCourier(Throwable throwable, String productId) {
+    public void logOnErrorLoadCourier(Throwable throwable, int itemPosition) {
         String errorMessage = getErrorMessage(throwable);
+        StringBuilder productIds = new StringBuilder();
+        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
+        if (shipmentCartItemModel != null) {
+            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                productIds.append(cartItemModel.getProductId());
+                productIds.append(",");
+            }
+        }
 
         Map<String, String> payload = new HashMap<>();
         payload.put(LoggerConstant.KEY_TYPE, LoggerConstant.TYPE_LOAD_CHECKOUT_PAGE_ERROR);
         payload.put(LoggerConstant.KEY_IS_OCS, String.valueOf(isOneClickShipment()));
         payload.put(LoggerConstant.KEY_IS_TRADE_IN, String.valueOf(isTradeIn()));
         payload.put(LoggerConstant.KEY_IS_TRADE_IN_INDOPAKET, String.valueOf(isTradeInByDropOff()));
-        payload.put(LoggerConstant.KEY_PRODUCT_ID, productId);
+        payload.put(LoggerConstant.KEY_PRODUCT_ID_LIST, productIds.toString());
         payload.put(LoggerConstant.KEY_MESSAGE, !errorMessage.isEmpty() ? errorMessage : "unknown exception");
         payload.put(LoggerConstant.KEY_STACK_TRACE, Arrays.toString(throwable.getStackTrace()).substring(0, 50));
         ServerLogger.log(

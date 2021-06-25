@@ -60,11 +60,11 @@ class GetCartListSimplifiedUseCase @Inject constructor(private val graphqlUseCas
                             if (shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.errorMessages.isNotEmpty()) {
                                 throw CartResponseErrorException(shopGroupSimplifiedGqlResponse.shopGroupSimplifiedResponse.errorMessages.joinToString())
                             } else {
-                                throw ResponseErrorException("get cart list response status is not OK and no error message")
+                                throw ResponseErrorException()
                             }
                         }
                     } else {
-                        throw ResponseErrorException("get cart list response is null")
+                        throw ResponseErrorException()
                     }
                 }
                 .subscribeOn(schedulers.io)

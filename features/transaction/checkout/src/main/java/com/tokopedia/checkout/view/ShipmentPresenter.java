@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
 import com.tokopedia.authentication.AuthHelper;
@@ -911,6 +912,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().setHasRunningApiCall(false);
                 getView().showToastError(errorMessage);
                 processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, cornerId, deviceId, leasingId);
+                getView().logOnErrorCheckout(e, checkoutRequest.toString());
             }
 
             @Override
@@ -937,8 +939,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     getView().hideLoading();
                     if (!checkoutData.getErrorMessage().isEmpty()) {
                         getView().renderCheckoutCartError(checkoutData.getErrorMessage());
+                        getView().logOnErrorCheckout(new MessageErrorException(checkoutData.getErrorMessage()), checkoutRequest.toString());
                     } else {
-                        getView().renderCheckoutCartError(getView().getActivityContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
+                        String defaultErrorMessage = getView().getActivityContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown);
+                        getView().renderCheckoutCartError(defaultErrorMessage);
+                        getView().logOnErrorCheckout(new MessageErrorException(defaultErrorMessage), checkoutRequest.toString());
                     }
                     processInitialLoadCheckoutPage(true, isOneClickShipment, isTradeIn, true, false, cornerId, deviceId, leasingId);
                 }

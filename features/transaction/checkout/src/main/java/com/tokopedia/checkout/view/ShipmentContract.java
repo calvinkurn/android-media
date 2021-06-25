@@ -156,7 +156,7 @@ public interface ShipmentContract {
 
         void logOnErrorLoadCheckoutPage(Throwable throwable);
 
-        void logOnErrorLoadCourier(Throwable throwable, String productId);
+        void logOnErrorLoadCourier(Throwable throwable, int itemPosition);
 
         void logOnErrorCheckout(Throwable throwable, String request);
     }
