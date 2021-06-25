@@ -22,6 +22,6 @@ interface MiniCartListTypeFactory {
 
     fun type(uiModel: MiniCartUnavailableReasonUiModel): Int
 
-    fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
+    fun createViewHolder(parent: View, viewType: Int): AbstractViewHolder<*>
 
 }
