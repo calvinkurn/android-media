@@ -99,6 +99,9 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     var operatorName = ""
     var productName = ""
 
+    // Favorite Number
+    protected var isSeamlessFavoriteNumber = true
+
     private fun subscribeUi() {
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {

@@ -44,13 +44,9 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     val productAutoCheckout: LiveData<TelcoProduct>
         get() = _productAutoCheckout
 
-    private val _favNumberSelected = MutableLiveData<TopupBillsFavNumberItem>()
-    val favNumberSelected: LiveData<TopupBillsFavNumberItem>
+    private val _favNumberSelected = MutableLiveData<String>()
+    val favNumberSelected: LiveData<String>
         get() = _favNumberSelected
-
-    private val _seamlessFavNumberSelected = MutableLiveData<TopupBillsSeamlessFavNumberItem>()
-    val seamlessFavNumberSelected: LiveData<TopupBillsSeamlessFavNumberItem>
-        get() = _seamlessFavNumberSelected
 
     private val _showTotalPrice = MutableLiveData<Boolean>()
     val showTotalPrice: LiveData<Boolean>
@@ -88,12 +84,8 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         _positionScrollItem.postValue(position)
     }
 
-    fun setFavNumberSelected(favNumber: TopupBillsFavNumberItem) {
-        _favNumberSelected.postValue(favNumber)
-    }
-
-    fun setSeamlessFavNumberSelected(favNumber: TopupBillsSeamlessFavNumberItem) {
-        _seamlessFavNumberSelected.postValue(favNumber)
+    fun setFavNumberSelected(productId: String) {
+        _favNumberSelected.postValue(productId)
     }
 
     fun setVisibilityTotalPrice(show: Boolean) {
@@ -133,8 +125,8 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
             } else {
                 _productList.postValue(Success(data.rechargeCatalogProductDataData.productInputList))
                 // TODO: [Misael] Toggle disini?
-//                setFavNumberSelected(TopupBillsFavNumberItem(productId = autoSelectProductId.toString()))
-                setSeamlessFavNumberSelected(TopupBillsSeamlessFavNumberItem(productId = autoSelectProductId))
+                setFavNumberSelected(autoSelectProductId.toString())
+//                setSeamlessFavNumberSelected(TopupBillsSeamlessFavNumberItem(productId = autoSelectProductId))
             }
         }) {
             _loadingProductList.postValue(false)
