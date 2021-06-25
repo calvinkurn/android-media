@@ -24,6 +24,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/best_seller_info_title"
             tools:text="Terlaris #1"
+            android:gravity="center"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             android:layout_marginStart="@dimen/unify_space_16"
@@ -33,10 +34,10 @@
             android:layout_height="wrap_content"/>
 
         <com.tokopedia.unifyprinciples.Typography
+            android:gravity="center"
             android:id="@+id/best_seller_info_description"
             tools:text="di Cleanser Wajah"
             app:typographyType="body_3"
-            android:layout_marginStart="@dimen/unify_space_4"
             android:layout_marginTop="@dimen/unify_space_16"
             android:layout_marginBottom="@dimen/unify_space_16"
             android:layout_width="wrap_content"
