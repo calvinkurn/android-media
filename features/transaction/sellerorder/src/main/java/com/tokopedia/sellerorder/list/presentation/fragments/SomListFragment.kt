@@ -1229,8 +1229,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     protected fun loadFilters(showShimmer: Boolean = true, loadOrders: Boolean) {
         if (showShimmer) {
-            sortFilterSomList.invisible()
-            shimmerViews.show()
+            sortFilterSomList?.invisible()
+            shimmerViews?.show()
         }
         viewModel.getFilters(loadOrders)
     }
@@ -1349,7 +1349,8 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
     }
 
     private fun updateOrderCounter() {
-        multiEditViews?.showWithCondition((somListSortFilterTab?.shouldShowBulkAction()?.and(canMultiAcceptOrder) ?: false) && GlobalConfig.isSellerApp())
+        multiEditViews?.showWithCondition((somListSortFilterTab?.shouldShowBulkAction()?.and(canMultiAcceptOrder)
+                ?: false) && GlobalConfig.isSellerApp() && adapter.data.filterIsInstance<SomListOrderUiModel>().isNotEmpty())
         context?.run {
             val text = if (viewModel.isMultiSelectEnabled) {
                 val checkedCount = adapter.data.filterIsInstance<SomListOrderUiModel>().count { it.isChecked }
@@ -1623,7 +1624,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             (adapter as SomListOrderAdapter).updateOrder(order)
         }
         if (adapter.dataSize == 0) {
-            multiEditViews?.showWithCondition(adapter.dataSize > 0 && canMultiAcceptOrder)
+            multiEditViews?.gone()
             toggleBulkActionButtonVisibility()
             viewModel.isMultiSelectEnabled = false
             showEmptyState()
@@ -2101,7 +2102,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
 
     private fun animateBulkAcceptOrderButtonEnter() {
         if (bulkAcceptButtonLeaveAnimation?.isRunning == true) bulkAcceptButtonLeaveAnimation?.cancel()
-        btnBulkAction.text = when (somListSortFilterTab?.getSelectedFilterStatus()) {
+        btnBulkAction?.text = when (somListSortFilterTab?.getSelectedFilterStatus()) {
             STATUS_NEW_ORDER -> getString(R.string.som_list_bulk_accept_order_button)
             KEY_CONFIRM_SHIPPING -> getString(R.string.som_list_bulk_confirm_shipping_order_button)
             else -> ""

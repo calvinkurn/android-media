@@ -20,7 +20,7 @@ import com.tokopedia.user.session.UserSessionInterface
 class PopularTopicsBottomSheet(mActivity: FragmentActivity?,
                                private val tracking: ProductReviewDetailTracking,
                                private val userSession: UserSessionInterface,
-                               private val productID: Int,
+                               private val productID: String,
                                listenerTopics: (List<SortFilterItemWrapper>, List<SortItemUiModel>) -> Unit) :
         BaseTopicsBottomSheet(mActivity, listenerTopics), TopicSortFilterListener.Topic, TopicSortFilterListener.Sort {
 
@@ -29,7 +29,7 @@ class PopularTopicsBottomSheet(mActivity: FragmentActivity?,
             resetFilterClicked()
         }
         setCloseClickListener {
-            tracking.eventClickCloseBottomSheetSortFilter(userSession.shopId.orEmpty(), productID.toString())
+            tracking.eventClickCloseBottomSheetSortFilter(userSession.shopId.orEmpty(), productID)
             dismiss()
         }
 
@@ -89,7 +89,7 @@ class PopularTopicsBottomSheet(mActivity: FragmentActivity?,
         val isSelected = chipType == ChipsUnify.TYPE_SELECTED
         tracking.eventClickFilterOnBottomSheet(
                 userSession.shopId.orEmpty(),
-                productID.toString(),
+                productID,
                 topicAdapter?.sortFilterList?.getOrNull(adapterPosition)?.titleUnformated.orEmpty(),
                 isSelected.toString())
         topicAdapter?.updateTopicFilter(isSelected, adapterPosition)
@@ -98,7 +98,7 @@ class PopularTopicsBottomSheet(mActivity: FragmentActivity?,
     override fun onSortClicked(chipType: String, adapterPosition: Int) {
         tracking.eventClickSortOnBottomSheet(
                 userSession.shopId.orEmpty(),
-                productID.toString(),
+                productID,
                 sortAdapter?.sortFilterListUiModel?.getOrNull(adapterPosition)?.title.orEmpty())
         sortAdapter?.updatedSortFilter(adapterPosition)
     }

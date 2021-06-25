@@ -48,6 +48,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
+import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -71,9 +72,6 @@ import javax.inject.Inject
  * @author by milhamj on 25/07/18.
  */
 
-private const val EXP_NAME = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
-private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
-private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
 private const val FEED_PAGE = "feed"
 
 class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener {
@@ -173,10 +171,16 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun initNavRevampAbTest() {
-        showOldToolbar = !RemoteConfigInstance.getInstance()
-                .abTestPlatform
-                .getString(EXP_NAME, VARIANT_OLD)
-                .equals(VARIANT_REVAMP, true)
+        showOldToolbar = !isNavRevamp()
+    }
+
+    private fun isNavRevamp(): Boolean {
+        return try {
+            return (context as? MainParentStateListener)?.isNavigationRevamp?:false
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 
     private fun initInboxAbTest() {

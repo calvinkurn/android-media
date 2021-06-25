@@ -32,6 +32,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.common.travel.widget.CountdownTimeView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.data.*
@@ -310,9 +311,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun mapThrowableToFlightError(message: String): FlightError {
         return try {
-            if (message == FlightErrorConstant.FLIGHT_ERROR_ON_CHECKOUT_GENERAL ||
-                    message == FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY ||
-                    message == FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY) {
+            if (message == FlightErrorConstant.FLIGHT_ERROR_ON_CHECKOUT_GENERAL.value.toString() ||
+                    message == FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY.value.toString() ||
+                    message == FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY.value.toString()) {
                 val error = FlightError(message)
                 error.head = getString(R.string.flight_booking_general_error_title)
                 error.message = getString(R.string.flight_booking_general_error_subtitle)
@@ -436,11 +437,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun setUpTimer(timeStamp: Date) {
         orderDueTimeStampString = FlightDateUtil.dateToString(timeStamp, FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
-        countdown_timeout.setListener {
-            if (context != null) {
-                refreshCart()
-            } else needRefreshCart = true
-        }
+        countdown_timeout.setListener(object : CountdownTimeView.OnActionListener {
+            override fun onFinished() {
+                if (context != null) {
+                    refreshCart()
+                } else needRefreshCart = true
+            }
+        })
         countdown_timeout.cancel()
         countdown_timeout.setExpiredDate(timeStamp)
         countdown_timeout.start()
@@ -839,7 +842,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
         if (activity != null) {
             if (e.id != null) {
                 val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
-                if (errorCode == FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME) renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
+                if (errorCode == FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME)
+                    renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
                 else if (errorCode == FlightErrorConstant.FLIGHT_SOLD_OUT) {
                     showErrorFullPage(e)
                 } else {
@@ -1000,14 +1004,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun finishActivityToHomepage() {
         showLoadingDialog()
         activity?.let {
-            FlightFlowUtil.actionSetResultAndClose(it, it.intent, FlightFlowConstant.EXPIRED_JOURNEY)
+            FlightFlowUtil.actionSetResultAndClose(it, it.intent, FlightFlowConstant.EXPIRED_JOURNEY.value)
         }
     }
 
     private fun finishActivityToSearchPage() {
         showLoadingDialog()
         activity?.let {
-            FlightFlowUtil.actionSetResultAndClose(it, it.intent, FlightFlowConstant.PRICE_CHANGE)
+            FlightFlowUtil.actionSetResultAndClose(it, it.intent, FlightFlowConstant.PRICE_CHANGE.value)
         }
     }
 

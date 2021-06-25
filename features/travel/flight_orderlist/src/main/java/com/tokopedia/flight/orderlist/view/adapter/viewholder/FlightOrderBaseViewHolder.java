@@ -1,10 +1,6 @@
 package com.tokopedia.flight.orderlist.view.adapter.viewholder;
 
 import android.content.Context;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -14,6 +10,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
+
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -140,7 +141,7 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
         rvDepartureSchedule.setAdapter(departureSchedules);
         if (orderJourney.size() == 1) {
             OrderSimpleViewModel simpleViewModel = new OrderSimpleViewModel();
-            simpleViewModel.setLabel(TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.FORMAT_DATE, orderJourney.get(0).getDepartureTime()));
+            simpleViewModel.setLabel(TravelDateUtil.Companion.formatDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.FORMAT_DATE, orderJourney.get(0).getDepartureTime()));
             simpleViewModel.setDescription(null);
             departureSchedules.setTitleBold(false);
             departureSchedules.setArrowVisible(false);
@@ -152,7 +153,7 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
             int index = 0;
             for (FlightOrderJourney journey : orderJourney) {
                 simpleViewModels.add(new OrderSimpleViewModel(journey.getDepartureAiportId() + "-" + journey.getArrivalAirportId(),
-                        TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.FORMAT_DATE, orderJourney.get(index).getDepartureTime())));
+                        TravelDateUtil.Companion.formatDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.FORMAT_DATE, orderJourney.get(index).getDepartureTime())));
                 index++;
             }
             departureSchedules.setTitleBold(true);

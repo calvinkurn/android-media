@@ -5,7 +5,9 @@ package com.tokopedia.play.broadcaster.analytic.tag
  */
 interface PlayBroadcastContentTaggingAnalytic {
 
-    fun selectRecommendedTags(selectedTags: Set<String>)
+    fun selectRecommendedTag(channelId: String, tag: String, isChosen: Boolean)
 
-    fun proceedFromContentTagging()
+    fun proceedFromContentTagging(channelId: String)
+
+    fun clickTitleInputArea()
 }

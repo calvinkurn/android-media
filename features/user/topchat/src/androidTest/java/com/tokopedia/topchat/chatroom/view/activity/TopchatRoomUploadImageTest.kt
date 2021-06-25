@@ -57,14 +57,6 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
         return recyclerView.adapter?.itemCount ?: 0
     }
 
-    private fun getImageData(): Intent {
-        return Intent().apply {
-            putStringArrayListExtra(PICKER_RESULT_PATHS, arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg"))
-            putStringArrayListExtra(RESULT_PREVIOUS_IMAGE, arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg"))
-            putStringArrayListExtra(RESULT_IMAGES_FED_INTO_IMAGE_PICKER, arrayListOf("https://images.tokopedia.net/img/LUZQDL/2021/3/18/fa23883b-4188-417b-ab8d-21255f62a324.jpg"))
-        }
-    }
-
     private fun openChatRoom(replyChatGqlDelay: Long = 0L) {
         setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer

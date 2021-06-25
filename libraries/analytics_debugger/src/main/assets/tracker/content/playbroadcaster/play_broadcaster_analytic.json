@@ -31,7 +31,8 @@
       "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "theme": ".*"
     },
     {
       "event": "openScreen",
@@ -44,7 +45,8 @@
       "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "theme": ".*"
     },
     {
       "eventAction": "click camera onboarding",
@@ -92,17 +94,6 @@
     },
     {
       "eventAction": "click close onboarding",
-      "event": "clickSellerBroadcast",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "\\d+",
-      "sessionIris": ".*",
-      "currentSite": ".*",
-      "shopId": ".*",
-      "userId": ".*",
-      "businessUnit": "play"
-    },
-    {
-      "eventAction": "click mulai persiapannya",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -310,7 +301,8 @@
       "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "theme": ".*"
     },
     {
       "eventAction": "click capture",
@@ -411,7 +403,8 @@
       "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "theme": ".*"
     },
     {
       "eventAction": "click title live streaming",
@@ -480,17 +473,6 @@
       "businessUnit": "play"
     },
     {
-      "eventAction": "click simpan",
-      "event": "clickSellerBroadcast",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "\\d+",
-      "sessionIris": ".*",
-      "currentSite": ".*",
-      "shopId": ".*",
-      "userId": ".*",
-      "businessUnit": "play"
-    },
-    {
       "eventAction": "click pilih ulang product",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
@@ -534,7 +516,8 @@
       "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "theme": ".*"
     },
     {
       "eventAction": "click product tag live",
@@ -668,7 +651,8 @@
       "userId": ".*",
       "sessionIris": ".*",
       "currentSite": "tokopediaseller",
-      "businessUnit": "play"
+      "businessUnit": "play",
+      "theme": ".*"
     },
     {
       "eventAction": "error state on report page",

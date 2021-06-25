@@ -6,8 +6,7 @@ import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
 import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantBasicInfoUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMBasicInfoUseCase
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantRemoteConfig
-import com.tokopedia.power_merchant.subscribe.domain.interactor.GetShopModerationStatusUseCase
+import com.tokopedia.power_merchant.subscribe.domain.usecase.GetShopModerationStatusUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.ModerationShopStatusUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.verifyErrorEquals
@@ -24,6 +23,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyLong
 
 /**
@@ -42,9 +42,6 @@ class PowerMerchantSharedViewModelTest {
     @RelaxedMockK
     lateinit var getShopModerationStatusUseCase: GetShopModerationStatusUseCase
 
-    @RelaxedMockK
-    lateinit var powerMerchantRemoteConfig: PowerMerchantRemoteConfig
-
     private lateinit var viewModel: PowerMerchantSharedViewModel
 
     @Before
@@ -54,7 +51,6 @@ class PowerMerchantSharedViewModelTest {
         viewModel = PowerMerchantSharedViewModel(
                 Lazy { getPmBasicInfo },
                 Lazy { getShopModerationStatusUseCase },
-                Lazy { powerMerchantRemoteConfig },
                 CoroutineTestDispatchersProvider
         )
     }
@@ -64,27 +60,18 @@ class PowerMerchantSharedViewModelTest {
         val result = PowerMerchantBasicInfoUiModel(
                 PMStatusUiModel(),
                 PMShopInfoUiModel(),
-                emptyList(),
-                PeriodType.COMMUNICATION_PERIOD_PM_PRO,
-                true
+                emptyList()
         )
+        val isFirstLoad = anyBoolean()
 
         coEvery {
-            powerMerchantRemoteConfig.isFreeShippingEnabled()
-        } returns true
-
-        coEvery {
-            getPmBasicInfo.executeOnBackground()
+            getPmBasicInfo.executeOnBackground(isFirstLoad)
         } returns result
 
-        viewModel.getPowerMerchantBasicInfo()
+        viewModel.getPowerMerchantBasicInfo(isFirstLoad)
 
         coVerify {
-            powerMerchantRemoteConfig.isFreeShippingEnabled()
-        }
-
-        coVerify {
-            getPmBasicInfo.executeOnBackground()
+            getPmBasicInfo.executeOnBackground(isFirstLoad)
         }
 
         val expected = Success(result)
@@ -95,19 +82,16 @@ class PowerMerchantSharedViewModelTest {
     @Test
     fun `when get pm basic info should return failed`() = runBlockingTest {
         val throwable = Throwable()
+        val isFirstLoad = anyBoolean()
 
         coEvery {
-            getPmBasicInfo.executeOnBackground()
+            getPmBasicInfo.executeOnBackground(isFirstLoad)
         } throws throwable
 
-        viewModel.getPowerMerchantBasicInfo()
+        viewModel.getPowerMerchantBasicInfo(isFirstLoad)
 
         coVerify {
-            powerMerchantRemoteConfig.isFreeShippingEnabled()
-        }
-
-        coVerify {
-            getPmBasicInfo.executeOnBackground()
+            getPmBasicInfo.executeOnBackground(isFirstLoad)
         }
 
         val expected = Fail(throwable)

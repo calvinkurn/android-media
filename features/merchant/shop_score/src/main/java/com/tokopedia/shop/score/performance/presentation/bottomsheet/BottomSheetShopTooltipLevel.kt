@@ -28,7 +28,7 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
     @Inject
     lateinit var shopPerformanceViewModel: ShopPerformanceViewModel
 
-    private var shopLevel = 0
+    private var shopLevel = 0L
     private var shopIncome = ""
     private var productSold = ""
     private var nextUpdate = ""
@@ -60,7 +60,7 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
     }
 
     private fun getDataFromArguments() {
-        shopLevel = arguments?.getInt(SHOP_PERFORMANCE_LEVEL_KEY, 0).orZero()
+        shopLevel = arguments?.getLong(SHOP_PERFORMANCE_LEVEL_KEY, 0).orZero()
         shopIncome = arguments?.getString(SHOP_INCOME_KEY).orEmpty()
         productSold = arguments?.getString(PRODUCT_SOLD_KEY).orEmpty()
         nextUpdate = arguments?.getString(NEXT_UPDATE_KEY).orEmpty()
@@ -144,10 +144,10 @@ class BottomSheetShopTooltipLevel : BaseBottomSheetShopScore() {
         private const val PERIOD_KEY = "period_key"
         private const val NEXT_UPDATE_KEY = "next_update_key"
 
-        fun createInstance(shopLevel: Int, shopIncome: String, productSold: String, period: String, nextUpdate: String): BottomSheetShopTooltipLevel {
+        fun createInstance(shopLevel: Long, shopIncome: String, productSold: String, period: String, nextUpdate: String): BottomSheetShopTooltipLevel {
             return BottomSheetShopTooltipLevel().apply {
                 val bundle = Bundle()
-                bundle.putInt(SHOP_PERFORMANCE_LEVEL_KEY, shopLevel)
+                bundle.putLong(SHOP_PERFORMANCE_LEVEL_KEY, shopLevel)
                 bundle.putString(SHOP_INCOME_KEY, shopIncome)
                 bundle.putString(PRODUCT_SOLD_KEY, productSold)
                 bundle.putString(PERIOD_KEY, period)
