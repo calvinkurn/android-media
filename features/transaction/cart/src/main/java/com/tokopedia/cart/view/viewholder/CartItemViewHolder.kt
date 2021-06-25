@@ -491,13 +491,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         qtyEditorCart.minValue = data.cartItemData?.originData?.minOrder ?: 0
         qtyEditorCart.maxValue = data.cartItemData?.originData?.maxOrder ?: 0
         // reset listener
-        qtyEditorCart.setValueChangedListener { _, _, _ -> /* no-op */ }
         qtyEditorCart.setValue(data.cartItemData?.updatedData?.quantity ?: 0)
-        qtyEditorCart.setValueChangedListener { newValue, _, _ ->
-//            cartItemHolderData?.cartItemData?.updatedData?.quantity = newValue
-//            actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse()
-//            cartItemHolderData?.let { handleRefreshType(it, viewHolderListener, parentPosition) }
-        }
         qtyEditorCart.setSubstractListener {
             if (data.cartItemData?.isError == false && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
                 actionListener?.onCartItemQuantityMinusButtonClicked()
