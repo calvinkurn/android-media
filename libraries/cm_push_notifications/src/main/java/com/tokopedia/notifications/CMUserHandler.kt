@@ -105,6 +105,7 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
 
     fun updateToken(token: String, remoteDelaySeconds: Long, userAction: Boolean) {
         try {
+            println("token::$token")
             var delay = getRandomDelay(remoteDelaySeconds)
             if (userAction)
                 delay = 0L
