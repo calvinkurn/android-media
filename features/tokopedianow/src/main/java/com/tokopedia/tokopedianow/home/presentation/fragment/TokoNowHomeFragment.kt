@@ -105,7 +105,7 @@ class TokoNowHomeFragment: Fragment(),
     private val adapter by lazy {
         HomeAdapter(
             typeFactory = HomeAdapterTypeFactory(
-                tokopediaNowListener = this,
+                tokoNowListener = this,
                 homeTickerListener = this,
                 homeChooseAddressWidgetListener = this,
                 homeCategoryGridlistener = this,
