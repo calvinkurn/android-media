@@ -5,12 +5,12 @@ import androidx.test.espresso.idling.CountingIdlingResource
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.topchat.chatroom.di.ChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
+import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
 
 class TopChatRoomActivityStub : TopChatRoomActivity() {
 
-    lateinit var chatComponentStub: ChatComponentStub
     lateinit var keyboardStateIdling: CountingIdlingResource
 
     override fun inflateFragment() {
@@ -18,14 +18,12 @@ class TopChatRoomActivityStub : TopChatRoomActivity() {
     }
 
     override fun initializeChatComponent(): ChatComponent {
-        return chatComponentStub
+        return TopchatRoomTest.chatComponentStub!!
     }
 
     fun setupTestFragment(
-            chatComponentStub: ChatComponentStub,
             keyboardStateIdling: CountingIdlingResource
     ) {
-        this.chatComponentStub = chatComponentStub
         this.keyboardStateIdling = keyboardStateIdling
         supportFragmentManager.beginTransaction()
                 .replace(parentViewResourceID, newFragment, TAG)

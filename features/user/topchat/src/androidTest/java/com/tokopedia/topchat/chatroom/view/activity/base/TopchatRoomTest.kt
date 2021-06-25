@@ -145,12 +145,15 @@ abstract class TopchatRoomTest {
     protected var chatBackgroundResponse = ChatBackgroundResponse()
     protected var chatRoomSettingResponse = RoomSettingResponse()
 
-    protected lateinit var chatComponentStub: ChatComponentStub
-
     object ProductPreviewAttribute {
         const val productName = "Testing Attach Product 1"
         const val productThumbnail = "https://ecs7-p.tokopedia.net/img/cache/350/attachment/" +
                 "2020/8/24/40768394/40768394_732546f9-371d-45c6-a412-451ea50aa22c.jpg.webp"
+    }
+
+    companion object {
+        const val MSG_ID = "66961"
+        var chatComponentStub: ChatComponentStub? = null
     }
 
     @Before
@@ -163,7 +166,7 @@ abstract class TopchatRoomTest {
             .fakeBaseAppComponent(baseComponent)
             .chatRoomContextModule(ChatRoomContextModule(context))
             .build()
-        chatComponentStub.inject(this)
+        chatComponentStub!!.inject(this)
         setupDefaultResponseWhenFirstOpenChatRoom()
         UploadImageChatService.dummyMap.clear()
         IdlingRegistry.getInstance().register(keyboardStateIdling)
@@ -172,6 +175,7 @@ abstract class TopchatRoomTest {
     @After
     open fun tearDown() {
         IdlingRegistry.getInstance().unregister(keyboardStateIdling)
+        chatComponentStub = null
     }
 
     protected open fun setupResponse() {
@@ -253,7 +257,7 @@ abstract class TopchatRoomTest {
     }
 
     protected fun inflateTestFragment() {
-        activity.setupTestFragment(chatComponentStub, keyboardStateIdling)
+        activity.setupTestFragment(keyboardStateIdling)
         waitForFragmentResumed()
     }
 
@@ -701,10 +705,6 @@ abstract class TopchatRoomTest {
 
     protected fun waitForIt(timeMillis: Long) {
         Thread.sleep(timeMillis)
-    }
-
-    companion object {
-        const val MSG_ID = "66961"
     }
 }
 
