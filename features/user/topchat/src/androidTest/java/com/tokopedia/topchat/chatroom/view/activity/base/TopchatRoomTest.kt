@@ -128,9 +128,6 @@ abstract class TopchatRoomTest {
 
     protected open lateinit var activity: TopChatRoomActivityStub
     protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
-    protected open var keyboardStateIdling: CountingIdlingResource = CountingIdlingResource(
-        "ChatRoom-Keyboard"
-    )
 
     protected var firstPageChatAsBuyer = GetExistingChatPojo()
     protected var firstPageChatAsSeller = GetExistingChatPojo()
@@ -154,6 +151,7 @@ abstract class TopchatRoomTest {
     companion object {
         const val MSG_ID = "66961"
         var chatComponentStub: ChatComponentStub? = null
+        var keyboardStateIdling: CountingIdlingResource? = null
     }
 
     @Before
@@ -169,6 +167,7 @@ abstract class TopchatRoomTest {
         chatComponentStub!!.inject(this)
         setupDefaultResponseWhenFirstOpenChatRoom()
         UploadImageChatService.dummyMap.clear()
+        keyboardStateIdling = CountingIdlingResource("ChatRoom-Keyboard")
         IdlingRegistry.getInstance().register(keyboardStateIdling)
     }
 
@@ -176,6 +175,7 @@ abstract class TopchatRoomTest {
     open fun tearDown() {
         IdlingRegistry.getInstance().unregister(keyboardStateIdling)
         chatComponentStub = null
+        keyboardStateIdling = null
     }
 
     protected open fun setupResponse() {
@@ -257,7 +257,7 @@ abstract class TopchatRoomTest {
     }
 
     protected fun inflateTestFragment() {
-        activity.setupTestFragment(keyboardStateIdling)
+        activity.setupTestFragment()
         waitForFragmentResumed()
     }
 

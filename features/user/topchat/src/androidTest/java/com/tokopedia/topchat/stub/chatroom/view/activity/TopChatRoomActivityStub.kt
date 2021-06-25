@@ -11,7 +11,6 @@ import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
 
 class TopChatRoomActivityStub : TopChatRoomActivity() {
 
-    lateinit var keyboardStateIdling: CountingIdlingResource
 
     override fun inflateFragment() {
         // Don't inflate fragment immediately
@@ -21,10 +20,7 @@ class TopChatRoomActivityStub : TopChatRoomActivity() {
         return TopchatRoomTest.chatComponentStub!!
     }
 
-    fun setupTestFragment(
-            keyboardStateIdling: CountingIdlingResource
-    ) {
-        this.keyboardStateIdling = keyboardStateIdling
+    fun setupTestFragment() {
         supportFragmentManager.beginTransaction()
                 .replace(parentViewResourceID, newFragment, TAG)
                 .commit()
@@ -35,9 +31,7 @@ class TopChatRoomActivityStub : TopChatRoomActivity() {
     }
 
     override fun createChatRoomFragment(bundle: Bundle): BaseChatFragment {
-        return TopChatRoomFragmentStub.createInstance(
-                bundle, keyboardStateIdling
-        )
+        return TopChatRoomFragmentStub.createInstance(bundle)
     }
 
     companion object {
