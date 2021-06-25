@@ -157,18 +157,10 @@ abstract class TopchatRoomTest {
     @Before
     open fun before() {
         setupResponse()
-        val baseComponent = DaggerFakeBaseAppComponent.builder()
-            .fakeAppModule(FakeAppModule(applicationContext))
-            .build()
-        chatComponentStub = DaggerChatComponentStub.builder()
-            .fakeBaseAppComponent(baseComponent)
-            .chatRoomContextModule(ChatRoomContextModule(context))
-            .build()
-        chatComponentStub!!.inject(this)
+        setupDaggerComponent()
         setupDefaultResponseWhenFirstOpenChatRoom()
-        UploadImageChatService.dummyMap.clear()
-        keyboardStateIdling = CountingIdlingResource("ChatRoom-Keyboard")
-        IdlingRegistry.getInstance().register(keyboardStateIdling)
+        setupDummyImageChatService()
+        setupKeyboardIdlingResource()
     }
 
     @After
@@ -213,6 +205,17 @@ abstract class TopchatRoomTest {
         )
     }
 
+    private fun setupDaggerComponent() {
+        val baseComponent = DaggerFakeBaseAppComponent.builder()
+            .fakeAppModule(FakeAppModule(applicationContext))
+            .build()
+        chatComponentStub = DaggerChatComponentStub.builder()
+            .fakeBaseAppComponent(baseComponent)
+            .chatRoomContextModule(ChatRoomContextModule(context))
+            .build()
+        chatComponentStub!!.inject(this)
+    }
+
     protected fun setupDefaultResponseWhenFirstOpenChatRoom() {
         getChatRoomSettingUseCase.response = chatRoomSettingResponse
         chatBackgroundUseCase.response = chatBackgroundResponse
@@ -224,6 +227,15 @@ abstract class TopchatRoomTest {
         chatSrwUseCase.response = chatSrwResponse
         getShopFollowingUseCaseStub.response = getShopFollowingStatus
         getTemplateChatRoomUseCase.response = generateTemplateResponse(true)
+    }
+
+    private fun setupDummyImageChatService() {
+        UploadImageChatService.dummyMap.clear()
+    }
+
+    private fun setupKeyboardIdlingResource() {
+        keyboardStateIdling = CountingIdlingResource("ChatRoom-Keyboard")
+        IdlingRegistry.getInstance().register(keyboardStateIdling)
     }
 
     protected fun setupChatRoomActivity(
