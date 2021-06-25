@@ -21,7 +21,7 @@
                     android:scheme="@string/tokopedia_scheme" />
 
                 <data
-                    android:host="@string/host_setting"
+                    android:host="@string/host_setting_setup"
                     android:pathPrefix="@string/path_dev_opt"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>

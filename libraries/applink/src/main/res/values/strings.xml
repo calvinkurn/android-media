@@ -13,6 +13,7 @@
 
     <!--Developer Options-->
     <string name="host_setting" translatable="false">setting</string>
+    <string name="host_setting_setup" translatable="false">setting-setup</string>
     <string name="path_dev_opt" translatable="false">/dev-opts</string>
 
     <!--Feedback Form-->

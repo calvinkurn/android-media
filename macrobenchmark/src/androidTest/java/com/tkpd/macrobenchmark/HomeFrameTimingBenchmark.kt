@@ -34,7 +34,7 @@ class HomeFrameTimingBenchmark {
     @Before
     fun startDeveloperOptions() {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
-        instrumentation.targetContext.startActivity(MacroIntent.getHomeIntent())
+        instrumentation.targetContext.startActivity(MacroIntent.getHomeMacroSetupIntent())
         Thread.sleep(5000)
     }
 

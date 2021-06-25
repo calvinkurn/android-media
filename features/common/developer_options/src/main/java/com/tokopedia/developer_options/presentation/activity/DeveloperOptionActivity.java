@@ -191,8 +191,7 @@ public class DeveloperOptionActivity extends BaseActivity {
                             uri.getPathSegments().get(1).equals(CHANGEURL);
                     isCoachmarkApplink = (uri.getPathSegments().size() == 3) &&
                             uri.getPathSegments().get(1).equals(URI_COACHMARK);
-                    isHomeMacrobenchmarkApplink = (uri.getPathSegments().size() == 3) &&
-                            uri.getPathSegments().get(1).equals(URI_HOME_MACROBENCHMARK);
+                    isHomeMacrobenchmarkApplink = uri.getPathSegments().get(1).equals(URI_HOME_MACROBENCHMARK);
                 }
             }
             if (isChangeUrlApplink) {
