@@ -844,7 +844,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     @SuppressLint("DialogUnifyUsage")
     private fun showErrorDialog(e: FlightError, action: () -> Unit) {
         if (activity != null) {
-            if (e.id != null) {
+            if (e.id != "" && e.id != null) {
                 val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
                 if (errorCode == FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME)
                     renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
