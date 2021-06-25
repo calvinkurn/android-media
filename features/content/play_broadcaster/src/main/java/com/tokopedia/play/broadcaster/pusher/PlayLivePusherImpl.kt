@@ -153,9 +153,13 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     }
 
     private fun startStream() {
-        mConnection.connectionId = streamer?.createConnection(mConnection)
+        createConnection()
         streamer?.let { mBitrateAdapter?.start(it, mConnection.connectionId.orZero()) }
         startStatsJob()
+    }
+
+    private fun createConnection() {
+        mConnection.connectionId = streamer?.createConnection(mConnection)
     }
 
     private fun stopStream() {
@@ -170,7 +174,7 @@ class PlayLivePusherImpl : PlayLivePusher, Streamer.Listener {
     }
 
     override fun reconnect() {
-        startStream() // TODO: handling max retry & reconnectDelay
+        createConnection() // TODO: handling max retry & reconnectDelay
     }
 
     override fun stop() {
