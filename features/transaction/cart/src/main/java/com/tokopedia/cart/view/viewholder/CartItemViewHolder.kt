@@ -205,7 +205,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     }
 
     private fun renderProductName(data: CartItemHolderData) {
-        binding.textProductName.text = Html.fromHtml(data.cartItemData.originData.productName ?: "")
+        binding.textProductName.text = Html.fromHtml(data.cartItemData.originData.productName)
         binding.textProductName.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
     }
 
@@ -218,8 +218,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
     private fun sendAnalyticsInformationLabel(data: CartItemHolderData) {
         if (informationLabel.isNotEmpty()) {
-            sendAnalyticsShowInformation(informationLabel, data.cartItemData.originData.productId
-                    ?: "")
+            sendAnalyticsShowInformation(informationLabel, data.cartItemData.originData.productId)
         }
     }
 
@@ -335,8 +334,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         if (data.cartItemData.originData.warningMessage.isNotBlank()) {
             binding.textQtyLeft.text = data.cartItemData.originData.warningMessage
             binding.textQtyLeft.show()
-            actionListener?.onCartItemShowRemainingQty(data.cartItemData.originData.productId
-                    ?: "")
+            actionListener?.onCartItemShowRemainingQty(data.cartItemData.originData.productId)
         } else {
             binding.textQtyLeft.gone()
         }
@@ -358,7 +356,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
                 textProductVariant.gone()
             }
         }
-        textProductVariant.setPadding(0, paddingTop, paddingRight, 0);
+        textProductVariant.setPadding(0, paddingTop, paddingRight, 0)
     }
 
     private fun renderActionNotes(data: CartItemHolderData, parentPosition: Int, viewHolderListener: ViewHolderListener) {
@@ -434,8 +432,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
                     // Has notes from pdp
                     etRemark.visibility = View.GONE
                     tvLabelRemarkTitle.visibility = View.GONE
-                    tvRemark.text = Utils.getHtmlFormat(data.cartItemData.updatedData.remark
-                            ?: "")
+                    tvRemark.text = Utils.getHtmlFormat(data.cartItemData.updatedData.remark)
                     tvRemark.visibility = View.VISIBLE
                     tvLabelRemarkOption.visibility = View.VISIBLE
                     tvNoteCharCounter.visibility = View.GONE
@@ -487,7 +484,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         qtyEditorCart.minValue = data.cartItemData.originData.minOrder
         qtyEditorCart.maxValue = data.cartItemData.originData.maxOrder
         // reset listener
-        qtyEditorCart.setValue(data.cartItemData.updatedData?.quantity ?: 0)
+        qtyEditorCart.setValue(data.cartItemData.updatedData.quantity)
         qtyEditorCart.setSubstractListener {
             if (!data.cartItemData.isError && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
                 actionListener?.onCartItemQuantityMinusButtonClicked()

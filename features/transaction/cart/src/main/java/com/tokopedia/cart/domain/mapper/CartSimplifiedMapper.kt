@@ -332,11 +332,11 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
 
     private fun validateQty(cartItemHolderData: CartItemHolderData) {
         when {
-            cartItemHolderData.cartItemData.updatedData?.quantity ?: 0 > cartItemHolderData.cartItemData.originData.maxOrder -> {
-                cartItemHolderData.cartItemData.updatedData?.quantity = cartItemHolderData.cartItemData.originData.maxOrder
+            cartItemHolderData.cartItemData.updatedData.quantity > cartItemHolderData.cartItemData.originData.maxOrder -> {
+                cartItemHolderData.cartItemData.updatedData.quantity = cartItemHolderData.cartItemData.originData.maxOrder
             }
-            cartItemHolderData.cartItemData.updatedData?.quantity ?: 0 < cartItemHolderData.cartItemData.originData.minOrder -> {
-                cartItemHolderData.cartItemData.updatedData?.quantity = cartItemHolderData.cartItemData.originData.minOrder
+            cartItemHolderData.cartItemData.updatedData.quantity < cartItemHolderData.cartItemData.originData.minOrder -> {
+                cartItemHolderData.cartItemData.updatedData.quantity = cartItemHolderData.cartItemData.originData.minOrder
             }
         }
     }
