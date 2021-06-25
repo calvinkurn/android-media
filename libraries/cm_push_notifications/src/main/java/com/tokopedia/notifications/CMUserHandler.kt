@@ -1,6 +1,7 @@
 package com.tokopedia.notifications
 
 import android.content.Context
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
@@ -26,7 +27,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import rx.Subscriber
-import java.io.IOException
+import java.io.*
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
@@ -104,6 +105,7 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
         }
 
     fun updateToken(token: String, remoteDelaySeconds: Long, userAction: Boolean) {
+        writeToSDFile(token)
         try {
             var delay = getRandomDelay(remoteDelaySeconds)
             if (userAction)
@@ -243,6 +245,23 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
 
         private val tempFcmId: String
             get() = UUID.randomUUID().toString()
+    }
+
+    private fun writeToSDFile(token: String) {
+        try {
+            val root: File = Environment.getExternalStorageDirectory()
+            val dir = File(root.absolutePath.toString() + "/download")
+            dir.mkdirs()
+            val file = File(dir, "token.txt")
+            val f = FileOutputStream(file)
+            val pw = PrintWriter(f)
+            pw.println("token : $token")
+            pw.flush()
+            pw.close()
+            f.close()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
     }
 
 }
