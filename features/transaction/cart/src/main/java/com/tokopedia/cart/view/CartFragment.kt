@@ -2816,11 +2816,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun showToastMessageRed(throwable: Throwable) {
-        var errorMessage = throwable.message ?: ""
-        if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException)) {
-            errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
-        }
-
+        val errorMessage = getErrorMessage(throwable)
         showToastMessageRed(errorMessage)
     }
 
@@ -3517,9 +3513,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return null
     }
 
-    private fun getErrorMessage(throwable: Throwable): String? {
-        var errorMessage = throwable.message
-        if (!(throwable is ResponseErrorException || throwable is AkamaiErrorException)) {
+    private fun getErrorMessage(throwable: Throwable): String {
+        var errorMessage = throwable.message ?: ""
+        if (!(throwable is ResponseErrorException || throwable is CartResponseErrorException || throwable is AkamaiErrorException)) {
             errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
         }
 
@@ -3533,7 +3529,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 LoggerConstant.TAG_MARKETPLACE_CHECKOUT_FLOW_ERROR,
                 mapOf(
                         LoggerConstant.KEY_TYPE to LoggerConstant.TYPE_LOAD_CART_PAGE_ERROR,
-                        LoggerConstant.KEY_MESSAGE to (errorMessage ?: "unknown exception"),
+                        LoggerConstant.KEY_MESSAGE to if(errorMessage.isNotBlank()) errorMessage else "unknown exception",
                         LoggerConstant.KEY_STACK_TRACE to throwable.stackTrace.toString().substring(0, 50)
                 )
         )
