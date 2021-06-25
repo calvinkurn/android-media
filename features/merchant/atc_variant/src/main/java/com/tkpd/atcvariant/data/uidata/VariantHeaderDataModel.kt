@@ -57,7 +57,7 @@ data class ProductHeaderData(
         val productDiscountedPercentage: Int = 0,
         val isCampaignActive: Boolean = false,
         val productSlashPrice: String = "",
-        val productStockWording: String = "",
+        val productStock: String = "",
         val productName:String = ""
 ) {
     fun getFinalPrice(): String {

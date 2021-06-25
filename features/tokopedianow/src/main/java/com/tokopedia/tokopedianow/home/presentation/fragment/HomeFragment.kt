@@ -88,6 +88,7 @@ class HomeFragment: Fragment(),
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
+        const val SOURCE_TRACKING = "tokonow page"
 
         fun newInstance() = HomeFragment()
     }
@@ -543,9 +544,9 @@ class HomeFragment: Fragment(),
     }
 
     private fun checkAddressDataAndServiceArea() {
+        checkIfChooseAddressWidgetDataUpdated()
         val shopId = localCacheModel?.shop_id.toLongOrZero()
         val warehouseId = localCacheModel?.warehouse_id.toLongOrZero()
-        checkIfChooseAddressWidgetDataUpdated()
         checkStateNotInServiceArea(shopId = shopId, warehouseId = warehouseId)
     }
 

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
@@ -63,6 +64,7 @@ import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -78,6 +80,7 @@ abstract class BaseSearchCategoryViewModel(
         protected val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
         protected val chooseAddressWrapper: ChooseAddressWrapper,
         protected val abTestPlatformWrapper: ABTestPlatformWrapper,
+        protected val userSession: UserSessionInterface,
 ): BaseViewModel(baseDispatcher.io) {
 
     protected val filterController = FilterController()
@@ -124,8 +127,7 @@ abstract class BaseSearchCategoryViewModel(
     protected val miniCartWidgetMutableLiveData = MutableLiveData<MiniCartSimplifiedData?>(null)
     val miniCartWidgetLiveData: LiveData<MiniCartSimplifiedData?> = miniCartWidgetMutableLiveData
 
-    protected val updatedVisitableIndicesMutableLiveData =
-            SingleLiveEvent<List<Int>>()
+    protected val updatedVisitableIndicesMutableLiveData = SingleLiveEvent<List<Int>>()
     val updatedVisitableIndicesLiveData: LiveData<List<Int>> =
             updatedVisitableIndicesMutableLiveData
 
@@ -163,6 +165,9 @@ abstract class BaseSearchCategoryViewModel(
 
     protected val isShowErrorMutableLiveData = SingleLiveEvent<Throwable?>()
     val isShowErrorLiveData: LiveData<Throwable?> = isShowErrorMutableLiveData
+
+    protected val routeApplinkMutableLiveData = SingleLiveEvent<String>()
+    val routeApplinkLiveData: LiveData<String> = routeApplinkMutableLiveData
 
     init {
         showLoading()
@@ -812,6 +817,13 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onViewATCProductNonVariant(productItem: ProductItemDataView, quantity: Int) {
+        if (userSession.isLoggedIn)
+            handleAddToCartEventLogin(productItem, quantity)
+        else
+            handleAddToCartEventNonLogin(productItem)
+    }
+
+    private fun handleAddToCartEventLogin(productItem: ProductItemDataView, quantity: Int) {
         val nonVariantATC = productItem.nonVariantATC ?: return
         if (nonVariantATC.quantity == quantity) return
 
@@ -866,7 +878,10 @@ abstract class BaseSearchCategoryViewModel(
         val miniCartItem = cartItemsNonVariant?.find { it.productId == productItem.id }
                 ?: return
         miniCartItem.quantity = quantity
-        updateCartUseCase.setParams(listOf(miniCartItem))
+        updateCartUseCase.setParams(
+                miniCartItemList = listOf(miniCartItem),
+                source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+        )
         updateCartUseCase.execute({
             sendTrackingUpdateQuantity(quantity, productItem)
             onAddToCartSuccess(productItem, quantity)
@@ -882,6 +897,11 @@ abstract class BaseSearchCategoryViewModel(
             decreaseQtyTrackingMutableLiveData.value = productItem.id
         else if (nonVariantATC.quantity < newQuantity)
             increaseQtyTrackingMutableLiveData.value = productItem.id
+    }
+
+    protected open fun handleAddToCartEventNonLogin(productItem: ProductItemDataView) {
+        routeApplinkMutableLiveData.value = ApplinkConst.LOGIN
+        updatedVisitableIndicesMutableLiveData.value = listOf(visitableList.indexOf(productItem))
     }
 
     fun onLocalizingAddressSelected() {

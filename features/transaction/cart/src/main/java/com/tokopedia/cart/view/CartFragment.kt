@@ -3401,12 +3401,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return listRedPromos
     }
 
-    override fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse() {
+    override fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(isTokoNow: Boolean?) {
         validateGoToCheckout()
         val params = generateParamValidateUsePromoRevamp(false, -1, -1, true)
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
             dPresenter.doUpdateCartAndValidateUse(params)
+        } else if (isTokoNow == true) {
+            dPresenter.processUpdateCartData(true, true)
         }
     }
 

@@ -34,6 +34,7 @@ import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import javax.inject.Inject
 import javax.inject.Named
@@ -54,6 +55,7 @@ class SearchViewModel @Inject constructor (
         getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
+        userSession: UserSessionInterface,
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
         queryParamMap,
@@ -65,6 +67,7 @@ class SearchViewModel @Inject constructor (
         getWarehouseUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
+        userSession,
 ) {
 
     private val generalSearchEventMutableLiveData = SingleLiveEvent<Map<String, Any>>()

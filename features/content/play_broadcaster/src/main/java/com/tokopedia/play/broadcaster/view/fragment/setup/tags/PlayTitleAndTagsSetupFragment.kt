@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.custom.PlayBottomSheetHeader
@@ -112,8 +113,9 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
     /**
      * Tag Recommendation List View Component
      */
-    override fun onTagClicked(view: TagListViewComponent, tag: String) {
-        viewModel.toggleTag(tag)
+    override fun onTagClicked(view: TagListViewComponent, tag: PlayTagUiModel) {
+        viewModel.toggleTag(tag.tag)
+        analytic.selectRecommendedTag(viewModel.channelId, tag.tag, tag.isChosen)
     }
 
     /**
@@ -121,8 +123,7 @@ class PlayTitleAndTagsSetupFragment @Inject constructor(
      */
     override fun onNextButtonClicked(view: BottomActionNextViewComponent) {
         viewModel.finishSetup(titleFieldView.getText())
-        analytic.selectRecommendedTags(viewModel.addedTags)
-        analytic.proceedFromContentTagging()
+        analytic.proceedFromContentTagging(viewModel.channelId)
     }
 
     fun setListener(listener: Listener?) {

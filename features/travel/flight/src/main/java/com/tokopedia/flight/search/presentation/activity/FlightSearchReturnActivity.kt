@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.booking.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
-import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
@@ -52,7 +52,7 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
         }
     }
 
-    override fun getScreenName(): String = FlightAnalytics.Screen.SEARCH_RETURN
+    override fun getScreenName(): String = FlightAnalyticsScreenName.SEARCH_RETURN
 
     override fun getDepartureAirport(): FlightAirportModel = flightSearchPassDataModel.arrivalAirport
 

@@ -11,6 +11,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.view.TokopediaNowView
 import com.tokopedia.tokopedianow.home.presentation.fragment.HomeFragment.Companion.SOURCE
+import com.tokopedia.tokopedianow.home.presentation.fragment.HomeFragment.Companion.SOURCE_TRACKING
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
 
 class HomeChooseAddressWidgetViewHolder(
@@ -51,7 +52,7 @@ class HomeChooseAddressWidgetViewHolder(
 
                 override fun getLocalizingAddressHostSourceData(): String = SOURCE
 
-                override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE
+                override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE_TRACKING
 
                 override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */ }
 

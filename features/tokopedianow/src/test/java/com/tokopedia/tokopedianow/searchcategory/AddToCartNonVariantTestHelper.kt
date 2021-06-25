@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.searchcategory
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -16,6 +17,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemD
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.miniCartItems
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.miniCartSimplifiedData
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
@@ -28,6 +30,7 @@ class AddToCartNonVariantTestHelper(
         private val addToCartUseCase: AddToCartUseCase,
         private val updateCartUseCase: UpdateCartUseCase,
         private val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
+        private val userSession: UserSessionInterface,
         private val callback: Callback,
 ) {
 
@@ -68,6 +71,7 @@ class AddToCartNonVariantTestHelper(
         `Then assert product item quantity`(productItemDataViewToATC, addToCartQty)
         `Then verify mini cart is refreshed`()
         `Then verify add to cart tracking is called`(addToCartQty, cartId, productItemDataViewToATC)
+        `Then assert route to login page event is null`()
     }
 
     private fun `Given view already created`() {
@@ -140,6 +144,10 @@ class AddToCartNonVariantTestHelper(
         assertThat(actualProductItem, shouldBe(productItem))
     }
 
+    private fun `Then assert route to login page event is null`() {
+        assertThat(baseViewModel.routeApplinkLiveData.value, nullValue())
+    }
+
     fun `test add to cart failed`() {
         callback.`Given first page API will be successful`()
         `Given view already created`()
@@ -155,6 +163,7 @@ class AddToCartNonVariantTestHelper(
         `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
         `Then assert product item quantity`(productItemDataViewToATC, 0)
         `Then verify mini cart is refreshed`(0)
+        `Then assert route to login page event is null`()
     }
 
     private fun `Given add to cart API will fail`(throwable: Throwable) {
@@ -175,6 +184,7 @@ class AddToCartNonVariantTestHelper(
         `When add to cart a product`(productInVisitable, currentQty)
 
         `Then assert add to cart use case is not called`()
+        `Then assert route to login page event is null`()
     }
 
     private fun `Given get mini cart simplified use case will be successful`(
@@ -227,6 +237,7 @@ class AddToCartNonVariantTestHelper(
                 productInVisitable
         )
         `Then verify decrease cart quantity tracking is called`(productIdToATC)
+        `Then assert route to login page event is null`()
     }
 
     private fun `Given view setup to update quantity`(updateCartSuccessMessage: String) {
@@ -271,7 +282,10 @@ class AddToCartNonVariantTestHelper(
         val updateCartParam by lazy { updateCartParamSlot.captured }
 
         verify {
-            updateCartUseCase.setParams(capture(updateCartParamSlot))
+            updateCartUseCase.setParams(
+                    miniCartItemList = capture(updateCartParamSlot),
+                    source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+            )
         }
         val updatedMiniCartItem = updateCartParam[0]
         assertThat(updatedMiniCartItem.quantity, shouldBe(productUpdatedQuantity))
@@ -305,6 +319,7 @@ class AddToCartNonVariantTestHelper(
                 productInVisitable,
         )
         `Then verify increase cart quantity tracking is called`(productIdToATC)
+        `Then assert route to login page event is null`()
     }
 
     private fun `Then verify increase cart quantity tracking is called`(productIdToATC: String) {
@@ -336,6 +351,7 @@ class AddToCartNonVariantTestHelper(
         `Then assert product item quantity`(productInVisitable, productInMiniCart.quantity)
         `Then assert add to cart use case is not called`()
         `Then verify mini cart is refreshed`(1)
+        `Then assert route to login page event is null`()
     }
 
     private fun `Given update cart use case will fail`() {
@@ -344,6 +360,47 @@ class AddToCartNonVariantTestHelper(
         } answers {
             secondArg<(Throwable) -> Unit>().invoke(responseErrorException)
         }
+    }
+
+    fun `test ATC non login should redirect to login page`() {
+        callback.`Given first page API will be successful`()
+        `Given view already created`()
+        `Given user not logged in`()
+
+        val visitableList = baseViewModel.visitableListLiveData.value!!
+        val productItemList = visitableList.getProductItemList()
+        val productItemDataViewToATC = productItemList[0]
+        `When add to cart a product`(productItemDataViewToATC, 3)
+
+        `Then assert route to login page event`()
+        `Then assert add to cart and update cart not called`()
+
+        val visitableIndex = visitableList.indexOf(productItemDataViewToATC)
+        `Then assert product item visitable is updated to revert add to cart button`(visitableIndex)
+    }
+
+    private fun `Given user not logged in`() {
+        every { userSession.isLoggedIn } returns false
+    }
+
+    private fun `Then assert route to login page event`() {
+        assertThat(baseViewModel.routeApplinkLiveData.value, shouldBe(ApplinkConst.LOGIN))
+    }
+
+    private fun `Then assert add to cart and update cart not called`() {
+        verify(exactly = 0) {
+            addToCartUseCase.execute(any(), any())
+            updateCartUseCase.execute(any(), any())
+        }
+    }
+
+    private fun `Then assert product item visitable is updated to revert add to cart button`(
+            visitableIndex: Int
+    ) {
+        assertThat(
+                baseViewModel.updatedVisitableIndicesLiveData.value,
+                shouldBe(listOf(visitableIndex))
+        )
     }
 
     companion object {

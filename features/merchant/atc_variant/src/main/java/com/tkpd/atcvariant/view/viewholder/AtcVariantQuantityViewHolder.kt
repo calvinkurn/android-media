@@ -124,8 +124,8 @@ class AtcVariantQuantityViewHolder constructor(
             quantityEditor?.setValue(quantityEditor.maxValue)
         } else {
             if (element.quantity != quantity) {
+                listener.onQuantityUpdate(quantityEditor.getValue(), element.productId, element.quantity)
                 element.quantity = quantityEditor.getValue()
-                listener.onQuantityUpdate(quantityEditor.getValue(), element.productId)
 
                 //fire again to update + and - button
                 quantityEditor.setValue(quantityEditor.getValue())

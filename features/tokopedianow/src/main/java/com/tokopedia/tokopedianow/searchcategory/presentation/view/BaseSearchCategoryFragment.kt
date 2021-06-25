@@ -422,6 +422,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().increaseQtyTrackingLiveData.observe(this::sendIncreaseQtyTrackingEvent)
         getViewModel().decreaseQtyTrackingLiveData.observe(this::sendDecreaseQtyTrackingEvent)
         getViewModel().isShowErrorLiveData.observe(this::showNetworkErrorHelper)
+        getViewModel().routeApplinkLiveData.observe(this::routeApplink)
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -583,8 +584,11 @@ abstract class BaseSearchCategoryFragment:
     }
 
     private fun notifyAdapterItemChange(indices: List<Int>) {
+        val searchCategoryAdapter = searchCategoryAdapter ?: return
+
         indices.forEach {
-            searchCategoryAdapter?.notifyItemChanged(it)
+            if (it in searchCategoryAdapter.list.indices)
+                searchCategoryAdapter.notifyItemChanged(it)
         }
     }
 
@@ -712,6 +716,12 @@ abstract class BaseSearchCategoryFragment:
     protected abstract fun sendTrackingQuickFilter(quickFilterTracking: Pair<Option, Boolean>)
 
     protected abstract fun sendAddToCartTrackingEvent(atcData: Triple<Int, String, ProductItemDataView>)
+
+    protected open fun routeApplink(applink: String?) {
+        applink ?: return
+
+        RouteManager.route(context, applink)
+    }
 
     override fun onPause() {
         super.onPause()
