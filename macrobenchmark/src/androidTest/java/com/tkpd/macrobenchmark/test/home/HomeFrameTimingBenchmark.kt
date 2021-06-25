@@ -41,10 +41,10 @@ class HomeFrameTimingBenchmark {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
 
-//        /**
-//         * Read the docs
-//         * https://developer.android.com/studio/profile/macrobenchmark
-//         */
+        /**
+         * Read the docs
+         * https://developer.android.com/studio/profile/macrobenchmark
+         */
         benchmarkRule.measureRepeated(
             packageName = MacroIntent.TKPD_PACKAGE_NAME,
             metrics = listOf(FrameTimingMetric()),
