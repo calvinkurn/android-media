@@ -644,6 +644,13 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
+    fun hotelDetailViewNearbyLandmarks(context: Context, screenName: String, hotelId: Long, hotelPrice: String){
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
+        val eventLabel = "$HOTEL_LABEL - $hotelId - $hotelPrice"
+        map.addGeneralEvent(VIEW_HOTEL_IRIS, VIEW_HOTEL_PDP_NEARBY_LANDMARK, eventLabel)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
     private fun convertDate(date: String): String =
             TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.YYYYMMDD, date)
 

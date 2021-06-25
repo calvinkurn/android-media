@@ -692,6 +692,10 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             rv_nearby_landmarks.layoutManager = layoutManager
             rv_nearby_landmarks.isNestedScrollingEnabled = false
             rv_nearby_landmarks.adapter = nearbyLandmarks
+
+            context?.let {
+                trackingHotelUtil.hotelDetailViewNearbyLandmarks(it, PDP_SCREEN_NAME, hotelId, roomPriceAmount)
+            }
         }else{
             hideNearbyLandmarks()
         }
