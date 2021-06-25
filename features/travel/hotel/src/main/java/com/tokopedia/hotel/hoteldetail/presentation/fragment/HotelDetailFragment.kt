@@ -159,12 +159,14 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     HotelGqlQuery.PROPERTY_DETAIL,
                     HotelGqlQuery.PROPERTY_ROOM_LIST,
                     HotelGqlQuery.PROPERTY_REVIEW,
+//                    HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
                     hotelHomepageModel.locId,
                     hotelHomepageModel, source)
         } else {
             detailViewModel.getHotelDetailDataWithoutRoom(
                     HotelGqlQuery.PROPERTY_DETAIL,
                     HotelGqlQuery.PROPERTY_REVIEW,
+                    //                    HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
                     hotelHomepageModel.locId, source)
         }
 

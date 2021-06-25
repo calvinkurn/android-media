@@ -16,6 +16,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.hoteldetail.data.entity.HotelNearbyLandmark
+import com.tokopedia.hotel.hoteldetail.data.entity.HotelNearbyLandmarkParam
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDataParam
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelReviewParam
@@ -63,6 +64,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
             getHotelInfo(hotelInfoQuery, propertyId, source)
             getHotelReview(hotelReviewQuery, propertyId)
             getRoomList(roomListQuery, searchParam)
+//            getNearbyLandmarks(hotelNearbyLandmarksQuery, propertyId)
         }
     }
 
@@ -70,6 +72,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         launch {
             getHotelInfo(hotelInfoQuery, propertyId, source)
             getHotelReview(hotelReviewQuery, propertyId)
+            //            getNearbyLandmarks(hotelNearbyLandmarksQuery, propertyId)
         }
     }
 
@@ -135,6 +138,11 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
                 adult = searchParam.adultCount,
                 child = 0,
                 room = searchParam.roomCount)))
+    }
+
+    private suspend fun getNearbyLandmarks(rawQuery: String, propertyId: Long){
+        val filterNearby = HotelNearbyLandmarkParam.FilterNearbyLandmark(propertyId)
+        val nearbyLandmarkParam = HotelNearbyLandmarkParam(template = "", filter = filterNearby)
     }
 
     /** testing purpose only*/

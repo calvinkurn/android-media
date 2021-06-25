@@ -671,4 +671,8 @@ object HotelGqlQuery {
           }
         }
     """.trimIndent()
+
+    val HOTEL_NEARBY_LANDMARKS = """
+        
+    """.trimIndent()
 }
