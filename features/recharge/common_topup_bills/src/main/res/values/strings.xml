@@ -12,6 +12,7 @@
     <string name="common_topup_title_recent_transaction_widget">Transaksi Terakhir</string>
 
     <string name="common_topup_title_fav_number">Nomor Favorit</string>
+    <string name="common_topup_fav_number_input_hint">Masukkan nomor HP</string>
     <string name="common_topup_voucher_code_already_copied">Kode voucher telah tersalin</string>
 
     <string name="common_topup_enquiry_default_label">Lanjut</string>

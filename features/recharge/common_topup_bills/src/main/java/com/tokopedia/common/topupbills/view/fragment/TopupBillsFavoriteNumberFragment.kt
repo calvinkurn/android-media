@@ -27,6 +27,8 @@ import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActiv
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberListAdapter
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.ArrayList
@@ -101,6 +103,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
             clearListener = { onSearchReset() }
             searchBarTextField.imeOptions = EditorInfo.IME_ACTION_DONE
         }
+
         binding?.commonTopupbillsFavoriteNumberRv?.run {
             layoutManager = LinearLayoutManager(activity)
             adapter = numberListAdapter
@@ -109,6 +112,10 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         binding?.commonTopupbillsSearchNumberContactPicker?.setOnClickListener {
             inputNumberActionType = InputNumberActionType.CONTACT
             navigateContact()
+        }
+
+        binding?.commonTopupbillsFavoriteNumberTitle?.run {
+            if (clientNumbers.isNullOrEmpty()) hide() else show()
         }
     }
 

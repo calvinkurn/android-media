@@ -453,6 +453,10 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.setInputNumber(contactNumber)
     }
 
+    override fun setContactNameFromContact(contactName: String) {
+        postpaidClientNumberWidget.setContactName(contactName)
+    }
+
     override fun handleCallbackSearchNumber(orderClientNumber: TopupBillsFavNumberItem, inputNumberActionTypeIndex: Int) {
         inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
         postpaidClientNumberWidget.setInputNumber(orderClientNumber.clientNumber)
