@@ -64,22 +64,6 @@
 
         </LinearLayout>
 
-<!--        <com.tokopedia.unifyprinciples.Typography-->
-<!--            android:id="@+id/telco_error_input_number"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="@dimen/spacing_lvl2"-->
-<!--            android:layout_marginLeft="@dimen/spacing_lvl2"-->
-<!--            android:layout_marginTop="@dimen/layout_lvl1"-->
-<!--            android:paddingBottom="@dimen/spacing_lvl2"-->
-<!--            android:textColor="@color/Unify_R600"-->
-<!--            android:textSize="@dimen/fontSize_lvl3"-->
-<!--            android:visibility="gone"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/telco_field_input_number"-->
-<!--            app:typographyType="body_3"-->
-<!--            tools:text="@string/digital_common_title_empty_stock"-->
-<!--            tools:visibility="visible" />-->
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include layout="@layout/view_telco_input_number_prepaid"/>
