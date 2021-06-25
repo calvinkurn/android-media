@@ -486,7 +486,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             setupPromoTicker(TickerCheckoutView.State.ACTIVE, getString(R.string.hotel_promo_btn_default_title))
             booking_pay_now_promo_ticker.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_right_grayscale_24
         }else if (promoData.promoCode.isNotEmpty() && hotelCart.property.isDirectPayment){
-            setupPromoTicker(TickerCheckoutView.State.ACTIVE,
+            setupPromoTicker(promoData.state,
                     promoData.title,
                     promoData.description)
             booking_pay_now_promo_ticker.chevronIcon = com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_24
@@ -521,6 +521,11 @@ class HotelBookingFragment : HotelBaseFragment() {
             booking_pay_now_promo_ticker.state = ButtonPromoCheckoutView.State.ACTIVE
         }else if(state == TickerCheckoutView.State.EMPTY){
             booking_pay_now_promo_ticker.state = ButtonPromoCheckoutView.State.LOADING
+        }else{
+            view?.let { v ->
+                Toaster.build(v, "Maaf, belum berhasil hapus kupon. Coba lagi, yuk!", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                        getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+            }
         }
     }
 
@@ -532,7 +537,6 @@ class HotelBookingFragment : HotelBaseFragment() {
     }
 
     private fun onResetPromo(){
-        bookingViewModel.applyPromoData(PromoData(state = TickerCheckoutView.State.ACTIVE))
         bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
     }
 
