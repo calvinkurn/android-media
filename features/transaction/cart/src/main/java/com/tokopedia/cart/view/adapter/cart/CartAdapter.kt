@@ -192,8 +192,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     is CartShopHolderData -> {
                         data.shopGroupAvailableData?.cartItemDataList?.let {
                             for (cartItemHolderData in it) {
-                                productIdList.add(cartItemHolderData.cartItemData.originData?.productId
-                                        ?: "")
+                                productIdList.add(cartItemHolderData.cartItemData.originData.productId)
                             }
                         }
                     }
@@ -787,7 +786,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         for (any in cartDataList) {
             if (any is CartShopHolderData && (any.isAllSelected || any.isPartialSelected)) {
                 any.shopGroupAvailableData?.cartItemDataList?.forEach {
-                    if (!it.errorFormItemValidationMessage.isNullOrBlank()) {
+                    if (it.errorFormItemValidationMessage.isNotBlank()) {
                         canProcess = false
                         return@forEach
                     }
@@ -856,8 +855,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                 val cartShopHolderData = cartDataList[i] as CartShopHolderData
                 cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
                     for (cartItemHolderData in it) {
-                        if (cartItemHolderData.cartItemData.originData?.productId == productId) {
-                            cartItemHolderData.cartItemData.originData?.isWishlisted = isWishlisted
+                        if (cartItemHolderData.cartItemData.originData.productId == productId) {
+                            cartItemHolderData.cartItemData.originData.isWishlisted = isWishlisted
                             notifyItemChanged(i)
                             break
                         }
@@ -1005,7 +1004,7 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
                     val toBeRemovedCartItemHolderData = ArrayList<CartItemHolderData>()
                     obj.shopGroupAvailableData?.cartItemDataList?.let {
                         for (cartItemHolderData in it) {
-                            cartItemHolderData.cartItemData.originData?.let { data ->
+                            cartItemHolderData.cartItemData.originData.let { data ->
                                 if (cartIds.contains(data.cartId.toString())) {
                                     toBeRemovedCartItemHolderData.add(cartItemHolderData)
                                     if (!toBeUpdatedIndex.contains(i)) {

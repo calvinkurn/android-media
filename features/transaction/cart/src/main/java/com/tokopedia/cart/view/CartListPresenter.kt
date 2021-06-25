@@ -148,7 +148,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             val toBeDeletedCartIds = ArrayList<String>()
             for (cartItemData in removedCartItems) {
-                toBeDeletedCartIds.add(cartItemData.originData?.cartId?.toString() ?: "0")
+                toBeDeletedCartIds.add(cartItemData.originData.cartId.toString())
             }
 
             val removeCartRequest = RemoveCartRequest()
@@ -249,11 +249,11 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     private fun getUpdateCartRequest(cartItemDataList: List<CartItemData>, onlyTokoNowProducts: Boolean = false): ArrayList<UpdateCartRequest> {
         val updateCartRequestList = ArrayList<UpdateCartRequest>()
         for (cartItemData in cartItemDataList) {
-            if (!onlyTokoNowProducts || (onlyTokoNowProducts && cartItemData.originData?.isTokoNow == true)) {
+            if (!onlyTokoNowProducts || (onlyTokoNowProducts && cartItemData.originData.isTokoNow)) {
                 val updateCartRequest = UpdateCartRequest()
-                updateCartRequest.cartId = cartItemData.originData?.cartId?.toString() ?: "0"
-                updateCartRequest.notes = cartItemData.updatedData?.remark
-                updateCartRequest.quantity = cartItemData.updatedData?.quantity ?: 0
+                updateCartRequest.cartId = cartItemData.originData.cartId.toString()
+                updateCartRequest.notes = cartItemData.updatedData.remark
+                updateCartRequest.quantity = cartItemData.updatedData.quantity
                 updateCartRequestList.add(updateCartRequest)
             }
         }
@@ -300,12 +300,10 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 if (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected) {
                     cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
                         for (cartItemHolderData in it) {
-                            if (cartItemHolderData.cartItemData?.isError == false && cartItemHolderData.isSelected) {
+                            if (!cartItemHolderData.cartItemData.isError && cartItemHolderData.isSelected) {
                                 allCartItemDataList.add(cartItemHolderData)
-                                val quantity = cartItemHolderData.cartItemData?.updatedData?.quantity
-                                        ?: 0
-                                val weight = cartItemHolderData.cartItemData?.originData?.weightPlan
-                                        ?: 0.0
+                                val quantity = cartItemHolderData.cartItemData.updatedData.quantity
+                                val weight = cartItemHolderData.cartItemData.originData.weightPlan
                                 shopWeight += quantity * weight
                             }
                         }
@@ -326,7 +324,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                     if (cartShopHolderData.isAllSelected || cartShopHolderData.isPartialSelected) {
                         cartShopHolderData.shopGroupAvailableData?.cartItemDataList?.let {
                             for (cartItemHolderData in it) {
-                                if (cartItemHolderData.cartItemData?.isError == true) {
+                                if (cartItemHolderData.cartItemData.isError) {
                                     errorProductCount++
                                 }
                             }
@@ -347,8 +345,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val result = ArrayList(allCartItemDataList)
         for (i in allCartItemDataList.indices) {
             val cartItemData = allCartItemDataList[i].cartItemData
-            if (cartItemData?.originData?.parentId == "0") {
-                cartItemData.originData?.parentId = (i + 1).toString()
+            if (cartItemData.originData.parentId == "0") {
+                cartItemData.originData.parentId = (i + 1).toString()
             }
         }
 
@@ -362,7 +360,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         var subtotalWholesaleCashback = 0.0
 
         var hasCalculateWholesalePrice = false
-        val wholesalePriceDataList = originData.wholesalePriceData ?: emptyList()
+        val wholesalePriceDataList = originData.wholesalePriceData
 
         for (wholesalePriceData in wholesalePriceDataList) {
             if (itemQty >= wholesalePriceData.qtyMin) {
@@ -385,9 +383,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
 
         if (originData.isCashBack) {
-            val cashbackPercentageString = originData.productCashBack?.replace("%", "")
-            val cashbackPercentage = cashbackPercentageString?.toDouble()
-                    ?: 0.toDouble()
+            val cashbackPercentageString = originData.productCashBack.replace("%", "")
+            val cashbackPercentage = cashbackPercentageString.toDouble()
             subtotalWholesaleCashback = cashbackPercentage / PERCENTAGE * subTotalWholesalePrice
         }
 
@@ -411,9 +408,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         if (!cartItemParentIdMap.containsKey(parentIdPriceIndex)) {
             val itemPrice = itemQty * originData.pricePlan
             if (originData.isCashBack) {
-                val cashbackPercentageString = originData.productCashBack?.replace("%", "")
-                val cashbackPercentage = cashbackPercentageString?.toDouble()
-                        ?: 0.toDouble()
+                val cashbackPercentageString = originData.productCashBack.replace("%", "")
+                val cashbackPercentage = cashbackPercentageString.toDouble()
                 val itemCashback = cashbackPercentage / PERCENTAGE * itemPrice
                 tmpSubtotalCashback += itemCashback
             }
@@ -426,7 +422,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             tmpSubTotalPrice += itemPrice
             originData.wholesalePriceFormatted = null
-            cartItemHolderData.cartItemData?.let {
+            cartItemHolderData.cartItemData.let {
                 cartItemParentIdMap[parentIdPriceIndex] = it
             }
         }
@@ -446,18 +442,17 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val cartItemParentIdMap = HashMap<String, CartItemData>()
 
         for (cartItemHolderData in allCartItemDataList) {
-            cartItemHolderData.cartItemData?.originData?.let {
-                val parentId = it.parentId ?: "0"
+            cartItemHolderData.cartItemData.originData.let {
+                val parentId = it.parentId
                 val productId = it.productId
-                var itemQty = cartItemHolderData.cartItemData?.updatedData?.quantity ?: 0
+                var itemQty = cartItemHolderData.cartItemData.updatedData.quantity
                 totalItemQty += itemQty
                 if (parentId.isNotBlank() && parentId != "0") {
                     for (cartItemHolderDataTmp in allCartItemDataList) {
-                        if (productId != cartItemHolderDataTmp.cartItemData?.originData?.productId &&
-                                parentId == cartItemHolderDataTmp.cartItemData?.originData?.parentId &&
-                                cartItemHolderDataTmp.cartItemData?.originData?.pricePlan == cartItemHolderData.cartItemData?.originData?.pricePlan) {
-                            itemQty += cartItemHolderDataTmp.cartItemData?.updatedData?.quantity
-                                    ?: 0
+                        if (productId != cartItemHolderDataTmp.cartItemData.originData.productId &&
+                                parentId == cartItemHolderDataTmp.cartItemData.originData.parentId &&
+                                cartItemHolderDataTmp.cartItemData.originData.pricePlan == cartItemHolderData.cartItemData.originData.pricePlan) {
+                            itemQty += cartItemHolderDataTmp.cartItemData.updatedData.quantity
                         }
                     }
                 }
@@ -559,51 +554,51 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     private fun getEnhancedECommerceProductCartMapData(cartItemData: CartItemData): EnhancedECommerceProductCartMapData {
         return EnhancedECommerceProductCartMapData().apply {
-            setCartId(cartItemData.originData?.cartId.toString())
-            setDimension45(cartItemData.originData?.cartId.toString())
-            setProductName(cartItemData.originData?.productName ?: "")
-            setProductID(cartItemData.originData?.productId.toString())
-            setPrice(cartItemData.originData?.pricePlanInt.toString())
+            setCartId(cartItemData.originData.cartId.toString())
+            setDimension45(cartItemData.originData.cartId.toString())
+            setProductName(cartItemData.originData.productName)
+            setProductID(cartItemData.originData.productId)
+            setPrice(cartItemData.originData.pricePlanInt.toString())
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setCategory(
-                    if (cartItemData.originData?.categoryForAnalytics.isNullOrBlank()) {
+                    if (cartItemData.originData.categoryForAnalytics.isBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
-                        cartItemData.originData?.categoryForAnalytics ?: ""
+                        cartItemData.originData.categoryForAnalytics
                     }
             )
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setQty(cartItemData.updatedData?.quantity ?: 0)
-            setShopId(cartItemData.originData?.shopId ?: "")
-            setShopType(cartItemData.originData?.shopTypeInfoData?.shopType)
-            setShopName(cartItemData.originData?.shopName ?: "")
-            setCategoryId(cartItemData.originData?.categoryId)
+            setQty(cartItemData.updatedData.quantity)
+            setShopId(cartItemData.originData.shopId)
+            setShopType(cartItemData.originData.shopTypeInfoData.shopType)
+            setShopName(cartItemData.originData.shopName)
+            setCategoryId(cartItemData.originData.categoryId)
             setAttribution(
-                    if (cartItemData.originData?.trackerAttribution.isNullOrBlank()) {
+                    if (cartItemData.originData.trackerAttribution.isBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
-                        cartItemData.originData?.trackerAttribution ?: ""
+                        cartItemData.originData.trackerAttribution
                     }
             )
             setDimension38(
-                    if (cartItemData.originData?.trackerAttribution.isNullOrBlank()) {
+                    if (cartItemData.originData.trackerAttribution.isBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
-                        cartItemData.originData?.trackerAttribution ?: ""
+                        cartItemData.originData.trackerAttribution
                     }
             )
             setListName(
-                    if (cartItemData.originData?.trackerListName.isNullOrBlank()) {
+                    if (cartItemData.originData.trackerListName.isBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
-                        cartItemData.originData?.trackerListName ?: ""
+                        cartItemData.originData.trackerListName
                     }
             )
             setDimension40(
-                    if (cartItemData.originData?.trackerListName.isNullOrBlank()) {
+                    if (cartItemData.originData.trackerListName.isBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
-                        cartItemData.originData?.trackerListName ?: ""
+                        cartItemData.originData.trackerListName
                     }
             )
         }
@@ -873,45 +868,45 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     private fun getCheckoutEnhancedECommerceProductCartMapData(cartItemData: CartItemData): EnhancedECommerceProductCartMapData {
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
             setDimension80(
-                    if (cartItemData.originData?.trackerAttribution.isNullOrBlank()) {
+                    if (cartItemData.originData.trackerAttribution.isBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
-                        cartItemData.originData?.trackerAttribution ?: ""
+                        cartItemData.originData.trackerAttribution
                     }
             )
-            setDimension45(cartItemData.originData?.cartId.toString())
+            setDimension45(cartItemData.originData.cartId.toString())
             setDimension54(cartItemData.isFulfillment)
-            setDimension53(cartItemData.originData?.priceOriginal ?: 0 > 0)
-            setProductName(cartItemData.originData?.productName ?: "")
-            setProductID(cartItemData.originData?.productId.toString())
-            setPrice(cartItemData.originData?.pricePlanInt.toString())
+            setDimension53(cartItemData.originData.priceOriginal > 0)
+            setProductName(cartItemData.originData.productName)
+            setProductID(cartItemData.originData.productId)
+            setPrice(cartItemData.originData.pricePlanInt.toString())
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setCategory(
-                    if (cartItemData.originData?.category.isNullOrBlank()) {
+                    if (cartItemData.originData.category.isBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
-                        cartItemData.originData?.category ?: ""
+                        cartItemData.originData.category
                     }
             )
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setQty(cartItemData.updatedData?.quantity ?: 0)
-            setShopId(cartItemData.originData?.shopId ?: "")
-            setShopType(cartItemData.originData?.shopTypeInfoData?.shopType)
-            setShopName(cartItemData.originData?.shopName ?: "")
-            setCategoryId(cartItemData.originData?.categoryId)
-            setWarehouseId(cartItemData.originData?.warehouseId.toString())
-            setProductWeight(cartItemData.originData?.weightPlan.toString())
-            setCartId(cartItemData.originData?.cartId.toString())
-            setPromoCode(cartItemData.originData?.promoCodes ?: "")
-            setPromoDetails(cartItemData.originData?.promoDetails ?: "")
+            setQty(cartItemData.updatedData.quantity)
+            setShopId(cartItemData.originData.shopId)
+            setShopType(cartItemData.originData.shopTypeInfoData.shopType)
+            setShopName(cartItemData.originData.shopName)
+            setCategoryId(cartItemData.originData.categoryId)
+            setWarehouseId(cartItemData.originData.warehouseId.toString())
+            setProductWeight(cartItemData.originData.weightPlan.toString())
+            setCartId(cartItemData.originData.cartId.toString())
+            setPromoCode(cartItemData.originData.promoCodes)
+            setPromoDetails(cartItemData.originData.promoDetails)
             setDimension83(
                     when {
-                        cartItemData.originData?.isFreeShippingExtra == true -> EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA
-                        cartItemData.originData?.isFreeShipping == true -> EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR
+                        cartItemData.originData.isFreeShippingExtra -> EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA
+                        cartItemData.originData.isFreeShipping -> EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR
                         else -> EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     }
             )
-            setCampaignId(cartItemData.originData?.campaignId?.toString() ?: "0")
+            setCampaignId(cartItemData.originData.campaignId.toString())
         }
         return enhancedECommerceProductCartMapData
     }
@@ -1029,15 +1024,15 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         var hasChanges = false
         view?.getAllCartDataList()?.let {
             for ((originData, updatedData) in it) {
-                if (updatedData?.quantity != originData?.originalQty || updatedData?.remark != originData?.originalRemark) {
+                if (updatedData.quantity != originData.originalQty || updatedData.remark != originData.originalRemark) {
                     hasChanges = true
                     break
                 }
             }
             if (hasChanges) {
                 for ((originData, updatedData) in it) {
-                    originData?.originalQty = updatedData?.quantity ?: 0
-                    originData?.originalRemark = updatedData?.remark
+                    originData.originalQty = updatedData.quantity
+                    originData.originalRemark = updatedData.remark
                 }
             }
         }

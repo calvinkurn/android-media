@@ -1109,9 +1109,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onDisabledCartItemProductClicked(cartItemData: CartItemData) {
-        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName
-                ?: "")
-        cartItemData.originData?.productId?.let {
+        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData.productName)
+        cartItemData.originData.productId.let {
             routeToProductDetailPage(it)
         }
     }
@@ -2357,15 +2356,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun doAddToListProducts(cartItemHolderData: ShopGroupAvailableData, j: Int, listProductDetail: ArrayList<ProductDetailsItem>) {
         cartItemHolderData.cartItemDataList[j].let { cartItemData ->
             if (cartItemData.isSelected) {
-                val productDetail = cartItemData.cartItemData.originData?.productId?.toLong()?.let {
-                    cartItemData.cartItemData.updatedData?.quantity?.let { it1 ->
+                val productDetail = cartItemData.cartItemData.originData.productId.toLong().let {
+                    cartItemData.cartItemData.updatedData.quantity.let { it1 ->
                         ProductDetailsItem(
                                 productId = it,
                                 quantity = it1
                         )
                     }
                 }
-                productDetail?.let { listProductDetail.add(it) }
+                productDetail.let { listProductDetail.add(it) }
             }
         }
     }
@@ -2398,9 +2397,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             hasCheckedItem = true
                         }
                         val productDetail = ProductDetail(
-                                productId = cartItem.cartItemData.originData?.productId?.toLong()
-                                        ?: 0,
-                                quantity = cartItem.cartItemData.updatedData?.quantity ?: 0
+                                productId = cartItem.cartItemData.originData.productId.toLong(),
+                                quantity = cartItem.cartItemData.updatedData.quantity
                         )
                         listProductDetail.add(productDetail)
                     }

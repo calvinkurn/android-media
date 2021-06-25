@@ -205,12 +205,12 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     }
 
     private fun renderProductName(data: CartItemHolderData) {
-        binding.textProductName.text = Html.fromHtml(data.cartItemData.originData?.productName ?: "")
+        binding.textProductName.text = Html.fromHtml(data.cartItemData.originData.productName ?: "")
         binding.textProductName.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
     }
 
     private fun renderImage(data: CartItemHolderData) {
-        data.cartItemData.originData?.productImage?.let {
+        data.cartItemData.originData.productImage.let {
             binding.iuImageProduct.loadImage(it)
         }
         binding.iuImageProduct.setOnClickListener(getOnClickProductItemListener(adapterPosition, parentPosition, data))
@@ -218,7 +218,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
     private fun sendAnalyticsInformationLabel(data: CartItemHolderData) {
         if (informationLabel.isNotEmpty()) {
-            sendAnalyticsShowInformation(informationLabel, data.cartItemData.originData?.productId
+            sendAnalyticsShowInformation(informationLabel, data.cartItemData.originData.productId
                     ?: "")
         }
     }
@@ -226,8 +226,8 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     private fun renderProductProperties(data: CartItemHolderData) {
         val layoutProductInfo = binding.layoutProductInfo
         layoutProductInfo.gone()
-        val productInformationList = data.cartItemData.originData?.productInformation
-        if (productInformationList?.isNotEmpty() == true) {
+        val productInformationList = data.cartItemData.originData.productInformation
+        if (productInformationList.isNotEmpty()) {
             layoutProductInfo.removeAllViews()
             productInformationList.forEach {
                 var tmpLabel = it
@@ -242,7 +242,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
             layoutProductInfo.show()
         }
 
-        if (data.cartItemData.originData?.wholesalePrice ?: 0 > 0) {
+        if (data.cartItemData.originData.wholesalePrice > 0) {
             val wholesaleLabel = itemView.context.getString(R.string.label_wholesale_product)
             val productInfo = createProductInfoText(wholesaleLabel)
             layoutProductInfo.addView(productInfo)
@@ -265,8 +265,8 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     }
 
     private fun renderProductPropertyIncidentLabel(data: CartItemHolderData) {
-        if (data.cartItemData.originData?.productAlertMessage?.isNotEmpty() == true) {
-            binding.textIncident.text = data.cartItemData.originData?.productAlertMessage
+        if (data.cartItemData.originData.productAlertMessage.isNotEmpty()) {
+            binding.textIncident.text = data.cartItemData.originData.productAlertMessage
             binding.textIncident.show()
         } else {
             binding.textIncident.gone()
@@ -274,34 +274,33 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     }
 
     private fun renderPrice(data: CartItemHolderData) {
-        if (data.cartItemData.originData?.wholesalePriceFormatted != null) {
-            binding.textProductPrice.text = data.cartItemData.originData?.wholesalePriceFormatted ?: ""
+        if (data.cartItemData.originData.wholesalePriceFormatted != null) {
+            binding.textProductPrice.text = data.cartItemData.originData.wholesalePriceFormatted ?: ""
         } else {
             binding.textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    data.cartItemData.originData?.pricePlan
-                            ?: 0.toDouble(), false).removeDecimalSuffix()
+                    data.cartItemData.originData.pricePlan, false).removeDecimalSuffix()
         }
     }
 
     private fun renderSlashPrice(data: CartItemHolderData) {
-        val hasPriceOriginal = data.cartItemData.originData?.priceOriginal != 0L
-        val hasWholesalePrice = data.cartItemData.originData?.wholesalePrice != 0L
-        val hasPriceDrop = data.cartItemData.originData?.initialPriceBeforeDrop ?: 0 > 0 &&
-                data.cartItemData.originData?.initialPriceBeforeDrop ?: 0 > data.cartItemData.originData?.pricePlan?.toLong() ?: 0
+        val hasPriceOriginal = data.cartItemData.originData.priceOriginal != 0L
+        val hasWholesalePrice = data.cartItemData.originData.wholesalePrice != 0L
+        val hasPriceDrop = data.cartItemData.originData.initialPriceBeforeDrop > 0 &&
+                data.cartItemData.originData.initialPriceBeforeDrop > data.cartItemData.originData.pricePlan.toLong()
         if (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) {
-            if (data.cartItemData.originData?.slashPriceLabel?.isNotBlank() == true) {
+            if (data.cartItemData.originData.slashPriceLabel.isNotBlank()) {
                 // Slash price
                 renderSlashPriceFromCampaign(data)
-            } else if (data.cartItemData.originData?.initialPriceBeforeDrop != 0L) {
-                val wholesalePrice = data.cartItemData.originData?.wholesalePrice ?: 0
-                if (wholesalePrice > 0 && wholesalePrice.toDouble() < data.cartItemData.originData?.pricePlan ?: 0.0) {
+            } else if (data.cartItemData.originData.initialPriceBeforeDrop != 0L) {
+                val wholesalePrice = data.cartItemData.originData.wholesalePrice
+                if (wholesalePrice > 0 && wholesalePrice.toDouble() < data.cartItemData.originData.pricePlan) {
                     // Wholesale
                     renderSlashPriceFromWholesale(data)
                 } else {
                     // Price drop
                     renderSlashPriceFromPriceDrop(data)
                 }
-            } else if (data.cartItemData.originData?.wholesalePrice != 0L) {
+            } else if (data.cartItemData.originData.wholesalePrice != 0L) {
                 // Wholesale
                 renderSlashPriceFromWholesale(data)
             }
@@ -315,30 +314,28 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
     }
 
     private fun renderSlashPriceFromWholesale(data: CartItemHolderData) {
-        val priceDropValue = data.cartItemData.originData?.initialPriceBeforeDrop ?: 0
-        val pricePlan = data.cartItemData.originData?.pricePlanInt ?: 0
+        val priceDropValue = data.cartItemData.originData.initialPriceBeforeDrop
+        val pricePlan = data.cartItemData.originData.pricePlanInt
         val originalPrice = if (priceDropValue > pricePlan) pricePlan else priceDropValue
         binding.textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(originalPrice, false).removeDecimalSuffix()
     }
 
     private fun renderSlashPriceFromPriceDrop(data: CartItemHolderData) {
-        binding.textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData.originData?.initialPriceBeforeDrop
-                ?: 0, false).removeDecimalSuffix()
+        binding.textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData.originData.initialPriceBeforeDrop, false).removeDecimalSuffix()
     }
 
     private fun renderSlashPriceFromCampaign(data: CartItemHolderData) {
-        binding.textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData.originData?.priceOriginal
-                ?: 0, false).removeDecimalSuffix()
-        binding.labelSlashPricePercentage.text = data.cartItemData.originData?.slashPriceLabel
+        binding.textSlashPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(data.cartItemData.originData.priceOriginal, false).removeDecimalSuffix()
+        binding.labelSlashPricePercentage.text = data.cartItemData.originData.slashPriceLabel
         binding.labelSlashPricePercentage.show()
         informationLabel.add(LABEL_DISCOUNT)
     }
 
     private fun renderWarningMessage(data: CartItemHolderData) {
-        if (data.cartItemData.originData?.warningMessage?.isNotBlank() == true) {
-            binding.textQtyLeft.text = data.cartItemData.originData?.warningMessage ?: ""
+        if (data.cartItemData.originData.warningMessage.isNotBlank()) {
+            binding.textQtyLeft.text = data.cartItemData.originData.warningMessage
             binding.textQtyLeft.show()
-            actionListener?.onCartItemShowRemainingQty(data.cartItemData.originData?.productId
+            actionListener?.onCartItemShowRemainingQty(data.cartItemData.originData.productId
                     ?: "")
         } else {
             binding.textQtyLeft.gone()
@@ -349,12 +346,12 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         var paddingRight = 0
         val paddingTop = itemView.resources.getDimensionPixelOffset(R.dimen.dp_2)
         val textProductVariant = binding.textProductVariant
-        if (data.cartItemData?.originData?.variant?.isNotBlank() == true) {
-            textProductVariant.text = data.cartItemData?.originData?.variant
+        if (data.cartItemData.originData.variant.isNotBlank()) {
+            textProductVariant.text = data.cartItemData.originData.variant
             textProductVariant.show()
             paddingRight = itemView.resources.getDimensionPixelOffset(R.dimen.dp_4)
         } else {
-            if (data.cartItemData?.originData?.warningMessage?.isNotBlank() == true) {
+            if (data.cartItemData.originData.warningMessage.isNotBlank()) {
                 textProductVariant.text = ""
                 textProductVariant.invisible()
             } else {
@@ -375,15 +372,15 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         }
 
         binding.tvLabelRemarkOption.setOnClickListener {
-            if (data.cartItemData?.isError == false) {
+            if (!data.cartItemData.isError) {
                 data.isStateNotesOnFocuss = true
                 binding.etRemark.requestFocus()
                 actionListener?.onCartItemLabelInputRemarkClicked()
                 if (binding.tvLabelRemarkOption.text == binding.tvLabelRemarkOption.context.getString(
                                 R.string.label_button_change_note)) {
-                    var remark = data.cartItemData?.updatedData?.remark
+                    var remark = data.cartItemData.updatedData.remark
                     remark += " "
-                    data.cartItemData?.updatedData?.remark = remark
+                    data.cartItemData.updatedData.remark = remark
                 }
                 data.isStateHasNotes = true
                 if (adapterPosition != RecyclerView.NO_POSITION) {
@@ -392,12 +389,11 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
             }
         }
 
-        data.isStateHasNotes = data.isStateNotesOnFocuss || data.cartItemData?.updatedData?.remark?.isNotBlank() == true
+        data.isStateHasNotes = data.isStateNotesOnFocuss || data.cartItemData.updatedData.remark.isNotBlank() == true
 
         renderNotesViews(data)
 
-        binding.etRemark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(data.cartItemData?.updatedData?.maxCharRemark
-                ?: 0))
+        binding.etRemark.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(data.cartItemData.updatedData.maxCharRemark))
         binding.etRemark.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
                 editable?.let {
@@ -412,7 +408,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
             @SuppressLint("SetTextI18n")
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
                 charSequence?.let {
-                    binding.tvNoteCharCounter.text = "${charSequence.length}/${data.cartItemData?.updatedData?.maxCharRemark ?: 0}"
+                    binding.tvNoteCharCounter.text = "${charSequence.length}/${data.cartItemData.updatedData.maxCharRemark}"
                 }
             }
         })
@@ -424,10 +420,10 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         with(binding) {
             if (data.isStateHasNotes) {
                 // Has a notes from pdp or not at all but click add notes button
-                if (data.isStateNotesOnFocuss && (data.cartItemData?.originData?.originalRemark.isNullOrBlank() || data.cartItemData?.updatedData?.remark != data.cartItemData?.originData?.originalRemark)) {
+                if (data.isStateNotesOnFocuss && (data.cartItemData.originData.originalRemark.isBlank() || data.cartItemData.updatedData.remark != data.cartItemData.originData.originalRemark)) {
                     // Notes is empty after click add notes button or has value after use click change notes button
                     tvRemark.visibility = View.GONE
-                    etRemark.setText(Utils.getHtmlFormat(data.cartItemData?.updatedData?.remark))
+                    etRemark.setText(Utils.getHtmlFormat(data.cartItemData.updatedData.remark))
                     etRemark.visibility = View.VISIBLE
                     tvLabelRemarkTitle.visibility = View.VISIBLE
                     etRemark.setSelection(etRemark.length())
@@ -438,7 +434,7 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
                     // Has notes from pdp
                     etRemark.visibility = View.GONE
                     tvLabelRemarkTitle.visibility = View.GONE
-                    tvRemark.text = Utils.getHtmlFormat(data.cartItemData?.updatedData?.remark
+                    tvRemark.text = Utils.getHtmlFormat(data.cartItemData.updatedData.remark
                             ?: "")
                     tvRemark.visibility = View.VISIBLE
                     tvLabelRemarkOption.visibility = View.VISIBLE
@@ -488,17 +484,17 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         }
 
         qtyEditorCart.autoHideKeyboard = true
-        qtyEditorCart.minValue = data.cartItemData?.originData?.minOrder ?: 0
-        qtyEditorCart.maxValue = data.cartItemData?.originData?.maxOrder ?: 0
+        qtyEditorCart.minValue = data.cartItemData.originData.minOrder
+        qtyEditorCart.maxValue = data.cartItemData.originData.maxOrder
         // reset listener
-        qtyEditorCart.setValue(data.cartItemData?.updatedData?.quantity ?: 0)
+        qtyEditorCart.setValue(data.cartItemData.updatedData?.quantity ?: 0)
         qtyEditorCart.setSubstractListener {
-            if (data.cartItemData?.isError == false && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
+            if (!data.cartItemData.isError && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
                 actionListener?.onCartItemQuantityMinusButtonClicked()
             }
         }
         qtyEditorCart.setAddClickListener {
-            if (data.cartItemData?.isError == false && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
+            if (!data.cartItemData.isError && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
                 actionListener?.onCartItemQuantityPlusButtonClicked()
             }
         }
@@ -518,17 +514,17 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         }
         quantityTextWatcher = QuantityTextWatcher(quantityTextwatcherListener)
         qtyEditorCart.editText.addTextChangedListener(quantityTextWatcher)
-        qtyEditorCart.editText.isEnabled = data.cartItemData?.isError == false
+        qtyEditorCart.editText.isEnabled = data.cartItemData.isError == false
     }
 
     private fun handleRefreshType(data: CartItemHolderData, viewHolderListener: ViewHolderListener?, parentPosition: Int) {
-        if (data.cartItemData?.originData?.wholesalePriceData != null && data.cartItemData?.originData?.wholesalePriceData?.size ?: 0 > 0) {
-            if (data.cartItemData?.originData?.isPreOrder == true) {
+        if (data.cartItemData.originData.wholesalePriceData.isNotEmpty()) {
+            if (data.cartItemData.originData.isPreOrder) {
                 viewHolderListener?.onNeedToRefreshAllShop()
             } else {
                 viewHolderListener?.onNeedToRefreshSingleShop(parentPosition)
             }
-        } else if (data.cartItemData?.shouldValidateWeight == true) {
+        } else if (data.cartItemData.shouldValidateWeight) {
             viewHolderListener?.onNeedToRefreshSingleShop(parentPosition)
         } else {
             viewHolderListener?.onNeedToRefreshSingleProduct(adapterPosition)
@@ -537,15 +533,14 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
     private fun renderActionWishlist(action: ActionData, data: CartItemHolderData) {
         val textMoveToWishlist = binding.textMoveToWishlist
-        if (data.cartItemData?.originData?.isWishlisted == true && action.id == ACTION_WISHLISTED) {
+        if (data.cartItemData.originData.isWishlisted && action.id == ACTION_WISHLISTED) {
             textMoveToWishlist.text = action.message
             textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             textMoveToWishlist.setOnClickListener { }
-        } else if (data.cartItemData?.originData?.isWishlisted == false && action.id == ACTION_WISHLIST) {
+        } else if (!data.cartItemData.originData.isWishlisted && action.id == ACTION_WISHLIST) {
             textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             textMoveToWishlist.setOnClickListener {
-                actionListener?.onWishlistCheckChanged(data.cartItemData?.originData?.productId, data.cartItemData?.originData?.cartId
-                        ?: 0, binding.iuImageProduct)
+                actionListener?.onWishlistCheckChanged(data.cartItemData.originData.productId, data.cartItemData.originData.cartId, binding.iuImageProduct)
             }
         }
         textMoveToWishlist.show()
