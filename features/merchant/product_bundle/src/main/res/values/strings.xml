@@ -1,0 +1,6 @@
+<resources>
+
+    <!-- add edit product screen name -->
+    <string name="product_bundle_page_title">Pilih paket</string>
+
+</resources>
