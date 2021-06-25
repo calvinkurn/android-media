@@ -1,4 +1,4 @@
-package com.tokopedia.hotel.search.usecase
+package com.tokopedia.hotel.search_map.presentation.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

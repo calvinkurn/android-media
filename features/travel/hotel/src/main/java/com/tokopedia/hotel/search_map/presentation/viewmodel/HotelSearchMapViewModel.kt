@@ -19,7 +19,7 @@ import com.tokopedia.hotel.search_map.data.model.params.ParamLocation
 import com.tokopedia.hotel.search_map.data.model.params.ParamSort
 import com.tokopedia.hotel.search_map.data.model.params.SearchParam
 import com.tokopedia.hotel.search_map.presentation.adapter.viewholder.FilterSelectionViewHolder
-import com.tokopedia.hotel.search.usecase.SearchPropertyUseCase
+import com.tokopedia.hotel.search_map.presentation.usecase.SearchPropertyUseCase
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify

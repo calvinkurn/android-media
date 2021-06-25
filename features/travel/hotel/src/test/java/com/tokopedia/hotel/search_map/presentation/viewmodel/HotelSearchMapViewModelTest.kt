@@ -12,7 +12,7 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.search_map.data.model.*
 import com.tokopedia.hotel.search_map.data.model.params.ParamFilterV2
-import com.tokopedia.hotel.search.usecase.SearchPropertyUseCase
+import com.tokopedia.hotel.search_map.presentation.usecase.SearchPropertyUseCase
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
