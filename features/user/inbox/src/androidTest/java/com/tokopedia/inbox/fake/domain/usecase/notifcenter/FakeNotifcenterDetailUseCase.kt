@@ -1,6 +1,8 @@
 package com.tokopedia.inbox.fake.domain.usecase.notifcenter
 
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.inbox.common.AndroidFileUtil
 import com.tokopedia.inbox.fake.common.FakeGraphqlUseCase
 import com.tokopedia.inbox.test.R
@@ -29,11 +31,31 @@ class FakeNotifcenterDetailUseCase(
             NotifcenterDetailResponse::class.java
         )
 
+    val noTrackHistoryWidgetMsg: NotifcenterDetailResponse
+        get() {
+            val responseObj: JsonObject = AndroidFileUtil.parseRaw(
+                R.raw.notifcenter_detail_v3_no_track_history_widget,
+                JsonObject::class.java
+            )
+            responseObj.getAsJsonObject(notifcenter_detail_v3)
+                .getAsJsonArray(new_list).get(0).asJsonObject
+                .getAsJsonObject(widget)
+                .addProperty(message, "")
+            return CommonUtil.fromJson(
+                responseObj.toString(), NotifcenterDetailResponse::class.java
+            )
+        }
+
     val defaultResponse: NotifcenterDetailResponse
         get() = AndroidFileUtil.parseRaw(
             R.raw.notifcenter_detail_v3,
             NotifcenterDetailResponse::class.java
         )
+
+    private val notifcenter_detail_v3 = "notifcenter_detail_v3"
+    private val new_list = "new_list"
+    private val widget = "widget"
+    private val message = "message"
 
     init {
         response = response

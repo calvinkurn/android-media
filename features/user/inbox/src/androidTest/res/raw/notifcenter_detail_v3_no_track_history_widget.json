@@ -20,7 +20,7 @@
         "template_key": "rechargeapp_failed_education",
         "title": "Pembayaran Voucher Belajar belum berhasil",
         "button_text": "Klik di sini",
-        "short_description": "Pembayaran tagihan biaya pendidikan GAGAL untuk Nomor Pelanggan: 747330958. ",
+        "short_description": "short description html",
         "short_description_html": "short description html",
         "is_longer_content": false,
         "show_bottomsheet": false,
