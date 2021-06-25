@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tokomart_common_empty_state_title">Yaah, saat ini TokoNOW! belum bisa antar ke tempatmu</string>
+    <string name="tokomart_common_empty_state_desc_1">TokoNOW! melayani kebutuhan belanja harianmu hanya dalam 2 jam pengiriman untuk menjamin tetap fresh.</string>
+    <string name="tokomart_common_empty_state_desc_2">Saat ini, kami baru melayani kota %s. Tunggu TokoNOW! tersedia di kotamu, ya!</string>
+    <string name="tokomart_common_empty_state_button_change_address">Ubah Alamat</string>
+    <string name="tokomart_common_empty_state_button_return">Belanja di Tokopedia</string>
+
+    <string name="tokomart_category_list_bottom_sheet_title">Semua kategori di TokoNOW!</string>
+    <string name="tokomart_category_list_bottom_sheet_error_not_found_title">Oops, halaman ini gagal dimuat</string>
+    <string name="tokomart_category_list_bottom_sheet_error_not_found_desc">Klik tombol di bawah ini untuk refresh halaman ini, ya!</string>
+    <string name="tokomart_category_list_bottom_sheet_error_go_to_homepage">Ke Homepage</string>
+    <string name="tokomart_see_all">Lihat Semua</string>
+    <string name="tokomart_all_category_text_format">Semua Produk %1$s</string>
+
+    <string name="home_choose_address_widget_coachmark_title">Bisa pilih alamat pengirimanmu dulu</string>
+    <string name="home_choose_address_widget_coachmark_description">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
+
+    <string name="tokomart_header_background_content_description">Header Background</string>
+
+    <string name="tokomart_search_title">Hasil pencarian di TokoNOW!</string>
+    <string name="tokomart_all_category">Semua Kategori</string>
+    <string name="tokomart_search_category_product_count_template">%s Produk</string>
+    <string name="tokomart_category_aisle_header">Lihat kategori lainnya</string>
+    <string name="tokomart_content_desc_image_empty_product">Image Empty Product</string>
+    <string name="tokomart_empty_product_title">Yaah, barang itu nggak ada di Tokopedia NOW!</string>
+    <string name="tokomart_empty_product_description">Coba cari barang yang lain, atau cek rekomendasi di bawah.</string>
+    <string name="tokomart_empty_product_filter_title">Oops, product nggak ditemukan</string>
+    <string name="tokomart_empty_product_filter_description">Coba kurangi filter yang sedang aktif berikut:</string>
+    <string name="tokomart_empty_product_filter_price_name">Filter Harga</string>
+    <string name="tokomart_global_search_button">Cari di Tokopedia</string>
+    <string name="tokomart_change_keyword_button">Ganti Kata Kunci</string>
+
+    <string name="tokomart_city_name_empty_state_no_address">Jakarta Barat</string>
+    <string name="tokomart_category_is_failed_to_display_title">Oops, bagian ini gagal ditampilkan</string>
+    <string name="tokomart_category_is_failed_to_display_description">Klik iklan di samping untuk coba lagi</string>
+
+    <string name="tokomart_search_bar_hint">Cari di Tokopedia NOW!</string>
+
+    <string name="tokomart_lihat">Lihat</string>
+</resources>

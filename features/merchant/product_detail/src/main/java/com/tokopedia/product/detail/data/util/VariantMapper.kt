@@ -6,9 +6,10 @@ import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
+import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.view.util.toDate
-import com.tokopedia.variant_common.model.ProductVariantCommon
-import com.tokopedia.variant_common.model.VariantChildCommon
 
 /**
  * Created by Yehezkiel on 2020-02-26
@@ -19,7 +20,7 @@ object VariantMapper {
             intent: Intent?,
             productId: String?,
             productInfo: DynamicProductInfoP1?,
-            variantResp: ProductVariantCommon?,
+            variantResp: ProductVariant?,
             freeOngkirImgUrl: String
     ) {
         if (intent == null || productId == null) return
@@ -66,7 +67,7 @@ object VariantMapper {
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }
 
-    fun updateDynamicProductInfo(oldData: DynamicProductInfoP1?, newData: VariantChildCommon?, existingListMedia: List<Media>?): DynamicProductInfoP1? {
+    fun updateDynamicProductInfo(oldData: DynamicProductInfoP1?, newData: VariantChild?, existingListMedia: List<Media>?): DynamicProductInfoP1? {
         if (oldData == null) return null
 
         val basic = oldData.basic.copy(
@@ -134,7 +135,6 @@ object VariantMapper {
         )
 
         val data = oldData.data.copy(
-                isWishlist = newData?.isWishlist ?: false,
                 campaign = newCampaign,
                 thematicCampaign = newThematicCampaign,
                 price = newPrice,
@@ -144,7 +144,7 @@ object VariantMapper {
                 isCod = newData?.isCod ?: false
         )
 
-        return DynamicProductInfoP1(basic, data, oldData.layoutName)
+        return DynamicProductInfoP1(basic, data, oldData.layoutName, oldData.pdpSession)
     }
 
     fun updateMediaToCurrentP1Data(oldData: DynamicProductInfoP1?, media: MutableList<Media>): DynamicProductInfoP1 {
@@ -156,9 +156,9 @@ object VariantMapper {
                 ?: ComponentData(), oldData?.layoutName ?: "")
     }
 
-    fun generateVariantString(variantData:ProductVariantCommon?): String {
+    fun generateVariantString(variantData: ProductVariant?): String {
         return try {
-            variantData?.variant?.map { it.name }?.joinToString(separator = ", ") ?: ""
+            variantData?.variants?.map { it.name }?.joinToString(separator = ", ") ?: ""
         } catch (e: Throwable) {
             ""
         }

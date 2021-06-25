@@ -48,10 +48,6 @@ data class CampaignModular(
         @SerializedName("paymentInfoWording")
         val paymentInfoWording:String = ""
 ) {
-    companion object {
-        const val CAMPAIGN_ID_NEW_USER = 68
-    }
-
     var discountedPriceFmt: String = ""
     var originalPriceFmt:String = ""
 

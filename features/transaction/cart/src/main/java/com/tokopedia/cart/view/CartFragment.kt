@@ -42,6 +42,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -56,6 +57,8 @@ import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_MA
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_OVERLOAD
 import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData.Companion.ID_TIMEOUT
 import com.tokopedia.cart.view.CartActivity.Companion.INVALID_PRODUCT_ID
+import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_AFTER_CHOOSE_ADDRESS
+import com.tokopedia.cart.view.ICartListPresenter.Companion.GET_CART_STATE_DEFAULT
 import com.tokopedia.cart.view.adapter.cart.CartAdapter
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.bottomsheet.showGlobalErrorBottomsheet
@@ -406,7 +409,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 showToastMessageRed(message ?: "")
             }
             else -> {
-                refreshCartWithProgressDialog()
+                refreshCartWithProgressDialog(GET_CART_STATE_DEFAULT)
             }
         }
     }
@@ -1153,7 +1156,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onLocalizingAddressUpdatedFromWidget() {
-        refreshCartWithProgressDialog()
+        refreshCartWithProgressDialog(GET_CART_STATE_AFTER_CHOOSE_ADDRESS)
     }
 
     override fun onClickShopNow() {
@@ -1572,18 +1575,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onCartShopNameClicked(shopId: String?, shopName: String?) {
+    override fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean) {
         if (shopId != null && shopName != null) {
             cartPageAnalytics.eventClickAtcCartClickShop(shopId, shopName)
-            routeToShopPage(shopId)
+            if (isTokoNow) {
+                routeToApplink(ApplinkConstInternalTokopediaNow.HOME)
+            } else {
+                routeToShopPage(shopId)
+            }
         }
     }
 
     override fun onShopItemCheckChanged(itemPosition: Int, checked: Boolean) {
         dPresenter.setHasPerformChecklistChange(true)
         cartAdapter.setShopSelected(itemPosition, checked)
-        onNeedToUpdateViewItem(itemPosition)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList)
+        onNeedToUpdateViewItem(itemPosition)
         validateGoToCheckout()
         dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
 
@@ -1812,7 +1819,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             setTopLayoutVisibility(false)
         } else {
             renderCartNotEmpty(it)
-            setTopLayoutVisibility(true)
+            setTopLayoutVisibility(it.shopGroupAvailableDataList.isNotEmpty())
         }
     }
 
@@ -1858,7 +1865,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun validateShowPopUpMessage(cartListData: CartListData) {
-        if (cartListData.popUpMessage.isNotBlank()) {
+        if (cartListData.popupErrorMessage.isNotBlank()) {
+            showToastMessageRed(cartListData.popupErrorMessage)
+            cartPageAnalytics.eventViewToasterErrorInCartPage(cartListData.popupErrorMessage)
+        } else if (cartListData.popUpMessage.isNotBlank()) {
             showToastMessageGreen(cartListData.popUpMessage)
         }
     }
@@ -1900,7 +1910,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     lat = localizationChooseAddressData.latitude,
                     long = localizationChooseAddressData.longitude,
                     label = String.format("%s %s", localizationChooseAddressData.addressName, localizationChooseAddressData.receiverName),
-                    postalCode = localizationChooseAddressData.postalCode)
+                    postalCode = localizationChooseAddressData.postalCode,
+                    shopId = localizationChooseAddressData.shopId,
+                    warehouseId = localizationChooseAddressData.warehouseId)
         }
     }
 
@@ -1956,6 +1968,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.enhancedECommerceCartLoadedStep0(
                 dPresenter.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_0)
         )
+        cartListData.unavailableGroupData.forEach { unavailableGroup ->
+            unavailableGroup.shopGroupWithErrorDataList.forEach { shop ->
+                cartPageAnalytics.eventLoadCartWithUnavailableProduct(shop.shopId, unavailableGroup.title)
+            }
+        }
 
         cartAdapter.notifyDataSetChanged()
 
@@ -2471,13 +2488,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 if (!showAccordion && it.shopGroupWithErrorDataList.size > 1) {
                     showAccordion = true
                 }
-                it.shopGroupWithErrorDataList.forEach {
-                    val cartItemHolderDataList = it.cartItemHolderDataList
+                it.shopGroupWithErrorDataList.forEach { shop ->
+                    val cartItemHolderDataList = shop.cartItemHolderDataList
                     if (cartItemHolderDataList.isNotEmpty()) {
                         if (!showAccordion && cartItemHolderDataList.size > 1) {
                             showAccordion = true
                         }
-                        cartAdapter.addNotAvailableShop(viewHolderDataMapper.mapDisabledShopHolderData(it))
+                        cartAdapter.addNotAvailableShop(viewHolderDataMapper.mapDisabledShopHolderData(shop, it.title))
                         for ((index, value) in cartItemHolderDataList.withIndex()) {
                             cartAdapter.addNotAvailableProduct(viewHolderDataMapper.mapDisabledItemHolderData(value, index != cartItemHolderDataList.size - 1))
                         }
@@ -3090,13 +3107,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun refreshCartWithProgressDialog() {
+    private fun refreshCartWithProgressDialog(getCartState: Int) {
         resetRecentViewList()
         if (dPresenter.dataHasChanged()) {
             showMainContainer()
-            dPresenter.processToUpdateAndReloadCartData(getCartId())
+            dPresenter.processToUpdateAndReloadCartData(getCartId(), getCartState)
         } else {
-            dPresenter.processInitialGetCartData(getCartId(), false, false)
+            dPresenter.processInitialGetCartData(getCartId(), false, false, getCartState)
         }
     }
 

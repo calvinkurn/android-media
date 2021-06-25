@@ -30,6 +30,8 @@ data class AddAddressParam(
             "latitude" to latitude,
             "longitude" to longitude,
             "is_ana_positive" to is_ana_positive,
-            "apply_name_as_new_user_fullname" to apply_name_as_new_user_fullname
+            "apply_name_as_new_user_fullname" to apply_name_as_new_user_fullname,
+            // hardcode to get tokonow shop & warehouse
+            "is_tokonow_request" to true
     )
 }

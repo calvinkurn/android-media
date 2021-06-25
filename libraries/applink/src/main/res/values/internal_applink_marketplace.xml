@@ -19,6 +19,7 @@
 
     <string name="path_checkout_variant" translatable="false">/checkout-variant</string>
     <string name="path_cart" translatable="false">/cart</string>
+    <string name="path_mini_cart_example" translatable="false">/minicartexample</string>
     <string name="path_checkout" translatable="false">/checkout</string>
     <string name="path_normal_checkout" translatable="false">/normal-checkout</string>
     <string name="path_checkout_address_selection" translatable="false">/checkout-address-selection</string>
@@ -32,6 +33,7 @@
     <string name="path_gold_merchant_redirect" translatable="false">/gold-merchant-redirect</string>
     <string name="path_power_merchant_subscribe" translatable="false">/power-merchant-subscribe</string>
 
+    <string name="path_atc_variant" translatable="false">/atc-variant/.*\\/.*\\/</string>
     <string name="path_product_category_picker" translatable="false">/product-category-picker/.*\\/</string>
     <string name="path_product_detail" translatable="false">/product-detail/.*\\/</string>
     <string name="path_product_detail_domain" translatable="false">/product-detail/.*\\/.*\\/</string>

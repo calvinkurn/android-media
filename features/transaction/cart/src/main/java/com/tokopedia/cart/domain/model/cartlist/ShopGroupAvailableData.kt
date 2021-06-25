@@ -31,16 +31,27 @@ data class ShopGroupAvailableData(
         var totalPrice: Long = 0,
         var totalCashback: Long = 0,
         var totalItem: Int = 0,
+        var totalWeight: Double = 0.0,
 
         var preOrderInfo: String = "",
         var isFreeShippingExtra: Boolean = false,
         var freeShippingBadgeUrl: String = "",
         var incidentInfo: String = "",
-        var estimatedTimeArrival: String = ""
+        var estimatedTimeArrival: String = "",
 
+        var shopTicker: String = "",
+        var maximumWeightWording: String = "",
+        var maximumShippingWeight: Double = 0.0,
+        var isTokoNow: Boolean = false
 ) : Parcelable {
 
     val cartItemDataList: MutableList<CartItemHolderData>?
         get() = cartItemHolderDataList
 
+    val shouldValidateWeight: Boolean
+        get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()
+
+    companion object {
+        const val MAXIMUM_WEIGHT_WORDING_REPLACE_KEY = "{{weight}}"
+    }
 }

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/image1"
+        android:layout_width="@dimen/dp_96"
+        android:layout_height="@dimen/dp_96"
+        android:layout_marginStart="@dimen/dp_16"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/text1"
+        android:layout_width="@dimen/dp_120"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_16"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintBottom_toTopOf="@id/text2"
+        app:layout_constraintLeft_toRightOf="@id/image1"
+        app:layout_constraintTop_toTopOf="@id/image1"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/text2"
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_12"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintBottom_toBottomOf="@id/image1"
+        app:layout_constraintLeft_toLeftOf="@id/text1"
+        app:layout_constraintTop_toBottomOf="@id/text1" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintTop_toBottomOf="@id/image1" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/text3"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_16"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintLeft_toLeftOf="@id/image1"
+        app:layout_constraintTop_toBottomOf="@id/divider1" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/image2"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/image3"
+        app:layout_constraintTop_toBottomOf="@id/text3" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/image3"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintLeft_toRightOf="@id/image2"
+        app:layout_constraintRight_toLeftOf="@id/image4"
+        app:layout_constraintTop_toTopOf="@id/image2" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/image4"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintLeft_toRightOf="@id/image3"
+        app:layout_constraintRight_toLeftOf="@id/image5"
+        app:layout_constraintTop_toTopOf="@id/image2" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/image5"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintLeft_toRightOf="@id/image4"
+        app:layout_constraintRight_toLeftOf="@id/image6"
+        app:layout_constraintTop_toTopOf="@id/image2" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/image6"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintLeft_toRightOf="@id/image5"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/image2" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/image7"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/image8"
+        app:layout_constraintTop_toBottomOf="@id/image2" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/image8"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintLeft_toRightOf="@id/image7"
+        app:layout_constraintRight_toLeftOf="@id/image9"
+        app:layout_constraintTop_toTopOf="@id/image7" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/image9"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintLeft_toRightOf="@id/image8"
+        app:layout_constraintRight_toLeftOf="@id/image10"
+        app:layout_constraintTop_toTopOf="@id/image7" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/image10"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintLeft_toRightOf="@id/image9"
+        app:layout_constraintRight_toLeftOf="@id/image11"
+        app:layout_constraintTop_toTopOf="@id/image7" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/image11"
+        android:layout_width="@dimen/dp_56"
+        android:layout_height="@dimen/dp_56"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintLeft_toRightOf="@id/image10"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/image7" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/text4"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_24"
+        app:corners="@integer/corner_radius_shimmering"
+        app:layout_constraintLeft_toLeftOf="@id/image1"
+        app:layout_constraintTop_toBottomOf="@id/image7" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/chip1"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_10"
+        app:corners="40"
+        app:layout_constraintLeft_toLeftOf="@id/image1"
+        app:layout_constraintTop_toBottomOf="@id/text4" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/chip2"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginStart="@dimen/dp_4"
+        app:corners="40"
+        app:layout_constraintLeft_toRightOf="@id/chip1"
+        app:layout_constraintTop_toTopOf="@id/chip1" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/chip3"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginStart="@dimen/dp_4"
+        app:corners="40"
+        app:layout_constraintLeft_toRightOf="@id/chip2"
+        app:layout_constraintTop_toTopOf="@id/chip1" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/chip4"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginStart="@dimen/dp_4"
+        app:corners="40"
+        app:layout_constraintLeft_toRightOf="@id/chip3"
+        app:layout_constraintTop_toTopOf="@id/chip1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_26"
+        android:background="@drawable/bg_shadow_top"
+        android:paddingLeft="@dimen/dp_9"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_9"
+        android:paddingBottom="@dimen/dp_8"
+        app:layout_constraintTop_toBottomOf="@id/chip1">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_weight="1"
+            app:corners="@integer/corner_radius_shimmering" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_weight="1"
+            app:corners="@integer/corner_radius_shimmering" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

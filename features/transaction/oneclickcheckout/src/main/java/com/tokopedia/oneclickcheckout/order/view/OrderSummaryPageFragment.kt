@@ -36,6 +36,7 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
@@ -53,7 +54,6 @@ import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
-import com.tokopedia.oneclickcheckout.common.view.model.preference.AddressModel
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.common.view.utils.animateGone
 import com.tokopedia.oneclickcheckout.common.view.utils.animateShow
@@ -567,7 +567,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
-    private fun updateLocalCacheAddressData(addressModel: AddressModel) {
+    private fun updateLocalCacheAddressData(addressModel: ChosenAddressModel) {
         activity?.let {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     context = it,
@@ -577,7 +577,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     lat = addressModel.latitude,
                     long = addressModel.longitude,
                     label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
-                    postalCode = addressModel.postalCode)
+                    postalCode = addressModel.postalCode,
+                    shopId = addressModel.tokonowModel.shopId.toString(),
+                    warehouseId = addressModel.tokonowModel.warehouseId.toString())
         }
     }
 
@@ -591,7 +593,25 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     lat = addressModel.latitude,
                     long = addressModel.longitude,
                     label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
-                    postalCode = addressModel.postalCode)
+                    postalCode = addressModel.postalCode,
+                    shopId = addressModel.shopId.toString(),
+                    warehouseId = addressModel.warehouseId.toString())
+        }
+    }
+
+    private fun updateLocalCacheAddressData(addressModel: OrderProfileAddress) {
+        activity?.let {
+            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                    context = it,
+                    addressId = addressModel.addressId.toString(),
+                    cityId = addressModel.cityId.toString(),
+                    districtId = addressModel.districtId.toString(),
+                    lat = addressModel.latitude,
+                    long = addressModel.longitude,
+                    label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
+                    postalCode = addressModel.postalCode,
+                    shopId = addressModel.tokoNowShopId,
+                    warehouseId = addressModel.tokoNowWarehouseId)
         }
     }
 
@@ -927,11 +947,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         if (addressState.errorCode == AddressState.ERROR_CODE_OPEN_ADDRESS_LIST) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS)
-            intent.putExtra(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS, addressState.state)
+            intent.putExtra(CheckoutConstant.EXTRA_PREVIOUS_STATE_ADDRESS, addressState.address.state)
             intent.putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET, true)
             startActivityForResult(intent, REQUEST_CODE_OPEN_ADDRESS_LIST)
         } else if (addressState.errorCode == AddressState.ERROR_CODE_OPEN_ANA) {
             showLayoutNoAddress()
+        } else {
+            updateLocalCacheAddressData(addressState.address)
         }
     }
 
@@ -955,7 +977,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
-                val addressState = viewModel.addressState.value.state
+                val addressState = viewModel.addressState.value.address.state
                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
             }
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
@@ -996,7 +1018,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         override fun chooseAddress(currentAddressId: String) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 orderSummaryAnalytics.eventClickArrowToChangeAddressOption(currentAddressId, userSession.get().userId)
-                newOrderPreferenceCard.showAddressBottomSheet(this@OrderSummaryPageFragment, getAddressCornerUseCase.get(), viewModel.addressState.value.state)
+                newOrderPreferenceCard.showAddressBottomSheet(this@OrderSummaryPageFragment, getAddressCornerUseCase.get(), viewModel.addressState.value.address.state)
             }
         }
 
@@ -1034,7 +1056,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
                 putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
                 putExtra(PreferenceEditActivity.EXTRA_DIRECT_PAYMENT_STEP, true)
-                val addressState = viewModel.addressState.value.state
+                val addressState = viewModel.addressState.value.address.state
                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
@@ -1055,7 +1077,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
-                val addressState = viewModel.addressState.value.state
+                val addressState = viewModel.addressState.value.address.state
                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
             }
             startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
@@ -1133,7 +1155,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
                                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
-                                val addressState = viewModel.addressState.value.state
+                                val addressState = viewModel.addressState.value.address.state
                                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
                                 putExtra(PreferenceEditActivity.EXTRA_SELECTED_PREFERENCE, preference.enable && preference.profileId == profileId)
                             }
@@ -1153,7 +1175,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
                                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                                 putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
-                                val addressState = viewModel.addressState.value.state
+                                val addressState = viewModel.addressState.value.address.state
                                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_STATE, addressState)
                             }
                             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)

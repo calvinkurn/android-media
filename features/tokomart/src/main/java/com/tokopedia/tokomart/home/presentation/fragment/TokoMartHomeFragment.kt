@@ -1,0 +1,777 @@
+package com.tokopedia.tokomart.home.presentation.fragment
+
+import android.content.Context
+import android.content.SharedPreferences
+import android.os.Build
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.home_component.listener.BannerComponentListener
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
+import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
+import com.tokopedia.tokomart.R
+import com.tokopedia.tokomart.categorylist.analytic.HomeAnalytics
+import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
+import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_EXP_NAME
+import com.tokopedia.tokomart.common.constant.ConstantKey.AB_TEST_VARIANT_OLD
+import com.tokopedia.tokomart.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
+import com.tokopedia.tokomart.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH
+import com.tokopedia.tokomart.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH
+import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
+import com.tokopedia.tokomart.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
+import com.tokopedia.tokomart.common.util.CustomLinearLayoutManager
+import com.tokopedia.tokomart.common.view.TokoNowView
+import com.tokopedia.tokomart.home.constant.HomeLayoutState
+import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
+import com.tokopedia.tokomart.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
+import com.tokopedia.tokomart.home.di.component.DaggerTokoMartHomeComponent
+import com.tokopedia.tokomart.home.domain.model.Data
+import com.tokopedia.tokomart.home.domain.model.SearchPlaceholder
+import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapter
+import com.tokopedia.tokomart.home.presentation.adapter.TokoMartHomeAdapterTypeFactory
+import com.tokopedia.tokomart.home.presentation.adapter.differ.TokoMartHomeListDiffer
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeCategoryGridUiModel
+import com.tokopedia.tokomart.home.presentation.uimodel.HomeLayoutListUiModel
+import com.tokopedia.tokomart.home.presentation.viewholder.HomeCategoryGridViewHolder
+import com.tokopedia.tokomart.home.presentation.viewholder.HomeChooseAddressWidgetViewHolder
+import com.tokopedia.tokomart.home.presentation.viewholder.HomeTickerViewHolder
+import com.tokopedia.tokomart.home.presentation.viewmodel.TokoMartHomeViewModel
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_tokomart_home.*
+import java.util.*
+import javax.inject.Inject
+
+class TokoMartHomeFragment: Fragment(),
+        TokoNowView,
+        HomeChooseAddressWidgetViewHolder.HomeChooseAddressWidgetListener,
+        HomeTickerViewHolder.HomeTickerListener,
+        HomeCategoryGridViewHolder.HomeCategoryGridListener,
+        MiniCartWidgetListener,
+        BannerComponentListener
+{
+
+    companion object {
+        private const val AUTO_TRANSITION_VARIANT = "auto_transition"
+        private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
+        const val CATEGORY_LEVEL_DEPTH = 1
+        const val SOURCE = "tokonow"
+        const val SOURCE_TRACKING = "tokonow page"
+
+        fun newInstance() = TokoMartHomeFragment()
+    }
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var viewModel: TokoMartHomeViewModel
+
+    @Inject
+    lateinit var analytics: HomeAnalytics
+
+    private val adapter by lazy {
+        TokoMartHomeAdapter(
+            typeFactory = TokoMartHomeAdapterTypeFactory(
+                tokoNowListener = this,
+                homeTickerListener = this,
+                homeChooseAddressWidgetListener = this,
+                homeCategoryGridlistener = this,
+                bannerComponentListener = this
+            ),
+            differ = TokoMartHomeListDiffer()
+        )
+    }
+
+    private var navToolbar: NavToolbar? = null
+    private var statusBarBackground: View? = null
+    private var localCacheModel: LocalCacheModel? = null
+    private var ivHeaderBackground: ImageView? = null
+    private var swipeLayout: SwipeRefreshLayout? = null
+    private var sharedPrefs: SharedPreferences? = null
+    private var rvLayoutManager: CustomLinearLayoutManager? = null
+    private var hasTickerBeenRemoved: Boolean = false
+    private var isShowFirstInstallSearch = false
+    private var durationAutoTransition = DEFAULT_INTERVAL_HINT
+    private var movingPosition = 0
+    private var isFirstImpressionOnBanner = false
+
+    private val homeMainToolbarHeight: Int
+        get() = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.tokomart_default_toolbar_status_height)
+    private val spaceZero: Int
+        get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
+
+    private val loadMoreListener by lazy { createLoadMoreListener() }
+    private val navBarScrollListener by lazy { createNavBarScrollListener() }
+    private val homeComponentScrollListener by lazy { createHomeComponentScrollListener() }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(activity)
+        firebaseRemoteConfig.let {
+            isShowFirstInstallSearch = it.getBoolean(REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
+            durationAutoTransition = it.getLong(REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH, DEFAULT_INTERVAL_HINT)
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_tokomart_home, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupNavToolbar()
+        setupStatusBar()
+        setupRecyclerView()
+        setupSwipeRefreshLayout()
+        observeLiveData()
+        updateCurrentPageLocalCacheModelData()
+
+        loadLayout()
+    }
+
+    override fun getFragmentPage(): Fragment = this
+
+    override fun getFragmentManagerPage(): FragmentManager = childFragmentManager
+
+    override fun refreshLayoutPage() = onRefreshLayout()
+
+    override fun onAttach(context: Context) {
+        initInjector()
+        super.onAttach(context)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkIfChooseAddressWidgetDataUpdated()
+        getMiniCart()
+    }
+
+    override fun onTickerDismissed() {
+        hasTickerBeenRemoved = true
+        adapter.removeTickerWidget()
+    }
+
+    override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        if (!miniCartSimplifiedData.isShowMiniCartWidget) {
+            miniCartWidget?.hide()
+        }
+    }
+
+    override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
+        analytics.onClickBannerPromo(position, userSession.userId, channelModel, channelGrid)
+        context?.let {
+            RouteManager.route(it, channelGrid.applink)
+        }
+    }
+
+    override fun onChooseAddressWidgetRemoved() {
+        if(rvHome?.isComputingLayout == false) {
+            adapter.removeHomeChooseAddressWidget()
+        }
+    }
+
+    override fun onCategoryRetried() {
+        val item = adapter.getItem(HomeCategoryGridUiModel::class.java)
+        if (item is HomeCategoryGridUiModel) {
+            viewModel.getCategoryGrid(item, localCacheModel?.warehouse_id.orEmpty())
+        }
+    }
+
+    override fun onAllCategoryClicked() {
+        analytics.onClickAllCategory()
+    }
+
+    override fun onCategoryClicked(position: Int, categoryId: String) {
+        analytics.onClickCategory(position, userSession.userId, categoryId)
+    }
+
+    override fun isMainViewVisible(): Boolean = true
+
+    override fun isBannerImpressed(id: String): Boolean = true
+
+    override fun onPromoScrolled(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {}
+
+    override fun onPageDragStateChanged(isDrag: Boolean) {}
+
+    override fun onPromoAllClick(channelModel: ChannelModel) {}
+
+    override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
+        if (!isFirstImpressionOnBanner) {
+            isFirstImpressionOnBanner = true
+        } else {
+            analytics.onImpressBannerPromo(userSession.userId, channelModel)
+            isFirstImpressionOnBanner = false
+        }
+    }
+
+    private fun initInjector() {
+        DaggerTokoMartHomeComponent.builder()
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
+    }
+
+    private fun checkStateNotInServiceArea(shopId: Long = -1L, warehouseId: Long) {
+        context?.let {
+            when {
+                shopId == 0L -> {
+                    viewModel.getChooseAddress(SOURCE)
+                }
+                warehouseId == 0L -> {
+                    showEmptyState(EMPTY_STATE_NO_ADDRESS)
+                }
+                else -> {
+                    showLayout()
+                }
+            }
+        }
+    }
+
+    private fun showEmptyState(id: String) {
+        rvLayoutManager?.setScrollEnabled(false)
+        viewModel.getEmptyState(id)
+    }
+
+    private fun showFailedToFetchData() {
+        showEmptyState(EMPTY_STATE_FAILED_TO_FETCH_DATA)
+    }
+
+    private fun showLayout() {
+        getHomeLayout()
+        getMiniCart()
+    }
+
+    private fun loadHeaderBackground() {
+        ivHeaderBackground?.show()
+        ivHeaderBackground?.loadImage(R.drawable.tokomart_ic_header_background_shimmering)
+    }
+
+    private fun showHeaderBackground() {
+        ivHeaderBackground?.show()
+        ivHeaderBackground?.loadImage(R.drawable.tokomart_ic_header_background)
+    }
+
+    private fun hideHeaderBackground() {
+        ivHeaderBackground?.hide()
+    }
+
+    private fun setupSwipeRefreshLayout() {
+        context?.let {
+            swipeLayout = view?.findViewById(R.id.swipe_refresh_layout)
+            swipeLayout?.setMargin(spaceZero, NavToolbarExt.getFullToolbarHeight(it), spaceZero, spaceZero)
+            swipeLayout?.setOnRefreshListener {
+                onRefreshLayout()
+            }
+        }
+    }
+
+    private fun onRefreshLayout() {
+        resetMovingPosition()
+        removeAllScrollListener()
+        rvLayoutManager?.setScrollEnabled(true)
+        loadLayout()
+    }
+
+    private fun setupNavToolbar() {
+        ivHeaderBackground = view?.findViewById(R.id.view_background_image)
+        navToolbar = view?.findViewById(R.id.navToolbar)
+        setupTopNavigation()
+        navAbTestCondition (
+                ifNavRevamp = {
+                    setIconNewTopNavigation()
+                },
+                ifNavOld = {
+                    setIconOldTopNavigation()
+                }
+        )
+    }
+
+    private fun setupTopNavigation() {
+        navToolbar?.let { toolbar ->
+            viewLifecycleOwner.lifecycle.addObserver(toolbar)
+            //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder
+            setHint(SearchPlaceholder(Data(null, "Cari di TokoNOW!","")))
+            addNavBarScrollListener()
+            activity?.let {
+                toolbar.setupToolbarWithStatusBar(it)
+            }
+        }
+    }
+
+    private fun setIconNewTopNavigation() {
+        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
+                .addIcon(IconList.ID_NAV_GLOBAL) {}
+        navToolbar?.setIcon(icons)
+    }
+
+    private fun setIconOldTopNavigation() {
+        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
+        navToolbar?.setIcon(icons)
+    }
+
+    private fun onClickCartButton() {
+        analytics.onClickCartButton()
+    }
+
+    private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
+        movingPosition += dy
+        ivHeaderBackground?.y = if(movingPosition >= 0) {
+            -(movingPosition.toFloat())
+        } else {
+            resetMovingPosition()
+            movingPosition.toFloat()
+        }
+        if (recyclerView.canScrollVertically(1) || movingPosition != 0) {
+            navToolbar?.showShadow(lineShadow = true)
+        } else {
+            navToolbar?.hideShadow(lineShadow = true)
+        }
+    }
+
+    private fun isNavOld(): Boolean {
+        return try {
+            getAbTestPlatform().getString(AB_TEST_EXP_NAME, AB_TEST_VARIANT_OLD) == AB_TEST_VARIANT_OLD
+        } catch (e: Exception) {
+            e.printStackTrace()
+            true
+        }
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform {
+        val remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        return remoteConfigInstance.abTestPlatform
+    }
+
+    private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
+        if (!isNavOld()) {
+            ifNavRevamp.invoke()
+        } else {
+            ifNavOld.invoke()
+        }
+    }
+
+    private fun setupStatusBar() {
+        /*
+            this status bar background only shows for android Kitkat below
+            In that version, status bar can't be forced to dark mode
+            We must set background to keep status bar icon visible
+        */
+        statusBarBackground = view?.findViewById(R.id.status_bar_bg)
+        activity?.let {
+            statusBarBackground?.apply {
+                layoutParams?.height = ViewHelper.getStatusBarHeight(activity)
+                visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) View.INVISIBLE else View.VISIBLE
+            }
+            setStatusBarAlpha()
+        }
+    }
+
+    private fun setStatusBarAlpha() {
+        val drawable = statusBarBackground?.background
+        drawable?.alpha = 0
+        statusBarBackground?.background = drawable
+    }
+
+    private fun setupRecyclerView() {
+        context?.let {
+            with(rvHome) {
+                adapter = this@TokoMartHomeFragment.adapter
+                rvLayoutManager = CustomLinearLayoutManager(it)
+                layoutManager = rvLayoutManager
+            }
+
+            rvHome?.setItemViewCacheSize(20)
+            addHomeComponentScrollListener()
+        }
+    }
+
+    private fun observeLiveData() {
+        observe(viewModel.homeLayoutList) {
+            removeAllScrollListener()
+
+            if (it is Success) {
+                loadHomeLayout(it.data)
+            } else {
+                showFailedToFetchData()
+            }
+
+            rvHome?.post {
+                addScrollListener()
+                resetSwipeLayout()
+            }
+        }
+
+        observe(viewModel.miniCart) {
+            if(it is Success) {
+                setupMiniCart(it.data)
+            }
+        }
+
+        observe(viewModel.chooseAddress) {
+            if (it is Success) {
+                it.data.let { chooseAddressData ->
+                    ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                            context = requireContext(),
+                            addressId = chooseAddressData.data.addressId.toString(),
+                            cityId = chooseAddressData.data.cityId.toString(),
+                            districtId = chooseAddressData.data.districtId.toString(),
+                            lat = chooseAddressData.data.latitude,
+                            long = chooseAddressData.data.longitude,
+                            label = String.format("%s %s", chooseAddressData.data.addressName, chooseAddressData.data.receiverName),
+                            postalCode = chooseAddressData.data.postalCode,
+                            warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
+                            shopId = chooseAddressData.tokonow.shopId.toString()
+                    )
+                }
+                checkIfChooseAddressWidgetDataUpdated()
+                checkStateNotInServiceArea(
+                        warehouseId = it.data.tokonow.warehouseId
+                )
+            } else {
+                showEmptyState(EMPTY_STATE_NO_ADDRESS)
+            }
+        }
+    }
+
+    private fun resetSwipeLayout() {
+        swipeLayout?.isEnabled = true
+        swipeLayout?.isRefreshing = false
+    }
+
+    private fun resetMovingPosition() {
+        movingPosition = 0
+    }
+
+    private fun setupMiniCart(data: MiniCartSimplifiedData) {
+        if(data.isShowMiniCartWidget) {
+            val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
+            miniCartWidget.initialize(shopIds, this, this, pageName = MiniCartAnalytics.Page.HOME_PAGE)
+            miniCartWidget.show()
+        } else {
+            miniCartWidget.hide()
+        }
+    }
+
+    private fun loadHomeLayout(data: HomeLayoutListUiModel) {
+        when (data.state) {
+            HomeLayoutState.SHOW -> onShowHomeLayout(data)
+            HomeLayoutState.HIDE -> onHideHomeLayout(data)
+            HomeLayoutState.LOADING -> onLoadingHomeLayout(data)
+            HomeLayoutState.LOAD_MORE -> {
+                rvHome?.post {
+                    showHomeLayout(data)
+                }
+            }
+        }
+    }
+
+    private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
+        showHomeLayout(data)
+        loadHeaderBackground()
+        checkAddressDataAndServiceArea()
+        if (!isChooseAddressWidgetShowed()) {
+            adapter.removeHomeChooseAddressWidget()
+        }
+    }
+
+    private fun onHideHomeLayout(data: HomeLayoutListUiModel) {
+        showHomeLayout(data)
+        hideHeaderBackground()
+    }
+
+    private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
+        val initialLoad = data.isInitialLoad
+        val initialLoadFinished = data.isInitialLoadFinished
+
+        when {
+            initialLoad -> {
+                showHeaderBackground()
+                showHomeLayout(data)
+                loadNextItem(data)
+            }
+            initialLoadFinished -> {
+                rvHome?.post {
+                    addLoadMoreListener()
+                }
+            }
+            else -> {
+                showHomeLayout(data)
+                loadNextItem(data)
+            }
+        }
+    }
+
+    private fun loadNextItem(data: HomeLayoutListUiModel) {
+        rvHome?.post {
+            val index = data.nextItemIndex
+            loadVisibleLayoutData(index)
+        }
+    }
+
+    private fun checkAddressDataAndServiceArea() {
+        checkIfChooseAddressWidgetDataUpdated()
+        val shopId = localCacheModel?.shop_id.toLongOrZero()
+        val warehouseId = localCacheModel?.warehouse_id.toLongOrZero()
+        checkStateNotInServiceArea(shopId = shopId, warehouseId = warehouseId)
+    }
+
+    private fun showHomeLayout(data: HomeLayoutListUiModel) {
+        val items = data.result.map { it.layout }
+        adapter.submitList(items)
+    }
+
+    private fun addLoadMoreListener() {
+        rvHome?.addOnScrollListener(loadMoreListener)
+    }
+
+    private fun removeLoadMoreListener() {
+        rvHome?.removeOnScrollListener(loadMoreListener)
+    }
+
+    private fun addNavBarScrollListener() {
+        navBarScrollListener?.let {
+            rvHome?.addOnScrollListener(it)
+        }
+    }
+
+    private fun removeNavBarScrollListener() {
+        navBarScrollListener?.let {
+            rvHome?.removeOnScrollListener(it)
+        }
+    }
+
+    private fun addHomeComponentScrollListener() {
+        rvHome?.addOnScrollListener(homeComponentScrollListener)
+    }
+
+    private fun removeHomeComponentScrollListener() {
+        rvHome?.removeOnScrollListener(homeComponentScrollListener)
+    }
+
+    private fun removeAllScrollListener() {
+        removeLoadMoreListener()
+        removeNavBarScrollListener()
+        removeHomeComponentScrollListener()
+    }
+
+    private fun addScrollListener() {
+        addNavBarScrollListener()
+        addHomeComponentScrollListener()
+    }
+
+    private fun loadVisibleLayoutData(index: Int) {
+        val warehouseId = localCacheModel?.warehouse_id.orEmpty()
+        val layoutManager = rvHome.layoutManager as? LinearLayoutManager
+        val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
+        val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
+        val isVisible = index in firstVisibleItemIndex..lastVisibleItemIndex
+        viewModel.getInitialLayoutData(index, warehouseId, isVisible)
+    }
+
+    private fun loadMoreLayoutData() {
+        val warehouseId = localCacheModel?.warehouse_id.orEmpty()
+        val layoutManager = rvHome.layoutManager as? LinearLayoutManager
+        val firstVisibleItemIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
+        val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
+        viewModel.getMoreLayoutData(warehouseId, firstVisibleItemIndex, lastVisibleItemIndex)
+    }
+
+    private fun getHomeLayout() {
+        viewModel.getHomeLayout(hasTickerBeenRemoved)
+    }
+
+    private fun getMiniCart()  {
+        viewModel.getMiniCart(listOf(localCacheModel?.shop_id.orEmpty()))
+    }
+
+    private fun loadLayout() {
+        viewModel.getLoadingState()
+    }
+
+    //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder
+    private fun getSearchHint() {
+        viewModel.getKeywordSearch(isFirstInstall(), userSession.deviceId, userSession.userId)
+    }
+
+    private fun checkIfChooseAddressWidgetDataUpdated() {
+        localCacheModel?.let {
+            context?.apply {
+                val isUpdated = ChooseAddressUtils.isLocalizingAddressHasUpdated(
+                        this,
+                        it
+                )
+                if (isUpdated) {
+                    updateCurrentPageLocalCacheModelData()
+                }
+            }
+        }
+    }
+
+    private fun isChooseAddressWidgetShowed(): Boolean {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        val isRollOutUser = ChooseAddressUtils.isRollOutUser(context)
+        val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
+                HomeChooseAddressWidgetViewHolder.ENABLE_CHOOSE_ADDRESS_WIDGET,
+                true
+        )
+        return isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled
+    }
+
+    private fun updateCurrentPageLocalCacheModelData() {
+        context?.let {
+            localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
+        }
+    }
+
+    private fun isFirstInstall(): Boolean {
+        context?.let {
+            if (!userSession.isLoggedIn && isShowFirstInstallSearch) {
+                val sharedPrefs = it.getSharedPreferences(SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+                var firstInstallCacheValue = sharedPrefs.getLong(SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH, 0)
+                if (firstInstallCacheValue == 0L) return false
+                firstInstallCacheValue += (30 * 60000).toLong()
+                val now = Date()
+                val firstInstallTime = Date(firstInstallCacheValue)
+                return if (now <= firstInstallTime) {
+                    true
+                } else {
+                    saveFirstInstallTime()
+                    false
+                }
+            } else {
+                return false
+            }
+        }
+        return false
+    }
+
+    private fun saveFirstInstallTime() {
+        context?.let {
+            sharedPrefs = it.getSharedPreferences(SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+            sharedPrefs?.edit()?.putLong(SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH, 0)?.apply()
+        }
+    }
+
+    private fun setHint(searchPlaceholder: SearchPlaceholder) {
+        searchPlaceholder.data?.let { data ->
+            navToolbar?.setupSearchbar(
+                    hints = listOf(
+                            HintData(
+                                    data.placeholder.orEmpty(),
+                                    data.keyword.orEmpty()
+                            )
+                    ),
+                    searchbarClickCallback = ::onSearchBarClick,
+                    searchbarImpressionCallback = {},
+                    durationAutoTransition = durationAutoTransition,
+                    shouldShowTransition = shouldShowTransition()
+            )
+        }
+    }
+
+    private fun onSearchBarClick(hint: String) {
+        analytics.onClickSearchBar()
+        RouteManager.route(context,
+                getAutoCompleteApplinkPattern(),
+                SOURCE,
+                resources.getString(R.string.tokomart_search_bar_hint),
+                isFirstInstall().toString())
+    }
+
+    private fun getAutoCompleteApplinkPattern() =
+            ApplinkConstInternalDiscovery.AUTOCOMPLETE +
+                    PARAM_APPLINK_AUTOCOMPLETE +
+                    "&" + getParamTokonowSRP()
+
+    private fun getParamTokonowSRP() =
+            "${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokopediaNow.SEARCH}"
+
+    private fun shouldShowTransition(): Boolean {
+        val abTestValue = getAbTestPlatform().getString(AB_TEST_AUTO_TRANSITION_KEY, "")
+        return abTestValue == AUTO_TRANSITION_VARIANT
+    }
+
+    private fun String?.safeEncodeUtf8(): String {
+        return try {
+            this?.encodeToUtf8().orEmpty()
+        } catch (throwable: Throwable) {
+            ""
+        }
+    }
+
+    private fun createNavBarScrollListener(): NavRecyclerViewScrollListener? {
+        return navToolbar?.let { toolbar ->
+            NavRecyclerViewScrollListener(
+                navToolbar = toolbar,
+                startTransitionPixel = homeMainToolbarHeight,
+                toolbarTransitionRangePixel = resources.getDimensionPixelSize(R.dimen.tokomart_searchbar_transition_range),
+                navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                    override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */
+                    }
+
+                    override fun onSwitchToLightToolbar() { /* nothing to do */
+                    }
+
+                    override fun onSwitchToDarkToolbar() {
+                        navToolbar?.hideShadow()
+                    }
+
+                    override fun onYposChanged(yOffset: Int) {}
+                },
+                fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+            )
+        }
+    }
+
+    private fun createHomeComponentScrollListener(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                evaluateHomeComponentOnScroll(recyclerView, dy)
+            }
+        }
+    }
+
+    private fun createLoadMoreListener(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                loadMoreLayoutData()
+            }
+        }
+    }
+}
