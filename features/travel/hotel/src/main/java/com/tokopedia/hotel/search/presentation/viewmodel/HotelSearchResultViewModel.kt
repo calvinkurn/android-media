@@ -9,9 +9,9 @@ import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.hotel.common.data.HotelTypeEnum
-import com.tokopedia.hotel.search.data.model.*
-import com.tokopedia.hotel.search.data.model.params.*
-import com.tokopedia.hotel.search.presentation.adapter.viewholder.FilterSelectionViewHolder
+import com.tokopedia.hotel.search_map.data.model.*
+import com.tokopedia.hotel.search_map.data.model.params.*
+import com.tokopedia.hotel.search_map.presentation.adapter.viewholder.FilterSelectionViewHolder
 import com.tokopedia.hotel.search.usecase.SearchPropertyUseCase
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify

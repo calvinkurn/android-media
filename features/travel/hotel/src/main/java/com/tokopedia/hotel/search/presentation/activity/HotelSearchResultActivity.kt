@@ -17,8 +17,8 @@ import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
-import com.tokopedia.hotel.search.data.model.HotelSearchModel
-import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
+import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
+import com.tokopedia.hotel.search_map.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.di.DaggerHotelSearchPropertyComponent
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment

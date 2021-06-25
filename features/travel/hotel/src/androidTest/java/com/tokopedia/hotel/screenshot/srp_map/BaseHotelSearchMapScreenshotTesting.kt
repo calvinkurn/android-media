@@ -9,7 +9,7 @@ import androidx.test.uiautomator.UiSelector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.hotel.R
-import com.tokopedia.hotel.search.data.model.HotelSearchModel
+import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.mock.HotelSearchMockResponseConfig
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity

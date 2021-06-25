@@ -12,7 +12,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
@@ -26,9 +25,9 @@ import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
-import com.tokopedia.hotel.search.data.model.HotelSearchModel
+import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.mock.HotelSearchMockResponseConfig
-import com.tokopedia.hotel.search.presentation.adapter.viewholder.SearchPropertyViewHolder
+import com.tokopedia.hotel.search_map.presentation.adapter.viewholder.SearchPropertyViewHolder
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
 import com.tokopedia.hotel.search_map.presentation.adapter.viewholder.HotelSearchMapItemViewHolder
 import com.tokopedia.hotel.search_map.presentation.fragment.HotelSearchMapFragment

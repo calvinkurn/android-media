@@ -47,7 +47,7 @@ import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageVi
 import com.tokopedia.hotel.homepage.presentation.widget.HotelHomepagePopularCitiesWidget
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
-import com.tokopedia.hotel.search.data.model.HotelSearchModel
+import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage

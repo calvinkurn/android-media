@@ -14,7 +14,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
-import com.tokopedia.hotel.search.data.model.HotelSearchModel
+import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
 import com.tokopedia.hotel.search.presentation.activity.mock.HotelSearchMockResponseConfig
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment

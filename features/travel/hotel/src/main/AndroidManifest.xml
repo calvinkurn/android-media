@@ -49,7 +49,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".search.presentation.activity.HotelSearchFilterActivity"
+            android:name=".search_map.presentation.activity.HotelSearchFilterActivity"
             android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
