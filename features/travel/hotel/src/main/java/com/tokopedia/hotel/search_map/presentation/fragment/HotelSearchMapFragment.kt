@@ -1519,8 +1519,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         private const val MAPS_ZOOM_OUT: Float = 9f
         private const val MAX_RADIUS: Float = 10.5f
 
-        private const val PREFERENCES_NAME = "hotel_search_map_preferences"
-        private const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
+        const val PREFERENCES_NAME = "hotel_search_map_preferences"
+        const val SHOW_COACH_MARK_KEY = "hotel_search_map_show_coach_mark"
 
         fun createInstance(hotelSearchModel: HotelSearchModel,
                            selectedParam: ParamFilterV2,

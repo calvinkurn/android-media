@@ -26,9 +26,8 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
-import com.tokopedia.hotel.search.presentation.activity.mock.HotelSearchMockResponseConfig
+import com.tokopedia.hotel.search_map.presentation.activity.mock.HotelSearchMockResponseConfig
 import com.tokopedia.hotel.search_map.presentation.adapter.viewholder.SearchPropertyViewHolder
-import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
 import com.tokopedia.hotel.search_map.presentation.adapter.viewholder.HotelSearchMapItemViewHolder
 import com.tokopedia.hotel.search_map.presentation.fragment.HotelSearchMapFragment
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -49,9 +48,9 @@ class HotelSearchMapActivityTest {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(HotelSearchMockResponseConfig())
-            val localCacheHandler = LocalCacheHandler(targetContext, HotelSearchResultFragment.PREFERENCES_NAME)
+            val localCacheHandler = LocalCacheHandler(targetContext, HotelSearchMapFragment.PREFERENCES_NAME)
             localCacheHandler.apply {
-                putBoolean(HotelSearchResultFragment.SHOW_COACH_MARK_KEY, false)
+                putBoolean(HotelSearchMapFragment.SHOW_COACH_MARK_KEY, false)
                 applyEditor()
             }
         }
