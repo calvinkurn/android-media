@@ -490,6 +490,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         telcoClientNumberWidget.setInputNumber(contactNumber)
     }
 
+    override fun setContactNameFromContact(contactName: String) {
+        telcoClientNumberWidget.setContactName(contactName)
+    }
+
     private fun getProductListData() {
         if (operatorId.isNotEmpty()) {
             sharedModelPrepaid.getCatalogProductList(DigitalTopupBillsGqlQuery.catalogProductTelco, menuId, operatorId, null,

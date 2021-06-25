@@ -109,6 +109,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
             clearListener = { onSearchReset() }
             searchBarTextField.imeOptions = EditorInfo.IME_ACTION_DONE
         }
+
         binding?.commonTopupbillsFavoriteNumberRv?.run {
             layoutManager = LinearLayoutManager(activity)
             adapter = numberListAdapter
@@ -117,6 +118,10 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         binding?.commonTopupbillsSearchNumberContactPicker?.setOnClickListener {
             inputNumberActionType = InputNumberActionType.CONTACT
             navigateContact()
+        }
+
+        binding?.commonTopupbillsFavoriteNumberTitle?.run {
+            if (clientNumbers.isNullOrEmpty()) hide() else show()
         }
     }
 

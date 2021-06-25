@@ -184,6 +184,7 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                         val contactURI = data.data
                         val contact = contactURI?.covertContactUriToContactData(it.contentResolver)
                         setInputNumberFromContact(contact?.contactNumber ?: "")
+                        setContactNameFromContact(contact?.givenName ?: "")
                     }
                 } else if (requestCode == REQUEST_CODE_DIGITAL_SEARCH_NUMBER) {
                     if (data != null) {
@@ -425,6 +426,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     protected abstract fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation)
 
     protected abstract fun setInputNumberFromContact(contactNumber: String)
+
+    protected abstract fun setContactNameFromContact(contactName: String)
 
     override fun onDestroy() {
         listMenu.clear()
