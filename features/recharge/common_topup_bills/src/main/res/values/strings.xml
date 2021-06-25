@@ -11,6 +11,7 @@
     <string name="common_topup_title_promo_code">Kode Promo: </string>
     <string name="common_topup_title_recent_transaction_widget">Transaksi Terakhir</string>
 
+    <string name="common_topup_fav_number_clue">Mau isi nomor yang mana, nih?</string>
     <string name="common_topup_title_fav_number">Nomor Favorit</string>
     <string name="common_topup_fav_number_input_hint">Masukkan nomor HP</string>
     <string name="common_topup_voucher_code_already_copied">Kode voucher telah tersalin</string>
@@ -20,4 +21,5 @@
     <string name="common_topup_enquiry_grpc_error_msg">Oops, ada kendala koneksi. Coba lagi, yuk.</string>
 
     <string name="common_topup_checkout_view_total_value_label">Total Pembayaran</string>
+    <string name="common_topup_contact_not_found">Aplikasi kontak tidak ditemukan</string>
 </resources>

@@ -22,6 +22,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
@@ -32,10 +34,12 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.util.DigitalTopupBillsGqlQuery
+import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity.Companion.RECHARGE_PRODUCT_EXTRA
 import com.tokopedia.topupbills.telco.common.adapter.TelcoTabAdapter
 import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
@@ -80,6 +84,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private var traceStop = false
     private var showProducts = false
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
+    private val seamlessFavNumberList = mutableListOf<TopupBillsSeamlessFavNumberItem>()
 
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
 
@@ -278,7 +283,16 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     private fun getCatalogMenuDetail() {
         onLoadingMenuDetail(true)
         getMenuDetail(TelcoComponentType.TELCO_PREPAID)
-        getFavoriteNumbers(TelcoComponentType.FAV_NUMBER_PREPAID)
+        // TODO: [Misael] Toggle
+        if (isSeamlessFavoriteNumber) {
+            getSeamlessFavoriteNumbers(listOf(
+                    TelcoCategoryType.CATEGORY_PULSA.toString(),
+                    TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                    TelcoCategoryType.CATEGORY_ROAMING.toString()
+            ))
+        } else {
+            getFavoriteNumbers(TelcoComponentType.FAV_NUMBER_PREPAID)
+        }
     }
 
     //region Promo and Recommendation
@@ -453,15 +467,21 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             sharedModelPrepaid.setVisibilityTotalPrice(false)
 
             telcoClientNumberWidget.clearFocusAutoComplete()
-            startActivityForResult(activity?.let {
-                // TODO: [Misael] Toggle
-//                DigitalSearchNumberActivity.newInstance(it,
-//                        ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList)
-                TopupBillsFavoriteNumberActivity.getCallingIntent(it,
-                        ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList
-                )
-            },
-                    REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
+
+            // TODO: [Misael] Toggle
+            if (isSeamlessFavoriteNumber) {
+                startActivityForResult(activity?.let {
+                    TopupBillsFavoriteNumberActivity.getCallingIntent(it,
+                        ClientNumberType.TYPE_INPUT_TEL, clientNumber, seamlessFavNumberList)
+                },
+                        REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
+            } else {
+                startActivityForResult(activity?.let {
+                    DigitalSearchNumberActivity.newInstance(it,
+                        ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList)
+                },
+                        REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
+            }
         }
     }
 
@@ -573,6 +593,16 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
+    override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
+        performanceMonitoringStopTrace()
+        val favNumbers = data.favoriteNumbers
+        seamlessFavNumberList.addAll(favNumbers)
+        if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {
+            autoSelectTabProduct = true
+            telcoClientNumberWidget.setInputNumber(favNumbers[0].clientNumber)
+        }
+    }
+
     override fun errorSetFavNumbers() {
         performanceMonitoringStopTrace()
     }
@@ -584,23 +614,21 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun handleCallbackSearchNumber(orderClientNumber: TopupBillsFavNumberItem, inputNumberActionTypeIndex: Int) {
+    override fun handleCallbackAnySearchNumber(clientNumber: String, productId: String, categoryId: String, inputNumberActionTypeIndex: Int) {
         inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
         autoSelectTabProduct = true
-        if (orderClientNumber.productId.isNotEmpty() &&
-                orderClientNumber.categoryId.toIntOrNull() ?: 0 == categoryId) {
-            sharedModelPrepaid.setFavNumberSelected(orderClientNumber)
+        if (productId.isNotEmpty() && categoryId.toIntOrNull() ?: 0 == this@DigitalTelcoPrepaidFragment.categoryId) {
+            sharedModelPrepaid.setFavNumberSelected(productId)
             sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
         }
 
-        telcoClientNumberWidget.setInputNumber(orderClientNumber.clientNumber)
+        telcoClientNumberWidget.setInputNumber(clientNumber)
         telcoClientNumberWidget.clearFocusAutoComplete()
     }
 
-    override fun handleCallbackSearchNumberCancel() {
+    override fun handleCallbackAnySearchNumberCancel() {
         telcoClientNumberWidget.clearFocusAutoComplete()
     }
-    // endregion Favorite Numbers
 
     //region Recent Numbers
     override fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation) {

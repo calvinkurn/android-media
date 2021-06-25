@@ -54,6 +54,10 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     val favNumberData : LiveData<Result<TopupBillsFavNumber>>
         get() = _favNumberData
 
+    private val _seamlessFavNumberData = MutableLiveData<Result<TopupBillsSeamlessFavNumber>>()
+    val seamlessFavNumberData: LiveData<Result<TopupBillsSeamlessFavNumber>>
+        get() = _seamlessFavNumberData
+
     private val _checkVoucherData = MutableLiveData<Result<PromoData>>()
     val checkVoucherData : LiveData<Result<PromoData>>
         get() = _checkVoucherData
@@ -135,6 +139,21 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
             _favNumberData.postValue(Success(data.favNumber))
         }) {
             _favNumberData.postValue(Fail(it))
+        }
+    }
+
+    fun getSeamlessFavoriteNumbers(rawQuery: String, mapParam: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+        launchCatchError(block = {
+            val data = withContext(dispatcher.io) {
+                val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsSeamlessFavNumberData::class.java, mapParam)
+                val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
+                        .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+            }.getSuccessData<TopupBillsSeamlessFavNumberData>()
+
+            _seamlessFavNumberData.postValue(Success(data.seamlessFavoriteNumber))
+        }) {
+            _seamlessFavNumberData.postValue(Fail(it))
         }
     }
 
@@ -233,6 +252,19 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         return mapOf(PARAM_CATEGORY_ID to categoryId)
     }
 
+    fun createSeamlessFavoriteNumberParams(categoryIds: List<String>): Map<String, Any> {
+        return mapOf(
+            FAVORITE_NUMBER_PARAM_FIELDS to mapOf(
+                FAVORITE_NUMBER_PARAM_SOURCE to "",
+                FAVORITE_NUMBER_PARAM_CATEGORY_IDS to categoryIds,
+                FAVORITE_NUMBER_PARAM_MIN_LAST_TRANSACTION to "",
+                FAVORITE_NUMBER_PARAM_MIN_TOTAL_TRANSACTION to "",
+                FAVORITE_NUMBER_PARAM_SERVICE_PLAN_TYPE to "",
+                FAVORITE_NUMBER_PARAM_SUBSCRIPTION to false,
+                FAVORITE_NUMBER_PARAM_LIMIT to 10
+        ))
+    }
+
     fun createExpressCheckoutParams(productId: Int,
                                     inputs: Map<String, String>,
                                     transactionAmount: Int = 0,
@@ -293,6 +325,15 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         const val EXPRESS_PARAM_DEVICE_ID_DEFAULT_VALUE = "5"
         const val EXPRESS_PARAM_ADD_TO_BILLS = "add_to_my_bills"
         const val EXPRESS_PARAM_CHECK_OTP = "check_otp"
+
+        const val FAVORITE_NUMBER_PARAM_FIELDS = "fields"
+        const val FAVORITE_NUMBER_PARAM_SOURCE = "source"
+        const val FAVORITE_NUMBER_PARAM_CATEGORY_IDS = "category_ids"
+        const val FAVORITE_NUMBER_PARAM_MIN_LAST_TRANSACTION = "min_last_transaction"
+        const val FAVORITE_NUMBER_PARAM_MIN_TOTAL_TRANSACTION = "min_total_transaction"
+        const val FAVORITE_NUMBER_PARAM_SERVICE_PLAN_TYPE = "service_plan_type"
+        const val FAVORITE_NUMBER_PARAM_SUBSCRIPTION = "subscription"
+        const val FAVORITE_NUMBER_PARAM_LIMIT = "limit"
 
         const val STATUS_DONE = "DONE"
         const val STATUS_PENDING = "PENDING"

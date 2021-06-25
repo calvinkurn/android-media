@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
 import com.tokopedia.header.HeaderUnify
@@ -19,7 +20,7 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
     protected lateinit var categoryId: String
     protected lateinit var clientNumberType: String
     protected lateinit var number: String
-    protected lateinit var numberList: List<TopupBillsFavNumberItem>
+    protected lateinit var numberList: List<TopupBillsSeamlessFavNumberItem>
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_digital_search_number_rev
@@ -68,13 +69,12 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
         const val EXTRA_NUMBER_LIST = "EXTRA_NUMBER_LIST"
         const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
         const val EXTRA_NUMBER = "EXTRA_NUMBER"
-        const val EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID"
 
         const val EXTRA_CALLBACK_CLIENT_NUMBER = "EXTRA_CALLBACK_CLIENT_NUMBER"
         const val EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE = "EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE"
 
         fun getCallingIntent(context: Context, clientNumberType: String,
-                             number: String, numberList: List<TopupBillsFavNumberItem>): Intent {
+                             number: String, numberList: List<TopupBillsSeamlessFavNumberItem>): Intent {
             val intent = Intent(context, TopupBillsFavoriteNumberActivity::class.java)
             intent.putExtra(EXTRA_CLIENT_NUMBER, clientNumberType)
             intent.putExtra(EXTRA_NUMBER, number)

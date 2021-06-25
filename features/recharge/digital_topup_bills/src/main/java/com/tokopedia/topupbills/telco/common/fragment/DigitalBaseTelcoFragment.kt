@@ -189,10 +189,21 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                 } else if (requestCode == REQUEST_CODE_DIGITAL_SEARCH_NUMBER) {
                     if (data != null) {
                         val inputNumberActionType = data.getIntExtra(EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, 0)
-                        val orderClientNumber = data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER)
-                        handleCallbackSearchNumber(orderClientNumber as TopupBillsFavNumberItem, inputNumberActionType)
+                        if (isSeamlessFavoriteNumber) {
+                            val orderClientNumber = data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsSeamlessFavNumberItem
+                            handleCallbackAnySearchNumber(
+                                    orderClientNumber.clientNumber, orderClientNumber.productId.toString(),
+                                    orderClientNumber.categoryId.toString(), inputNumberActionType
+                            )
+                        } else {
+                            val orderClientNumber = data.getParcelableExtra<Parcelable>(EXTRA_CALLBACK_CLIENT_NUMBER) as TopupBillsFavNumberItem
+                            handleCallbackAnySearchNumber(
+                                    orderClientNumber.clientNumber, orderClientNumber.productId,
+                                    orderClientNumber.categoryId, inputNumberActionType
+                            )
+                        }
                     } else {
-                        handleCallbackSearchNumberCancel()
+                        handleCallbackAnySearchNumberCancel()
                     }
                 } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
                     if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
@@ -290,6 +301,10 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         setFavNumbers(data)
     }
 
+    override fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber) {
+        setSeamlessFavNumbers(data)
+    }
+
     override fun onEnquiryError(error: Throwable) {
         //do nothing
     }
@@ -299,6 +314,11 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
     }
 
     override fun onFavoriteNumbersError(error: Throwable) {
+        errorSetFavNumbers()
+    }
+
+    override fun onSeamlessFavoriteNumbersError(error: Throwable) {
+        // TODO: [Misael] mau isi apa ni, harusnya panggil error handler kah? atau send log
         errorSetFavNumbers()
     }
 
@@ -395,11 +415,13 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected abstract fun setFavNumbers(data: TopupBillsFavNumber)
 
+    protected abstract fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber)
+
     protected abstract fun errorSetFavNumbers()
 
-    protected abstract fun handleCallbackSearchNumber(orderClientNumber: TopupBillsFavNumberItem, inputNumberActionTypeIndex: Int)
+    protected abstract fun handleCallbackAnySearchNumber(clientNumber: String, productId: String, categoryId: String, inputNumberActionTypeIndex: Int)
 
-    protected abstract fun handleCallbackSearchNumberCancel()
+    protected abstract fun handleCallbackAnySearchNumberCancel()
 
     protected abstract fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation)
 

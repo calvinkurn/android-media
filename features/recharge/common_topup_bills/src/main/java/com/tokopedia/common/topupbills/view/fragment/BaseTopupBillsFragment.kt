@@ -18,6 +18,7 @@ import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
@@ -98,6 +99,9 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     var operatorName = ""
     var productName = ""
 
+    // Favorite Number
+    protected var isSeamlessFavoriteNumber = true
+
     private fun subscribeUi() {
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -146,6 +150,15 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 when (it) {
                     is Success -> processFavoriteNumbers(it.data)
                     is Fail -> onFavoriteNumbersError(it.throwable)
+                }
+            }
+        })
+
+        topupBillsViewModel.seamlessFavNumberData.observe(viewLifecycleOwner, Observer {
+            it.run {
+                when (it) {
+                    is Success -> processSeamlessFavoriteNumbers(it.data)
+                    is Fail -> onSeamlessFavoriteNumbersError(it.throwable)
                 }
             }
         })
@@ -395,6 +408,13 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 topupBillsViewModel.createFavoriteNumbersParams(categoryId))
     }
 
+    fun getSeamlessFavoriteNumbers(categoryIds: List<String>) {
+        topupBillsViewModel.getSeamlessFavoriteNumbers(
+                CommonTopupBillsGqlQuery.rechargeFavoriteNumber,
+                topupBillsViewModel.createSeamlessFavoriteNumberParams(categoryIds)
+        )
+    }
+
     fun checkVoucher() {
         promoTicker?.toggleLoading(true)
         topupBillsViewModel.checkVoucher(promoCode,
@@ -445,11 +465,15 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)
 
+    abstract fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber)
+
     abstract fun onEnquiryError(error: Throwable)
 
     abstract fun onCatalogPluginDataError(error: Throwable)
 
     abstract fun onFavoriteNumbersError(error: Throwable)
+
+    abstract fun onSeamlessFavoriteNumbersError(error: Throwable)
 
     abstract fun onCheckVoucherError(error: Throwable)
 

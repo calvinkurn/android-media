@@ -284,10 +284,10 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             }
         }
 
-        sharedModelPrepaid.favNumberSelected.observe(viewLifecycleOwner, Observer { favNumber ->
+        sharedModelPrepaid.favNumberSelected.observe(viewLifecycleOwner, Observer { productId ->
             val activeCategory = sharedModelPrepaid.selectedCategoryViewPager.value
             if (activeCategory == titleProduct) {
-                telcoTelcoProductView.selectProductFromFavNumber(favNumber.productId)
+                telcoTelcoProductView.selectProductFromFavNumber(productId)
             }
         })
     }

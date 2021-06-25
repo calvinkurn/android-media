@@ -18,8 +18,11 @@ import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
+import com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
@@ -77,6 +80,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         }
 
     private val favNumberList = mutableListOf<TopupBillsFavNumberItem>()
+    private val seamlessFavNumberList = mutableListOf<TopupBillsSeamlessFavNumberItem>()
 
     override var menuId = TelcoComponentType.TELCO_POSTPAID
     override var categoryId = TelcoCategoryType.CATEGORY_PASCABAYAR
@@ -230,7 +234,12 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     private fun getCatalogMenuDetail() {
         getMenuDetail(TelcoComponentType.TELCO_POSTPAID)
-        getFavoriteNumbers(TelcoComponentType.FAV_NUMBER_POSTPAID)
+        // TODO: [Misael] toggle
+        if (isSeamlessFavoriteNumber) {
+            getSeamlessFavoriteNumbers(listOf(TelcoComponentType.FAV_NUMBER_POSTPAID.toString()))
+        } else {
+            getFavoriteNumbers(TelcoComponentType.FAV_NUMBER_POSTPAID)
+        }
     }
 
     private fun getDataFromBundle(savedInstanceState: Bundle?) {
@@ -296,11 +305,20 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
             override fun onClientNumberHasFocus(clientNumber: String) {
                 postpaidClientNumberWidget.clearFocusAutoComplete()
-                startActivityForResult(activity?.let {
-                    DigitalSearchNumberActivity.newInstance(it,
+                // TODO: [Misael] toggle
+                if (isSeamlessFavoriteNumber) {
+                    startActivityForResult(activity?.let {
+                        TopupBillsFavoriteNumberActivity.getCallingIntent(it,
+                            ClientNumberType.TYPE_INPUT_TEL, clientNumber, seamlessFavNumberList)
+                    },
+                            REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
+                } else {
+                    startActivityForResult(activity?.let {
+                        DigitalSearchNumberActivity.newInstance(it,
                             ClientNumberType.TYPE_INPUT_TEL, clientNumber, favNumberList)
-                },
-                        REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
+                    },
+                            REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
+                }
             }
         })
 
@@ -452,18 +470,17 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         inputNumberActionType = InputNumberActionType.CONTACT_HOMEPAGE
         postpaidClientNumberWidget.setInputNumber(contactNumber)
     }
-
     override fun setContactNameFromContact(contactName: String) {
         postpaidClientNumberWidget.setContactName(contactName)
     }
 
-    override fun handleCallbackSearchNumber(orderClientNumber: TopupBillsFavNumberItem, inputNumberActionTypeIndex: Int) {
+    override fun handleCallbackAnySearchNumber(clientNumber: String, productId: String, categoryId: String, inputNumberActionTypeIndex: Int) {
         inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
-        postpaidClientNumberWidget.setInputNumber(orderClientNumber.clientNumber)
+        postpaidClientNumberWidget.setInputNumber(clientNumber)
         postpaidClientNumberWidget.clearFocusAutoComplete()
     }
 
-    override fun handleCallbackSearchNumberCancel() {
+    override fun handleCallbackAnySearchNumberCancel() {
         postpaidClientNumberWidget.clearFocusAutoComplete()
     }
 
@@ -484,6 +501,11 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     override fun errorSetFavNumbers() {
         performanceMonitoringStopTrace()
+    }
+
+    override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
+        performanceMonitoringStopTrace()
+        seamlessFavNumberList.addAll(data.favoriteNumbers)
     }
 
     private fun performanceMonitoringStopTrace() {
