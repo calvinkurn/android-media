@@ -11,7 +11,6 @@ import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.search_map.data.model.HotelSearchModel
 import com.tokopedia.hotel.search_map.data.model.params.ParamFilterV2
-import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
 import com.tokopedia.hotel.search_map.di.DaggerHotelSearchMapComponent
 import com.tokopedia.hotel.search_map.di.HotelSearchMapComponent
 import com.tokopedia.hotel.search_map.presentation.fragment.HotelSearchMapFragment
@@ -87,7 +86,7 @@ class HotelSearchMapActivity : HotelBaseActivity(), HasComponent<HotelSearchMapC
             selectedSort = uri.getQueryParameter(PARAM_SORT) ?: ""
         } else {
             //when activity open from intent
-            hotelSearchModel = intent.getParcelableExtra(HotelSearchResultFragment.ARG_HOTEL_SEARCH_MODEL)
+            hotelSearchModel = intent.getParcelableExtra(HotelSearchMapFragment.ARG_HOTEL_SEARCH_MODEL)
                     ?: HotelSearchModel()
         }
 
