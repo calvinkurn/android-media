@@ -18,7 +18,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
-import com.tokopedia.applink.travel.DeeplinkMapperTravel
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
@@ -49,7 +48,6 @@ import com.tokopedia.hotel.homepage.presentation.widget.HotelHomepagePopularCiti
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.HotelSearchModel
-import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
 import com.tokopedia.hotel.search_map.presentation.activity.HotelSearchMapActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -590,11 +588,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                             adult = hotelHomepageModel.adultCount,
                             searchType = hotelHomepageModel.searchType,
                             searchId = hotelHomepageModel.searchId)
-                    if (DeeplinkMapperTravel.isHotelSrpShowMap(this) && DeeplinkMapperTravel.isABTestHotelShowMap()) {
-                        startActivityForResult(HotelSearchMapActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
-                    } else {
-                        startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
-                    }
+                    startActivityForResult(HotelSearchMapActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
                 }
             }
         }
