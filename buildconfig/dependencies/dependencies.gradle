@@ -113,6 +113,7 @@ ext {
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.7'
     unifyAccordionVersion = '1.1.2'
+    unifyTotalAmountVersion = '1.0.3'
 
     gradlePlugin = [
             crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -353,6 +354,7 @@ ext {
             sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar",
             carousel        : "com.tokopedia.unify.compositions:carousel:${unifyCarouselVersion}@aar",
             accordion       : "com.tokopedia.unify.compositions:accordion:${unifyAccordionVersion}@aar",
+            total_amount    : "com.tokopedia.unify.compositions:total_amount:${unifyTotalAmountVersion}@aar",
             icons           : "com.tokopedia.unify:icons:${unifyIconsVersion}@aar"
     ]
 }
