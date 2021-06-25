@@ -2638,7 +2638,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
         et_search.setOnClickListener {
             DynamicProductDetailTracking.Click.eventSearchToolbarClicked(viewModel.getDynamicProductInfoP1)
-            RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
+            RouteManager.route(context, getLocalSearchApplink())
         }
         et_search.hint = String.format(getString(R.string.pdp_search_hint), "")
     }
@@ -2663,12 +2663,16 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    private fun setNavToolbarSearchHint(hint: String) {
+    private fun getLocalSearchApplink(): String {
         val isTokoNow = viewModel.getDynamicProductInfoP1?.basic?.isTokoNow == true
         val applink = ApplinkConstInternalDiscovery.AUTOCOMPLETE +
                 if (isTokoNow) "?${SearchApiConst.NAVSOURCE}=tokonow&${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalTokopediaNow.SEARCH}"
                 else ""
-        navToolbar?.setupSearchbar(listOf(HintData(hint)), applink = applink)
+        return applink
+    }
+
+    private fun setNavToolbarSearchHint(hint: String) {
+        navToolbar?.setupSearchbar(listOf(HintData(hint)), applink = getLocalSearchApplink())
     }
 
     private fun initStickyLogin(view: View) {
