@@ -44,6 +44,19 @@
       ]
     },
     {
+      "event": "viewHotelIris",
+      "eventCategory": "digital - native",
+      "eventAction": "view nearby landmark",
+      "eventLabel": "hotel - .+ - .+",
+      "screenName": "/hotel/pdp",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": ".+",
+      "sessionIris": ".+",
+      "userId": ".*",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel"
+    },
+    {
       "event": "clickHotel",
       "eventCategory": "digital - native",
       "eventAction": "click hotel photo",
