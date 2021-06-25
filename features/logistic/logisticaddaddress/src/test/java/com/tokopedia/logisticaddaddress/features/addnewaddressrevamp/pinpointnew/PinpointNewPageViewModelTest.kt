@@ -19,12 +19,14 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class PinpointNewPageViewModelTest {
 
     @get:Rule
@@ -61,7 +63,7 @@ class PinpointNewPageViewModelTest {
     }
 
     @Test
-    fun `Get District Data Faile`() {
+    fun `Get District Data Fail`() {
         coEvery { repo.getDistrictGeocode(any()) } throws defaultThrowable
         pinpointNewPageViewModel.getDistrictData(1134.5, -6.4214)
         verify { autofillDistrictDataObserver.onChanged(match { it is Fail }) }
