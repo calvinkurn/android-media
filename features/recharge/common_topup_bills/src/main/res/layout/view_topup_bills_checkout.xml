@@ -23,24 +23,29 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_recharge_checkout_label"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:ellipsize="end"
         android:lines="1"
         android:text="@string/common_topup_checkout_view_total_value_label"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_recharge_checkout_next"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recharge_checkout_promo_ticker"
         app:typographyType="heading_4" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_recharge_checkout_price"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:ellipsize="end"
         android:lines="1"
         android:textColor="@color/Unify_Y500"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_recharge_checkout_next"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_recharge_checkout_label"
         app:typographyType="body_1"
         app:typographyWeight="bold"
@@ -48,12 +53,13 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_recharge_checkout_next"
-        android:layout_width="@dimen/layout_lvl8"
+        android:layout_width="@dimen/layout_lvl9"
         android:layout_height="wrap_content"
         android:text="@string/common_topup_enquiry_default_label"
         app:layout_constraintBottom_toBottomOf="@id/txt_recharge_checkout_price"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/txt_recharge_checkout_label"
+        app:unifyButtonSize="medium"
         app:unifyButtonType="transaction" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

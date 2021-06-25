@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/layout_lvl2">
+    android:paddingBottom="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/telco_title_detail"
@@ -14,7 +14,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl2"
         android:lines="1"
         android:text="@string/digital_title_details"
-        app:typographyType="heading_5"/>
+        app:typographyType="heading_5" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/telco_details"
