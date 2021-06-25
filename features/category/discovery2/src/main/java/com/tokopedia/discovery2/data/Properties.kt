@@ -50,6 +50,12 @@ data class Properties(
         val timerStyle: String? = null,
 
         @SerializedName("category_detail")
-        val categoryDetail: Boolean = false
+        val categoryDetail: Boolean = false,
+
+        @SerializedName("filter")
+        val filter:Boolean = false,
+
+        @SerializedName("sort")
+        val sort:Boolean = false,
 
 )
