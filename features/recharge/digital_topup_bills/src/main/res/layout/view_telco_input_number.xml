@@ -19,7 +19,7 @@
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl2"
             app:text_field_input_type="phone"
-            app:text_field_label="Nomor Telepon"
+            app:text_field_label="@string/digital_client_label"
             app:layout_constraintEnd_toStartOf="@id/telco_contact_picker_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
