@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
@@ -61,6 +62,8 @@ import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -83,6 +86,8 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.network.exception.ResponseErrorException;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
@@ -95,6 +100,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
+import com.tokopedia.purchase_platform.common.constant.LoggerConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
 import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
@@ -128,6 +134,7 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil;
 import com.tokopedia.utils.time.TimeHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -3039,4 +3046,68 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    private String getErrorMessage(Throwable throwable) {
+        String errorMessage = throwable.getMessage();
+        if (!(throwable instanceof ResponseErrorException || throwable instanceof AkamaiErrorException)) {
+            errorMessage = ErrorHandler.getErrorMessage(getActivity(), throwable);
+        }
+
+        return errorMessage;
+    }
+
+    @Override
+    public void logOnErrorLoadCheckoutPage(Throwable throwable) {
+        String errorMessage = getErrorMessage(throwable);
+
+        Map<String, String> payload = new HashMap<>();
+        payload.put(LoggerConstant.KEY_TYPE, LoggerConstant.TYPE_LOAD_CHECKOUT_PAGE_ERROR);
+        payload.put(LoggerConstant.KEY_IS_OCS, String.valueOf(isOneClickShipment()));
+        payload.put(LoggerConstant.KEY_IS_TRADE_IN, String.valueOf(isTradeIn()));
+        payload.put(LoggerConstant.KEY_IS_TRADE_IN_INDOPAKET, String.valueOf(isTradeInByDropOff()));
+        payload.put(LoggerConstant.KEY_MESSAGE, !errorMessage.isEmpty() ? errorMessage : "unknown exception");
+        payload.put(LoggerConstant.KEY_STACK_TRACE, Arrays.toString(throwable.getStackTrace()).substring(0, 50));
+        ServerLogger.log(
+                Priority.P1,
+                LoggerConstant.TAG_MARKETPLACE_CHECKOUT_FLOW_ERROR,
+                payload
+        );
+    }
+
+    @Override
+    public void logOnErrorLoadCourier(Throwable throwable, String productId) {
+        String errorMessage = getErrorMessage(throwable);
+
+        Map<String, String> payload = new HashMap<>();
+        payload.put(LoggerConstant.KEY_TYPE, LoggerConstant.TYPE_LOAD_CHECKOUT_PAGE_ERROR);
+        payload.put(LoggerConstant.KEY_IS_OCS, String.valueOf(isOneClickShipment()));
+        payload.put(LoggerConstant.KEY_IS_TRADE_IN, String.valueOf(isTradeIn()));
+        payload.put(LoggerConstant.KEY_IS_TRADE_IN_INDOPAKET, String.valueOf(isTradeInByDropOff()));
+        payload.put(LoggerConstant.KEY_PRODUCT_ID, productId);
+        payload.put(LoggerConstant.KEY_MESSAGE, !errorMessage.isEmpty() ? errorMessage : "unknown exception");
+        payload.put(LoggerConstant.KEY_STACK_TRACE, Arrays.toString(throwable.getStackTrace()).substring(0, 50));
+        ServerLogger.log(
+                Priority.P1,
+                LoggerConstant.TAG_MARKETPLACE_CHECKOUT_FLOW_ERROR,
+                payload
+        );
+    }
+
+    @Override
+    public void logOnErrorCheckout(Throwable throwable, String request) {
+        String errorMessage = getErrorMessage(throwable);
+
+        Map<String, String> payload = new HashMap<>();
+        payload.put(LoggerConstant.KEY_TYPE, LoggerConstant.TYPE_LOAD_CHECKOUT_PAGE_ERROR);
+        payload.put(LoggerConstant.KEY_IS_OCS, String.valueOf(isOneClickShipment()));
+        payload.put(LoggerConstant.KEY_IS_TRADE_IN, String.valueOf(isTradeIn()));
+        payload.put(LoggerConstant.KEY_IS_TRADE_IN_INDOPAKET, String.valueOf(isTradeInByDropOff()));
+        payload.put(LoggerConstant.KEY_REQUEST, request);
+        payload.put(LoggerConstant.KEY_MESSAGE, !errorMessage.isEmpty() ? errorMessage : "unknown exception");
+        payload.put(LoggerConstant.KEY_STACK_TRACE, Arrays.toString(throwable.getStackTrace()).substring(0, 50));
+        ServerLogger.log(
+                Priority.P1,
+                LoggerConstant.TAG_MARKETPLACE_CHECKOUT_FLOW_ERROR,
+                payload
+        );
+    }
 }

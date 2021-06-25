@@ -153,6 +153,12 @@ public interface ShipmentContract {
         void updateLocalCacheAddressData(UserAddress userAddress);
 
         void resetAllCourier();
+
+        void logOnErrorLoadCheckoutPage(Throwable throwable);
+
+        void logOnErrorLoadCourier(Throwable throwable, String productId);
+
+        void logOnErrorCheckout(Throwable throwable, String request);
     }
 
     interface AnalyticsActionListener {
