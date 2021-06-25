@@ -41,3 +41,7 @@ open class InboxNotifcenterTest : InboxTest() {
     }
 
 }
+
+object NotifcenterAssertion {
+
+}
