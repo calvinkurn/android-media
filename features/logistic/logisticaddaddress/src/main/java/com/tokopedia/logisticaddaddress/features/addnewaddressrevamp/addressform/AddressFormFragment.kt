@@ -760,7 +760,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             saveDataModel?.addressName =  binding.formAddress.etLabel.textFieldInput.text.toString()
         } else {
             if (binding.formAddressNegative.etCourierNote.textFieldInput.text.isNotEmpty()) {
-                saveDataModel?.address1 = "${binding.formAddressNegative.etAlamat.textFieldInput.text} (${binding.formAddress.etCourierNote.textFieldInput.text})"
+                saveDataModel?.address1 = "${binding.formAddressNegative.etAlamat.textFieldInput.text} (${binding.formAddressNegative.etCourierNote.textFieldInput.text})"
             } else {
                 saveDataModel?.address1 = "${binding.formAddressNegative.etAlamat.textFieldInput.text}"
             }
