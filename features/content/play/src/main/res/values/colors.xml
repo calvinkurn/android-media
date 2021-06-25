@@ -35,6 +35,10 @@
 
     <color name="play_dms_out_of_stock_bg">#AD31353B</color>
 
+    <!--Engagement Tools-->
+    <color name="play_dms_engagement_prestart_bg_g1">#F94D63</color>
+    <color name="play_dms_engagement_prestart_bg_g2">#FF7F17</color>
+
     <!--General Color-->
     <color name="play_dms_R100">#FFEAEF</color>
     <color name="play_dms_G300">#82EF95</color>

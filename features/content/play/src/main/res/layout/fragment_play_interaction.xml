@@ -128,6 +128,17 @@
         tools:visibility="visible"
         />
 
+    <include
+        android:id="@+id/view_engagement"
+        layout="@layout/view_engagement_prestart"
+        android:layout_width="@dimen/play_engagement_prestart_width"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toTopOf="@id/view_chat_list"
+        app:layout_constraintStart_toStartOf="@id/space_size"
+        />
+
     <com.google.android.exoplayer2.ui.PlayerControlView
         android:id="@+id/pcv_video"
         android:layout_width="@dimen/layout_lvl0"
