@@ -12,7 +12,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.imagepicker.common.PICKER_RESULT_PATHS
 import com.tokopedia.pms.analytics.PmsIdlingResource
 import com.tokopedia.pms.analytics.actionTest
@@ -36,8 +36,10 @@ class UploadPaymentProofActivityTest {
     @get:Rule
     val activityRule = ActivityTestRule(UploadProofPaymentActivity::class.java, false, false)
 
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule(false)
+
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setUp() {
@@ -48,16 +50,13 @@ class UploadPaymentProofActivityTest {
                 null
             )
         )
-
         IdlingRegistry.getInstance().register(PmsIdlingResource.idlingResource)
-        gtmLogDBSource.deleteAll().toBlocking().first()
         login()
         launchActivity()
     }
 
     @After
     fun finish() {
-        gtmLogDBSource.deleteAll().toBlocking()
         IdlingRegistry.getInstance().unregister(PmsIdlingResource.idlingResource)
     }
 
@@ -90,7 +89,7 @@ class UploadPaymentProofActivityTest {
             actionClickView(R.id.button_save)
 
         } assertTest {
-            validate(PAYMENT_UPLOAD_PROOF_TRACKER_PATH)
+            validate(cassavaTestRule, PAYMENT_UPLOAD_PROOF_TRACKER_PATH)
             finishTest()
         }
     }
@@ -98,7 +97,6 @@ class UploadPaymentProofActivityTest {
     private fun login() = InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
     private fun finishTest() {
-        gtmLogDBSource.deleteAll().toBlocking()
         Intents.release()
         activityRule.activity.finish()
     }
