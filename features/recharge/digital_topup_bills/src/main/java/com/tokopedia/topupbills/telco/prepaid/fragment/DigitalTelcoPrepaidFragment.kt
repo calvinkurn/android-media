@@ -610,19 +610,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-//    override fun handleCallbackSearchNumber(orderClientNumber: TopupBillsFavNumberItem, inputNumberActionTypeIndex: Int) {
-//        inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
-//        autoSelectTabProduct = true
-//        if (orderClientNumber.productId.isNotEmpty() &&
-//                orderClientNumber.categoryId.toIntOrNull() ?: 0 == categoryId) {
-//            sharedModelPrepaid.setFavNumberSelected(orderClientNumber.productId)
-//            sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
-//        }
-//
-//        telcoClientNumberWidget.setInputNumber(orderClientNumber.clientNumber)
-//        telcoClientNumberWidget.clearFocusAutoComplete()
-//    }
-
     override fun handleCallbackAnySearchNumber(clientNumber: String, productId: String, categoryId: String, inputNumberActionTypeIndex: Int) {
         inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
         autoSelectTabProduct = true

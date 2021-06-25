@@ -124,9 +124,7 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
                 _productList.postValue(Fail(MessageErrorException()))
             } else {
                 _productList.postValue(Success(data.rechargeCatalogProductDataData.productInputList))
-                // TODO: [Misael] Toggle disini?
                 setFavNumberSelected(autoSelectProductId.toString())
-//                setSeamlessFavNumberSelected(TopupBillsSeamlessFavNumberItem(productId = autoSelectProductId))
             }
         }) {
             _loadingProductList.postValue(false)
