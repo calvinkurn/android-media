@@ -606,18 +606,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         iuNoAddress?.setImageUrl(NO_ADDRESS_IMAGE)
         descNoAddress?.text = getString(R.string.occ_lbl_desc_no_address)
         btnAddNewAddress?.setOnClickListener {
-            if (LogisticCommonUtil.isRollOutUserANARevamp()) {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
-                    putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
-                    putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
-                }, REQUEST_CODE_ADD_NEW_ADDRESS)
-            } else {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                    putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
-                    putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
-                }, REQUEST_CODE_ADD_NEW_ADDRESS)
-            }
-
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+                putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
+                putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
+            }, REQUEST_CODE_ADD_NEW_ADDRESS)
         }
     }
 
@@ -971,19 +963,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onAddAddress(token: Token?) {
-            if (LogisticCommonUtil.isRollOutUserANARevamp()) {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
-                    putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
-                    putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
-                    putExtra(CheckoutConstant.KERO_TOKEN, token)
-                }, REQUEST_CODE_ADD_ADDRESS)
-            } else {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                    putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
-                    putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
-                    putExtra(CheckoutConstant.KERO_TOKEN, token)
-                }, REQUEST_CODE_ADD_ADDRESS)
-            }
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+                putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
+                putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
+                putExtra(CheckoutConstant.KERO_TOKEN, token)
+            }, REQUEST_CODE_ADD_ADDRESS)
         }
 
         override fun onAddressChange(addressModel: RecipientAddressModel) {
