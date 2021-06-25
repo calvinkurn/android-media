@@ -87,6 +87,7 @@ class TokoMartHomeFragment: Fragment(),
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
+        const val SOURCE_TRACKING = "tokonow page"
 
         fun newInstance() = TokoMartHomeFragment()
     }
