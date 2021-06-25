@@ -53,12 +53,11 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun user_can_see_preview_product_before_attach_product() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // Then
         onView(withId(R.id.rv_attachment_preview)).check(matches(isDisplayed()))
@@ -69,12 +68,11 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun user_can_not_sent_preview_product_when_text_is_empty() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSendBtn()
@@ -88,10 +86,9 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun user_preview_product_from_attach_product_page() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
+        launchChatRoomActivity()
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
             .respondWith(
                 Instrumentation.ActivityResult(
@@ -112,10 +109,9 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun user_reattach_product_from_preview_product() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // When
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
@@ -155,10 +151,9 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun user_remove_preview_product() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
+        launchChatRoomActivity()
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
             .respondWith(
                 Instrumentation.ActivityResult(
@@ -178,10 +173,9 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun user_remove_two_out_of_three_preview_products() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
-        inflateTestFragment()
+        launchChatRoomActivity()
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
             .respondWith(
                 Instrumentation.ActivityResult(
@@ -204,13 +198,12 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun template_chat_shown_if_product_preview_is_closed() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // Then
         clickCloseAttachmentPreview(0)

@@ -49,7 +49,6 @@ import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.TopchatProductAttachmentViewHolder
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
-import com.tokopedia.topchat.idling.FragmentTransactionIdle
 import com.tokopedia.topchat.isKeyboardOpened
 import com.tokopedia.topchat.matchers.hasSrwBubble
 import com.tokopedia.topchat.matchers.withRecyclerView
@@ -127,7 +126,6 @@ abstract class TopchatRoomTest {
     protected lateinit var websocket: RxWebSocketUtilStub
 
     protected open lateinit var activity: TopChatRoomActivityStub
-    protected open lateinit var fragmentTransactionIdling: FragmentTransactionIdle
 
     protected var firstPageChatAsBuyer = GetExistingChatPojo()
     protected var firstPageChatAsSeller = GetExistingChatPojo()
@@ -238,11 +236,14 @@ abstract class TopchatRoomTest {
         IdlingRegistry.getInstance().register(keyboardStateIdling)
     }
 
-    protected fun setupChatRoomActivity(
+    protected fun launchChatRoomActivity(
         sourcePage: String? = null,
         isSellerApp: Boolean = false,
         intentModifier: (Intent) -> Unit = {}
     ) {
+        if (isSellerApp) {
+            GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
+        }
         val intent = Intent().apply {
             putExtra(ApplinkConst.Chat.MESSAGE_ID, MSG_ID)
             sourcePage?.let {
@@ -252,25 +253,6 @@ abstract class TopchatRoomTest {
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
-        fragmentTransactionIdling = FragmentTransactionIdle(
-            activity.supportFragmentManager,
-            TopChatRoomActivityStub.TAG
-        )
-        if (isSellerApp) {
-            GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
-        }
-    }
-
-    protected fun waitForFragmentResumed() {
-        IdlingRegistry.getInstance().register(fragmentTransactionIdling)
-        onView(withId(R.id.recycler_view))
-            .check(matches(isDisplayed()))
-        IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
-    }
-
-    protected fun inflateTestFragment() {
-        activity.setupTestFragment()
-        waitForFragmentResumed()
     }
 
     protected fun changeResponseStartTime(
