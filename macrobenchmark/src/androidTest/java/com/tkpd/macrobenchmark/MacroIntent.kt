@@ -6,6 +6,8 @@ import android.net.Uri
 object MacroIntent {
     fun getHomeIntent(): Intent {
         val intent = Intent()
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
         intent.setData(Uri.parse("tokopedia-android-internal://home/navigation"))
         intent.putExtra("testenv", "testenv")
         return intent
@@ -13,7 +15,7 @@ object MacroIntent {
 
     fun getHomeMacroSetupIntent(): Intent {
         val intent = Intent()
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.setData(Uri.parse("tokopedia://setting/dev-opts/home-macrobenchmark/setup"))
         return intent
     }
