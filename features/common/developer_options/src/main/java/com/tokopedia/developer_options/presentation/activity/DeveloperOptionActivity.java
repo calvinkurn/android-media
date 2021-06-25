@@ -104,6 +104,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
 
+    String EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV;
+    String VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
+
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
     private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
@@ -191,7 +194,8 @@ public class DeveloperOptionActivity extends BaseActivity {
                             uri.getPathSegments().get(1).equals(CHANGEURL);
                     isCoachmarkApplink = (uri.getPathSegments().size() == 3) &&
                             uri.getPathSegments().get(1).equals(URI_COACHMARK);
-                    isHomeMacrobenchmarkApplink = uri.getPathSegments().get(1).equals(URI_HOME_MACROBENCHMARK);
+                    isHomeMacrobenchmarkApplink = (uri.getPathSegments().size() == 3) &&
+                            uri.getPathSegments().get(1).equals(URI_HOME_MACROBENCHMARK);
                 }
             }
             if (isChangeUrlApplink) {
@@ -248,6 +252,8 @@ public class DeveloperOptionActivity extends BaseActivity {
                 .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true).apply();
 
         userSession.setFirstTimeUserOnboarding(false);
+
+        RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_REVAMP);
     }
 
     /**

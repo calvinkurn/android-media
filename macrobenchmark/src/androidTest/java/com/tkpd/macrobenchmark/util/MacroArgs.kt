@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark
+package com.tkpd.macrobenchmark.util
 
 import android.os.Bundle
 import androidx.benchmark.macro.CompilationMode

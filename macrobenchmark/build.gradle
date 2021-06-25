@@ -39,6 +39,5 @@ dependencies {
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     androidTestImplementation 'androidx.benchmark:benchmark-macro-junit4:1.1.0-alpha02'
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    implementation project(rootProject.ext.features.developerOptions)
     implementation project(rootProject.ext.libraries.applink)
 }
