@@ -53,7 +53,6 @@ import com.tokopedia.developer_options.R;
 import com.tokopedia.developer_options.ab_test_rollence.AbTestRollenceConfigFragmentActivity;
 import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
-import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
@@ -113,7 +112,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView resetOnBoarding;
     private TextView testOnBoarding;
     private TextView vForceCrash;
-    private TextView reviewNotifBtn;
     private AppCompatEditText remoteConfigPrefix;
     private AppCompatTextView remoteConfigStartButton;
     private AppCompatTextView abTestRollenceEditorStartButton;
@@ -278,8 +276,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
         abTestRollenceEditorStartButton = findViewById(R.id.ab_test_rollence_editor_start);
-
-        reviewNotifBtn = findViewById(R.id.review_notification);
 
         TextView deviceId = findViewById(R.id.device_id);
         deviceId.setText(String.format("DEVICE ID: %s", GlobalConfig.DEVICE_ID));
@@ -622,12 +618,6 @@ public class DeveloperOptionActivity extends BaseActivity {
             public void oneOnClick(View view) {
                 startActivity(Chucker.getLaunchIntent(getApplicationContext(), Chucker.SCREEN_HTTP));
             }
-        });
-
-        reviewNotifBtn.setOnClickListener(v -> {
-            Notification notifReview = ReviewNotificationExample.createReviewNotification(getApplicationContext());
-            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
-            notificationManagerCompat.notify(777, notifReview);
         });
 
         toggleDarkMode.setChecked((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);
