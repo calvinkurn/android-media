@@ -927,7 +927,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         resetMarkerState()
         try {
             if (!allMarker.isNullOrEmpty()) {
-                if (cardListPosition == position && !searchPropertiesMap.isNullOrEmpty()) {
+                if (cardListPosition == position && !searchPropertiesMap.isNullOrEmpty() && position < searchPropertiesMap.size) {
                     allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
                     putPriceMarkerOnTop(position)
                     if (cardListPosition == SELECTED_POSITION_INIT) {
@@ -1467,7 +1467,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun putPriceMarkerOnTop(position: Int){
         resetStackPriceMarker()
-        if(!allMarker.isNullOrEmpty() && position != -1){
+        if(!allMarker.isNullOrEmpty() && position != -1 && position < allMarker.size){
             allMarker[position].zIndex = 1.0f
         }
     }
