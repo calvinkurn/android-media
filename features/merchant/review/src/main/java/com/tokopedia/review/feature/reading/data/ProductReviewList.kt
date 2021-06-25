@@ -54,7 +54,7 @@ data class ProductReview(
         val imageAttachments: List<ProductReviewAttachments> = listOf(),
         @SerializedName("likeDislike")
         @Expose
-        val likeDislike: LikeDislike = LikeDislike()
+        var likeDislike: LikeDislike = LikeDislike()
 )
 
 data class ProductReviewResponse(

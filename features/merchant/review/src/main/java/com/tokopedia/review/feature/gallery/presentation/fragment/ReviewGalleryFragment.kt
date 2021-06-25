@@ -174,7 +174,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
 
     private fun observeToggleLikeReviewResult() {
         viewModel.toggleLikeReview.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> onSuccessLikeReview(it.data)
                 is Fail -> onFailLikeReview()
             }
@@ -185,6 +185,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         with(toggleLikeReviewResponse) {
             updateLikeCount(totalLike)
             updateLikeButton(isLiked())
+            updateLikeStatus(likeStatus)
         }
     }
 
@@ -198,6 +199,10 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
 
     private fun updateLikeCount(totalLike: Int) {
         reviewDetail?.setLikeCount(totalLike)
+    }
+
+    private fun updateLikeStatus(likeStatus: Int) {
+        productReview.likeDislike = productReview.likeDislike.copy(likeStatus = likeStatus)
     }
 
     private fun goToReportReview(reviewId: String, shopId: String) {
