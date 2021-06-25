@@ -15,7 +15,12 @@ import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_best_seller_info.view.bottom_separator
 import kotlinx.android.synthetic.main.item_best_seller_info.view.top_separator
 
-class BestSellerInfoViewHolder(val view: View, private val listener: DynamicProductDetailListener) : AbstractViewHolder<BestSellerInfoDataModel>(view) {
+class BestSellerInfoViewHolder(val view: View, private val listener: DynamicProductDetailListener) :
+    AbstractViewHolder<BestSellerInfoDataModel>(view) {
+
+    var bestSellerInfoTitleText: Typography? = view.findViewById(R.id.best_seller_info_title)
+    var bestSellerInfoDescriptionText: Typography? =
+        view.findViewById(R.id.best_seller_info_description)
 
     companion object {
         val LAYOUT = R.layout.item_best_seller_info
@@ -25,7 +30,7 @@ class BestSellerInfoViewHolder(val view: View, private val listener: DynamicProd
         if (element.bestSellerInfoContent != null && element.bestSellerInfoContent?.isVisible == true) {
             itemView.setVisible(true)
             renderContent(element)
-            renderSeparator(element.bestSellerInfoContent?.separator?:"")
+            renderSeparator(element.bestSellerInfoContent?.separator ?: "")
         } else {
             itemView.setVisible(false)
         }
@@ -36,11 +41,8 @@ class BestSellerInfoViewHolder(val view: View, private val listener: DynamicProd
             listener.onImpressComponent(getComponentTrackData(element))
         }
 
-        val bestSellerInfoTitleText = view.findViewById<Typography>(R.id.best_seller_info_title)
-        val bestSellerInfoDescriptionText = view.findViewById<Typography>(R.id.best_seller_info_description)
-
-        bestSellerInfoTitleText.text = element.bestSellerInfoContent?.linkText
-        bestSellerInfoDescriptionText.text = element.bestSellerInfoContent?.content
+        bestSellerInfoTitleText?.text = element.bestSellerInfoContent?.linkText
+        bestSellerInfoDescriptionText?.text = element.bestSellerInfoContent?.content
 
         view.setOnClickListener {
             element.bestSellerInfoContent?.applink?.let {
@@ -54,9 +56,11 @@ class BestSellerInfoViewHolder(val view: View, private val listener: DynamicProd
         bottom_separator.showWithCondition(separator == SEPARATOR_BOTH || separator == SEPARATOR_BOTTOM)
     }
 
-    private fun getComponentTrackData(element: BestSellerInfoDataModel?) = ComponentTrackDataModel(element?.type
+    private fun getComponentTrackData(element: BestSellerInfoDataModel?) = ComponentTrackDataModel(
+        element?.type
             ?: "",
-            element?.name ?: "", adapterPosition + 1)
+        element?.name ?: "", adapterPosition + 1
+    )
 
     private fun View.setVisible(isVisible: Boolean) {
         if (isVisible) {
