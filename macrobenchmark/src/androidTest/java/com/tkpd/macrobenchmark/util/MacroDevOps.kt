@@ -14,7 +14,7 @@ object MacroDevOps {
     }
 
     private fun killProcess(device: UiDevice, packageName: String) {
-        Log.d("Devara", "Killing process $packageName")
+        Log.d("TkpdMacroBenchmark", "Killing process $packageName")
         device.executeShellCommand("am force-stop $packageName")
     }
 }
