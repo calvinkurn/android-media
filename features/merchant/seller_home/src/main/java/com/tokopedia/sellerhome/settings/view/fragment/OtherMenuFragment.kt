@@ -275,6 +275,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         otherMenuViewModel.getShopTotalFollowers()
     }
 
+    override fun onShopBadgeFollowersRefresh() {
+        otherMenuViewModel.getShopBadge()
+        otherMenuViewModel.getShopTotalFollowers()
+    }
+
     override fun onUserInfoRefresh() {
         otherMenuViewModel.getUserShopInfo()
     }
@@ -338,6 +343,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         observeShopBadge()
         observeShopTotalFollowers()
         observeShopBadgeFollowersLoading()
+        observeShopBadgeFollowersError()
         observeShopStatus()
         observeShopOperationalHour()
         observeSaldoBalance()
@@ -395,6 +401,12 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private fun observeShopBadgeFollowersLoading() {
         otherMenuViewModel.shopBadgeFollowersShimmerLiveData.observe(viewLifecycleOwner) {
             otherMenuViewHolder?.setBadgeFollowersLoading(it)
+        }
+    }
+
+    private fun observeShopBadgeFollowersError() {
+        otherMenuViewModel.shopBadgeFollowersErrorLiveData.observe(viewLifecycleOwner) {
+            otherMenuViewHolder?.setBadgeFollowersError(it)
         }
     }
 

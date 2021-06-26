@@ -92,16 +92,25 @@ class OtherMenuViewModel @Inject constructor(
     val isTopAdsAutoTopupLiveData: LiveData<Result<Boolean>>
         get() = _isTopAdsAutoTopupLiveData
 
+    private val _shopBadgeFollowersErrorLiveData = MutableLiveData<Boolean>()
+    val shopBadgeFollowersErrorLiveData: LiveData<Boolean>
+        get() = _shopBadgeFollowersErrorLiveData
     private val _shopBadgeFollowersShimmerLiveData = MediatorLiveData<Boolean>().apply {
         addSource(_shopBadgeLiveData) { state ->
             val shouldShowShimmer = state is SettingResponseState.SettingLoading &&
                     _shopTotalFollowersLiveData.value is SettingResponseState.SettingLoading
+            val shouldShowError = state is SettingResponseState.SettingError &&
+                    _shopTotalFollowersLiveData.value is SettingResponseState.SettingError
             value = shouldShowShimmer
+            _shopBadgeFollowersErrorLiveData.value = shouldShowError
         }
         addSource(_shopTotalFollowersLiveData) { state ->
             val shouldShowShimmer = state is SettingResponseState.SettingLoading &&
                     _shopBadgeLiveData.value is SettingResponseState.SettingLoading
+            val shouldShowError = state is SettingResponseState.SettingError &&
+                    _shopBadgeLiveData.value is SettingResponseState.SettingError
             value = shouldShowShimmer
+            _shopBadgeFollowersErrorLiveData.value = shouldShowError
         }
     }
     val shopBadgeFollowersShimmerLiveData: LiveData<Boolean>

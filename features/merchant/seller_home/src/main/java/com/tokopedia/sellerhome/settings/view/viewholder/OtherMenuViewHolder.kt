@@ -67,6 +67,7 @@ class OtherMenuViewHolder(private val itemView: View,
     private var shopNextButton: AppCompatImageView? = null
 
     private var shopBadgeFollowersShimmer: LinearLayout? = null
+    private var shopBadgeFollowersError: ConstraintLayout? = null
     private var shopBadgeFollowersDot: Typography? = null
     private var shopBadgeImage: AppCompatImageView? = null
     private var shopBadgeShimmer: LoaderTextView? = null
@@ -116,6 +117,7 @@ class OtherMenuViewHolder(private val itemView: View,
             errorLocalLoad = findViewById(R.id.localLoadOthers)
 
             shopBadgeFollowersShimmer = findViewById(R.id.shimmer_sah_other_badge_followers)
+            shopBadgeFollowersError = findViewById(R.id.layout_sah_other_badge_followers_error)
             shopBadgeFollowersDot = findViewById(R.id.dot)
             shopBadgeImage = findViewById(R.id.shopBadges)
             shopBadgeShimmer = findViewById(R.id.shimmer_sah_other_badge)
@@ -229,11 +231,29 @@ class OtherMenuViewHolder(private val itemView: View,
 
     fun setBadgeFollowersLoading(isLoading: Boolean) {
         shopBadgeFollowersShimmer?.showWithCondition(isLoading)
+        if (isLoading) {
+            hideBadgeFollowersLayout()
+            shopBadgeFollowersError?.gone()
+        }
+    }
+
+    fun setBadgeFollowersError(isError: Boolean) {
+        shopBadgeFollowersError?.run {
+            showWithCondition(isError)
+            setOnClickListener {
+                listener.onShopBadgeFollowersRefresh()
+            }
+        }
+        if (isError) {
+            hideBadgeFollowersLayout()
+            shopBadgeFollowersShimmer?.gone()
+        }
     }
 
     fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
         shopBadgeShimmer?.gone()
         shopBadgeErrorLayout?.gone()
+        shopBadgeFollowersDot?.visible()
         shopBadgeImage?.run {
             ImageHandler.LoadImage(this, shopBadgeUiModel.shopBadgeUrl)
             setOnClickListener {
@@ -248,6 +268,7 @@ class OtherMenuViewHolder(private val itemView: View,
         shopBadgeShimmer?.show()
         shopBadgeImage?.gone()
         shopBadgeErrorLayout?.gone()
+        shopBadgeFollowersDot?.visible()
     }
 
     fun setShopBadgeError() {
@@ -259,11 +280,13 @@ class OtherMenuViewHolder(private val itemView: View,
         }
         shopBadgeImage?.gone()
         shopBadgeShimmer?.gone()
+        shopBadgeFollowersDot?.visible()
     }
 
     fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
         shopFollowersShimmer?.gone()
         shopFollowersErrorLayout?.gone()
+        shopBadgeFollowersDot?.visible()
         val shouldShowFollowers = shopTotalFollowersUiModel.shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
         val followersVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
         shopFollowersText?.run {
@@ -281,6 +304,7 @@ class OtherMenuViewHolder(private val itemView: View,
         shopFollowersShimmer?.show()
         shopFollowersText?.gone()
         shopFollowersErrorLayout?.gone()
+        shopBadgeFollowersDot?.visible()
     }
 
     fun setShopTotalFollowersError() {
@@ -292,6 +316,7 @@ class OtherMenuViewHolder(private val itemView: View,
         }
         shopFollowersText?.gone()
         shopFollowersShimmer?.gone()
+        shopBadgeFollowersDot?.visible()
     }
 
     fun setupFreeShippingLayout() {
@@ -320,6 +345,14 @@ class OtherMenuViewHolder(private val itemView: View,
 
         operationalHourShimmer?.gone()
         operationalErrorLayout?.gone()
+    }
+
+    private fun hideBadgeFollowersLayout() {
+        shopBadgeErrorLayout?.gone()
+        shopFollowersErrorLayout?.gone()
+        shopBadgeImage?.gone()
+        shopBadgeFollowersDot?.gone()
+        shopFollowersText?.gone()
     }
 
     private fun setupOperationalHourText(shopOperational: ShopOperationalUiModel) {
@@ -774,6 +807,7 @@ class OtherMenuViewHolder(private val itemView: View,
         fun onFreeShippingClicked()
         fun onShopBadgeRefresh()
         fun onShopTotalFollowersRefresh()
+        fun onShopBadgeFollowersRefresh()
         fun onUserInfoRefresh()
         fun onOperationalHourRefresh()
         fun onSaldoBalanceRefresh()
