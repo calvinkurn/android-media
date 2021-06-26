@@ -605,7 +605,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun showAllLoadingShimmering() {
-        showSettingShopInfoState(SettingResponseState.SettingLoading)
+//        showSettingShopInfoState(SettingResponseState.SettingLoading)
     }
 
     //TODO: Remove this

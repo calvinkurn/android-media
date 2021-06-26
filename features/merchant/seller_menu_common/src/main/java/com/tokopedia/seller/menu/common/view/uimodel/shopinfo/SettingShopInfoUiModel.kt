@@ -9,7 +9,7 @@ import com.tokopedia.user.session.UserSessionInterface
 
 data class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingResponse,
                              private val partialTopAdsInfo: PartialSettingResponse,
-                             private val userSession: UserSessionInterface): SettingResponseState.SettingSuccess() {
+                             private val userSession: UserSessionInterface) {
 
     val partialResponseStatus by lazy {
         Pair(

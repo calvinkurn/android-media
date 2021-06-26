@@ -66,8 +66,7 @@ class OtherMenuViewHolder(private val itemView: View,
     private var shopNameText: Typography? = null
     private var shopNextButton: AppCompatImageView? = null
 
-    private var shopBadgeFollowersGroup: Group? = null
-    private var shopBadgeFollowersShimmer: LoaderTextView? = null
+    private var shopBadgeFollowersShimmer: LinearLayout? = null
     private var shopBadgeFollowersDot: Typography? = null
     private var shopBadgeImage: AppCompatImageView? = null
     private var shopBadgeShimmer: LoaderTextView? = null
@@ -116,7 +115,6 @@ class OtherMenuViewHolder(private val itemView: View,
 
             errorLocalLoad = findViewById(R.id.localLoadOthers)
 
-            shopBadgeFollowersGroup = findViewById(R.id.group_sah_other_badge_followers)
             shopBadgeFollowersShimmer = findViewById(R.id.shimmer_sah_other_badge_followers)
             shopBadgeFollowersDot = findViewById(R.id.dot)
             shopBadgeImage = findViewById(R.id.shopBadges)
@@ -231,19 +229,19 @@ class OtherMenuViewHolder(private val itemView: View,
 
     fun setBadgeFollowersLoading(isLoading: Boolean) {
         shopBadgeFollowersShimmer?.showWithCondition(isLoading)
-        shopBadgeFollowersGroup?.showWithCondition(!isLoading)
     }
 
     fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
+        shopBadgeShimmer?.gone()
+        shopBadgeErrorGroup?.gone()
         shopBadgeImage?.run {
             ImageHandler.LoadImage(this, shopBadgeUiModel.shopBadgeUrl)
             setOnClickListener {
                 listener.onShopBadgeClicked()
                 shopBadgeUiModel.sendSettingShopInfoClickTracking()
             }
+            show()
         }
-        shopBadgeShimmer?.gone()
-        shopBadgeErrorGroup?.gone()
     }
 
     fun setShopBadgeLoading() {
@@ -264,6 +262,8 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
+        shopFollowersShimmer?.gone()
+        shopFollowersErrorGroup?.gone()
         val shouldShowFollowers = shopTotalFollowersUiModel.shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
         val followersVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
         shopFollowersText?.run {
@@ -275,8 +275,6 @@ class OtherMenuViewHolder(private val itemView: View,
             }
             show()
         }
-        shopFollowersShimmer?.gone()
-        shopFollowersErrorGroup?.gone()
     }
 
     fun setShopTotalFollowersLoading() {
@@ -320,8 +318,8 @@ class OtherMenuViewHolder(private val itemView: View,
         setupOperationalHourClick(shopOperationalStatus, shopOperational)
         setupOperationalHourImage(shopOperational)
 
-        operationalHourShimmer?.hide()
-        operationalErrorGroup?.hide()
+        operationalHourShimmer?.gone()
+        operationalErrorGroup?.gone()
     }
 
     private fun setupOperationalHourText(shopOperational: ShopOperationalUiModel) {
@@ -365,6 +363,7 @@ class OtherMenuViewHolder(private val itemView: View,
     fun showOperationalHourLayoutLoading() {
         operationalHourShimmer?.show()
         operationalErrorGroup?.gone()
+        operationalHourText?.gone()
         operationalHourImage?.gone()
         operationalHourLabel?.gone()
     }
@@ -377,6 +376,7 @@ class OtherMenuViewHolder(private val itemView: View,
             }
         }
         operationalHourShimmer?.gone()
+        operationalHourText?.gone()
         operationalHourImage?.gone()
         operationalHourLabel?.gone()
     }
@@ -459,6 +459,8 @@ class OtherMenuViewHolder(private val itemView: View,
         topAdsLayout?.sendSettingShopInfoImpressionTracking(topadsBalanceUiModel, trackingListener::sendImpressionDataIris)
         setupKreditTopadsBalanceText(topadsBalanceUiModel)
         topAdsBalanceText?.show()
+        topAdsShimmer?.gone()
+        topAdsErrorGroup?.gone()
     }
 
     private fun setupKreditTopadsBalanceText(topadsBalanceUiModel: TopadsBalanceUiModel) {

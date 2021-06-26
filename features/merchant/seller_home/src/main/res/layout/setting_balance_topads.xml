@@ -63,12 +63,11 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmer_sah_other_topads"
         android:layout_width="@dimen/setting_zero_dp"
-        android:layout_height="@dimen/setting_zero_dp"
+        android:layout_height="@dimen/layout_lvl2"
         android:gravity="center_vertical"
         android:visibility="gone"
         app:corners="@integer/setting_shimmer_radius"
         app:layout_constraintWidth_percent="0.38"
-        app:layout_constraintHeight_percent="0.3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline_sah_other_topads_right"

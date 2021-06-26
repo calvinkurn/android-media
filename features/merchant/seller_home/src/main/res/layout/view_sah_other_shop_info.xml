@@ -22,6 +22,15 @@
         app:layout_constraintBottom_toBottomOf="@id/shopInfoView"/>
 
     <View
+        android:id="@+id/middleRefer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sah_dimen_1dp"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="@id/shopInfoView"
+        app:layout_constraintBottom_toBottomOf="@id/shopInfoView"/>
+
+    <View
         android:id="@+id/outerCircle"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -62,26 +71,10 @@
         app:layout_constraintTop_toTopOf="@id/shopInfoView"
         app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
         app:layout_constraintEnd_toEndOf="@id/settingShopGuidelineRight"
-        app:layout_constraintBottom_toBottomOf="@id/settingMiddleGuideline"
+        app:layout_constraintBottom_toBottomOf="@id/middleRefer"
         app:typographyType="heading_3"
         app:typographyWeight="bold"
         tools:text="Adeedust Naiki"/>
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_sah_other_badge_followers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="shopBadges, shimmer_sah_other_badge, dot, shopFollowers, shimmer_sah_other_followers"
-        tools:visibility="gone"/>
-
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/shimmer_sah_other_badge_followers"
-        android:layout_width="@dimen/layout_lvl9"
-        android:layout_height="@dimen/layout_lvl2"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
-        app:layout_constraintBottom_toTopOf="@id/bottomRefer"
-        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"/>
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_sah_other_badge"
@@ -92,7 +85,7 @@
         tools:visibility="invisible"
         tools:layout_width="@dimen/layout_lvl8"
         tools:layout_height="@dimen/layout_lvl2"
-        tools:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
+        tools:layout_constraintTop_toBottomOf="@id/middleRefer"
         tools:layout_constraintBottom_toTopOf="@id/bottomRefer"
         tools:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"/>
 
@@ -100,7 +93,7 @@
         android:id="@+id/shopBadges"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/setting_shop_badge_height"
-        app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
+        app:layout_constraintTop_toBottomOf="@id/middleRefer"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
         app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
         tools:src="@tools:sample/avatars"
@@ -118,7 +111,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/setting_shop_badge_height"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
+        app:layout_constraintTop_toBottomOf="@id/middleRefer"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
         app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
         app:icon_name="RELOAD"/>
@@ -131,7 +124,7 @@
         android:gravity="center_vertical"
         android:visibility="gone"
         app:typographyType="body_3"
-        app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
+        app:layout_constraintTop_toBottomOf="@id/middleRefer"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
         app:layout_constraintStart_toEndOf="@id/icon_sah_other_badge_reload"/>
 
@@ -139,32 +132,35 @@
         android:id="@+id/shimmer_sah_other_badge"
         android:layout_width="@dimen/layout_lvl8"
         android:layout_height="@dimen/layout_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
+        android:visibility="gone"
+        app:corners="@integer/setting_shimmer_radius"
+        app:layout_constraintTop_toBottomOf="@id/middleRefer"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
-        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"/>
+        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/dot"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_68"
         android:gravity="center_vertical"
         android:text="@string/dot_string"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
-        app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
+        app:layout_constraintTop_toBottomOf="@id/middleRefer"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
         app:layout_constraintStart_toEndOf="@id/barrier_sah_other_badge"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shopFollowers"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_68"
         android:gravity="center_vertical"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
+        app:layout_constraintTop_toBottomOf="@id/middleRefer"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
         app:layout_constraintStart_toEndOf="@id/dot"
         tools:text="99 Followers"/>
@@ -181,7 +177,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/setting_shop_badge_height"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
+        app:layout_constraintTop_toBottomOf="@id/middleRefer"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
         app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
         app:icon_name="RELOAD"/>
@@ -194,7 +190,7 @@
         android:gravity="center_vertical"
         android:visibility="gone"
         app:typographyType="body_3"
-        app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
+        app:layout_constraintTop_toBottomOf="@id/middleRefer"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
         app:layout_constraintStart_toEndOf="@id/dot"/>
 
@@ -202,9 +198,32 @@
         android:id="@+id/shimmer_sah_other_followers"
         android:layout_width="@dimen/layout_lvl8"
         android:layout_height="@dimen/layout_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
+        android:visibility="gone"
+        app:corners="@integer/setting_shimmer_radius"
+        app:layout_constraintTop_toBottomOf="@id/middleRefer"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
-        app:layout_constraintStart_toEndOf="@id/dot"/>
+        app:layout_constraintStart_toEndOf="@id/dot"
+        tools:visibility="visible"/>
+
+    <LinearLayout
+        android:id="@+id/shimmer_sah_other_badge_followers"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/layout_lvl1"
+        android:background="@color/Neutral_N0"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/middleRefer"
+        app:layout_constraintBottom_toTopOf="@id/bottomRefer"
+        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
+        app:layout_constraintEnd_toStartOf="@id/settingShopGuidelineRight">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl4"
+            app:corners="@integer/setting_shimmer_radius"/>
+
+    </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/settingShopNext"
@@ -239,14 +258,5 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.3"/>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/settingMiddleGuideline"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        app:layout_constraintVertical_bias="0.3"
-        app:layout_constraintTop_toTopOf="@id/shopInfoView"
-        app:layout_constraintBottom_toBottomOf="@id/shopInfoView"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

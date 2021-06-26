@@ -17,6 +17,7 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:textColor="@color/Unify_N700_96"
+            android:text="@string/setting_balance"
             app:typographyType="body_2"
             app:layout_constraintStart_toStartOf="@id/guidelineVerticalLeft"
             tools:text="Saldo"/>
@@ -68,12 +69,11 @@
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/shimmeringBalanceValue"
             android:layout_width="@dimen/setting_zero_dp"
-            android:layout_height="@dimen/setting_zero_dp"
+            android:layout_height="@dimen/layout_lvl2"
             android:gravity="center_vertical"
             android:visibility="gone"
             app:corners="@integer/setting_shimmer_radius"
             app:layout_constraintWidth_percent="0.38"
-            app:layout_constraintHeight_percent="0.3"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"

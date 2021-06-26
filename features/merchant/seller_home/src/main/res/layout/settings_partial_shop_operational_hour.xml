@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/layout_lvl6"
     android:paddingTop="@dimen/layout_lvl1"
     android:paddingBottom="@dimen/spacing_lvl3">
 
@@ -13,6 +13,7 @@
         android:layout_height="match_parent"
         android:text="@string/settings_shop_status_label"
         android:textColor="@color/Unify_N700_96"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/guidelineLeft"
         app:layout_constraintTop_toTopOf="parent"
@@ -85,12 +86,11 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmer_sah_other_shop_operational"
         android:layout_width="@dimen/setting_zero_dp"
-        android:layout_height="@dimen/setting_zero_dp"
+        android:layout_height="@dimen/layout_lvl2"
         android:gravity="center_vertical"
         android:visibility="visible"
         app:corners="@integer/setting_shimmer_radius"
         app:layout_constraintWidth_percent="0.38"
-        app:layout_constraintHeight_percent="0.3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"/>
