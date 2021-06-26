@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.google.android.material.imageview.ShapeableImageView
@@ -61,6 +62,8 @@ class OtherMenuViewHolder(private val itemView: View,
         private const val TAB_PM_PRO = "pm_pro"
     }
 
+    private var successHeaderGroup: Group? = null
+
     private var shopAvatarImage: ImageUnify? = null
     private var shopNameText: Typography? = null
     private var shopNextButton: AppCompatImageView? = null
@@ -75,7 +78,7 @@ class OtherMenuViewHolder(private val itemView: View,
     private var shopFollowersShimmer: LoaderTextView? = null
     private var shopFollowersErrorLayout: ConstraintLayout? = null
 
-    private var errorLocalLoad: LocalLoad? = null
+    private var allErrorLocalLoad: LocalLoad? = null
 
     private var shopStatusContainer: LinearLayout? = null
 
@@ -109,11 +112,13 @@ class OtherMenuViewHolder(private val itemView: View,
 
     private fun initLayoutComponents() {
         itemView.run {
+            successHeaderGroup = findViewById(R.id.group_sah_other_success)
+
             shopAvatarImage = findViewById(R.id.shopImage)
             shopNameText = findViewById(R.id.shopName)
             shopNextButton = findViewById(R.id.settingShopNext)
 
-            errorLocalLoad = findViewById(R.id.localLoadOthers)
+            allErrorLocalLoad = findViewById(R.id.localLoadOthers)
 
             shopBadgeFollowersShimmer = findViewById(R.id.shimmer_sah_other_badge_followers)
             shopBadgeFollowersError = findViewById(R.id.layout_sah_other_badge_followers_error)
@@ -556,6 +561,16 @@ class OtherMenuViewHolder(private val itemView: View,
                 addView(view)
             }
         }
+    }
+
+    fun setAllErrorLocalLoad(isAllError: Boolean) {
+        allErrorLocalLoad?.run {
+            if (isAllError) {
+                setup()
+            }
+            showWithCondition(isAllError)
+        }
+        successHeaderGroup?.showWithCondition(!isAllError)
     }
 
     private fun goToPowerMerchantSubscribe(tab: String) {

@@ -234,6 +234,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/Neutral_N0"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/middleRefer"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
         app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"

@@ -1,59 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_sah_other_success"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="shopStatus, freeShippingLayout, divider_sah_other_free_shipping, shopOperationalHour, divider_sah_other_operational, layout_sah_other_saldo, layout_sah_other_topads"/>
 
     <include
+        layout="@layout/view_sah_other_shop_info"
         android:id="@+id/successShopInfoLayout"
-        layout="@layout/view_sah_other_shop_info"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <include
-        layout="@layout/setting_partial_others_local_load"/>
+        layout="@layout/setting_partial_others_local_load"
+        android:id="@+id/local_load_sah_others"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/successShopInfoLayout"/>
 
     <LinearLayout
         android:id="@+id/shopStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        app:layout_constraintTop_toBottomOf="@id/local_load_sah_others"
         tools:layout_height="@dimen/layout_lvl6"
         tools:background="@drawable/bg_other_rounded"
-        android:layout_marginTop="@dimen/layout_lvl1"
         tools:layout_marginHorizontal="@dimen/layout_lvl2"/>
 
     <include
-        android:id="@+id/freeShippingLayout"
-        android:visibility="gone"
         layout="@layout/setting_partial_free_shipping"
+        android:id="@+id/freeShippingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/shopStatus"
         tools:visibility="visible"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_sah_other_free_shipping"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/setting_divider_thin"/>
+        android:layout_height="@dimen/setting_divider_thin"
+        app:layout_constraintTop_toBottomOf="@id/freeShippingLayout"/>
 
     <include
+        layout="@layout/settings_partial_shop_operational_hour"
         android:id="@+id/shopOperationalHour"
-        layout="@layout/settings_partial_shop_operational_hour" />
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl6"
+        app:layout_constraintTop_toBottomOf="@id/divider_sah_other_free_shipping"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_sah_other_operational"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/setting_divider_thin"/>
+        android:layout_height="@dimen/setting_divider_thin"
+        app:layout_constraintTop_toBottomOf="@id/shopOperationalHour"/>
 
     <include
-        layout="@layout/setting_partial_others_local_load"/>
-
-    <include
+        layout="@layout/setting_balance"
         android:id="@+id/layout_sah_other_saldo"
-        layout="@layout/setting_balance"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/divider_sah_other_operational"/>
 
     <include
+        layout="@layout/setting_balance_topads"
         android:id="@+id/layout_sah_other_topads"
-        layout="@layout/setting_balance_topads"/>
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/setting_balance_height"
+        app:layout_constraintTop_toBottomOf="@id/layout_sah_other_saldo"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
-        android:layout_height="@dimen/setting_divider_thick"/>
+        android:layout_height="@dimen/setting_divider_thick"
+        app:layout_constraintTop_toBottomOf="@id/layout_sah_other_topads"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -37,8 +36,6 @@ import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.*
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.BalanceUiModel
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.StatusbarHelper
@@ -275,8 +272,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onShopBadgeFollowersRefresh() {
-        otherMenuViewModel.getShopBadge()
-        otherMenuViewModel.getShopTotalFollowers()
+        otherMenuViewModel.getShopBadgeAndFollowers()
     }
 
     override fun onUserInfoRefresh() {
@@ -387,7 +383,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun observeIsAllError() {
         otherMenuViewModel.shouldShowAllError.observe(viewLifecycleOwner) {
-            // Todo: Show local load and error view
+            otherMenuViewHolder?.setAllErrorLocalLoad(it)
         }
     }
 

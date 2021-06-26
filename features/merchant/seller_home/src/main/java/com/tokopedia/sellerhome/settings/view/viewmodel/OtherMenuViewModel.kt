@@ -16,11 +16,9 @@ import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.domain.usecase.*
-import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.BalanceType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
-import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalUiModel
@@ -37,7 +35,6 @@ import javax.inject.Inject
 
 class OtherMenuViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatchers,
-        private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
         private val getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase,
         private val getShopOperationalUseCase: GetShopOperationalUseCase,
         private val getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase,
@@ -151,7 +148,7 @@ class OtherMenuViewModel @Inject constructor(
         get() = _shouldShowAllError
     private val _shouldShowMultipleErrorToaster = MediatorLiveData<Boolean>().apply {
         addSource(_errorStateMap) { map ->
-            val errorCounts = map.count { !it.value }
+            val errorCounts = map.count { it.value }
             if (errorCounts < map.count()) {
                 value = errorCounts >= 2
                 _shouldShowAllError.value = false
@@ -215,6 +212,15 @@ class OtherMenuViewModel @Inject constructor(
 
             _isFreeShippingActive.value = isFreeShippingActive
         }){}
+    }
+
+    fun getShopBadgeAndFollowers() {
+        if (_shouldShowAllError.value == true) {
+            getAllShopInfoData()
+        } else {
+            getShopBadge()
+            getShopTotalFollowers()
+        }
     }
 
     fun getShopBadge() {
