@@ -28,37 +28,38 @@
         app:layout_constraintTop_toTopOf="@id/tv_sah_other_topads_title"
         app:layout_constraintBottom_toBottomOf="@id/tv_sah_other_topads_title"/>
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_sah_other_topads_failed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="icon_sah_other_topads_failed, tv_sah_other_topads_failed"
-        tools:visibility="gone"/>
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/icon_sah_other_topads_failed"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_sah_other_topads_failed"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:visibility="gone"
-        android:layout_marginVertical="@dimen/layout_lvl1"
-        app:icon_name="RELOAD"
-        app:layout_constraintEnd_toStartOf="@id/tv_sah_other_topads_failed"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_sah_other_topads_failed"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:gravity="center_vertical"
-        android:text="@string/setting_other_failed_to_load"
-        android:textColor="@color/Unify_N700_96"
-        android:visibility="gone"
-        app:typographyType="heading_5"
-        app:typographyWeight="bold"
         app:layout_constraintEnd_toEndOf="@id/guideline_sah_other_topads_right"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_sah_other_topads_failed"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginVertical="@dimen/layout_lvl1"
+            app:icon_name="RELOAD"
+            app:layout_constraintEnd_toStartOf="@id/tv_sah_other_topads_failed"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_sah_other_topads_failed"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:gravity="center_vertical"
+            android:text="@string/setting_other_failed_to_load"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmer_sah_other_topads"

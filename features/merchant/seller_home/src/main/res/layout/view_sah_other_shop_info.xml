@@ -81,7 +81,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="right"
-        app:constraint_referenced_ids="shopBadges, shimmer_sah_other_badge, group_sah_other_badge_error"
+        app:constraint_referenced_ids="shopBadges, shimmer_sah_other_badge, layout_sah_other_badge_error"
         tools:visibility="invisible"
         tools:layout_width="@dimen/layout_lvl8"
         tools:layout_height="@dimen/layout_lvl2"
@@ -99,34 +99,36 @@
         tools:src="@tools:sample/avatars"
         tools:layout_width="@dimen/layout_lvl3"/>
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_sah_other_badge_error"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_sah_other_badge_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="icon_sah_other_badge_reload, tv_sah_other_badge_reload"
-        tools:visibility="gone"/>
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/icon_sah_other_badge_reload"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/setting_shop_badge_height"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/middleRefer"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
-        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
-        app:icon_name="RELOAD"/>
+        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_sah_other_badge_reload"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:text="@string/setting_other_failed_to_load"
-        android:gravity="center_vertical"
-        android:visibility="gone"
-        app:typographyType="body_3"
-        app:layout_constraintTop_toBottomOf="@id/middleRefer"
-        app:layout_constraintBottom_toTopOf="@id/bottomRefer"
-        app:layout_constraintStart_toEndOf="@id/icon_sah_other_badge_reload"/>
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_sah_other_badge_reload"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/setting_shop_badge_height"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:icon_name="RELOAD"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_sah_other_badge_reload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_other_failed_to_load"
+            android:gravity="center_vertical"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/icon_sah_other_badge_reload"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmer_sah_other_badge"
@@ -165,34 +167,36 @@
         app:layout_constraintStart_toEndOf="@id/dot"
         tools:text="99 Followers"/>
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_sah_other_followers_error"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_sah_other_followers_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="icon_sah_other_followers_reload, tv_sah_other_followers_reload"
-        tools:visibility="gone"/>
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/icon_sah_other_followers_reload"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/setting_shop_badge_height"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/middleRefer"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
-        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
-        app:icon_name="RELOAD"/>
+        app:layout_constraintStart_toEndOf="@id/dot">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_sah_other_followers_reload"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:text="@string/setting_other_failed_to_load"
-        android:gravity="center_vertical"
-        android:visibility="gone"
-        app:typographyType="body_3"
-        app:layout_constraintTop_toBottomOf="@id/middleRefer"
-        app:layout_constraintBottom_toTopOf="@id/bottomRefer"
-        app:layout_constraintStart_toEndOf="@id/dot"/>
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_sah_other_followers_reload"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/setting_shop_badge_height"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:icon_name="RELOAD"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_sah_other_followers_reload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_other_failed_to_load"
+            android:gravity="center_vertical"
+            app:typographyType="body_3"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/icon_sah_other_followers_reload"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmer_sah_other_followers"

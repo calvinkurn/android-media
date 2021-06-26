@@ -70,10 +70,10 @@ class OtherMenuViewHolder(private val itemView: View,
     private var shopBadgeFollowersDot: Typography? = null
     private var shopBadgeImage: AppCompatImageView? = null
     private var shopBadgeShimmer: LoaderTextView? = null
-    private var shopBadgeErrorGroup: Group? = null
+    private var shopBadgeErrorLayout: ConstraintLayout? = null
     private var shopFollowersText: Typography? = null
     private var shopFollowersShimmer: LoaderTextView? = null
-    private var shopFollowersErrorGroup: Group? = null
+    private var shopFollowersErrorLayout: ConstraintLayout? = null
 
     private var errorLocalLoad: LocalLoad? = null
 
@@ -86,18 +86,18 @@ class OtherMenuViewHolder(private val itemView: View,
     private var operationalHourLabel: Label? = null
     private var operationalHourImage: ImageView? = null
     private var operationalHourShimmer: LoaderTextView? = null
-    private var operationalErrorGroup: Group? = null
+    private var operationalErrorLayout: ConstraintLayout? = null
 
     private var saldoLayout: LinearLayout? = null
     private var saldoShimmer: LoaderTextView? = null
     private var saldoBalanceText: Typography? = null
-    private var saldoErrorGroup: Group? = null
+    private var saldoErrorLayout: ConstraintLayout? = null
 
     private var topAdsLayout: ConstraintLayout? = null
     private var topAdsShimmer: LoaderTextView? = null
     private var topAdsBalanceText: Typography? = null
     private var topAdsTooltipImage: AppCompatImageView? = null
-    private var topAdsErrorGroup: Group? = null
+    private var topAdsErrorLayout: ConstraintLayout? = null
 
     fun setupInitialLayout() {
         initLayoutComponents()
@@ -119,10 +119,10 @@ class OtherMenuViewHolder(private val itemView: View,
             shopBadgeFollowersDot = findViewById(R.id.dot)
             shopBadgeImage = findViewById(R.id.shopBadges)
             shopBadgeShimmer = findViewById(R.id.shimmer_sah_other_badge)
-            shopBadgeErrorGroup = findViewById(R.id.group_sah_other_badge_error)
+            shopBadgeErrorLayout = findViewById(R.id.layout_sah_other_badge_error)
             shopFollowersText = findViewById(R.id.shopFollowers)
             shopFollowersShimmer = findViewById(R.id.shimmer_sah_other_followers)
-            shopFollowersErrorGroup = findViewById(R.id.group_sah_other_followers_error)
+            shopFollowersErrorLayout = findViewById(R.id.layout_sah_other_followers_error)
 
             shopStatusContainer = findViewById(R.id.shopStatus)
 
@@ -133,18 +133,18 @@ class OtherMenuViewHolder(private val itemView: View,
             operationalHourLabel = findViewById(R.id.labelShopStatus)
             operationalHourImage = findViewById(R.id.imageOperationalHour)
             operationalHourShimmer = findViewById(R.id.shimmer_sah_other_shop_operational)
-            operationalErrorGroup = findViewById(R.id.group_sah_other_operational_failed)
+            operationalErrorLayout = findViewById(R.id.layout_sah_other_operational_failed)
 
             saldoLayout = findViewById(R.id.layout_sah_other_saldo)
             saldoShimmer = findViewById(R.id.shimmeringBalanceValue)
             saldoBalanceText = findViewById(R.id.balanceValue)
-            saldoErrorGroup = findViewById(R.id.group_shc_balance_failed)
+            saldoErrorLayout = findViewById(R.id.layout_shc_other_balance_failed)
 
             topAdsLayout = findViewById(R.id.layout_sah_other_topads)
             topAdsShimmer = findViewById(R.id.shimmer_sah_other_topads)
             topAdsBalanceText = findViewById(R.id.tv_sah_other_topads_balance)
             topAdsTooltipImage = findViewById(R.id.iv_sah_other_topads_tooltip)
-            topAdsErrorGroup = findViewById(R.id.group_sah_other_topads_failed)
+            topAdsErrorLayout = findViewById(R.id.layout_sah_other_topads_failed)
         }
     }
 
@@ -233,7 +233,7 @@ class OtherMenuViewHolder(private val itemView: View,
 
     fun setShopBadge(shopBadgeUiModel: ShopBadgeUiModel) {
         shopBadgeShimmer?.gone()
-        shopBadgeErrorGroup?.gone()
+        shopBadgeErrorLayout?.gone()
         shopBadgeImage?.run {
             ImageHandler.LoadImage(this, shopBadgeUiModel.shopBadgeUrl)
             setOnClickListener {
@@ -247,11 +247,11 @@ class OtherMenuViewHolder(private val itemView: View,
     fun setShopBadgeLoading() {
         shopBadgeShimmer?.show()
         shopBadgeImage?.gone()
-        shopBadgeErrorGroup?.gone()
+        shopBadgeErrorLayout?.gone()
     }
 
     fun setShopBadgeError() {
-        shopBadgeErrorGroup?.run {
+        shopBadgeErrorLayout?.run {
             show()
             setOnClickListener {
                 listener.onShopBadgeRefresh()
@@ -263,7 +263,7 @@ class OtherMenuViewHolder(private val itemView: View,
 
     fun setShopTotalFollowers(shopTotalFollowersUiModel: ShopFollowersUiModel) {
         shopFollowersShimmer?.gone()
-        shopFollowersErrorGroup?.gone()
+        shopFollowersErrorLayout?.gone()
         val shouldShowFollowers = shopTotalFollowersUiModel.shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
         val followersVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
         shopFollowersText?.run {
@@ -280,11 +280,11 @@ class OtherMenuViewHolder(private val itemView: View,
     fun setShopTotalFollowersLoading() {
         shopFollowersShimmer?.show()
         shopFollowersText?.gone()
-        shopFollowersErrorGroup?.gone()
+        shopFollowersErrorLayout?.gone()
     }
 
     fun setShopTotalFollowersError() {
-        shopFollowersErrorGroup?.run {
+        shopFollowersErrorLayout?.run {
             show()
             setOnClickListener {
                 listener.onShopTotalFollowersRefresh()
@@ -319,7 +319,7 @@ class OtherMenuViewHolder(private val itemView: View,
         setupOperationalHourImage(shopOperational)
 
         operationalHourShimmer?.gone()
-        operationalErrorGroup?.gone()
+        operationalErrorLayout?.gone()
     }
 
     private fun setupOperationalHourText(shopOperational: ShopOperationalUiModel) {
@@ -362,14 +362,14 @@ class OtherMenuViewHolder(private val itemView: View,
 
     fun showOperationalHourLayoutLoading() {
         operationalHourShimmer?.show()
-        operationalErrorGroup?.gone()
+        operationalErrorLayout?.gone()
         operationalHourText?.gone()
         operationalHourImage?.gone()
         operationalHourLabel?.gone()
     }
 
     fun showOperationalHourLayoutError() {
-        operationalErrorGroup?.run {
+        operationalErrorLayout?.run {
             show()
             setOnClickListener {
                 listener.onOperationalHourRefresh()
@@ -434,18 +434,18 @@ class OtherMenuViewHolder(private val itemView: View,
             show()
         }
         saldoShimmer?.gone()
-        saldoErrorGroup?.gone()
+        saldoErrorLayout?.gone()
         saldoLayout?.sendSettingShopInfoImpressionTracking(saldoBalanceUiModel, trackingListener::sendImpressionDataIris)
     }
 
     fun setSaldoBalanceLoading() {
         saldoShimmer?.show()
         saldoBalanceText?.gone()
-        saldoErrorGroup?.gone()
+        saldoErrorLayout?.gone()
     }
 
     fun setSaldoBalanceError() {
-        saldoErrorGroup?.run {
+        saldoErrorLayout?.run {
             show()
             setOnClickListener {
                 listener.onSaldoBalanceRefresh()
@@ -460,7 +460,7 @@ class OtherMenuViewHolder(private val itemView: View,
         setupKreditTopadsBalanceText(topadsBalanceUiModel)
         topAdsBalanceText?.show()
         topAdsShimmer?.gone()
-        topAdsErrorGroup?.gone()
+        topAdsErrorLayout?.gone()
     }
 
     private fun setupKreditTopadsBalanceText(topadsBalanceUiModel: TopadsBalanceUiModel) {
@@ -495,20 +495,18 @@ class OtherMenuViewHolder(private val itemView: View,
 
     fun setKreditTopadsBalanceLoading() {
         topAdsShimmer?.show()
-        topAdsTooltipImage?.gone()
         topAdsBalanceText?.gone()
-        topAdsErrorGroup?.gone()
+        topAdsErrorLayout?.gone()
     }
 
     fun setKreditTopadsBalanceError() {
-        topAdsErrorGroup?.run {
+        topAdsErrorLayout?.run {
             show()
             setOnClickListener {
                 listener.onKreditTopAdsRefresh()
             }
         }
         topAdsShimmer?.gone()
-        topAdsTooltipImage?.gone()
         topAdsBalanceText?.gone()
     }
 
