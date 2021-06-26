@@ -14,6 +14,7 @@ import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.domain.usecase.*
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.BalanceType
@@ -53,7 +54,7 @@ class OtherMenuViewModel @Inject constructor(
     companion object {
         private const val DELAY_TIME = 5000L
 
-        private const val CUSTOM_ERROR_EXCEPTION_MESSAGE = "both shop info and topads response are failed"
+        private const val INVALID_FOLLOWERS_ERROR_MESSAGE =  "Shop followers value is invalid"
 
         private const val ERROR_BADGE = 1
         private const val ERROR_FOLLOWERS = 2
@@ -238,7 +239,13 @@ class OtherMenuViewModel @Inject constructor(
                 block = {
                     val totalFollowers = withContext(dispatcher.io) {
                         getShopTotalFollowersUseCase.params = GetShopTotalFollowersUseCase.createRequestParams(userSession.shopId.toIntOrZero())
-                        getShopTotalFollowersUseCase.executeOnBackground()
+                        getShopTotalFollowersUseCase.executeOnBackground().let { shopFollowers ->
+                            if (shopFollowers == Constant.INVALID_NUMBER_OF_FOLLOWERS) {
+                                throw MessageErrorException(INVALID_FOLLOWERS_ERROR_MESSAGE)
+                            } else {
+                                shopFollowers
+                            }
+                        }
                     }
                     _shopTotalFollowersLiveData.value = SettingResponseState.SettingSuccess(ShopFollowersUiModel(totalFollowers))
                 },
@@ -314,7 +321,7 @@ class OtherMenuViewModel @Inject constructor(
         )
     }
 
-    fun getIsTopAdsAutoTopup() {
+    private fun getIsTopAdsAutoTopup() {
         launchCatchError(
                 block = {
                     val isTopAdsAutoTopup = withContext(dispatcher.io) {
@@ -333,6 +340,7 @@ class OtherMenuViewModel @Inject constructor(
         getShopBadge()
         getShopTotalFollowers()
         getUserShopInfo()
+        getFreeShippingStatus()
         getShopOperational()
         getBalanceInfo()
         getKreditTopAds()

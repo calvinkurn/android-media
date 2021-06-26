@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.google.android.material.imageview.ShapeableImageView
@@ -147,85 +146,6 @@ class OtherMenuViewHolder(private val itemView: View,
             topAdsBalanceText = findViewById(R.id.tv_sah_other_topads_balance)
             topAdsTooltipImage = findViewById(R.id.iv_sah_other_topads_tooltip)
             topAdsErrorLayout = findViewById(R.id.layout_sah_other_topads_failed)
-        }
-    }
-
-    fun onSuccessGetSettingShopInfoData(uiModel: SettingShopInfoUiModel) {
-        with(uiModel) {
-            with(itemView) {
-                when {
-                    partialResponseStatus.first && partialResponseStatus.second -> {
-                        setupSuccessLayout()
-                        shopStatusUiModel?.let { setShopStatusType(it) }
-                        saldoBalanceUiModel?.let { setSaldoBalance(it) }
-                        topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
-                        shopBadgeUiModel?.let { setShopBadge(it) }
-                        shopFollowersUiModel?.let {
-                            setShopTotalFollowers(it)
-                            setDotVisibility(it.shopFollowers)
-                        }
-
-                        findViewById<LocalLoad>(R.id.localLoadOthers)?.gone()
-                        findViewById<LinearLayout>(R.id.shopStatus)?.visible()
-                        findViewById<LinearLayout>(R.id.layout_sah_other_saldo)?.visible()
-                        findViewById<LinearLayout>(R.id.layout_sah_other_topads)?.visible()
-                    }
-                    partialResponseStatus.first -> {
-                        setupSuccessLayout()
-                        shopStatusUiModel?.let { setShopStatusType(it) }
-                        shopBadgeUiModel?.let { setShopBadge(it) }
-                        shopFollowersUiModel?.let {
-                            setShopTotalFollowers(it)
-                            setDotVisibility(it.shopFollowers)
-                        }
-
-                        findViewById<LinearLayout>(R.id.shopStatus)?.visible()
-                        findViewById<LocalLoad>(R.id.localLoadOthers)?.run {
-                            setup()
-                            visible()
-                        }
-                        findViewById<LinearLayout>(R.id.layout_sah_other_saldo)?.gone()
-                        findViewById<LinearLayout>(R.id.layout_sah_other_topads)?.gone()
-                    }
-                    partialResponseStatus.second -> {
-                        setupSuccessLayout()
-                        saldoBalanceUiModel?.let { setSaldoBalance(it) }
-                        topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
-
-                        findViewById<Typography>(R.id.dot)?.gone()
-                        findViewById<LinearLayout>(R.id.shopStatus)?.gone()
-                        findViewById<LocalLoad>(R.id.localLoadOthers)?.run {
-                            setup()
-                            visible()
-                        }
-                        findViewById<LinearLayout>(R.id.layout_sah_other_saldo)?.visible()
-                        findViewById<LinearLayout>(R.id.layout_sah_other_topads)?.visible()
-                    }
-                    else -> {
-                        onErrorGetSettingShopInfoData()
-                    }
-                }
-            }
-        }
-    }
-
-    fun onLoadingGetSettingShopInfoData() {
-        val loadingLayout = LayoutInflater.from(context).inflate(R.layout.setting_partial_shop_info_loading, null, false)
-        (itemView.shopInfoLayout as? LinearLayout)?.run {
-            removeAllViews()
-            addView(loadingLayout)
-        }
-    }
-
-    fun onErrorGetSettingShopInfoData() {
-        val errorLayout = LayoutInflater.from(context).inflate(R.layout.setting_partial_shop_info_error, null, false)
-        errorLayout?.run {
-            findViewById<LocalLoad>(R.id.settingLocalLoad)?.setup()
-            findViewById<Typography>(R.id.dot)?.gone()
-        }
-        (itemView.shopInfoLayout as? LinearLayout)?.run {
-            removeAllViews()
-            addView(errorLayout)
         }
     }
 
@@ -412,13 +332,6 @@ class OtherMenuViewHolder(private val itemView: View,
         operationalHourText?.gone()
         operationalHourImage?.gone()
         operationalHourLabel?.gone()
-    }
-
-    private fun setDotVisibility(shopFollowers: Long) {
-        val shouldShowFollowers = shopFollowers != Constant.INVALID_NUMBER_OF_FOLLOWERS
-        val dotVisibility = if (shouldShowFollowers) View.VISIBLE else View.GONE
-        val tvDot = itemView.shopInfoLayout.findViewById<Typography>(R.id.dot)
-        tvDot?.visibility = dotVisibility
     }
 
     private fun setupSuccessLayout() {

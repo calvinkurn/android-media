@@ -209,7 +209,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onRefreshShopInfo() {
-        showAllLoadingShimmering()
         otherMenuViewModel.getAllSettingShopInfo()
         otherMenuViewModel.getShopPeriodType()
     }
@@ -627,34 +626,18 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun getAllShopInfoData() {
-        showAllLoadingShimmering()
         otherMenuViewModel.getAllSettingShopInfo()
     }
 
-    private fun showAllLoadingShimmering() {
-//        showSettingShopInfoState(SettingResponseState.SettingLoading)
-    }
-
-    //TODO: Remove this
-    private fun showSettingShopInfoState(settingResponseState: SettingResponseState<*>) {
-        when(settingResponseState) {
-            is SettingResponseState.SettingSuccess -> {
-
-            }
-            is SettingResponseState.SettingLoading -> otherMenuViewHolder?.onLoadingGetSettingShopInfoData()
-            is SettingResponseState.SettingError -> {
-                val canShowToaster = currentFragmentType == FragmentType.OTHER && canShowErrorToaster
-                if (canShowToaster) {
-                    view?.showToasterError(resources.getString(R.string.setting_toaster_error_message))
-                }
-                otherMenuViewHolder?.onErrorGetSettingShopInfoData()
-            }
-        }
-    }
-
     private fun retryFetchAfterError() {
-        showAllLoadingShimmering()
         otherMenuViewModel.getAllSettingShopInfo(isToasterRetry = true)
+    }
+
+    private fun showErrorToaster() {
+        val canShowToaster = currentFragmentType == FragmentType.OTHER && canShowErrorToaster
+        if (canShowToaster) {
+            view?.showToasterError(resources.getString(R.string.setting_toaster_error_message))
+        }
     }
 
     private fun View.showToasterError(errorMessage: String) {
