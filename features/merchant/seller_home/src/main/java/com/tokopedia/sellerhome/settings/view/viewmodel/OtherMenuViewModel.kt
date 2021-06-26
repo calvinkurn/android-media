@@ -75,7 +75,7 @@ class OtherMenuViewModel @Inject constructor(
     private val _shopOperationalLiveData = MutableLiveData<SettingResponseState<ShopOperationalUiModel>>()
     private val _balanceInfoLiveData = MutableLiveData<SettingResponseState<BalanceUiModel>>()
     private val _kreditTopAdsLiveData = MutableLiveData<SettingResponseState<TopadsBalanceUiModel>>()
-    private val _isTopAdsAutoTopupLiveData = MutableLiveData<SettingResponseState<Boolean>>()
+    private val _isTopAdsAutoTopupLiveData = MutableLiveData<Result<Boolean>>()
 
     val shopBadgeLiveData: LiveData<SettingResponseState<ShopBadgeUiModel>>
         get() = _shopBadgeLiveData
@@ -89,7 +89,7 @@ class OtherMenuViewModel @Inject constructor(
         get() = _balanceInfoLiveData
     val kreditTopAdsLiveData: LiveData<SettingResponseState<TopadsBalanceUiModel>>
         get() = _kreditTopAdsLiveData
-    val isTopAdsAutoTopupLiveData: LiveData<SettingResponseState<Boolean>>
+    val isTopAdsAutoTopupLiveData: LiveData<Result<Boolean>>
         get() = _isTopAdsAutoTopupLiveData
 
     private val _shopBadgeFollowersShimmerLiveData = MediatorLiveData<Boolean>().apply {
@@ -312,10 +312,10 @@ class OtherMenuViewModel @Inject constructor(
                         topAdsAutoTopupUseCase.params = TopAdsAutoTopupUseCase.createRequestParams(userSession.shopId)
                         topAdsAutoTopupUseCase.executeOnBackground()
                     }
-                    _isTopAdsAutoTopupLiveData.value = SettingResponseState.SettingSuccess(isTopAdsAutoTopup)
+                    _isTopAdsAutoTopupLiveData.value = Success(isTopAdsAutoTopup)
                 },
                 onError = {
-                    _isTopAdsAutoTopupLiveData.value = SettingResponseState.SettingError(it)
+                    _isTopAdsAutoTopupLiveData.value = Fail(it)
                 }
         )
     }
@@ -327,6 +327,7 @@ class OtherMenuViewModel @Inject constructor(
         getShopOperational()
         getBalanceInfo()
         getKreditTopAds()
+        getIsTopAdsAutoTopup()
     }
 
     private suspend fun checkDelayErrorResponseTrigger() {

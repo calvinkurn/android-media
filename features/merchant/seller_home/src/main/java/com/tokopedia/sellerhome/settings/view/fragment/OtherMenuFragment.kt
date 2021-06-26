@@ -343,6 +343,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         observeSaldoBalance()
         observeKreditTopAds()
         observeFreeShippingStatus()
+        observeIsTopAdsAutoTopup()
     }
 
     private fun observeFreeShippingStatus() {
@@ -512,6 +513,20 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                             it.throwable,
                             ""
                     )
+                }
+            }
+        }
+    }
+
+    private fun observeIsTopAdsAutoTopup() {
+        otherMenuViewModel.isTopAdsAutoTopupLiveData.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    otherMenuViewHolder?.setupKreditTopadsBalanceTooltip(result.data)
+                }
+                is Fail -> {
+                    otherMenuViewHolder?.setupKreditTopadsBalanceTooltip(null)
+                    SellerHomeErrorHandler.logException(result.throwable, "")
                 }
             }
         }

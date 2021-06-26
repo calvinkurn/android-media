@@ -473,17 +473,22 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    fun setupKreditTopadsBalanceTooltip(isTopAdsUser: Boolean) {
-        val topAdsTooltipDrawable =
-                if (isTopAdsUser) {
-                    ContextCompat.getDrawable(context, R.drawable.ic_topads_active)
-                } else {
-                    ContextCompat.getDrawable(context, R.drawable.ic_topads_inactive)
+    fun setupKreditTopadsBalanceTooltip(isTopAdsUser: Boolean?) {
+        if (isTopAdsUser == null) {
+            topAdsTooltipImage?.gone()
+        } else {
+            val topAdsTooltipDrawable =
+                    if (isTopAdsUser) {
+                        ContextCompat.getDrawable(context, R.drawable.ic_topads_active)
+                    } else {
+                        ContextCompat.getDrawable(context, R.drawable.ic_topads_inactive)
+                    }
+            topAdsTooltipImage?.run {
+                setImageDrawable(topAdsTooltipDrawable)
+                setOnClickListener {
+                    listener.onTopAdsTooltipClicked(isTopAdsUser)
                 }
-        topAdsTooltipImage?.run {
-            setImageDrawable(topAdsTooltipDrawable)
-            setOnClickListener {
-                listener.onTopAdsTooltipClicked(isTopAdsUser)
+                show()
             }
         }
     }
