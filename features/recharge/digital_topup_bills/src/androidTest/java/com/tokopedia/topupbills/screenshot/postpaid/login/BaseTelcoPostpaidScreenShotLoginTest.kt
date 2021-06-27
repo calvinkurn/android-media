@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.screenshot.postpaid
+package com.tokopedia.topupbills.screenshot.postpaid.login
 
 import android.Manifest
 import android.app.Activity
@@ -10,7 +10,6 @@ import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
@@ -23,7 +22,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
-import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
@@ -33,6 +31,7 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonActions.findViewAndScreenShot
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
@@ -47,8 +46,9 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.StringBuilder
 
-class BaseTelcoPostpaidLoginScreenShotTest {
+abstract class BaseTelcoPostpaidScreenShotLoginTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val graphqlCacheManager = GraphqlCacheManager()
@@ -62,6 +62,7 @@ class BaseTelcoPostpaidLoginScreenShotTest {
     @Before
     fun stubAllExternalIntents() {
         Intents.init()
+        setupDarkModeTest(forceDarkMode())
         graphqlCacheManager.deleteAll()
         setupGraphqlMockResponse {
             addMockResponse(KEY_QUERY_MENU_DETAIL, ResourceUtils.getJsonFromResource(PATH_RESPONSE_POSTPAID_MENU_DETAIL_LOGIN),
@@ -107,19 +108,19 @@ class BaseTelcoPostpaidLoginScreenShotTest {
 
         // ss visible screen
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            CommonActions.takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, filePrefix(), "visible_screen_pdp")
+            CommonActions.takeScreenShotVisibleViewInScreen(mActivityRule.activity.window.decorView, generatePrefix(), "visible_screen_pdp")
         }
 
         // ss full layout
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val test = mActivityRule.activity.findViewById<RelativeLayout>(R.id.telco_page_container)
-            CommonActions.takeScreenShotVisibleViewInScreen(test, filePrefix(), "full_layout")
+            CommonActions.takeScreenShotVisibleViewInScreen(test, generatePrefix(), "full_layout")
         }
 
         // ss input number component
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val test = mActivityRule.activity.findViewById<ConstraintLayout>(R.id.telco_input_number_layout)
-            CommonActions.takeScreenShotVisibleViewInScreen(test, filePrefix(), "input_number_widget")
+            CommonActions.takeScreenShotVisibleViewInScreen(test, generatePrefix(), "input_number_widget")
         }
     }
 
@@ -130,7 +131,7 @@ class BaseTelcoPostpaidLoginScreenShotTest {
         Thread.sleep(2000)
         findViewAndScreenShot(
                 R.id.container_menu,
-                filePrefix(),
+                generatePrefix(),
                 "interaction_menu"
         )
         Thread.sleep(2000)
@@ -143,7 +144,7 @@ class BaseTelcoPostpaidLoginScreenShotTest {
         Thread.sleep(2000)
         findViewAndScreenShot(
                 R.id.container_search_number_telco,
-                filePrefix(),
+                generatePrefix(),
                 "search_number"
         )
 
@@ -152,14 +153,14 @@ class BaseTelcoPostpaidLoginScreenShotTest {
         Thread.sleep(2000)
         findViewAndScreenShot(
                 R.id.container_search_number_telco,
-                filePrefix(),
+                generatePrefix(),
                 "search_number_filled"
         )
         Espresso.onView(ViewMatchers.withId(R.id.searchbar_textfield)).perform(ViewActions.click(), ViewActions.pressImeActionButton())
         Thread.sleep(2000)
         findViewAndScreenShot(
                 R.id.telco_input_number_layout,
-                filePrefix(),
+                generatePrefix(),
                 "input_number_widget_filled"
         )
     }
@@ -173,7 +174,7 @@ class BaseTelcoPostpaidLoginScreenShotTest {
 
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val test = mActivityRule.activity.findViewById<RelativeLayout>(R.id.telco_page_container)
-            CommonActions.takeScreenShotVisibleViewInScreen(test, filePrefix(), "full_layout_enquiry")
+            CommonActions.takeScreenShotVisibleViewInScreen(test, generatePrefix(), "full_layout_enquiry")
         }
 
         Espresso.onView(ViewMatchers.withId(R.id.telco_clear_input_number_btn)).perform(ViewActions.click())
@@ -181,12 +182,12 @@ class BaseTelcoPostpaidLoginScreenShotTest {
     }
 
     fun take_screenshot_interaction_view_pager() {
-        findViewAndScreenShot(R.id.telco_tab_layout, filePrefix(), "tab_layout")
+        findViewAndScreenShot(R.id.telco_tab_layout, generatePrefix(), "tab_layout")
 
         Thread.sleep(2000)
         findViewAndScreenShot(
                 R.id.layout_widget,
-                filePrefix(),
+                generatePrefix(),
                 "pager_recent"
         )
 
@@ -200,7 +201,7 @@ class BaseTelcoPostpaidLoginScreenShotTest {
         Thread.sleep(2000)
         findViewAndScreenShot(
                 R.id.layout_widget,
-                filePrefix(),
+                generatePrefix(),
                 "pager_promo"
         )
 
@@ -210,7 +211,7 @@ class BaseTelcoPostpaidLoginScreenShotTest {
         Thread.sleep(2000)
         findViewAndScreenShot(
                 R.id.layout_widget,
-                filePrefix(),
+                generatePrefix(),
                 "pager_promo_chosen"
         )
     }
@@ -236,7 +237,7 @@ class BaseTelcoPostpaidLoginScreenShotTest {
         Thread.sleep(2000)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val test = mActivityRule.activity.findViewById<RelativeLayout>(R.id.telco_page_container)
-            CommonActions.takeScreenShotVisibleViewInScreen(test, filePrefix(), "full_layout_header_disappear")
+            CommonActions.takeScreenShotVisibleViewInScreen(test, generatePrefix(), "full_layout_header_disappear")
         }
     }
 
@@ -260,8 +261,18 @@ class BaseTelcoPostpaidLoginScreenShotTest {
         mActivityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
     }
 
-    fun filePrefix(): String {
-        return "telco-postpaid-login-light"
+    abstract fun forceDarkMode(): Boolean
+
+    abstract fun filePrefix(): String
+
+    protected fun generatePrefix(): String {
+        val prefix = StringBuilder()
+        prefix.append(filePrefix())
+        prefix.append( when (forceDarkMode()) {
+            true -> "-dark"
+            false -> "-light"
+        })
+        return prefix.toString()
     }
 
     companion object {
@@ -276,7 +287,5 @@ class BaseTelcoPostpaidLoginScreenShotTest {
         private const val PATH_RESPONSE_POSTPAID_ENQUIRY = "postpaid/response_mock_data_postpaid_enquiry.json"
 
         private const val VALID_PHONE_NUMBER = "08123232323"
-        private const val VALID_PHONE_NUMBER_2 = "085252525252"
-        private const val ANALYTIC_VALIDATOR_QUERY_LOGIN = "tracker/recharge/recharge_telco_postpaid_login.json"
     }
 }
