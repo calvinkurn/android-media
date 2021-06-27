@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.performance.presentation.fragment
 
 import android.content.Context
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -44,6 +45,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_penalty_detail.*
 import kotlinx.android.synthetic.main.fragment_shop_performance.*
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -51,7 +53,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceListener, ItemShopPerformanceListener,
         ItemPotentialRegularMerchantListener, ItemRecommendationFeatureListener,
         ItemStatusPowerMerchantListener, ItemTimerNewSellerListener, SectionFaqListener,
-        GlobalErrorListener, ItemStatusPMProListener, ItemRegularMerchantListener {
+        GlobalErrorListener, ItemRegularMerchantListener, ItemPotentialPMProListener, ItemStatusPowerMerchantProListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -67,7 +69,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         ShopPerformanceAdapterTypeFactory(this, this,
                 this, this,
                 this, this, this,
-                this, this, this)
+                this, this, this, this)
     }
 
     private val shopPerformanceAdapter by lazy { ShopPerformanceAdapter(shopPerformanceAdapterTypeFactory) }
@@ -84,7 +86,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         context?.let { PenaltyDotBadge(it) }
     }
 
-    private var counterPenalty = 0
+    private var counterPenalty = 0L
     private var menu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,9 +100,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        context?.let {
-            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, R.color.shop_score_page_dms_background))
-        }
+        setPageBackground()
         setupActionBar()
         setupAdapter()
         onSwipeRefreshShopPerformance()
@@ -148,7 +148,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         getComponent(ShopPerformanceComponent::class.java).inject(this)
     }
 
-    override fun onTooltipLevelClicked(level: Int) {
+    override fun onTooltipLevelClicked(level: Long) {
         val shopLevelData = shopScoreWrapperResponse?.shopScoreTooltipResponse?.result
         val bottomSheetShopTooltipLevel = BottomSheetShopTooltipLevel.createInstance(
                 shopLevel = level,
@@ -216,6 +216,17 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onGotoPMProPage() {
+        goToPowerMerchantSubscribe(PARAM_PM_PRO)
+    }
+
+    /**
+     * ItemStatusPowerMerchantProListener
+     */
+    override fun onItemClickedPMProPage() {
+        goToPowerMerchantSubscribe(PARAM_PM_PRO)
+    }
+
+    override fun onItemClickedGoToPMProActivation() {
         goToPowerMerchantSubscribe(PARAM_PM_PRO)
     }
 
@@ -301,6 +312,16 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         shopScorePenaltyTracking.impressHelpCenterFaqNewSeller(isNewSeller)
     }
 
+    private fun setPageBackground() {
+        try {
+            context?.let {
+                activity?.window?.decorView?.setBackgroundColor(it.getResColor(R.color.shop_score_page_dms_background))
+            }
+        } catch (e: Resources.NotFoundException) {
+            Timber.e(e)
+        }
+    }
+
     private fun goToFaqSection() {
         val faqData = shopPerformanceAdapter.list.find { it is SectionFaqUiModel }
         if (faqData != null) {
@@ -341,7 +362,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         Handler().postDelayed({
             context?.let {
                 val menuItem = menu?.findItem(PENALTY_WARNING_MENU_ID)
-                if (counterPenalty.isLessThanZero()) {
+                if (counterPenalty < 0L) {
                     penaltyDotBadge?.showBadge(menuItem ?: return@let)
                 } else {
                     penaltyDotBadge?.removeBadge(menuItem ?: return@let)
@@ -364,7 +385,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     val itemPMIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
                     val itemRMIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
                     val itemRMNonEligibleIndex = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMBenefitUiModel }
-                    val itemPMProIndex = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMProUiModel }
+                    val itemPotentialPMProIndex = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMProUiModel }
+                    val itemPMProIndex = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMProUiModel }
+
 
                     if (coachMark?.isShowing == true) {
                         when (coachMark?.currentIndex) {
@@ -386,7 +409,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                                 if (itemPMIndex in firstVisiblePosition..lastVisiblePosition
                                         || itemRMIndex in firstVisiblePosition..lastVisiblePosition
                                         || itemRMNonEligibleIndex in firstVisiblePosition..lastVisiblePosition
-                                        || itemPMProIndex in firstVisiblePosition..lastVisiblePosition) {
+                                        || itemPotentialPMProIndex in firstVisiblePosition..lastVisiblePosition
+                                        || itemPMProIndex in firstVisiblePosition..lastVisiblePosition
+                                ) {
                                     coachMark?.animateShow()
                                 } else {
                                     coachMark?.animateHide()
@@ -434,7 +459,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun getPositionLastItemCoachMark(): Int? {
-        val positionPMPro = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMProUiModel }
+        val positionPotentialPMPro = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMProUiModel }
+        val positionPMPro = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMProUiModel }
         val positionPM = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMUiModel }
         val positionRMNonEligible = shopPerformanceAdapter.list.indexOfFirst { it is SectionPotentialPMBenefitUiModel }
         val positionRMEligible = shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusRMUiModel }
@@ -444,6 +470,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         when {
             positionPMPro != RecyclerView.NO_POSITION -> {
                 position = positionPMPro
+            }
+            positionPotentialPMPro != RecyclerView.NO_POSITION -> {
+                position = positionPotentialPMPro
             }
             positionPM != RecyclerView.NO_POSITION -> {
                 position = positionPM

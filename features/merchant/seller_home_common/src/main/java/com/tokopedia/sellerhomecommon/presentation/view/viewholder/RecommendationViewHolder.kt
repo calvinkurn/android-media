@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.gm.common.utils.PMCommonUtils
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
@@ -83,7 +84,7 @@ class RecommendationViewHolder(
 
             val progressBar = element.data?.progressBar
             val progressTitle = progressBar?.text.orEmpty()
-            val currentProgressText = progressBar?.bar?.value.orZero().toString()
+            val currentProgressText = PMCommonUtils.getShopScoreFmt(progressBar?.bar?.value.orZero())
             val setMaxProgressText = progressBar?.bar?.maxValue.orZero().toString()
             val currentProgressValue = progressBar?.bar?.value.orZero()
             val setMaxProgressValue = progressBar?.bar?.maxValue.orZero()

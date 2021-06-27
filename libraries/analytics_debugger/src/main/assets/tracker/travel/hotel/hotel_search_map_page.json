@@ -8,6 +8,7 @@
       "clientId": ".+",
       "currentSite": "tokopediadigitalhotel",
       "isLoggedInStatus": ".+",
+      "theme": "light|dark",
       "appsflyerId": ".+",
       "shopId": ".*",
       "screenName": "/hotel/searchresult",
@@ -17,10 +18,22 @@
       "sessionIris": ".+"
     },
     {
+      "businessUnit": "travel & entertainment",
+      "clientId": ".+",
+      "eventCategory": "digital - native",
+      "currentSite": "tokopediadigitalhotel",
+      "screenName": "/hotel/searchresult",
+      "eventAction": "view map on srp",
+      "category": "hotel",
+      "event": "viewHotelIris",
+      "userId": ".*",
+      "sessionIris": ".+",
+      "eventLabel": "hotel - .+ - .+ - .+ - .+ - .+ - .+"},
+    {
       "event": "view_item_list",
       "eventCategory": "digital - native",
       "eventAction": "view hotel list impression",
-      "eventLabel": "hotel - search by map - .+ - .+ - .+ - .+ - .+ - .+",
+      "eventLabel": "hotel - .+ - .+ - .+ - .+ - .+ - .+",
       "screenName": "/hotel/searchresult",
       "currentSite": "tokopediadigitalhotel",
       "clientId": ".+",
@@ -39,37 +52,12 @@
         "item_variant": ".+",
         "item_category": "Hotel"
       }]
-    }, {
-      "event": "clickHotel",
-      "eventCategory": "digital - native",
-      "eventAction": "click change on search result page",
-      "eventLabel": "hotel - .+ - .+ - .+ - .+ - .+ - .+",
-      "screenName": "/hotel/searchresult",
-      "currentSite": "tokopediadigitalhotel",
-      "clientId": ".+",
-      "sessionIris": ".+",
-      "userId": ".*",
-      "businessUnit": "travel & entertainment",
-      "category": "hotel"
-    }, {
-      "networkSpeed": ".+",
-      "businessUnit": "travel & entertainment",
-      "clientId": ".+",
-      "currentSite": "tokopediadigitalhotel",
-      "isLoggedInStatus": ".+",
-      "appsflyerId": ".+",
-      "shopId": ".*",
-      "screenName": "/hotel/changesearch",
-      "category": "hotel",
-      "event": "openScreen",
-      "userId": ".*",
-      "sessionIris": ".+"
     },{
       "event": "clickHotel",
       "eventCategory": "digital - native",
-      "eventAction": "click search hotel on change search page",
-      "eventLabel": "hotel - .+ - .+ - .+ - .+ - .+ - .+",
-      "screenName": "/hotel/changesearch",
+      "eventAction": "click quick filter on search result page",
+      "eventLabel": "hotel - .+ - .+",
+      "screenName": "/hotel/searchresult",
       "currentSite": "tokopediadigitalhotel",
       "clientId": ".+",
       "sessionIris": ".+",
@@ -89,19 +77,7 @@
       "businessUnit": "travel & entertainment",
       "category": "hotel"
     }, {
-      "event": "clickHotel",
-      "eventCategory": "digital - native",
-      "eventAction": "click quick filter on search result page",
-      "eventLabel": "hotel - .+ - .+",
-      "screenName": "/hotel/searchresult",
-      "currentSite": "tokopediadigitalhotel",
-      "clientId": ".+",
-      "sessionIris": ".+",
-      "userId": ".*",
-      "businessUnit": "travel & entertainment",
-      "category": "hotel"
-    }, {
-      "event": "clickHotel",
+      "event": "viewHotelIris",
       "eventCategory": "digital - native",
       "eventAction": "view full map",
       "eventLabel": "hotel - .+ - .+",
@@ -115,7 +91,20 @@
     }, {
       "event": "clickHotel",
       "eventCategory": "digital - native",
-      "eventAction": "close map",
+      "eventAction": "click my location",
+      "eventLabel": "hotel - .+ - .+",
+      "screenName": "/hotel/searchresult",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": ".+",
+      "sessionIris": ".+",
+      "userId": ".*",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel"
+    },
+    {
+      "event": "clickHotel",
+      "eventCategory": "digital - native",
+      "eventAction": "click cari di sekitar sini",
       "eventLabel": "hotel - .+ - .+",
       "screenName": "/hotel/searchresult",
       "currentSite": "tokopediadigitalhotel",
@@ -125,10 +114,10 @@
       "businessUnit": "travel & entertainment",
       "category": "hotel"
     }, {
-      "event": "select_content",
+      "event": "view_item_list",
       "eventCategory": "digital - native",
-      "eventAction": "choose hotel on map mode",
-      "eventLabel": "hotel - search by map - .+ - .+ - .+ - .+ - .+ - .+",
+      "eventAction": "view hotel name on map",
+      "eventLabel": "hotel - .+ - .+ - .+ - .+ - .+ - .+",
       "screenName": "/hotel/searchresult",
       "currentSite": "tokopediadigitalhotel",
       "clientId": ".+",
@@ -147,11 +136,46 @@
         "item_variant": ".+",
         "item_category": "Hotel"
       }]
-    }, {
+    },{
+      "event": "select_content",
+      "eventCategory": "digital - native",
+      "eventAction": "choose hotel on map mode",
+      "eventLabel": "hotel - .+ - .+ - .+ - .+ - .+ - .+",
+      "screenName": "/hotel/searchresult",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": ".+",
+      "sessionIris": ".+",
+      "userId": ".*",
+      "businessUnit": "travel & entertainment",
+      "item_list": "/hotel/",
+      "category": "hotel",
+      "items": [ {
+        "item_id": ".+",
+        "price": "\\d*.\\d*|\\d.\\d+E\\d",
+        "index": "\\d*.\\d*",
+        "dimension40": "/hotel/",
+        "item_name": ".+",
+        "item_brand":  "none / other",
+        "item_variant": ".+",
+        "item_category": "Hotel"
+      }]
+    },{
       "event": "clickHotel",
       "eventCategory": "digital - native",
-      "eventAction": "click my location",
-      "eventLabel": "hotel - search by map - .+ - .+",
+      "eventAction": "close map",
+      "eventLabel": "hotel - .+ - .+",
+      "screenName": "/hotel/searchresult",
+      "currentSite": "tokopediadigitalhotel",
+      "clientId": ".+",
+      "sessionIris": ".+",
+      "userId": ".*",
+      "businessUnit": "travel & entertainment",
+      "category": "hotel"
+    },{
+      "event": "clickHotel",
+      "eventCategory": "digital - native",
+      "eventAction": "click change on search result page",
+      "eventLabel": "hotel - .+ - .+ - .+ - .+ - .+ - .+",
       "screenName": "/hotel/searchresult",
       "currentSite": "tokopediadigitalhotel",
       "clientId": ".+",
@@ -160,11 +184,25 @@
       "businessUnit": "travel & entertainment",
       "category": "hotel"
     }, {
+      "networkSpeed": ".+",
+      "businessUnit": "travel & entertainment",
+      "clientId": ".+",
+      "currentSite": "tokopediadigitalhotel",
+      "isLoggedInStatus": ".+",
+      "theme": "light|dark",
+      "appsflyerId": ".+",
+      "shopId": ".*",
+      "screenName": "/hotel/changesearch",
+      "category": "hotel",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    },{
       "event": "clickHotel",
       "eventCategory": "digital - native",
-      "eventAction": "click cari di sekitar sini",
-      "eventLabel": "hotel - search by map - .+ - .+",
-      "screenName": "/hotel/searchresult",
+      "eventAction": "click search hotel on change search page",
+      "eventLabel": "hotel - .+ - .+ - .+ - .+ - .+ - .+",
+      "screenName": "/hotel/changesearch",
       "currentSite": "tokopediadigitalhotel",
       "clientId": ".+",
       "sessionIris": ".+",

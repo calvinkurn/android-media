@@ -5,14 +5,14 @@ package com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail;
  */
 
 public class ProductDataDomain {
-    private int productId;
+    private long productId;
     private String productName;
     private String productImageUrl;
     private String productPageUrl;
     private int shopId;
     private int productStatus;
 
-    public ProductDataDomain(int productId, String productName,
+    public ProductDataDomain(long productId, String productName,
                              String productImageUrl, String productPageUrl, int shopId, int productStatus) {
         this.productId = productId;
         this.productName = productName;
@@ -22,7 +22,7 @@ public class ProductDataDomain {
         this.productStatus = productStatus;
     }
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 

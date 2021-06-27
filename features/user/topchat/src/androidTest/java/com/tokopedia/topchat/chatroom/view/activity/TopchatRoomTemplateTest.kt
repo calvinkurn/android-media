@@ -31,9 +31,7 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
 
         // Then
         assertTemplateChatVisibility(isDisplayed())
-        onView(withId(R.id.new_comment)).check(
-                matches(withText(" Hi barang ini ready gk? "))
-        )
+        assertComposedTextValue(" Hi barang ini ready gk? ")
     }
 
     @Test
@@ -66,9 +64,7 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         clickTemplateChatAt(0)
 
         // Then
-        onView(withId(R.id.new_comment)).check(
-                matches(withText(" Hi barang ini ready gk? "))
-        )
+        assertComposedTextValue(" Hi barang ini ready gk? ")
         DrawableMatcher.compareDrawable(R.id.send_but, R.drawable.bg_topchat_send_btn)
     }
 
@@ -98,6 +94,6 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
                 ))
                 .check(matches(withText("Test ")))
         onView(withId(R.id.recycler_view)).check(matches(withTotalItem(count+1)))
-        onView(withId(R.id.new_comment)).check(matches(withText("")))
+        assertComposedTextValue("")
     }
 }

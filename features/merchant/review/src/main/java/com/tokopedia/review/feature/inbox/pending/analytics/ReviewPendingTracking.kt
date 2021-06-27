@@ -6,10 +6,10 @@ import com.tokopedia.track.TrackApp
 
 object ReviewPendingTracking {
 
-    fun eventClickCard(reputationId: Long, productId: Long, userId: String, isEligible: Boolean, source: String) {
+    fun eventClickCard(reputationId: String, productId: String, userId: String, isEligible: Boolean, source: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 generateTrackingMap(
-                        String.format(ReviewPendingTrackingConstants.EVENT_LABEL_INCENTIVE, reputationId.toString(), productId.toString(), isEligible.toString()),
+                        String.format(ReviewPendingTrackingConstants.EVENT_LABEL_INCENTIVE, reputationId, productId, isEligible.toString()),
                         ReviewPendingTrackingConstants.EVENT_ACTION_CLICK_PRODUCT_CARD,
                         userId,
                         source
@@ -17,10 +17,10 @@ object ReviewPendingTracking {
         )
     }
 
-    fun eventClickRatingStar(reputationId: Long, productId: Long, starRating: Int, userId: String, isEligible: Boolean, source: String) {
+    fun eventClickRatingStar(reputationId: String, productId: String, starRating: Int, userId: String, isEligible: Boolean, source: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 generateTrackingMap(
-                        String.format(ReviewPendingTrackingConstants.EVENT_LABEL_PENDING, reputationId.toString(), productId.toString(), isEligible.toString()),
+                        String.format(ReviewPendingTrackingConstants.EVENT_LABEL_PENDING, reputationId, productId, isEligible.toString()),
                         String.format(ReviewPendingTrackingConstants.EVENT_ACTION_CLICK_STAR, starRating.toString()),
                         userId,
                         source
