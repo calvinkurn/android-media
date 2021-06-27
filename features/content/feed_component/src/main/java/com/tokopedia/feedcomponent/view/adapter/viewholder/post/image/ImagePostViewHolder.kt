@@ -47,7 +47,12 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
     interface ImagePostListener {
         fun userImagePostImpression(positionInFeed: Int, contentPosition: Int)
 
-        fun userCarouselImpression(positionInFeed: Int, media: List<FeedXMedia>)
+        fun userCarouselImpression(
+            positionInFeed: Int,
+            media: List<FeedXMedia>,
+            postType: String,
+            isFollowed: Boolean
+        )
 
         fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
 

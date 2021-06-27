@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
+import android.content.Context
 import android.os.Handler
 import android.text.SpannableString
 import android.text.TextUtils
@@ -40,6 +41,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.CtaPostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
@@ -347,8 +349,20 @@ open class DynamicPostViewHolder(v: View,
 
             if (template.like) {
                 itemView.likeGroup.show()
-                itemView.likeIcon.setOnClickListener { listener.onLikeClick(adapterPosition, id, footer.like.isChecked) }
-                itemView.likeText.setOnClickListener { listener.onLikeClick(adapterPosition, id, footer.like.isChecked) }
+                itemView.likeIcon.setOnClickListener {
+                    listener.onLikeClick(adapterPosition,
+                        id,
+                        footer.like.isChecked,
+                        "",
+                        false)
+                }
+                itemView.likeText.setOnClickListener {
+                    listener.onLikeClick(adapterPosition,
+                        id,
+                        footer.like.isChecked,
+                        "",
+                        false)
+                }
                 bindLike(footer.like)
             } else {
                 itemView.likeGroup.hide()
@@ -360,14 +374,17 @@ open class DynamicPostViewHolder(v: View,
                     listener.onCommentClick(
                         adapterPosition,
                         id,
-                        ""
+                        "",
+                        "",
+                        isFollowed = false
                     )
                 }
                 itemView.commentText.setOnClickListener {
                     listener.onCommentClick(
                         adapterPosition,
-                        id, ""
-
+                        id, "",
+                        "",
+                        false
                     )
                 }
                 bindComment(footer.comment)
@@ -540,9 +557,23 @@ open class DynamicPostViewHolder(v: View,
     }
 
     interface DynamicPostListener {
-        fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta)
+        fun onAvatarClick(
+            positionInFeed: Int,
+            redirectUrl: String,
+            activityId: Int,
+            activityName: String,
+            followCta: FollowCta,
+            type: String = "",
+            isFollowed: Boolean = false
+        )
 
-        fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean)
+        fun onHeaderActionClick(
+            positionInFeed: Int,
+            id: String,
+            type: String,
+            isFollow: Boolean,
+            postType: String=""
+        )
 
         fun onMenuClick(
             positionInFeed: Int,
@@ -552,14 +583,29 @@ open class DynamicPostViewHolder(v: View,
             editable: Boolean,
             isFollowed: Boolean,
             authorId: String,
-            authorType: String
+            authorType: String ,
+            postType: String = ""
         )
 
         fun onCaptionClick(positionInFeed: Int, redirectUrl: String)
 
-        fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean, type: Boolean = false)
+        fun onLikeClick(
+            positionInFeed: Int,
+            id: Int,
+            isLiked: Boolean,
+            postType: String = "",
+            isFollowed: Boolean = false,
+            type: Boolean = false
 
-        fun onCommentClick(positionInFeed: Int, id: Int, authorType: String)
+        )
+
+        fun onCommentClick(
+            positionInFeed: Int,
+            id: Int,
+            authorType: String,
+            type: String,
+            isFollowed: Boolean = false
+        )
 
         fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int)
 
@@ -570,7 +616,9 @@ open class DynamicPostViewHolder(v: View,
             description: String,
             url: String,
             imageUrl: String,
-            postTypeASGC: Boolean = false
+            postTypeASGC: Boolean = false,
+            type: String="",
+            isFollowed: Boolean = false
         )
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
@@ -592,21 +640,30 @@ open class DynamicPostViewHolder(v: View,
             authorType: String
         )
 
-        fun onTagSheetItemBuy(positionInFeed: Int, item: FeedXProduct, shopId: String)
+        fun onTagSheetItemBuy(
+            activityId: Int,
+            positionInFeed: Int,
+            item: FeedXProduct,
+            shopId: String,
+            type: String,
+            isFollowed: Boolean,
+        )
 
         fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel)
 
         fun onReadMoreClicked(trackingPostModel: TrackingPostModel)
 
-        fun onImageClicked(activityId: String)
+        fun onImageClicked(activityId: String, type: String, isFollowed: Boolean)
 
-        fun addToWishList(productId: String)
+        fun addToWishList(activityId: Int, productId: String, type: String, isFollowed: Boolean)
 
         fun onTagClicked(
             postId: Int,
             products: List<FeedXProduct>,
             listener: DynamicPostListener,
-            id: String
+            id: String,
+            type: String,
+            isFollowed: Boolean,
         )
 
         fun onShareProduct(
@@ -615,8 +672,15 @@ open class DynamicPostViewHolder(v: View,
             description: String,
             url: String,
             imageUrl: String,
+            activityId: Int,
+            type: String,
+            isFollowed: Boolean
         )
 
         fun onReadMoreClicked(postId: String)
+        fun onBottomSheetMenuClicked(
+            item: ProductPostTagViewModelNew,
+            context: Context
+        )
     }
 }

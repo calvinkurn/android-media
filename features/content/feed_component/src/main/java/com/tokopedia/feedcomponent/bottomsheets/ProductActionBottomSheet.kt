@@ -13,6 +13,8 @@ class ProductActionBottomSheet : BottomSheetUnify() {
     var addToCartCB: (() -> Unit)? = null
     var addToWIshListCB: (() -> Unit)? = null
     var shareProductCB: (() -> Unit)? = null
+    private var postType: String = ""
+    private var isFollowed: Boolean = false
 
     companion object {
 

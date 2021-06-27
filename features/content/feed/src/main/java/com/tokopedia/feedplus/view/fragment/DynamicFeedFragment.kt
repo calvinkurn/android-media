@@ -188,7 +188,15 @@ class DynamicFeedFragment:
         }
     }
 
-    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta) {
+    override fun onAvatarClick(
+        positionInFeed: Int,
+        redirectUrl: String,
+        activityId: Int,
+        activityName: String,
+        followCta: FollowCta,
+        type: String,
+        isFollowed: Boolean
+    ) {
         val item = ((adapter.list[positionInFeed]) as HighlightViewModel)
         feedAnalyticTracker.eventTrendingClickProfile(item.postId)
         onGoToLink(redirectUrl)

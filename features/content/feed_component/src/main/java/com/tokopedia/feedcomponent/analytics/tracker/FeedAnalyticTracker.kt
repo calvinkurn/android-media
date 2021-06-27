@@ -3,6 +3,7 @@ package com.tokopedia.feedcomponent.analytics.tracker
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.CLICK
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.FORMAT_THREE_PARAM
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.FORMAT_TWO_PARAM
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE_BOTTOMSHEET
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE_COMMENT
@@ -10,6 +11,7 @@ import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Categor
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.CLICK_FEED
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.CONTENT
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.OPEN_SCREEN
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.PRODUCT_CLICK
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.PROMO_VIEW
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.MARKETPLACE
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_FEED_EMPTY
@@ -57,7 +59,9 @@ class FeedAnalyticTracker
         private const val KEY_EVENT_USER_ID = "userId"
         private const val KEY_SESSION_IRIS = "sessionIris"
         private const val SGC_IMAGE = "sgc image"
-
+        private const val ASGC = "asgc"
+        private const val ASGC_RECOM= "asgc recom"
+        private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT= "FeedXCardProductsHighlight"
     }
 
     private object Event {
@@ -210,6 +214,15 @@ class FeedAnalyticTracker
     @Inject
     lateinit var irisSession: IrisSession
 
+    private fun getPostType(type: String, isFollowed: Boolean):String{
+        return if(type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed)
+            ASGC_RECOM
+        else if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && isFollowed)
+            ASGC
+        else
+            SGC_IMAGE
+    }
+
     private fun getIrisSessionId(): String = irisSession.getSessionId()
 
 
@@ -252,12 +265,13 @@ class FeedAnalyticTracker
     //https://mynakama.tokopedia.com/datatracker/requestdetail/view/942
     //1
     fun eventClickFeedAvatar(
-        activityId: String
+        activityId: String,
+        type: String, isFollowed: Boolean,
     ) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
-            KEY_EVENT_ACTION to String.format(FORMAT_THREE_PARAM, CLICK, "shop", SGC_IMAGE),
+            KEY_EVENT_ACTION to String.format(FORMAT_THREE_PARAM, CLICK, "shop", getPostType(type, isFollowed)),
             KEY_EVENT_LABEL to String.format(
                 Action.FORMAT_TWO_PARAM,
                 activityId,
@@ -271,7 +285,7 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun evenClickMenu(activityId: String) {
+    fun evenClickMenu(activityId: String, type: String, isFollowed: Boolean) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
@@ -279,7 +293,30 @@ class FeedAnalyticTracker
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "three dots",
-                SGC_IMAGE
+                getPostType(type, isFollowed)
+            ),
+            KEY_EVENT_LABEL to String.format(
+                Action.FORMAT_TWO_PARAM,
+                activityId,
+                userSessionInterface.shopId
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    fun eventClickBottomSheetMenu(activityId: String,type: String,isFollowed: Boolean) {
+        val map = mapOf(
+            KEY_EVENT to CLICK_FEED,
+            KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
+            KEY_EVENT_ACTION to String.format(
+                FORMAT_THREE_PARAM,
+                CLICK,
+                "three dots",
+                getPostType(type,isFollowed)
             ),
             KEY_EVENT_LABEL to String.format(
                 Action.FORMAT_TWO_PARAM,
@@ -295,7 +332,10 @@ class FeedAnalyticTracker
     }
 
 
-    fun eventTagClicked(activityId: String) {
+    fun eventTagClicked(
+        activityId: String, type: String,
+        isFollowed: Boolean
+    ) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
@@ -303,7 +343,7 @@ class FeedAnalyticTracker
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "lihat produk",
-                SGC_IMAGE
+                getPostType(type,isFollowed)
             ),
             KEY_EVENT_LABEL to String.format(
                 Action.FORMAT_TWO_PARAM,
@@ -318,7 +358,10 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun eventImageClicked(activityId: String) {
+    fun eventImageClicked(
+        activityId: String, type: String,
+        isFollowed: Boolean
+    ) {
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
@@ -326,7 +369,7 @@ class FeedAnalyticTracker
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "image",
-                SGC_IMAGE
+               getPostType(type,isFollowed)
             ),
             KEY_EVENT_LABEL to String.format(
                 Action.FORMAT_TWO_PARAM,
@@ -341,7 +384,145 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun eventClickLikeButton(activityId: String, doubleTap: Boolean = false, isLiked: Boolean) {
+    fun eventAddToWishlistClicked(
+        activityId: String, productId: String, type: String,
+        isFollowed: Boolean
+    ) {
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET)
+        map = map.plus(
+            mutableMapOf(
+                KEY_EVENT_ACTION to String.format(
+                    FORMAT_THREE_PARAM,
+                    CLICK,
+                    "wishlist",
+                    getPostType(type, isFollowed)
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    FORMAT_THREE_PARAM,
+                    activityId,
+                    userSessionInterface.shopId,
+                    productId
+                ),
+                KEY_BUSINESS_UNIT_EVENT to CONTENT,
+                KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+                KEY_SESSION_IRIS to getIrisSessionId(),
+                KEY_EVENT_USER_ID to userSessionInterface.userId
+            )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+    fun eventOnTagSheetItemBuyClicked(
+        activityId: String, type: String,
+        isFollowed: Boolean
+    ) {
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET)
+        map = map.plus(
+            mutableMapOf(
+                KEY_EVENT_ACTION to String.format(
+                    FORMAT_THREE_PARAM,
+                    CLICK,
+                    "lihat-wishlist",
+                    getPostType(type,isFollowed)
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    Action.FORMAT_TWO_PARAM,
+                    activityId,
+                    userSessionInterface.shopId
+                ),
+                KEY_BUSINESS_UNIT_EVENT to CONTENT,
+                KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+                KEY_SESSION_IRIS to getIrisSessionId(),
+                KEY_EVENT_USER_ID to userSessionInterface.userId
+            )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+    fun eventonShareProductClicked(
+        activityId: String, productId: String, type: String,
+        isFollowed: Boolean
+    ) {
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET)
+        map = map.plus(
+            mutableMapOf(
+                KEY_EVENT_ACTION to String.format(
+                    FORMAT_THREE_PARAM,
+                    CLICK,
+                    "share",
+                    getPostType(type,isFollowed)
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    Action.FORMAT_TWO_PARAM,
+                    activityId,
+                    userSessionInterface.shopId
+                ),
+                KEY_BUSINESS_UNIT_EVENT to CONTENT,
+                KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+                KEY_SESSION_IRIS to getIrisSessionId(),
+                KEY_EVENT_USER_ID to userSessionInterface.userId
+            )
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+    fun eventGridProductItemClicked(
+        activityId: String,productId: String, type: String,
+        isFollowed: Boolean
+    ) {
+        val map = mapOf(
+            KEY_EVENT to PRODUCT_CLICK,
+            KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
+            KEY_EVENT_ACTION to String.format(
+                FORMAT_THREE_PARAM,
+                CLICK,
+                "product",
+                getPostType(type,isFollowed)
+            ),
+            KEY_EVENT_LABEL to String.format(
+                Action.FORMAT_THREE_PARAM,
+                activityId,
+                userSessionInterface.shopId,
+                productId
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+    fun eventGridMoreProductCLicked(
+        activityId: String, type: String,
+        isFollowed: Boolean
+    ) {
+        val map = mapOf(
+            KEY_EVENT to CLICK_FEED,
+            KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
+            KEY_EVENT_ACTION to String.format(
+                FORMAT_THREE_PARAM,
+                CLICK,
+                "more product",
+                getPostType(type,isFollowed)
+            ),
+            KEY_EVENT_LABEL to String.format(
+                Action.FORMAT_TWO_PARAM,
+                activityId,
+                userSessionInterface.shopId
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+
+    fun eventClickLikeButton(
+        activityId: String,
+        doubleTap: Boolean = false,
+        isLiked: Boolean,
+        type: String,
+        isFollowed: Boolean,
+    ) {
         val likeType = if (doubleTap && isLiked)
             "double tap like"
         else if (doubleTap && !isLiked)
@@ -355,7 +536,7 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     CLICK,
                     likeType,
-                    SGC_IMAGE
+                    getPostType(type, isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     Action.FORMAT_TWO_PARAM,
@@ -385,7 +566,12 @@ class FeedAnalyticTracker
         return list
     }
 
-    fun eventImpression(activityId: String, list: List<FeedXMedia>) {
+    fun eventImpression(
+        activityId: String,
+        list: List<FeedXMedia>,
+        type: String,
+        isFollowed: Boolean
+    ) {
         var map = getCommonMap(PROMO_VIEW)
         map = map.plus(
             mutableMapOf(
@@ -393,7 +579,7 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     "impression",
                     "image",
-                    SGC_IMAGE
+                    getPostType(type,isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     Action.FORMAT_TWO_PARAM,
@@ -408,7 +594,7 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
     }
 
-    fun eventClickOpenComment(activityId: String) {
+    fun eventClickOpenComment(activityId: String, type: String, isFollowed: Boolean) {
         var map = getCommonMap()
         map = map.plus(
             mapOf(
@@ -416,7 +602,7 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     CLICK,
                     "comment",
-                    SGC_IMAGE
+                    getPostType(type, isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     Action.FORMAT_TWO_PARAM,
@@ -428,7 +614,7 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun eventClickOpenShare(activityId: String) {
+    fun eventClickOpenShare(activityId: String, type: String, isFollowed: Boolean) {
         var map = getCommonMap()
         map = map.plus(
             mapOf(
@@ -436,7 +622,7 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     CLICK,
                     "share",
-                    SGC_IMAGE
+                    getPostType(type, isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     Action.FORMAT_TWO_PARAM,
@@ -459,7 +645,7 @@ class FeedAnalyticTracker
                     SGC_IMAGE
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    Action.FORMAT_TWO_PARAM,
+                    FORMAT_TWO_PARAM,
                     activityId,
                     userSessionInterface.shopId
                 )
@@ -468,7 +654,7 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun eventClickCloseProductInfoSheet(activityId: String) {
+    fun eventClickCloseProductInfoSheet(activityId: String, type: String, isFollowed: Boolean) {
         var map = getCommonMap()
         map = map.plus(
             mapOf(
@@ -476,7 +662,7 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     CLICK,
                     " x ",
-                    SGC_IMAGE
+                    getPostType(type, isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     Action.FORMAT_TWO_PARAM,
@@ -488,16 +674,22 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun eventClickBSitem(activityId: String, products: List<FeedXProduct>, position: Int) {
+    fun eventClickBSitem(
+        activityId: String,
+        products: List<FeedXProduct>,
+        position: Int,
+        type: String,
+        isFollowed: Boolean,
+    ) {
 
         val map = mapOf(
-            KEY_EVENT to Event.PRODUCT_CLICK,
+            KEY_EVENT to PRODUCT_CLICK,
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE + "- bottom sheet",
             KEY_EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "product",
-                SGC_IMAGE
+                getPostType(type, isFollowed)
             ),
             KEY_EVENT_LABEL to String.format(
                 FORMAT_THREE_PARAM,
@@ -521,7 +713,37 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun eventClickGreyArea(activityId: String) {
+    fun eventClickFollowitem(
+        activityId: String,
+        position: Int,
+        type: String,
+        isFollowed: Boolean,
+    ) {
+
+        val map = mapOf(
+            KEY_EVENT to CLICK_FEED,
+            KEY_EVENT_CATEGORY to Category.CONTENT_FEED_TIMELINE,
+            KEY_EVENT_ACTION to String.format(
+                FORMAT_THREE_PARAM,
+                CLICK,
+                "follow",
+                getPostType(type, isFollowed)
+            ),
+            KEY_EVENT_LABEL to String.format(
+                FORMAT_TWO_PARAM,
+                activityId,
+                userSessionInterface.shopId
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_CURRENT_SITE_EVENT to MARKETPLACE,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+
+    fun eventClickGreyArea(activityId: String, type: String, isFollowed: Boolean) {
         var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET)
         map = map.plus(
             mutableMapOf(
@@ -529,7 +751,7 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     CLICK,
                     "grey area",
-                    SGC_IMAGE
+                    getPostType(type,isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     Action.FORMAT_TWO_PARAM,
@@ -559,7 +781,7 @@ class FeedAnalyticTracker
         return list
     }
 
-    fun eventCloseThreeDotBS(activityId: String) {
+    fun eventCloseThreeDotBS(activityId: String, type: String, isFollowed: Boolean) {
         var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU)
         map = map.plus(
             mutableMapOf(
@@ -567,7 +789,7 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     CLICK,
                     "x",
-                    SGC_IMAGE
+                    getPostType(type, isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     Action.FORMAT_TWO_PARAM,
@@ -579,7 +801,12 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun eventClickThreeDotsOption(activityId: String, action: String) {
+    fun eventClickThreeDotsOption(
+        activityId: String,
+        action: String,
+        type: String,
+        isFollowed: Boolean,
+    ) {
         var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU)
         map = map.plus(
             mutableMapOf(
@@ -587,7 +814,7 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     CLICK,
                     "three dots menu",
-                    SGC_IMAGE
+                    getPostType(type, isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_THREE_PARAM,
@@ -600,7 +827,7 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun eventClickGreyAreaThreeDots(activityId: String) {
+    fun eventClickGreyAreaThreeDots(activityId: String, type: String, isFollowed: Boolean) {
         var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU)
         map = map.plus(
             mutableMapOf(
@@ -608,7 +835,7 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     CLICK,
                     "grey area",
-                    SGC_IMAGE
+                    getPostType(type, isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     Action.FORMAT_TWO_PARAM,

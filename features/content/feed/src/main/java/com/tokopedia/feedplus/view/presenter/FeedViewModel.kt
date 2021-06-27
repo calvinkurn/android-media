@@ -311,10 +311,10 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doAtc(postTagItem: FeedXProduct, shopId: String) {
+    fun doAtc(postTagItem: FeedXProduct, shopId: String, type: String, isFollowed: Boolean) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
-                atc(postTagItem, shopId)
+                atc(postTagItem, shopId, type, isFollowed)
             }
             atcResp.value = Success(results)
         }) {
@@ -332,7 +332,11 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doToggleFavoriteShop(rowNumber: Int, adapterPosition: Int, shopId: String) {
+    fun doToggleFavoriteShop(
+        rowNumber: Int,
+        adapterPosition: Int,
+        shopId: String
+    ) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
                 toggleFavoriteShop(rowNumber, adapterPosition, shopId)
@@ -370,8 +374,10 @@ class FeedViewModel @Inject constructor(
     fun addWishlist(
         productId: String,
         position: Int,
+        type: String,
+        isFollowed: Boolean,
         onFail: (String) -> Unit,
-        onSuccess: () -> Unit
+        onSuccess: (String, String, Boolean) -> Unit
     ) {
         addWishListUseCase.createObservable(
             productId, userSession.userId,
@@ -381,7 +387,9 @@ class FeedViewModel @Inject constructor(
                 }
 
                 override fun onSuccessAddWishlist(productId: String?) {
-                    onSuccess.invoke()
+                    if (productId != null) {
+                        onSuccess.invoke(productId, type, isFollowed)
+                    }
                 }
 
                 override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
@@ -606,10 +614,18 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun atc(postTagItem: FeedXProduct, shopId: String): AtcViewModel {
+    private fun atc(
+        postTagItem: FeedXProduct,
+        shopId: String,
+        type: String,
+        isFollowed: Boolean
+    ): AtcViewModel {
         try {
             val data = AtcViewModel()
             data.applink = postTagItem.appLink
+            data.activityId = postTagItem.id
+            data.postType = type
+            data.isFollowed = isFollowed
 
             val params = AddToCartUseCase.getMinimumParams(
                 postTagItem.id,

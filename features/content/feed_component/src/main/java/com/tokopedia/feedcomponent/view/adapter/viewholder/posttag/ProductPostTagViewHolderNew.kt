@@ -6,10 +6,8 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
-import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.bottomsheets.ProductActionBottomSheet
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -18,7 +16,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -86,23 +83,7 @@ class ProductPostTagViewHolderNew(
             )
         )
         menuBtn.setOnClickListener {
-            val sheet = ProductActionBottomSheet.newInstance()
-            sheet.show((mainView.context as FragmentActivity).supportFragmentManager, "")
-            sheet.shareProductCB = {
-                listener.onShareProduct(
-                    item.id.toIntOrZero(),
-                    item.text,
-                    "",
-                    item.weblink,
-                    item.imgUrl
-                )
-            }
-            sheet.addToCartCB = {
-                listener.onTagSheetItemBuy(item.positionInFeed, item.product, item.shopId)
-            }
-            sheet.addToWIshListCB = {
-                listener.addToWishList(item.id)
-            }
+            listener.onBottomSheetMenuClicked(item,mainView.context)
         }
         rating.text = String.format("%.1f", item.rating.toDouble() / RATING_FORMAT)
         val soldInfoText = getString(R.string.feed_common_terjual) + " " + item.totalSold.toString()
@@ -125,8 +106,7 @@ class ProductPostTagViewHolderNew(
         listener: DynamicPostViewHolder.DynamicPostListener,
         positionInFeed: Int,
         item: FeedXProduct, itemPosition: Int
-    )
-            : View.OnClickListener {
+    )   : View.OnClickListener {
         return View.OnClickListener {
             listener.onPostTagItemBSClick(positionInFeed, item.appLink, item, itemPosition)
             //   listener.onAffiliateTrackClicked(mappingTracking(item.tracking), true)

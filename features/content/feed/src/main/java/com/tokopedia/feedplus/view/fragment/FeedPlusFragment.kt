@@ -42,6 +42,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.bottomsheets.MenuOptionsBottomSheet
+import com.tokopedia.feedcomponent.bottomsheets.ProductActionBottomSheet
 import com.tokopedia.feedcomponent.bottomsheets.ProductItemInfoBottomSheet
 import com.tokopedia.feedcomponent.bottomsheets.ReportBottomSheet
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
@@ -76,6 +77,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
@@ -476,7 +478,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                     Toaster.TYPE_NORMAL,
                                     getString(R.string.feed_go_to_cart),
                                     View.OnClickListener {
-                                        onAddToCartSuccess()
+                                        onAddToCartSuccess(data.activityId,
+                                            data.postType,
+                                            data.isFollowed)
                                     }).show()
                             }
                             data.errorMsg.isNotEmpty() -> {
@@ -1315,18 +1319,22 @@ class FeedPlusFragment : BaseDaggerFragment(),
         redirectUrl: String,
         activityId: Int,
         activityName: String,
-        followCta: FollowCta
+        followCta: FollowCta,
+        type: String,
+        isFollowed: Boolean
     ) {
         onGoToLink(redirectUrl)
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.AVATAR)
         feedAnalytics.eventClickFeedAvatar(
-            activityId.toString()
+            activityId.toString(),
+            type,
+            isFollowed
         )
     }
 
     override fun onHeaderActionClick(
         positionInFeed: Int, id: String, type: String,
-        isFollow: Boolean
+        isFollow: Boolean, postType: String
     ) {
         if (userSession.isLoggedIn) {
             if (type == FollowCta.AUTHOR_USER) {
@@ -1356,21 +1364,28 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onMenuClick(
-        positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean,
+        positionInFeed: Int,
+        postId: Int,
+        reportable: Boolean,
+        deletable: Boolean,
         editable: Boolean,
         isFollowed: Boolean,
         authorId: String,
-        authorType: String
+        authorType: String,
+        postType: String
     ) {
         if (context != null) {
-            feedAnalytics.evenClickMenu(postId.toString())
+            feedAnalytics.evenClickMenu(postId.toString(), postType, isFollowed)
             val sheet = MenuOptionsBottomSheet.newInstance(
                 reportable, isFollowed,
                 deletable
             )
             sheet.show((context as FragmentActivity).supportFragmentManager, "")
             sheet.onReport = {
-                feedAnalytics.eventClickThreeDotsOption(postId.toString(), "laporkan")
+                feedAnalytics.eventClickThreeDotsOption(postId.toString(),
+                    "laporkan",
+                    postType,
+                    isFollowed)
                 if (userSession.isLoggedIn) {
                     context?.let {
                         ReportBottomSheet.newInstance(
@@ -1392,7 +1407,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
             }
             sheet.onFollow = {
-                feedAnalytics.eventClickThreeDotsOption(postId.toString(), "unfollow")
+                feedAnalytics.eventClickThreeDotsOption(postId.toString(), "unfollow",
+                    postType,
+                    isFollowed)
                 if (userSession.isLoggedIn)
                     onHeaderActionClick(
                         positionInFeed,
@@ -1403,15 +1420,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
             sheet.onDelete = {
                 createDeleteDialog(positionInFeed, postId)
-                feedAnalytics.eventClickThreeDotsOption(postId.toString(), "Hapus")
+                feedAnalytics.eventClickThreeDotsOption(postId.toString(), "Hapus",
+                    postType,
+                    isFollowed)
 
             }
             sheet.onDismiss = {
-                feedAnalytics.eventClickGreyAreaThreeDots(postId.toString())
+                feedAnalytics.eventClickGreyAreaThreeDots(postId.toString(),
+                    postType,
+                    isFollowed)
             }
 
             sheet.onClosedClicked = {
-                feedAnalytics.eventCloseThreeDotBS(postId.toString())
+                feedAnalytics.eventCloseThreeDotBS(postId.toString(),
+                    postType,
+                    isFollowed)
 
             }
         }
@@ -1421,8 +1444,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(redirectUrl)
     }
 
-    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean, type: Boolean) {
-        feedAnalytics.eventClickLikeButton(id.toString(), type, isLiked)
+    override fun onLikeClick(
+        positionInFeed: Int,
+        id: Int,
+        isLiked: Boolean,
+        postType: String,
+        isFollowed: Boolean,
+        type: Boolean
+    ) {
+        feedAnalytics.eventClickLikeButton(id.toString(), type, isLiked, postType, isFollowed)
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
         } else {
@@ -1430,8 +1460,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String) {
-        feedAnalytics.eventClickOpenComment(id.toString())
+    override fun onCommentClick(
+        positionInFeed: Int,
+        id: Int,
+        authorType: String,
+        type: String,
+        isFollowed: Boolean
+    ) {
+        feedAnalytics.eventClickOpenComment(id.toString(), type, isFollowed)
         onGoToKolComment(positionInFeed, id, false, "", authorType)
     }
 
@@ -1439,7 +1475,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         positionInFeed: Int, id: Int, title: String,
         description: String, url: String,
         imageUrl: String,
-        typeASGC: Boolean
+        typeASGC: Boolean,
+        type: String,
+        isFollowed: Boolean
     ) {
         activity?.let {
             val urlString = if (typeASGC) {
@@ -1466,7 +1504,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
             )
         }
-        feedAnalytics.eventClickOpenShare(id.toString())
+        feedAnalytics.eventClickOpenShare(id.toString(), type, isFollowed)
     }
 
     override fun onStatsClick(
@@ -1503,7 +1541,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val item = (adapter.getlist()[positionInFeed] as DynamicPostUiModel)
             //  val (id, _, header, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostUiModel
 
-            feedAnalytics.eventClickBSitem(item.feedXCard.id, item.feedXCard.products, itemPosition)
+            feedAnalytics.eventClickBSitem(item.feedXCard.id, item.feedXCard.products,
+                itemPosition, item.feedXCard.typename, item.feedXCard.followers.isFollowed)
 
         }
         onGoToLink(redirectUrl)
@@ -1524,8 +1563,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun userCarouselImpression(positionInFeed: Int, media: List<FeedXMedia>) {
-        feedAnalytics.eventImpression(positionInFeed.toString(), media)
+    override fun userCarouselImpression(positionInFeed: Int, media: List<FeedXMedia>,type: String,isFollowed: Boolean) {
+        feedAnalytics.eventImpression(positionInFeed.toString(), media, type, isFollowed)
     }
 
     override fun onImageClick(
@@ -1586,10 +1625,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
     }
 
-    override fun onTagSheetItemBuy(positionInFeed: Int, postTagItem: FeedXProduct, shopId: String) {
+    override fun onTagSheetItemBuy(
+        activityId: Int,
+        positionInFeed: Int,
+        postTagItem: FeedXProduct,
+        shopId: String,
+        type: String,
+        isFollowed: Boolean
+    ) {
+        feedAnalytics.eventOnTagSheetItemBuyClicked(activityId.toString(), type, isFollowed)
         if (userSession.isLoggedIn) {
             productTagBS.dismiss()
-            feedViewModel.doAtc(postTagItem, shopId)
+            feedViewModel.doAtc(postTagItem, shopId, type, isFollowed)
         } else {
             onGoToLogin()
         }
@@ -1662,20 +1709,28 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedAnalytics.eventClickReadMoreNew(postId)
     }
 
-    override fun onImageClicked(activityId: String) {
-        feedAnalytics.eventImageClicked(activityId)
+    override fun onImageClicked(activityId: String, type: String, isFollowed: Boolean) {
+        feedAnalytics.eventImageClicked(activityId, type, isFollowed)
     }
 
-    override fun addToWishList(productId: String) {
+    override fun addToWishList(postId: Int, productId: String, type: String, isFollowed: Boolean) {
+
+        feedAnalytics.eventAddToWishlistClicked(postId.toString(), productId, type, isFollowed)
+
         productTagBS.dismiss()
-        feedViewModel.addWishlist(productId, 0, ::onWishListFail, ::onWishListSuccess)
+        feedViewModel.addWishlist(productId,
+            0,
+            type,
+            isFollowed,
+            ::onWishListFail,
+            ::onWishListSuccess)
     }
 
     private fun onWishListFail(s: String) {
         showToast(s, Toaster.TYPE_ERROR)
     }
 
-    private fun onWishListSuccess() {
+    private fun onWishListSuccess(activityId: String,type: String,isFollowed: Boolean) {
         Toaster.build(
             requireView(),
             getString(R.string.feed_added_to_wishlist),
@@ -1683,7 +1738,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             Toaster.TYPE_NORMAL,
             getString(R.string.feed_go_to_wishlist),
             View.OnClickListener {
-                onAddToCartSuccess()
+                onAddToCartSuccess(activityId, type, isFollowed)
             }).show()
     }
 
@@ -1691,15 +1746,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
         postId: Int,
         products: List<FeedXProduct>,
         listener: DynamicPostViewHolder.DynamicPostListener,
-        id: String
+        id: String,
+        type: String,
+        isFollowed: Boolean
     ) {
-        feedAnalytics.eventTagClicked(postId.toString())
-        productTagBS.show(childFragmentManager, products, listener, postId, id)
+        feedAnalytics.eventTagClicked(postId.toString(), type, isFollowed)
+        productTagBS.show(childFragmentManager, products, listener, postId, id, type, isFollowed)
         productTagBS.closeClicked = {
-            feedAnalytics.eventClickCloseProductInfoSheet(postId.toString())
+            feedAnalytics.eventClickCloseProductInfoSheet(postId.toString(), type, isFollowed)
         }
         productTagBS.disMissed = {
-            feedAnalytics.eventClickGreyArea(postId.toString())
+            feedAnalytics.eventClickGreyArea(postId.toString(), type, isFollowed)
         }
     }
 
@@ -1708,8 +1765,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
         title: String,
         description: String,
         url: String,
-        imageUrl: String
+        imageUrl: String,
+        activityId: Int,
+        type: String,
+        isFollowed: Boolean
     ) {
+        feedAnalytics.eventonShareProductClicked(activityId.toString(),
+            id.toString(),
+            type,
+            isFollowed)
         productTagBS.dismiss()
         activity?.let {
             shareData = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
@@ -1732,32 +1796,51 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
+    override fun onBottomSheetMenuClicked(
+        item: ProductPostTagViewModelNew,
+        context: Context
+    ) {
+        feedAnalytics.eventClickBottomSheetMenu(item.postId.toString(),item.postType,item.isFollowed)
+        val sheet = ProductActionBottomSheet.newInstance()
+        sheet.show((context as FragmentActivity).supportFragmentManager, "")
+        sheet.shareProductCB = {
+            onShareProduct(
+                item.id.toIntOrZero(),
+                item.text,
+                "",
+                item.weblink,
+                item.imgUrl,
+                item.postId,
+                item.postType,
+                item.isFollowed
+            )
+        }
+        sheet.addToCartCB = {
+          onTagSheetItemBuy(item.postId,item.positionInFeed, item.product, item.shopId,item.postType,item.isFollowed)
+        }
+        sheet.addToWIshListCB = {
+            addToWishList(item.postId, item.id, item.postType, item.isFollowed)
+        }
+    }
+
     override fun onGridItemClick(
-        positionInFeed: Int, contentPosition: Int, productPosition: Int,
-        redirectLink: String
+        positionInFeed: Int,
+        activityId: Int,
+        productId: Int,
+        redirectLink: String,
+        type: String,
+        isFollowed: Boolean
     ) {
         onGoToLink(redirectLink)
 
-        if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
-            val (_, _, _, _, _, _, contentList, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
-            if (redirectLink.contains(FEED_DETAIL)) {
-                analytics.eventGoToFeedDetail(trackingPostModel.postId, trackingPostModel.recomId)
-            } else if (contentList[contentPosition] is GridPostViewModel) {
-                val (itemList) = contentList[contentPosition] as GridPostViewModel
-                val (id, text, price) = itemList[productPosition]
-                analytics.eventProductGridClick(
-                    ProductEcommerce(
-                        id,
-                        text,
-                        price,
-                        productPosition
-                    ),
-                    trackingPostModel.activityName,
-                    trackingPostModel.postId,
-                    userIdInt,
-                    trackingPostModel.recomId
-                )
-            }
+        if (redirectLink.contains(FEED_DETAIL)) {
+            feedAnalytics.eventGridMoreProductCLicked(
+                activityId.toString(), type, isFollowed)
+        } else {
+            feedAnalytics.eventGridProductItemClicked(activityId.toString(),
+                productId.toString(),
+                type,
+                isFollowed)
         }
     }
 
@@ -2053,7 +2136,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             })
     }
 
-    private fun onAddToCartSuccess() {
+    private fun onAddToCartSuccess(activityId: String, type: String, isFollowed: Boolean) {
+        feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed)
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
 
@@ -2067,6 +2151,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
             if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
                 val item = (adapter.getlist()[rowNumber] as DynamicPostUiModel)
                 item.feedXCard.followers.isFollowed = !item.feedXCard.followers.isFollowed
+
+                feedAnalytics.eventClickFollowitem(item.feedXCard.id,
+                    adapterPosition,
+                    item.feedXCard.typename,
+                    item.feedXCard.followers.isFollowed)
 
                 if (item.feedXCard.followers.isFollowed)
                     item.feedXCard.followers.transitionFollow = true

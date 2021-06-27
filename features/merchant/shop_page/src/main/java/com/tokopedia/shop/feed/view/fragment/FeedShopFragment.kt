@@ -50,6 +50,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopView
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -530,10 +531,24 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onEditClicked(hasMultipleContent: Boolean, activityId: String, activityType: String) {
     }
 
-    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta) {
-    }
+    override fun onAvatarClick(
+        positionInFeed: Int,
+        redirectUrl: String,
+        activityId: Int,
+        activityName: String,
+        followCta: FollowCta,
+        type: String,
+        isFollowed: Boolean
+    ) {}
 
-    override fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean) {
+
+    override fun onHeaderActionClick(
+        positionInFeed: Int,
+        id: String,
+        type: String,
+        isFollow: Boolean,
+        postType: String
+    ) {
         if (type == FollowCta.AUTHOR_USER) {
             var userIdInt = 0
             try {
@@ -556,7 +571,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         editable: Boolean,
         isFollowed: Boolean,
         id: String,
-        authorType: String
+        authorType: String,
+        postType: String
     ) {
         context?.let {
             val menus =
@@ -585,7 +601,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectUrl)
     }
 
-    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean, type: Boolean) {
+    override fun onLikeClick(
+        positionInFeed: Int,
+        id: Int,
+        isLiked: Boolean,
+        postType: String,
+        isFollowed: Boolean,
+        type: Boolean
+    ) {
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
         } else {
@@ -593,7 +616,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String) {
+    override fun onCommentClick(
+        positionInFeed: Int,
+        id: Int,
+        authorType: String,
+        type: String,
+        isFollowed: Boolean
+    ) {
         onGoToKolComment(positionInFeed, id, false, "", authorType)
     }
 
@@ -604,7 +633,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         description: String,
         url: String,
         imageUrl: String,
-        typeASGC: Boolean
+        typeASGC: Boolean,
+        type: String,
+        isFollowed: Boolean
     ) {
         activity?.let {
             ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
@@ -660,7 +691,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         presenter.addPostTagItemToCart(postTagItem)
     }
 
-    override fun onTagSheetItemBuy(positionInFeed: Int, item: FeedXProduct, shopId: String) {
+    override fun onTagSheetItemBuy(
+        activityId: Int,
+        positionInFeed: Int,
+        item: FeedXProduct,
+        shopId: String,
+        type: String,
+        isFollowed: Boolean
+    ) {
     }
 
     override fun onActionPopup() {
@@ -685,7 +723,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun userCarouselImpression(positionInFeed: Int, media: List<FeedXMedia>) {
+    override fun userCarouselImpression(
+        positionInFeed: Int,
+        media: List<FeedXMedia>,
+        postType: String,
+        isFollowed: Boolean
+    ) {
     }
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
@@ -771,7 +814,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, productPosition: Int, redirectLink: String) {
+    override fun onGridItemClick(
+        positionInFeed: Int,
+        contentPosition: Int,
+        productPosition: Int,
+        redirectLink: String,
+        type: String,
+        isFollowed: Boolean
+    ) {
         onGoToLink(redirectLink)
     }
 
@@ -811,17 +861,24 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onReadMoreClicked(postId: String) {
     }
 
-    override fun onImageClicked(activityId: String) {
+    override fun onImageClicked(activityId: String, type: String, isFollowed: Boolean) {
     }
 
-    override fun addToWishList(productId: String) {
+    override fun addToWishList(
+        activityId: Int,
+        productId: String,
+        type: String,
+        isFollowed: Boolean
+    ) {
     }
 
     override fun onTagClicked(
         postId: Int,
         products: List<FeedXProduct>,
         listener: DynamicPostViewHolder.DynamicPostListener,
-        id: String
+        id: String,
+        type: String,
+        isFollowed: Boolean
     ) {
     }
 
@@ -830,7 +887,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         title: String,
         description: String,
         url: String,
-        imageUrl: String
+        imageUrl: String,
+        activityId: Int,
+        type: String,
+        isFollowed: Boolean
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onBottomSheetMenuClicked(
+        item: ProductPostTagViewModelNew,
+        context: Context
     ) {
         TODO("Not yet implemented")
     }

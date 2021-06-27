@@ -26,6 +26,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private lateinit var listener: DynamicPostViewHolder.DynamicPostListener
     private var postId: Int = 0
     private var shopId: String = "0"
+    private var postType: String = ""
+    private var isFollowed: Boolean = false
     var closeClicked: (() -> Unit)? = null
     var disMissed: (() -> Unit)? = null
     private var dismissedByClosing = false
@@ -97,6 +99,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
             item.feedType = "product"
             item.postId = postId
             item.positionInFeed = 0
+            item.postType = postType
+            item.isFollowed = isFollowed
             itemList.add(item)
         }
         return itemList
@@ -107,12 +111,16 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         products: List<FeedXProduct>,
         dynamicPostListener: DynamicPostViewHolder.DynamicPostListener,
         postId: Int,
-        shopId: String
+        shopId: String,
+        type: String,
+        isFollowed: Boolean
     ) {
         this.listProducts = products
         this.listener = dynamicPostListener
         this.postId = postId
         this.shopId = shopId
+        this.postType = type
+        this.isFollowed = isFollowed
         show(fragmentManager, "")
     }
 }

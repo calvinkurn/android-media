@@ -148,7 +148,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             userSession.name,
             feedXCard.id.toIntOrZero(),
             feedXCard.author.type,
-            feedXCard.author.id
+            feedXCard.author.id,
+            feedXCard.typename,
+            feedXCard.followers.isFollowed
         )
         shareButton.setOnClickListener {
             val desc = context.getString(R.string.feed_share_default_text)
@@ -159,13 +161,15 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 desc.replace("%s", feedXCard.author.name),
                 feedXCard.appLink,
                 feedXCard.media.firstOrNull()?.mediaUrl ?: "",
-                feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
+                feedXCard.typename == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT,
+                feedXCard.typename,
+                feedXCard.followers.isFollowed
             )
         }
     }
 
     fun bindLike(feedXCard: FeedXCard) {
-        bindLike(feedXCard.like, feedXCard.id.toIntOrZero())
+        bindLike(feedXCard.like, feedXCard.id.toIntOrZero(), feedXCard.typename, feedXCard.followers.isFollowed)
     }
 
     fun bindFollow(feedXCard: FeedXCard) {
@@ -174,7 +178,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.author,
             feedXCard.reportable,
             feedXCard.deletable,
-            feedXCard.followers
+            feedXCard.followers,
+            feedXCard.typename
         )
     }
 
@@ -183,7 +188,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         author: FeedXAuthor,
         reportable: Boolean,
         deletable: Boolean,
-        followers: FeedXFollowers
+        followers: FeedXFollowers,
+        type: String
     ) {
         val isFollowed = followers.isFollowed
         val count = followers.count
@@ -233,7 +239,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     author.appLink,
                     activityId,
                     activityName,
-                    followCta
+                    followCta,
+                    type,
+                    isFollowed
                 )
             }
 
@@ -252,7 +260,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 override fun onClick(widget: View) {
                     listener?.onHeaderActionClick(
                         positionInFeed, author.id,
-                        authorType, isFollowed
+                        authorType, isFollowed, type
                     )
                 }
 
@@ -284,7 +292,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 author.appLink,
                 activityId,
                 activityName,
-                followCta
+                followCta,
+                type,
+                isFollowed
             )
         }
         shopMenuIcon.setOnClickListener {
@@ -296,12 +306,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 true,
                 isFollowed,
                 author.id,
-                authorType
+                authorType,
+                type
             )
         }
     }
 
-    private fun bindLike(like: FeedXLike, id: Int) {
+    private fun bindLike(like: FeedXLike, id: Int, type: String, isFollowed: Boolean) {
         if (like.isLiked) {
             val colorGreen =
                 ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
@@ -347,7 +358,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             likedText.hide()
         }
         likeButton.setOnClickListener {
-            listener?.onLikeClick(positionInFeed, id, like.isLiked)
+            listener?.onLikeClick(positionInFeed, id, like.isLiked, type, isFollowed)
         }
     }
 
@@ -448,7 +459,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         caption.appLink,
                         caption.id.toIntOrZero(),
                         "",
-                        followCta
+                        followCta,
+                        caption.typename,
+                        caption.followers.isFollowed
                     )
                 }
 
@@ -491,7 +504,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
         name: String,
         id: Int,
         authorType: Int,
-        authorId: String
+        authorId: String,
+        type: String,
+        isFollowed: Boolean
     ) {
         seeAllCommentText.showWithCondition(comments.count != 0)
         seeAllCommentText.text =
@@ -525,13 +540,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
         if (authorType != 1)
             authId = authorId
         commentButton.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed)
         }
         seeAllCommentText.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed)
         }
         addCommentHint.setOnClickListener {
-            listener?.onCommentClick(positionInFeed, id, authId)
+            listener?.onCommentClick(positionInFeed, id, authId, type, isFollowed)
         }
     }
 
@@ -556,7 +571,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     pageControl.hide()
                 }
                 media.forEach { feedMedia ->
-                    imagePostListener.userCarouselImpression(positionInFeed, media)
+                    imagePostListener.userCarouselImpression(positionInFeed,
+                        media,
+                        feedXCard.typename,
+                        feedXCard.followers.isFollowed)
 
                     if (feedMedia.type == TYPE_IMAGE) {
                         val imageItem = View.inflate(context, R.layout.item_post_image_new, null)
@@ -593,7 +611,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 context,
                                 object : GestureDetector.SimpleOnGestureListener() {
                                     override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                                        listener?.onImageClicked(postId.toString())
+                                        listener?.onImageClicked(postId.toString(),
+                                            feedXCard.typename,
+                                            feedXCard.followers.isFollowed)
                                         if (!productTagText.isVisible)
                                             productTagText.visible()
                                         else
@@ -618,6 +638,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                 listener?.onLikeClick(
                                                     positionInFeed, postId,
                                                     isLiked = false,
+                                                    feedXCard.typename,
+                                                    feedXCard.followers.isFollowed,
                                                     type = true
                                                 )
                                             }
@@ -648,7 +670,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         postId,
                                         products,
                                         listener,
-                                        feedXCard.author.id
+                                        feedXCard.author.id,
+                                        feedXCard.typename,
+                                        feedXCard.followers.isFollowed
                                     )
                                 }
                             }
@@ -658,7 +682,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         postId,
                                         products,
                                         listener,
-                                        feedXCard.author.id
+                                        feedXCard.author.id,
+                                        feedXCard.typename,
+                                        feedXCard.followers.isFollowed
                                     )
                                 }
                             }
@@ -675,7 +701,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 feedMedia,
                                 feedXCard.id,
                                 products,
-                                feedXCard.author.id
+                                feedXCard.author.id,
+                                feedXCard.typename,
+                                feedXCard.followers.isFollowed
                             )
                         )
                     }
@@ -700,7 +728,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
         feedMedia: FeedXMedia,
         postId: String,
         products: List<FeedXProduct>,
-        id: String
+        id: String,
+        type: String,
+        isFollowed: Boolean
     ): View {
         val videoItem = View.inflate(context, R.layout.item_post_video_new, null)
         val param = LinearLayout.LayoutParams(
@@ -747,6 +777,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         products,
                         listener,
                         id,
+                        type,
+                        isFollowed
                     )
                 }
             }
@@ -756,7 +788,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         postId.toIntOrZero(),
                         products,
                         listener,
-                        id
+                        id,
+                        type,
+                        isFollowed
                     )
                 }
             }
@@ -873,7 +907,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             true,
             mutableListOf(),
             feedXCard.id.toInt(),
-            positionInFeed
+            positionInFeed,
+            feedXCard.typename,
+            feedXCard.followers.isFollowed
         )
     }
 

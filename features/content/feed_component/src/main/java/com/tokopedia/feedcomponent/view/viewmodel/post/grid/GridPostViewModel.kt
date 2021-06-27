@@ -14,5 +14,7 @@ data class GridPostViewModel(
         val showGridButton: Boolean = true,
         val trackingList: MutableList<TrackingViewModel> = ArrayList(),
         override var postId: Int = 0,
-        override var positionInFeed: Int = 0
+        override var positionInFeed: Int = 0,
+        val postType: String="",
+        val isFollowed: Boolean = false
 ) : BasePostViewModel

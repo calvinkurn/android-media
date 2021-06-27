@@ -63,7 +63,9 @@ class GridPostAdapter(private val contentPosition: Int,
                     extraProduct,
                     gridPostViewModel.actionText,
                     gridPostViewModel.actionLink,
-                    gridPostViewModel.postId
+                    gridPostViewModel.postId,
+                    gridPostViewModel.postType,
+                    gridPostViewModel.isFollowed
             )
 
         } else if (gridPostViewModel.showGridButton
@@ -72,14 +74,19 @@ class GridPostAdapter(private val contentPosition: Int,
                 && position == LAST_FEED_POSITION_SMALL) {
             val extraProduct = gridPostViewModel.totalItems - LAST_FEED_POSITION_SMALL
             holder.bindOthers(
-                    extraProduct,
-                    gridPostViewModel.actionText,
-                    gridPostViewModel.actionLink,
-                    gridPostViewModel.postId
+                extraProduct,
+                gridPostViewModel.actionText,
+                gridPostViewModel.actionLink,
+                gridPostViewModel.postId,
+                gridPostViewModel.postType,
+                gridPostViewModel.isFollowed
             )
 
         } else {
-            holder.bindProduct(gridPostViewModel.itemList[position])
+            holder.bindProduct(gridPostViewModel.postId,
+                gridPostViewModel.itemList[position],
+                gridPostViewModel.postType,
+                gridPostViewModel.isFollowed)
         }
     }
 
@@ -92,7 +99,7 @@ class GridPostAdapter(private val contentPosition: Int,
             setImageMargins(listSize)
         }
 
-        fun bindProduct(item: GridItemViewModel) {
+        fun bindProduct(postId: Int, item: GridItemViewModel, type: String, isFollowed: Boolean) {
             itemView.extraProduct.background = null
             itemView.extraProduct.hide()
 
@@ -116,7 +123,12 @@ class GridPostAdapter(private val contentPosition: Int,
             }
 
             itemView.setOnClickListener {
-                listener.onGridItemClick(positionInFeed, contentPosition, adapterPosition, item.redirectLink)
+                listener.onGridItemClick(positionInFeed,
+                    postId,
+                    item.id.toInt(),
+                    item.redirectLink,
+                    type,
+                    isFollowed)
                 if (item.trackingList.isNotEmpty()) {
                     listener.onAffiliateTrackClicked(item.trackingList, true)
                 }
@@ -152,7 +164,7 @@ class GridPostAdapter(private val contentPosition: Int,
         }
 
         fun bindOthers(numberOfExtraProduct: Int, actionText: String,
-                       actionLink: String, postId: Int) {
+                       actionLink: String, postId: Int, type: String, isFollowed: Boolean) {
             val extra = "+$numberOfExtraProduct $actionText"
             itemView.extraProduct.background = ColorDrawable(
                     MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
@@ -165,10 +177,12 @@ class GridPostAdapter(private val contentPosition: Int,
             itemView.setOnClickListener {
                 listener.onGridItemClick(
                     positionInFeed,
-                    contentPosition,
-                    adapterPosition,
+                    postId,
+                    0,
                     if (!TextUtils.isEmpty(actionLink)) actionLink
-                    else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString())
+                    else ApplinkConst.FEED_DETAILS.replace(EXTRA_DETAIL_ID, postId.toString()),
+                    type,
+                    isFollowed
                 )
             }
         }
@@ -187,8 +201,10 @@ class GridPostAdapter(private val contentPosition: Int,
     }
 
     interface GridItemListener {
-        fun onGridItemClick(positionInFeed: Int, contentPosition: Int, productPosition: Int,
-                            redirectLink: String)
+        fun onGridItemClick(
+            positionInFeed: Int, activityId: Int, productId: Int,
+            redirectLink: String, type: String, isFollowed: Boolean,
+        )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
     }
