@@ -3,18 +3,23 @@ package com.tokopedia.logisticaddaddress.features.district_recommendation.adapte
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.databinding.ItemDistrictRecommendationRevampBinding
 import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.logisticaddaddress.features.district_recommendation.viewholder.DiscomAdapterViewHolder
 
-class DiscomAdapterRevamp(private var listener: ActionListener): RecyclerView.Adapter<DiscomAdapterRevamp.DiscomAdapterViewHolder>() {
+class DiscomAdapterRevamp(private var listener: ActionListener): RecyclerView.Adapter<DiscomAdapterViewHolder>() {
 
     private var districtData = mutableListOf<Address>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscomAdapterViewHolder {
         val binding = ItemDistrictRecommendationRevampBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return DiscomAdapterViewHolder(binding, listener)
+        val viewHolder = DiscomAdapterViewHolder.getViewHolder(binding)
+        viewHolder.itemView.setOnClickListener {
+            val newPosition = viewHolder.adapterPosition
+            val model = districtData[newPosition]
+            listener.onDistrictItemRevampClicked(model)
+        }
+        return viewHolder
     }
 
     override fun getItemCount(): Int {
@@ -41,19 +46,4 @@ class DiscomAdapterRevamp(private var listener: ActionListener): RecyclerView.Ad
         fun onDistrictItemRevampClicked(districtModel: Address)
     }
 
-    inner class DiscomAdapterViewHolder (binding: ItemDistrictRecommendationRevampBinding, private val listener: ActionListener): RecyclerView.ViewHolder(binding.root) {
-
-        val tvDistrictName = binding.searchPlaceName
-
-        fun bindData(data: Address) {
-            val districtSelected = HtmlLinkHelper(itemView.context, itemView.context.getString(R.string.tv_discom_item_revamp, data.provinceName, data.cityName, data.districtName)).spannedString
-            itemView.apply {
-
-                tvDistrictName.text = districtSelected
-                tvDistrictName.setOnClickListener {
-                    listener.onDistrictItemRevampClicked(data)
-                }
-            }
-        }
-    }
 }
