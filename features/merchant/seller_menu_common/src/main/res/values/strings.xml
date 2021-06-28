@@ -18,7 +18,6 @@
     <string name="setting_menu_location_and_shipment">LOKASI DAN PENGIRIMAN</string>
     <string name="setting_menu_add_and_shop_location">Lokasi Toko</string>
     <string name="setting_menu_set_shipment_method">Atur Layanan Pengiriman</string>
-    <string name="setting_menu_new_label">BARU</string>
     <string name="setting_error_message">Data tidak dapat ditampilkan</string>
     <string name="setting_error_description">Ketuk icon untuk memuat ulang</string>
     <string name="setting_active">Aktif</string>
@@ -39,6 +38,8 @@
     <string name="dot_string">&#160;\u2022&#160;</string>
     <string name="official_store">Official Store</string>
     <string name="power_merchant_status">Power Merchant:&#160;</string>
+    <string name="power_merchant_upgrade">Power Merchant</string>
+    <string name="power_merchant_pro_status">Power Merchant PRO:&#160;</string>
 
     <string name="setting_toaster_error_message">Oops, informasi gagal ditampilkan</string>
     <string name="setting_toaster_error_retry">Muat Ulang</string>
@@ -61,6 +62,10 @@
     <string name="seller_menu_shop_score_empty_label">--</string>
     <string name="seller_menu_admin_no_permission_oops">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
 
-    <string name="seller_menu_ticker_title_shop_score">Mulai %s, ada skema Performa Toko baru!</string>
-    <string name="seller_menu_ticker_desc_shop_score">Ada 3 perubahan besar yang penting untuk tokomu. &lt;a href="#"&gt;Pelajari Selengkapnya&lt;/a&gt;</string>
+    <string name="transaction_since_joining">Transaksi sejak bergabung</string>
+    <string name="transaction_on_date">Transaksi sejak 14 Juni 2021</string>
+    <string name="transaction_passed">Kamu telah melewati <![CDATA[<b>100</b>]]> transaksi</string>
+
+    <string name="total_transaction">%s/100</string>
+
 </resources>

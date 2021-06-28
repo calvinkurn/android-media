@@ -41,6 +41,8 @@
     <string name="path_cotp">/cotp</string>
     <string name="path_otp_push_notif_receiver">/otp-push-notif-receiver</string>
     <string name="path_otp_push_notif_setting">/otp-push-notif-setting</string>
+    <string name="path_qr_login">/qr-login</string>
+    <string name="path_qr_login_result">/qr-login-result</string>
     <string name="path_otp_validator">/otp-validator</string>
     <string name="path_image_picker">/image-picker</string>
     <string name="path_video_picker">/video-picker</string>

@@ -71,8 +71,10 @@
 
     <!-- add edit product price recommendation -->
     <string name="title_price_recommendation">Rekomendasi Harga Pasar</string>
+    <string name="title_price_recommendation_applied">Rekomendasi harga sudah diterapkan</string>
     <string name="title_price_recommendation_bottom_sheet">Rekomendasi harga pasar</string>
     <string name="label_price_recommendation_description">Harga rata-rata %1s - %2s</string>
+    <string name="label_price_recommendation_price_description">Rekomendasi ini untuk &lt;b>“%1s”&lt;/b> </string>
     <string name="label_price_recommendation_apply">Terapkan</string>
     <string name="label_price_recommendation_next">Pelajari Selengkapnya</string>
     <string-array name="array_price_recommendation_content_titles">
@@ -393,6 +395,25 @@
     <string name="label_product_limitation_bottomsheet_button_draft">Simpan Sebagai Draft</string>
     <string name="title_product_limitation_cant_add_product">Tidak bisa menambahkan produk</string>
     <string name="title_product_limitation_add_product_rules">Aturan jumlah produk toko</string>
+
+    <!-- Title Validation -->
+    <string name="title_product_title_validation_bottomsheet">Tips menamakan produk</string>
+    <string name="title_product_title_validation_bottomsheet_success"><![CDATA[Nama produkmu sudah sesuai dengan Syarat & Ketentuan Tokopedia:]]></string>
+    <string name="title_product_title_validation_bottomsheet_error"><![CDATA[Nama produkmu memiliki kata yang tidak sesuai dengan Syarat & Ketentuan. Yuk, cek lagi!]]></string>
+    <string name="label_product_title_validation_bottomsheet_point1">Tidak berisi kata terlarang</string>
+    <string name="label_product_title_validation_bottomsheet_point1_desc">Hapus kata-kata yang berwarna merah, ya.</string>
+    <string name="label_product_title_validation_bottomsheet_point2">Tidak berisi kata-kata spam atau berisi kata yang berunsur multi-brand</string>
+    <string name="label_product_title_validation_bottomsheet_point3">Tidak ada kesalahan penulisan</string>
+    <string name="error_product_title_validation_bottomsheet_point1">Terdeteksi adanya kata terlarang</string>
+    <string name="error_product_title_validation_bottomsheet_point2">Terdeteksi adanya kata spam atau multi-brand pada nama produk</string>
+    <string name="error_product_title_validation_bottomsheet_point3">Terdeteksi adanya kesalahan ejaan</string>
+    <string name="label_product_title_validation_bottomsheet_description">Kata yang kurang sesuai pada nama produk dapat mengurangi kemungkinan produkmu muncul di hasil pencarian, lho.</string>
+    <string name="label_product_title_validation_bottomsheet_dismiss">Saya Mengerti</string>
+    <string name="error_product_title_validation_typo">Pastikan ejaan kata di nama produk benar, ya.</string>
+    <string name="error_product_title_validation_negative">Nama produk berisi kata-kata spam. Cek lagi, ya.</string>
+    <string name="error_product_title_validation_blacklisted">Tidak boleh menggunakan kata terlarang di dalam nama produk.</string>
+    <string name="label_success_remove_blacklisted_words">Kata terlarang berhasil dihapus</string>
+    <string name="label_product_title_validation_typo_correction"><![CDATA[<strike>%1$s</strike><h6>&rsaquo;</h6><font color=\'#%3$s\'>%2$s</font>]]></string>
 
     <!--CONTENT DESC-->
     <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>

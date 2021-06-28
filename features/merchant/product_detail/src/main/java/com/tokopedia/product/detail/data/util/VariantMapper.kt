@@ -43,22 +43,23 @@ object VariantMapper {
         val productColorVariantId = variants?.get("colour")?.get("id") ?: ""
         val productSizeVariantId = variants?.get("size")?.get("id") ?: ""
         val productPreview = ProductPreview(
-                productId,
-                productImageUrl,
-                productName,
-                productPrice,
-                productColorVariantId,
-                productColorVariant,
-                productColorHexVariant,
-                productSizeVariantId,
-                productSizeVariant,
-                productUrl,
-                productFsIsActive,
-                freeOngkirImgUrl,
-                priceBefore,
-                priceBeforeInt,
-                dropPercentage,
-                isActive
+            id = productId,
+            imageUrl = productImageUrl,
+            name = productName,
+            price = productPrice,
+            colorVariantId = productColorVariantId,
+            colorVariant = productColorVariant,
+            colorHexVariant = productColorHexVariant,
+            sizeVariantId = productSizeVariantId,
+            sizeVariant = productSizeVariant,
+            url = productUrl,
+            productFsIsActive = productFsIsActive,
+            productFsImageUrl = freeOngkirImgUrl,
+            priceBefore = priceBefore,
+            priceBeforeInt = priceBeforeInt,
+            dropPercentage = dropPercentage,
+            isActive = isActive,
+            remainingStock = productInfo?.getFinalStock()?.toIntOrNull() ?: 1
         )
         val productPreviews = listOf(productPreview)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)
@@ -143,7 +144,12 @@ object VariantMapper {
                 isCod = newData?.isCod ?: false
         )
 
-        return DynamicProductInfoP1(basic, data, oldData.layoutName)
+        return DynamicProductInfoP1(
+            basic = basic,
+            data = data,
+            layoutName = oldData.layoutName,
+            bestSellerContent = oldData.bestSellerContent
+        )
     }
 
     fun updateMediaToCurrentP1Data(oldData: DynamicProductInfoP1?, media: MutableList<Media>): DynamicProductInfoP1 {
@@ -151,8 +157,11 @@ object VariantMapper {
         val data = oldData?.data?.copy(
                 media = media
         )
-        return DynamicProductInfoP1(basic ?: BasicInfo(), data
-                ?: ComponentData(), oldData?.layoutName ?: "")
+        return DynamicProductInfoP1(
+            basic = basic ?: BasicInfo(),
+            data = data ?: ComponentData(),
+            layoutName = oldData?.layoutName ?: "",
+            bestSellerContent = oldData?.bestSellerContent)
     }
 
     fun generateVariantString(variantData:ProductVariantCommon?): String {

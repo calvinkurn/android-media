@@ -4,6 +4,8 @@ import com.tokopedia.gm.common.data.source.cloud.model.GetPowerMerchantSettingIn
 import com.tokopedia.gm.common.data.source.local.model.PowerMerchantSettingInfoUiModel
 import com.tokopedia.gm.common.domain.mapper.PowerMerchantSettingInfoMapper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -26,11 +28,14 @@ class GetPMSettingInfoUseCase @Inject constructor(
         val errors: List<GraphqlError>? = gqlResponse.getError(GetPowerMerchantSettingInfoResponse::class.java)
 
         if (errors.isNullOrEmpty()) {
-            val response = gqlResponse.getData<GetPowerMerchantSettingInfoResponse>()
-            val data = mapper.mapRemoteModelToUiModel(response.goldGetPMSettingInfo)
-            return data
+            val response = gqlResponse.getData<GetPowerMerchantSettingInfoResponse>(GetPowerMerchantSettingInfoResponse::class.java)
+            if (response != null) {
+                return mapper.mapRemoteModelToUiModel(response.goldGetPMSettingInfo)
+            } else {
+                throw RuntimeException("${getClassName()} : returns null")
+            }
         } else {
-            throw MessageErrorException(errors.joinToString(" - ") { it.message })
+            throw MessageErrorException(errors.firstOrNull()?.message.orEmpty())
         }
     }
 
@@ -40,9 +45,7 @@ class GetPMSettingInfoUseCase @Inject constructor(
         private val QUERY = """
            query goldGetPMSettingInfo(${'$'}shopID: Int!, ${'$'}source: String!) {
              goldGetPMSettingInfo(shopID: ${'$'}shopID, source:${'$'}source) {
-               shop_id
                period_type
-               period_end_date_time
                ticker_list {
                  title
                  text
@@ -57,6 +60,15 @@ class GetPMSettingInfoUseCase @Inject constructor(
                 putLong(KEY_SHOP_ID, shopId.toLongOrZero())
                 putString(KEY_SOURCE, source)
             }
+        }
+
+        fun getCacheStrategy(shouldFromCache: Boolean): GraphqlCacheStrategy {
+            val cacheType = if (shouldFromCache) {
+                CacheType.CACHE_FIRST
+            } else {
+                CacheType.ALWAYS_CLOUD
+            }
+            return GraphqlCacheStrategy.Builder(cacheType).build()
         }
     }
 }

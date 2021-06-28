@@ -4,5 +4,5 @@ class PrintingMenuItemUiModel(
         override val title: String = "",
         override val iconUnify: Int? = null,
         override val clickAction: () -> Unit = {})
-    : MenuItemUiModel(title, null, null, "", "",
-        null, iconUnify, 0, true, clickAction)
+    : MenuItemUiModel(title, null, "", "",
+        null, iconUnify, 0, clickAction)

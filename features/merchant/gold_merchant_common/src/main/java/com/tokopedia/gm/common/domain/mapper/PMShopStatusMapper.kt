@@ -1,8 +1,9 @@
 package com.tokopedia.gm.common.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
-import com.tokopedia.gm.common.data.source.cloud.model.PMShopStatusDataModel
+import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import javax.inject.Inject
 
@@ -12,10 +13,11 @@ import javax.inject.Inject
 
 class PMShopStatusMapper @Inject constructor() {
 
-    fun mapRemoteModelToUiModel(shopStatus: PMShopStatusDataModel): PMStatusUiModel {
-        val statusOff = PMStatusUiModel.AUTO_EXTEND_STATUS
+    fun mapRemoteModelToUiModel(shopStatus: ShopStatusModel): PMStatusUiModel {
+        val statusOff = PMStatusUiModel.PM_AUTO_EXTEND_OFF
         return PMStatusUiModel(
-                status = shopStatus.powerMerchant?.status.orEmpty(),
+                status = shopStatus.powerMerchant?.status ?: PMStatusConst.INACTIVE,
+                pmTier = shopStatus.powerMerchant?.pmTire ?: PMConstant.PMTierType.POWER_MERCHANT,
                 expiredTime = getExpiredTimeFmt(shopStatus.powerMerchant?.expiredTime.orEmpty()),
                 autoExtendEnabled = shopStatus.powerMerchant?.autoExtend?.status != statusOff,
                 isOfficialStore = shopStatus.officialStore?.status == PMStatusConst.ACTIVE

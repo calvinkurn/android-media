@@ -1,8 +1,8 @@
 package com.tokopedia.shop.home.domain
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.*
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
 import com.tokopedia.usecase.coroutines.UseCase
@@ -47,6 +47,7 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                 publishDate
                 widgets {
                   widgetID
+                  widgetMasterID
                   layoutOrder
                   name
                   type
@@ -57,6 +58,7 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                     cover
                     ratio
                     isATC
+                    etalaseID
                   }
                   data {
                     ... on DisplayWidget {

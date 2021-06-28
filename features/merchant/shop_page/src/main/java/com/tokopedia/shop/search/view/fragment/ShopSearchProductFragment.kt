@@ -300,7 +300,7 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
                 is Fail -> {
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeShopSearchProductResult.name,
                                 liveDataName = ShopSearchProductViewModel::shopSearchProductResult.name,

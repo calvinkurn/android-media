@@ -26,4 +26,7 @@ data class SaveAddressDataModel (
         var longitude: String = "",
         var editDetailAddress: String = "",
         var selectedDistrict: String = "",
-        var zipCodes: List<String> = emptyList()) : Parcelable
+        var zipCodes: List<String> = emptyList(),
+        var applyNameAsNewUserFullname: Boolean = false,
+        var setAsPrimaryAddresss: Boolean = false,
+        var isAnaPositive: String = "" ) : Parcelable

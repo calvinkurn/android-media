@@ -1,15 +1,16 @@
 
 package com.tokopedia.review.feature.inbox.buyerreview.data.pojo.inboxdetail;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class InboxReputationDetailPojo {
 
     @SerializedName("reputation_id")
     @Expose
-    private int reputationId;
+    private long reputationId;
     @SerializedName("review_inbox_data")
     @Expose
     private List<ReviewInboxDatum> reviewInboxData = null;
@@ -29,11 +30,11 @@ public class InboxReputationDetailPojo {
     @Expose
     private String orderId;
 
-    public int getReputationId() {
+    public long getReputationId() {
         return reputationId;
     }
 
-    public void setReputationId(int reputationId) {
+    public void setReputationId(long reputationId) {
         this.reputationId = reputationId;
     }
 

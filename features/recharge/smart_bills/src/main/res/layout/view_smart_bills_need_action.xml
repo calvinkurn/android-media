@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.LocalLoad
+        android:id="@+id/sbm_local_load_action"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_local_load_title="@string/smart_bills_clustering_local_load_title"
+        app:unify_local_load_description="@string/smart_bills_clustering_local_load_desc"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_smart_bills_need_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+</LinearLayout>

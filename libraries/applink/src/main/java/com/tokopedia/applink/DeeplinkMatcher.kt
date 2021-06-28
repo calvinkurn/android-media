@@ -15,10 +15,12 @@ import com.tokopedia.applink.DeepLinkChecker.HOT
 import com.tokopedia.applink.DeepLinkChecker.HOTEL
 import com.tokopedia.applink.DeepLinkChecker.HOT_LIST
 import com.tokopedia.applink.DeepLinkChecker.INVOICE
+import com.tokopedia.applink.DeepLinkChecker.LOGIN_BY_QR
 import com.tokopedia.applink.DeepLinkChecker.NATIVE_THANK_YOU
 import com.tokopedia.applink.DeepLinkChecker.ORDER_LIST
 import com.tokopedia.applink.DeepLinkChecker.OTHER
 import com.tokopedia.applink.DeepLinkChecker.PLAY
+import com.tokopedia.applink.DeepLinkChecker.POWER_MERCHANT
 import com.tokopedia.applink.DeepLinkChecker.PRODUCT
 import com.tokopedia.applink.DeepLinkChecker.PRODUCT_REVIEW
 import com.tokopedia.applink.DeepLinkChecker.PROFILE
@@ -39,6 +41,7 @@ class DeeplinkMatcher {
     private val GT = false
 
     var matcherList: List<Pair<Pattern, Int>> = mutableListOf<Pair<Pattern, Int>>().apply {
+        add(Pattern(GT, 0, mapOf(0 to "qrcode-login")) to LOGIN_BY_QR)
         add(Pattern(GT, 0, mapOf(0 to "play")) to PLAY)
         add(Pattern(GT, 0, mapOf(0 to "flight")) to FLIGHT)
         add(Pattern(EQ, 2, mapOf(0 to "promo")) to PROMO_DETAIL)
@@ -82,14 +85,17 @@ class DeeplinkMatcher {
         add(Pattern(EQ, 2, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
         add(Pattern(EQ, 1, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
         add(Pattern(EQ, 4, mapOf(0 to "product-review")) to PRODUCT_REVIEW)
+        add(Pattern(EQ, 2, mapOf(0 to "settings", 1 to "power-merchant")) to POWER_MERCHANT)
+        add(Pattern(EQ, 2, mapOf(0 to "myshop", 1 to "power-merchant")) to POWER_MERCHANT) // The position of this pattern needs to be above "myshop"
         add(Pattern(GT, 1, mapOf(0 to "myshop")) to OTHER)
         add(Pattern(EQ, 1, mapOf(0 to "my-shop")) to OTHER)
         add(Pattern(GT, 0, mapOf(0 to "deals")) to DEALS)
         add(Pattern(EQ, 2, mapOf(0 to "terms", 1 to "aktivasi-powermerchant")) to OTHER)
-        add(Pattern(EQ, 1, null) to SHOP)
-        add(Pattern(EQ, 2, null) to PRODUCT)
+        add(Pattern(GT, 0, mapOf(0 to "edu")) to OTHER)
         add(Pattern(EQ, 3, mapOf(1 to "campaign")) to ETALASE)
         add(Pattern(EQ, 4, mapOf(0 to "payment", 1 to "thank-you")) to NATIVE_THANK_YOU)
+        add(Pattern(EQ, 1, null) to SHOP)
+        add(Pattern(EQ, 2, null) to PRODUCT)
     }
 
     fun match(uri: Uri): Int {

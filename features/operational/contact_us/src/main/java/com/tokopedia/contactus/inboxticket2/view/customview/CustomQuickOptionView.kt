@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.contactus.inboxticket2.view.customview.adapter.ContactUsCustomQuickOptionViewAdapter
-import com.tokopedia.design.quickfilter.QuickSingleFilterView
+import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterView
 
 class CustomQuickOptionView : QuickSingleFilterView {
     constructor(context: Context) : super(context)
@@ -13,7 +13,7 @@ class CustomQuickOptionView : QuickSingleFilterView {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     override fun initialAdapter() {
-        adapterFilter = ContactUsCustomQuickOptionViewAdapter(quickSingleFilterListener)
+        adapterFilter = ContactUsCustomQuickOptionViewAdapter(quickSingleFilterListener())
     }
 
     override fun isMultipleSelectionAllowed(): Boolean {

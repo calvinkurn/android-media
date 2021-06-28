@@ -25,8 +25,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -41,9 +39,10 @@ import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
@@ -380,9 +379,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun onErrorToggleFavoriteShop(error: Throwable) {
         activity?.run {
-            NetworkErrorHelper.showCloseSnackbar(this,
-                    com.tokopedia.network.utils.ErrorHandler.getErrorMessage(this, error)
-            )
+            NetworkErrorHelper.showCloseSnackbar(this, ErrorHandler.getErrorMessage(this, error))
         }
     }
 
@@ -420,14 +417,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     onErrorGetShopInfo(it.throwable)
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
                                 liveDataName = ShopPageProductListResultViewModel::shopInfoResp.name,
                                 userId = userId,
                                 shopId = shopId.orEmpty(),
                                 shopName = shopName.orEmpty(),
-                                errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable),
+                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
                                 stackTrace = Log.getStackTraceString(throwable),
                                 errType = SHOP_PAGE_PRODUCT_RESULT_BUYER_FLOW_TAG
                         )
@@ -442,14 +439,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 is Fail -> {
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
                                 liveDataName = ShopPageProductListResultViewModel::shopSortFilterData.name,
                                 userId = userId,
                                 shopId = shopId.orEmpty(),
                                 shopName = shopName.orEmpty(),
-                                errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable),
+                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
                                 stackTrace = Log.getStackTraceString(throwable),
                                 errType = SHOP_PAGE_PRODUCT_RESULT_BUYER_FLOW_TAG
                         )
@@ -481,14 +478,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 is Fail -> {
                     val throwable = it.throwable
                     if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP1BuyerFlowAlerting(
+                        ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
                                 liveDataName = ShopPageProductListResultViewModel::productData.name,
                                 userId = userId,
                                 shopId = shopId.orEmpty(),
                                 shopName = shopName.orEmpty(),
-                                errorMessage = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable),
+                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
                                 stackTrace = Log.getStackTraceString(throwable),
                                 errType = SHOP_PAGE_PRODUCT_RESULT_BUYER_FLOW_TAG
                         )

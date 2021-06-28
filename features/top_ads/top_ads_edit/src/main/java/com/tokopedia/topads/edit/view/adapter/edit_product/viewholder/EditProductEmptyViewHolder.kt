@@ -18,7 +18,7 @@ class EditProductEmptyViewHolder(val view: View) : EditProductViewHolder<EditPro
     }
 
     override fun bind(item: EditProductEmptyViewModel) {
-        view.imageView8.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.ill_no_product))
+        view.imageView8.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.no_products))
     }
 
 }

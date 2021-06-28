@@ -40,4 +40,11 @@ class LoadingDialogFragment : DialogFragment() {
     private fun setupView(view: View) {
         loader = view.findViewById(R.id.loader)
     }
+
+    companion object {
+
+        fun get(fragmentManager: FragmentManager): LoadingDialogFragment? {
+            return fragmentManager.findFragmentByTag(LoadingDialogFragment::class.java.simpleName) as? LoadingDialogFragment
+        }
+    }
 }

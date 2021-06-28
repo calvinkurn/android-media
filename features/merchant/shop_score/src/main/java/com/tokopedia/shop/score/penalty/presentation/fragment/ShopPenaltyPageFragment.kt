@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -28,6 +29,7 @@ import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewMo
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_penalty_page.*
 import javax.inject.Inject
 
 class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
@@ -59,6 +61,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
+        setupActionBar()
         observePenaltyPage()
         observeUpdateSortFilter()
         observeDetailPenaltyNextPage()
@@ -156,10 +159,15 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         } else {
             "${startDate.second} - ${endDate.second}"
         }
-        clearAllData()
         viewModelShopPenalty.setDateFilterData(Pair(startDate.first, endDate.first))
-        viewModelShopPenalty.getDataPenalty()
-        penaltyPageAdapter.showLoading()
+        penaltyPageAdapter.apply {
+            removePenaltyListData()
+            refreshSticky()
+            removeNotFoundPenalty()
+            removeErrorStatePenalty()
+            showLoading()
+        }
+        endlessRecyclerViewScrollListener.resetState()
         penaltyPageAdapter.updateDateFilterText(date)
     }
 
@@ -200,7 +208,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
                     val basePenaltyData = it.data.penaltyVisitableList.first.filterNot { visitable -> visitable is ItemPenaltyUiModel }
                     val penaltyFilterDetailData = it.data.penaltyVisitableList.first.filterIsInstance<ItemPenaltyUiModel>()
                     penaltyPageAdapter.setPenaltyData(basePenaltyData)
-                    onSuccessGetPenaltyListData(penaltyFilterDetailData, it.data.penaltyVisitableList.second, it.data.penaltyVisitableList.third)
+                    onSuccessGetPenaltyListData(penaltyFilterDetailData, it.data.penaltyVisitableList.third)
                     penaltyPageAdapter.refreshSticky()
                 }
                 is Fail -> {
@@ -217,7 +225,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             hideLoading()
             when (it) {
                 is Success -> {
-                    onSuccessGetPenaltyListData(it.data.first, it.data.second, it.data.third)
+                    onSuccessGetPenaltyListData(it.data.first, it.data.third)
                 }
                 is Fail -> {
                     penaltyPageAdapter.setErrorStatePenalty(ItemPenaltyErrorUiModel(it.throwable))
@@ -228,13 +236,24 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
         }
     }
 
-    private fun onSuccessGetPenaltyListData(data: List<ItemPenaltyUiModel>, hasPrev: Boolean, hasNext: Boolean) {
-        if (!hasPrev && data.isEmpty()) {
+    private fun onSuccessGetPenaltyListData(data: List<ItemPenaltyUiModel>, hasNext: Boolean) {
+        val penaltyList = penaltyPageAdapter.list.filterIsInstance<ItemPenaltyUiModel>()
+        if (penaltyList.isEmpty() && data.isEmpty()) {
             penaltyPageAdapter.setEmptyStatePenalty()
         } else {
             penaltyPageAdapter.updatePenaltyListData(data)
         }
         updateScrollListenerState(hasNext)
+    }
+
+    private fun setupActionBar() {
+        (activity as? AppCompatActivity)?.run {
+            supportActionBar?.hide()
+            setSupportActionBar(penalty_page_toolbar)
+            supportActionBar?.apply {
+                title = getString(R.string.title_penalty_shop_score)
+            }
+        }
     }
 
 

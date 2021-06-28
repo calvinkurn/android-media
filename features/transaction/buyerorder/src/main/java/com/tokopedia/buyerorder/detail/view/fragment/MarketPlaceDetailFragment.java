@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorder.detail.view.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -42,6 +43,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tkpd.library.utils.ImageHandler;
@@ -119,6 +121,7 @@ import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_BODY
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_TITLE_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerUtils.formatTitleHtml;
 import static com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.FINISH_ORDER_BOTTOMSHEET_TITLE;
+import static com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment.CREATE_REVIEW_ERROR_MESSAGE;
 
 public class MarketPlaceDetailFragment extends BaseDaggerFragment implements RefreshHandler.OnRefreshHandlerListener, OrderListDetailContract.View {
 
@@ -159,6 +162,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public static final int CANCEL_ORDER_DISABLE = 102;
     public static final int TEXT_SIZE_MEDIUM = 12;
     public static final int TEXT_SIZE_LARGE = 14;
+    public static final int REQUEST_CODE_WRITE_REVIEW = 103;
+
     @Inject
     OrderListDetailPresenter presenter;
     @Inject
@@ -903,7 +908,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
                     buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
-                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
+                    buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, (Serializable) listProducts);
                     if (getArguments() != null) {
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                     }
@@ -985,13 +990,13 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
                     orderListAnalytics.sendTulisReviewEventData(status.status());
-                    RouteManager.route(getContext(), actionButton.getUri());
+                    goToReview(actionButton.getUri());
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     if (this.status.status().equals(STATUS_CODE_220) || this.status.status().equals(STATUS_CODE_400)) {
                         Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
-                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, (Serializable) listProducts);
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_URI, actionButton.getUri());
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, isRequestedCancel);
@@ -1010,7 +1015,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         Intent buyerReqCancelIntent = new Intent(getContext(), BuyerRequestCancelActivity.class);
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SHOP_NAME, shopInfo.getShopName());
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_INVOICE, invoiceNum);
-                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_LIST_PRODUCT, (Serializable) listProducts);
+                        buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, (Serializable) listProducts);
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_URI, actionButton.getUri());
                         buyerReqCancelIntent.putExtra(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, isRequestedCancel);
@@ -1111,6 +1116,17 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 finishOrderDetail();
             }
             orderListAnalytics.sendActionButtonClickEvent(CLICK_SUBMIT_CANCELATION, statusValue.getText().toString() + "-" + reason);
+        } else if (requestCode == REQUEST_CODE_WRITE_REVIEW) {
+            if (resultCode == Activity.RESULT_OK) {
+                onSuccessCreateReview();
+            } else if (resultCode == Activity.RESULT_FIRST_USER) {
+                String errorMessage = data.getStringExtra(CREATE_REVIEW_ERROR_MESSAGE);
+                if(errorMessage == null) {
+                    onFailCreateReview(getString(R.string.uoh_review_create_invalid_to_review));
+                } else {
+                    onFailCreateReview(errorMessage);
+                }
+            }
         }
     }
 
@@ -1346,5 +1362,23 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void setActionButtonText(String txt) {
         // no op
+    }
+
+    private void goToReview(String applink) {
+        Intent intent = RouteManager.getIntent(getContext(), applink);
+        startActivityForResult(intent, REQUEST_CODE_WRITE_REVIEW);
+    }
+
+    private void onSuccessCreateReview() {
+        if (getContext() != null && getView() != null) {
+            Toaster.build(getView(), getString(R.string.uoh_review_create_success_toaster, userSessionInterface.getName()), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.uoh_review_oke), v -> {}).show();
+            refreshHandler.startRefresh();
+        }
+    }
+
+    private void onFailCreateReview(String errorMessage) {
+        if(getView() != null) {
+            Toaster.build(getView(), errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.uoh_review_oke), v -> {}).show();
+        }
     }
 }
