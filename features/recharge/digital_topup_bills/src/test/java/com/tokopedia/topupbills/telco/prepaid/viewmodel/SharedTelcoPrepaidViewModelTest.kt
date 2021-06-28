@@ -158,7 +158,7 @@ class SharedTelcoPrepaidViewModelTest {
         val labelPulsa = (actualData as Success).data[0].label
         assertEquals(false, sharedTelcoPrepaidViewModel.loadingProductList.value)
         assertEquals(multiTab.rechargeCatalogProductDataData.productInputList[0].label, labelPulsa)
-        assertEquals(autoSelectProductId.toString(), sharedTelcoPrepaidViewModel.favNumberSelected.value )
+        assertEquals(autoSelectProductId.toString(), sharedTelcoPrepaidViewModel.favNumberSelected.value)
     }
 
     @Test
