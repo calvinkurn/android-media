@@ -9,7 +9,7 @@ data class ProductVariantBottomSheetParams(
         // general info
         var productId: String = "",
         var pageSource: String = "",
-        var productParentId: String = "",
+        var trackerCdListName: String = "",
         var isTokoNow: Boolean = false,
         var whId: String = "",
 

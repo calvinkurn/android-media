@@ -358,8 +358,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                         ?: "", categoryName = aggregatorParams?.categoryName ?: "",
                 categoryId = aggregatorParams?.categoryId
                         ?: "", isFreeOngkir = aggregatorParams?.isFreeOngkir ?: false,
-                trackerAttribution = aggregatorParams?.trackerAttribution ?: "",
-                pageSource = aggregatorParams?.pageSource ?: "")
+                pageSource = aggregatorParams?.pageSource ?: "",
+                cdListName = aggregatorParams?.trackerCdListName ?: "")
     }
 
     private fun onSuccessOcs(result: AddToCartDataModel) {
