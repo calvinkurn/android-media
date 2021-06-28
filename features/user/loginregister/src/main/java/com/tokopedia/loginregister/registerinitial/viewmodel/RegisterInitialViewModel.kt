@@ -274,7 +274,7 @@ class RegisterInitialViewModel @Inject constructor(
 
             }
         }, {
-            onFailedRegisterCheck()
+            onFailedRegisterCheck().invoke(it)
         })
     }
 
