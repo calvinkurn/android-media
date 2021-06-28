@@ -272,7 +272,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
         })
 
         bookingViewModel.errorCancelVoucher.observe(viewLifecycleOwner,{
-            renderErrorToast(it)
+            if(it != 0){
+                renderErrorToast(it)
+            }else{
+                bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = "", promoCode = ""))
+            }
         })
 
     }
@@ -730,7 +734,6 @@ class FlightBookingFragment : BaseDaggerFragment() {
         flight_promo_ticker_view.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
             override fun onResetPromoDiscount() {
                 isCouponChanged = true
-                bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = "", promoCode = ""))
                 bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
             }
 
