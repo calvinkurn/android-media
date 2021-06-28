@@ -11,6 +11,9 @@ import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common_digital.atc.data.response.AttributesCart
@@ -74,6 +77,23 @@ object CommonTopupbillsDummyData {
                                         operatorId = "123"
                                 )
                         )
+                )
+        )
+    }
+
+    fun getSeamlessFavoriteNumberSuccess(): TopupBillsSeamlessFavNumberData {
+        return TopupBillsSeamlessFavNumberData(
+                seamlessFavoriteNumber = TopupBillsSeamlessFavNumber(
+                        categoryId = 578,
+                        clientNumber = "081288888888",
+                        favoriteNumbers = listOf(
+                                TopupBillsSeamlessFavNumberItem(
+                                        clientNumber = "081288888888",
+                                        clientName = ""
+                                )
+                        ),
+                        operatorId = 123,
+                        productId = 5
                 )
         )
     }

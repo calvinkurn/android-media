@@ -6,6 +6,7 @@ import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberData
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.response.CommonTopupbillsDummyData
@@ -262,6 +263,52 @@ class CommonTopupBillsViewModelTest {
 
         // Then
         val actualData = topupBillsViewModel.favNumberData.value
+        assertNotNull(actualData)
+        assert(actualData is Fail)
+
+        val error = (actualData as Fail).throwable
+        Assert.assertEquals(errorGql.message, error.message)
+    }
+
+    @Test
+    fun getSeamlessFavoriteNumbers_returnSuccessData() {
+        // Given
+        val favoriteNumber = CommonTopupbillsDummyData.getSeamlessFavoriteNumberSuccess()
+        val result = HashMap<Type, Any>()
+        result[TopupBillsSeamlessFavNumberData::class.java] = favoriteNumber
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        // When
+        topupBillsViewModel.getSeamlessFavoriteNumbers("", hashMapOf())
+
+        // Then
+        val actualData = topupBillsViewModel.seamlessFavNumberData.value
+        assertNotNull(actualData)
+        assert(actualData is Success)
+
+        val resultData = (actualData as Success).data
+        assertNotNull(resultData)
+
+        assertThat(resultData.favoriteNumbers[0].clientNumber == "081288888888")
+    }
+
+    @Test
+    fun getSeamlessFavoriteNumber_returnFailData() {
+        // Given
+        val errorGql = GraphqlError()
+        errorGql.message = "Error gql"
+
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[TopupBillsSeamlessFavNumberData::class.java] = listOf(errorGql)
+        val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        // When
+        topupBillsViewModel.getSeamlessFavoriteNumbers("", hashMapOf())
+
+        // Then
+        val actualData = topupBillsViewModel.seamlessFavNumberData.value
         assertNotNull(actualData)
         assert(actualData is Fail)
 
