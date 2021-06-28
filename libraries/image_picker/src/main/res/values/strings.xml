@@ -61,4 +61,7 @@
     <string name="editor_common_new_feature">Beta</string>
 
     <string name="editor_watermark_item">Logo Tokopedia &amp; Nama Toko</string>
+    <string name="thumbnail_image_editor_item">thumbnail image editor item</string>
+    <string name="placeholder_image_watermark_preview">placeholder image watermark preview</string>
+    <string name="thumbnail_image_watermark_preview">thumbnail image watermark preview</string>
 </resources>

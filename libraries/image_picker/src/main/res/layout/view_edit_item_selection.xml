@@ -22,6 +22,7 @@
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_1"
             android:scaleType="centerCrop"
+            android:contentDescription="@string/thumbnail_image_watermark_preview"
             tools:src="@tools:sample/avatars" />
 
         <ImageView
@@ -31,6 +32,7 @@
             android:layout_margin="@dimen/dp_1"
             android:scaleType="centerCrop"
             android:visibility="gone"
+            android:contentDescription="@string/placeholder_image_watermark_preview"
             tools:src="@tools:sample/avatars"
             tools:visibility="visible" />
 

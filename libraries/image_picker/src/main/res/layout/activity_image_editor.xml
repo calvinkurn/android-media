@@ -25,29 +25,31 @@
             app:subtitleTextAppearance="?subtitleTextAppearance"
             app:titleTextAppearance="?titleTextAppearance">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
+                style="@style/TextView.Title.Green"
                 android:id="@+id/tv_done"
+                app:typographyType="body_2"
+                android:layout_gravity="end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                style="@style/TextView.Title.Green"
                 android:text="@string/label_next_short"
                 android:paddingTop="@dimen/dp_8"
                 android:paddingBottom="@dimen/dp_8"
                 android:paddingLeft="@dimen/dp_8"
                 android:paddingRight="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"/>
 
-            <TextView
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_action_title"
+                app:typographyType="body_1"
+                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textSize="@dimen/sp_16"
+                android:text="@string/label_next_short"
                 android:textColor="@color/Unify_N700"
                 tools:text="@string/crop"/>
 
@@ -90,15 +92,16 @@
                         android:layout_height="match_parent"
                         app:can_swipe="false"/>
 
-                    <ProgressBar
+                    <com.tokopedia.unifycomponents.LoaderUnify
                         android:id="@+id/crop_progressbar"
                         style="?android:attr/indeterminate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/dp_48"
+                        android:layout_height="@dimen/dp_48"
                         android:layout_gravity="center"
                         android:indeterminate="true"
                         android:visibility="gone"
                         tools:visibility="visible" />
+
                 </com.tokopedia.imagepicker.common.widget.SquareFrameLayout>
             </LinearLayout>
 
@@ -274,19 +277,24 @@
             android:visibility="gone"
             tools:visibility="visible">
 
-            <ProgressBar
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/progressbar"
                 style="?android:attr/indeterminate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:indeterminate="true" />
+                android:layout_width="@dimen/dp_48"
+                android:layout_height="@dimen/dp_48"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
+                app:typographyType="body_2"
+                android:text="@string/downloading_images"
+                android:layout_marginTop="@dimen/dp_16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
-                android:textColor="@color/Unify_N700"
-                android:text="@string/downloading_images" />
+                android:textColor="@color/Unify_N700"/>
+
         </LinearLayout>
 
         <View

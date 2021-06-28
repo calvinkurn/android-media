@@ -18,15 +18,20 @@
         android:scaleType="fitCenter"
         tools:src="@drawable/ic_crop_rotate" />
 
-    <TextView
-        style="@style/TextView.Micro.BlackSecondary"
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_edit"
-        android:layout_marginTop="@dimen/dp_4"
+        style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_4"
         android:gravity="center_horizontal"
         android:textColor="@color/Unify_N700"
-        tools:text="Watermark"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selection_container"
+        app:typographyType="body_3"
+        tools:text="Nama Menu Item" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/txt_label"

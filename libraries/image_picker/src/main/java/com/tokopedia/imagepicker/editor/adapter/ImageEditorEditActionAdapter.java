@@ -11,6 +11,7 @@ import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageEditActionType;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.unifycomponents.Label;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
 
@@ -54,7 +55,7 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
         for (ImageEditActionType tabTypeDefItem : tabTypeDef) {
             View view = LayoutInflater.from(context).inflate(R.layout.view_edit_image_icon, viewGroup, false);
             ImageView ivEdit = view.findViewById(R.id.iv_edit);
-            TextView tvEdit = view.findViewById(R.id.tv_edit);
+            Typography tvEdit = view.findViewById(R.id.tv_edit);
             Label txtLabel = view.findViewById(R.id.txt_label);
             view.setId(tabTypeDefItem.getAction());
             switch (tabTypeDefItem) {
