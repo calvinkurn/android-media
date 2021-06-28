@@ -11,7 +11,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import java.io.*
 import javax.inject.Inject
 
-class GetHowToPayInstructions @Inject constructor(val resources: Resources,
+class GetHowToPayInstructions {} /*@Inject constructor(val resources: Resources,
                                                   @HowToPayRawJsonFileResID val jsonFileResId: Int)
     : UseCase<HowToPayInstruction>() {
 
@@ -99,3 +99,4 @@ class GetHowToPayInstructions @Inject constructor(val resources: Resources,
     }
 }
 
+*/

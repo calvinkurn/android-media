@@ -4,46 +4,77 @@ import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.pms.howtopay_native.data.model.AppLinkPaymentInfo
+import com.tokopedia.pms.howtopay_native.data.model.HowToPayGqlResponse
 import com.tokopedia.pms.howtopay_native.data.model.HowToPayInstruction
 import com.tokopedia.pms.howtopay_native.domain.AppLinkPaymentUseCase
+import com.tokopedia.pms.howtopay_native.domain.GetGqlHowToPayInstructions
 import com.tokopedia.pms.howtopay_native.domain.GetHowToPayInstructions
+import com.tokopedia.pms.howtopay_native.domain.GetHowToPayInstructionsMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class HowToPayViewModel @Inject constructor(private val appLinkPaymentUseCase: AppLinkPaymentUseCase,
-                                            private val getHowToPayInstructions: GetHowToPayInstructions)
-    : BaseViewModel(Dispatchers.Main) {
+class HowToPayViewModel @Inject constructor(
+    private val appLinkPaymentUseCase: AppLinkPaymentUseCase,
+    private val getGqlHowToPayInstructions: GetGqlHowToPayInstructions,
+    private val getHowToPayInstructionsMapper: GetHowToPayInstructionsMapper
+) : BaseViewModel(Dispatchers.Main) {
 
     val howToPayLiveData = MutableLiveData<Result<HowToPayInstruction>>()
     val appLinkPaymentLiveData = MutableLiveData<Result<AppLinkPaymentInfo>>()
 
     fun getHowToPayInstruction(appLinkPaymentInfo: AppLinkPaymentInfo) {
-        val requestParams = getHowToPayInstructions.getRequestParam(appLinkPaymentInfo)
+        /*val requestParams = getHowToPayInstructions.getRequestParam(appLinkPaymentInfo)
         getHowToPayInstructions.getHowToPayInstruction(
-                requestParams,
-                { result ->
-                    howToPayLiveData.postValue(Success(result))
-                },
-                {
-                    howToPayLiveData.postValue(Fail(it))
-                }
+            requestParams,
+            { result ->
+                howToPayLiveData.postValue(Success(result))
+            },
+            {
+                howToPayLiveData.postValue(Fail(it))
+            }
+        )*/
+    }
+
+    fun getGqlHtpInstructions(appLinkPaymentInfo: AppLinkPaymentInfo) {
+        getGqlHowToPayInstructions.getGqlHowToPayInstruction(
+            appLinkPaymentInfo,
+            ::onHowToPayDataSuccess,
+            ::onHowToPayDataFailure
         )
+    }
+
+    private fun onHowToPayDataSuccess(
+        howToPayGqlResponse: HowToPayGqlResponse,
+        appLinkPaymentInfo: AppLinkPaymentInfo
+    ) {
+        getHowToPayInstructionsMapper.getHowToPayInstruction(
+            howToPayGqlResponse,
+            appLinkPaymentInfo,
+            { result -> howToPayLiveData.postValue(Success(result)) },
+            { howToPayLiveData.postValue(Fail(it))}
+        )
+    }
+
+
+    private fun onHowToPayDataFailure(throwable: Throwable) {
+        howToPayLiveData.postValue(Fail(throwable))
     }
 
     fun getAppLinkPaymentInfoData(bundle: Bundle) {
         appLinkPaymentUseCase.getAppLinkPaymentInfo(bundle,
-                {
-                    appLinkPaymentLiveData.postValue(Success(it))
-                }, {
-            appLinkPaymentLiveData.postValue(Fail(it))
-        })
+            {
+                appLinkPaymentLiveData.postValue(Success(it))
+            }, {
+                appLinkPaymentLiveData.postValue(Fail(it))
+            })
     }
 
     override fun onCleared() {
         super.onCleared()
-        getHowToPayInstructions.cancelJobs()
+        getGqlHowToPayInstructions.cancelJobs()
+        getHowToPayInstructionsMapper.cancelJobs()
     }
 }

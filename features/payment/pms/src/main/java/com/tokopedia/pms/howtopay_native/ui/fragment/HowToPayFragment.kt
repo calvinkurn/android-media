@@ -25,12 +25,12 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.pms.R
 import com.tokopedia.pms.howtopay_native.analytics.HowToPayAnalytics
 import com.tokopedia.pms.howtopay_native.data.model.*
-import com.tokopedia.pms.howtopay_native.di.HowToPayComponent
 import com.tokopedia.pms.howtopay_native.ui.adapter.InstructionAdapter
 import com.tokopedia.pms.howtopay_native.ui.adapter.MultiChannelAdapter
 import com.tokopedia.pms.howtopay_native.ui.adapter.viewHolder.NonScrollLinerLayoutManager
 import com.tokopedia.pms.howtopay_native.ui.viewmodel.HowToPayViewModel
 import com.tokopedia.pms.howtopay_native.util.ScreenshotHelper
+import com.tokopedia.pms.paymentlist.di.PmsComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -69,7 +69,7 @@ class HowToPayFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        getComponent(HowToPayComponent::class.java).inject(this)
+        getComponent(PmsComponent::class.java).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,7 +79,11 @@ class HowToPayFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.pms_hwp_info, container, false)
     }
 
@@ -111,10 +115,13 @@ class HowToPayFragment : BaseDaggerFragment() {
     private fun onAppLinkParsingError() {
         loaderViewHowToPay.gone()
         activity?.finish()
-        ServerLogger.log(Priority.P2, "HOW_TO_PAY", mapOf("type" to "validation",
+        ServerLogger.log(
+            Priority.P2, "HOW_TO_PAY", mapOf(
+                "type" to "validation",
                 "reason" to "bundle_app_link_parsing_error",
                 "data" to arguments.toString().take(TIMBER_CHAR_MAX_LIMIT)
-        ))
+            )
+        )
     }
 
     private fun onAppLinkPaymentInfoLoaded(appLinkPaymentInfo: AppLinkPaymentInfo) {
@@ -127,10 +134,13 @@ class HowToPayFragment : BaseDaggerFragment() {
         loaderViewHowToPay.gone()
         globalErrorHowToPay.visible()
         globalErrorHowToPay.errorAction.setOnClickListener { activity?.finish() }
-        ServerLogger.log(Priority.P2, "HOW_TO_PAY", mapOf("type" to "validation",
+        ServerLogger.log(
+            Priority.P2, "HOW_TO_PAY", mapOf(
+                "type" to "validation",
                 "reason" to "page_not_found",
                 "data" to appLinkPaymentInfo.toString().take(TIMBER_CHAR_MAX_LIMIT)
-        ))
+            )
+        )
     }
 
     private fun onInstructionLoaded(data: HowToPayInstruction) {
@@ -142,7 +152,7 @@ class HowToPayFragment : BaseDaggerFragment() {
                     is VirtualAccount -> addVirtualAccountPayment()
                     is Syariah -> addSyariahPayment()
                 }
-                addMultipleChannelAdapter(data.gateway.paymentChannels)
+                addMultipleChannelAdapter(data.gateway.channelList)
             }
             is SingleChannelGatewayResult -> {
                 when (data.type) {
@@ -156,51 +166,65 @@ class HowToPayFragment : BaseDaggerFragment() {
     }
 
     private fun addVirtualAccountPayment() {
-        setPaymentInfo(getString(R.string.pms_hwp_VA_code),
-                appLinkPaymentInfo.payment_code,
-                getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
-                getString(R.string.pms_hwp_copy),
-                IconUnify.COPY) {
+        setPaymentInfo(
+            getString(R.string.pms_hwp_VA_code),
+            appLinkPaymentInfo.payment_code,
+            getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
+            getString(R.string.pms_hwp_copy),
+            IconUnify.COPY
+        ) {
             copyTOClipBoard(context, appLinkPaymentInfo.payment_code)
             showToast(getString(R.string.pms_hwp_va_copy_success))
         }
     }
 
     private fun addSyariahPayment() {
-        setPaymentInfo(getString(R.string.pms_hwp_payment_code),
-                appLinkPaymentInfo.payment_code,
-                getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
-                getString(R.string.pms_hwp_copy),
-                IconUnify.COPY) {
+        setPaymentInfo(
+            getString(R.string.pms_hwp_payment_code),
+            appLinkPaymentInfo.payment_code,
+            getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
+            getString(R.string.pms_hwp_copy),
+            IconUnify.COPY
+        ) {
             copyTOClipBoard(context, appLinkPaymentInfo.payment_code)
             showToast(getString(R.string.pms_hwp_code_copy_success))
         }
     }
 
     private fun addBankTransferPayment() {
-        setPaymentInfo(getString(R.string.pms_hwp_account_number),
-                appLinkPaymentInfo.bank_num,
-                highlightLastThreeDigits(getString(R.string.pms_hwp_rp,
-                        appLinkPaymentInfo.total_amount)),
-                getString(R.string.pms_hwp_copy),
-                IconUnify.COPY) {
+        setPaymentInfo(
+            getString(R.string.pms_hwp_account_number),
+            appLinkPaymentInfo.bank_num,
+            highlightLastThreeDigits(
+                getString(
+                    R.string.pms_hwp_rp,
+                    appLinkPaymentInfo.total_amount
+                )
+            ),
+            getString(R.string.pms_hwp_copy),
+            IconUnify.COPY
+        ) {
             copyTOClipBoard(context, appLinkPaymentInfo.payment_code)
             showToast(getString(R.string.pms_hwp_bank_account_number_copy))
         }
         tvAccountName.visible()
-        tvAccountName.text = getString(R.string.pms_hwp_bank_info,
-                appLinkPaymentInfo.bank_name, appLinkPaymentInfo.bank_info)
+        tvAccountName.text = getString(
+            R.string.pms_hwp_bank_info,
+            appLinkPaymentInfo.bank_name, appLinkPaymentInfo.bank_info
+        )
         tickerAmountNote.visible()
         tickerAmountNote.setTextDescription(getString(R.string.pms_hwp_transfer_3_digit_info))
     }
 
     private fun addStoreTransferPayment(data: SingleChannelGatewayResult) {
 
-        setPaymentInfo(getString(R.string.pms_hwp_payment_code),
-                appLinkPaymentInfo.payment_code,
-                getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
-                getString(R.string.pms_hwp_screenshot),
-                IconUnify.DOWNLOAD) {
+        setPaymentInfo(
+            getString(R.string.pms_hwp_payment_code),
+            appLinkPaymentInfo.payment_code,
+            getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
+            getString(R.string.pms_hwp_screenshot),
+            IconUnify.DOWNLOAD
+        ) {
             takeScreenShot()
         }
         tvStorePaymentNote.visible()
@@ -218,17 +242,21 @@ class HowToPayFragment : BaseDaggerFragment() {
     }
 
     private fun addKlikBCAPayment() {
-        setPaymentInfo(getString(R.string.pms_hwp_user_id),
-                appLinkPaymentInfo.payment_code,
-                getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
-                null, null, null)
+        setPaymentInfo(
+            getString(R.string.pms_hwp_user_id),
+            appLinkPaymentInfo.payment_code,
+            getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
+            null, null, null
+        )
     }
 
-    private fun setPaymentInfo(accountTitle: String,
-                               accountNumber: String,
-                               amountStr: CharSequence,
-                               actionText: String?,
-                               actionIcon: Int?, clickAction: (() -> Unit)?) {
+    private fun setPaymentInfo(
+        accountTitle: String,
+        accountNumber: String,
+        amountStr: CharSequence,
+        actionText: String?,
+        actionIcon: Int?, clickAction: (() -> Unit)?
+    ) {
         tvPaymentAccountTitle.text = accountTitle
 
         tvGateWayName.text = appLinkPaymentInfo.gateway_name
@@ -266,7 +294,7 @@ class HowToPayFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun addMultipleChannelAdapter(paymentChannels: ArrayList<PaymentChannel>?) {
+    private fun addMultipleChannelAdapter(paymentChannels: ArrayList<HtpPaymentChannel>?) {
         if (!paymentChannels.isNullOrEmpty()) {
             recyclerView.layoutManager = NonScrollLinerLayoutManager(activity as Context)
             recyclerView.adapter = MultiChannelAdapter(paymentChannels)
@@ -287,9 +315,16 @@ class HowToPayFragment : BaseDaggerFragment() {
         context?.let {
             if (amountStr.length > HIGHLIGHT_DIGIT_COUNT) {
                 val startIndex = spannable.length - HIGHLIGHT_DIGIT_COUNT
-                spannable.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifycomponents.R.color.Unify_G500)),
-                        startIndex, spannable.length,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannable.setSpan(
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            it,
+                            com.tokopedia.unifycomponents.R.color.Unify_G500
+                        )
+                    ),
+                    startIndex, spannable.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
             }
         }
         return spannable
@@ -301,7 +336,8 @@ class HowToPayFragment : BaseDaggerFragment() {
         val spannableString = SpannableString(viewStore)
         val startIndex = 0
         val endIndex = spannableString.length
-        val color = ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G500)
+        val color =
+            ContextCompat.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G500)
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         spannableString.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
@@ -325,10 +361,13 @@ class HowToPayFragment : BaseDaggerFragment() {
                 val extraSpaceRegexStr = "\\s+".toRegex()
                 val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE)
                         as ClipboardManager
-                val clip = ClipData.newPlainText(COPY_BOARD_LABEL,
-                        dataStr.replace(extraSpaceRegexStr, ""))
+                val clip = ClipData.newPlainText(
+                    COPY_BOARD_LABEL,
+                    dataStr.replace(extraSpaceRegexStr, "")
+                )
                 clipboard.setPrimaryClip(clip)
-            }catch (e : Exception){}
+            } catch (e: Exception) {
+            }
             if (::appLinkPaymentInfo.isInitialized)
                 howToPayAnalytics.get().eventOnCopyCodeClick(appLinkPaymentInfo.payment_type)
         }
@@ -340,7 +379,11 @@ class HowToPayFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         screenshotHelper.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
     }

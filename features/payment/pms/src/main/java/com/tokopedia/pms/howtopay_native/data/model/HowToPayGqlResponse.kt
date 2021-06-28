@@ -1,0 +1,44 @@
+package com.tokopedia.pms.howtopay_native.data.model
+
+import com.google.gson.annotations.SerializedName
+
+data class HowToPayGqlResponse(
+        @SerializedName("howToPayData")
+        val howToPayData: HowToPayData
+)
+
+data class HowToPayData(
+        @SerializedName("expiredIn")
+        val expiredIn: String,
+        @SerializedName("nettAmount")
+        val netAmount: String,
+        @SerializedName("combineAmount")
+        val combineAmount: Float,
+        @SerializedName("gatewayImage")
+        val gatewayImage : String,
+        @SerializedName("gatewayName")
+        val gatewayName: String,
+        @SerializedName("gatewayCode")
+        val gatewayCode: String,
+        @SerializedName("helpPageJSON")
+        val helpPageJSON: String? = null,
+)
+
+data class HelpPageData(
+   @SerializedName("gateway_code")
+   val gatewayCode: String,
+   @SerializedName("gateway_type")
+   val gatewayType: String,
+   @SerializedName("gateway_name")
+   val gatewayName: String,
+   @SerializedName("channel")
+   val channelList: ArrayList<HtpPaymentChannel>
+)
+
+data class HtpPaymentChannel(
+        @SerializedName("payment_channel")
+        val channelTitle: String,
+        @SerializedName("channel_steps")
+        val channelSteps: ArrayList<String>,
+        var isExpanded: Boolean
+)

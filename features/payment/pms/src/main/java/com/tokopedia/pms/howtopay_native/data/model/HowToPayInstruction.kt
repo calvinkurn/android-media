@@ -4,7 +4,7 @@ sealed class HowToPayInstruction
 data class SingleChannelGatewayResult(val type: PaymentType,
                                       val instructions : ArrayList<String>) : HowToPayInstruction()
 data class MultiChannelGatewayResult(val type: PaymentType,
-                                     val gateway: MultiChannelGateway) : HowToPayInstruction()
+                                     val gateway: HelpPageData) : HowToPayInstruction()
 
 
 sealed class PaymentType

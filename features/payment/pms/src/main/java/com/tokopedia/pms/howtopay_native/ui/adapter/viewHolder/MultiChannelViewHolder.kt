@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.pms.howtopay_native.data.model.HtpPaymentChannel
 import com.tokopedia.pms.howtopay_native.data.model.PaymentChannel
 import com.tokopedia.pms.howtopay_native.ui.adapter.InstructionAdapter
 import kotlinx.android.synthetic.main.pms_hwp_item_multi_channel.view.*
@@ -19,8 +20,8 @@ class MultiChannelViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     private val recyclerView: RecyclerView = itemView.rvInstructions
     private val divider: View = itemView.divider
 
-    fun bindView(paymentChannel: PaymentChannel, isLastItem: Boolean,
-                 onExpand: (PaymentChannel) -> Unit) {
+    fun bindView(paymentChannel: HtpPaymentChannel, isLastItem: Boolean,
+                 onExpand: (HtpPaymentChannel) -> Unit) {
 
         tvChannelName.text = paymentChannel.channelTitle
         if (paymentChannel.isExpanded) {
@@ -28,7 +29,9 @@ class MultiChannelViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
             recyclerView.visible()
             recyclerView.layoutManager = NonScrollLinerLayoutManager(itemView.context)
             recyclerView.adapter = InstructionAdapter(paymentChannel.channelSteps,
-                    paymentChannel.channelNotes)
+                "")
+            /*recyclerView.adapter = InstructionAdapter(paymentChannel.channelSteps,
+                    paymentChannel.channelNotes)*/
             recyclerView.post {
                 recyclerView.adapter?.notifyDataSetChanged()
             }
