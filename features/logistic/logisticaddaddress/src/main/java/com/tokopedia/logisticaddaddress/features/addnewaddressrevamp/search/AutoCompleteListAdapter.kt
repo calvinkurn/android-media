@@ -17,13 +17,13 @@ class AutoCompleteListAdapter(private var listener: AutoCompleteItemListener): R
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AutoCompleteListAdapterViewHolder {
         val binding = ItemDistrictSearchPageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val viewHolder = AutoCompleteListAdapterViewHolder.getViewHolder(binding)
-        viewHolder.itemView.setOnClickListener {
-            val newPosition = viewHolder.adapterPosition
-            val model = autoCompleteData[newPosition]
-            listener.onItemClicked(model.placeId )
+        return viewHolder.apply {
+            itemView.setOnClickListener {
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    listener.onItemClicked(autoCompleteData[adapterPosition].placeId)
+                }
+            }
         }
-
-        return viewHolder
     }
 
     override fun getItemCount(): Int {

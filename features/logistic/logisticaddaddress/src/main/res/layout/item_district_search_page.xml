@@ -32,7 +32,8 @@
             android:layout_height="wrap_content"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            android:layout_marginBottom="@dimen/dp_2"/>
+            android:layout_marginBottom="@dimen/dp_2"
+            android:contentDescription="@string/content_desc_place_name"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/search_place_address"

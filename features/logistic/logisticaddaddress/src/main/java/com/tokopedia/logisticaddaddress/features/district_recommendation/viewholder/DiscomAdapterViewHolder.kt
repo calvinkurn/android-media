@@ -6,13 +6,11 @@ import com.tokopedia.logisticaddaddress.databinding.ItemDistrictRecommendationRe
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
-class DiscomAdapterViewHolder (binding: ItemDistrictRecommendationRevampBinding): RecyclerView.ViewHolder(binding.root) {
-
-    private val tvDistrictName = binding.searchPlaceName
+class DiscomAdapterViewHolder (private val binding: ItemDistrictRecommendationRevampBinding): RecyclerView.ViewHolder(binding.root) {
 
     fun bindData(data: Address) {
         val districtSelected = HtmlLinkHelper(itemView.context, itemView.context.getString(R.string.tv_discom_item_revamp, data.provinceName, data.cityName, data.districtName)).spannedString
-        tvDistrictName.text = districtSelected
+        binding.searchPlaceName.text = districtSelected
     }
 
     companion object {

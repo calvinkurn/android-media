@@ -14,12 +14,14 @@ class DiscomAdapterRevamp(private var listener: ActionListener): RecyclerView.Ad
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DiscomAdapterViewHolder {
         val binding = ItemDistrictRecommendationRevampBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val viewHolder = DiscomAdapterViewHolder.getViewHolder(binding)
-        viewHolder.itemView.setOnClickListener {
-            val newPosition = viewHolder.adapterPosition
-            val model = districtData[newPosition]
-            listener.onDistrictItemRevampClicked(model)
+
+        return viewHolder.apply {
+            itemView.setOnClickListener {
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    listener.onDistrictItemRevampClicked(districtData[adapterPosition])
+                }
+            }
         }
-        return viewHolder
     }
 
     override fun getItemCount(): Int {
