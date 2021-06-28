@@ -3526,11 +3526,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val errorMessage = getErrorMessage(throwable)
         ServerLogger.log(
                 Priority.P1,
-                LoggerConstant.TAG_MARKETPLACE_CHECKOUT_FLOW_ERROR,
+                LoggerConstant.Tag.P2_BUYER_FLOW_CART,
                 mapOf(
-                        LoggerConstant.KEY_TYPE to LoggerConstant.TYPE_LOAD_CART_PAGE_ERROR,
-                        LoggerConstant.KEY_MESSAGE to if(errorMessage.isNotBlank()) errorMessage else "unknown exception",
-                        LoggerConstant.KEY_STACK_TRACE to throwable.stackTrace.toString().substring(0, 50)
+                        LoggerConstant.Key.TYPE to LoggerConstant.Type.LOAD_CART_PAGE_ERROR,
+                        LoggerConstant.Key.MESSAGE to if(errorMessage.isNotBlank()) errorMessage else "unknown exception",
+                        LoggerConstant.Key.STACK_TRACE to throwable.stackTrace.toString().substring(0, 50)
                 )
         )
     }
@@ -3545,12 +3545,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val errorMessage = getErrorMessage(throwable)
         ServerLogger.log(
                 Priority.P1,
-                LoggerConstant.TAG_MARKETPLACE_CHECKOUT_FLOW_ERROR,
+                LoggerConstant.Tag.P2_BUYER_FLOW_CART,
                 mapOf(
-                        LoggerConstant.KEY_TYPE to LoggerConstant.TYPE_UPDATE_CART_FOR_CHECKOUT_ERROR,
-                        LoggerConstant.KEY_MESSAGE to (errorMessage ?: "unknown exception"),
-                        LoggerConstant.KEY_PRODUCT_ID_LIST to productIdList.joinToString(","),
-                        LoggerConstant.KEY_STACK_TRACE to throwable.stackTrace.toString().substring(0, 50)
+                        LoggerConstant.Key.TYPE to LoggerConstant.Type.UPDATE_CART_FOR_CHECKOUT_ERROR,
+                        LoggerConstant.Key.MESSAGE to (errorMessage ?: "unknown exception"),
+                        LoggerConstant.Key.PRODUCT_ID_LIST to productIdList.joinToString(","),
+                        LoggerConstant.Key.STACK_TRACE to throwable.stackTrace.toString().substring(0, 50)
                 )
         )
     }

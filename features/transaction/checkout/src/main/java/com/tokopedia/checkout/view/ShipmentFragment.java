@@ -71,7 +71,6 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PreOrder;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
@@ -3060,15 +3059,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         String errorMessage = getErrorMessage(throwable);
 
         Map<String, String> payload = new HashMap<>();
-        payload.put(LoggerConstant.KEY_TYPE, LoggerConstant.TYPE_LOAD_CHECKOUT_PAGE_ERROR);
-        payload.put(LoggerConstant.KEY_IS_OCS, String.valueOf(isOneClickShipment()));
-        payload.put(LoggerConstant.KEY_IS_TRADE_IN, String.valueOf(isTradeIn()));
-        payload.put(LoggerConstant.KEY_IS_TRADE_IN_INDOPAKET, String.valueOf(isTradeInByDropOff()));
-        payload.put(LoggerConstant.KEY_MESSAGE, !errorMessage.isEmpty() ? errorMessage : "unknown exception");
-        payload.put(LoggerConstant.KEY_STACK_TRACE, Arrays.toString(throwable.getStackTrace()).substring(0, 50));
+        payload.put(LoggerConstant.Key.TYPE, LoggerConstant.Type.LOAD_CHECKOUT_PAGE_ERROR);
+        payload.put(LoggerConstant.Key.IS_OCS, String.valueOf(isOneClickShipment()));
+        payload.put(LoggerConstant.Key.IS_TRADE_IN, String.valueOf(isTradeIn()));
+        payload.put(LoggerConstant.Key.IS_TRADE_IN_INDOPAKET, String.valueOf(isTradeInByDropOff()));
+        payload.put(LoggerConstant.Key.MESSAGE, !errorMessage.isEmpty() ? errorMessage : "unknown exception");
+        payload.put(LoggerConstant.Key.STACK_TRACE, Arrays.toString(throwable.getStackTrace()).substring(0, 50));
         ServerLogger.log(
                 Priority.P1,
-                LoggerConstant.TAG_MARKETPLACE_CHECKOUT_FLOW_ERROR,
+                LoggerConstant.Tag.P2_BUYER_FLOW_CART,
                 payload
         );
     }
@@ -3086,16 +3085,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         Map<String, String> payload = new HashMap<>();
-        payload.put(LoggerConstant.KEY_TYPE, LoggerConstant.TYPE_LOAD_CHECKOUT_PAGE_ERROR);
-        payload.put(LoggerConstant.KEY_IS_OCS, String.valueOf(isOneClickShipment()));
-        payload.put(LoggerConstant.KEY_IS_TRADE_IN, String.valueOf(isTradeIn()));
-        payload.put(LoggerConstant.KEY_IS_TRADE_IN_INDOPAKET, String.valueOf(isTradeInByDropOff()));
-        payload.put(LoggerConstant.KEY_PRODUCT_ID_LIST, productIds.toString());
-        payload.put(LoggerConstant.KEY_MESSAGE, !errorMessage.isEmpty() ? errorMessage : "unknown exception");
-        payload.put(LoggerConstant.KEY_STACK_TRACE, Arrays.toString(throwable.getStackTrace()).substring(0, 50));
+        payload.put(LoggerConstant.Key.TYPE, LoggerConstant.Type.LOAD_CHECKOUT_PAGE_ERROR);
+        payload.put(LoggerConstant.Key.IS_OCS, String.valueOf(isOneClickShipment()));
+        payload.put(LoggerConstant.Key.IS_TRADE_IN, String.valueOf(isTradeIn()));
+        payload.put(LoggerConstant.Key.IS_TRADE_IN_INDOPAKET, String.valueOf(isTradeInByDropOff()));
+        payload.put(LoggerConstant.Key.PRODUCT_ID_LIST, productIds.toString());
+        payload.put(LoggerConstant.Key.MESSAGE, !errorMessage.isEmpty() ? errorMessage : "unknown exception");
+        payload.put(LoggerConstant.Key.STACK_TRACE, Arrays.toString(throwable.getStackTrace()).substring(0, 50));
         ServerLogger.log(
                 Priority.P1,
-                LoggerConstant.TAG_MARKETPLACE_CHECKOUT_FLOW_ERROR,
+                LoggerConstant.Tag.P2_BUYER_FLOW_CART,
                 payload
         );
     }
@@ -3105,16 +3104,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         String errorMessage = getErrorMessage(throwable);
 
         Map<String, String> payload = new HashMap<>();
-        payload.put(LoggerConstant.KEY_TYPE, LoggerConstant.TYPE_LOAD_CHECKOUT_PAGE_ERROR);
-        payload.put(LoggerConstant.KEY_IS_OCS, String.valueOf(isOneClickShipment()));
-        payload.put(LoggerConstant.KEY_IS_TRADE_IN, String.valueOf(isTradeIn()));
-        payload.put(LoggerConstant.KEY_IS_TRADE_IN_INDOPAKET, String.valueOf(isTradeInByDropOff()));
-        payload.put(LoggerConstant.KEY_REQUEST, request);
-        payload.put(LoggerConstant.KEY_MESSAGE, !errorMessage.isEmpty() ? errorMessage : "unknown exception");
-        payload.put(LoggerConstant.KEY_STACK_TRACE, Arrays.toString(throwable.getStackTrace()).substring(0, 50));
+        payload.put(LoggerConstant.Key.TYPE, LoggerConstant.Type.LOAD_CHECKOUT_PAGE_ERROR);
+        payload.put(LoggerConstant.Key.IS_OCS, String.valueOf(isOneClickShipment()));
+        payload.put(LoggerConstant.Key.IS_TRADE_IN, String.valueOf(isTradeIn()));
+        payload.put(LoggerConstant.Key.IS_TRADE_IN_INDOPAKET, String.valueOf(isTradeInByDropOff()));
+        payload.put(LoggerConstant.Key.REQUEST, request);
+        payload.put(LoggerConstant.Key.MESSAGE, !errorMessage.isEmpty() ? errorMessage : "unknown exception");
+        payload.put(LoggerConstant.Key.STACK_TRACE, Arrays.toString(throwable.getStackTrace()).substring(0, 50));
         ServerLogger.log(
                 Priority.P1,
-                LoggerConstant.TAG_MARKETPLACE_CHECKOUT_FLOW_ERROR,
+                LoggerConstant.Tag.P2_BUYER_FLOW_CART,
                 payload
         );
     }
