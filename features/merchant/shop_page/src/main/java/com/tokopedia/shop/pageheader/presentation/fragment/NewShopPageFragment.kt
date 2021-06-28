@@ -1701,7 +1701,9 @@ class NewShopPageFragment :
                             when (shopShare) {
                                 is ShopShareModel.CopyLink -> {
                                     linkerShareData?.url?.let { ClipboardHandler().copyToClipboard((activity as Activity), it) }
-                                    Toast.makeText(context, getString(R.string.shop_page_share_action_copy_success), Toast.LENGTH_SHORT).show()
+                                    activity?.runOnUiThread {
+                                        Toast.makeText(context, getString(R.string.shop_page_share_action_copy_success), Toast.LENGTH_SHORT).show()
+                                    }
                                 }
                                 is ShopShareModel.Instagram, is ShopShareModel.Facebook -> {
                                     startActivity(shopShare.appIntent?.apply {
