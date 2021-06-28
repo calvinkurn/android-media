@@ -46,7 +46,7 @@ class PinVerificationFragment : VerificationFragment() {
         spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
-                        viewModel.done = true
+                        done = true
                         val data = otpData
                         data.otpType = OtpConstant.OtpType.RESET_PIN
                         (activity as VerificationActivity).goToMethodPageResetPin(data)

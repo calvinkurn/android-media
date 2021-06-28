@@ -3,16 +3,14 @@ package com.tokopedia.otp.verification.viewmodel
 import FileUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.otp.verification.domain.data.*
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListPojo
 import com.tokopedia.otp.verification.domain.usecase.*
-import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -31,26 +29,30 @@ class VerificationViewModelTest {
 
     @RelaxedMockK
     lateinit var getVerificationMethodUseCase: GetVerificationMethodUseCase
+
     @RelaxedMockK
     lateinit var getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FA
+
     @RelaxedMockK
     lateinit var otpValidateUseCase: OtpValidateUseCase
+
     @RelaxedMockK
     lateinit var otpValidateUseCase2FA: OtpValidateUseCase2FA
+
     @RelaxedMockK
     lateinit var sendOtpUseCase2FA: SendOtp2FAUseCase
+
     @RelaxedMockK
     lateinit var sendOtpUseCase: SendOtpUseCase
+
     @RelaxedMockK
     lateinit var getVerificationMethodResultObserver: Observer<Result<OtpModeListData>>
+
     @RelaxedMockK
     lateinit var sendOtpResultObserver: Observer<Result<OtpRequestData>>
+
     @RelaxedMockK
     lateinit var otpValidateResultObserver: Observer<Result<OtpValidateData>>
-    @RelaxedMockK
-    lateinit var userSessionInterface: UserSessionInterface
-    @RelaxedMockK
-    lateinit var remoteConfig: RemoteConfig
 
     private val dispatcherProviderTest = CoroutineTestDispatchersProvider
 
@@ -66,8 +68,6 @@ class VerificationViewModelTest {
                 otpValidateUseCase2FA,
                 sendOtpUseCase,
                 sendOtpUseCase2FA,
-                userSessionInterface,
-                remoteConfig,
                 dispatcherProviderTest
         )
     }
@@ -189,7 +189,7 @@ class VerificationViewModelTest {
         viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
         coEvery { otpValidateUseCase.getData(any()) } returns successOtpValidationResponse
 
-        viewmodel.otpValidate(code = "", otpType = "", userId = 0)
+        viewmodel.otpValidate("", "", "", "", "", "", "", "", "", 0)
 
         verify { otpValidateResultObserver.onChanged(any<Success<OtpValidateData>>()) }
         assert(viewmodel.otpValidateResult.value is Success)
@@ -203,7 +203,7 @@ class VerificationViewModelTest {
         viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
         coEvery { otpValidateUseCase.getData(any()) } coAnswers { throw throwable }
 
-        viewmodel.otpValidate(code = "", otpType = "", userId = 0)
+        viewmodel.otpValidate("", "", "", "", "", "", "", "", "", 0)
 
         verify { otpValidateResultObserver.onChanged(any<Fail>()) }
         assert(viewmodel.otpValidateResult.value is Fail)

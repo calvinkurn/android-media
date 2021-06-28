@@ -39,7 +39,9 @@ import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.adapter.VerificationMethodAdapter
 import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -54,16 +56,23 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     @Inject
     lateinit var analytics: TrackingOtpUtil
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
     private lateinit var otpData: OtpData
     private lateinit var adapter: VerificationMethodAdapter
 
     private var isMoreThanOneMethod: Boolean = true
+    private var clear: Boolean = false
+    private var done = false
+    private var isLoginRegisterFlow = false
 
     private val viewmodel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(VerificationViewModel::class.java)
@@ -84,7 +93,8 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         otpData = arguments?.getParcelable(OtpConstant.OTP_DATA_EXTRA) ?: OtpData()
-        viewmodel.isLoginRegisterFlow = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW)?: false
+        isLoginRegisterFlow = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW)
+                ?: false
         KeyboardHandler.hideSoftKeyboard(activity)
     }
 
@@ -104,6 +114,13 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     override fun onDestroy() {
         viewmodel.getVerificationMethodResult.removeObservers(this)
         viewmodel.flush()
+        clear = remoteConfig.getBoolean(RemoteConfigKey.PRE_OTP_LOGIN_CLEAR, true)
+        if (clear) {
+            //if user interrupted login / register otp flow (not done), delete the token
+            if (!done && isLoginRegisterFlow) {
+                userSession.setToken(null, null, null)
+            }
+        }
         super.onDestroy()
     }
 
@@ -128,7 +145,7 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private fun setMethodListAdapter() {
         adapter = VerificationMethodAdapter.createInstance(object : VerificationMethodAdapter.ClickListener {
             override fun onModeListClick(modeList: ModeListData, position: Int) {
-                viewmodel.done = true
+                done = true
                 if (modeList.modeText == OtpConstant.OtpMode.MISCALL) {
                     (activity as VerificationActivity).goToOnboardingMiscallPage(modeList)
                 } else {
@@ -145,7 +162,10 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         val otpType = otpData.otpType.toString()
         if ((otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() || otpType == OtpConstant.OtpType.RESET_PIN.toString())
                 && otpData.userIdEnc.isNotEmpty()) {
-            viewmodel.getVerificationMethod2FA(otpType, otpData.accessToken, otpData.userIdEnc)
+            viewmodel.getVerificationMethod2FA(
+                    otpType = otpType,
+                    validateToken = otpData.accessToken,
+                    userIdEnc = otpData.userIdEnc)
         } else {
             viewmodel.getVerificationMethod(
                     otpType = otpType,
@@ -200,7 +220,7 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     private fun skipView(modeListData: ModeListData) {
-        viewmodel.done = true
+        done = true
         if (modeListData.modeText == OtpConstant.OtpMode.MISCALL && otpData.otpType == OtpConstant.OtpType.REGISTER_PHONE_NUMBER) {
             (activity as VerificationActivity).goToOnboardingMiscallPage(modeListData)
         } else {

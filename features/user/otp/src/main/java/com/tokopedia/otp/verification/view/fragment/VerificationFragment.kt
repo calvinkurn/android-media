@@ -1,4 +1,3 @@
-
 package com.tokopedia.otp.verification.view.fragment
 
 import android.app.Activity
@@ -49,9 +48,12 @@ import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.viewbinding.VerificationViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import com.tokopedia.pin.PinUnify
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -70,6 +72,12 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
     protected lateinit var otpData: OtpData
     protected lateinit var modeListData: ModeListData
     private lateinit var countDownTimer: CountDownTimer
@@ -77,6 +85,9 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private var isRunningCountDown = false
     private var isFirstSendOtp = true
     protected var isMoreThanOneMethod = true
+    protected var clear: Boolean = false
+    protected var done = false
+    protected var isLoginRegisterFlow = false
 
     private var tempOtp: CharSequence? = null
     private var indexTempOtp = 0
@@ -115,7 +126,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         super.onCreate(savedInstanceState)
         otpData = arguments?.getParcelable(OtpConstant.OTP_DATA_EXTRA) ?: OtpData()
         modeListData = arguments?.getParcelable(OtpConstant.OTP_MODE_EXTRA) ?: ModeListData()
-        viewModel.isLoginRegisterFlow = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW)
+        isLoginRegisterFlow = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW)
                 ?: false
         isMoreThanOneMethod = arguments?.getBoolean(OtpConstant.IS_MORE_THAN_ONE_EXTRA, true)
                 ?: true
@@ -146,10 +157,17 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         if (::countDownTimer.isInitialized) {
             countDownTimer.cancel()
         }
+        clear = remoteConfig.getBoolean(RemoteConfigKey.PRE_OTP_LOGIN_CLEAR, true)
+        if (clear) {
+            //if user interrupted login / register otp flow (not done), delete the token
+            if (!done && isLoginRegisterFlow) {
+                userSession.setToken(null, null, null)
+            }
+        }
+        super.onDestroy()
     }
 
     override fun onBackPressed(): Boolean {
@@ -164,15 +182,25 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     protected fun sendOtp() {
         if (isCountdownFinished()) {
-            viewModel.sendOtp(
-                    otpType = otpData.otpType.toString(),
-                    mode = modeListData.modeText,
-                    msisdn = otpData.msisdn,
-                    email = otpData.email,
-                    otpDigit = modeListData.otpDigit,
-                    validateToken = otpData.accessToken,
-                    userIdEnc = otpData.userIdEnc
-            )
+            if (otpData.accessToken.isNotEmpty() && otpData.userIdEnc.isNotEmpty()) {
+                viewModel.sendOtp2FA(
+                        otpType = otpData.otpType.toString(),
+                        mode = modeListData.modeText,
+                        msisdn = otpData.msisdn,
+                        email = otpData.email,
+                        otpDigit = modeListData.otpDigit,
+                        validateToken = otpData.accessToken,
+                        userIdEnc = otpData.userIdEnc
+                )
+            } else {
+                viewModel.sendOtp(
+                        otpType = otpData.otpType.toString(),
+                        mode = modeListData.modeText,
+                        msisdn = otpData.msisdn,
+                        email = otpData.email,
+                        otpDigit = modeListData.otpDigit
+                )
+            }
         } else {
             setFooterText()
         }
@@ -190,6 +218,17 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 analytics.trackClickVerificationButton(otpData.otpType)
             }
         }
+        if ((otpData.otpType.toString() == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() ||
+                        otpData.otpType.toString() == OtpConstant.OtpType.RESET_PIN.toString()) &&
+                otpData.userIdEnc.isNotEmpty()) {
+            viewModel.otpValidate2FA(
+                    code = code,
+                    otpType = otpData.otpType.toString(),
+                    mode = modeListData.modeText,
+                    userIdEnc = otpData.userIdEnc,
+                    validateToken = otpData.accessToken
+            )
+        }
         viewModel.otpValidate(
                 code = code,
                 otpType = otpData.otpType.toString(),
@@ -197,8 +236,10 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 email = otpData.email,
                 mode = modeListData.modeText,
                 userId = otpData.userId.toIntOrZero(),
-                userIdEnc = otpData.userIdEnc,
-                validateToken = otpData.accessToken
+                fpData = "",
+                getSL = "",
+                signature = "",
+                timeUnix = ""
         )
     }
 
@@ -286,7 +327,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     private fun onSuccessOtpValidate(otpValidateData: OtpValidateData) {
         when {
             otpValidateData.success -> {
-                viewModel.done = true
+                done = true
                 trackSuccess()
                 resetCountDown()
                 val bundle = Bundle().apply {
@@ -299,7 +340,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 }
                 redirectAfterValidationSuccessful(bundle)
                 // tracker auto submit success
-                analytics.trackAutoSubmitVerification(otpData, modeListData,true)
+                analytics.trackAutoSubmitVerification(otpData, modeListData, true)
             }
             otpValidateData.errorMessage.isNotEmpty() -> {
                 onFailedOtpValidate(MessageErrorException(otpValidateData.errorMessage))
@@ -350,7 +391,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 }
             }
             // tracker auto submit failed
-            analytics.trackAutoSubmitVerification(otpData, modeListData,false, message)
+            analytics.trackAutoSubmitVerification(otpData, modeListData, false, message)
             viewBound.pin?.isError = true
             showKeyboard()
         }
@@ -504,7 +545,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
-                        viewModel.done = true
+                        done = true
                         analytics.trackClickUseOtherMethod(otpData, modeListData)
                         (activity as VerificationActivity).goToVerificationMethodPage()
                     }
@@ -524,7 +565,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         spannable.setSpan(
                 object : ClickableSpan() {
                     override fun onClick(view: View) {
-                        viewModel.done = true
+                        done = true
                         analytics.trackClickUseOtherMethod(otpData, modeListData)
                         (activity as VerificationActivity).goToVerificationMethodPage()
                     }
