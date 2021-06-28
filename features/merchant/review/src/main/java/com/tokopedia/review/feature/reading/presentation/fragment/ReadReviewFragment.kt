@@ -51,6 +51,7 @@ import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -91,6 +92,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private var globalError: GlobalError? = null
     private var emptyFilteredState: View? = null
     private var emptyFilteredStateImage: ImageUnify? = null
+    private var goToTopFab: FloatingButtonUnify? = null
 
     private val readReviewFilterFactory by lazy {
         ReadReviewSortFilterFactory()
@@ -260,6 +262,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         startNetworkRequestPerformanceMonitoring()
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
+        setupFab()
         showFullPageLoading()
         showListOnlyLoading()
         observeRatingAndTopics()
@@ -291,6 +294,13 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         globalError = view.findViewById(R.id.read_review_network_error)
         emptyFilteredState = view.findViewById(R.id.read_review_list_empty)
         emptyFilteredStateImage = view.findViewById(R.id.read_review_empty_list_image)
+        goToTopFab = view.findViewById(R.id.read_review_go_to_top_fab)
+    }
+
+    private fun setupFab() {
+//        goToTopFab?.setOnClickListener {
+//            getRecyclerView(view)?.smoothScrollToPosition(0)
+//        }
     }
 
     private fun getProductReview(page: Int) {

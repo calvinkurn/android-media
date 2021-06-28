@@ -153,6 +153,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         }
         addPagerSnapHelperToRecyclerView()
         adapter.setData(productReview.imageAttachments.map { it.imageUrl })
+        imagesRecyclerView?.scrollToPosition(index - 1)
     }
 
     private fun addPagerSnapHelperToRecyclerView() {
