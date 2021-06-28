@@ -58,6 +58,7 @@ import com.tokopedia.tokopoints.view.tokopointhome.merchantvoucher.MerchantVouch
 import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
@@ -76,6 +77,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     @Inject
     lateinit var viewFactory: ViewModelFactory
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
     private val mPresenter: TokoPointsHomeViewModel by lazy { ViewModelProviders.of(this, viewFactory).get(TokoPointsHomeViewModel::class.java) }
     private var mValueMembershipDescription: String? = null
     private var appBarCollapseListener: onAppBarCollapseListener? = null
@@ -488,14 +491,13 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 }
                 AnalyticsTrackerUtil.impressionProductRecomItem(
                     productIdString,
-                    item.recommendationType,
                     position,
                     "none / other",
                     item.categoryBreadcrumbs,
                     item.name,
                     "none / other",
                     item.price,
-                    item.isTopAds
+                    trackingQueue
                 )
             }
 
@@ -512,14 +514,13 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 }
                 AnalyticsTrackerUtil.clickProductRecomItem(
                     item.productId.toString(),
-                    item.recommendationType,
                     position[0],
                     "none / other",
                     item.categoryBreadcrumbs,
                     item.name,
                     "none / other",
                     item.price,
-                    item.isTopAds
+                    trackingQueue
                 )
 
                 val intent = RouteManager.getIntent(
