@@ -458,18 +458,18 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             var timer: CountDownTimer? = null
             it.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
                 HintData(getString(R.string.hint_cari_transaksi) )),
-                navSearchbarInterface = { query,_,_,_ ->
+                navSearchbarInterface = { query,_,count,_ ->
                     if (timer != null) timer!!.cancel()
-                    timer = object : CountDownTimer(1000, 1000) {
+                    timer = object : CountDownTimer(800, 1000) {
                         override fun onTick(l: Long) {}
                         override fun onFinish() {
                             searchQuery = query.toString()
-                            when {
-                                query.toString().isBlank() -> {
+                            when (searchQuery.length) {
+                                0 -> {
                                     view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
                                     triggerSearch()
                                 }
-                                query.toString().length in 1 until MIN_KEYWORD_CHARACTER_COUNT -> {
+                                in 1 until MIN_KEYWORD_CHARACTER_COUNT -> {
                                     showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
                                 }
                                 else -> {
@@ -1058,7 +1058,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         val listRecomm = arrayListOf<UohTypeData>()
         if (!onLoadMoreRecommendation) {
             val searchBarIsNotEmpty = searchQuery.isNotEmpty()
-//            val searchBarIsNotEmpty = search_bar?.searchBarTextField?.text?.isNotEmpty() ?: false
             val emptyStatus: UohEmptyState?
             when {
                 searchBarIsNotEmpty -> {
