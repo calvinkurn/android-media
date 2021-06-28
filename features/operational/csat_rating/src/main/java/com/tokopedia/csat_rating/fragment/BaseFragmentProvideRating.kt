@@ -21,9 +21,8 @@ import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.di.CsatComponent
 import com.tokopedia.csat_rating.di.CsatModule
 import com.tokopedia.csat_rating.di.DaggerCsatComponent
-import com.tokopedia.design.quickfilter.QuickFilterItem
-import com.tokopedia.design.quickfilter.QuickSingleFilterView
-import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
+import com.tokopedia.csat_rating.quickfilter.QuickFilterItem
+import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
@@ -149,31 +148,35 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
     override fun setFilterList(filterList: List<BadCsatReasonListItem>) {
         mFilterReview.updateLayoutManager(getLayoutManager(filterList))
         val filterItems = ArrayList<QuickFilterItem>()
-        var finishFilter: CustomViewQuickFilterItem? = null
+        var finishFilter: QuickFilterItem? = null
         for (filter in filterList) {
-            finishFilter = CustomViewQuickFilterItem()
+            finishFilter = QuickFilterItem()
             finishFilter.name = filter.message
             finishFilter.type = filter.id.toString()
             finishFilter.setColorBorder(R.color.tkpd_main_green)
             filterItems.add(finishFilter)
         }
         mFilterReview.renderFilter(filterItems)
-        mFilterReview.setListener { typeFilter ->
-            if (selectedOption.contains(typeFilter)) {
-                selectedOption.remove(typeFilter)
-            } else {
-                if (!(filterList.isNotEmpty() && filterList[0].id > 0)) {
-                    sendEventClickReason(filterList[typeFilter.toIntOrNull() ?: 0].message)
+        mFilterReview.setListener(object :QuickSingleFilterView.ActionListener{
+            override fun selectFilter(typeFilter: String?) {
+                if (selectedOption.contains(typeFilter)) {
+                    selectedOption.remove(typeFilter)
+                } else {
+                    if (!(filterList.isNotEmpty() && filterList[0].id > 0)) {
+                        sendEventClickReason(filterList[typeFilter?.toIntOrNull() ?: 0].message)
+                    }
+                    if (typeFilter != null) {
+                        selectedOption.add(typeFilter)
+                    }
                 }
-                selectedOption.add(typeFilter)
-            }
 
-            if (mFilterReview.isAnyItemSelected) {
-                enableSubmitButton()
-            } else {
-                disableSubmitButton()
+                if (mFilterReview.isAnyItemSelected) {
+                    enableSubmitButton()
+                } else {
+                    disableSubmitButton()
+                }
             }
-        }
+        })
     }
 
     open fun sendEventClickReason(message: String?) {}

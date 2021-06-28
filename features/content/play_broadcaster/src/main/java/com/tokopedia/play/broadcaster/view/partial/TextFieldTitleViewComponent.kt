@@ -39,6 +39,10 @@ class TextFieldTitleViewComponent(
                 if (s != null) listener.onTitleInputChanged(this@TextFieldTitleViewComponent, s.toString())
             }
         })
+
+        textField.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) listener.onTitleInputHasFocus()
+        }
     }
 
     fun getText() = textField.textFieldInput.text.toString()
@@ -64,5 +68,6 @@ class TextFieldTitleViewComponent(
     interface Listener {
 
         fun onTitleInputChanged(view: TextFieldTitleViewComponent, title: String)
+        fun onTitleInputHasFocus()
     }
 }

@@ -10,7 +10,7 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.presentation.model.SectionPotentialPMBenefitUiModel
 import kotlinx.android.synthetic.main.item_potential_pm_benefit.view.*
 
-class ItemPotentialPMBenefitAdapter : RecyclerView.Adapter<ItemPotentialPMBenefitAdapter.ItemPotentialPMBenefitViewHolder>() {
+class ItemPotentialPMBenefitAdapter(private val itemRegularMerchantListener: ItemRegularMerchantListener) : RecyclerView.Adapter<ItemPotentialPMBenefitAdapter.ItemPotentialPMBenefitViewHolder>() {
 
     private val potentialPMBenefitList: MutableList<SectionPotentialPMBenefitUiModel.ItemPotentialPMBenefitUIModel> = mutableListOf()
 
@@ -39,6 +39,10 @@ class ItemPotentialPMBenefitAdapter : RecyclerView.Adapter<ItemPotentialPMBenefi
             with(itemView) {
                 iv_potential_pm_benefit?.loadImage(data.iconPotentialPMUrl)
                 tv_potential_pm_benefit?.text = MethodChecker.fromHtml(data.titlePotentialPM?.let { context.getString(it) })
+
+                setOnClickListener {
+                    itemRegularMerchantListener.onRMSectionToPMPage()
+                }
             }
         }
     }

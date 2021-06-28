@@ -1883,13 +1883,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun loggingError(flow: String, errorMessage: String?) {
-        ServerLogger.log(Priority.P1, "BUYER_FLOW_LOGIN"
+        ServerLogger.log(Priority.P2, "BUYER_FLOW_LOGIN"
                 , mapOf("type" to flow
                         , "error" to errorMessage.orEmpty()))
     }
 
     private fun loggingErrorWithThrowable(flow: String, errorMessage: String?, throwable: Throwable) {
-        ServerLogger.log(Priority.P1, "BUYER_FLOW_LOGIN"
+        ServerLogger.log(Priority.P2, "BUYER_FLOW_LOGIN"
                 , mapOf("type" to flow
                 , "error" to errorMessage.orEmpty()
                 , "throwable" to Log.getStackTraceString(throwable)))
