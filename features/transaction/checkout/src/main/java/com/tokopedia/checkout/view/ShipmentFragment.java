@@ -3085,7 +3085,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         Map<String, String> payload = new HashMap<>();
-        payload.put(LoggerConstant.Key.TYPE, LoggerConstant.Type.LOAD_CHECKOUT_PAGE_ERROR);
+        payload.put(LoggerConstant.Key.TYPE, LoggerConstant.Type.LOAD_COURIER_ERROR);
         payload.put(LoggerConstant.Key.IS_OCS, String.valueOf(isOneClickShipment()));
         payload.put(LoggerConstant.Key.IS_TRADE_IN, String.valueOf(isTradeIn()));
         payload.put(LoggerConstant.Key.IS_TRADE_IN_INDOPAKET, String.valueOf(isTradeInByDropOff()));
@@ -3104,7 +3104,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         String errorMessage = getErrorMessage(throwable);
 
         Map<String, String> payload = new HashMap<>();
-        payload.put(LoggerConstant.Key.TYPE, LoggerConstant.Type.LOAD_CHECKOUT_PAGE_ERROR);
+        payload.put(LoggerConstant.Key.TYPE, LoggerConstant.Type.CHECKOUT_ERROR);
         payload.put(LoggerConstant.Key.IS_OCS, String.valueOf(isOneClickShipment()));
         payload.put(LoggerConstant.Key.IS_TRADE_IN, String.valueOf(isTradeIn()));
         payload.put(LoggerConstant.Key.IS_TRADE_IN_INDOPAKET, String.valueOf(isTradeInByDropOff()));
