@@ -114,6 +114,7 @@ public interface LinkerConstants {
     String UTM_SOURCE = "utm_source";
     String UTM_MEDIUM = "utm_medium";
     String UTM_CAMPAIGN = "utm_campaign";
+    String CLICK_TIME = "+click_timestamp";
     String UTM_TERM = "utm_term";
     String SCREEN_NAME_KEY = "screenName";
     String SCREEN_NAME_VALUE = "Deeplink Page";

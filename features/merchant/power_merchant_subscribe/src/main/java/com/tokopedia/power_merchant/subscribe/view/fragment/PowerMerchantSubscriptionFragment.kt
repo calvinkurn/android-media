@@ -152,6 +152,15 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
         bottomSheet.show(childFragmentManager)
     }
 
+    override fun showPmProStatusInfo(model: PMProStatusInfoUiModel) {
+        val bottomSheet = PMProStatusInfoBottomSheet.createInstance(model)
+        if (childFragmentManager.isStateSaved || bottomSheet.isAdded) {
+            return
+        }
+
+        bottomSheet.show(childFragmentManager)
+    }
+
     protected fun showErrorToaster(message: String, actionText: String) {
         view?.run {
             Toaster.toasterCustomBottomHeight = context.resources.getDimensionPixelSize(R.dimen.pm_spacing_100dp)
@@ -553,12 +562,8 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
                 && data.currentPMGrade?.gradeName != PMShopGrade.ULTIMATE
                 && isPmPro && isPmActive
         if (shouldShowNextGradeWidget) {
-            val pmProThreshold = pmBasicInfo?.shopInfo?.shopScorePmProThreshold
-                    ?: PMShopInfoUiModel.DEFAULT_PM_PRO_SHOP_SCORE_THRESHOLD
             widgets.add(WidgetDividerUiModel)
             widgets.add(getNextShopGradeWidgetData(data))
-            widgets.add(WidgetDividerUiModel)
-            widgets.add(WidgetNextUpdateUiModel(pmProThreshold, data.nextMonthlyRefreshDate))
         }
         if (pmBasicInfo?.shopInfo?.isNewSeller.orFalse()) {
             widgets.add(WidgetDividerUiModel)
@@ -642,11 +647,17 @@ open class PowerMerchantSubscriptionFragment : BaseListFragment<BaseWidgetUiMode
     private fun getShopGradeWidgetData(data: PMGradeBenefitInfoUiModel): WidgetShopGradeUiModel {
         val shopGrade = data.currentPMGrade
         val shopInfo = pmBasicInfo?.shopInfo
+        val newFormat = "dd MMMM yyyy"
         return WidgetShopGradeUiModel(
                 isNewSeller = shopInfo?.isNewSeller.orTrue(),
                 pmTierType = pmBasicInfo?.pmStatus?.pmTier ?: PMConstant.PMTierType.POWER_MERCHANT,
                 shopScore = shopInfo?.shopScore.orZero(),
-                threshold = shopInfo?.shopScoreThreshold.orZero(),
+                shopScoreThreshold = shopInfo?.shopScoreThreshold.orZero(),
+                pmProShopScoreThreshold = shopInfo?.shopScorePmProThreshold.orZero(),
+                itemSoldThreshold = shopInfo?.itemSoldPmProThreshold.orZero(),
+                netItemValueThreshold = shopInfo?.netItemValuePmProThreshold.orZero(),
+                autoExtendDateStr = pmBasicInfo?.pmStatus?.getExpiredTimeFmt(newFormat).orEmpty(),
+                shopAge = shopInfo?.shopAge.orZero(),
                 gradeBadgeImgUrl = shopGrade?.imgBadgeUrl.orEmpty(),
                 gradeBackgroundUrl = shopGrade?.backgroundUrl.orEmpty(),
                 pmStatus = pmBasicInfo?.pmStatus?.status ?: PMStatusConst.INACTIVE

@@ -175,11 +175,14 @@ class DigitalCartViewModel @Inject constructor(
         } else {
 
             val pricePlain = mappedCartData.attributes.pricePlain
-            _totalPrice.postValue(pricePlain + mappedCartData.attributes.adminFee)
+            _totalPrice.postValue(calculateTotalPrice(pricePlain, mappedCartData.attributes.adminFee,
+                    mappedCartData.attributes.isOpenAmount))
+
             paymentSummary.summaries.clear()
             paymentSummary.addToSummary(SUMMARY_TOTAL_PAYMENT_POSITION, Payment(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain)))
-            if (mappedCartData.attributes.adminFee > 0) {
-                paymentSummary.addToSummary(SUMMARY_ADMIN_FEE_POSITION, Payment(STRING_ADMIN_FEE, getStringIdrFormat(mappedCartData.attributes.adminFee.toDouble())))
+
+            if (mappedCartData.attributes.isOpenAmount && mappedCartData.attributes.adminFee > 0) {
+                paymentSummary.addToSummary(SUMMARY_ADMIN_FEE_POSITION, Payment(STRING_ADMIN_FEE, getStringIdrFormat(mappedCartData.attributes.adminFee)))
             }
             _payment.postValue(paymentSummary)
 
@@ -199,6 +202,12 @@ class DigitalCartViewModel @Inject constructor(
     fun cancelVoucherCart(promoCode: String, defaultErrorMsg: String) {
         cancelVoucherUseCase.execute(promoCode, onSuccessCancelVoucher(defaultErrorMsg),
                 onErrorCancelVoucher(defaultErrorMsg))
+    }
+
+    private fun calculateTotalPrice(totalPrice: Double, adminFee: Double, isOpenAmount: Boolean): Double {
+        return if (isOpenAmount) {
+            totalPrice + adminFee
+        } else totalPrice
     }
 
     private fun onSuccessCancelVoucher(defaultErrorMsg: String): (CancelVoucherData.Response) -> Unit {
@@ -257,14 +266,14 @@ class DigitalCartViewModel @Inject constructor(
         updateCheckoutSummaryWithFintechProduct(fintechProduct, isChecked)
     }
 
-    fun updateTotalPriceWithFintechProduct(inputPrice: Double?) {
+    private fun updateTotalPriceWithFintechProduct(inputPrice: Double?) {
         cartDigitalInfoData.value?.attributes?.let { attributes ->
             var totalPrice = inputPrice ?: attributes.pricePlain
 
             requestCheckoutParam.fintechProducts.forEach { fintech ->
                 totalPrice += fintech.value.fintechAmount
             }
-            _totalPrice.postValue(totalPrice + attributes.adminFee)
+            _totalPrice.postValue(calculateTotalPrice(totalPrice, attributes.adminFee, attributes.isOpenAmount))
         }
     }
 

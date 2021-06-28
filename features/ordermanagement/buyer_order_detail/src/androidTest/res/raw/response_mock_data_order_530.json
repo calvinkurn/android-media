@@ -1,0 +1,190 @@
+[
+  {
+    "data": {
+      "mp_bom_detail": {
+        "order_id": 166832541,
+        "invoice": "INV/20210525/MPL/20530100",
+        "invoice_url": "https://staging.tokopedia.com/invoice.pl?id=166832541&pdf=Invoice-8969212-479933-20210525163706-bm5ubm5ubm41",
+        "payment_date": "25 Mei 2021, 16:37 WIB",
+        "cashback_info": "",
+        "order_status": {
+          "id": 530,
+          "status_name": "Sedang Dikirim",
+          "indicator_color": "#FFC400"
+        },
+        "ticker_info": {
+          "text": "",
+          "type": "",
+          "action_text": "",
+          "action_key": "",
+          "action_url": ""
+        },
+        "preorder": {
+          "is_preorder": false,
+          "label": "",
+          "value": ""
+        },
+        "deadline": {
+          "label": "",
+          "value": "",
+          "color": ""
+        },
+        "shop": {
+          "shop_id": 479933,
+          "shop_name": "dhanny-shop",
+          "shop_type": 2,
+          "badge_url": "https://ecs7.tokopedia.net/img/official_store/badge_official.png"
+        },
+        "products": [
+          {
+            "product_id": 15122393,
+            "order_detail_id": 20530101,
+            "product_name": "alphabet",
+            "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2017/7/14/5512090/5512090_fc6b0895-a7fd-46fd-a148-1f90fb5bbaf8_1058_595.png",
+            "price": 22000,
+            "price_text": "Rp22.000",
+            "quantity": 1,
+            "total_price": 22000,
+            "total_price_text": "Rp22.000",
+            "notes": "",
+            "category": "Gaming",
+            "category_id": 2099,
+            "button": {
+              "key": "",
+              "display_name": "",
+              "type": "",
+              "variant": "",
+              "url": "",
+              "popup": {
+                "title": "",
+                "body": "",
+                "action_button": []
+              }
+            }
+          }
+        ],
+        "shipment": {
+          "shipping_name": "GoSend",
+          "shipping_product_name": "Instant Courier",
+          "shipping_display_name": "Instant - GoSend",
+          "shipping_ref_num": "GK-11-1534145",
+          "eta": "Estimasi tiba hari ini",
+          "receiver": {
+            "name": "Jere",
+            "phone": "6287887725577",
+            "street": "Jalan Kusbini, Kecamatan Gondokusuman, 55222",
+            "postal": "55222",
+            "district": "Gondokusuman",
+            "city": "Kota Yogyakarta",
+            "province": "D.I. Yogyakarta"
+          },
+          "driver": {
+            "name": "",
+            "phone": "",
+            "photo_url": "",
+            "license_number": ""
+          },
+          "shipping_info": {
+            "text": "",
+            "type": "",
+            "action_key": "",
+            "action_url": "",
+            "action_text": ""
+          }
+        },
+        "payment": {
+          "payment_method": {
+            "label": "Metode Pembayaran",
+            "value": "BCA KlikPay"
+          },
+          "payment_details": [
+            {
+              "label": "Total Harga (1 barang)",
+              "value": "Rp22.000"
+            },
+            {
+              "label": "Total Ongkos Kirim (0.50 kg)",
+              "value": "Rp10.000"
+            }
+          ],
+          "payment_amount": {
+            "label": "Total Bayar",
+            "value": "Rp33.000"
+          }
+        },
+        "button": {
+          "key": "track",
+          "display_name": "Lacak",
+          "type": "main",
+          "variant": "filled",
+          "url": "tokopedia://order/track/166832541?url=",
+          "popup": {
+            "title": "",
+            "body": "",
+            "action_button": []
+          }
+        },
+        "dot_menus": [
+          {
+            "key": "complaint",
+            "display_name": "Komplain",
+            "url": "https://staging.tokopedia.com/resolution-center/create/166832541",
+            "popup": {
+              "title": "Komplain Pesanan",
+              "body": "Apakah pesanan Anda bermasalah ?",
+              "action_button": [
+                {
+                  "key": "back",
+                  "display_name": "Kembali",
+                  "color": "default",
+                  "type": "secondary",
+                  "uri_type": "",
+                  "uri": ""
+                },
+                {
+                  "key": "complaint",
+                  "display_name": "Komplain",
+                  "color": "green",
+                  "type": "primary",
+                  "uri_type": "URI",
+                  "uri": "https://staging.tokopedia.com/resolution-center/create/166832541"
+                }
+              ]
+            }
+          },
+          {
+            "key": "receive_confirmation",
+            "display_name": "Selesai",
+            "url": "https://ws-staging.tokopedia.com/v4/action/tx-order/delivery_finish_order.pl",
+            "popup": {
+              "title": "Selesaikan Pesanan",
+              "body": "Dengan klik Selesai, dana akan diteruskan ke penjual dan Anda tidak dapat mengajukan komplain.",
+              "action_button": [
+                {
+                  "key": "back",
+                  "display_name": "Kembali",
+                  "color": "default",
+                  "type": "secondary",
+                  "uri_type": "",
+                  "uri": ""
+                },
+                {
+                  "key": "finish_order",
+                  "display_name": "Selesai",
+                  "color": "green",
+                  "type": "primary",
+                  "uri_type": "WEB",
+                  "uri": "https://ws-staging.tokopedia.com/v4/action/tx-order/delivery_finish_order.pl"
+                }
+              ]
+            }
+          }
+        ],
+        "meta": {
+          "is_bo": false,
+          "bo_image_url": ""
+        }
+      }
+    }
+  }
+]

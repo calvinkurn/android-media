@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.view.customview.csat.adapter.ChatBotQuickOptionViewAdapter
-import com.tokopedia.design.quickfilter.QuickSingleFilterView
+import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterView
 
 class ChatBotQuickOptionViewCsat : QuickSingleFilterView {
     constructor(context: Context) : super(context)
@@ -13,7 +13,7 @@ class ChatBotQuickOptionViewCsat : QuickSingleFilterView {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     override fun initialAdapter() {
-        adapterFilter = ChatBotQuickOptionViewAdapter(quickSingleFilterListener)
+        adapterFilter = ChatBotQuickOptionViewAdapter(quickSingleFilterListener())
     }
 
     override fun isMultipleSelectionAllowed(): Boolean {

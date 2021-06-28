@@ -47,12 +47,12 @@ import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.coachmark.CoachMark2;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.R;
 import com.tokopedia.developer_options.ab_test_rollence.AbTestRollenceConfigFragmentActivity;
 import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.developer_options.fakeresponse.FakeResponseActivityProvider;
-import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
@@ -112,7 +112,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView resetOnBoarding;
     private TextView testOnBoarding;
     private TextView vForceCrash;
-    private TextView reviewNotifBtn;
     private AppCompatEditText remoteConfigPrefix;
     private AppCompatTextView remoteConfigStartButton;
     private AppCompatTextView abTestRollenceEditorStartButton;
@@ -219,25 +218,14 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private void handleCoachmarkUri(Uri uri) {
         if (uri.getLastPathSegment().startsWith(URI_COACHMARK_DISABLE)) {
-            //soon will be replaced with global coachmark disable provided by unify team
+            CoachMark2.Companion.setCoachmmarkShowAllowed(false);
+
             SharedPreferences sharedPrefs = getSharedPreferences(
                     KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE);
             sharedPrefs.edit().putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false)
                     .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1, false)
                     .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, false)
                     .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true).apply();
-
-
-            SharedPreferences homePref = getSharedPreferences(
-                    PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE);
-            homePref.edit().putBoolean(PREF_KEY_HOME_COACHMARK_NAV, true)
-                    .putBoolean(PREF_KEY_HOME_COACHMARK_INBOX, true)
-                    .putBoolean(PREF_KEY_HOME_COACHMARK_BALANCE, true).apply();
-
-
-            SharedPreferences chooseAddressPref = getSharedPreferences(
-                    PREFERENCE_NAME, Context.MODE_PRIVATE);
-            chooseAddressPref.edit().putBoolean(EXTRA_IS_COACHMARK, false).apply();
         }
         finish();
     }
@@ -288,8 +276,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
         abTestRollenceEditorStartButton = findViewById(R.id.ab_test_rollence_editor_start);
-
-        reviewNotifBtn = findViewById(R.id.review_notification);
 
         TextView deviceId = findViewById(R.id.device_id);
         deviceId.setText(String.format("DEVICE ID: %s", GlobalConfig.DEVICE_ID));
@@ -632,12 +618,6 @@ public class DeveloperOptionActivity extends BaseActivity {
             public void oneOnClick(View view) {
                 startActivity(Chucker.getLaunchIntent(getApplicationContext(), Chucker.SCREEN_HTTP));
             }
-        });
-
-        reviewNotifBtn.setOnClickListener(v -> {
-            Notification notifReview = ReviewNotificationExample.createReviewNotification(getApplicationContext());
-            NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
-            notificationManagerCompat.notify(777, notifReview);
         });
 
         toggleDarkMode.setChecked((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);

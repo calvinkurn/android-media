@@ -13,4 +13,5 @@ object SearchTrackingConstant {
     const val CATEGORY_NAME_MAPPING = "categoryNameMapping"
     const val CATEGORY_ID_MAPPING = "categoryIdMapping"
     const val RELATED_KEYWORD = "relatedKeyword"
+    const val PAGE_SOURCE = "pageSource"
 }
