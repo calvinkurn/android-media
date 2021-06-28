@@ -134,11 +134,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
         <activity
-            android:name=".detail.view.activity.FlightInvoiceActivity"
-            android:label="@string/flight_order_invoice_toolbar_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" />
-        <activity
             android:name=".booking.presentation.activity.FlightBookingActivity"
             android:label="@string/flight_booking_toolbar_title"
             android:screenOrientation="portrait"

@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.AllNotificationListener
+import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
@@ -66,10 +67,6 @@ class OfficialHomeContainerFragment
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeContainerFragment().apply { arguments = bundle }
         const val KEY_CATEGORY = "key_category"
-
-        private const val EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV
-        private const val VARIANT_OLD = AbTestPlatform.NAVIGATION_VARIANT_OLD
-        private const val VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP
 
     }
     private val queryHashingKey = "android_do_query_hashing"
@@ -433,7 +430,7 @@ class OfficialHomeContainerFragment
 
     private fun isNavRevamp(): Boolean {
         return try {
-            getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_REVAMP
+            return (context as? MainParentStateListener)?.isNavigationRevamp?:false
         } catch (e: Exception) {
             e.printStackTrace()
             false

@@ -79,9 +79,9 @@ abstract class AddEditProductPreviewViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = AddEditProductPreviewViewModel(
-                getProductUseCase,
                 getProductMapper,
                 resourceProvider,
+                getProductUseCase,
                 getProductDraftUseCase,
                 saveProductDraftUseCase,
                 validateProductNameUseCase,
@@ -89,9 +89,9 @@ abstract class AddEditProductPreviewViewModelTestFixture {
                 saveShopShipmentLocationUseCase,
                 authorizeAccessUseCase,
                 authorizeEditStockUseCase,
-                userSession,
                 annotationCategoryUseCase,
                 productLimitationUseCase,
+                userSession,
                 CoroutineTestDispatchersProvider)
 
         viewModel.getProductResult.observeForever(getProductResultObserver)

@@ -128,7 +128,6 @@ dependencies {
 
     //Travel
     implementation project(rootProject.ext.features.travelHomepage)
-    implementation project(rootProject.ext.features.hotel)
 
     //User
     implementation project(rootProject.ext.features.settingnotif)
@@ -156,6 +155,7 @@ dependencies {
 
     //Order Management
     implementation project(rootProject.ext.features.ordermanagementhistory)
+    implementation project(rootProject.ext.features.buyerorderdetail)
 
     //Library
     implementation project(rootProject.ext.libraries.imagePicker)

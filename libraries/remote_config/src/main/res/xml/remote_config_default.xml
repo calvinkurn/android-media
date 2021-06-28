@@ -554,6 +554,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>android_enable_branch_valid_campaign_logging</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>android_enable_xiaomi_pai_tracking</key>
         <value>true</value>
     </entry>

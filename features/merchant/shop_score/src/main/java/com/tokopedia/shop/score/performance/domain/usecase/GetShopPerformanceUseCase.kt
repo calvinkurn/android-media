@@ -6,12 +6,15 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.score.performance.domain.model.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.user.session.UserSessionInterface
 import java.io.IOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) :
+class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: GraphqlRepository,
+                                                    private val userSession: UserSessionInterface
+) :
         UseCase<ShopScoreWrapperResponse>() {
 
     companion object {
@@ -86,19 +89,38 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
             }
         """.trimIndent()
 
+        val GOLD_GET_PMO_STATUS_QUERY = """
+            query goldGetPMOSStatus(${'$'}shopID: Int!){
+              goldGetPMOSStatus(
+                shopID: ${'$'}shopID,
+                includeOS: false){
+                data {
+                  power_merchant {
+                    status
+                    pm_tier              
+                  }
+                  official_store {
+                    status
+                    error
+                  }
+                }
+              }
+            }
+        """.trimIndent()
+
         @JvmStatic
-        fun createParams(shopID: Int, shopScoreLevelParam: ShopScoreLevelParam, shopLevelTooltipParam: ShopLevelTooltipParam): RequestParams = RequestParams.create().apply {
-            putInt(SHOP_ID_STATUS_INFO, shopID)
+        fun createParams(shopID: Long, shopScoreLevelParam: ShopScoreLevelParam, shopLevelTooltipParam: ShopLevelTooltipParam): RequestParams = RequestParams.create().apply {
+            putLong(SHOP_ID_STATUS_INFO, shopID)
             putObject(SHOP_SCORE_LEVEL_INPUT, shopScoreLevelParam)
             putObject(SHOP_SCORE_TOOLTIP_KEY, shopLevelTooltipParam)
         }
     }
 
-    var requestParams: RequestParams = RequestParams.EMPTY
+    var requestParams: RequestParams = RequestParams.create()
 
     override suspend fun executeOnBackground(): ShopScoreWrapperResponse {
 
-        val shopID = requestParams.getInt(SHOP_ID_STATUS_INFO, 0)
+        val shopID = requestParams.getLong(SHOP_ID_STATUS_INFO, 0)
         val shopScoreLevelInput = requestParams.getObject(SHOP_SCORE_LEVEL_INPUT) as? ShopScoreLevelParam
         val shopLevelTooltipInput = requestParams.getObject(SHOP_SCORE_TOOLTIP_KEY) as? ShopLevelTooltipParam
 
@@ -109,12 +131,17 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
 
         val getRecommendationToolsParam = mapOf(SHOP_ID_STATUS_INFO to shopID)
 
+        val goldGetPMOStatusParam = mapOf(SHOP_ID_STATUS_INFO to shopID)
+
         val shopScoreLevelRequest = GraphqlRequest(SHOP_SCORE_LEVEL_QUERY, ShopScoreLevelResponse::class.java, shopScoreLevelParam)
         val shopLevelRequest = GraphqlRequest(SHOP_LEVEL_TOOLTIP_QUERY, ShopLevelTooltipResponse::class.java, shopLevelParam)
         val goldPMShopInfoRequest = GraphqlRequest(GOLD_PM_SHOP_INFO_QUERY, GoldGetPMShopInfoResponse::class.java, goldPMShopInfoParam)
 
         val getRecommendationToolsRequest =
                 GraphqlRequest(RECOMMENDATION_TOOLS_QUERY, GetRecommendationToolsResponse::class.java, getRecommendationToolsParam)
+
+        val goldGetPMPStatusRequest =
+                GraphqlRequest(GOLD_GET_PMO_STATUS_QUERY, GoldGetPMOStatusResponse::class.java, goldGetPMOStatusParam)
 
         val requests = mutableListOf<GraphqlRequest>()
 
@@ -125,6 +152,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
             add(shopLevelRequest)
             add(goldPMShopInfoRequest)
             add(getRecommendationToolsRequest)
+            add(goldGetPMPStatusRequest)
         }
 
         try {
@@ -151,6 +179,11 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
             if (gqlResponse.getError(GetRecommendationToolsResponse::class.java).isNullOrEmpty()) {
                 val getRecommendationToolsData = gqlResponse.getData<GetRecommendationToolsResponse>(GetRecommendationToolsResponse::class.java).valuePropositionGetRecommendationTools
                 shopScoreWrapperResponse.getRecommendationToolsResponse = getRecommendationToolsData
+            }
+
+            if (gqlResponse.getError(GoldGetPMOStatusResponse::class.java).isNullOrEmpty()) {
+                val powerMerchantResponse = gqlResponse.getData<GoldGetPMOStatusResponse>(GoldGetPMOStatusResponse::class.java).goldGetPMOSStatus.data
+                shopScoreWrapperResponse.goldGetPMOStatusResponse = powerMerchantResponse
             }
 
         } catch (e: Throwable) {

@@ -783,11 +783,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             AccountConstants.SettingCode.SETTING_BANK_ACCOUNT_ID -> {
                 homeAccountAnalytic.eventClickPaymentSetting(ACCOUNT_BANK)
                 homeAccountAnalytic.eventClickAccountSettingBankAccount()
-                if (userSession.hasPassword()) {
-                    goToApplink(item.applink)
-                } else {
-                    showNoPasswordDialog()
-                }
+                goToApplink(item.applink)
             }
             AccountConstants.SettingCode.SETTING_INSTANT_PAYMENT -> {
                 homeAccountAnalytic.eventClickAccountSettingInstantPayment()
@@ -991,31 +987,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 it.startActivity(Intent(Intent.ACTION_VIEW,
                         Uri.parse(AccountConstants.Url.PLAYSTORE_URL + it.application.packageName)))
             }
-        }
-    }
-
-    private fun showNoPasswordDialog() {
-        activity?.run {
-            val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(getString(R.string.error_bank_no_password_title))
-            dialog.setDescription(getString(R.string.error_bank_no_password_content))
-            dialog.setPrimaryCTAText(getString(R.string.error_no_password_yes))
-            dialog.setPrimaryCTAClickListener {
-                intentToAddPassword()
-                dialog.dismiss()
-            }
-            dialog.setSecondaryCTAText(getString(R.string.error_no_password_no))
-            dialog.setSecondaryCTAClickListener {
-                dialog.dismiss()
-            }
-            dialog.show()
-        }
-    }
-
-    private fun intentToAddPassword() {
-        if (activity != null) {
-            startActivityForResult(RouteManager.getIntent(activity,
-                    ApplinkConstInternalGlobal.ADD_PASSWORD), AccountConstants.REQUEST.REQUEST_ADD_PASSWORD)
         }
     }
 

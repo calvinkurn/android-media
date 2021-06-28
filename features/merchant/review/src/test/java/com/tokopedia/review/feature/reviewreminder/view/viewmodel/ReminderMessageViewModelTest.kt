@@ -4,11 +4,8 @@ import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderCou
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderListResponseWrapper
 import com.tokopedia.review.feature.reviewreminder.data.ProductrevGetReminderTemplateResponseWrapper
 import com.tokopedia.unit.test.ext.verifyValueEquals
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.verify
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 

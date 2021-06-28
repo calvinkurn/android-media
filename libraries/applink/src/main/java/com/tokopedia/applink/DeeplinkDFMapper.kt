@@ -131,6 +131,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MODALTOKO_INTERN
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDERLIST_DIGITAL_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PESAWAT_INTERNAL_ORDER
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.TRACK
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
@@ -147,6 +148,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_HOTEL
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.logger.ServerLogger
@@ -428,7 +430,7 @@ object DeeplinkDFMapper : CoroutineScope {
             // Travel
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DF_BASE, R.string.title_travel_homepage))
             add(DFP({ it.startsWith(FLIGHT) || it.startsWith(INTERNAL_FLIGHT) }, DF_TRAVEL, R.string.title_flight, { DFWebviewFallbackUrl.TRAVEL_FLIGHT }))
-            add(DFP({ it.startsWith(HOTEL) }, DF_BASE, R.string.title_hotel))
+            add(DFP({ it.startsWith(HOTEL) || it.startsWith(INTERNAL_HOTEL)}, DF_TRAVEL, R.string.title_hotel, {DFWebviewFallbackUrl.TRAVEL_HOTEL}))
 
             // User
             add(DFP({ it.startsWith(PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX) }, DF_BASE, R.string.title_applink_campaign_shake_landing))
@@ -513,6 +515,9 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Order History
             add(DFP({ it.startsWith(TRACK) }, DF_BASE, R.string.title_order_management_history))
+
+            // Revamped buyer order detail (features/ordermanagement/buyer_order_detail)
+            add(DFP({ it.startsWith(MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL) }, DF_BASE, R.string.title_revamped_buyer_order_detail))
         }
     }
 
@@ -633,10 +638,6 @@ object DeeplinkDFMapper : CoroutineScope {
      */
     @JvmStatic
     fun getDFDeeplinkIfNotInstalled(context: Context, deeplink: String): String? {
-        //KITKAT does not support dynamic feature
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-            return null
-        }
         if (deeplink.startsWith(DYNAMIC_FEATURE_INSTALL_BASE)) {
             return null
         }
