@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.analytic
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.track.TrackApp
@@ -120,6 +121,7 @@ object SellerHomeTracking {
     }
 
     fun sendImpressionPostEvent(model: PostListWidgetUiModel, userId: String) {
+        val isEmpty = model.data?.isEmptyPost().orFalse()
         val filterType = model.postFilter.find { it.isSelected }?.value.orEmpty()
 
         val map = TrackingHelper.createMap(
@@ -136,6 +138,7 @@ object SellerHomeTracking {
     }
 
     fun sendClickPostSeeMoreEvent(model: PostListWidgetUiModel, userId: String) {
+        val isEmpty = model.data?.isEmptyPost().orFalse()
         val filterType = model.postFilter.find { it.isSelected }?.value.orEmpty()
 
         val map = TrackingHelper.createMap(
@@ -162,6 +165,7 @@ object SellerHomeTracking {
     }
 
     fun sendPostListFilterClick(model: PostListWidgetUiModel, userId: String) {
+        val isEmpty = model.data?.isEmptyPost().orFalse()
         val map = TrackingHelper.createMap(
                 TrackingConstant.CLICK_SELLER_WIDGET,
                 arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
@@ -174,6 +178,8 @@ object SellerHomeTracking {
     }
 
     fun sendPostEmptyStateCtaClick(model: PostListWidgetUiModel, userId: String) {
+        val isEmpty = model.data?.isEmptyPost().orFalse()
+
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.CLICK_HOMEPAGE,
                 category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),

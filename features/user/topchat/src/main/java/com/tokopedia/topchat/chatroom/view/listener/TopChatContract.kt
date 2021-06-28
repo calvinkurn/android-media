@@ -138,14 +138,6 @@ interface TopChatContract {
             onSuccessGetShopFollowingStatus: (Boolean) -> Unit
         )
 
-        fun copyVoucherCode(
-            fromUid: String?,
-            replyId: String,
-            blastId: String,
-            attachmentId: String,
-            replyTime: String?
-        )
-
         fun followUnfollowShop(
             shopId: String,
             onError: (Throwable) -> Unit,

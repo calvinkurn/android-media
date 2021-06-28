@@ -61,13 +61,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_displayed_if_buyer_attach_from_start_intent() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -78,13 +77,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_displayed_with_multiple_questions_from_start_intent() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponseMultipleQuestion
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -95,11 +93,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_displayed_if_buyer_attach_from_attach_product() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity()
         intendingAttachProduct(1)
 
         // When
@@ -115,13 +112,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_no_question_not_displayed_if_buyer_attach_from_start_intent() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse.hasQuestion(false)
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // Then
         assertSrwPreviewContentIsHidden()
@@ -136,14 +132,13 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         )
         val templateResponse = generateTemplateResponse(templates = templateChats)
         val templateDelay = 500L
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse.hasQuestion(false)
         getTemplateChatRoomUseCase.setResponse(templateResponse, templateDelay)
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // Then
         // Simulate template chat load last after SRW
@@ -157,13 +152,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun template_chat_remain_hidden_if_user_click_send_btn_when_srw_preview_shown() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // Then
         clickSendBtn()
@@ -175,11 +169,10 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_no_question_not_displayed_if_buyer_attach_from_attach_product() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse.hasQuestion(false)
-        inflateTestFragment()
+        launchChatRoomActivity()
         intendingAttachProduct(1)
 
         // When
@@ -194,15 +187,14 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_loading_state_displayed_if_buyer_attach_from_start_intent() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.setResponseWithDelay(
             chatSrwResponse, 1500
         )
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // Then
         assertTemplateChatVisibility(not(isDisplayed()))
@@ -212,13 +204,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_error_state_displayed_if_buyer_attach_from_start_intent() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.isError = true
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // Then
         assertSrwPreviewContentIsError()
@@ -227,13 +218,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun load_srw_preview_from_error_state_if_buyer_attach_from_start_intent() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.isError = true
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         chatSrwUseCase.isError = false
@@ -248,13 +238,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun assert_srw_preview_expand_collapse_interaction() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // Then
         assertSrwPreviewContentIsVisible()
@@ -278,13 +267,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_content_hidden_if_content_is_clicked() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -297,13 +285,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun collapse_srw_preview_when_user_open_keyboard() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickComposeArea()
@@ -316,13 +303,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun expand_srw_preview_when_user_hide_keyboard() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickComposeArea()
@@ -336,13 +322,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun expand_srw_preview_when_keyboard_opened() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickComposeArea()
@@ -357,13 +342,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun collapse_srw_preview_when_keyboard_opened() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickComposeArea()
@@ -382,13 +366,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_should_expanded_when_reattach_product() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
         intending(hasExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TOPCHAT))
             .respondWith(
                 Instrumentation.ActivityResult(
@@ -411,13 +394,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_displayed_after_click_srw_preview() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -430,13 +412,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_always_stays_at_the_bottom_when_receive_response_msg_from_ws() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -453,13 +434,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_always_stays_at_the_bottom_when_receive_response_different_day_msg_from_ws() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -476,13 +456,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_removed_when_user_request_sent_invoice() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
 
         // When
@@ -502,13 +481,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_removed_when_user_receive_invoice_event_from_ws() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -524,13 +502,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_should_removed_when_user_re_attach_preview_with_invoice() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
 
         // When
@@ -545,13 +522,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_removed_when_user_receive_attach_image_event_from_ws() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
         intending(anyIntent()).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData())
         )
@@ -569,13 +545,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_should_not_be_sent_when_user_attach_image() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
         intending(anyIntent()).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData())
         )
@@ -594,13 +569,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_removed_when_user_re_attach_product_in_preview_mode() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
         intending(anyIntent()).respondWith(getAttachProductResult(1))
 
         // When
@@ -619,13 +593,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun template_chat_should_be_hidden_when_srw_bubble_exist() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -639,13 +612,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_should_collapsed_when_user_open_sticker() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickStickerIconMenu()
@@ -658,13 +630,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_should_expanded_when_user_close_sticker() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickStickerIconMenu()
@@ -678,13 +649,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_should_collapsed_when_user_open_chat_menu() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickPlusIconMenu()
@@ -697,13 +667,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_should_expanded_when_user_close_chat_menu() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickPlusIconMenu()
@@ -717,13 +686,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_should_remain_collapsed_when_user_open_sticker_menu_and_click_open_keyboard() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickStickerIconMenu()
@@ -737,13 +705,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_preview_should_remain_collapsed_when_user_open_keyboard_and_open_sticker_menu() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickComposeArea()
@@ -757,13 +724,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun chat_menu_should_be_hidden_when_SRW_preview_expanded() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickPlusIconMenu()
@@ -778,13 +744,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun chat_sticker_should_be_hidden_when_srw_preview_expanded() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickStickerIconMenu()
@@ -800,13 +765,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_collapsed_when_user_open_sticker() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -823,13 +787,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_expanded_when_user_close_sticker() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -847,13 +810,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_collapsed_when_user_open_chat_menu() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -870,13 +832,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_expanded_when_user_close_chat_menu() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -893,13 +854,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun chat_menu_should_be_hidden_when_srw_bubble_expanded() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -916,13 +876,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun chat_Sticker_should_be_hidden_when_srw_bubble_expanded() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -939,13 +898,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_collapsed_when_user_open_keyboard() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -960,13 +918,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_expanded_when_user_close_keyboard() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -982,13 +939,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_remain_collapsed_when_user_click_sticker_menu_and_click_open_keyboard() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -1004,13 +960,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_remain_collapsed_when_user_open_keyboard_and_open_sticker_menu() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -1026,13 +981,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_Bubble_should_collapsed_when_preview_attachment_is_visible_other_than_product() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
 
         // When
@@ -1049,13 +1003,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_Bubble_should_expanded_when_preview_attachment_is_not_visible() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
 
         // When
@@ -1073,13 +1026,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_Bubble_should_remain_collapsed_when_invoice_preview_visible_and_user_toggle_chat_menu_on() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
 
         // When
@@ -1097,13 +1049,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_Bubble_should_remain_collapsed_when_invoice_preview_visible_and_user_toggle_chat_menu_on_then_off() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
         intending(anyIntent()).respondWith(getAttachInvoiceResult())
 
         // When
@@ -1122,13 +1073,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_maintain_state_expand_or_collapse_if_scrolled_far_top_and_back_at_it() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -1145,13 +1095,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_still_displayed_or_added_when_user_click_send_sticker() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickStickerIconMenu()
@@ -1165,13 +1114,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_Bubble_should_displayed_when_user_send_manually_typed_msg_instead_of_click_srw_preview_question() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickComposeArea()
@@ -1186,13 +1134,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_not_be_added_if_srw_preview_state_is_error_when_user_send_msg_sticker() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.isError = true
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickComposeArea()
@@ -1210,13 +1157,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_removed_when_user_receive_attach_different_product_from_ws() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -1235,13 +1181,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_not_be_removed_when_user_receive_attach_same_product() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
 
         // When
         clickSrwPreviewItemAt(0)
@@ -1260,13 +1205,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     @Test
     fun srw_bubble_should_removed_when_user_return_from_attach_image_and_request_upload_image() {
         // Given
-        setupChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
         intending(anyIntent()).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData())
         )
@@ -1280,6 +1224,30 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         // Then
         assertSrwBubbleDoesNotExist()
         assertTemplateChatVisibility(isDisplayed())
+    }
+
+    @Test
+    fun should_go_back_to_the_bottom_of_the_page_if_click_srw_preview_item_and_not_clear_composed_msg() {
+        // Given
+        val typedMsg = "Hi seller"
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        launchChatRoomActivity {
+            putProductAttachmentIntent(it)
+        }
+
+        // When
+        scrollChatToPosition(10)
+        clickComposeArea()
+        typeMessage(typedMsg)
+        clickSrwPreviewExpandCollapse()
+        clickSrwPreviewItemAt(0)
+        websocket.simulateResponseFromRequestQueue(getChatUseCase.response)
+
+        // Then
+        assertSrwBubbleContentIsVisibleAt(0)
+        assertComposedTextValue(typedMsg)
     }
 
     // TODO: SRW should hide broadcast handler if visible
