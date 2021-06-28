@@ -2,17 +2,13 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import com.tokopedia.imagepicker.common.PICKER_RESULT_PATHS
-import com.tokopedia.imagepicker.common.RESULT_IMAGES_FED_INTO_IMAGE_PICKER
-import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.withItemCount
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
@@ -58,14 +54,14 @@ class TopchatRoomUploadImageTest : TopchatRoomTest() {
     }
 
     private fun openChatRoom(replyChatGqlDelay: Long = 0L) {
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         replyChatGQLUseCase.delayResponse = replyChatGqlDelay
         replyChatGQLUseCase.response = uploadImageReplyResponse
-        inflateTestFragment()
-        Intents.intending(IntentMatchers.anyIntent())
-                .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData()))
+        launchChatRoomActivity()
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, getImageData())
+        )
     }
 
     @After

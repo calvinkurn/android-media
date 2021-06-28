@@ -132,11 +132,15 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.coroutines.*
+import rx.Emitter
+import rx.Observable
 import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -175,6 +179,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     @Inject
     lateinit var compositeSubscription: CompositeSubscription
+
+    // RxJava Emitter to trigger update tokonow only products
+    private var tokoNowProductUpdater: Emitter<Boolean>? = null
 
     lateinit var cartAdapter: CartAdapter
     private var refreshHandler: RefreshHandler? = null
@@ -218,6 +225,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         private var FLAG_BEGIN_SHIPMENT_PROCESS = false
         private var FLAG_SHOULD_CLEAR_RECYCLERVIEW = false
         private var FLAG_IS_CART_EMPTY = false
+
+        private const val TOKONOW_UPDATER_DEBOUNCE = 500L
 
         const val HAS_ELEVATION = 9
         const val NO_ELEVATION = 0
@@ -359,6 +368,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onDetach() {
+        tokoNowProductUpdater = null
         compositeSubscription.unsubscribe()
         super.onDetach()
     }
@@ -3406,7 +3416,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             renderPromoCheckoutLoading()
             dPresenter.doUpdateCartAndValidateUse(params)
         } else if (isTokoNow == true) {
-            dPresenter.processUpdateCartData(true, true)
+            if (tokoNowProductUpdater == null) {
+                compositeSubscription.add(
+                        Observable.create({ e: Emitter<Boolean> ->
+                            tokoNowProductUpdater = e
+                            tokoNowProductUpdater?.onNext(true)
+                        }, Emitter.BackpressureMode.LATEST)
+                                .debounce(TOKONOW_UPDATER_DEBOUNCE, TimeUnit.MILLISECONDS)
+                                .subscribeOn(AndroidSchedulers.mainThread())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe {
+                                    dPresenter.processUpdateCartData(true, true)
+                                }
+                )
+            } else {
+                tokoNowProductUpdater?.onNext(true)
+            }
         }
     }
 
