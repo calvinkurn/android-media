@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.common
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.BUSINESS_UNIT
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.CURRENT_SITE
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT
 import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_CURRENT_SITE
@@ -55,7 +54,7 @@ object ProductTrackingCommon {
                 ProductTrackingConstant.Action.CLICK_NOTIFY_ME_VARIANT_BOTTOMSHEET,
                 "")
 
-        addAdditionalParams(productId, mapEvent)
+        addAdditionalParams(productId, mapEvent, pageSource)
     }
 
     fun onQuantityEditorClicked(productId: String, pageSource: String, oldQuantity: Int, newQuantity: Int) {
@@ -63,10 +62,10 @@ object ProductTrackingCommon {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 "$pageSource - variant bottomsheet",
-                ProductTrackingConstant.Action.CLICK_NOTIFY_ME_VARIANT_BOTTOMSHEET,
+                ProductTrackingConstant.Action.CLICK_VARIANT_QUANTITY_EDITOR,
                 label)
 
-        addAdditionalParams(productId, mapEvent)
+        addAdditionalParams(productId, mapEvent, pageSource)
     }
 
     fun onWishlistCheckClicked(productId: String, pageSource: String) {
@@ -76,7 +75,7 @@ object ProductTrackingCommon {
                 ProductTrackingConstant.Action.CLICK_CHECK_WISHLIST,
                 "")
 
-        addAdditionalParams(productId, mapEvent)
+        addAdditionalParams(productId, mapEvent, pageSource)
     }
 
     fun onSeeCartVariantBottomSheetClicked(message: String, productId: String, pageSource: String) {
@@ -86,7 +85,7 @@ object ProductTrackingCommon {
                 ProductTrackingConstant.Action.CLICK_TOASTER_LIHAT_SUCCESS_ATC,
                 "toaster message:$message")
 
-        addAdditionalParams(productId, mapEvent)
+        addAdditionalParams(productId, mapEvent, pageSource)
     }
 
     fun onVariantImageBottomSheetClicked(productId: String, pageSource: String) {
@@ -96,7 +95,7 @@ object ProductTrackingCommon {
                 ProductTrackingConstant.Action.CLICK_PRODUCT_IMAGE,
                 "")
 
-        addAdditionalParams(productId, mapEvent)
+        addAdditionalParams(productId, mapEvent, pageSource)
     }
 
     fun onVariantGuidelineClicked(productId: String, pageSource: String) {
@@ -106,7 +105,7 @@ object ProductTrackingCommon {
                 ProductTrackingConstant.Action.CLICK_VARIANT_BOTTOMSHEET_GUIDELINE,
                 "")
 
-        addAdditionalParams(productId, mapEvent)
+        addAdditionalParams(productId, mapEvent, pageSource)
     }
 
     fun onVariantPartiallySelected(errorMessage: String, productId: String, pageSource: String) {
@@ -116,11 +115,11 @@ object ProductTrackingCommon {
                 ProductTrackingConstant.Action.VIEW_CHOOSE_VARIANT_ERROR,
                 "not success - $errorMessage")
 
-        addAdditionalParams(productId, mapEvent)
+        addAdditionalParams(productId, mapEvent, pageSource)
     }
 
-    private fun addAdditionalParams(productId: String, mapEvent: MutableMap<String, Any>) {
-        mapEvent[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
+    private fun addAdditionalParams(productId: String, mapEvent: MutableMap<String, Any>, pageSource: String) {
+        mapEvent[KEY_BUSINESS_UNIT] = generateBusinessUnit(pageSource)
         mapEvent[KEY_CURRENT_SITE] = CURRENT_SITE
         mapEvent[KEY_PRODUCT_ID] = productId
 
@@ -135,7 +134,7 @@ object ProductTrackingCommon {
         mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
         mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
         mapEvent[ProductTrackingConstant.Tracking.PROMO_ID] = productId
-        mapEvent[KEY_BUSINESS_UNIT] = BUSINESS_UNIT
+        mapEvent[KEY_BUSINESS_UNIT] = generateBusinessUnit(pageSource)
         mapEvent[KEY_CURRENT_SITE] = CURRENT_SITE
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
@@ -168,7 +167,7 @@ object ProductTrackingCommon {
                 KEY_PRODUCT_ID, productId,
                 ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
                 ProductTrackingConstant.Tracking.KEY_ISLOGGIN, (userId.isNotEmpty()).toString(),
-                KEY_BUSINESS_UNIT, BUSINESS_UNIT,
+                KEY_BUSINESS_UNIT, generateBusinessUnit(pageSource),
                 KEY_CURRENT_SITE, CURRENT_SITE,
 
                 ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
@@ -195,4 +194,9 @@ object ProductTrackingCommon {
                 ))))))
     }
 
+    private fun generateBusinessUnit(pageSource: String) = if (pageSource == AtcVariantHelper.PDP_PAGE_SOURCE) {
+        ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
+    } else {
+        ProductTrackingConstant.Tracking.BUSINESS_UNIT
+    }
 }

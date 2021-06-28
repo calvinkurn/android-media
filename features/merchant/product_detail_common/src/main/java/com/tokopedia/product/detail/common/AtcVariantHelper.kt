@@ -28,10 +28,16 @@ object AtcVariantHelper {
     const val ATC_VARIANT_RESULT_CODE = 19202
 
     const val WISHLIST_PAGESOURCE = "wishlist"
-    const val PDP_PAGESOURCE = "pdp"
+    const val PDP_PAGESOURCE = "product detail page"
     const val PLAY_PAGESOURCE = "play"
     const val TOPCHAT_PAGESOURCE = "topchat"
     const val NOTIFCENTER_PAGESOURCE = "notifcenter"
+    const val HOMEPAGE_PAGESOURCE = "homepage"
+    const val DISCOVERY_PAGESOURCE = "discovery page"
+    const val SHOP_PAGE_PAGESOURCE = "shop page - buyer"
+    const val CART_PAGESOURCE = "cart"
+    const val SEARCH_PAGESOURCE = "search result"
+    const val CATEGORY_PAGESOURCE = "category page"
 
     /**
      * For PDP only
