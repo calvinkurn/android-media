@@ -235,6 +235,22 @@ class DiscoveryFragment :
                     ivToTop.show()
                 }
                 scrollDist += dy
+
+                val offset = recyclerView.computeVerticalScrollOffset() // area of view not visible on screen
+                val extent = recyclerView.computeVerticalScrollExtent() // area of visible on screen
+                val range = recyclerView.computeVerticalScrollRange() // max scroll
+
+                val percentage = 100.0f * offset / (range - extent).toFloat()
+
+                Log.d("Percentage", "${Math.round(percentage)}%")
+
+
+                val percentageWithScreen = 100.0f * (offset  + extent).toFloat() / range
+
+                Log.d("percentageWithScreen", "${Math.round(percentageWithScreen)}%")
+
+
+                // recyclerView.computeVerticalScrollRange() = recyclerView.computeVerticalScrollOffset() + recyclerView.computeVerticalScrollExtent()
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -366,11 +382,11 @@ class DiscoveryFragment :
         discoveryViewModel.checkAddressVisibility().observe(viewLifecycleOwner, { widgetVisibilityStatus ->
             context?.let {
                 if (widgetVisibilityStatus) {
-                    if(shouldShowChooseAddressWidget) {
+                    if (shouldShowChooseAddressWidget) {
                         chooseAddressWidget?.show()
                         chooseAddressWidgetDivider?.show()
                     }
-                    if(ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true){
+                    if (ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(it) == true) {
                         ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(it)
                         showLocalizingAddressCoachMark()
                     }
@@ -683,10 +699,10 @@ class DiscoveryFragment :
         when (requestCode) {
             LOGIN_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    if(this.componentPosition != null && this.componentPosition!! >= 0) {
+                    if (this.componentPosition != null && this.componentPosition!! >= 0) {
                         discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
                         discoveryBaseViewModel?.loggedInCallback()
-                    }else{
+                    } else {
                         discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
                     }
                 }
