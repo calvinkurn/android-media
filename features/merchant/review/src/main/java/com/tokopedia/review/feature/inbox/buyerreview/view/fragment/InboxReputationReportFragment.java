@@ -57,10 +57,10 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
     @Inject
     ReputationTracking tracking;
 
-    public static Fragment createInstance(String reviewId, int shopId) {
+    public static Fragment createInstance(String reviewId, long shopId) {
         Fragment fragment = new InboxReputationReportFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(InboxReputationReportActivity.ARGS_SHOP_ID, shopId);
+        bundle.putLong(InboxReputationReportActivity.ARGS_SHOP_ID, shopId);
         bundle.putString(ARGS_REVIEW_ID, reviewId);
         fragment.setArguments(bundle);
         return fragment;
@@ -128,7 +128,7 @@ public class InboxReputationReportFragment extends BaseDaggerFragment
         sendButton.setOnClickListener(v -> {
             tracking.onSubmitReportAbuse(feedbackId);
             presenter.reportReview(getArguments().getString(ARGS_REVIEW_ID, ""),
-                    String.valueOf(getArguments().getInt(InboxReputationReportActivity.ARGS_SHOP_ID)),
+                    String.valueOf(getArguments().getLong(InboxReputationReportActivity.ARGS_SHOP_ID)),
                     reportRadioGroup.getCheckedRadioButtonId(),
                     otherReason.getText().toString());
         });

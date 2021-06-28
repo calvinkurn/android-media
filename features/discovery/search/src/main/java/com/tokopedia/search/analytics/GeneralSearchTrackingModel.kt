@@ -7,5 +7,6 @@ data class GeneralSearchTrackingModel(
         val isResultFound: String,
         val categoryIdMapping: String,
         val categoryNameMapping: String,
-        val relatedKeyword: String
+        val relatedKeyword: String,
+        val pageSource: String = "",
 )

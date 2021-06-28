@@ -2,7 +2,6 @@ package com.tokopedia.saldodetails.contract
 
 import android.app.Activity
 import android.content.Context
-
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.saldodetails.adapter.SaldoDepositAdapter
 import com.tokopedia.saldodetails.utils.SaldoDatePickerUtil

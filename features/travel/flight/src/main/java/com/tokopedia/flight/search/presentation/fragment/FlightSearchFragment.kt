@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -23,7 +22,7 @@ import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.constant.FlightErrorConstant
-import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.common.view.HorizontalProgressBar
 import com.tokopedia.flight.common.view.adapter.FlightAdapterTypeFactory
 import com.tokopedia.flight.common.view.model.EmptyResultModel
@@ -117,7 +116,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        flightSearchViewModel.journeyList.observe(viewLifecycleOwner, Observer {
+        flightSearchViewModel.journeyList.observe(viewLifecycleOwner, {
             stopTrace()
             when (it) {
                 is Success -> {
@@ -128,7 +127,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     if (it.throwable is FlightSearchThrowable) {
                         val errors = (it.throwable as FlightSearchThrowable).errorList
                         for (error in errors) {
-                            if (error.id == FlightErrorConstant.FLIGHT_ROUTE_NOT_FOUND) {
+                            if (error.id.toInt() == FlightErrorConstant.FLIGHT_ROUTE_NOT_FOUND.value) {
                                 showNoRouteFlightEmptyState(error.title)
                                 flightSearchViewModel.sendProductNotFoundTrack()
                                 break
@@ -139,11 +138,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             }
         })
 
-        flightSearchViewModel.progress.observe(viewLifecycleOwner, Observer {
+        flightSearchViewModel.progress.observe(viewLifecycleOwner, {
             setUpProgress(it)
         })
 
-        flightSearchViewModel.selectedJourney.observe(viewLifecycleOwner, Observer {
+        flightSearchViewModel.selectedJourney.observe(viewLifecycleOwner, {
             it?.let { flightSearchSelectedModel ->
                 navigateToTheNextPage(flightSearchSelectedModel.journeyModel.id,
                         flightSearchSelectedModel.journeyModel.term,
@@ -152,7 +151,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             }
         })
 
-        flightSearchViewModel.tickerData.observe(viewLifecycleOwner, Observer {
+        flightSearchViewModel.tickerData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     if (it.data.message.isNotEmpty()) {
@@ -198,7 +197,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         return adapter
     }
 
-    override fun getScreenName(): String = FlightAnalytics.Screen.SEARCH
+    override fun getScreenName(): String = FlightAnalyticsScreenName.SEARCH
 
     override fun initInjector() {
         if (!::flightSearchComponent.isInitialized) {
@@ -390,7 +389,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     open fun initViewModels() {
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             flightSearchViewModel = viewModelProvider.get(FlightSearchViewModel::class.java)
 
             arguments?.let { args ->
