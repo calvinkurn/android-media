@@ -124,22 +124,22 @@ class OtherMenuViewModel @Inject constructor(
                 ERROR_TOPADS to false
         )
         addSource(_shopBadgeLiveData) {
-            value = value?.geUpdatedErrorMap(ERROR_BADGE, it)
+            value = value?.getUpdatedErrorMap(ERROR_BADGE, it)
         }
         addSource(_shopTotalFollowersLiveData) {
-            value = value?.geUpdatedErrorMap(ERROR_FOLLOWERS, it)
+            value = value?.getUpdatedErrorMap(ERROR_FOLLOWERS, it)
         }
         addSource(_userShopInfoLiveData) {
-            value = value?.geUpdatedErrorMap(ERROR_STATUS, it)
+            value = value?.getUpdatedErrorMap(ERROR_STATUS, it)
         }
         addSource(_shopOperationalLiveData) {
-            value = value?.geUpdatedErrorMap(ERROR_OPERATIONAL, it)
+            value = value?.getUpdatedErrorMap(ERROR_OPERATIONAL, it)
         }
         addSource(_balanceInfoLiveData) {
-            value = value?.geUpdatedErrorMap(ERROR_SALDO, it)
+            value = value?.getUpdatedErrorMap(ERROR_SALDO, it)
         }
         addSource(_kreditTopAdsLiveData) {
-            value = value?.geUpdatedErrorMap(ERROR_TOPADS, it)
+            value = value?.getUpdatedErrorMap(ERROR_TOPADS, it)
         }
     }
 
@@ -150,7 +150,9 @@ class OtherMenuViewModel @Inject constructor(
         addSource(_errorStateMap) { map ->
             val errorCounts = map.count { it.value }
             if (errorCounts < map.count()) {
-                value = errorCounts >= 2
+                val shouldShowMultipleErrorToaster = errorCounts >= 2 && _hasShownMultipleErrorToaster.value == false
+                value = shouldShowMultipleErrorToaster
+                _hasShownMultipleErrorToaster.value = shouldShowMultipleErrorToaster
                 _shouldShowAllError.value = false
             } else {
                 value = false
@@ -160,6 +162,7 @@ class OtherMenuViewModel @Inject constructor(
     }
     val shouldShowMultipleErrorToaster: LiveData<Boolean>
         get() = _shouldShowMultipleErrorToaster
+    private val _hasShownMultipleErrorToaster = MutableLiveData<Boolean>(false)
 
     val shopPeriodType: LiveData<Result<ShopInfoPeriodUiModel>>
         get() = _shopPeriodType
@@ -172,13 +175,27 @@ class OtherMenuViewModel @Inject constructor(
     val isFreeShippingActive: LiveData<Boolean>
         get() = _isFreeShippingActive
 
-    fun checkDelayErrorResponseTrigger() {
-        launch(coroutineContext) {
-            _isToasterAlreadyShown.value.let { isToasterAlreadyShown ->
-                if (!isToasterAlreadyShown){
-                    _isToasterAlreadyShown.value = true
-                    delay(DELAY_TIME)
-                    _isToasterAlreadyShown.value = false
+    fun getAllShopInfoData() {
+        getShopBadge()
+        getShopTotalFollowers()
+        getUserShopInfo()
+        getFreeShippingStatus()
+        getShopOperational()
+        getBalanceInfo()
+        getKreditTopAds()
+        getIsTopAdsAutoTopup()
+    }
+
+    fun onReloadAndCheckDelayErrorResponseTrigger(shouldCheckDelay: Boolean = true) {
+        _hasShownMultipleErrorToaster.value = false
+        if (shouldCheckDelay) {
+            launch(coroutineContext) {
+                _isToasterAlreadyShown.value.let { isToasterAlreadyShown ->
+                    if (!isToasterAlreadyShown){
+                        _isToasterAlreadyShown.value = true
+                        delay(DELAY_TIME)
+                        _isToasterAlreadyShown.value = false
+                    }
                 }
             }
         }
@@ -215,6 +232,21 @@ class OtherMenuViewModel @Inject constructor(
 
             _isFreeShippingActive.value = isFreeShippingActive
         }){}
+    }
+
+    fun reloadErrorData() {
+        _errorStateMap.value?.forEach{
+            if (it.value) {
+                when(it.key) {
+                    ERROR_BADGE -> getShopBadge()
+                    ERROR_FOLLOWERS -> getShopTotalFollowers()
+                    ERROR_STATUS -> getUserShopInfo()
+                    ERROR_OPERATIONAL -> getShopOperational()
+                    ERROR_SALDO -> getBalanceInfo()
+                    ERROR_TOPADS -> getKreditTopAds()
+                }
+            }
+        }
     }
 
     fun getShopBadgeAndFollowers() {
@@ -345,21 +377,10 @@ class OtherMenuViewModel @Inject constructor(
         )
     }
 
-    fun getAllShopInfoData() {
-        getShopBadge()
-        getShopTotalFollowers()
-        getUserShopInfo()
-        getFreeShippingStatus()
-        getShopOperational()
-        getBalanceInfo()
-        getKreditTopAds()
-        getIsTopAdsAutoTopup()
-    }
-
     private fun SettingResponseState<*>.isError(): Boolean =
             this is SettingResponseState.SettingError
 
-    private fun Map<Int, Boolean>.geUpdatedErrorMap(key: Int, state: SettingResponseState<*>): Map<Int, Boolean> {
+    private fun Map<Int, Boolean>.getUpdatedErrorMap(key: Int, state: SettingResponseState<*>): Map<Int, Boolean> {
         return mapValues {
             if (it.key == key) {
                 state.isError()

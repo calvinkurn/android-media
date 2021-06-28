@@ -108,6 +108,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private var otherMenuViewHolder: OtherMenuViewHolder? = null
 
+    private var multipleErrorSnackbar: Snackbar? = null
+
     private var startToTransitionOffset = 0
     private var statusInfoTransitionOffset = 0
 
@@ -269,7 +271,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onRefreshData() {
-        otherMenuViewModel.checkDelayErrorResponseTrigger()
+        otherMenuViewModel.onReloadAndCheckDelayErrorResponseTrigger()
     }
 
     override fun onShopBadgeRefresh() {
@@ -381,8 +383,12 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun observeMultipleErrorToaster() {
-        otherMenuViewModel.shouldShowMultipleErrorToaster.observe(viewLifecycleOwner) {
-            // TODO: show interdeminate toaster
+        otherMenuViewModel.shouldShowMultipleErrorToaster.observe(viewLifecycleOwner) { shouldShowError ->
+            if (shouldShowError) {
+                showMultipleErrorToaster()
+            } else {
+                multipleErrorSnackbar?.dismiss()
+            }
         }
     }
 
@@ -650,6 +656,23 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             } ?: resources.getString(R.string.setting_toaster_error_message)
             view?.showToasterError(errorMessage, onRetryAction)
         }
+    }
+
+    private fun showMultipleErrorToaster() {
+        multipleErrorSnackbar =
+                view?.run {
+                    Toaster.build(
+                            this,
+                            context?.getString(R.string.setting_header_multiple_error_message).orEmpty(),
+                            Snackbar.LENGTH_INDEFINITE,
+                            Toaster.TYPE_NORMAL,
+                            context?.getString(R.string.setting_toaster_error_retry).orEmpty())
+                    {
+                        otherMenuViewModel.reloadErrorData()
+                        otherMenuViewModel.onReloadAndCheckDelayErrorResponseTrigger(false)
+                    }
+                }
+        multipleErrorSnackbar?.show()
     }
 
     private fun View.showToasterError(errorMessage: String, onRetryAction: () -> Unit) {
