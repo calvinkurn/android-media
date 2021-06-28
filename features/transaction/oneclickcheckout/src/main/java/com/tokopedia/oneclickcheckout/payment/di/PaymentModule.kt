@@ -8,8 +8,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.oneclickcheckout.common.PAYMENT_LISTING_URL
 import com.tokopedia.oneclickcheckout.payment.analytics.PaymentListingAnalytics
 import com.tokopedia.oneclickcheckout.payment.data.OvoTopUpUrlGqlResponse
-import com.tokopedia.oneclickcheckout.payment.domain.GetPaymentListingParamUseCase
-import com.tokopedia.oneclickcheckout.payment.domain.GetPaymentListingParamUseCaseImpl
+import com.tokopedia.oneclickcheckout.payment.list.domain.GetPaymentListingParamUseCase
+import com.tokopedia.oneclickcheckout.payment.list.domain.GetPaymentListingParamUseCaseImpl
 import com.tokopedia.oneclickcheckout.payment.list.data.PaymentListingParamGqlResponse
 import com.tokopedia.oneclickcheckout.payment.topup.domain.GetOvoTopUpUrlUseCase
 import com.tokopedia.url.TokopediaUrl

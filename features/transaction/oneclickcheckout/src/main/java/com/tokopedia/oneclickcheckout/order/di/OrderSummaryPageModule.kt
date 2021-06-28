@@ -112,5 +112,4 @@ open class OrderSummaryPageModule(private val activity: Activity) {
     open fun provideOvoActivationLink(): String {
         return "${TokopediaUrl.getInstance().WEB}ovo/api/v2/activate"
     }
-
 }

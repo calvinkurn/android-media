@@ -409,19 +409,23 @@ class NewOrderPreferenceCard(val binding: CardOrderPreferenceNewBinding, private
                         btnChangePayment.invisible()
                         tvPaymentOvoErrorAction.gone()
                         setPaymentErrorAlpha()
-                    } else if (payment.ovoErrorData != null) {
+                    } else if (payment.walletErrorData != null) {
                         // ovo error
-                        val message = payment.ovoErrorData.message
-                        val button = payment.ovoErrorData.buttonTitle
+                        val message = payment.walletErrorData.message
+                        val button = payment.walletErrorData.buttonTitle
 
                         val span = SpannableString("$message $button")
                         if (message.isBlank() && button.isNotBlank()) {
                             // only show button
                             tvPaymentOvoErrorAction.setOnClickListener {
-                                if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_TOP_UP) {
-                                    listener.onOvoTopUpClicked(payment.ovoErrorData.callbackUrl, payment.ovoErrorData.isHideDigital, payment.ovoData.customerData)
-                                } else if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_ACTIVATION) {
-                                    listener.onOvoActivateClicked(payment.ovoErrorData.callbackUrl)
+                                if (payment.walletErrorData.type == OrderPaymentOvoErrorData.TYPE_TOP_UP) {
+                                    listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.ovoErrorData.isHideDigital, payment.ovoData.customerData)
+                                } else if (payment.walletErrorData.type == OrderPaymentOvoErrorData.TYPE_ACTIVATION) {
+                                    if (payment.walletErrorData.isOvo) {
+                                        listener.onOvoActivateClicked(payment.walletErrorData.callbackUrl)
+                                    } else {
+                                        listener.onWalletActivateClicked(payment.walletData.activation.urlLink, payment.walletData.callbackUrl)
+                                    }
                                 }
                             }
                             tvPaymentOvoErrorAction.text = button
@@ -435,16 +439,20 @@ class NewOrderPreferenceCard(val binding: CardOrderPreferenceNewBinding, private
                                 span.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                             }
                             tvPaymentErrorMessage.setOnClickListener {
-                                if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_TOP_UP) {
+                                if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_TOP_UP) {
                                     listener.onOvoTopUpClicked(payment.ovoErrorData.callbackUrl, payment.ovoErrorData.isHideDigital, payment.ovoData.customerData)
-                                } else if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_ACTIVATION) {
-                                    listener.onOvoActivateClicked(payment.ovoErrorData.callbackUrl)
+                                } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
+                                    if (payment.walletErrorData.isOvo) {
+                                        listener.onOvoActivateClicked(payment.walletErrorData.callbackUrl)
+                                    } else {
+                                        listener.onWalletActivateClicked(payment.walletData.activation.urlLink, payment.walletData.callbackUrl)
+                                    }
                                 }
                             }
                             tvPaymentErrorMessage.text = span
                             tvPaymentErrorMessage.visible()
                             tvPaymentOvoErrorAction.gone()
-                            if (payment.ovoErrorData.type != OrderPaymentOvoErrorData.TYPE_TOP_UP) {
+                            if (payment.walletErrorData.type != OrderPaymentOvoErrorData.TYPE_TOP_UP) {
                                 tvPaymentDetail.gone()
                             }
                         } else {
@@ -458,7 +466,7 @@ class NewOrderPreferenceCard(val binding: CardOrderPreferenceNewBinding, private
                             tvPaymentOvoErrorAction.gone()
                         }
                         btnChangePayment.visible()
-                        if (payment.ovoErrorData.isBlockingError) {
+                        if (payment.walletErrorData.isBlockingError) {
                             setPaymentErrorAlpha()
                         } else {
                             setPaymentActiveAlpha()
@@ -752,6 +760,8 @@ class NewOrderPreferenceCard(val binding: CardOrderPreferenceNewBinding, private
         fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData)
 
         fun onOvoActivateClicked(callbackUrl: String)
+
+        fun onWalletActivateClicked(activationUrl: String, callbackUrl: String)
 
         fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData)
     }

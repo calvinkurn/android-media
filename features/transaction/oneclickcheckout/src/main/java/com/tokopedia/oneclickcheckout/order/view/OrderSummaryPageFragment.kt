@@ -138,6 +138,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private var lastPurchaseProtectionCheckState = PurchaseProtectionPlanData.STATE_EMPTY
 
     private var source: String = SOURCE_OTHERS
+    private var shouldShowToaster: Boolean = false
 
     override fun getScreenName(): String {
         return this::class.java.simpleName
@@ -497,6 +498,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                             Toaster.build(v, message, type = Toaster.TYPE_ERROR).show()
                         }
                         source = SOURCE_OTHERS
+                        shouldShowToaster = false
                         refresh(isFullRefresh = it.isFullRefresh)
                     }
                 }
@@ -546,6 +548,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         priceValidationDialog.setPrimaryCTAClickListener {
                             priceValidationDialog.dismiss()
                             source = SOURCE_OTHERS
+                            shouldShowToaster = false
                             refresh()
                         }
                         priceValidationDialog.show()
@@ -716,6 +719,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 //        } else {
 //            binding.layoutNewOccOnboarding.root.gone()
 //        }
+
+        if (shouldShowToaster) showToasterSuccess()
     }
 
 //    private fun showPreferenceTicker(preference: OrderPreference) {
@@ -1120,6 +1125,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 val orderCost = viewModel.orderTotal.value.orderCost
                 val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
+                putExtra(PaymentListingActivity.EXTRA_PAYMENT_BID, viewModel.getPaymentBid())
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
         }
@@ -1145,7 +1151,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
 
         override fun onOvoActivateClicked(callbackUrl: String) {
-            OvoActivationWebViewBottomSheet(ovoActivationUrl.get(), callbackUrl, object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
+            OvoActivationWebViewBottomSheet(ovoActivationUrl.get(), callbackUrl,
+                getString(R.string.lbl_activate_ovo_now),
+                object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
                 override fun onActivationResult(isSuccess: Boolean) {
                     view?.let {
                         it.post {
@@ -1155,6 +1163,23 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                                 Toaster.build(it, getString(R.string.message_ovo_activation_failed), type = Toaster.TYPE_ERROR, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
                             }
                             source = SOURCE_OTHERS
+                            shouldShowToaster = false
+                            refresh()
+                        }
+                    }
+                }
+            }).show(this@OrderSummaryPageFragment, userSession.get())
+        }
+
+        override fun onWalletActivateClicked(activationUrl: String, callbackUrl: String) {
+            OvoActivationWebViewBottomSheet(activationUrl, callbackUrl,
+                viewModel.getActivationData().headerTitle,
+                object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
+                override fun onActivationResult(isSuccess: Boolean) {
+                    view?.let {
+                        it.post {
+                            source = SOURCE_OTHERS
+                            shouldShowToaster = true
                             refresh()
                         }
                     }
@@ -1204,6 +1229,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private fun showGlobalError(type: Int) {
         binding.globalError.setType(type)
         binding.globalError.setActionClickListener {
+            shouldShowToaster = false
             refresh()
         }
 //        binding.mainContent.animateGone()
@@ -1369,6 +1395,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             OccPromptButton.ACTION_RELOAD -> {
                 dialog.dismiss()
                 source = SOURCE_OTHERS
+                shouldShowToaster = false
                 refresh()
             }
             OccPromptButton.ACTION_RETRY -> {
@@ -1409,6 +1436,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             OccPromptButton.ACTION_RELOAD -> {
                 bottomSheet.dismiss()
                 source = SOURCE_OTHERS
+                shouldShowToaster = false
                 refresh()
             }
             OccPromptButton.ACTION_RETRY -> {
@@ -1441,6 +1469,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun setSourceFromPDP() {
         source = SOURCE_PDP
+    }
+
+    private fun showToasterSuccess() {
+        view?.let {
+            it.post {
+                Toaster.build(it, viewModel.getActivationData().successToaster,
+                    actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+            }
+        }
     }
 
     companion object {
