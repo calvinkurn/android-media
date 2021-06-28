@@ -40,7 +40,6 @@ data class ImagePickerBuilder(
 
     fun withSimpleEditor():ImagePickerBuilder {
         imagePickerEditorBuilder = ImagePickerEditorBuilder.getSimpleEditBuilder()
-        withWatermarkEditor()
         return this
     }
 

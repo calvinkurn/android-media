@@ -286,7 +286,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     }
 
     private void remoteConfigEditor() {
-        if (remoteConfig.getBoolean(WATERMARK_REMOTE_CONFIG)) {
+        if (!remoteConfig.getBoolean(WATERMARK_REMOTE_CONFIG)) {
             imageEditActionType.remove(ImageEditActionType.ACTION_WATERMARK);
         }
     }
