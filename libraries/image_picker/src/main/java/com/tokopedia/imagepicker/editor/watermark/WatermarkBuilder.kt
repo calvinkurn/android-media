@@ -12,6 +12,7 @@ import com.tokopedia.imagepicker.editor.watermark.entity.TextAndImageUIModel
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeScaledBitmap
 import com.tokopedia.imagepicker.editor.watermark.utils.MAX_IMAGE_SIZE
+import com.tokopedia.imagepicker.editor.watermark.utils.takeAndEllipsizeOf
 import com.yalantis.ucrop.util.FastBitmapDrawable
 import android.graphics.Bitmap.Config.ARGB_8888 as ARGB_8888
 import android.graphics.Bitmap.createBitmap as createBitmap
@@ -22,6 +23,7 @@ open class WatermarkBuilder {
     private var backgroundImg: Bitmap? = null
     private var isTitleMode: Boolean = false
     private var isCombine: Boolean = false
+    private var onlyWatermark: Boolean = false
     private var resizeBackgroundImg: Boolean
     private var watermarkImage: Image? = null
     private var watermarkText: TextUIModel? = null
@@ -88,13 +90,19 @@ open class WatermarkBuilder {
         }
     }
 
-    fun loadWatermarkTextAndImage(text: String, bitmap: Bitmap) = apply {
+    fun loadWatermarkTextImage(text: String, bitmap: Bitmap) = apply {
         this.isCombine = true
 
         this.watermarkTextAndImage = TextAndImage().apply {
             this.image = bitmap
-            this.text = text.take(10)
+            this.text = text.takeAndEllipsizeOf()
         }
+    }
+
+    fun loadOnlyWatermarkTextImage(text: String, bitmap: Bitmap) = apply {
+        this.onlyWatermark = true
+
+        loadWatermarkTextImage(text, bitmap)
     }
 
     fun setTileMode(tileMode: Boolean) = apply {
@@ -119,9 +127,10 @@ open class WatermarkBuilder {
             watermarkImg = watermarkImage,
             watermarkText = watermarkText,
             backgroundImg = backgroundImg,
+            onlyWatermark = onlyWatermark,
             isTitleMode = isTitleMode,
             isCombine = isCombine,
-            context = context
+            context = context,
         )
     }
 

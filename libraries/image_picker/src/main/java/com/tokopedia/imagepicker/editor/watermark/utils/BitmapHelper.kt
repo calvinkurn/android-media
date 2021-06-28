@@ -254,4 +254,5 @@ object BitmapHelper {
 
         return resultBitmap
     }
+
 }

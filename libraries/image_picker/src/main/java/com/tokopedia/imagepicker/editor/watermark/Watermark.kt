@@ -22,7 +22,8 @@ data class Watermark (
     var outputImage: Bitmap? = null,
     var canvasBitmap: Bitmap? = null,
     var isTitleMode: Boolean,
-    var isCombine: Boolean
+    var isCombine: Boolean,
+    var onlyWatermark: Boolean
 ) {
 
     init {
@@ -33,8 +34,24 @@ data class Watermark (
             createWatermarkImage(watermarkImg)
             createWatermarkText(watermarkText)
         } else {
-            createWatermarkTextAndImage(watermarkTextAndImage)
+            if (onlyWatermark) {
+                createOnlyWatermarkTextAndImage(watermarkTextAndImage)
+            } else {
+                createWatermarkTextAndImage(watermarkTextAndImage)
+            }
         }
+    }
+
+    private fun createOnlyWatermarkTextAndImage(watermark: TextAndImageUIModel?) {
+        if (watermark == null) return
+
+        val logoBitmap = watermark.image!!.resizeBitmap(watermark.imageSize.toFloat(), backgroundImg!!)
+        val textBitmap = watermark.text.textAsBitmap(context, watermark)
+
+        createOnlyWatermark(
+            bitmap = logoBitmap.combine(textBitmap),
+            config = watermark
+        )
     }
 
     private fun createWatermarkTextAndImage(watermark: TextAndImageUIModel?) {
@@ -69,6 +86,19 @@ data class Watermark (
             bitmap = textBitmap,
             config = watermarkText
         )
+    }
+
+    private fun createOnlyWatermark(
+        bitmap: Bitmap,
+        config: BaseWatermark?
+    ) {
+        if (config == null) return
+
+        val hasWatermarkBitmap = bitmap
+            .adjustRotation(config.position.rotation)
+
+        canvasBitmap = hasWatermarkBitmap
+        outputImage = hasWatermarkBitmap
     }
 
     private fun createWatermark(

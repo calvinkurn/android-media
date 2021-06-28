@@ -31,7 +31,9 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPreviewPresenter.ImageEditPreviewView> {
+
     private CompositeSubscription compositeSubscription;
+
     private PublishSubject<Float> brightnessSubject;
     private PublishSubject<Float> contrastSubject;
 
@@ -307,8 +309,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
             // create watermark with transparent container (empty) bitmap
             Watermark watermark = WatermarkBuilder
                     .createWithSize(getView().getContext())
-                    .setTileMode(true)
-                    .loadWatermarkTextAndImage(userInfoName, tokopediaLogoBitmap)
+                    .loadWatermarkTextImage(userInfoName, tokopediaLogoBitmap)
                     .getWatermark();
 
             return Observable.just(watermark);
