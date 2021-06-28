@@ -131,11 +131,11 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, FlightCancelVoucher.Response::class.java)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<FlightCancelVoucher>()
-            if(!data.attributes.success){
+            }.getSuccessData<FlightCancelVoucher.Response>()
+            if(!data.response.attributes.success){
                 mutablePromoData.postValue(promoData.value?.copy(state = TickerCheckoutView.State.FAILED))
             }else{
-                mutablePromoData.postValue(PromoData())
+                mutablePromoData.postValue(PromoData(state = TickerCheckoutView.State.ACTIVE))
             }
         }) {
             mutablePromoData.postValue(promoData.value?.copy(state = TickerCheckoutView.State.FAILED))

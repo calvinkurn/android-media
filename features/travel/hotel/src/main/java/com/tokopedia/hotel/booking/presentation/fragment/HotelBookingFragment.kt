@@ -524,7 +524,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             booking_pay_now_promo_ticker.state = ButtonPromoCheckoutView.State.ACTIVE
         }else if(state == TickerCheckoutView.State.EMPTY){
             booking_pay_now_promo_ticker.state = ButtonPromoCheckoutView.State.LOADING
-        }else{
+        }else if(state == TickerCheckoutView.State.FAILED){
             booking_pay_now_promo_ticker.state = ButtonPromoCheckoutView.State.ACTIVE
             view?.let { v ->
                 Toaster.build(v, "Maaf, belum berhasil hapus kupon. Coba lagi, yuk!", Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
