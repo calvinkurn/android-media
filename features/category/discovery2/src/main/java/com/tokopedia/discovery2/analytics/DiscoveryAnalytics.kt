@@ -351,7 +351,8 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     }
 
     override fun trackClickVideo(videoUrl: String, videoName: String, videoPlayedTime: String) {
-        val map = createGeneralEvent(eventAction = "$CLICK_VIDEO - $videoUrl", eventLabel = "$videoName - $videoPlayedTime")
+        val map = createGeneralEvent(eventAction = CLICK_VIDEO,
+                eventLabel = "$videoName - $videoUrl - $videoPlayedTime")
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
         getTracker().sendGeneralEvent(map)
