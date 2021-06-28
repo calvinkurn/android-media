@@ -13,11 +13,9 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifyOrder
-import org.hamcrest.MatcherAssert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.jupiter.api.Assertions
 import rx.Observable
 import rx.Subscriber
 
