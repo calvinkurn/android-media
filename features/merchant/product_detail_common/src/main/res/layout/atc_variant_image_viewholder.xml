@@ -43,7 +43,7 @@
             android:gravity="center"
             android:background="@drawable/bg_round_corner_atc_variant_overlay"
             android:text="@string/atc_variant_empty"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_Static_White"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
