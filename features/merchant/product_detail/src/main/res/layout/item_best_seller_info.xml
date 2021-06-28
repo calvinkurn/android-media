@@ -18,7 +18,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:foreground="?selectableItemBackground"
-        android:layout_marginBottom="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_12"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -41,7 +41,6 @@
             android:id="@+id/best_seller_info_description"
             tools:text="di Cleanser Wajah"
             app:typographyType="body_3"
-            android:layout_marginBottom="@dimen/unify_space_16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <com.tokopedia.iconunify.IconUnify
