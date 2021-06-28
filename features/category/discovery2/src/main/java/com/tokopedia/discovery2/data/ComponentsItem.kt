@@ -59,6 +59,7 @@ data class ComponentsItem(
         var pagePath: String = "",
         var parentComponentId: String = "",
         var parentComponentPosition: Int = 0,
+        var parentFilterComponentId: String? = null,
         var cpmData: CpmModel? = null,
         var chipSelectionData: DataItem? = null,
         var chipSelectionChange: Boolean = false,
