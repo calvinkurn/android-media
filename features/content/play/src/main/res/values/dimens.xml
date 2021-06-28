@@ -75,11 +75,20 @@
     <dimen name="play_engagement_prestart_width">152dp</dimen>
     <dimen name="play_engagement_prestart_radius">12dp</dimen>
 
+    <dimen name="play_engagement_live_width">174dp</dimen>
+    <dimen name="play_engagement_live_height">82dp</dimen>
+
+    <dimen name="play_engagement_tap_action">62dp</dimen>
+    <dimen name="play_engagement_tap_inside_margin">6dp</dimen>
+    <dimen name="play_engagement_tap_timer_radius">14dp</dimen>
+
     <!--General Dimension-->
+    <dimen name="play_offset_6">6dp</dimen>
     <dimen name="play_offset_10">10dp</dimen>
     <dimen name="play_offset_12">12dp</dimen>
     <dimen name="play_offset_14">14dp</dimen>
     <dimen name="play_offset_18">18dp</dimen>
+    <dimen name="play_offset_30">30dp</dimen>
     <dimen name="play_offset_44">44dp</dimen>
     <dimen name="play_no_offset">0dp</dimen>
 </resources>

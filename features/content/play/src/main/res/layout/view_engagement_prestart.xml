@@ -5,15 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/play_engagement_prestart_width"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_play_engagement_prestart"
+    android:background="@drawable/bg_play_engagement"
     >
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_lvl0"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bg_play_engagement_prestart_decor"
+        app:srcCompat="@drawable/bg_play_engagement_decor"
     />
 
     <com.tokopedia.iconunify.IconUnify
