@@ -25,8 +25,8 @@ object LoggingUtils {
     }
 
     @JvmStatic
-    fun logGqlErrorBackend(from: String, request: String, errorMessage: String) {
-        ServerLogger.log(Priority.P1, "GQL_ERROR_BACKEND", mapOf("from" to from, "err" to errorMessage, "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
+    fun logGqlErrorBackend(from: String, request: String, errorMessage: String, statusCode: String) {
+        ServerLogger.log(Priority.P1, "GQL_ERROR_BACKEND", mapOf("from" to from, "code" to statusCode, "err" to errorMessage, "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
     }
 
     @JvmStatic
