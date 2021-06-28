@@ -57,7 +57,8 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ATC_VARIANT = "$INTERNAL_MARKETPLACE/atc-variant/{product_id}/{shop_id}/" +
             "?pageSource={pageSource}&" +
-            "isTokoNow={isTokoNow}"
+            "isTokoNow={isTokoNow}&" +
+            "cdListName={cdListName}"
 
     // ProductManageActivity
     const val PRODUCT_MANAGE_LIST = "$INTERNAL_MARKETPLACE/product-manage-list"

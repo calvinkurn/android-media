@@ -145,8 +145,8 @@ object ProductTrackingCommon {
             productName: String, productPrice: String, quantity: Int,
             variantName: String, isMultiOrigin: Boolean,
             shopType: String = "", shopName: String = "",
-            categoryName: String = "", categoryId: String = "", isFreeOngkir: Boolean = false, trackerAttribution: String = "",
-            pageSource: String = ""
+            categoryName: String = "", categoryId: String = "", isFreeOngkir: Boolean = false, pageSource: String = "",
+            cdListName: String = ""
     ) {
         val generateButtonActionString = when (buttonAction) {
             ProductDetailCommonConstant.OCS_BUTTON -> "$buttonText ocs"
@@ -187,7 +187,7 @@ object ProductTrackingCommon {
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_81, shopType,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_45, cartId,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_82, categoryId,
-                        ProductTrackingConstant.Tracking.KEY_DIMENSION_40, "null", //cd listname --> /tokonow - searchproduct - {organic/organic ads/topads productlist}
+                        ProductTrackingConstant.Tracking.KEY_DIMENSION_40, cdListName, //cd listname --> /tokonow - searchproduct - {organic/organic ads/topads productlist}
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_54, multiOrigin,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_83, if (isFreeOngkir) ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR else ProductTrackingConstant.Tracking.VALUE_NONE_OTHER,
                         ProductTrackingConstant.Tracking.KEY_DIMENSION_38, pageSource

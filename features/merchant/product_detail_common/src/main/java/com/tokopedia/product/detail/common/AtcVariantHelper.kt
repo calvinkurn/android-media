@@ -90,7 +90,7 @@ object AtcVariantHelper {
         )
         cacheManager.put(PDP_PARCEL_KEY_RESPONSE, parcelData)
 
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productInfoP1.basic.productID, PDP_PAGESOURCE, "", "")
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productInfoP1.basic.productID, PDP_PAGESOURCE, "", "", "")
                 .putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
         startActivitResult.invoke(intent, ATC_VARIANT_RESULT_CODE)
     }
@@ -111,8 +111,9 @@ object AtcVariantHelper {
                        pageSource: String,
                        isTokoNow: Boolean = false,
                        shopId: String,
+                       trackerCdListName: String = "",
                        startActivitResult: (Intent, Int) -> Unit) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productId, shopId, pageSource, isTokoNow.toString())
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productId, shopId, pageSource, isTokoNow.toString(), trackerCdListName)
         startActivitResult(intent, ATC_VARIANT_RESULT_CODE)
     }
 }
