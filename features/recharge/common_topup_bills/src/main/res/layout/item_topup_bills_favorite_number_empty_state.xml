@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/common_topupbills_empty_state_image"
+        android:layout_width="@dimen/layout_lvl8"
+        android:layout_height="@dimen/layout_lvl8"
+        android:src="@drawable/common_topup_ic_empty_state"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/common_topupbills_empty_state_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:text="@string/common_topup_fav_number_empty_state_title"
+        app:typographyType="heading_4"
+        app:layout_constraintTop_toTopOf="@id/common_topupbills_empty_state_image"
+        app:layout_constraintStart_toEndOf="@id/common_topupbills_empty_state_image"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/common_topupbills_empty_state_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:text="@string/common_topupbills_empty_state_desc"
+        app:typographyType="body_3"
+        app:layout_constraintTop_toBottomOf="@id/common_topupbills_empty_state_title"
+        app:layout_constraintStart_toEndOf="@id/common_topupbills_empty_state_image"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/common_topupbills_empty_state_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:text="@string/common_topupbills_empty_state_continue"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="small"
+        app:unifyButtonType="main"
+        app:layout_constraintStart_toEndOf="@id/common_topupbills_empty_state_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/common_topupbills_empty_state_image"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
