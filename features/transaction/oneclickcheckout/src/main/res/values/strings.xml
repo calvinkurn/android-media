@@ -65,4 +65,6 @@
 
     <string name="occ_lbl_title_no_address">Tambahkan Alamat dulu, ya!</string>
     <string name="occ_lbl_desc_no_address">Cuma satu langkah lagi sebelum\nmelanjutkan proses Beli Langsung :)</string>
+    
+    <string name="occ_custom_ticker_action">Lihat</string>
 </resources>

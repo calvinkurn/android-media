@@ -37,7 +37,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         this.product = product
     }
 
-    fun isProductInitialized(): Boolean {
+    private fun isProductInitialized(): Boolean {
         return ::product.isInitialized
     }
 
@@ -49,10 +49,10 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 showPrice()
 
                 if (product.cashback.isNotEmpty()) {
-                    lblCashback.setLabel(product.cashback)
-                    lblCashback.visible()
+                    labelProductSlashPricePercentage.setLabel(product.cashback)
+                    labelProductSlashPricePercentage.visible()
                 } else {
-                    lblCashback.gone()
+                    labelProductSlashPricePercentage.gone()
                 }
 
                 tfNote.textFieldInput.textSize = 16f
@@ -190,9 +190,9 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 for (replacement in product.tickerMessage.replacement) {
                     completeText = completeText.replace("{{${replacement.identifier}}}", replacement.value)
                 }
-                tvQuantityStockAvailable.text = MethodChecker.fromHtml(completeText)
+                tvQtyLeft.text = MethodChecker.fromHtml(completeText)
             } else {
-                tvQuantityStockAvailable.text = ""
+                tvQtyLeft.text = ""
             }
         }
     }
