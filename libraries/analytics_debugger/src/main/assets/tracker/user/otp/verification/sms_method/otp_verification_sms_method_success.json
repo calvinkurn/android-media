@@ -5,8 +5,9 @@
     {
       "networkSpeed": ".+",
       "clientId": ".+",
-      "isLoggedInStatus": ".+",
+      "isLoggedInStatus": false,
       "appsflyerId": ".+",
+      "theme": ".+",
       "shopId": ".*",
       "screenName": "change method",
       "event": "openScreen",
@@ -16,20 +17,35 @@
     {
       "networkSpeed": ".+",
       "clientId": ".+",
-      "isLoggedInStatus": ".+",
+      "isLoggedInStatus": false,
       "appsflyerId": ".+",
+      "theme": ".+",
       "shopId": ".*",
-      "screenName": "Input OTP .+",
+      "screenName": "Input OTP sms",
       "event": "openScreen",
       "userId": ".*",
       "sessionIris": ".+"
     },
     {
-      "event": "clickOtp",
       "eventCategory": "otp page",
+      "event": "clickOtp",
       "eventAction": "click metode otp",
-      "eventLabel": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".+",
+      "eventLabel": "success - .+ - sms"
+    },
+    {
+      "eventCategory": "input otp page",
+      "event": "clickConfirm",
+      "eventAction": "click on verifikasi",
+      "sessionIris": ".+",
+      "eventLabel": ".+"
+    },
+    {
+      "eventCategory": "otp page",
+      "event": "clickOtp",
+      "eventAction": "auto submit otp page",
+      "sessionIris": ".+",
+      "eventLabel": "success - .+ - sms"
     }
   ]
 }

@@ -5,8 +5,9 @@
     {
       "networkSpeed": ".+",
       "clientId": ".+",
-      "isLoggedInStatus": ".+",
+      "isLoggedInStatus": false,
       "appsflyerId": ".+",
+      "theme": ".+",
       "shopId": ".*",
       "screenName": "change method",
       "event": "openScreen",
@@ -16,27 +17,28 @@
     {
       "networkSpeed": ".+",
       "clientId": ".+",
-      "isLoggedInStatus": ".+",
+      "isLoggedInStatus": false,
       "appsflyerId": ".+",
+      "theme": ".+",
       "shopId": ".*",
-      "screenName": "Input OTP .+",
+      "screenName": "Input OTP whatsapp",
       "event": "openScreen",
       "userId": ".*",
       "sessionIris": ".+"
     },
     {
-      "event": "clickOtp",
       "eventCategory": "otp page",
+      "event": "clickOtp",
       "eventAction": "click metode otp",
-      "eventLabel": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".+",
+      "eventLabel": "success - .+ - whatsapp"
     },
     {
-      "event": "clickOtp",
       "eventCategory": "otp page",
+      "event": "clickOtp",
       "eventAction": "click button back",
-      "eventLabel": ".+",
-      "sessionIris": ".*"
+      "sessionIris": ".+",
+      "eventLabel": ".+"
     }
   ]
 }

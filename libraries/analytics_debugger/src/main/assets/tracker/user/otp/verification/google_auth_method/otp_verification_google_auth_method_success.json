@@ -1,12 +1,13 @@
 {
-  "readme": "Success verification with sms method",
+  "readme": "Success verification with google_authenticator method",
   "mode": "subset",
   "query": [
     {
       "networkSpeed": ".+",
       "clientId": ".+",
-      "isLoggedInStatus": ".+",
+      "isLoggedInStatus": false,
       "appsflyerId": ".+",
+      "theme": ".+",
       "shopId": ".*",
       "screenName": "change method",
       "event": "openScreen",
@@ -16,20 +17,28 @@
     {
       "networkSpeed": ".+",
       "clientId": ".+",
-      "isLoggedInStatus": ".+",
+      "isLoggedInStatus": false,
       "appsflyerId": ".+",
+      "theme": ".+",
       "shopId": ".*",
-      "screenName": "Input OTP .+",
+      "screenName": "Input OTP google_authenticator",
       "event": "openScreen",
       "userId": ".*",
       "sessionIris": ".+"
     },
     {
-      "event": "clickOtp",
+      "eventCategory": "input otp page",
+      "event": "clickConfirm",
+      "eventAction": "click on verifikasi",
+      "sessionIris": ".+",
+      "eventLabel": ".+"
+    },
+    {
       "eventCategory": "otp page",
-      "eventAction": "click metode otp",
-      "eventLabel": ".*",
-      "sessionIris": ".*"
+      "event": "clickOtp",
+      "eventAction": "auto submit otp page",
+      "sessionIris": ".+",
+      "eventLabel": "success - .+ - google_authenticator"
     }
   ]
 }

@@ -2,7 +2,8 @@ package com.tokopedia.otp.verification.base
 
 import android.content.Context
 import android.content.Intent
-import androidx.test.espresso.Espresso.*
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBackUnconditionally
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -11,6 +12,8 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.action.PinUnifyAction
 import com.tokopedia.otp.common.action.SpannableTypographyAction.clickClickableSpan
@@ -159,7 +162,7 @@ abstract class VerificationTest {
         test.invoke()
     }
 
-    private fun launchDefaultFragment() {
+    protected fun launchDefaultFragment() {
         setupVerificationActivity {
             it.putExtras(Intent(context, VerificationActivityStub::class.java))
         }
@@ -200,8 +203,7 @@ abstract class VerificationTest {
     }
 
     protected fun clickOnBackPress() {
-        sleep(1000)
-        closeSoftKeyboard()
+        sleep(2000)
         pressBackUnconditionally()
     }
 
@@ -242,19 +244,33 @@ abstract class VerificationTest {
     }
 
     protected fun clickResendOtp() {
-        sleep(2000)
-        waitOnView(withText(CoreMatchers.containsString("Kirim ulang")), 35000, 500)
+        sleep(6000)
+        waitOnView(withText(CoreMatchers.containsString("Tidak menerima kode?")), 35000, 500)
                 .check(matches(isDisplayed()))
                 .perform(clickClickableSpan("Kirim ulang"))
-        sleep(2000)
     }
 
     protected fun clickChooseAnotherOtpMethod() {
-        sleep(2000)
-        waitOnView(withText(CoreMatchers.containsString("gunakan metode verifikasi lain.")), 35000, 500)
+        sleep(6000)
+        waitOnView(withText(CoreMatchers.containsString("Tidak menerima kode?")), 35000, 500)
                 .check(matches(isDisplayed()))
                 .perform(clickClickableSpan("gunakan metode verifikasi lain."))
-        sleep(2000)
+    }
+
+    protected fun viewToaster(text: String) {
+        waitOnView(withText(text)).check(matches(isDisplayed()))
+    }
+
+    protected fun viewCountingOtp() {
+        waitOnView(withText(CoreMatchers.containsString("Mohon tunggu dalam"))).check(matches(isDisplayed()))
+    }
+
+    protected fun checkTracker(path: String, sleepTime: Long = 6000) {
+        sleep(sleepTime)
+        assertThat(
+                getAnalyticsWithQuery(gtmLogDbSource, context, path),
+                hasAllSuccess()
+        )
     }
 
     companion object {

@@ -86,6 +86,7 @@ dependencies {
     implementation rootProject.ext.testDependencies.espressoIdlingResource
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
 
+    androidTestImplementation rootProject.ext.firebase.messaging
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation project(rootProject.ext.libraries.analytics)

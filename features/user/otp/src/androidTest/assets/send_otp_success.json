@@ -1,7 +1,7 @@
 {
   "OTPRequest": {
     "success": true,
-    "message": "SMS telah dikirim.",
+    "message": "Sended",
     "errorMessage": "",
     "prefixMisscall": ""
   }

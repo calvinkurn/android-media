@@ -1,10 +1,7 @@
 package com.tokopedia.otp.verification.choose_method
 
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
-import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.otp.verification.base.VerificationTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -15,38 +12,38 @@ class ChooseOtpMethodTest : VerificationTest() {
 
     @Test
     fun test_view_otp_method() {
-        runTest {
-            viewLisfOfMethod()
+        // Given
+        launchDefaultFragment()
 
-            ViewMatchers.assertThat(
-                    getAnalyticsWithQuery(gtmLogDbSource, context, VIEW_CHOOSE_OTP_METHOD_TRACKER_PATH),
-                    hasAllSuccess()
-            )
-        }
+        // When
+        viewLisfOfMethod()
+
+        // Then
+        checkTracker(VIEW_CHOOSE_OTP_METHOD_TRACKER_PATH)
     }
 
     @Test
     fun test_click_inactive_phone() {
-        runTest {
-            clickInactivePhone()
+        // Given
+        launchDefaultFragment()
 
-            ViewMatchers.assertThat(
-                    getAnalyticsWithQuery(gtmLogDbSource, context, CLICK_INACTIVE_PHONE_TRACKER_PATH),
-                    hasAllSuccess()
-            )
-        }
+        // When
+        clickInactivePhone()
+
+        // Then
+        checkTracker(CLICK_INACTIVE_PHONE_TRACKER_PATH)
     }
 
     @Test
     fun test_click_back() {
-        runTest {
-            clickOnBackPress()
+        // Given
+        launchDefaultFragment()
 
-            ViewMatchers.assertThat(
-                    getAnalyticsWithQuery(gtmLogDbSource, context, CLICK_BACK_TRACKER_PATH),
-                    hasAllSuccess()
-            )
-        }
+        // When
+        clickOnBackPress()
+
+        // Then
+        checkTracker(CLICK_BACK_TRACKER_PATH)
     }
 
     companion object {

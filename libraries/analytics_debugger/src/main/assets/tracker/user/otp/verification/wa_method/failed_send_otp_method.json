@@ -1,5 +1,5 @@
 {
-  "readme": "Choose another otp method",
+  "readme": "Resend whatsapp method",
   "mode": "subset",
   "query": [
     {
@@ -21,7 +21,7 @@
       "appsflyerId": ".+",
       "theme": ".+",
       "shopId": ".*",
-      "screenName": "Input OTP sms",
+      "screenName": "Input OTP whatsapp",
       "event": "openScreen",
       "userId": ".*",
       "sessionIris": ".+"
@@ -31,26 +31,7 @@
       "event": "clickOtp",
       "eventAction": "click metode otp",
       "sessionIris": ".+",
-      "eventLabel": "success - .+ - sms"
-    },
-    {
-      "eventCategory": "otp page",
-      "event": "clickOtp",
-      "eventAction": "click gunakan metode lain",
-      "sessionIris": ".*",
-      "eventLabel": ".+ - sms"
-    },
-    {
-      "networkSpeed": ".+",
-      "clientId": ".+",
-      "isLoggedInStatus": false,
-      "appsflyerId": ".+",
-      "theme": ".+",
-      "shopId": ".*",
-      "screenName": "change method",
-      "event": "openScreen",
-      "userId": ".*",
-      "sessionIris": ".+"
+      "eventLabel": "fail - .+"
     }
   ]
 }
