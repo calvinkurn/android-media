@@ -57,38 +57,68 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
         // listeners
         val productAddToCartListener = object : CarouselProductCardListener.OnItemAddToCartListener {
             override fun onItemAddToCart(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                val productItem = element.productList.getOrNull(carouselProductCardPosition) ?: return
-                shopHomeCarouselProductListener.onCarouselPersonalizationProductItemClickAddToCart(
-                        adapterPosition,
-                        carouselProductCardPosition,
-                        element,
-                        productItem,
-                        isOcc = isAtcOcc(element.name)
-                )
+                val productItem = element.productList.getOrNull(carouselProductCardPosition)
+                        ?: return
+                if (element.name == REMINDER) {
+                    shopHomeCarouselProductListener.onCarouselPersonalizationReminderProductItemClickAddToCart(
+                            adapterPosition,
+                            carouselProductCardPosition,
+                            element,
+                            productItem
+                    )
+                } else {
+                    shopHomeCarouselProductListener.onCarouselPersonalizationProductItemClickAddToCart(
+                            adapterPosition,
+                            carouselProductCardPosition,
+                            element,
+                            productItem,
+                            isOcc = isAtcOcc(element.name)
+                    )
+                }
             }
         }
 
         val productClickListener = object : CarouselProductCardListener.OnItemClickListener {
             override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                val productItem = element.productList.getOrNull(carouselProductCardPosition) ?: return
-                shopHomeCarouselProductListener.onPersonalizationCarouselProductItemClicked(
-                        adapterPosition,
-                        carouselProductCardPosition,
-                        element,
-                        productItem
-                )
+                val productItem = element.productList.getOrNull(carouselProductCardPosition)
+                        ?: return
+                if (element.name == REMINDER) {
+                    shopHomeCarouselProductListener.onPersonalizationReminderCarouselProductItemClicked(
+                            adapterPosition,
+                            carouselProductCardPosition,
+                            element,
+                            productItem
+                    )
+                } else {
+                    shopHomeCarouselProductListener.onPersonalizationCarouselProductItemClicked(
+                            adapterPosition,
+                            carouselProductCardPosition,
+                            element,
+                            productItem
+                    )
+                }
             }
         }
 
         val productImpressionListener = object : CarouselProductCardListener.OnItemImpressedListener {
             override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                val productItem = element.productList.getOrNull(carouselProductCardPosition) ?: return
-                shopHomeCarouselProductListener.onCarouselProductPersonalizationItemImpression(
-                        adapterPosition,
-                        carouselProductCardPosition,
-                        element,
-                        productItem
-                )
+                val productItem = element.productList.getOrNull(carouselProductCardPosition)
+                        ?: return
+                if (element.name == REMINDER) {
+                    shopHomeCarouselProductListener.onCarouselProductPersonalizationReminderItemImpression(
+                            adapterPosition,
+                            carouselProductCardPosition,
+                            element,
+                            productItem
+                    )
+                } else {
+                    shopHomeCarouselProductListener.onCarouselProductPersonalizationItemImpression(
+                            adapterPosition,
+                            carouselProductCardPosition,
+                            element,
+                            productItem
+                    )
+                }
 
             }
 
