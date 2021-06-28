@@ -13,10 +13,10 @@ import com.tokopedia.user.session.UserSession
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifyOrder
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.assertTrue
 import rx.Observable
 
 class GeolocationPresenterTest {
@@ -100,7 +100,7 @@ class GeolocationPresenterTest {
 
         i = presenter.interactor
 
-        assertTrue(i is RetrofitInteractor)
+        Assert.assertTrue(i is RetrofitInteractor)
     }
 
     @Test

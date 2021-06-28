@@ -16,10 +16,10 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_distr
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifyOrder
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.jupiter.api.Assertions
 import rx.Observable
 import rx.Subscriber
 
@@ -144,8 +144,8 @@ class PinpointMapPresenterTest {
         presenter.setAddress(address)
         result = presenter.getUnnamedRoadModelFormat()
 
-        Assertions.assertFalse(result.formattedAddress.contains("Unnamed Road"))
-        Assertions.assertEquals(result.formattedAddress, result.selectedDistrict)
+        Assert.assertFalse(result.formattedAddress.contains("Unnamed Road"))
+        Assert.assertEquals(result.formattedAddress, result.selectedDistrict)
     }
 
     @Test

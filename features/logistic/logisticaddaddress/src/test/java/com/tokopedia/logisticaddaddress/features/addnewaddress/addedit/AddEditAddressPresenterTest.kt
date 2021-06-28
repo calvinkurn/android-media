@@ -19,10 +19,10 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.*
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.assertEquals
 import rx.Observable
 
 class AddEditAddressPresenterTest {
@@ -64,7 +64,7 @@ class AddEditAddressPresenterTest {
 
         verifyOrder {
             AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any(), any())
-            assertEquals(successGql.keroAddAddress.data.addrId, model.id)
+            Assert.assertEquals(successGql.keroAddAddress.data.addrId, model.id)
             view.onSuccessAddAddress(model)
         }
     }
