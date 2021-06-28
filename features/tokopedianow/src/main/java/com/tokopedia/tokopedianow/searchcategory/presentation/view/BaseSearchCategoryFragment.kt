@@ -9,19 +9,12 @@ import android.view.ViewGroup
 import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.constraintlayout.widget.ConstraintSet.BOTTOM
-import androidx.constraintlayout.widget.ConstraintSet.END
-import androidx.constraintlayout.widget.ConstraintSet.PARENT_ID
-import androidx.constraintlayout.widget.ConstraintSet.START
-import androidx.constraintlayout.widget.ConstraintSet.TOP
 import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
-import androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -59,7 +52,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
@@ -71,9 +63,11 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.EmptyProd
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OutOfCoverageListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
+import com.tokopedia.tokopedianow.searchcategory.utils.CustomStaggeredGridLayoutManager
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -94,16 +88,16 @@ abstract class BaseSearchCategoryFragment:
         ProductItemListener,
         EmptyProductListener,
         ChooseAddressBottomSheetListener,
-        NoAddressEmptyStateView.ActionListener {
+        OutOfCoverageListener {
 
     companion object {
-        protected const val DEFAULT_SPAN_COUNT = 2
         protected const val OUT_OF_COVERAGE_CHOOSE_ADDRESS = "OUT_OF_COVERAGE_CHOOSE_ADDRESS"
     }
 
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    protected var recyclerViewLayoutManager: CustomStaggeredGridLayoutManager? = null
     protected var searchCategoryAdapter: SearchCategoryAdapter? = null
     protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
     protected var sortFilterBottomSheet: SortFilterBottomSheet? = null
@@ -340,14 +334,14 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun configureRecyclerView() {
-        val staggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, VERTICAL)
-        staggeredGridLayoutManager.gapStrategy = GAP_HANDLING_NONE
+        recyclerViewLayoutManager = CustomStaggeredGridLayoutManager()
+        recyclerViewLayoutManager?.gapStrategy = GAP_HANDLING_NONE
 
-        endlessScrollListener = createEndlessScrollListener(staggeredGridLayoutManager)
+        endlessScrollListener = recyclerViewLayoutManager?.let{ createEndlessScrollListener(it) }
         searchCategoryAdapter = SearchCategoryAdapter(createTypeFactory())
 
         recyclerView?.adapter = searchCategoryAdapter
-        recyclerView?.layoutManager = staggeredGridLayoutManager
+        recyclerView?.layoutManager = recyclerViewLayoutManager
         recyclerView?.addProductItemDecoration()
 
         endlessScrollListener?.let {
@@ -413,10 +407,9 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().updatedVisitableIndicesLiveData.observe(this::notifyAdapterItemChange)
         getViewModel().successATCMessageLiveData.observe(this::showSuccessATCMessage)
         getViewModel().errorATCMessageLiveData.observe(this::showErrorATCMessage)
-        getViewModel().isHeaderBackgroundVisibleLiveData
-                .observe(this::updateHeaderBackgroundVisibility)
+        getViewModel().isHeaderBackgroundVisibleLiveData.observe(this::updateHeaderBackgroundVisibility)
         getViewModel().isContentLoadingLiveData.observe(this::updateContentVisibility)
-        getViewModel().isOutOfServiceLiveData.observe(this::updateOutOfServiceVisibility)
+        getViewModel().isRecyclerViewScrollEnabledLiveData.observe(this::updateRecyclerViewScrollable)
         getViewModel().quickFilterTrackingLiveData.observe(this::sendTrackingQuickFilter)
         getViewModel().addToCartTrackingLiveData.observe(this::sendAddToCartTrackingEvent)
         getViewModel().increaseQtyTrackingLiveData.observe(this::sendIncreaseQtyTrackingEvent)
@@ -659,46 +652,8 @@ abstract class BaseSearchCategoryFragment:
         recyclerView?.showWithCondition(!isLoadingVisible)
     }
 
-    protected var noAddressEmptyStateView: NoAddressEmptyStateView? = null
-
-    protected open fun updateOutOfServiceVisibility(isOutOfService: Boolean) {
-        if (isOutOfService)
-            initializeOutOfServiceView()
-
-        noAddressEmptyStateView?.showWithCondition(isOutOfService)
-        contentGroup?.showWithCondition(!isOutOfService)
-    }
-
-    protected open fun initializeOutOfServiceView() {
-        val context = context ?: return
-        val container = container ?: return
-        val navToolbar = navToolbar ?: return
-
-        if (noAddressEmptyStateView != null) return
-
-        noAddressEmptyStateView = NoAddressEmptyStateView(context).also {
-            it.id = View.generateViewId()
-            it.setDescriptionCityName(getString(R.string.tokopedianow_city_name_empty_state_no_address))
-            it.actionListener = this
-
-            container.addView(it)
-            configureOutOfServiceConstraint(container, it, navToolbar)
-        }
-    }
-
-    private fun configureOutOfServiceConstraint(
-            container: ConstraintLayout,
-            outOfServiceView: NoAddressEmptyStateView,
-            navToolbar: NavToolbar
-    ) {
-        val constraintSet = ConstraintSet()
-
-        constraintSet.clone(container)
-        constraintSet.connect(outOfServiceView.id, START, PARENT_ID, START)
-        constraintSet.connect(outOfServiceView.id, END, PARENT_ID, END)
-        constraintSet.connect(outOfServiceView.id, TOP, navToolbar.id, BOTTOM)
-
-        constraintSet.applyTo(container)
+    protected open fun updateRecyclerViewScrollable(isScrollable: Boolean) {
+        recyclerViewLayoutManager?.setScrollEnabled(isScrollable)
     }
 
     protected abstract fun sendIncreaseQtyTrackingEvent(productId: String)

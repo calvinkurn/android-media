@@ -16,6 +16,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCount
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
@@ -31,6 +32,10 @@ inline fun <reified T> String.jsonToObject(): T {
     val jsonString = String(fileFromUrlResourcePath.readBytes())
 
     return Gson().fromJson(jsonString, T::class.java)
+}
+
+fun Visitable<*>.assertOutOfCoverageDataView() {
+    assertThat(this, instanceOf(OutOfCoverageDataView::class.java))
 }
 
 fun Visitable<*>.assertChooseAddressDataView() {

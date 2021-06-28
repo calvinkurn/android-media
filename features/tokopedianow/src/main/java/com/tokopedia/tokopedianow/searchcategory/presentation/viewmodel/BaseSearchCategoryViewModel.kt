@@ -58,6 +58,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterD
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SortFilterItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.TitleDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.VariantATCDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.OutOfCoverageDataView
 import com.tokopedia.tokopedianow.searchcategory.utils.ABTestPlatformWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
@@ -137,7 +138,7 @@ abstract class BaseSearchCategoryViewModel(
     protected val errorATCMessageMutableLiveData = SingleLiveEvent<String>()
     val errorATCMessageLiveData: LiveData<String> = errorATCMessageMutableLiveData
 
-    protected val isHeaderBackgroundVisibleMutableLiveData = MutableLiveData(true)
+    protected val isHeaderBackgroundVisibleMutableLiveData = MutableLiveData(false)
     val isHeaderBackgroundVisibleLiveData: LiveData<Boolean> = isHeaderBackgroundVisibleMutableLiveData
 
     protected val isContentLoadingMutableLiveData = MutableLiveData(true)
@@ -146,8 +147,8 @@ abstract class BaseSearchCategoryViewModel(
     protected val shopIdMutableLiveData = MutableLiveData("")
     val shopIdLiveData: LiveData<String> = shopIdMutableLiveData
 
-    protected val isOutOfServiceMutableLiveData = MutableLiveData(false)
-    val isOutOfServiceLiveData: LiveData<Boolean> = isOutOfServiceMutableLiveData
+    protected val isRecyclerViewScrollEnabledMutableLiveData = MutableLiveData(true)
+    val isRecyclerViewScrollEnabledLiveData: LiveData<Boolean> = isRecyclerViewScrollEnabledMutableLiveData
 
     protected val addToCartTrackingMutableLiveData =
             SingleLiveEvent<Triple<Int, String, ProductItemDataView>>()
@@ -218,8 +219,6 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun processLoadDataInCoverage() {
-        isOutOfServiceMutableLiveData.value = false
-
         loadFirstPage()
     }
 
@@ -242,7 +241,19 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun showOutOfCoverage() {
-        isOutOfServiceMutableLiveData.value = true
+        updateRecyclerViewScrollable(false)
+        updateHeaderBackgroundVisibility(false)
+
+        createVisitableListWithOutOfCoverageView()
+        clearVisitableListLiveData()
+        updateVisitableListLiveData()
+        showPageContent()
+    }
+
+    private fun createVisitableListWithOutOfCoverageView() {
+        visitableList.clear()
+        visitableList.add(chooseAddressDataView)
+        visitableList.add(OutOfCoverageDataView())
     }
 
     protected open fun onGetShopAndWarehouseFailed(throwable: Throwable) {
@@ -552,6 +563,7 @@ abstract class BaseSearchCategoryViewModel(
 
         updateNextPageData()
         updateHeaderBackgroundVisibility(!isEmptyProductList)
+        updateRecyclerViewScrollable(!isEmptyProductList)
 
         showPageContent()
     }
@@ -574,6 +586,10 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun updateHeaderBackgroundVisibility(isVisible: Boolean) {
         isHeaderBackgroundVisibleMutableLiveData.value = isVisible
+    }
+
+    private fun updateRecyclerViewScrollable(isScrollable: Boolean) {
+        isRecyclerViewScrollEnabledMutableLiveData.value = isScrollable
     }
 
     private fun showPageContent() {
