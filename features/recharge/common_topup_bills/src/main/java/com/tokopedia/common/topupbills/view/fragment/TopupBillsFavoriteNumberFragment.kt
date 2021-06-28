@@ -26,6 +26,8 @@ import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberListAdapter
+import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberMenuBottomSheet
+import com.tokopedia.common.topupbills.view.listener.FavoriteNumberMenuListener
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
@@ -35,7 +37,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.ArrayList
 import javax.inject.Inject
 
-class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberClickListener {
+class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberClickListener, FavoriteNumberMenuListener {
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -262,6 +264,20 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
+    }
+
+    override fun onFavoriteNumberMenuClick(favNumberItem: TopupBillsSeamlessFavNumberItem) {
+        // TODO: [Misael] use favNumberItem
+        val bottomSheet = FavoriteNumberMenuBottomSheet.newInstance(this)
+        bottomSheet.show(childFragmentManager, "")
+    }
+
+    override fun onChangeNameClicked() {
+        // TODO: [Misael] ("Not yet implemented")
+    }
+
+    override fun onDeleteContactClicked() {
+        // TODO: [Misael] delete contact
     }
 
     private fun checkMatchesFavoriteNumber(textNumber: String) {

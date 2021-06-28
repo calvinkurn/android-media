@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/common_topupbills_favorite_number_change_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/common_topup_fav_number_menu_change_name"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_5" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@drawable/bg_line_separator" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/common_topup_bills_favorite_number_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/common_topupbills_favorite_number_delete"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_5"/>
+
+</LinearLayout>
