@@ -95,6 +95,11 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.MVC -> {
                     listOfComponent.add(ProductMerchantVoucherSummaryDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.ONE_LINERS -> {
+                    listOfComponent.add(
+                        BestSellerInfoDataModel(type = component.type, name = component.componentName)
+                    )
+                }
             }
         }
         return listOfComponent
@@ -114,11 +119,32 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.MEDIA
         }?.componentData?.firstOrNull() ?: ComponentData()
 
+        val bestSellerComponent = data.components.find {
+            it.componentName == ProductDetailConstant.BEST_SELLER
+        }?.componentData?.map {
+            BestSellerInfoContent (
+                productID = it.productId,
+                content = it.oneLinerContent,
+                linkText = it.linkText,
+                color = it.color,
+                applink = it.applink,
+                separator = it.separator,
+                icon = it.icon,
+                isVisible = it.isVisible
+            )
+        }?.associateBy { it.productID }
+
         val newDataWithMedia = contentData?.copy(media = mediaData.media, youtubeVideos = mediaData.youtubeVideos)
                 ?: ComponentData()
         assignIdToMedia(newDataWithMedia.media)
 
-        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newDataWithMedia, pdpSession = data.pdpSession)
+        return DynamicProductInfoP1(
+            layoutName = data.generalName,
+            basic = data.basicInfo,
+            data = newDataWithMedia,
+            pdpSession = data.pdpSession,
+            bestSellerContent = bestSellerComponent
+        )
     }
 
     private fun assignIdToMedia(listOfMedia: List<Media>) {

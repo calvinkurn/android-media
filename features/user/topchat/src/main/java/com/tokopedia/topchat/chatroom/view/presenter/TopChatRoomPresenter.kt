@@ -120,7 +120,9 @@ open class TopChatRoomPresenter @Inject constructor(
 
     var autoRetryConnectWs = true
     var newUnreadMessage = 0
+        private set
     var thisMessageId: String = ""
+        private set
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     val onGoingStockUpdate: ArrayMap<String, UpdateProductStockResult> = ArrayMap()
     private var userLocationInfo = LocalCacheModel()
@@ -536,6 +538,7 @@ open class TopChatRoomPresenter @Inject constructor(
         opponentId: String,
         onSendingMessage: () -> Unit
     ) {
+        onSendingMessage.invoke()
         sendAttachments(messageId, opponentId, question.content)
         sendMessage(messageId, question.content, startTime, opponentId, question.intent)
         view?.clearAttachmentPreviews()
@@ -550,7 +553,7 @@ open class TopChatRoomPresenter @Inject constructor(
         sendMessage: String,
         startTime: String,
         opponentId: String,
-        intention: String? = null
+        intention: String?
     ) {
         if (networkMode == MODE_WEBSOCKET) {
             topchatSendMessageWithWebsocket(
@@ -732,25 +735,6 @@ open class TopChatRoomPresenter @Inject constructor(
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(thisMessageId))
     }
 
-    override fun copyVoucherCode(
-        fromUid: String?,
-        replyId: String,
-        blastId: String,
-        attachmentId: String,
-        replyTime: String?
-    ) {
-        sendMessageWebSocket(
-            TopChatWebSocketParam.generateParamCopyVoucherCode(
-                thisMessageId,
-                replyId,
-                blastId,
-                attachmentId,
-                replyTime,
-                fromUid
-            )
-        )
-    }
-
     override fun followUnfollowShop(
         shopId: String,
         onError: (Throwable) -> Unit,
@@ -787,10 +771,12 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun initAttachmentPreview() {
         if (attachmentsPreview.isEmpty()) return
-        view?.showAttachmentPreview(attachmentsPreview)
-        view?.updateSrwPreviewState()
-        if (view?.hasProductPreviewShown() == false) {
-            view?.focusOnReply()
+        view?.let {
+            it.showAttachmentPreview(attachmentsPreview)
+            it.updateSrwPreviewState()
+            if (!it.hasProductPreviewShown()) {
+                it.focusOnReply()
+            }
         }
     }
 
@@ -858,16 +844,14 @@ open class TopChatRoomPresenter @Inject constructor(
     override fun getOrderProgress(messageId: String) {
         orderProgressUseCase.getOrderProgress(
             messageId,
-            ::onSuccessGetOrderProgress,
-            ::onErrorGetOrderProgress
-        )
+            ::onSuccessGetOrderProgress
+        ) {}
     }
 
     override fun getStickerGroupList(chatRoom: ChatroomViewModel) {
         groupStickerUseCase.getStickerGroup(
             chatRoom.isSeller(), ::onLoadingStickerGroup, ::onSuccessGetStickerGroup,
-            ::onErrorGetStickerGroup
-        )
+        ) {}
     }
 
     override fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel) {
@@ -929,8 +913,8 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun getBackground() {
         chatBackgroundUseCase.getBackground(
-            ::onLoadBackgroundFromCache, ::onSuccessLoadBackground, ::onErrorLoadBackground
-        )
+            ::onLoadBackgroundFromCache, ::onSuccessLoadBackground
+        ) {}
     }
 
     override fun addProductToCart(
@@ -994,10 +978,6 @@ open class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    private fun onErrorLoadBackground(throwable: Throwable) {
-        throwable.printStackTrace()
-    }
-
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
         this.attachments.putAll(attachments.toMap())
         view?.updateAttachmentsView(this.attachments)
@@ -1039,10 +1019,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private fun isProblematicDevice(): Boolean {
         return PROBLEMATIC_DEVICE.contains(DeviceInfo.getModelName().toLowerCase())
     }
-
-    private fun onErrorGetOrderProgress(throwable: Throwable) {}
-
-    private fun onErrorGetStickerGroup(throwable: Throwable) {}
 
     companion object {
         const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service"

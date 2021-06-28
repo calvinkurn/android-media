@@ -75,15 +75,15 @@ class RecommendationViewHolder(
             containerShcRecommendationSuccess.visible()
 
             tvShcRecommendationTitle.text = element.title
-            val level = element.data?.progressLevel?.bar?.value.orZero()
-            slvShcShopLevel.show(level)
+            val progressLevel = element.data?.progressLevel
+            slvShcShopLevel.show(progressLevel?.text.orEmpty(), progressLevel?.bar?.value.orZero())
 
             setupTicker(element.data?.ticker)
             setupRecommendations(element)
 
             val progressBar = element.data?.progressBar
             val progressTitle = progressBar?.text.orEmpty()
-            val currentProgressText = progressBar?.bar?.value.orZero().toString()
+            val currentProgressText = progressBar?.bar?.valueToDisplay.orEmpty()
             val setMaxProgressText = progressBar?.bar?.maxValue.orZero().toString()
             val currentProgressValue = progressBar?.bar?.value.orZero()
             val setMaxProgressValue = progressBar?.bar?.maxValue.orZero()
@@ -114,7 +114,7 @@ class RecommendationViewHolder(
             ticker?.let {
                 tickerShcRecommendation.visible()
                 tickerShcRecommendation.setHtmlDescription(ticker.text)
-                tickerShcRecommendation.tickerType = when(ticker.type) {
+                tickerShcRecommendation.tickerType = when (ticker.type) {
                     RecommendationTickerUiModel.TYPE_ERROR -> Ticker.TYPE_ERROR
                     RecommendationTickerUiModel.TYPE_INFO -> Ticker.TYPE_INFORMATION
                     RecommendationTickerUiModel.TYPE_WARNING -> Ticker.TYPE_WARNING
