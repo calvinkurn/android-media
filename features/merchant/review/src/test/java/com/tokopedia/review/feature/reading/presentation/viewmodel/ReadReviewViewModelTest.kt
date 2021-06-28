@@ -169,6 +169,35 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         verifyToggleLikeReviewErrorEquals(Fail(expectedResponse))
     }
 
+    @Test
+    fun `when clearFilters should make all filters null`() {
+        val expectedSelectedRating = emptyList<String>()
+        val expectedSelectedTopic = emptyList<String>()
+
+        val actualSelectedRating = viewModel.getSelectedRatingFilter()
+        val actualSelectedTopic = viewModel.getSelectedTopicFilter()
+        viewModel.clearFilters()
+
+        Assert.assertFalse(viewModel.isFilterSelected())
+        Assert.assertEquals(expectedSelectedRating, actualSelectedRating)
+        Assert.assertEquals(expectedSelectedTopic, actualSelectedTopic)
+    }
+
+    @Test
+    fun `when setFilterWithImage but isActive = true should make it null`() {
+        val isActive = true
+        val expectedResponse = ProductReviewList()
+
+        onGetProductReviewsSuccess_thenReturn(expectedResponse)
+
+        viewModel.setFilterWithImage(isActive)
+        viewModel.setFilterWithImage(isActive)
+
+        Assert.assertFalse(viewModel.isFilterSelected())
+        verifyGetProductReviewListUseCaseExecuted()
+        verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
+    }
+
 //    @Test
 //    fun `when setFilter from rating should set expected filter, reset page and make network call with correct params`() {
 //

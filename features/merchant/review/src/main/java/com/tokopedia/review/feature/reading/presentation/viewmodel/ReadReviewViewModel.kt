@@ -14,10 +14,7 @@ import com.tokopedia.review.feature.reading.data.ProductrevGetProductReviewList
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductRatingAndTopicsUseCase
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductReviewListUseCase
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
-import com.tokopedia.review.feature.reading.presentation.uimodel.FilterType
-import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
-import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
-import com.tokopedia.review.feature.reading.presentation.uimodel.ToggleLikeUiModel
+import com.tokopedia.review.feature.reading.presentation.uimodel.*
 import com.tokopedia.review.feature.reading.utils.ReadReviewUtils
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -51,7 +48,7 @@ class ReadReviewViewModel @Inject constructor(
     private val currentPage = MutableLiveData<Int>()
     private var productId: MutableLiveData<String> = MutableLiveData()
     private var sort: String = SortTypeConstants.MOST_HELPFUL_PARAM
-    private var filter: MutableList<FilterType> = mutableListOf()
+    private var filter: SelectedFilters = SelectedFilters()
 
     init {
         _ratingAndTopics.addSource(productId) {
@@ -102,15 +99,15 @@ class ReadReviewViewModel @Inject constructor(
     fun setFilter(selectedFilters: List<ListItemUnify>, type: SortFilterBottomSheetType) {
         if (type == SortFilterBottomSheetType.RatingFilterBottomSheet) {
             if (selectedFilters.isEmpty()) {
-                this.filter.removeBasedOnClass(FilterType.FilterRating())
+                this.filter.rating = null
             } else {
-                this.filter.replace(mapRatingFilterToFilterType(selectedFilters))
+                this.filter.rating = mapRatingFilterToFilterType(selectedFilters)
             }
         } else {
             if (selectedFilters.isEmpty()) {
-                this.filter.removeBasedOnClass(FilterType.FilterTopic())
+                this.filter.topic = null
             } else {
-                this.filter.replace(mapTopicFilterToFilterType(selectedFilters))
+                this.filter.topic = mapTopicFilterToFilterType(selectedFilters)
             }
         }
         resetPage()
@@ -118,14 +115,9 @@ class ReadReviewViewModel @Inject constructor(
 
     fun setFilterWithImage(isActive: Boolean) {
         if (isActive) {
-            this.filter.forEach {
-                if (it is FilterType.FilterWithImage) {
-                    filter.remove(it)
-                    return@forEach
-                }
-            }
+            this.filter.withImage = null
         } else {
-            this.filter.add(getFilterWithImageParam())
+            this.filter.withImage = getFilterWithImageParam()
         }
         resetPage()
     }
@@ -136,12 +128,13 @@ class ReadReviewViewModel @Inject constructor(
     }
 
     fun getSelectedRatingFilter(): List<String> {
-        val selectedFilters = filter.getBasedOnClass(FilterType.FilterRating())?.value
+        val selectedFilters = filter.rating?.value
         return selectedFilters?.split(",")?.map { it.trim() } ?: listOf()
     }
 
     fun getSelectedTopicFilter(): List<String> {
-        val selectedFilters = filter.getBasedOnClass(FilterType.FilterTopic())?.value?.split(",")?.map { it.trim() } ?: listOf()
+        val selectedFilters = filter.topic?.value?.split(",")?.map { it.trim() }
+                ?: listOf()
         val topicsMap = getTopicsMap()
         val result = mutableListOf<String>()
         selectedFilters.forEach {
@@ -151,16 +144,11 @@ class ReadReviewViewModel @Inject constructor(
     }
 
     fun clearFilters() {
-        this.filter = mutableListOf()
-    }
-
-    fun resetToDefaultSort() {
-        this.sort = SortTypeConstants.MOST_HELPFUL_PARAM
-        resetPage()
+        this.filter.clear()
     }
 
     fun isFilterSelected(): Boolean {
-        return this.filter.isNotEmpty()
+        return this.filter.isAnyFilterSelected()
     }
 
     private fun getKey(map: Map<String, String>, target: String): String {
@@ -175,7 +163,7 @@ class ReadReviewViewModel @Inject constructor(
     private fun getProductReviews(page: Int) {
         launchCatchError(block = {
             getProductReviewListUseCase.setParams(productId.value
-                    ?: "", page, sort, mapFilterToRequestParams())
+                    ?: "", page, sort, filter.mapFilterToRequestParams())
             val data = getProductReviewListUseCase.executeOnBackground()
             _productReviews.postValue(Success(data.productrevGetProductReviewList))
         }) {
@@ -201,13 +189,8 @@ class ReadReviewViewModel @Inject constructor(
         return SortTypeConstants.sortMap[sort] ?: SortTypeConstants.MOST_HELPFUL_PARAM
     }
 
-    private fun getFilterWithImageParam(): FilterType {
+    private fun getFilterWithImageParam(): FilterType.FilterWithImage {
         return FilterType.FilterWithImage()
-    }
-
-    private fun mapFilterToRequestParams(): String {
-        if (filter.isEmpty()) return ""
-        return filter.joinToString(separator = ";") { "${it.param}=${it.value}" }
     }
 
     private fun mapRatingFilterToFilterType(ratingFilters: List<ListItemUnify>): FilterType.FilterRating {
@@ -227,31 +210,5 @@ class ReadReviewViewModel @Inject constructor(
 
     private fun getTopicsMap(): Map<String, String> {
         return (_ratingAndTopics.value as? Success)?.data?.getTopicsMap() ?: mapOf()
-    }
-
-    private fun MutableList<FilterType>.replace(filter: FilterType) {
-        this.forEach {
-            if (it::class == filter::class) {
-                remove(it)
-            }
-        }
-        add(filter)
-    }
-
-    private fun MutableList<FilterType>.removeBasedOnClass(filter: FilterType) {
-        this.forEach {
-            if (it::class == filter::class) {
-                remove(it)
-            }
-        }
-    }
-
-    private fun MutableList<FilterType>.getBasedOnClass(filter: FilterType): FilterType? {
-        this.forEach {
-            if (it::class == filter::class) {
-                return it
-            }
-        }
-        return null
     }
 }

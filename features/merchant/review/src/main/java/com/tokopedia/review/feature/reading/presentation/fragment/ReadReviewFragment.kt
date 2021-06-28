@@ -43,6 +43,7 @@ import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilt
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterChipsListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
+import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
 import com.tokopedia.review.feature.reading.presentation.uimodel.ToggleLikeUiModel
 import com.tokopedia.review.feature.reading.presentation.viewmodel.ReadReviewViewModel
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewFilterBottomSheet
@@ -195,7 +196,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onClearFiltersClicked() {
         viewModel.clearFilters()
-        viewModel.resetToDefaultSort()
+        viewModel.setSort(SortTypeConstants.MOST_HELPFUL_PARAM)
     }
 
     override fun onAttachedImagesClicked(productReview: ProductReview, positionClicked: Int, shopId: String) {
@@ -347,7 +348,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         stopNetworkRequestPerformanceMonitoring()
         startRenderPerformanceMonitoring()
         hideError()
-        if(productrevGetProductReviewList.reviewList.isEmpty() && viewModel.isFilterSelected()) {
+        if (productrevGetProductReviewList.reviewList.isEmpty() && viewModel.isFilterSelected()) {
             showFilteredEmpty()
             return
         }
