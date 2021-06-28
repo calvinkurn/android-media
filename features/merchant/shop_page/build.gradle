@@ -131,7 +131,10 @@ dependencies {
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.localizationchooseaddress)
     implementation rootProject.ext.unifyDependencies.coach_mark
-    implementation project(rootProject.ext.features.testFragmentDf)
+    implementation rootProject.ext.miscDependencies.navigationFragmentKtx
+    implementation rootProject.ext.miscDependencies.navigationUiKtx
+    implementation rootProject.ext.miscDependencies.navigationDf
+//    implementation project(rootProject.ext.features.testFragmentDf)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner

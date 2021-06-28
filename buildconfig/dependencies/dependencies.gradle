@@ -248,6 +248,7 @@ ext {
             navigationSafeArgs    : "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion",
             navigationFragmentKtx : "androidx.navigation:navigation-fragment-ktx:$navigationVersion",
             navigationUiKtx       : "androidx.navigation:navigation-ui-ktx:$navigationVersion",
+            navigationDf          : "androidx.navigation:navigation-dynamic-features-fragment:$navigationVersion",
             viewModel             : "androidx.lifecycle:lifecycle-viewmodel:$lifeCycleVersion",
             viewModelKtx          : "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifeCycleVersion",
             exoPlayerCore         : "com.google.android.exoplayer:exoplayer-core:$exoPlayerVersion",

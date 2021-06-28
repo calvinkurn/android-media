@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -71,6 +72,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
         checkIfAppLinkToShopInfo()
         checkIfApplinkRedirectedForMigration()
         super.onCreate(savedInstanceState)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.df_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        navController.navigate(R.id.test_fragment_df_graph)
     }
 
     override fun getLayoutRes(): Int {
@@ -78,10 +82,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
     }
 
     override fun getNewFragment(): Fragment? {
-        return if(ShopUtil.isUsingNewShopPageHeader(this))
-            NewShopPageFragment.createInstance()
-        else
-            ShopPageFragment.createInstance()
+//        return if(ShopUtil.isUsingNewShopPageHeader(this))
+//            NewShopPageFragment.createInstance()
+//        else
+//            ShopPageFragment.createInstance()
+        return null
     }
 
     override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)

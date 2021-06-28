@@ -113,6 +113,7 @@ dependencies {
     implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.reviewProduct)
     implementation project(rootProject.ext.features.shopPage)
+//    implementation project(rootProject.ext.features.testFragmentDf)
     //Operational
 
     //Payment

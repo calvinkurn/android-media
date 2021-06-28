@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/shop_page_nav"
+    app:startDestination="@id/shopHeaderFragment"
+    >
+
+    <fragment
+        android:id="@+id/shopHeaderFragment"
+        android:name="com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment">
+    </fragment>
+    <include-dynamic
+        android:id="@+id/test_fragment_df_graph"
+        app:moduleName="df_merchant_seller"
+        app:graphResName="fragment_test_df_graph"
+        />
+<!--    testFragmentDf                    : ":features:merchant:test_fragment_df",-->
+
+    <!--    <include app:graph="@navigation/fragment_test_df_graph"/>-->
+</navigation>
