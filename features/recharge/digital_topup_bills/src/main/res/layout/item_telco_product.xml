@@ -27,13 +27,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/parent"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/telco_label_product"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl2"
             android:layout_marginLeft="@dimen/layout_lvl2"
             android:layout_marginRight="@dimen/layout_lvl2"
             android:lines="2"
             app:typographyType="heading_5"
-            tools:text="Pulsa 40.000" />
+            tools:text="Pulsa 40.000 Pulsa 40.000 Pulsa Pulsa 40.000 Pulsa 40.000" />
 
         <View
             android:id="@+id/telco_empty_view"
