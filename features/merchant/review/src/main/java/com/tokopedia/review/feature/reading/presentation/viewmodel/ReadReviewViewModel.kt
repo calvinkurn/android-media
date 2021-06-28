@@ -159,6 +159,10 @@ class ReadReviewViewModel @Inject constructor(
         resetPage()
     }
 
+    fun isFilterSelected(): Boolean {
+        return this.filter.isNotEmpty()
+    }
+
     private fun getKey(map: Map<String, String>, target: String): String {
         map.keys.forEach {
             if (target == map[it]) {

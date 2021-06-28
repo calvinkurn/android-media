@@ -48,6 +48,7 @@ import com.tokopedia.review.feature.reading.presentation.viewmodel.ReadReviewVie
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewFilterBottomSheet
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -66,6 +67,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         const val INDEX_KEY = "Index"
         const val SHOP_ID_KEY = "ShopId"
         const val PRODUCT_ID_KEY = "ProductId"
+        const val EMPTY_FILTERED_STATE_IMAGE_URL = "https://images.tokopedia.net/img/android/others/review-reading-filtered-empty.png"
         fun createNewInstance(productId: String): ReadReviewFragment {
             return ReadReviewFragment().apply {
                 arguments = Bundle().apply {
@@ -87,6 +89,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private var listOnlyLoading: View? = null
     private var globalError: GlobalError? = null
     private var emptyFilteredState: View? = null
+    private var emptyFilteredStateImage: ImageUnify? = null
 
     private val readReviewFilterFactory by lazy {
         ReadReviewSortFilterFactory()
@@ -286,6 +289,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         listOnlyLoading = view.findViewById(R.id.read_review_list_only_loading)
         globalError = view.findViewById(R.id.read_review_network_error)
         emptyFilteredState = view.findViewById(R.id.read_review_list_empty)
+        emptyFilteredStateImage = view.findViewById(R.id.read_review_empty_list_image)
     }
 
     private fun getProductReview(page: Int) {
@@ -343,6 +347,11 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         stopNetworkRequestPerformanceMonitoring()
         startRenderPerformanceMonitoring()
         hideError()
+        if(productrevGetProductReviewList.reviewList.isEmpty() && viewModel.isFilterSelected()) {
+            showFilteredEmpty()
+            return
+        }
+        hideFilteredEmpty()
         with(productrevGetProductReviewList) {
             if (productrevGetProductReviewList.reviewList.isEmpty()) {
                 showEmpty()
@@ -396,11 +405,12 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun showFilteredEmpty() {
+        emptyFilteredStateImage?.setImageUrl(EMPTY_FILTERED_STATE_IMAGE_URL)
         emptyFilteredState?.show()
     }
 
     private fun hideFilteredEmpty() {
-        emptyFilteredState?.show()
+        emptyFilteredState?.hide()
     }
 
     private fun showPageNotFound() {
