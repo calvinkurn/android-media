@@ -1,8 +1,10 @@
 package com.tokopedia.common.topupbills.view.viewholder
 
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoritNumberBinding
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
 import com.tokopedia.common.topupbills.view.model.FavoriteNumberDataView
@@ -33,6 +35,9 @@ class FavoriteNumberViewHolder(
             }
             commonTopupbillsFavoriteNumberContainer.setOnClickListener {
                 favoriteNumberListener.onFavoriteNumberClick(item.favoriteNumber)
+            }
+            commonTopupbillsFavoriteNumberMenu.setOnClickListener {
+                favoriteNumberListener.onFavoriteNumberMenuClick(item.favoriteNumber)
             }
         }
     }

@@ -27,6 +27,8 @@ import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberListAdapter
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
+import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberMenuBottomSheet
+import com.tokopedia.common.topupbills.view.listener.FavoriteNumberMenuListener
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
 import com.tokopedia.common.topupbills.view.model.FavoriteNumberDataView
 import com.tokopedia.common.topupbills.view.model.FavoriteNumberEmptyDataView
@@ -40,7 +42,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.ArrayList
 import javax.inject.Inject
 
-class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberClickListener, FavoriteNumberEmptyStateListener {
+class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberClickListener, FavoriteNumberMenuListener, FavoriteNumberEmptyStateListener {
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -233,9 +235,6 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         }
     }
 
-//    private fun isContain(number: String, clientNumbers: List<TopupBillsSeamlessFavNumberItem>): Boolean {
-//        return clientNumbers.any { it.clientNumber.equals(number, ignoreCase = true) }
-//    }
 
     private fun findNumber(number: String, clientNumbers: List<TopupBillsSeamlessFavNumberItem>): TopupBillsSeamlessFavNumberItem? {
         var foundClientNumber: TopupBillsSeamlessFavNumberItem? = null
@@ -294,6 +293,19 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
+    }
+    override fun onFavoriteNumberMenuClick(favNumberItem: TopupBillsSeamlessFavNumberItem) {
+        // TODO: [Misael] use favNumberItem
+        val bottomSheet = FavoriteNumberMenuBottomSheet.newInstance(this)
+        bottomSheet.show(childFragmentManager, "")
+    }
+
+    override fun onChangeNameClicked() {
+        // TODO: [Misael] ("Not yet implemented")
+    }
+
+    override fun onDeleteContactClicked() {
+        // TODO: [Misael] delete contact
     }
 
     private fun checkMatchesFavoriteNumber(textNumber: String) {
