@@ -3,23 +3,20 @@ package com.tokopedia.logisticaddaddress.features.pinpoint
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.uimodel.CoordinateUiModel
-import com.tokopedia.logisticaddaddress.data.RetrofitInteractor
-import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl
-import com.tokopedia.logisticaddaddress.domain.mapper.GeolocationMapper
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
+import com.tokopedia.logisticaddaddress.data.RetrofitInteractor
+import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl
+import com.tokopedia.logisticaddaddress.domain.mapper.GeolocationMapper
 import com.tokopedia.user.session.UserSession
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 
 class GeolocationPresenterTest {

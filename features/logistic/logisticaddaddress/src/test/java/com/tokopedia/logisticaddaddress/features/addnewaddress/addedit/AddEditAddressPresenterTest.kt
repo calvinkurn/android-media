@@ -1,6 +1,9 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.domain.model.Place
+import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.domain.model.add_address.AddAddressResponse
 import com.tokopedia.logisticaddaddress.domain.model.add_address.Data
@@ -14,17 +17,12 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.domain.model.Place
-import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 
 class AddEditAddressPresenterTest {
@@ -43,6 +41,12 @@ class AddEditAddressPresenterTest {
     @Before
     fun setup() {
         presenter = AddEditAddressPresenter(saveUseCase, zipUseCase, districtUseCase, autoCompleteUseCase)
+
+        mockkObject(AddNewAddressAnalytics)
+        every { AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any(), any()) } just Runs
+        every { AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any(), any()) } just Runs
+        every { AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(any(), any(), any()) } just Runs
+
         presenter.attachView(view)
     }
 
@@ -59,6 +63,7 @@ class AddEditAddressPresenterTest {
         presenter.saveAddress(model, AddressConstants.ANA_POSITIVE, true, true)
 
         verifyOrder {
+            AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any(), any())
             assertEquals(successGql.keroAddAddress.data.addrId, model.id)
             view.onSuccessAddAddress(model)
         }
@@ -71,12 +76,13 @@ class AddEditAddressPresenterTest {
                 Data(isSuccess = 0)
         ))
 
-        every { saveUseCase.execute(any(), "1")
+        every { saveUseCase.execute(any(), any())
         } returns Observable.just(notSuccessResponse)
 
         presenter.saveAddress(model, AddressConstants.ANA_NEGATIVE, true, true)
 
         verifyOrder {
+            AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any(), any())
             view.showError(null)
         }
     }
@@ -92,6 +98,7 @@ class AddEditAddressPresenterTest {
         presenter.saveAddress(model, AddressConstants.ANA_POSITIVE, true, true)
 
         verifyOrder {
+            AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(any(), any(), any())
             view.showError(exception)
         }
     }
