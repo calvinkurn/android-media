@@ -82,6 +82,7 @@ class TokoNowCategoryFragment: BaseSearchCategoryFragment(), CategoryAisleListen
             productItemListener = this,
             emptyProductListener = this,
             categoryAisleListener = this,
+            outOfCoverageListener = this,
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel

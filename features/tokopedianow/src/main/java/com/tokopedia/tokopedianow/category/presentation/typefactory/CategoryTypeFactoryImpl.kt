@@ -14,6 +14,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.EmptyProd
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.OutOfCoverageListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.BaseChooseAddressViewHolder
 
@@ -26,6 +27,7 @@ class CategoryTypeFactoryImpl(
         productItemListener: ProductItemListener,
         emptyProductListener: EmptyProductListener,
         private val categoryAisleListener: CategoryAisleListener,
+        outOfCoverageListener: OutOfCoverageListener,
 ): BaseSearchCategoryTypeFactoryImpl(
         chooseAddressListener,
         titleListener,
@@ -34,6 +36,7 @@ class CategoryTypeFactoryImpl(
         categoryFilterListener,
         productItemListener,
         emptyProductListener,
+        outOfCoverageListener,
 ), CategoryTypeFactory {
 
     override fun type(categoryAisleDataView: CategoryAisleDataView) = CategoryAisleViewHolder.LAYOUT

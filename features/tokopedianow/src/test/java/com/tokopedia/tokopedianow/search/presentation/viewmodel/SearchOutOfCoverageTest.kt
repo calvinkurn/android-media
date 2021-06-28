@@ -5,6 +5,8 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.emptyAddress
+import com.tokopedia.tokopedianow.searchcategory.assertChooseAddressDataView
+import com.tokopedia.tokopedianow.searchcategory.assertOutOfCoverageDataView
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
 import io.mockk.every
 import io.mockk.verify
@@ -102,18 +104,26 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
     }
 
     @Test
-    fun `test warehouse id empty from choose address should show out of coverage`() {
+    fun `test warehouse id empty from choose address should show out of coverage and choose address`() {
         `Given choose address data`(LocalCacheModel(shop_id = "12345"))
         `Given search view model`()
 
         `When view created`()
 
         `Then verify search API first page is not called`()
-        `Then assert out of service is shown`()
+        `Then assert scrollable false`()
+        `Then assert out of coverage visitable list`()
     }
 
-    private fun `Then assert out of service is shown`() {
-        assertThat(tokoNowSearchViewModel.isOutOfServiceLiveData.value, shouldBe(true))
+    private fun `Then assert scrollable false`() {
+        assertThat(tokoNowSearchViewModel.isRecyclerViewScrollEnabledLiveData.value, shouldBe(false))
+    }
+
+    private fun `Then assert out of coverage visitable list`() {
+        val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
+
+        visitableList.first().assertChooseAddressDataView()
+        visitableList.last().assertOutOfCoverageDataView()
     }
 
     @Test
@@ -131,6 +141,7 @@ class SearchOutOfCoverageTest: SearchTestFixtures() {
         `When view created`()
 
         `Then verify search API first page is not called`()
-        `Then assert out of service is shown`()
+        `Then assert scrollable false`()
+        `Then assert out of coverage visitable list`()
     }
 }
