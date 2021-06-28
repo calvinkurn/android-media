@@ -148,7 +148,7 @@ class OtherMenuViewModelTest {
 
             mockViewModel.getAllSettingShopInfo(true)
 
-            coVerify {
+            verify {
                 mockViewModel["checkDelayErrorResponseTrigger"]()
             }
 
