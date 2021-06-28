@@ -1,7 +1,6 @@
 package com.tokopedia.autocomplete.analytics;
 
 import com.tokopedia.analyticconstant.DataLayer;
-import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch;
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.track.TrackApp;
@@ -24,14 +23,8 @@ import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.EVENT_CATEGORY;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.EVENT_LABEL;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.LIST;
+import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PAGE_SOURCE;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCTS;
-import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCT_BRAND;
-import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCT_CATEGORY;
-import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCT_ID;
-import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCT_NAME;
-import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCT_POSITION;
-import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCT_PRICE;
-import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.PRODUCT_VARIANT;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.SCREEN_NAME;
 import static com.tokopedia.autocomplete.analytics.AutocompleteTrackingConstant.USER_ID;
 
@@ -55,21 +48,31 @@ public class AutocompleteTracking {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventTracking);
     }
 
-    public static void eventClickRecentSearch(String label) {
+    public static void eventClickRecentSearch(String label, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AutocompleteEventTracking.Event.CLICK_SEARCH,
-                AutocompleteEventTracking.Category.TOP_NAV,
-                AutocompleteEventTracking.Action.CLICK_RECENT_SEARCH,
-                label
+            DataLayer.mapOf(
+                    EVENT, AutocompleteEventTracking.Event.CLICK_SEARCH,
+                    EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
+                    EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_RECENT_SEARCH,
+                    EVENT_LABEL, label,
+                    CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                    BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                    PAGE_SOURCE, pageSource
+            )
         );
     }
 
-    public static void eventClickShop(String label) {
+    public static void eventClickShop(String label, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AutocompleteEventTracking.Event.CLICK_SEARCH_RESULT,
-                AutocompleteEventTracking.Category.TOP_NAV,
-                AutocompleteEventTracking.Action.CLICK_SHOP_SUGGESTION,
-                label
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_SHOP_SUGGESTION,
+                        EVENT_LABEL, label,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        PAGE_SOURCE, pageSource
+                )
         );
     }
 
@@ -82,22 +85,30 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickKeyword(String label) {
+    public static void eventClickKeyword(String label, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AutocompleteEventTracking.Event.CLICK_SEARCH_RESULT,
-                AutocompleteEventTracking.Category.TOP_NAV,
-                AutocompleteEventTracking.Action.CLICK_KEYWORD_SUGGESTION,
-                label
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_KEYWORD_SUGGESTION,
+                        EVENT_LABEL, label,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        PAGE_SOURCE, pageSource
+                )
         );
     }
 
-    public static void eventClickCurated(String label, String campaignCode) {
+    public static void eventClickCurated(String label, String campaignCode, String pageSource) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, AutocompleteEventTracking.Event.CLICK_SEARCH_RESULT,
+                DataLayer.mapOf(EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
                         EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - /",
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_DIGITAL_PRODUCT_SUGGESTION,
                         EVENT_LABEL, label,
-                        CAMPAIGN_CODE, campaignCode
+                        CAMPAIGN_CODE, campaignCode,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        PAGE_SOURCE, pageSource
                 )
         );
     }
@@ -111,40 +122,22 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickRecentView(String position,
-                                            BaseItemInitialStateSearch data) {
-        Map<String, Object> productData = convertSearchItemToProductData(data, position);
+    public static void eventClickRecentView(Object productDataLayer, String label) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, AutocompleteEventTracking.Event.PRODUCT_CLICK,
                         EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_RECENT_VIEW_PRODUCT,
-                        EVENT_LABEL, String.
-                                format(AutocompleteEventTracking.Label.LABEL_RECENT_VIEW_CLICK,
-                                        position,
-                                        data.getApplink()),
+                        EVENT_LABEL, label,
                         ECOMMERCE, DataLayer.mapOf(
                                 CLICK,
                                 DataLayer.mapOf(
                                         ACTION_FIELD, DataLayer.mapOf(LIST, AutocompleteEventTracking.Other.RECENT_VIEW_ACTION_FIELD),
                                         PRODUCTS, DataLayer.listOf(
-                                                productData
+                                                productDataLayer
                                         )
                                 )
                         )
                 )
-        );
-    }
-
-    private static Map<String, Object> convertSearchItemToProductData(BaseItemInitialStateSearch data,
-                                                                      String position) {
-        return DataLayer.mapOf(
-                PRODUCT_NAME, data.getTitle(),
-                PRODUCT_ID, data.getProductId(),
-                PRODUCT_PRICE, "",
-                PRODUCT_BRAND, AutocompleteEventTracking.Other.NONE_OTHER,
-                PRODUCT_CATEGORY, AutocompleteEventTracking.Other.NONE_OTHER,
-                PRODUCT_VARIANT, AutocompleteEventTracking.Other.NONE_OTHER,
-                PRODUCT_POSITION, position
         );
     }
 
@@ -157,26 +150,32 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickRecentKeyword(String keyword) {
+    public static void eventClickRecentKeyword(String keyword, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AutocompleteEventTracking.Event.CLICK_TOP_NAV,
-                AutocompleteEventTracking.Category.TOP_NAV + " - homepage",
-                AutocompleteEventTracking.Action.CLICK_RECENT_SEARCH_AUTOCOMPLETE,
-                keyword
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - homepage",
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_RECENT_SEARCH_AUTOCOMPLETE,
+                        EVENT_LABEL, keyword,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        PAGE_SOURCE, pageSource
+                )
         );
     }
 
-    public static void eventClickRecentShop(String label, String userId) {
+    public static void eventClickRecentShop(String label, String userId, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
             DataLayer.mapOf(
                     EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
-                    EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - /",
+                    EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
                     EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_RECENT_SHOP,
                     EVENT_LABEL, label,
                     SCREEN_NAME, "/",
                     CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
                     USER_ID, userId,
-                    BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH
+                    BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                    PAGE_SOURCE, pageSource
             )
         );
     }
@@ -282,21 +281,22 @@ public class AutocompleteTracking {
         iris.saveEvent(map);
     }
 
-    public static void eventClickDynamicSection(String userId, String label, String type) {
+    public static void eventClickDynamicSection(String userId, String label, String type, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
                         EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
-                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV + " - /",
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
                         EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_DYNAMIC_SECTION + " - " + type,
                         EVENT_LABEL, label,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
                         CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
-                        USER_ID, userId
+                        USER_ID, userId,
+                        PAGE_SOURCE, pageSource
                 )
         );
     }
 
-    public static void eventClickLocalKeyword(String label, String userId) {
+    public static void eventClickLocalKeyword(String label, String userId, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
                         EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
@@ -305,12 +305,13 @@ public class AutocompleteTracking {
                         EVENT_LABEL, label,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
                         CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
-                        USER_ID, userId
+                        USER_ID, userId,
+                        PAGE_SOURCE, pageSource
                 )
         );
     }
 
-    public static void eventClickGlobalKeyword(String label, String userId) {
+    public static void eventClickGlobalKeyword(String label, String userId, String pageSource) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
                 DataLayer.mapOf(
                         EVENT, AutocompleteEventTracking.Event.CLICK_TOP_NAV,
@@ -319,7 +320,8 @@ public class AutocompleteTracking {
                         EVENT_LABEL, label,
                         BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
                         CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
-                        USER_ID, userId
+                        USER_ID, userId,
+                        PAGE_SOURCE, pageSource
                 )
         );
     }
@@ -349,5 +351,50 @@ public class AutocompleteTracking {
                 USER_ID, userId
         );
         iris.saveEvent(map);
+    }
+
+    public static void eventClickInitialStateProductLine(Object productDataLayer, String userId, String label, String pageSource) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.PRODUCT_CLICK,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_INITIAL_STATE_PRODUCT_LINE,
+                        EVENT_LABEL, label,
+                        ECOMMERCE, DataLayer.mapOf(
+                                CLICK, DataLayer.mapOf(
+                                        ACTION_FIELD, DataLayer.mapOf(LIST, AutocompleteEventTracking.Other.PRODUCT_LINE_INITIAL_STATE_ACTION_FIELD),
+                                        PRODUCTS, DataLayer.listOf(
+                                                productDataLayer
+                                        )
+                                )
+                        ),
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        USER_ID, userId,
+                        PAGE_SOURCE, pageSource
+                )
+        );
+    }
+
+    public static void eventClickSuggestionProductLine(Object productDataLayer, String label, String userId) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT, AutocompleteEventTracking.Event.PRODUCT_CLICK,
+                        EVENT_CATEGORY, AutocompleteEventTracking.Category.TOP_NAV,
+                        EVENT_ACTION, AutocompleteEventTracking.Action.CLICK_SUGGESTION_PRODUCT_LINE,
+                        EVENT_LABEL, label,
+                        ECOMMERCE, DataLayer.mapOf(
+                                CLICK, DataLayer.mapOf(
+                                        ACTION_FIELD, DataLayer.mapOf(LIST, AutocompleteEventTracking.Other.PRODUCT_LINE_SUGGESTION_ACTION_FIELD),
+                                        PRODUCTS, DataLayer.listOf(
+                                                productDataLayer
+                                        )
+                                )
+                        ),
+                        BUSINESS_UNIT, AutocompleteEventTracking.Iris.SEARCH,
+                        CURRENT_SITE, AutocompleteEventTracking.Iris.TOKOPEDIA_MARKETPLACE,
+                        USER_ID, userId
+                )
+        );
     }
 }

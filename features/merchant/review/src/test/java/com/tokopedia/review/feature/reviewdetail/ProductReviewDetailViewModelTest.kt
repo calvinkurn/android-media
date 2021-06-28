@@ -27,7 +27,7 @@ class ProductReviewDetailViewModelTest : ProductReviewDetailViewModelTestFixture
             viewModel.setChipFilterDateText(anyString())
             onProductReviewInitial_thenReturn()
 
-            viewModel.getProductRatingDetail(anyInt(), anyString())
+            viewModel.getProductRatingDetail(anyString(), anyString())
             val dataResponse = (viewModel.reviewInitialData.value as Success).data
             viewModel.updateRatingFilterData(dataResponse.first.filterIsInstance<ProductReviewFilterUiModel>().firstOrNull()?.ratingBarList
                     ?: listOf())
@@ -83,7 +83,7 @@ class ProductReviewDetailViewModelTest : ProductReviewDetailViewModelTestFixture
     fun `when get feedback detail on lazy load by sort should return success`() {
         runBlocking {
             onProductFeedbackDetailList_thenReturn()
-            viewModel.getFeedbackDetailListNext(anyInt(), "create_time desc", anyInt())
+            viewModel.getFeedbackDetailListNext(anyString(), "create_time desc", anyInt())
             verifySuccessProductFeedbackDetailListUseCaseCalled()
             assertTrue(viewModel.productFeedbackDetail.value is Success)
             assertNotNull(viewModel.productFeedbackDetail.value)
@@ -96,7 +96,7 @@ class ProductReviewDetailViewModelTest : ProductReviewDetailViewModelTestFixture
             val error = NullPointerException()
             onProductReviewInitial_thenError(error)
 
-            viewModel.getProductRatingDetail(anyInt(), anyString())
+            viewModel.getProductRatingDetail(anyString(), anyString())
             val expectedResult = Fail(error)
             viewModel.reviewInitialData.verifyErrorEquals(expectedResult)
         }
@@ -108,7 +108,7 @@ class ProductReviewDetailViewModelTest : ProductReviewDetailViewModelTestFixture
             val error = NullPointerException()
             onProductFeedbackDetailList_thenError(error)
 
-            viewModel.getFeedbackDetailListNext(anyInt(), anyString(), anyInt())
+            viewModel.getFeedbackDetailListNext(anyString(), anyString(), anyInt())
             val expectedResult = Fail(error)
             viewModel.productFeedbackDetail.verifyErrorEquals(expectedResult)
         }

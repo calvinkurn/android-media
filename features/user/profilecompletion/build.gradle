@@ -30,6 +30,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.libraries.utils)
+    implementation project(rootProject.ext.libraries.webview)
 
     implementation rootProject.ext.playServicesDependencies.core
 

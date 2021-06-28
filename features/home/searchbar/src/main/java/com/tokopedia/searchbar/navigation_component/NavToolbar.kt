@@ -34,6 +34,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Fill.TO
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
+import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotificationModel
 import com.tokopedia.searchbar.navigation_component.di.DaggerNavigationComponent
 import com.tokopedia.searchbar.navigation_component.di.module.NavigationModule
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -207,6 +208,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 lightCondition = { navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT) },
                 darkCondition = { navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_DARK) }
         )
+
+        viewModel?.navNotificationLiveData?.value?.let {
+            updateCentralizedNotificationData(it)
+        }
     }
 
     /**
@@ -487,14 +492,18 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         lifecycleOwner?.let {owner ->
             viewModel?.navNotificationLiveData?.observe(owner, Observer {
                 it?.let {
-                    setCentralizedBadgeCounter(IconList.ID_MESSAGE, it.totalInbox)
-                    setCentralizedBadgeCounter(IconList.ID_CART, it.totalCart)
-                    setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, it.totalNotif)
-                    setCentralizedBadgeCounter(IconList.ID_INBOX, it.totalNewInbox)
-                    setCentralizedBadgeCounter(IconList.ID_NAV_GLOBAL, it.totalGlobalNavNotif)
+                    updateCentralizedNotificationData(it)
                 }
             })
         }
+    }
+
+    private fun updateCentralizedNotificationData(it: TopNavNotificationModel) {
+        setCentralizedBadgeCounter(IconList.ID_MESSAGE, it.totalInbox)
+        setCentralizedBadgeCounter(IconList.ID_CART, it.totalCart)
+        setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, it.totalNotif)
+        setCentralizedBadgeCounter(IconList.ID_INBOX, it.totalNewInbox)
+        setCentralizedBadgeCounter(IconList.ID_NAV_GLOBAL, it.totalGlobalNavNotif)
     }
 
     private fun Toolbar.updatePadding(left: Int = paddingLeft, top: Int = ViewHelper.getStatusBarHeight(context), right: Int = paddingRight, bottom: Int = paddingBottom) {

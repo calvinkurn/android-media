@@ -27,11 +27,9 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_WEB_VIEW_TRACE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE
 import com.tokopedia.shop.common.di.component.ShopComponent
-import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, ShopPagePerformanceMonitoringListener{
@@ -74,12 +72,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
         return R.layout.activity_new_shop_page
     }
 
-    override fun getNewFragment(): Fragment? {
-        return if(ShopUtil.isUsingNewShopPageHeader(this))
-            NewShopPageFragment.createInstance()
-        else
-            ShopPageFragment.createInstance()
-    }
+    override fun getNewFragment(): Fragment = NewShopPageFragment.createInstance()
 
     override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)
 
