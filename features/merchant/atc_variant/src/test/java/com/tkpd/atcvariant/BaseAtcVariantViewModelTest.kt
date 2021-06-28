@@ -6,8 +6,8 @@ import com.tkpd.atcvariant.data.uidata.VariantHeaderDataModel
 import com.tkpd.atcvariant.data.uidata.VariantQuantityDataModel
 import com.tkpd.atcvariant.usecase.GetAggregatorAndMiniCartUseCase
 import com.tkpd.atcvariant.util.AtcVariantJsonHelper
-import com.tkpd.atcvariant.view.viewmodel.AtcVariantViewModel
 import com.tkpd.atcvariant.view.adapter.AtcVariantVisitable
+import com.tkpd.atcvariant.view.viewmodel.AtcVariantViewModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -112,11 +112,12 @@ abstract class BaseAtcVariantViewModelTest {
                          expectedSelectedOptionIds: List<String>,
                          expectedSelectedProductId: String,
                          expectedSelectedMainPrice: String,
-                         expectedSelectedStockWording: String,
+                         expectedSelectedStock: String,
                          expectedSelectedOptionIdsLevelOne: String,
                          expectedSelectedOptionIdsLevelTwo: String,
                          expectedQuantity: Int,
-                         expectedMinOrder: Int) {
+                         expectedMinOrder: Int,
+                         isEmptyStock: Boolean = false) {
 
         visitables.forEach {
             when (it) {
@@ -124,7 +125,7 @@ abstract class BaseAtcVariantViewModelTest {
                     Assert.assertEquals(it.headerData.productId, expectedSelectedProductId)
                     Assert.assertEquals(it.headerData.productMainPrice, expectedSelectedMainPrice)
                     Assert.assertEquals(it.headerData.productDiscountedPercentage, 0)
-                    Assert.assertEquals(it.headerData.productStockWording, expectedSelectedStockWording)
+                    Assert.assertEquals(it.headerData.productStock, expectedSelectedStock)
                 }
                 is VariantComponentDataModel -> {
                     val currentSelectedLevelOne = it.listOfVariantCategory?.first()?.getSelectedOption()?.variantId
@@ -135,7 +136,7 @@ abstract class BaseAtcVariantViewModelTest {
                     Assert.assertEquals(currentSelectedLevelOne, expectedSelectedOptionIdsLevelOne)
                     Assert.assertEquals(currentSelectedLevelTwo, expectedSelectedOptionIdsLevelTwo)
                     Assert.assertTrue(it.mapOfSelectedVariant.values.toList().containsAll(expectedSelectedOptionIds))
-                    Assert.assertEquals(it.isEmptyStock, false)
+                    Assert.assertEquals(it.isEmptyStock, isEmptyStock)
                     Assert.assertEquals(it.isTokoCabang, false)
                 }
                 is VariantQuantityDataModel -> {

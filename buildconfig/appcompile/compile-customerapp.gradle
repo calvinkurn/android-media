@@ -157,7 +157,7 @@ include "features:merchant:shop_score"
 include "features:merchant:shop_showcase"
 include "features:merchant:youtube_common"
 
-include "features:tokomart"
+include "features:tokopedianow"
 
 include "features:operational:contact_us"
 include "features:operational:csat_rating"

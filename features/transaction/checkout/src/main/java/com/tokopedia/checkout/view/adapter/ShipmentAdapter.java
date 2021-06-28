@@ -836,8 +836,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
         }
-        totalPrice = totalItemPrice + shippingFee + insuranceFee + orderPriorityFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
-                shipmentCostModel.getShippingDiscountAmount() - shipmentCostModel.getProductDiscountAmount() - tradeInPrice;
+        double finalShippingFee = shippingFee - shipmentCostModel.getShippingDiscountAmount();
+        if (finalShippingFee < 0) {
+            finalShippingFee = 0;
+        }
+        totalPrice = totalItemPrice + finalShippingFee + insuranceFee + orderPriorityFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
+                shipmentCostModel.getProductDiscountAmount() - tradeInPrice;
         shipmentCostModel.setTotalWeight(totalWeight);
         shipmentCostModel.setAdditionalFee(additionalFee);
         shipmentCostModel.setTotalItemPrice(totalItemPrice);

@@ -469,7 +469,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderCustomError(ShipmentCartItemModel shipmentCartItemModel) {
         if (!shipmentCartItemModel.isError() && shipmentCartItemModel.isHasUnblockingError()
-                && !TextUtils.isEmpty(shipmentCartItemModel.getUnblockingErrorMessage()) && shipmentCartItemModel.getFirstProductErrorIndex() > 0) {
+                && !TextUtils.isEmpty(shipmentCartItemModel.getUnblockingErrorMessage()) && shipmentCartItemModel.getFirstProductErrorIndex() > -1) {
             final String errorMessage = shipmentCartItemModel.getUnblockingErrorMessage();
             customTickerDescription.setText(errorMessage);
             customTickerAction.setOnClickListener(v -> {

@@ -7,8 +7,8 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
-import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.common.getCurrencyFormatted
+import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.CampaignRibbon
 import kotlinx.android.synthetic.main.item_product_content.view.*
@@ -17,10 +17,16 @@ import kotlinx.android.synthetic.main.item_product_content.view.*
  * Created by Yehezkiel on 25/05/20
  */
 class PartialContentView(private val view: View, private val listener: DynamicProductDetailListener) : CampaignRibbon.CampaignCountDownCallback {
+
+    companion object {
+        const val PRICE_FONT_SIZE = 24F
+    }
+
     private var campaignRibbon: CampaignRibbon? = null
 
     fun renderData(data: ProductContentMainData,
                    isUpcomingNplType: Boolean, freeOngkirImgUrl: String) = with(view) {
+        txt_main_price.textSize = PRICE_FONT_SIZE
         txt_main_price.contentDescription = context.getString(R.string.content_desc_txt_main_price, data.price.value)
         product_name.contentDescription = context.getString(R.string.content_desc_product_name, MethodChecker.fromHtml(data.productName))
         product_name.text = MethodChecker.fromHtml(data.productName)

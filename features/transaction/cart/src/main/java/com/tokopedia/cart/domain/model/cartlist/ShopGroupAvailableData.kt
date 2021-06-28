@@ -8,24 +8,23 @@ import java.util.*
 @Parcelize
 data class ShopGroupAvailableData(
 
-        var cartItemHolderDataList: MutableList<CartItemHolderData>? = ArrayList(),
+        var cartItemHolderDataList: MutableList<CartItemHolderData> = ArrayList(),
         var isChecked: Boolean = false,
         var isError: Boolean = false,
-        var errorTitle: String? = null,
-        var errorDescription: String? = null,
-        var similarProductUrl: String? = null,
+        var errorTitle: String = "",
+        var errorDescription: String = "",
         var isWarning: Boolean = false,
-        var warningTitle: String? = null,
-        var warningDescription: String? = null,
-        var shopName: String? = null,
-        var shopId: String? = null,
+        var warningTitle: String = "",
+        var warningDescription: String = "",
+        var shopName: String = "",
+        var shopId: String = "",
         var shopTypeInfo: ShopTypeInfoData = ShopTypeInfoData(),
         var isFulfillment: Boolean = false,
-        var fulfillmentName: String? = null,
+        var fulfillmentName: String = "",
         var fulfillmentBadgeUrl: String = "",
         var isHasPromoList: Boolean = false,
-        var cartString: String? = null,
-        var promoCodes: List<String>? = emptyList(),
+        var cartString: String = "",
+        var promoCodes: List<String> = emptyList(),
 
         // Total data which is calculated from cartItemDataList
         var totalPrice: Long = 0,
@@ -45,7 +44,7 @@ data class ShopGroupAvailableData(
         var isTokoNow: Boolean = false
 ) : Parcelable {
 
-    val cartItemDataList: MutableList<CartItemHolderData>?
+    val cartItemDataList: MutableList<CartItemHolderData>
         get() = cartItemHolderDataList
 
     val shouldValidateWeight: Boolean

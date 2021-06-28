@@ -166,7 +166,7 @@ object AtcCommonMapper {
 
         return listOf(cartTypeData?.availableButtons?.firstOrNull()?.copy(
                 cartType = ProductDetailCommonConstant.KEY_CHECK_WISHLIST,
-                color = remindMeAlternateCopy?.color ?: ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GREEN,
+                color = remindMeAlternateCopy?.color ?: ProductDetailCommonConstant.KEY_BUTTON_SECONDARY_GRAY,
                 text = remindMeAlternateCopy?.text ?: ProductDetailCommonConstant.TEXT_REMIND_ME
         ) ?: return null)
     }
@@ -198,7 +198,7 @@ object AtcCommonMapper {
                         position = idCounter,
                         listOfVariantCategory = processedVariant,
                         mapOfSelectedVariant = initialSelectedVariant,
-                        isEmptyStock = totalStock == 0,
+                        isEmptyStock = totalStock == 0 || selectedChild?.isBuyable == false,
                         isTokoCabang = selectedProductFulfillment)
         ).also {
             idCounter += 1
@@ -295,8 +295,7 @@ object AtcCommonMapper {
                 isCampaignActive = selectedChild?.campaign?.isActive ?: false,
                 productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted()
                         ?: "",
-                productStockWording = selectedChild?.stock?.stockWordingHTML
-                        ?: "",
+                productStock = selectedChild?.getVariantFinalStock()?.toString() ?: "",
                 productName = selectedChild?.name ?: ""
         )
         return productImage to headerData

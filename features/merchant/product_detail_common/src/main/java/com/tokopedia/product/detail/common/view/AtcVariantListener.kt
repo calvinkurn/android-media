@@ -13,9 +13,10 @@ interface AtcVariantListener {
     fun onVariantGuideLineClicked(url: String) {}
     fun onSelectionChanged(view: View, position: Int) {}
     fun onVariantGuideLineHide(): Boolean = false
-    fun onVariantImageClicked(url: String){}
-    fun onVariantEmptyAndSelectedClicked(){}
+    fun onVariantImageClicked(url: String) {}
+    fun onVariantEmptyAndSelectedClicked() {}
 
-    fun onQuantityUpdate(quantity: Int, productId: String) {}
+    fun onQuantityUpdate(quantity: Int, productId: String, oldValue: Int) {}
     fun onClickRefresh() {}
+    fun isTokonow(): Boolean = false
 }

@@ -9,11 +9,13 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
+import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
+import com.tokopedia.track.TrackApp
 
 object DynamicProductDetailMapper {
 
@@ -264,6 +266,10 @@ object DynamicProductDetailMapper {
     fun generateUserLocationRequestRates(localData: LocalCacheModel): String {
         val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
         return "${localData.district_id}|${localData.postal_code}|${latlong}"
+    }
+
+    fun getAffiliateUIID(affiliateUniqueString: String, uuid: String): AffiliateUIIDRequest? {
+        return if(affiliateUniqueString.isNotBlank()) AffiliateUIIDRequest(trackerID = uuid, uuid = affiliateUniqueString, irisSessionID = TrackApp.getInstance().gtm.irisSessionId) else null
     }
 
     fun determineSelectedOptionIds(variantData: ProductVariant, selectedChild: VariantChild?): Pair<Boolean, MutableMap<String, String>> {

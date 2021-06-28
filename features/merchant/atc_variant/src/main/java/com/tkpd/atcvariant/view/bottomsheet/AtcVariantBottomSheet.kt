@@ -50,6 +50,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import rx.subscriptions.CompositeSubscription
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -76,7 +77,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
     private var loadingProgressDialog: ProgressDialog? = null
 
-    private val adapterFactory by lazy { AtcVariantAdapterTypeFactoryImpl(this) }
+    private val compositeSubscription by lazy { CompositeSubscription() }
+    private val adapterFactory by lazy { AtcVariantAdapterTypeFactoryImpl(this, compositeSubscription) }
     private val adapter by lazy {
         val asyncDifferConfig = AsyncDifferConfig.Builder(AtcVariantDiffutil())
                 .build()
@@ -90,6 +92,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     private var rvVariantBottomSheet: RecyclerView? = null
     private var buttonActionType = 0
     private var buttonText = ""
+    private var alreadyHitQtyTrack = false
 
     fun show(fragmentManager: FragmentManager,
              tag: String,
@@ -122,6 +125,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    override fun onDestroyView() {
+        compositeSubscription.clear()
+        super.onDestroyView()
     }
 
     private fun initLayout() {
@@ -269,6 +277,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 onSuccessTransaction(it.data)
             } else if (it is Fail) {
                 it.throwable.run {
+                    trackAtcError(message ?: "")
                     viewModel.updateActivityResult(atcSuccessMessage = "")
                     if (this is AkamaiErrorException && message != null) {
                         showToasterError(
@@ -282,6 +291,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 }
             }
         })
+    }
+
+    private fun trackAtcError(message: String) {
+        val productId = adapter.getHeaderDataModel()?.headerData?.productId ?: ""
+
+        ProductTrackingCommon.eventEcommerceAtcError(message, productId, userSessionInterface.userId, sharedViewModel.aggregatorParams.value?.pageSource
+                ?: "")
     }
 
     private fun getErrorMessage(throwable: Throwable): String {
@@ -334,11 +350,16 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 productId = productId, shopId = aggregatorParams?.shopId ?: "",
                 productName = adapter.getHeaderDataModel()?.headerData?.productName ?: "",
                 productPrice = adapter.getHeaderDataModel()?.headerData?.getFinalPrice() ?: "",
-                quantity = viewModel.getSelectedQuantity(productId), variantName = viewModel.titleVariantName.value ?: "",
-                isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment ?: false, shopType = aggregatorParams?.shopTypeString ?: "",
-                shopName = aggregatorParams?.shopName ?: "", categoryName = aggregatorParams?.categoryName ?: "",
-                categoryId = aggregatorParams?.categoryId ?: "", isFreeOngkir = aggregatorParams?.isFreeOngkir ?: false,
-                trackerAttribution = aggregatorParams?.trackerAttribution ?: "")
+                quantity = viewModel.getSelectedQuantity(productId), variantName = viewModel.titleVariantName.value
+                ?: "",
+                isMultiOrigin = viewModel.getSelectedWarehouse(productId)?.isFulfillment
+                        ?: false, shopType = aggregatorParams?.shopTypeString ?: "",
+                shopName = aggregatorParams?.shopName
+                        ?: "", categoryName = aggregatorParams?.categoryName ?: "",
+                categoryId = aggregatorParams?.categoryId
+                        ?: "", isFreeOngkir = aggregatorParams?.isFreeOngkir ?: false,
+                trackerAttribution = aggregatorParams?.trackerAttribution ?: "",
+                pageSource = aggregatorParams?.pageSource ?: "")
     }
 
     private fun onSuccessOcs(result: AddToCartDataModel) {
@@ -366,7 +387,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 successMessage
             viewModel.updateActivityResult(atcSuccessMessage = message)
             showToasterSuccess(message, getString(R.string.atc_variant_oke_label)) {
-                ProductTrackingCommon.onSeeCartVariantBottomSheetClicked(message, adapter.getHeaderDataModel()?.headerData?.productId ?: "")
+                val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
+                ProductTrackingCommon.onSeeCartVariantBottomSheetClicked(message, adapter.getHeaderDataModel()?.headerData?.productId
+                        ?: "", pageSource)
             }
         }
     }
@@ -412,7 +435,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     override fun onVariantGuideLineClicked(url: String) {
-        ProductTrackingCommon.onVariantGuidelineClicked(adapter.getHeaderDataModel()?.headerData?.productId ?: "")
+        val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
+        ProductTrackingCommon.onVariantGuidelineClicked(adapter.getHeaderDataModel()?.headerData?.productId
+                ?: "", pageSource)
         goToImagePreview(arrayListOf(url))
     }
 
@@ -432,6 +457,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
         doAtc(atcKey)
     }
 
+    override fun isTokonow(): Boolean {
+        return sharedViewModel.aggregatorParams.value?.isTokoNow ?: false
+    }
+
     private fun goToImagePreview(listOfImage: ArrayList<String>) {
         context?.let {
             startActivity(ImagePreviewActivity.getCallingIntent(it, listOfImage, arrayListOf("variant")))
@@ -439,11 +468,19 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
     }
 
     override fun onVariantImageClicked(url: String) {
-        ProductTrackingCommon.onVariantImageBottomSheetClicked(adapter.getHeaderDataModel()?.headerData?.productId ?: "")
+        val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
+        ProductTrackingCommon.onVariantImageBottomSheetClicked(adapter.getHeaderDataModel()?.headerData?.productId
+                ?: "", pageSource)
         goToImagePreview(arrayListOf(url))
     }
 
-    override fun onQuantityUpdate(quantity: Int, productId: String) {
+    override fun onQuantityUpdate(quantity: Int, productId: String, oldValue: Int) {
+        if (!alreadyHitQtyTrack) {
+            alreadyHitQtyTrack = true
+            ProductTrackingCommon.onQuantityEditorClicked(productId, sharedViewModel.aggregatorParams?.value?.pageSource
+                    ?: "", oldValue, quantity)
+        }
+
         viewModel.updateQuantity(quantity, productId)
     }
 
@@ -460,17 +497,22 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
 
             if (checkLogin()) return@let
 
+            val sharedData = sharedViewModel.aggregatorParams.value
+            val pageSource = sharedData?.pageSource ?: ""
+
             if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON) {
-                ProductTrackingCommon.onRemindMeClicked(adapter.getHeaderDataModel()?.headerData?.productId ?: "")
+                ProductTrackingCommon.onRemindMeClicked(adapter.getHeaderDataModel()?.headerData?.productId
+                        ?: "", pageSource)
                 //The possibilities this method being fire is when the user first open the bottom sheet with product not buyable
                 //Use product id from params because we dont have selected id yet here
-                viewModel.addWishlist(sharedViewModel.aggregatorParams.value?.productId
+                viewModel.addWishlist(sharedData?.productId
                         ?: "", userSessionInterface.userId)
                 return@let
             }
 
             if (buttonActionType == ProductDetailCommonConstant.CHECK_WISHLIST_BUTTON) {
-                ProductTrackingCommon.onWishlistCheckClicked(adapter.getHeaderDataModel()?.headerData?.productId ?: "")
+                ProductTrackingCommon.onWishlistCheckClicked(adapter.getHeaderDataModel()?.headerData?.productId
+                        ?: "", pageSource)
                 goToWishlist()
                 return@let
             }
@@ -479,9 +521,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                 showErrorVariantUnselected()
                 return@let
             }
-
-
-            val sharedData = sharedViewModel.aggregatorParams.value
 
             showProgressDialog {
                 loadingProgressDialog?.dismiss()
@@ -493,7 +532,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                     sharedData?.minimumShippingPrice ?: 0,
                     sharedData?.trackerAttribution ?: "",
                     sharedData?.trackerListNamePdp ?: "",
-                    sharedViewModel.aggregatorParams.value?.isTokoNow ?: false
+                    sharedData?.isTokoNow ?: false
             )
         }
     }
@@ -539,7 +578,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(), AtcVariantListener, PartialAtc
                     ?: "")
         }
 
-        ProductTrackingCommon.onVariantPartiallySelected(variantErrorMessage, adapter.getHeaderDataModel()?.headerData?.productId ?: "")
+        val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
+        ProductTrackingCommon.onVariantPartiallySelected(variantErrorMessage, adapter.getHeaderDataModel()?.headerData?.productId
+                ?: "", pageSource)
         showToasterError(variantErrorMessage, getString(R.string.atc_variant_oke_label))
     }
 
