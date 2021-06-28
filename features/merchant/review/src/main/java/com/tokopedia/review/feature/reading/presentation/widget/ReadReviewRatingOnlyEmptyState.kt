@@ -46,4 +46,8 @@ class ReadReviewRatingOnlyEmptyState : BaseCustomView {
         twoStarProgressBar = findViewById(R.id.rating_only_statistic_two_progress_bar)
         oneStarProgressBar = findViewById(R.id.rating_only_statistic_one_progress_bar)
     }
+
+    fun setEmptyData() {
+
+    }
 }

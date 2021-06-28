@@ -27,6 +27,7 @@ import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryIm
 import com.tokopedia.review.feature.gallery.presentation.di.DaggerReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.presentation.di.ReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryImageSwipeListener
+import com.tokopedia.review.feature.gallery.presentation.listener.SnapPagerScrollListener
 import com.tokopedia.review.feature.gallery.presentation.viewmodel.ReviewGalleryViewModel
 import com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryExpandedReviewBottomSheet
 import com.tokopedia.review.feature.gallery.presentation.widget.ReviewGalleryReviewDetailWidget
@@ -83,7 +84,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     }
 
     override fun onImageSwiped(index: Int) {
-        reviewDetail?.setPhotoCount(index, productReview.imageAttachments.size)
+        reviewDetail?.setPhotoCount(index + 1, productReview.imageAttachments.size)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -150,9 +151,14 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
                 }
             }
         }
-        val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(imagesRecyclerView)
+        addPagerSnapHelperToRecyclerView()
         adapter.setData(productReview.imageAttachments.map { it.imageUrl })
+    }
+
+    private fun addPagerSnapHelperToRecyclerView() {
+        val helper = PagerSnapHelper()
+        helper.attachToRecyclerView(imagesRecyclerView)
+        imagesRecyclerView?.addOnScrollListener(SnapPagerScrollListener(helper, this))
     }
 
     private fun setupReviewDetail() {
