@@ -267,8 +267,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 val graphqlRequest = GraphqlRequest(rawQuery, FlightCancelVoucher.Response::class.java)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<FlightCancelVoucher>()
-            if(data == null){
-                //need to confirm with product team
+            if(!data.attributes.success){
                 _errorCancelVoucher.postValue(R.string.flight_error_cancel_voucher)
             }
         }) {
