@@ -6,16 +6,21 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_N0">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/read_review_app_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        app:elevation="@dimen/layout_lvl0"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/read_review_collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/layout_lvl2"
-            app:layout_constraintTop_toTopOf="parent">
+            android:minHeight="@dimen/layout_lvl7"
+            app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
 
             <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
                 android:id="@+id/read_review_header"
@@ -26,59 +31,60 @@
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-            android:id="@+id/read_review_swipe_refresh_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/read_review_collapsing_toolbar">
+    </com.google.android.material.appbar.AppBarLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/read_review_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/read_review_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/read_review_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <include
+                android:id="@+id/read_review_list_only_loading"
+                layout="@layout/partial_read_review_list_only_loading"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
 
-                <include
-                    android:id="@+id/read_review_list_only_loading"
-                    layout="@layout/partial_read_review_list_only_loading"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone" />
+            <include
+                android:id="@+id/read_review_list_empty"
+                layout="@layout/partial_read_review_empty_filtered"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
 
-                <include
-                    android:id="@+id/read_review_list_empty"
-                    layout="@layout/partial_read_review_empty_filtered"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+    <include
+        android:id="@+id/read_review_loading"
+        layout="@layout/partial_read_review_full_page_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
-        <include
-            android:id="@+id/read_review_loading"
-            layout="@layout/partial_read_review_full_page_loading"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-
-        <com.tokopedia.globalerror.GlobalError
-            android:id="@+id/read_review_network_error"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:visibility="gone"
-            android:background="@color/Unify_N0"
-            app:globalerrors_type="NO_CONNECTION"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/read_review_network_error"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:visibility="gone"
+        app:globalerrors_type="NO_CONNECTION"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
