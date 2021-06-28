@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.io.IOException
 import java.lang.reflect.Type
 
 class TapcashBalanceViewModelTest {
@@ -39,6 +40,7 @@ class TapcashBalanceViewModelTest {
 
     val challangeResult = "895EEC0E771D3A369000"
     val challangeFail = "6A80"
+    val challangeFailNoData = "9080"
     val secureRequest = "903203000A1201EFCE6ACABEA98BF900"
     val secureResult = "0701004E2000000075461300000568547546130000056854C1F125BD000000000600271031CAD03F0220000000000600271031CAD03F0000000000000000000000000000000000010000000000001E8480000000000000000000000000000034780056F547A8C5C9BD9CB81358802B62D49000"
     val terminalRandomNumber = "EFCE6ACABEA98BF9"
@@ -87,6 +89,20 @@ class TapcashBalanceViewModelTest {
     }
 
     @Test
+    fun processTagIntent_WriteBalanceTapcash_FailedChallangeOtherError() {
+        //given
+        initSuccessData()
+        challangeResultFail = NFCUtils.stringToByteArrayRadix(challangeFailNoData)
+        every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultFail
+
+        //when
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
+
+        //then
+        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+    }
+
+    @Test
     fun processTagIntent_WriteBalanceTapcash_SuccessChallangeFailedSecurePurse() {
         //given
         initSuccessData()
@@ -113,6 +129,42 @@ class TapcashBalanceViewModelTest {
         every { tapcashBalanceViewModel.getRandomString() } returns terminalRandomNumber
         every { isoDep.transceive(secureByteRequest) } returns secureByteResult
         every { tapcashBalanceViewModel.getCardData(secureResult, terminalRandomNumber,challangeResult) } returns ""
+
+        //when
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
+
+        //then
+        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+    }
+
+    @Test
+    fun processTagIntent_WriteBalanceTapcash_SuccessChallangeSuccessSecurePurseCardFailedNullCardData() {
+        //given
+        initSuccessData()
+        val secureByteRequest = NFCUtils.stringToByteArrayRadix(secureRequest)
+        val secureByteResult =
+                NFCUtils.stringToByteArrayRadix(secureResult)
+        every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultSuccess
+        every { tapcashBalanceViewModel.getRandomString() } returns terminalRandomNumber
+        every { isoDep.transceive(secureByteRequest) } returns secureByteResult
+        every { tapcashBalanceViewModel.getCardData(secureResult, terminalRandomNumber,challangeResult) } returns null
+
+        //when
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
+
+        //then
+        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+    }
+
+    @Test
+    fun processTagIntent_WriteBalanceTapcash_SuccessChallangeSuccessSecurePurseCardFailedIOException() {
+        //given
+        initSuccessData()
+        val secureByteRequest = NFCUtils.stringToByteArrayRadix(secureRequest)
+
+        every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultSuccess
+        every { tapcashBalanceViewModel.getRandomString() } returns terminalRandomNumber
+        every { isoDep.transceive(secureByteRequest) } answers { throw IOException() }
 
         //when
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
@@ -313,6 +365,80 @@ class TapcashBalanceViewModelTest {
         assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
     }
 
+    @Test
+    fun processTagIntent_WriteBalanceTapcash_IsodepNotConnected() {
+        //given
+        initSuccessData()
+        tapcashBalanceViewModel.isoDep = isoDep
+
+        val balanceTapcash = Gson().fromJson(dummyResponseWithCrypto, BalanceTapcash::class.java)
+        val terminalRandomNumberByte = NFCUtils.hexStringToByteArray(terminalRandomNumber)
+
+        every { isoDep.isConnected } returns false
+
+        //when
+        tapcashBalanceViewModel.writeBalance(balanceTapcash, terminalRandomNumberByte)
+
+        //then
+        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+    }
+
+    @Test
+    fun processTagIntent_WriteBalanceTapcash_IsodepNotInitialez() {
+        //given
+        initSuccessData()
+
+        val balanceTapcash = Gson().fromJson(dummyResponseWithCrypto, BalanceTapcash::class.java)
+        val terminalRandomNumberByte = NFCUtils.hexStringToByteArray(terminalRandomNumber)
+
+        //when
+        tapcashBalanceViewModel.writeBalance(balanceTapcash, terminalRandomNumberByte)
+
+        //then
+        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+    }
+
+    @Test
+    fun processTagIntent_WriteBalanceTapcash_IsodepIOException() {
+        //given
+        initSuccessData()
+        tapcashBalanceViewModel.isoDep = isoDep
+        val writeByteRequest = NFCUtils.stringToByteArrayRadix("9036140125031402140300EFCE6ACABEA98BF985A00E33BD0F26DFDB71CA6C6CBCE500000000000000000018")
+        val balanceTapcash = Gson().fromJson(dummyResponseWithCrypto, BalanceTapcash::class.java)
+        val terminalRandomNumberByte = NFCUtils.hexStringToByteArray(terminalRandomNumber)
+
+        every { isoDep.transceive(writeByteRequest) } answers { throw IOException() }
+
+        //when
+        tapcashBalanceViewModel.writeBalance(balanceTapcash, terminalRandomNumberByte)
+
+        //then
+        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+    }
+
+    @Test
+    fun processTagIntent_GetStringFromPosition_Succes() {
+        //given
+        val secureData = "ABCDEF12345678"
+
+        //when
+        val expected = tapcashBalanceViewModel.getStringFromPosition(secureData, 2, 4)
+
+        //then
+        assertEquals(expected, "CDEF12")
+    }
+
+    @Test
+    fun processTagIntent_GetStringFromNormalPosition_Success() {
+        //given
+        val secureData = "ABCDEF12345678"
+
+        //when
+        val expected = tapcashBalanceViewModel.getStringFromNormalPosition(secureData, 2, 4)
+
+        //then
+        assertEquals(expected, "CD")
+    }
 
     private fun checkAssertEmoneyInquiry(expected: EmoneyInquiry, actual: EmoneyInquiry){
         assertEquals(expected.attributesEmoneyInquiry?.buttonText, actual.attributesEmoneyInquiry?.buttonText)

@@ -37,7 +37,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     val tapcashInquiry: LiveData<EmoneyInquiry>
         get() = tapcashInquiryMutable
 
-    private lateinit var isoDep: IsoDep
+    lateinit var isoDep: IsoDep
 
     fun processTapCashTagIntent(isoDep: IsoDep, balanceRawQuery: String) {
         //do something with tagFromIntent
@@ -106,7 +106,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         }
     }
 
-    private fun writeBalance(tapcash: BalanceTapcash, terminalRandomNumber: ByteArray) {
+    fun writeBalance(tapcash: BalanceTapcash, terminalRandomNumber: ByteArray) {
         val attributesTapcash = tapcash.rechargeUpdateBalance.attributes
         if (::isoDep.isInitialized && isoDep.isConnected) {
             try {
@@ -119,7 +119,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 if (isCommandFailed(writeResult)) {
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 } else if(writeResultString.length == MAX_WRITE_RESULT_SIZE){
-                    tapcashInquiryMutable.postValue(mapTapcashtoEmoney(tapcash, writeResultString.substring(48, 54)))
+                    tapcashInquiryMutable.postValue(mapTapcashtoEmoney(tapcash, getStringFromNormalPosition(writeResultString, 48, 54)))
                 } else {
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
@@ -141,7 +141,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     private fun writeBalanceRequest(cryptogram: String, terminalRandomNumber: ByteArray): ByteArray {
         val command = COMMAND_WRITE_BALANCE.plus(0x03.toByte()).plus(0x14.toByte()).plus(0x02.toByte()).plus(0x14.toByte()).plus(0x03.toByte()). //fixed value
         plus(terminalRandomNumber). //Terminal Random Number
-        plus(stringToByteArrayRadix(cryptogram.substring(32, 64))). // Cryptogram
+        plus(stringToByteArrayRadix(getStringFromNormalPosition(cryptogram,32, 64))). // Cryptogram
         plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()).plus(0x00.toByte()). // fixed value
         plus(0x18.toByte()) //LE field
 
@@ -174,7 +174,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     fun getCardData(securePurse: String,
                             terminalRandomNumber: String,
                             cardRandomNumber: String
-    ): String {
+    ): String? {
         if (securePurse.isNotEmpty()
                 && securePurse.length == MAX_SECURE_PURSE_LENGTH
                 && terminalRandomNumber.isNotEmpty()
@@ -228,8 +228,15 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     /**
      * get the substring of each needed from secure purse
      */
-    private fun getStringFromPosition(securePurse: String, indexBegin: Int, indexEnd: Int): String {
+    fun getStringFromPosition(securePurse: String, indexBegin: Int, indexEnd: Int): String {
         return securePurse.substring(indexBegin(indexBegin), indexEnd(indexEnd))
+    }
+
+    /**
+     * get the substring of each needed from normal position
+     */
+    fun getStringFromNormalPosition(string: String, indexBegin: Int, indexEnd: Int): String {
+        return string.substring(indexBegin, indexEnd)
     }
 
 
