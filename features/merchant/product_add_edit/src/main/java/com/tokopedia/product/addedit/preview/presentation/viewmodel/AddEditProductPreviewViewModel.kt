@@ -389,7 +389,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         mIsLoading.value = true
         productInputModel.value?.let {
             it.detailInputModel.apply {
-                if (productName == currentProductName) {
+                if (isEditing.value == true && productName == currentProductName) {
                     mValidationResult.value = ValidationResultModel(VALIDATION_SUCCESS)
                     mIsLoading.value = false
                     return
@@ -398,7 +398,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
         launchCatchError(block = {
             val response = withContext(dispatcher.io) {
-                validateProductNameUseCase.setParamsProductName(productId.value, productName)
+                if (isEditing.value == true) {
+                    validateProductNameUseCase.setParamsProductName(productId.value, productName)
+                } else {
+                    validateProductNameUseCase.setParamsProductName(productName)
+                }
                 validateProductNameUseCase.executeOnBackground()
             }
             val validationMessages = response.productValidateV3.data.validationResults

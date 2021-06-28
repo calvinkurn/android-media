@@ -5,6 +5,7 @@
     <string name="path_shipping_confirmation" translatable="false">/shipping-confirmation/.*</string>
     <string name="path_add_address_v1" translatable="false">/addaddress/v1/.*\\/</string>
     <string name="path_add_address_v2" translatable="false">/addaddress/v2/</string>
+    <string name="path_add_address_v3" translatable="false">/addaddress/v3/</string>
     <string name="path_edit_shop_address" translatable="false">/editaddress/</string>
 
     <string name="dropoff_title">Pilih Lokasi Titik Ambil</string>
