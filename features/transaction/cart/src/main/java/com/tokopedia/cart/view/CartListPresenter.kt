@@ -86,17 +86,17 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     var lastValidateUseRequest: ValidateUsePromoRequest? = null
 
     companion object {
-        private val PERCENTAGE = 100.0f
+        private const val PERCENTAGE = 100.0f
 
-        val ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0
-        val ITEM_CHECKED_ALL_WITH_CHANGES = 1
-        val ITEM_CHECKED_PARTIAL_SHOP = 3
-        val ITEM_CHECKED_PARTIAL_ITEM = 4
-        val ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM = 5
+        const val ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0
+        const val ITEM_CHECKED_ALL_WITH_CHANGES = 1
+        const val ITEM_CHECKED_PARTIAL_SHOP = 3
+        const val ITEM_CHECKED_PARTIAL_ITEM = 4
+        const val ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM = 5
         private const val RECENT_VIEW_XSOURCE = "recentview"
         private const val PAGE_NAME_RECENT_VIEW = "cart_recent_view"
 
-        private val QUERY_APP_CLIENT_ID = "{app_client_id}"
+        private const val QUERY_APP_CLIENT_ID = "{app_client_id}"
         private val REGEX_NUMBER = "[^0-9]".toRegex()
     }
 
