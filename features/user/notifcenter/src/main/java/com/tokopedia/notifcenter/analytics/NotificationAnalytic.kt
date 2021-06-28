@@ -80,9 +80,9 @@ class NotificationAnalytic @Inject constructor(
 
     private class OtherAttr private constructor() {
         companion object {
-            const val ATTR_USER_ID = "userId"
-            const val ATTR_PRODUCT_ID = "productId"
-            const val ATTR_SHOP_ID = "shopId"
+            const val USER_ID = "userId"
+            const val PRODUCT_ID = "productId"
+            const val SHOP_ID = "shopId"
         }
     }
 
@@ -401,9 +401,9 @@ class NotificationAnalytic @Inject constructor(
                 businessUnit = BusinessUnit.COMMUNICATION,
                 currentSite = CurrentSite.MARKETPLACE,
                 additionalAttribute = mapOf(
-                    OtherAttr.ATTR_PRODUCT_ID to element.product?.productId.toString(),
-                    OtherAttr.ATTR_SHOP_ID to element.product?.shop?.id.toString(),
-                    OtherAttr.ATTR_USER_ID to userSession.userId
+                    OtherAttr.PRODUCT_ID to element.product?.productId.toString(),
+                    OtherAttr.SHOP_ID to element.product?.shop?.id.toString(),
+                    OtherAttr.USER_ID to userSession.userId
                 )
             )
         )
@@ -423,9 +423,9 @@ class NotificationAnalytic @Inject constructor(
                 businessUnit = BusinessUnit.COMMUNICATION,
                 currentSite = CurrentSite.MARKETPLACE,
                 additionalAttribute = mapOf(
-                    OtherAttr.ATTR_PRODUCT_ID to element.product?.productId.toString(),
-                    OtherAttr.ATTR_SHOP_ID to element.product?.shop?.id.toString(),
-                    OtherAttr.ATTR_USER_ID to userSession.userId
+                    OtherAttr.PRODUCT_ID to element.product?.productId.toString(),
+                    OtherAttr.SHOP_ID to element.product?.shop?.id.toString(),
+                    OtherAttr.USER_ID to userSession.userId
                 )
             )
         )
@@ -446,9 +446,9 @@ class NotificationAnalytic @Inject constructor(
                 businessUnit = BusinessUnit.COMMUNICATION,
                 currentSite = CurrentSite.MARKETPLACE,
                 additionalAttribute = mapOf(
-                    OtherAttr.ATTR_PRODUCT_ID to notification.product?.productId.toString(),
-                    OtherAttr.ATTR_SHOP_ID to notification.product?.shop?.id.toString(),
-                    OtherAttr.ATTR_USER_ID to userSession.userId
+                    OtherAttr.PRODUCT_ID to notification.product?.productId.toString(),
+                    OtherAttr.SHOP_ID to notification.product?.shop?.id.toString(),
+                    OtherAttr.USER_ID to userSession.userId
                 )
             )
         )
