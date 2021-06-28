@@ -28,6 +28,10 @@ import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActiv
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberListAdapter
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
+import com.tokopedia.common.topupbills.view.model.FavoriteNumberDataView
+import com.tokopedia.common.topupbills.view.model.FavoriteNumberEmptyDataView
+import com.tokopedia.common.topupbills.view.model.FavoriteNumberNotFoundDataView
+import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactoryImpl
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -101,7 +105,15 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         } else {
             binding?.commonTopupbillsFavoriteNumberClue?.show()
         }
-        numberListAdapter = TopupBillsFavoriteNumberListAdapter(this, this, clientNumbers)
+        val typeFactory = FavoriteNumberTypeFactoryImpl(this, this)
+
+        if (clientNumbers.isEmpty()) {
+            numberListAdapter = TopupBillsFavoriteNumberListAdapter(
+                    mapSeamlessFavNumberItemToDataView(clientNumbers), typeFactory)
+        } else {
+            numberListAdapter = TopupBillsFavoriteNumberListAdapter(
+                    listOf(FavoriteNumberNotFoundDataView()), typeFactory)
+        }
 
         binding?.commonTopupbillsSearchNumberInputView?.run {
             searchBarTextField.addTextChangedListener(getSearchTextWatcher)
@@ -207,20 +219,23 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
 
     private fun filterData(query: String) {
         val searchClientNumbers = ArrayList<TopupBillsSeamlessFavNumberItem>()
-        if (!TextUtils.isEmpty(query) and !isContain(query, clientNumbers)) {
-            searchClientNumbers.add(TopupBillsSeamlessFavNumberItem(clientNumber = query, isFavorite = false))
-        }
 
         searchClientNumbers.addAll(clientNumbers.filter {
             it.clientNumber.contains(query)
         })
 
-        numberListAdapter.setNumbers(searchClientNumbers)
+        if (searchClientNumbers.isNotEmpty()) {
+            numberListAdapter.setNumbers(
+                    mapSeamlessFavNumberItemToDataView(searchClientNumbers)
+            )
+        } else {
+            numberListAdapter.setEmptyState(listOf(FavoriteNumberEmptyDataView()))
+        }
     }
 
-    private fun isContain(number: String, clientNumbers: List<TopupBillsSeamlessFavNumberItem>): Boolean {
-        return clientNumbers.any { it.clientNumber.equals(number, ignoreCase = true) }
-    }
+//    private fun isContain(number: String, clientNumbers: List<TopupBillsSeamlessFavNumberItem>): Boolean {
+//        return clientNumbers.any { it.clientNumber.equals(number, ignoreCase = true) }
+//    }
 
     private fun findNumber(number: String, clientNumbers: List<TopupBillsSeamlessFavNumberItem>): TopupBillsSeamlessFavNumberItem? {
         var foundClientNumber: TopupBillsSeamlessFavNumberItem? = null
@@ -246,9 +261,13 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         KeyboardHandler.hideSoftKeyboard(activity)
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onFavoriteNumberClick(clientNumber: TopupBillsSeamlessFavNumberItem) {
+        // TODO: [Misael] check kondisi isFavorite
         if (!::inputNumberActionType.isInitialized || inputNumberActionType != InputNumberActionType.CONTACT) {
-            val checkNumber = findNumber(clientNumber.clientNumber, numberListAdapter.clientNumbers)
+            val checkNumber = findNumber(
+                    clientNumber.clientNumber,
+                    mapSeamlessDataViewToItem(numberListAdapter.visitables as List<FavoriteNumberDataView>))
             inputNumberActionType = if (checkNumber != null && checkNumber.isFavorite) {
                 InputNumberActionType.FAVORITE
             } else {
@@ -266,13 +285,40 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
     }
 
     override fun onContinueClicked() {
-        // TODO [Misael] ("Not yet implemented")
+        activity?.run {
+            val intent = Intent()
+            val searchedClientNumber = binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.text.toString()
+            intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, TopupBillsSeamlessFavNumberItem(
+                    clientNumber = searchedClientNumber))
+            intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, InputNumberActionType.MANUAL)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
+        }
     }
 
     private fun checkMatchesFavoriteNumber(textNumber: String) {
-        val matchedFavoriteNumber = numberListAdapter.clientNumbers.findLast { it.clientNumber == textNumber }
+        val matchedFavoriteNumber = numberListAdapter.visitables.findLast {
+            if (it is FavoriteNumberDataView) {
+                it.favoriteNumber.clientNumber == textNumber
+            } else {
+                false
+            }
+        }
         matchedFavoriteNumber?.let {
-            onFavoriteNumberClick(it)
+            onFavoriteNumberClick((it as FavoriteNumberDataView).favoriteNumber)
+        }
+    }
+
+    // Data Mapper
+    private fun mapSeamlessFavNumberItemToDataView(clientNumbers: List<TopupBillsSeamlessFavNumberItem>): List<FavoriteNumberDataView> {
+        return clientNumbers.map {
+            FavoriteNumberDataView(it)
+        }
+    }
+
+    private fun mapSeamlessDataViewToItem(clientNumbers: List<FavoriteNumberDataView>): List<TopupBillsSeamlessFavNumberItem> {
+        return clientNumbers.map {
+            it.favoriteNumber
         }
     }
 
