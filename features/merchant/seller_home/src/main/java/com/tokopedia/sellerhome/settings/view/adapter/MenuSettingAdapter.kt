@@ -52,6 +52,10 @@ class MenuSettingAdapter(private val context: Context?,
                     clickApplink = ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER,
                     settingTypeInfix = SettingTrackingConstant.APP_SETTING),
             MenuItemUiModel(
+                    context?.getString(R.string.setting_screen_recorder).orEmpty(),
+                    clickApplink = ApplinkConstInternalGlobal.SCREEN_RECORDER,
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING),
+            MenuItemUiModel(
                     context?.getString(R.string.setting_menu_share_app).orEmpty(),
                     settingTypeInfix = SettingTrackingConstant.APP_SETTING) { listener.onShareApplication() },
             MenuItemUiModel(

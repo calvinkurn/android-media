@@ -55,6 +55,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.utils)
     implementation project(rootProject.ext.libraries.logger)
+    implementation project(rootProject.ext.libraries.screenRecorder)
 
     if (rootProject.ext.debugToolsEnabled) {
         implementation project(rootProject.ext.libraries.analyticsDebugger)
