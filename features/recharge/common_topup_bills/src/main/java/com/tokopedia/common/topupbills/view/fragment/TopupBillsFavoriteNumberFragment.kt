@@ -26,6 +26,7 @@ import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberListAdapter
+import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
@@ -35,7 +36,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.ArrayList
 import javax.inject.Inject
 
-class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberClickListener {
+class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberClickListener, FavoriteNumberEmptyStateListener {
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -100,7 +101,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         } else {
             binding?.commonTopupbillsFavoriteNumberClue?.show()
         }
-        numberListAdapter = TopupBillsFavoriteNumberListAdapter(this, clientNumbers)
+        numberListAdapter = TopupBillsFavoriteNumberListAdapter(this, this, clientNumbers)
 
         binding?.commonTopupbillsSearchNumberInputView?.run {
             searchBarTextField.addTextChangedListener(getSearchTextWatcher)
@@ -262,6 +263,10 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
+    }
+
+    override fun onContinueClicked() {
+        // TODO [Misael] ("Not yet implemented")
     }
 
     private fun checkMatchesFavoriteNumber(textNumber: String) {

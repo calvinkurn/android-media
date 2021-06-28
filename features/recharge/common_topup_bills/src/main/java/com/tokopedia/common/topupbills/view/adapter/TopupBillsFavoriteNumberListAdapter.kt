@@ -3,7 +3,6 @@ package com.tokopedia.common.topupbills.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoritNumberBinding
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberEmptyStateBinding
@@ -16,22 +15,31 @@ class TopupBillsFavoriteNumberListAdapter (
         val favoriteNumberListener: OnFavoriteNumberClickListener,
         val emptyStateListener: FavoriteNumberEmptyStateListener,
         var clientNumbers: List<TopupBillsSeamlessFavNumberItem>
-): RecyclerView.Adapter<BaseFavoriteNumberViewHolder>() {
+): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopupBillsFavoriteNumberListAdapter.FavoriteNumberViewHolder {
-        if (viewType == VIEW_TYPE_FAVORITE_NUMBER) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == VIEW_TYPE_FAVORITE_NUMBER) {
             val binding = ItemTopupBillsFavoritNumberBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false)
-            return FavoriteNumberViewHolder(binding)
-        } else if (viewType == VIEW_TYPE_EMPTY_STATE) {
+            FavoriteNumberViewHolder(binding)
+        } else {
             val binding = ItemTopupBillsFavoriteNumberEmptyStateBinding.inflate(
                     LayoutInflater.from(parent.context), parent, false)
-            return FavoriteNumberEmptyViewHolder(binding)
+            FavoriteNumberEmptyViewHolder(binding)
         }
     }
 
-    override fun onBindViewHolder(holder: TopupBillsFavoriteNumberListAdapter.FavoriteNumberViewHolder, position: Int) {
-        holder.bind(clientNumbers[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val viewType = getItemViewType(position)
+        when (viewType) {
+            VIEW_TYPE_FAVORITE_NUMBER -> {
+                val data = clientNumbers[position] as TopupBillsSeamlessFavNumberItem
+                (holder as FavoriteNumberViewHolder).bind(data)
+            }
+            VIEW_TYPE_EMPTY_STATE -> {
+                (holder as FavoriteNumberEmptyViewHolder).bind()
+            }
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -42,15 +50,13 @@ class TopupBillsFavoriteNumberListAdapter (
         }
     }
 
-    override fun getItemCount(): Int = clientNumbers.size
+    override fun getItemCount(): Int {
+        return if (clientNumbers.isEmpty()) 1 else clientNumbers.size
+    }
 
     fun setNumbers(clientNumbers: List<TopupBillsSeamlessFavNumberItem>) {
         this.clientNumbers = clientNumbers
         notifyDataSetChanged()
-    }
-
-    abstract inner class BaseFavoriteNumberViewHolder {
-        abstract fun bind(item: Visitable)
     }
 
     inner class FavoriteNumberViewHolder(
