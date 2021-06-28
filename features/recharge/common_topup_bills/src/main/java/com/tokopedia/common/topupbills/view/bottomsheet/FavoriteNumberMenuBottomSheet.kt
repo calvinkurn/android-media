@@ -6,6 +6,8 @@ import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberMenuListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_seamless_favorite_number_menu.*
+import kotlinx.android.synthetic.main.bottom_sheet_seamless_favorite_number_menu.common_topup_bills_favorite_number_delete
+import kotlinx.android.synthetic.main.bottom_sheet_seamless_favorite_number_menu.view.*
 
 class FavoriteNumberMenuBottomSheet(
         private val listener: FavoriteNumberMenuListener
@@ -28,14 +30,16 @@ class FavoriteNumberMenuBottomSheet(
     }
 
     private fun initListener() {
-        common_topupbills_favorite_number_change_name.setOnClickListener {
-            listener.onChangeNameClicked()
-            dismiss()
-        }
+        with(childView) {
+            common_topupbills_favorite_number_change_name.setOnClickListener {
+                listener.onChangeNameClicked()
+                dismiss()
+            }
 
-        common_topup_bills_favorite_number_delete.setOnClickListener {
-            listener.onDeleteContactClicked()
-            dismiss()
+            common_topup_bills_favorite_number_delete.setOnClickListener {
+                listener.onDeleteContactClicked()
+                dismiss()
+            }
         }
     }
 

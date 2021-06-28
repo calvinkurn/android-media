@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingStart="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/common_topupbills_favorite_number_change_name"
@@ -11,6 +12,7 @@
         android:layout_height="wrap_content"
         android:text="@string/common_topup_fav_number_menu_change_name"
         android:textColor="@color/Unify_N700_96"
+        android:paddingBottom="@dimen/spacing_lvl4"
         app:typographyType="heading_5" />
 
     <View
@@ -24,6 +26,8 @@
         android:layout_height="wrap_content"
         android:text="@string/common_topupbills_favorite_number_delete"
         android:textColor="@color/Unify_N700_96"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl4"
         app:typographyType="heading_5"/>
 
 </LinearLayout>
