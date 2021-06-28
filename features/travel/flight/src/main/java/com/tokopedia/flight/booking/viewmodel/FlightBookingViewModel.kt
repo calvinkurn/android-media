@@ -266,11 +266,11 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
             val data = withContext(dispatcherProvider.main) {
                 val graphqlRequest = GraphqlRequest(rawQuery, FlightCancelVoucher.Response::class.java)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }.getSuccessData<FlightCancelVoucher>()
-            if(!data.attributes.success){
-                _errorCancelVoucher.postValue(R.string.flight_error_cancel_voucher)
-            }else{
+            }.getSuccessData<FlightCancelVoucher.Response>()
+            if(data.response.attributes.success){
                 _errorCancelVoucher.postValue(0)
+            }else{
+                _errorCancelVoucher.postValue(R.string.flight_error_cancel_voucher)
             }
         }) {
             _errorCancelVoucher.postValue(R.string.flight_error_cancel_voucher)

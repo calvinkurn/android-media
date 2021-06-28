@@ -272,10 +272,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
         })
 
         bookingViewModel.errorCancelVoucher.observe(viewLifecycleOwner,{
-            if(it != 0){
-                renderErrorToast(it)
-            }else{
+            if(it == 0){
                 bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = "", promoCode = ""))
+            }else{
+                renderErrorToast(it)
             }
         })
 
