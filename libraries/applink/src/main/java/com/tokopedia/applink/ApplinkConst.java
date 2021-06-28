@@ -481,7 +481,7 @@ public interface ApplinkConst {
         String HOME = "tokopedia://now";
         String TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_1 = "11515028";
         String TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2 = "11530573";
-        String TOKOPEDIA_NOW_STAGING = "480552";
+        String TOKOPEDIA_NOW_STAGING_SHOP_ID = "480552";
         String SEARCH = "tokopedia://now/search";
         String CATEGORY = "tokopedia://now/category";
     }

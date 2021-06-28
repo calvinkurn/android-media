@@ -62,10 +62,10 @@ object DeeplinkMapperMarketplace {
     }
 
     private fun isTokopediaNowShopId(shopId: String): Boolean {
-        return if(TokopediaUrl.getInstance().TYPE == Env.LIVE) {
-            shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_1 || shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
+        return if(TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_STAGING_SHOP_ID
         } else {
-            shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_STAGING
+            shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_1 || shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
         }
     }
 

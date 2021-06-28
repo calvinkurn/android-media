@@ -607,10 +607,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private boolean isTokopediaNowShopId(String shopId) {
-        if(TokopediaUrl.getInstance().getTYPE() == Env.LIVE) {
-            return shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_1) || shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2);
+        if(TokopediaUrl.getInstance().getTYPE() == Env.STAGING) {
+            return shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_STAGING_SHOP_ID);
         } else {
-            return shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_STAGING);
+            return shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_1) || shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2);
         }
     }
 
