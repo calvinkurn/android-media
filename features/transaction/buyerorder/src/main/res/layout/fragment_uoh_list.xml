@@ -5,25 +5,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/Unify_N0">
 
-    <com.tokopedia.unifycomponents.SearchBarUnify
-        android:id="@+id/search_bar"
+    <View
+        android:visibility="invisible"
+        android:id="@+id/statusbar"
+        android:background="@color/Unify_N0"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_25"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_12"
-        app:search_bar_placeholder="@string/hint_cari_transaksi"
-        app:search_bar_show_icon="false"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/uoh_navtoolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/statusbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:toolbarContentType="typeSearchbar"
+        app:toolbarBackButton="none"
+        app:toolbarInitialTheme="light"
+        app:toolbarAlwaysShowShadow="false" />
 
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/uoh_sort_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/search_bar"
+        app:layout_constraintTop_toBottomOf="@id/uoh_navtoolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_marginTop="@dimen/dp_12"

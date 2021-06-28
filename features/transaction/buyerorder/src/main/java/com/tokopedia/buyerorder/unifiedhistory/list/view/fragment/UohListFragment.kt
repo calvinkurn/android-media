@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.format.DateFormat
@@ -29,6 +30,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DALAM_PROSES
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DEALS
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_DIGITAL
@@ -142,6 +144,12 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.helper.ViewHelper
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -226,6 +234,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var gson = Gson()
     private val REQUEST_CODE_LOGIN = 288
     private val MIN_KEYWORD_CHARACTER_COUNT = 3
+    private var activityOrderHistory = ""
+    private var searchQuery = ""
 
     @SuppressLint("SimpleDateFormat")
     private val monthStringDateFormat = SimpleDateFormat("dd MMM yyyy")
@@ -237,10 +247,15 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     companion object {
+        const val PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history"
+        const val PARAM_HOME = "home"
         @JvmStatic
         fun newInstance(bundle: Bundle): UohListFragment {
             return UohListFragment().apply {
-                arguments = bundle
+                arguments = bundle.apply {
+                    putString(PARAM_ACTIVITY_ORDER_HISTORY, this.getString(
+                        PARAM_ACTIVITY_ORDER_HISTORY))
+                }
             }
         }
 
@@ -436,30 +451,52 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun prepareLayout() {
         refreshHandler = RefreshHandler(swipe_refresh_layout, this)
         refreshHandler?.setPullEnabled(true)
+        activityOrderHistory = arguments?.getString(PARAM_ACTIVITY_ORDER_HISTORY, "") as String
+
+        statusbar.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
+        uoh_navtoolbar?.let {
+            it.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
+                HintData(getString(R.string.hint_cari_transaksi) )),
+                navSearchbarInterface = { query,_,_,_ ->
+                    object : CountDownTimer(500, 1000) {
+                        override fun onTick(l: Long) {}
+                        override fun onFinish() {
+                            searchQuery = query.toString()
+                            when {
+                                query.toString().isBlank() -> {
+                                    view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
+                                    triggerSearch()
+                                }
+                                query.toString().length in 1 until MIN_KEYWORD_CHARACTER_COUNT -> {
+                                    showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
+                                }
+                                else -> {
+                                    triggerSearch()
+                                }
+                            }
+                        }
+                    }.start()
+                }
+            )
+            val icons = IconBuilder(
+                IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_UOH)
+            )
+            if(activityOrderHistory != PARAM_HOME)
+            {
+                it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+                statusbar.visibility = View.GONE
+            }
+            icons.apply {
+                addIcon(IconList.ID_NAV_GLOBAL) {}
+            }
+            it.setIcon(icons)
+        }
 
         uohItemAdapter = UohItemAdapter().apply {
             setActionListener(this@UohListFragment)
         }
 
         uohBottomSheetKebabMenuAdapter = UohBottomSheetKebabMenuAdapter(this)
-
-        search_bar?.searchBarIcon?.setOnClickListener {
-            view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
-            search_bar?.searchBarTextField?.text?.clear()
-            triggerSearch()
-        }
-
-        search_bar?.searchBarTextField?.setOnEditorActionListener { view, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                UohUtils.hideKeyBoard(search_bar.context, view)
-                if (search_bar?.searchBarTextField?.text?.length ?: 0 < MIN_KEYWORD_CHARACTER_COUNT) {
-                    showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
-                } else {
-                    triggerSearch()
-                }
-                true
-            } else false
-        }
 
         addEndlessScrollListener()
     }
@@ -480,7 +517,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun triggerSearch() {
-        search_bar?.searchBarTextField?.text?.toString()?.let { keyword ->
+        searchQuery.let { keyword ->
             resetFilter()
             paramUohOrder.searchableText = keyword
             refreshHandler?.startRefresh()
@@ -1018,7 +1055,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         refreshHandler?.finishRefresh()
         val listRecomm = arrayListOf<UohTypeData>()
         if (!onLoadMoreRecommendation) {
-            val searchBarIsNotEmpty = search_bar?.searchBarTextField?.text?.isNotEmpty() ?: false
+            val searchBarIsNotEmpty = searchQuery.isNotEmpty()
+//            val searchBarIsNotEmpty = search_bar?.searchBarTextField?.text?.isNotEmpty() ?: false
             val emptyStatus: UohEmptyState?
             when {
                 searchBarIsNotEmpty -> {
