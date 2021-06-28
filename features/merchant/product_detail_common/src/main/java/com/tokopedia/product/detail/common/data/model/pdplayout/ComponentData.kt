@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.product.*
 
@@ -43,6 +44,7 @@ data class ComponentData(
         val media: List<Media> = listOf(),
         @SerializedName("name")
         val name: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         val price: Price = Price(),
         @SerializedName("stock")
@@ -70,7 +72,20 @@ data class ComponentData(
         @SerializedName("variants")
         val variants: List<ProductP1Variant> = listOf(),
         @SerializedName("children")
-        val children : List<ProductP1VariantChild> = listOf()
+        val children : List<ProductP1VariantChild> = listOf(),
+        //endregioncopy
+
+        //region best seller data
+        @SerializedName("productID")
+        val productId: String = "",
+        @SerializedName("oneLinerContent")
+        val oneLinerContent: String = "",
+        @SerializedName("linkText")
+        val linkText: String = "",
+        @SerializedName("color")
+        val color: String = "",
+        @SerializedName("isVisible")
+        val isVisible: Boolean = true
         //endregioncopy
 )  {
     companion object{

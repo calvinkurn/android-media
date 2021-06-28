@@ -171,11 +171,6 @@ class HotelBookingFragment : HotelBaseFragment() {
                 }
             }
         })
-
-        bookingViewModel.promoData.observe(viewLifecycleOwner, Observer {
-            promoCode = it.promoCode
-            setupPayNowPromoTicker(it)
-        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -261,8 +256,16 @@ class HotelBookingFragment : HotelBaseFragment() {
         setupContactDetail(hotelCart.cart)
         setupInvoiceSummary(hotelCart.cart, hotelCart.property)
         setupImportantNotes(hotelCart.property)
+        initPromoSection()
 
         booking_button.setOnClickListener { onBookingButtonClicked() }
+    }
+
+    private fun initPromoSection(){
+        bookingViewModel.promoData.observe(viewLifecycleOwner, Observer {
+            promoCode = it.promoCode
+            setupPayNowPromoTicker(it)
+        })
     }
 
     private fun initGuestInfoEditText() {
