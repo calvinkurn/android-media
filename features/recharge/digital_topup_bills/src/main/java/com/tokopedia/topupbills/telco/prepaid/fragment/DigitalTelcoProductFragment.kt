@@ -109,6 +109,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             categoryId = it.getInt(CATEGORY_ID)
 
             sharedModelPrepaid.productList.observe(viewLifecycleOwner, Observer {
+                clearFilterIfTabNotActive()
                 if (telcoFilterData.isFilterSelected()) titleFilterResult.show() else titleFilterResult.hide()
                 when (it) {
                     is Success -> onSuccessProductList()
@@ -290,6 +291,16 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
                 telcoTelcoProductView.selectProductFromFavNumber(favNumber.productId)
             }
         })
+    }
+
+    private fun clearFilterIfTabNotActive() {
+        if (sharedModelPrepaid.selectedCategoryViewPager.value != null &&
+                sharedModelPrepaid.selectedCategoryViewPager.value != titleProduct) {
+            telcoFilterData.clearAllFilter()
+            sortFilter.chipItems?.map {
+                it.type = ChipsUnify.TYPE_NORMAL
+            }
+        }
     }
 
     private fun onErrorProductList(error: Throwable? = null) {
