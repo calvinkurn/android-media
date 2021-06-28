@@ -55,6 +55,9 @@ class TopupBillsFavoriteNumberListAdapter (
                 commonTopupbillsFavoriteNumberContainer.setOnClickListener {
                     listener.onFavoriteNumberClick(favClientNumber)
                 }
+                commonTopupbillsFavoriteNumberMenu.setOnClickListener {
+                    listener.onFavoriteNumberMenuClick(favClientNumber)
+                }
             }
         }
     }
