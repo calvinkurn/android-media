@@ -481,18 +481,15 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             val icons = IconBuilder(
                 IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_UOH)
             )
-            if(activityOrderHistory == PARAM_HOME)
-            {
-                icons.apply {
-                    addIcon(IconList.ID_NAV_GLOBAL) {}
-                }
-                it.setIcon(icons)
-            }
-            else
+            if(activityOrderHistory != PARAM_HOME)
             {
                 it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 statusbar.visibility = View.GONE
             }
+            icons.apply {
+                addIcon(IconList.ID_NAV_GLOBAL) {}
+            }
+            it.setIcon(icons)
         }
 
         uohItemAdapter = UohItemAdapter().apply {
