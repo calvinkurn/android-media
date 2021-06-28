@@ -53,7 +53,6 @@ import com.tokopedia.play.view.measurement.bounds.provider.videobounds.PlayVideo
 import com.tokopedia.play.view.measurement.bounds.provider.videobounds.VideoBoundsProvider
 import com.tokopedia.play.view.measurement.layout.DynamicLayoutManager
 import com.tokopedia.play.view.measurement.layout.PlayDynamicLayoutManager
-import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
@@ -100,7 +99,9 @@ class PlayUserInteractionFragment @Inject constructor(
         PlayButtonViewComponent.Listener,
         PiPViewComponent.Listener,
         ProductFeaturedViewComponent.Listener,
-        PinnedVoucherViewComponent.Listener
+        PinnedVoucherViewComponent.Listener,
+        EngagementToolsPreStartViewComponent.Listener,
+        EngagementToolsTapViewComponent.Listener
 {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.main + job)
@@ -123,6 +124,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
+    private val engagementToolsPreStartView by viewComponentOrNull { EngagementToolsPreStartViewComponent(it, this) }
+    private val engagementToolsTapView by viewComponentOrNull { EngagementToolsTapViewComponent(it, this) }
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
@@ -412,6 +415,21 @@ class PlayUserInteractionFragment @Inject constructor(
         doShowToaster(message = getString(R.string.play_voucher_code_copied), actionText = getString(R.string.play_action_ok))
         analytic.clickHighlightedVoucher(voucher)
     }
+
+    /**
+     * EngagementToolsPreStart View Component Listener
+     */
+    override fun onFollowButtonClicked(view: EngagementToolsPreStartViewComponent) {
+        val partnerId = playViewModel.partnerId ?: return
+        doClickFollow(partnerId, PartnerFollowAction.Follow)
+    }
+
+    /**
+     * EngagementToolsTap View Component Listener
+     */
+    override fun onTapClicked(view: EngagementToolsTapViewComponent) {
+        //TODO("TAP")
+    }
     //endregion
 
     fun maxTopOnChatMode(maxTopPosition: Int) {
@@ -636,6 +654,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeToolbarInfo() {
         playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, DistinctObserver {
             toolbarView.setPartnerInfo(it)
+            engagementToolsPreStartView?.showFollowButton(it.isFollowable && !it.isFollowed)
         })
     }
 
@@ -877,6 +896,7 @@ class PlayUserInteractionFragment @Inject constructor(
         viewModel.doFollow(partnerId, action)
 
         toolbarView.setFollowStatus(action == PartnerFollowAction.Follow)
+        engagementToolsPreStartView?.showFollowButton(action == PartnerFollowAction.UnFollow)
     }
 
     //TODO("This action is duplicated with the one in PlayBottomSheetFragment, find a way to prevent duplication")

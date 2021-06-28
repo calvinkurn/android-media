@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+
+    <FrameLayout
+        android:id="@+id/fl_engagement_background"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/play_engagement_live_height"
+        android:layout_marginTop="@dimen/play_offset_6"
+        android:background="@drawable/bg_play_engagement"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/fl_engagement_tap"
+        >
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:scaleType="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/bg_play_engagement_decor"
+            />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_engagement_tap"
+        android:layout_width="@dimen/play_engagement_tap_action"
+        android:layout_height="@dimen/play_engagement_tap_action"
+        android:layout_marginEnd="@dimen/play_offset_12"
+        android:background="@drawable/bg_play_engagement_tap_action"
+        app:layout_constraintEnd_toEndOf="@id/fl_engagement_background"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_gift"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_gravity="center"
+            app:icon_color_light_disabled="@color/Unify_Static_White"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_disabled="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="GIFT"
+            />
+
+    </FrameLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_engagement_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:text="Tap terus!"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/fl_timer_tap"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/fl_engagement_background"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        />
+
+    <FrameLayout
+        android:id="@+id/fl_timer_tap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_play_engagement_tap_timer"
+        app:layout_constraintBottom_toBottomOf="@id/fl_engagement_background"
+        app:layout_constraintEnd_toEndOf="@id/fl_engagement_background"
+        app:layout_constraintStart_toStartOf="@id/fl_engagement_background"
+        app:layout_constraintTop_toBottomOf="@id/fl_engagement_tap"
+        app:layout_constraintVertical_bias="1"
+        >
+
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/timer_tap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginEnd="@dimen/spacing_lvl1"
+            android:layout_marginBottom="@dimen/spacing_lvl1"
+            app:timer_unify_single_remainingMinutes="5"
+            app:timer_unify_single_text="Berakhir dalam:"
+            app:timer_unify_single_textWidth="wrap"
+            app:timer_unify_single_type="hour"
+            app:timer_unify_single_variant="main"
+            />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
