@@ -257,7 +257,6 @@ object CartListPresenterUpdateCartTest : Spek({
                     shopGroupAvailableData = ShopGroupAvailableData().apply {
                         cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
                             add(CartItemHolderData(
-                                    cartItemData = null,
                                     isSelected = false
                             ))
                         }
@@ -329,11 +328,9 @@ object CartListPresenterUpdateCartTest : Spek({
                     shopGroupAvailableData = ShopGroupAvailableData().apply {
                         cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
                             add(CartItemHolderData(
-                                    cartItemData = null,
                                     isSelected = true
                             ))
                             add(CartItemHolderData(
-                                    cartItemData = null,
                                     isSelected = false
                             ))
                         }
@@ -344,7 +341,6 @@ object CartListPresenterUpdateCartTest : Spek({
                     shopGroupAvailableData = ShopGroupAvailableData().apply {
                         cartItemHolderDataList = mutableListOf<CartItemHolderData>().apply {
                             add(CartItemHolderData(
-                                    cartItemData = null,
                                     isSelected = false
                             ))
                         }
