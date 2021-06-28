@@ -491,7 +491,13 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
         qtyEditorCart.minValue = data.cartItemData?.originData?.minOrder ?: 0
         qtyEditorCart.maxValue = data.cartItemData?.originData?.maxOrder ?: 0
         // reset listener
+        qtyEditorCart.setValueChangedListener { _, _, _ -> /* no-op */ }
         qtyEditorCart.setValue(data.cartItemData?.updatedData?.quantity ?: 0)
+        qtyEditorCart.setValueChangedListener { newValue, _, _ ->
+            cartItemHolderData?.cartItemData?.updatedData?.quantity = newValue
+            actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(cartItemHolderData?.cartItemData?.originData?.isTokoNow)
+            cartItemHolderData?.let { handleRefreshType(it, viewHolderListener, parentPosition) }
+        }
         qtyEditorCart.setSubstractListener {
             if (data.cartItemData?.isError == false && adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
                 actionListener?.onCartItemQuantityMinusButtonClicked()
@@ -569,24 +575,14 @@ class CartItemViewHolder constructor(private val binding: HolderItemCartNewBindi
 
     private fun itemQuantityTextWatcherAction(quantity: QuantityWrapper) {
         if (adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
-            var qty = quantity.editable.toString().replace(QUANTITY_REGEX.toRegex(), "").toIntOrZero()
-            val minOrder = cartItemHolderData?.cartItemData?.originData?.minOrder ?: 0
-            val maxOrder = cartItemHolderData?.cartItemData?.originData?.maxOrder ?: 0
-            if (qty <= 0) {
-                actionListener?.onCartItemQuantityReseted(adapterPosition, parentPosition)
-            }
-            if (qty > maxOrder) {
-                qty = maxOrder
-            } else if (qty < minOrder) {
-                qty = minOrder
-            }
+            val qty = quantity.editable.toString().replace(QUANTITY_REGEX.toRegex(), "").toIntOrZero()
             val needToUpdateView = cartItemHolderData?.cartItemData?.updatedData?.quantity != qty
             if (needToUpdateView) {
+                if (qty <= 0) {
+                    actionListener?.onCartItemQuantityReseted(adapterPosition, parentPosition)
+                }
                 binding.qtyEditorCart.setValue(qty)
             }
-            cartItemHolderData?.cartItemData?.updatedData?.quantity = qty
-            actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse(cartItemHolderData?.cartItemData?.originData?.isTokoNow)
-            cartItemHolderData?.let { handleRefreshType(it, viewHolderListener, parentPosition) }
         }
     }
 
