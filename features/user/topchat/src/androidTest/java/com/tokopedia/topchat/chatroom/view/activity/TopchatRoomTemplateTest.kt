@@ -20,11 +20,10 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         val templateChats = listOf(
                 "Hi barang ini ready gk?", "Lorem Ipsum"
         )
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         getTemplateChatRoomUseCase.response = generateTemplateResponse(templates = templateChats)
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // When
         clickTemplateChatAt(0)
@@ -37,11 +36,10 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
     @Test
     fun template_chat_hidden_if_disabled() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         getTemplateChatRoomUseCase.response = generateTemplateResponse(enable = false)
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // Then
 
@@ -54,11 +52,10 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         val templateChats = listOf(
                 "Hi barang ini ready gk?", "Lorem Ipsum"
         )
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         getTemplateChatRoomUseCase.response = generateTemplateResponse(templates = templateChats)
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // When
         clickTemplateChatAt(0)
@@ -74,11 +71,10 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         val templateChats = listOf(
                 "Test"
         )
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         getTemplateChatRoomUseCase.response = generateTemplateResponse(templates = templateChats)
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // When
         val count = activityTestRule.activity
