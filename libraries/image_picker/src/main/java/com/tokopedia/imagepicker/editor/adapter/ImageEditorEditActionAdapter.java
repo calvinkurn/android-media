@@ -12,12 +12,14 @@ import com.tokopedia.imagepicker.common.ImageEditActionType;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.unifycomponents.Label;
 
+import java.util.ArrayList;
+
 /**
  * Created by hendry on 19/04/18.
  */
 
 public class ImageEditorEditActionAdapter implements View.OnClickListener {
-    private ImageEditActionType[] tabTypeDef;
+    private ArrayList<ImageEditActionType> tabTypeDef;
     private Context context;
     private ViewGroup viewGroup;
 
@@ -37,7 +39,7 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
     public ImageEditorEditActionAdapter(
             ViewGroup viewGroup,
             Context context,
-            ImageEditActionType[] tabTypeDef,
+            ArrayList<ImageEditActionType> tabTypeDef,
             OnImageEditorEditActionAdapterListener listener) {
         this.viewGroup = viewGroup;
         this.tabTypeDef = tabTypeDef;

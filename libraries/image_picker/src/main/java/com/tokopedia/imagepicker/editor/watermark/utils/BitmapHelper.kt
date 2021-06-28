@@ -211,6 +211,28 @@ object BitmapHelper {
         return bitmap
     }
 
+    private fun downscaleToMaxAllowedDimension(bitmap: Bitmap): Bitmap? {
+        val ratioThreshold: Int
+        val outWidth: Int
+        val outHeight: Int
+
+        val inWidth = bitmap.width
+        val inHeight = bitmap.height
+
+        if (inWidth > inHeight) {
+            ratioThreshold = inWidth / 2
+
+            outWidth = ratioThreshold
+            outHeight = inHeight * ratioThreshold / inWidth
+        } else {
+            ratioThreshold = inHeight / 2
+
+            outHeight = ratioThreshold
+            outWidth = inWidth * ratioThreshold / inHeight
+        }
+
+        return Bitmap.createScaledBitmap(bitmap, outWidth, outHeight, false)
+    }
 
     /**
      * This is the temporary solution for watermark feature
@@ -224,12 +246,7 @@ object BitmapHelper {
         val heightMainBitmap = mainBitmap.height
 
         // scaled resize the watermark container
-        val scaledWatermarkBitmap = Bitmap.createScaledBitmap(
-            watermarkBitmap!!,
-            widthMainBitmap,
-            widthMainBitmap,
-            true
-        )
+        val scaledWatermarkBitmap = downscaleToMaxAllowedDimension(watermarkBitmap!!)
 
         // merge the main bitmap with scaled watermark bitmap
         val resultBitmap = Bitmap.createBitmap(
@@ -244,7 +261,7 @@ object BitmapHelper {
         val paint = Paint()
 
         paint.shader = BitmapShader(
-            scaledWatermarkBitmap,
+            scaledWatermarkBitmap!!,
             Shader.TileMode.REPEAT,
             Shader.TileMode.REPEAT
         )

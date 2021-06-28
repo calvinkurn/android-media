@@ -31,6 +31,8 @@ import com.tokopedia.imagepicker.editor.widget.ItemSelection;
 import com.tokopedia.imagepicker.editor.widget.ItemSelectionWidget;
 import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.file.FileUtil;
@@ -71,12 +73,14 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     public static final String SAVED_EDIT_TYPE = "SAVED_EDIT_TYPE";
     public static final String SAVED_RATIO = "RATIO";
 
-    public static final int MAX_HISTORY_PER_IMAGE = 5;
+    private static final String WATERMARK_REMOTE_CONFIG = "media_watermark_editor_tool";
     private static final int REQUEST_STORAGE_PERMISSIONS = 5109;
+
+    public static final int MAX_HISTORY_PER_IMAGE = 5;
 
     protected ArrayList<String> extraImageUrls;
     private int minResolution;
-    private ImageEditActionType[] imageEditActionType;
+    private ArrayList<ImageEditActionType> imageEditActionType;
     private String belowMinResolutionErrorMessage = "";
     private String imageTooLargeErrorMessage = "";
     private boolean recheckSizeAfterResize;
@@ -131,6 +135,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     private ImageEditCropListWidget imageEditCropListWidget;
 
     private UserSessionInterface userSession;
+    private RemoteConfig remoteConfig;
 
     public static Intent getIntent(Context context, ImageEditorBuilder imageEditorBuilder) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
@@ -216,6 +221,9 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         super.onCreate(savedInstanceState);
 
         userSession = new UserSession(getApplicationContext());
+        remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
+
+        remoteConfigEditor();
 
         vgDownloadProgressBar = findViewById(R.id.vg_download_progress_bar);
         vgContentContainer = findViewById(R.id.vg_content_container);
@@ -275,6 +283,12 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
             }
         });
         trackOpen();
+    }
+
+    private void remoteConfigEditor() {
+        if (remoteConfig.getBoolean(WATERMARK_REMOTE_CONFIG)) {
+            imageEditActionType.remove(ImageEditActionType.ACTION_WATERMARK);
+        }
     }
 
     private void onCancelEditClicked() {
