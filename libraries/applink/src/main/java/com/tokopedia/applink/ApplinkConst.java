@@ -195,7 +195,9 @@ public interface ApplinkConst {
     String HOTEL_ORDER = "tokopedia://hotel/order";
     String HOTEL_HOST = "hotel";
     String HOTEL = "tokopedia://hotel";
+    String HOTEL_DASHBOARD = "tokopedia://hotel/dashboard";
     String HOTEL_SRP = "tokopedia://hotel/result";
+    String HOTEL_DETAIL = "tokopedia://hotel/detail";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
     String TRAVEL_SUBHOMEPAGE_HOME = "tokopedia://travelentertainment/home";
 
