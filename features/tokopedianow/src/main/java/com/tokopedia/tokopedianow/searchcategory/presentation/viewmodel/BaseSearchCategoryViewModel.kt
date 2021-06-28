@@ -138,7 +138,7 @@ abstract class BaseSearchCategoryViewModel(
     protected val errorATCMessageMutableLiveData = SingleLiveEvent<String>()
     val errorATCMessageLiveData: LiveData<String> = errorATCMessageMutableLiveData
 
-    protected val isHeaderBackgroundVisibleMutableLiveData = MutableLiveData(false)
+    protected val isHeaderBackgroundVisibleMutableLiveData = MutableLiveData(true)
     val isHeaderBackgroundVisibleLiveData: LiveData<Boolean> = isHeaderBackgroundVisibleMutableLiveData
 
     protected val isContentLoadingMutableLiveData = MutableLiveData(true)

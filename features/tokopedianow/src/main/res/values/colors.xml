@@ -5,4 +5,5 @@
     <color name="tokopedianow_toolbar_dms_shadow_color_3">#15CCCCCC</color>
     <color name="tokopedianow_toolbar_dms_shadow_color_4">#20CCCCCC</color>
     <color name="tokopedianow_toolbar_dms_shadow_color_5">#25CCCCCC</color>
+    <color name="tokopedianow_dms_transparent">#00000000</color>
 </resources>
