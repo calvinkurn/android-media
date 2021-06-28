@@ -2099,12 +2099,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ArrayList<Product> products = new ArrayList<>();
         if (shipmentCartItemModel != null && shipmentCartItemModel.getCartItemModels() != null) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                Product product = new Product();
-                product.setProductId(cartItemModel.getProductId());
-                product.setFreeShipping(cartItemModel.isFreeShipping());
-                product.setFreeShippingTc(cartItemModel.isFreeShippingExtra());
+                if (!cartItemModel.isError()) {
+                    Product product = new Product();
+                    product.setProductId(cartItemModel.getProductId());
+                    product.setFreeShipping(cartItemModel.isFreeShipping());
+                    product.setFreeShippingTc(cartItemModel.isFreeShippingExtra());
 
-                products.add(product);
+                    products.add(product);
+                }
             }
         }
 
