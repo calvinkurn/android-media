@@ -1,6 +1,7 @@
 package com.tokopedia.seller.menu.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
@@ -31,6 +32,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
+import org.mockito.Mockito.mock
 
 @ExperimentalCoroutinesApi
 open class SellerMenuViewModelTestFixture {

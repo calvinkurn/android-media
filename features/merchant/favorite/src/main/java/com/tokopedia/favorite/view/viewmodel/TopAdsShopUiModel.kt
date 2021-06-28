@@ -6,7 +6,7 @@ import com.tokopedia.favorite.view.adapter.FavoriteTypeFactory
 /**
  * @author kulomady on 1/24/17.
  */
-class TopAdsShopViewModel : Visitable<FavoriteTypeFactory> {
+class TopAdsShopUiModel : Visitable<FavoriteTypeFactory> {
 
     var adsShopItems: List<TopAdsShopItem>? = null
         get() = if (field == null) {
