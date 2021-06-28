@@ -133,6 +133,7 @@ ext {
             kyc                             : ":features:kyc",
             ovop2p                          : ":features:ovop2p",
             productAddEdit                  : ":features:merchant:product_add_edit",
+            productBundle                   : ":features:merchant:product_bundle",
             productManageCommon             : ":features:merchant:product_manage_common",
             productManageList               : ":features:merchant:product_manage_list",
             productShare                    : ":features:merchant:product_share",
