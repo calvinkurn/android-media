@@ -50,6 +50,7 @@
     <string name="setting_menu_share_app">Bagikan Aplikasi</string>
     <string name="setting_menu_review_app">Review Aplikasi</string>
     <string name="setting_menu_developer_options">Developer Options</string>
+    <string name="setting_header_error_message">Error when get %s in other setting</string>
     <string name="setting_topads_next">Atur</string>
     <string name="setting_topads_status">Tambah Kredit Otomatis kamu %1$s aktif</string>
     <string name="setting_topads_status_active">sedang</string>

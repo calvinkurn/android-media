@@ -28,6 +28,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.active.common.service.UpdateShopActiveService
@@ -78,9 +79,13 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         private const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
-        private const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
-        private const val ERROR_GET_SHOP_OPERATIONAL_HOUR = "Error when get operational hour in other setting."
-        // TODO: Add more custom error message
+        private const val SHOP_BADGE = "shop badge"
+        private const val SHOP_FOLLOWERS = "shop followers"
+        private const val SHOP_INFO = "shop info"
+        private const val OPERATIONAL_HOUR = "operational hour"
+        private const val SALDO_BALANCE = "saldo balance"
+        private const val TOPADS_BALANCE = "topads balance"
+        private const val TOPADS_AUTO_TOPUP = "topads auto topup"
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
@@ -138,7 +143,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun onResume() {
         super.onResume()
-        getAllShopInfoData()
+        otherMenuViewModel.getAllShopInfoData()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -206,7 +211,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onRefreshShopInfo() {
-        otherMenuViewModel.getAllSettingShopInfo()
+        otherMenuViewModel.getAllShopInfoData()
         otherMenuViewModel.getShopPeriodType()
     }
 
@@ -263,6 +268,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
+    override fun onRefreshData() {
+        otherMenuViewModel.checkDelayErrorResponseTrigger()
+    }
+
     override fun onShopBadgeRefresh() {
         otherMenuViewModel.getShopBadge()
     }
@@ -316,23 +325,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun observeLiveData() {
-//        with(otherMenuViewModel) {
-//            settingShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
-//                when(result) {
-//                    is Success -> {
-//                        showSettingShopInfoState(result.data)
-//                        otherMenuViewModel.getFreeShippingStatus()
-//                    }
-//                    is Fail -> {
-//                        SellerHomeErrorHandler.logException(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
-//                        showSettingShopInfoState(SettingResponseState.SettingError(result.throwable))
-//                    }
-//                }
-//            })
-//            isToasterAlreadyShown.observe(viewLifecycleOwner, Observer { isToasterAlreadyShown ->
-//                canShowErrorToaster = !isToasterAlreadyShown
-//            })
-//        }
         observeIsAllError()
         observeMultipleErrorToaster()
         observeShopBadge()
@@ -345,6 +337,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         observeKreditTopAds()
         observeFreeShippingStatus()
         observeIsTopAdsAutoTopup()
+        observeToasterAlreadyShown()
     }
 
     private fun observeFreeShippingStatus() {
@@ -415,10 +408,13 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     otherMenuViewHolder?.setShopBadgeLoading()
                 }
                 is SettingResponseState.SettingError -> {
+                    showErrorToaster(it.throwable) {
+                        onShopBadgeRefresh()
+                    }
                     otherMenuViewHolder?.setShopBadgeError()
                     SellerHomeErrorHandler.logException(
                             it.throwable,
-                            ""
+                            context?.getString(R.string.setting_header_error_message, SHOP_BADGE).orEmpty()
                     )
                 }
             }
@@ -435,10 +431,13 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     otherMenuViewHolder?.setShopTotalFollowersLoading()
                 }
                 is SettingResponseState.SettingError -> {
+                    showErrorToaster(it.throwable) {
+                        onShopTotalFollowersRefresh()
+                    }
                     otherMenuViewHolder?.setShopTotalFollowersError()
                     SellerHomeErrorHandler.logException(
                             it.throwable,
-                            ""
+                            context?.getString(R.string.setting_header_error_message, SHOP_FOLLOWERS).orEmpty()
                     )
                 }
             }
@@ -455,10 +454,13 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     otherMenuViewHolder?.setShopStatusLoading()
                 }
                 is SettingResponseState.SettingError -> {
+                    showErrorToaster(it.throwable) {
+                        onRefreshShopInfo()
+                    }
                     otherMenuViewHolder?.setShopStatusError()
                     SellerHomeErrorHandler.logException(
                             it.throwable,
-                            ""
+                            context?.getString(R.string.setting_header_error_message, SHOP_INFO).orEmpty()
                     )
                 }
             }
@@ -475,10 +477,13 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     otherMenuViewHolder?.showOperationalHourLayoutLoading()
                 }
                 is SettingResponseState.SettingError -> {
+                    showErrorToaster(it.throwable) {
+                        onOperationalHourRefresh()
+                    }
                     otherMenuViewHolder?.showOperationalHourLayoutError()
                     SellerHomeErrorHandler.logException(
                             it.throwable,
-                            ERROR_GET_SHOP_OPERATIONAL_HOUR
+                            context?.getString(R.string.setting_header_error_message, OPERATIONAL_HOUR).orEmpty()
                     )
                 }
             }
@@ -495,10 +500,13 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     otherMenuViewHolder?.setSaldoBalanceLoading()
                 }
                 is SettingResponseState.SettingError -> {
+                    showErrorToaster(it.throwable) {
+                        onSaldoBalanceRefresh()
+                    }
                     otherMenuViewHolder?.setSaldoBalanceError()
                     SellerHomeErrorHandler.logException(
                             it.throwable,
-                            ""
+                            context?.getString(R.string.setting_header_error_message, SALDO_BALANCE).orEmpty()
                     )
                 }
             }
@@ -515,10 +523,13 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     otherMenuViewHolder?.setKreditTopadsBalanceLoading()
                 }
                 is SettingResponseState.SettingError -> {
+                    showErrorToaster(it.throwable) {
+                        onKreditTopAdsRefresh()
+                    }
                     otherMenuViewHolder?.setKreditTopadsBalanceError()
                     SellerHomeErrorHandler.logException(
                             it.throwable,
-                            ""
+                            context?.getString(R.string.setting_header_error_message, TOPADS_BALANCE).orEmpty()
                     )
                 }
             }
@@ -532,10 +543,20 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     otherMenuViewHolder?.setupKreditTopadsBalanceTooltip(result.data)
                 }
                 is Fail -> {
+                    showErrorToaster(result.throwable)
                     otherMenuViewHolder?.setupKreditTopadsBalanceTooltip(null)
-                    SellerHomeErrorHandler.logException(result.throwable, "")
+                    SellerHomeErrorHandler.logException(
+                            result.throwable,
+                            context?.getString(R.string.setting_header_error_message, TOPADS_AUTO_TOPUP).orEmpty()
+                    )
                 }
             }
+        }
+    }
+
+    private fun observeToasterAlreadyShown() {
+        otherMenuViewModel.isToasterAlreadyShown.observe(viewLifecycleOwner) { isToasterAlreadyShown ->
+            canShowErrorToaster = !isToasterAlreadyShown
         }
     }
 
@@ -621,29 +642,24 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         renderList(settingList)
     }
 
-    private fun getAllShopInfoData() {
-        otherMenuViewModel.getAllSettingShopInfo()
-    }
-
-    private fun retryFetchAfterError() {
-        otherMenuViewModel.getAllSettingShopInfo(isToasterRetry = true)
-    }
-
-    private fun showErrorToaster() {
+    private fun showErrorToaster(throwable: Throwable, onRetryAction: () -> Unit = {}) {
         val canShowToaster = currentFragmentType == FragmentType.OTHER && canShowErrorToaster
         if (canShowToaster) {
-            view?.showToasterError(resources.getString(R.string.setting_toaster_error_message))
+            val errorMessage = context?.let {
+                ErrorHandler.getErrorMessage(it, throwable)
+            } ?: resources.getString(R.string.setting_toaster_error_message)
+            view?.showToasterError(errorMessage, onRetryAction)
         }
     }
 
-    private fun View.showToasterError(errorMessage: String) {
+    private fun View.showToasterError(errorMessage: String, onRetryAction: () -> Unit) {
         Toaster.build(this,
                 errorMessage,
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
                 resources.getString(R.string.setting_toaster_error_retry)
         ) {
-            retryFetchAfterError()
+            onRetryAction()
         }.show()
     }
 

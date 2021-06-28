@@ -166,6 +166,7 @@ class OtherMenuViewHolder(private val itemView: View,
         shopBadgeFollowersError?.run {
             showWithCondition(isError)
             setOnClickListener {
+                listener.onRefreshData()
                 listener.onShopBadgeFollowersRefresh()
             }
         }
@@ -200,6 +201,7 @@ class OtherMenuViewHolder(private val itemView: View,
         shopBadgeErrorLayout?.run {
             show()
             setOnClickListener {
+                listener.onRefreshData()
                 listener.onShopBadgeRefresh()
             }
         }
@@ -236,6 +238,7 @@ class OtherMenuViewHolder(private val itemView: View,
         shopFollowersErrorLayout?.run {
             show()
             setOnClickListener {
+                listener.onRefreshData()
                 listener.onShopTotalFollowersRefresh()
             }
         }
@@ -330,6 +333,7 @@ class OtherMenuViewHolder(private val itemView: View,
         operationalErrorLayout?.run {
             show()
             setOnClickListener {
+                listener.onRefreshData()
                 listener.onOperationalHourRefresh()
             }
         }
@@ -399,6 +403,7 @@ class OtherMenuViewHolder(private val itemView: View,
         saldoErrorLayout?.run {
             show()
             setOnClickListener {
+                listener.onRefreshData()
                 listener.onSaldoBalanceRefresh()
             }
         }
@@ -454,6 +459,7 @@ class OtherMenuViewHolder(private val itemView: View,
         topAdsErrorLayout?.run {
             show()
             setOnClickListener {
+                listener.onRefreshData()
                 listener.onKreditTopAdsRefresh()
             }
         }
@@ -465,6 +471,7 @@ class OtherMenuViewHolder(private val itemView: View,
         shopStatusContainer?.run {
             val shopStatusLayout = LayoutInflater.from(context).inflate(R.layout.view_sah_shop_status_error, this, false)?.apply {
                 setOnClickListener {
+                    listener.onRefreshData()
                     listener.onUserInfoRefresh()
                 }
             }
@@ -733,6 +740,7 @@ class OtherMenuViewHolder(private val itemView: View,
         fun onStatusBarNeedDarkColor(isDefaultDark: Boolean)
         fun onTopAdsTooltipClicked(isTopAdsActive: Boolean)
         fun onFreeShippingClicked()
+        fun onRefreshData()
         fun onShopBadgeRefresh()
         fun onShopTotalFollowersRefresh()
         fun onShopBadgeFollowersRefresh()

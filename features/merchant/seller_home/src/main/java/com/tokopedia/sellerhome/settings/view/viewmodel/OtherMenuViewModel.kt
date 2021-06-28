@@ -172,13 +172,16 @@ class OtherMenuViewModel @Inject constructor(
     val isFreeShippingActive: LiveData<Boolean>
         get() = _isFreeShippingActive
 
-    fun getAllSettingShopInfo(isToasterRetry: Boolean = false) {
-        if (isToasterRetry) {
-            launch(coroutineContext) {
-                checkDelayErrorResponseTrigger()
+    fun checkDelayErrorResponseTrigger() {
+        launch(coroutineContext) {
+            _isToasterAlreadyShown.value.let { isToasterAlreadyShown ->
+                if (!isToasterAlreadyShown){
+                    _isToasterAlreadyShown.value = true
+                    delay(DELAY_TIME)
+                    _isToasterAlreadyShown.value = false
+                }
             }
         }
-        getAllShopInfoData()
     }
 
     fun setIsStatusBarInitialState(isInitialState: Boolean) {
@@ -342,7 +345,7 @@ class OtherMenuViewModel @Inject constructor(
         )
     }
 
-    private fun getAllShopInfoData() {
+    fun getAllShopInfoData() {
         getShopBadge()
         getShopTotalFollowers()
         getUserShopInfo()
@@ -351,16 +354,6 @@ class OtherMenuViewModel @Inject constructor(
         getBalanceInfo()
         getKreditTopAds()
         getIsTopAdsAutoTopup()
-    }
-
-    private suspend fun checkDelayErrorResponseTrigger() {
-        _isToasterAlreadyShown.value.let { isToasterAlreadyShown ->
-            if (!isToasterAlreadyShown){
-                _isToasterAlreadyShown.value = true
-                delay(DELAY_TIME)
-                _isToasterAlreadyShown.value = false
-            }
-        }
     }
 
     private fun SettingResponseState<*>.isError(): Boolean =
