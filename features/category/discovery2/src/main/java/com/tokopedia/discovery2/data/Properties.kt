@@ -53,9 +53,9 @@ data class Properties(
         val categoryDetail: Boolean = false,
 
         @SerializedName("filter")
-        val filter:Boolean = false,
+        val filter:Boolean = true,
 
         @SerializedName("sort")
-        val sort:Boolean = false,
+        val sort:Boolean = true,
 
 )
