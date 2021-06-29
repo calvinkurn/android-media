@@ -495,9 +495,12 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 }
             }
         }
-        adapter.items.removeAt(position)
-        isnewlyAddded.removeAt(position)
-        initialBudget.removeAt(position)
+        if (position < adapter.itemCount)
+            adapter.items.removeAt(position)
+        if (position < isnewlyAddded.size)
+            isnewlyAddded.removeAt(position)
+        if (position < initialBudget.size)
+            initialBudget.removeAt(position)
         if (adapter.items.isEmpty()) {
             setEmptyView()
         }

@@ -203,6 +203,10 @@
 
     <string name="label_image_preview">Gambar Bukti</string>
 
+    <string name="title_pinpoint_new">Tentukan Pinpoint Lokasi</string>
+
+    <string name="title_address_form">Detail Alamat</string>
+
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
 
