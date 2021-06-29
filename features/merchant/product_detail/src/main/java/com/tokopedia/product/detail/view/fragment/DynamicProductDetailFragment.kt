@@ -1280,7 +1280,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun observeUpdateCart() {
         viewModel.updateCartLiveData.observe(viewLifecycleOwner) {
             it.doSuccessOrFail({ success ->
-                view?.showToasterSuccess(success.data)
+                view?.showToasterSuccess(success.data, ctaText = getString(R.string.label_oke_pdp))
             }) { throwable ->
                 view?.showToasterError(
                         throwable.message ?: "",
