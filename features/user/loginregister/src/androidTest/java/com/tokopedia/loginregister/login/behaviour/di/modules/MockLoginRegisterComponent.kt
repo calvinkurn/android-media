@@ -11,8 +11,4 @@ import dagger.Component
 @LoginRegisterScope
 @SessionCommonScope
 @Component(modules = [LoginRegisterModule::class, SessionModule::class], dependencies = [BaseAppComponentStub::class])
-interface MockLoginRegisterComponent: LoginRegisterComponent {
-//    fun inject(registerInitialbase: RegisterInitialBase)
-//    fun inject(activity: LoginBase)
-//    fun inject(fragment: LoginEmailPhoneFragmentStub)
-}
+interface MockLoginRegisterComponent: LoginRegisterComponent {}

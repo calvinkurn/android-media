@@ -27,10 +27,6 @@ class RegisterInitialActivityStub: RegisterInitialActivity() {
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
-//        bundle.putAll(getBundleFromData())
-//        intent?.extras?.let {
-//            bundle.putAll(it)
-//        }
         return RegisterInitialFragmentStub.createInstance(bundle)
     }
 

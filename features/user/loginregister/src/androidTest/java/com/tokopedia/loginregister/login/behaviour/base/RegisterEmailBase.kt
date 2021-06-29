@@ -21,15 +21,10 @@ import com.tokopedia.loginregister.login.behaviour.di.RegisterInitialComponentSt
 import com.tokopedia.loginregister.login.behaviour.di.modules.AppModuleStub
 import com.tokopedia.loginregister.login.behaviour.di.modules.DaggerMockLoginRegisterComponent
 import com.tokopedia.loginregister.login.idling.FragmentTransactionIdle
-import com.tokopedia.loginregister.login.stub.RegisterInitialRouterHelperStub
 import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.setMain
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
 import org.junit.Before
@@ -66,13 +61,8 @@ open class RegisterEmailBase: LoginRegisterBase() {
     @Inject
     lateinit var discoverUseCaseStub: DiscoverUseCaseStub
 
-    @Inject
-    lateinit var routerHelperStub: RegisterInitialRouterHelperStub
-
-    @ExperimentalCoroutinesApi
     @Before
     open fun before() {
-        Dispatchers.setMain(TestCoroutineDispatcher())
         val baseAppComponent = DaggerBaseAppComponentStub.builder()
             .appModuleStub(AppModuleStub(applicationContext))
             .build()
@@ -118,9 +108,6 @@ open class RegisterEmailBase: LoginRegisterBase() {
 
     protected fun launchDefaultFragment() {
         setupActivity {
-//            it.putExtras(Bundle().apply {
-//            })
-//            it.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@tokopedia.com")
             it.putExtras(Intent(context, RegisterEmailActivityStub::class.java))
         }
         inflateTestFragment()

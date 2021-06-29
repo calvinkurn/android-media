@@ -140,13 +140,6 @@ class LoginNormalCase : LoginBase() {
     }
 
     private fun mockChooseAccountSuccess() {
-//        val mockVerificationResult = Intent().apply {
-//            putExtras(Bundle().apply {
-//                putString(ApplinkConstInternalGlobal.PARAM_UUID, "abc1234")
-//                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, "abv1234")
-//                putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "yoris.prayogo@gmail.com")
-//            })
-//        }
         intending(hasComponent(ChooseAccountActivityStub::class.java.name)).respondWith(Instrumentation.ActivityResult(
             Activity.RESULT_OK,
             null
@@ -237,14 +230,12 @@ class LoginNormalCase : LoginBase() {
         }
     }
 
-
     @Test
     fun checkEmailExtensionShownAfterAddAt() {
         runTest {
             inputEmailOrPhone("yoris.prayogo@")
             isEmailExtensionDisplayed()
         }
-
     }
 
     @Test
@@ -257,7 +248,6 @@ class LoginNormalCase : LoginBase() {
         inputEmailOrPhone("@")
         isEmailExtensionDisplayed()
     }
-
 
     @Test
     fun checkEmailExtensionAdded() {

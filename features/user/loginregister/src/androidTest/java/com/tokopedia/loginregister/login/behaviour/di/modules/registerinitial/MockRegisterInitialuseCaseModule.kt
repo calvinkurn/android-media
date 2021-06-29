@@ -95,11 +95,4 @@ class MockRegisterInitialuseCaseModule {
     fun provideMockRegisterCheckUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCaseStub<RegisterCheckPojo> {
         return GraphqlUseCaseStub(graphqlRepository)
     }
-
-//    @Provides
-//    fun provideGeneratePublicUseCaseStub(graphqlRepository: GraphqlRepository): GeneratePublicKeyUseCaseStub {
-//        val useCase = GraphqlUseCaseStub<GenerateKeyPojo>(graphqlRepository)
-//        return GeneratePublicKeyUseCaseStub(useCase)
-//    }
-
 }

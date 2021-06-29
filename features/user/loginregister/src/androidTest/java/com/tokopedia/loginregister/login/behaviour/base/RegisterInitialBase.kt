@@ -135,7 +135,6 @@ open class RegisterInitialBase: LoginRegisterBase() {
     }
 
     fun runTest(test: () -> Unit) {
-//        setRegisterCheckDefaultResponse()
         if(isDefaultDiscover) {
             setDefaultDiscover()
         }
@@ -146,5 +145,4 @@ open class RegisterInitialBase: LoginRegisterBase() {
         clearEmailInput()
         test.invoke()
     }
-
 }
