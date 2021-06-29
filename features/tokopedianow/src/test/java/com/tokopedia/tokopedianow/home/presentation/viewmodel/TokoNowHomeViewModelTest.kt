@@ -255,4 +255,41 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         verifyGetCategoryListUseCaseCalled()
         verifyGetHomeLayoutUseCaseCalled()
     }
+
+    @Test
+    fun `when getting moreLayoutData should run and give the success result`() {
+        //set mock data
+        onGetTicker_thenReturn(createTicker())
+        onGetHomeLayout_thenReturn(createHomeLayoutList())
+        onGetCategoryList_thenReturn(createCategoryGridListFirstFetch())
+
+        //fetch homeLayout
+        viewModelTokoNow.getHomeLayout(true)
+
+        //fetch widget one by one
+        viewModelTokoNow.getInitialLayoutData(0, "1", true)
+
+        viewModelTokoNow.getMoreLayoutData("1", 2, 2)
+
+        //prepare model for expectedResult
+        val expectedResponse = HomeLayoutItemUiModel(
+                HomeCategoryGridUiModel(
+                        id="11111",
+                        title="Category Tokonow",
+                        categoryList = listOf(HomeCategoryItemUiModel(
+                                id="3",
+                                title="Category 3",
+                                imageUrl="tokopedia://",
+                                appLink="tokoepdia://"
+                        )),
+                        state=HomeLayoutState.SHOW
+                ),
+                HomeLayoutItemState.LOADED
+        )
+
+        // verify use case called and response
+        verifyGetCategoryListResponseSuccess(expectedResponse)
+        verifyGetCategoryListUseCaseCalled()
+        verifyGetHomeLayoutUseCaseCalled()
+    }
 }

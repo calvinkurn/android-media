@@ -112,6 +112,12 @@ object HomeLayoutMapper {
         }
     }
 
+    fun HomeLayoutItemUiModel.shouldLoadLayout(): Boolean {
+        return this.state != HomeLayoutItemState.LOADING &&
+                this.state != HomeLayoutItemState.LOADED &&
+                this.layout.isNotStaticLayout()
+    }
+
     fun Visitable<*>.isNotStaticLayout(): Boolean {
         return this.getVisitableId() !in STATIC_LAYOUT_ID
     }
