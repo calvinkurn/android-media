@@ -1,21 +1,13 @@
 package com.tokopedia.hotel.common.util
 
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class HotelUtils {
 
     companion object {
-        val ONE_DAY: Long = TimeUnit.DAYS.toMillis(1)
-
-        fun countCurrentDayDifference(date: String): Long =
-                ((DateUtil.stringToDate(DateUtil.YYYY_MM_DD, date).time -
-                        DateUtil.getCurrentCalendar().timeInMillis) / ONE_DAY) + 1
-
-        fun countDayDifference(date1: String, date2: String): Long =
-                (DateUtil.stringToDate(DateUtil.YYYY_MM_DD, date2).time -
-                        DateUtil.stringToDate(DateUtil.YYYY_MM_DD, date1).time) / ONE_DAY
 
         fun validateCheckInAndCheckOutDate(checkInDate: String, checkOutDate: String): Pair<String, String> {
             val todayWithoutTime = DateUtil.removeTime(DateUtil.getCurrentCalendar().time)
@@ -27,32 +19,32 @@ class HotelUtils {
 
             //if check in and / or check out param is empty
             if (updatedCheckInDate.isBlank() && updatedCheckOutDate.isBlank()) {
-                updatedCheckInDate = DateUtil.dateToString(DateUtil.YYYY_MM_DD, tomorrow)
-                updatedCheckOutDate = DateUtil.dateToString(DateUtil.YYYY_MM_DD, dayAfterTomorrow)
+                updatedCheckInDate = tomorrow.toString(DateUtil.YYYY_MM_DD)
+                updatedCheckOutDate = dayAfterTomorrow.toString(DateUtil.YYYY_MM_DD)
             } else if (updatedCheckInDate.isBlank()) {
-                val checkout = DateUtil.stringToDate(DateUtil.YYYY_MM_DD, updatedCheckOutDate)
+                val checkout = updatedCheckOutDate.toDate(DateUtil.YYYY_MM_DD)
                 val dayBeforeCheckOut = DateUtil.addTimeToSpesificDate(checkout, Calendar.DATE, -1)
-                updatedCheckInDate = DateUtil.dateToString(DateUtil.YYYY_MM_DD, dayBeforeCheckOut)
+                updatedCheckInDate = dayBeforeCheckOut.toString(DateUtil.YYYY_MM_DD)
             } else if (updatedCheckOutDate.isBlank()) {
-                val checkin = DateUtil.stringToDate(DateUtil.YYYY_MM_DD, updatedCheckInDate)
+                val checkin = updatedCheckInDate.toDate(DateUtil.YYYY_MM_DD)
                 val dayAfterCheckIn = DateUtil.addTimeToSpesificDate(checkin, Calendar.DATE, 1)
-                updatedCheckOutDate = DateUtil.dateToString(DateUtil.YYYY_MM_DD, dayAfterCheckIn)
+                updatedCheckOutDate = dayAfterCheckIn.toString(DateUtil.YYYY_MM_DD)
             }
 
             //if check in date has passed
-            if (countCurrentDayDifference(updatedCheckInDate) < 1) {
-                updatedCheckInDate = DateUtil.dateToString(DateUtil.YYYY_MM_DD, tomorrow)
+            if (DateUtil.getDayDiffFromToday(updatedCheckInDate) < 1) {
+                updatedCheckInDate = tomorrow.toString(DateUtil.YYYY_MM_DD)
             }
             //if check out date has passed or check out date < check in date
-            if (countCurrentDayDifference(updatedCheckOutDate) < 1) {
-                val checkin = DateUtil.stringToDate(DateUtil.YYYY_MM_DD, updatedCheckInDate)
+            if (DateUtil.getDayDiffFromToday(updatedCheckOutDate) < 1) {
+                val checkin = updatedCheckInDate.toDate(DateUtil.YYYY_MM_DD)
                 val dayAfterCheckIn = DateUtil.addTimeToSpesificDate(checkin, Calendar.DATE, 1)
-                updatedCheckOutDate = DateUtil.dateToString(DateUtil.YYYY_MM_DD, dayAfterCheckIn)
+                updatedCheckOutDate = dayAfterCheckIn.toString(DateUtil.YYYY_MM_DD)
             }
 
-            if (countDayDifference(updatedCheckInDate, updatedCheckOutDate) < 1) {
-                updatedCheckInDate = DateUtil.dateToString(DateUtil.YYYY_MM_DD, tomorrow)
-                updatedCheckOutDate = DateUtil.dateToString(DateUtil.YYYY_MM_DD, dayAfterTomorrow)
+            if (DateUtil.getDayDiff(updatedCheckInDate, updatedCheckOutDate) < 1) {
+                updatedCheckInDate = tomorrow.toString(DateUtil.YYYY_MM_DD)
+                updatedCheckOutDate = dayAfterTomorrow.toString(DateUtil.YYYY_MM_DD)
             }
 
             return Pair(updatedCheckInDate, updatedCheckOutDate)

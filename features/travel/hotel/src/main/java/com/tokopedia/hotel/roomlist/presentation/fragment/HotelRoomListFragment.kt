@@ -53,6 +53,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.fragment_hotel_room_list.*
 import kotlinx.android.synthetic.main.layout_sticky_hotel_date_and_guest.*
 import kotlinx.coroutines.CoroutineScope
@@ -106,10 +108,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             hotelRoomListPageModel.adult = it.getInt(ARG_TOTAL_ADULT, 0)
             hotelRoomListPageModel.child = it.getInt(ARG_TOTAL_CHILDREN, 0)
             hotelRoomListPageModel.room = it.getInt(ARG_TOTAL_ROOM, 0)
-            hotelRoomListPageModel.checkInDateFmt = DateUtil.dateToString(DateUtil.DEFAULT_VIEW_FORMAT,
-                    DateUtil.stringToDate(DateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkIn))
-            hotelRoomListPageModel.checkOutDateFmt = DateUtil.dateToString(DateUtil.DEFAULT_VIEW_FORMAT,
-                    DateUtil.stringToDate(DateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkOut))
+            hotelRoomListPageModel.checkInDateFmt = hotelRoomListPageModel.checkIn.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
+            hotelRoomListPageModel.checkOutDateFmt = hotelRoomListPageModel.checkOut.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
             hotelRoomListPageModel.destinationName = it.getString(ARG_DESTINATION_NAME, "")
             hotelRoomListPageModel.destinationType = it.getString(ARG_DESTINATION_TYPE, "")
         }
@@ -261,26 +261,20 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     private fun onCheckInDateChanged(newCheckInDate: Date) {
-        hotelRoomListPageModel.checkIn = DateUtil.dateToString(
-                DateUtil.YYYY_MM_DD, newCheckInDate)
-        hotelRoomListPageModel.checkInDateFmt = DateUtil.dateToString(
-                DateUtil.DEFAULT_VIEW_FORMAT, newCheckInDate)
+        hotelRoomListPageModel.checkIn = newCheckInDate.toString(DateUtil.YYYY_MM_DD)
+        hotelRoomListPageModel.checkInDateFmt = newCheckInDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)
 
-        if (newCheckInDate >= DateUtil.stringToDate(DateUtil.YYYY_MM_DD, hotelRoomListPageModel.checkOut)) {
+        if (newCheckInDate >= hotelRoomListPageModel.checkOut.toDate(DateUtil.YYYY_MM_DD)) {
             val tomorrow = DateUtil.addTimeToSpesificDate(newCheckInDate,
                     Calendar.DATE, 1)
-            hotelRoomListPageModel.checkOut = DateUtil.dateToString(
-                    DateUtil.YYYY_MM_DD, tomorrow)
-            hotelRoomListPageModel.checkOutDateFmt = DateUtil.dateToString(
-                    DateUtil.DEFAULT_VIEW_FORMAT, tomorrow)
+            hotelRoomListPageModel.checkOut = tomorrow.toString(DateUtil.YYYY_MM_DD)
+            hotelRoomListPageModel.checkOutDateFmt = tomorrow.toString(DateUtil.DEFAULT_VIEW_FORMAT)
         }
     }
 
     private fun onCheckOutDateChanged(newCheckOutDate: Date) {
-        hotelRoomListPageModel.checkOut = DateUtil.dateToString(
-                DateUtil.YYYY_MM_DD, newCheckOutDate)
-        hotelRoomListPageModel.checkOutDateFmt = DateUtil.dateToString(
-                DateUtil.DEFAULT_VIEW_FORMAT, newCheckOutDate)
+        hotelRoomListPageModel.checkOut = newCheckOutDate.toString(DateUtil.YYYY_MM_DD)
+        hotelRoomListPageModel.checkOutDateFmt = newCheckOutDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)
         renderDate()
         loadInitialData()
     }

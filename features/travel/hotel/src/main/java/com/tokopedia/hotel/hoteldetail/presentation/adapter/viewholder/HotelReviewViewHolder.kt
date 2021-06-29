@@ -6,13 +6,15 @@ import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.item_hotel_review.view.*
 
 /**
  * @author by jessica on 29/04/19
  */
 
-class HotelReviewViewHolder(val view: View): AbstractViewHolder<HotelReview>(view) {
+class HotelReviewViewHolder(val view: View) : AbstractViewHolder<HotelReview>(view) {
 
     override fun bind(review: HotelReview) {
         with(itemView) {
@@ -26,9 +28,8 @@ class HotelReviewViewHolder(val view: View): AbstractViewHolder<HotelReview>(vie
             bad_review_text.text = TextHtmlUtils.getTextFromHtml(review.cons)
 
             reviewer_name.text = review.reviewerName
-            reviewer_origin_and_date.text = resources.getString(R.string.hotel_review_country_date, review.country,
-                    DateUtil.dateToString(DateUtil.DEFAULT_VIEW_FORMAT,
-                            DateUtil.stringToDate(DateUtil.YYYY_MM_DD, review.createTime)))
+            reviewer_origin_and_date.text = String.format(resources.getString(R.string.hotel_review_country_date), review.country,
+                    review.createTime.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT))
         }
     }
 

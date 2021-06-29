@@ -9,6 +9,7 @@ import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -37,7 +38,7 @@ class FlightHolidayCalendarViewModel @Inject constructor(private val useCase: Tr
     private fun mappingHolidayData(holidayData: TravelCalendarHoliday.HolidayData): ArrayList<Legend> {
         val legendList = arrayListOf<Legend>()
         for (holiday in holidayData.data) {
-            legendList.add(Legend(DateUtil.stringToDate(DateUtil.YYYY_MM_DD, holiday.attribute.date),
+            legendList.add(Legend(holiday.attribute.date.toDate(DateUtil.YYYY_MM_DD),
                     holiday.attribute.label))
         }
         return legendList

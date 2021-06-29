@@ -13,6 +13,7 @@ import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
 import javax.inject.Inject
 
 /**
@@ -81,10 +82,8 @@ class FlightCancellationPassengerViewModel @Inject constructor(
 
             // sort journey by departure date
             if (cancellationList.size > 1) {
-                val firstJourney = DateUtil.stringToDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                        cancellationList[0].flightCancellationJourney.departureTime)
-                val secondJourney = DateUtil.stringToDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                        cancellationList[1].flightCancellationJourney.departureTime)
+                val firstJourney = cancellationList[0].flightCancellationJourney.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+                val secondJourney = cancellationList[1].flightCancellationJourney.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
 
                 if (firstJourney.after(secondJourney)) {
                     val temp: FlightCancellationModel = cancellationList[0]
@@ -93,10 +92,8 @@ class FlightCancellationPassengerViewModel @Inject constructor(
                 }
             }
             if (selectedList.size > 1) {
-                val firstJourney = DateUtil.stringToDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                        selectedList[0].flightCancellationJourney.departureTime)
-                val secondJourney = DateUtil.stringToDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                        selectedList[1].flightCancellationJourney.departureTime)
+                val firstJourney = selectedList[0].flightCancellationJourney.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+                val secondJourney = selectedList[1].flightCancellationJourney.departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
 
                 if (firstJourney.after(secondJourney)) {
                     val temp: FlightCancellationModel = selectedList[0]

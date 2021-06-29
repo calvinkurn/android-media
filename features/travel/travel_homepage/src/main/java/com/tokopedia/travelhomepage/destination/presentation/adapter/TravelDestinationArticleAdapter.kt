@@ -9,6 +9,8 @@ import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.destination.listener.ActionListener
 import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.item_travel_destination_article.view.*
 
 /**
@@ -37,7 +39,7 @@ class TravelDestinationArticleAdapter(private var list: List<TravelArticleModel.
         fun bind(item: TravelArticleModel.Item, position: Int) {
             with(itemView) {
                 iv_article.loadImage(item.imageUrl)
-                tv_article_subtitle.text = DateUtil.dateToString(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.stringToDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS, item.publishedDate))
+                tv_article_subtitle.text = item.publishedDate.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS).toString(DateUtil.DEFAULT_VIEW_FORMAT)
                 tv_article_title.text = item.title
                 setOnClickListener {
                     actionListener.onTrackArticleItemClick(item, position)

@@ -16,6 +16,8 @@ import com.tokopedia.travelcalendar.dateToString
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.travelcalendar.stringToDate
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import java.util.*
 
 /**
@@ -70,8 +72,7 @@ class FlightCalendarRoundTripWidget : SelectionRangeCalendarWidget() {
 
             activity?.run {
                 fareCalendarViewModel.getFareFlightCalendar(mapFareParam, minCalendarDate, maxCalendarDate,
-                        true, DateUtil.dateToString(TRAVEL_CAL_YYYY_MM_DD, minDate
-                        ?: DateUtil.getCurrentCalendar().time))
+                        true, (minDate ?: DateUtil.getCurrentCalendar().time).toString(TRAVEL_CAL_YYYY_MM_DD))
             }
 
             fareCalendarViewModel.fareFlightCalendarData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -86,7 +87,7 @@ class FlightCalendarRoundTripWidget : SelectionRangeCalendarWidget() {
     private fun mapFareFlightToSubtitleCalendar(listFareAttribute: List<FlightFareAttributes>): ArrayList<SubTitle> {
         val subTitleList = arrayListOf<SubTitle>()
         listFareAttribute.map {
-            val dateFare = DateUtil.stringToDate(DateUtil.YYYY_MM_DD, it.dateFare)
+            val dateFare = it.dateFare.toDate(DateUtil.YYYY_MM_DD)
             minDate?.let { date ->
                 subTitleList.add(SubTitle(dateFare,
                         if (!dateFare.before(date)) it.displayedFare else " ", if (it.isLowestFare) getString(R.string.flight_dms_calendar_lowest_fare_price_color) else ""))
@@ -97,7 +98,7 @@ class FlightCalendarRoundTripWidget : SelectionRangeCalendarWidget() {
 
     override fun onDateInClicked(dateIn: Date) {
         calendar.showSubTitle(false)
-        fareCalendarViewModel.calculateRoundTripFareCalendar(DateUtil.dateToString(TRAVEL_CAL_YYYY_MM_DD, dateIn))
+        fareCalendarViewModel.calculateRoundTripFareCalendar(dateIn.toString(TRAVEL_CAL_YYYY_MM_DD))
     }
 
     companion object {

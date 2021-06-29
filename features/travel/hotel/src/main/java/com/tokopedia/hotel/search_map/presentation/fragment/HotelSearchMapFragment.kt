@@ -72,6 +72,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_hotel_search_map.*
 import javax.inject.Inject
@@ -716,8 +718,8 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     private fun setUpTitleAndSubtitle() {
         context?.let {
             val hotelSearchModel = hotelSearchMapViewModel.hotelSearchModel
-            val checkInString = DateUtil.dateToString(DateUtil.VIEW_FORMAT_WITHOUT_YEAR, DateUtil.stringToDate(DateUtil.YYYY_MM_DD, hotelSearchModel.checkIn))
-            val checkOutString = DateUtil.dateToString(DateUtil.VIEW_FORMAT_WITHOUT_YEAR, DateUtil.stringToDate(DateUtil.YYYY_MM_DD, hotelSearchModel.checkOut))
+            val checkInString = hotelSearchModel.checkIn.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.VIEW_FORMAT_WITHOUT_YEAR)
+            val checkOutString = hotelSearchModel.checkOut.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.VIEW_FORMAT_WITHOUT_YEAR)
 
             headerHotelSearchMap.title = hotelSearchModel.name
             headerHotelSearchMap.subtitle = getString(R.string.template_search_subtitle,

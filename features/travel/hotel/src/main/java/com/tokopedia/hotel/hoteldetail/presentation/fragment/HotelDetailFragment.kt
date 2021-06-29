@@ -59,6 +59,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.fragment_hotel_detail.*
 import kotlinx.android.synthetic.main.item_network_error_view.*
 import java.util.*
@@ -126,11 +127,11 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
             if (it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE)?.isNotEmpty() == true) {
                 hotelHomepageModel.checkInDate = it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE,
-                        DateUtil.dateToString(DateUtil.YYYY_MM_DD, DateUtil.addTimeToSpesificDate(
-                                DateUtil.getCurrentCalendar().time, Calendar.DATE, 1)))
+                        DateUtil.addTimeToSpesificDate(DateUtil.getCurrentCalendar().time, Calendar.DATE, 1)
+                                .toString(DateUtil.YYYY_MM_DD))
                 hotelHomepageModel.checkOutDate = it.getString(HotelDetailActivity.EXTRA_CHECK_OUT_DATE,
-                        DateUtil.dateToString(DateUtil.YYYY_MM_DD, DateUtil.addTimeToSpesificDate(
-                                DateUtil.getCurrentCalendar().time, Calendar.DATE, 2)))
+                        DateUtil.addTimeToSpesificDate(DateUtil.getCurrentCalendar().time, Calendar.DATE, 2)
+                                .toString(DateUtil.YYYY_MM_DD))
                 hotelHomepageModel.roomCount = it.getInt(HotelDetailActivity.EXTRA_ROOM_COUNT)
                 hotelHomepageModel.adultCount = it.getInt(HotelDetailActivity.EXTRA_ADULT_COUNT, 1)
                 hotelHomepageModel.locName = it.getString(HotelDetailActivity.EXTRA_DESTINATION_NAME, "")

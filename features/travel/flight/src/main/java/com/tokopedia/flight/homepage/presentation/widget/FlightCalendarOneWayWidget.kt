@@ -14,6 +14,7 @@ import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY
 import com.tokopedia.travelcalendar.dateToString
 import com.tokopedia.travelcalendar.singlecalendar.SinglePickCalendarWidget
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
 import java.util.*
 
 class FlightCalendarOneWayWidget : SinglePickCalendarWidget() {
@@ -83,7 +84,7 @@ class FlightCalendarOneWayWidget : SinglePickCalendarWidget() {
     private fun mapFareFlightToSubtitleCalendar(listFareAttribute: List<FlightFareAttributes>): ArrayList<SubTitle> {
         val subTitleList = arrayListOf<SubTitle>()
         listFareAttribute.map {
-            subTitleList.add(SubTitle(DateUtil.stringToDate(DateUtil.YYYY_MM_DD, it.dateFare),
+            subTitleList.add(SubTitle(it.dateFare.toDate(DateUtil.YYYY_MM_DD),
                     it.displayedFare, if (it.isLowestFare) getString(R.string.flight_dms_calendar_lowest_fare_price_color) else ""))
         }
         return subTitleList

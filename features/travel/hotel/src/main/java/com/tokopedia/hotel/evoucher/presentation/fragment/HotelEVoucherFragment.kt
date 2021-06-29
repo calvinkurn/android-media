@@ -35,6 +35,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
 import kotlinx.android.synthetic.main.fragment_hotel_e_voucher.*
@@ -180,7 +181,7 @@ class HotelEVoucherFragment : HotelBaseFragment(), HotelSharePdfBottomSheets.Sha
     }
 
     private fun saveImage(bitmap: Bitmap, context: Context, folderName: String, isShare: Boolean) {
-        val currentTime = DateUtil.dateToString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.getCurrentCalendar().time)
+        val currentTime = DateUtil.getCurrentCalendar().time.toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
         val filename = getString(R.string.hotel_share_file_name, currentTime)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

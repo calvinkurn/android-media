@@ -4,6 +4,7 @@ import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * @author by furqan on 24/06/2021
@@ -14,8 +15,12 @@ import java.util.*
  */
 object DateUtil {
 
+    const val LAST_HOUR_IN_A_DAY = 23
+    const val LAST_MIN_IN_AN_HOUR = 59
+    const val LAST_SEC_IN_A_MIN = 59
+
+    val DEFAULT_LOCALE = Locale("in", "ID")
     private val DEFAULT_TIMEZONE: TimeZone = TimeZone.getTimeZone("GMT+7")
-    private val DEFAULT_LOCALE = Locale("in", "ID")
 
     const val DEFAULT_VIEW_FORMAT = "dd MMM yyyy"
     const val DEFAULT_VIEW_TIME_FORMAT = "dd MMM yyyy, HH:mm"
@@ -29,34 +34,32 @@ object DateUtil {
     const val EEE_DD_MMM_YY = "EEE, dd MMM yy"
 
     /**
-     * Function to format string to date
+     * Function to get the day difference from date 2 - date 1
      *
-     * @param format string input format eg. "yyyy-MM-dd", there are some available format above
-     * @param input string that want to be formatted to date eg. "2021-10-10"
+     * @param date1 date string
+     * @param date2 date string
      *
-     * @return Date object from String input
+     * @return Long object of day difference between two dates
      */
-    fun stringToDate(format: String, input: String): Date {
-        val fromFormat: DateFormat = SimpleDateFormat(format, DEFAULT_LOCALE)
-        return try {
-            fromFormat.parse(input) ?: throw ParseException("Failed to parse", 0)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-            throw RuntimeException("Date doesn't valid ($input) with format $format")
-        }
+    fun getDayDiff(date1: String, date2: String): Long {
+        val leftDate = date2.toDate(YYYY_MM_DD_T_HH_MM_SS_Z).trimDate()
+        val rightDate = date1.toDate(YYYY_MM_DD_T_HH_MM_SS_Z).trimDate()
+        val diff = leftDate.time - rightDate.time
+        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
     }
 
     /**
-     * Function to format date to string
+     * Function to get the day difference from input date and today
      *
-     * @param format expected result string format eg. "yyyy-MM-dd", there are some available format above
-     * @param input date object that want to be formatted to string eg. Date(2021-10-10)
+     * @param inputDate date string
      *
-     * @return String object from Date input with selected format
+     * @return Long object of day difference between two dates
      */
-    fun dateToString(format: String, input: Date): String {
-        val formatDate: DateFormat = SimpleDateFormat(format, DEFAULT_LOCALE)
-        return formatDate.format(input)
+    fun getDayDiffFromToday(inputDate: String): Long {
+        val leftDate = inputDate.toDate(YYYY_MM_DD_T_HH_MM_SS_Z).trimDate()
+        val rightDate = getCurrentCalendar().time.trimDate()
+        val diff = leftDate.time - rightDate.time
+        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
     }
 
     /**
@@ -109,9 +112,16 @@ object DateUtil {
      * @return String with new format
      */
     @JvmStatic
-    fun formatDateByUsersTimezone(currentFormat: String, newFormat: String, dateString: String): String {
+    fun formatDateByUsersTimezone(currentFormat: String,
+                                  newFormat: String,
+                                  dateString: String): String {
         val timeZone = TimeZone.getDefault()
-        return formatDate(currentFormat, newFormat, dateString, DEFAULT_LOCALE, DEFAULT_TIMEZONE, timeZone)
+        return formatDate(currentFormat,
+                newFormat,
+                dateString,
+                DEFAULT_LOCALE,
+                DEFAULT_TIMEZONE,
+                timeZone)
     }
 
     /**
@@ -125,7 +135,10 @@ object DateUtil {
      * @return String with new format
      */
     @JvmOverloads
-    fun formatDate(currentFormat: String, newFormat: String, dateString: String, locale: Locale = DEFAULT_LOCALE): String {
+    fun formatDate(currentFormat: String,
+                   newFormat: String,
+                   dateString: String,
+                   locale: Locale = DEFAULT_LOCALE): String {
         return try {
             val fromFormat: DateFormat = SimpleDateFormat(currentFormat, locale)
             fromFormat.isLenient = false
@@ -158,7 +171,7 @@ object DateUtil {
     fun formatDate(currentFormat: String,
                    newFormat: String,
                    dateString: String,
-                   locale: Locale,
+                   locale: Locale = DEFAULT_LOCALE,
                    fromTimeZone: TimeZone,
                    toTimezone: TimeZone): String {
         return try {
@@ -193,4 +206,52 @@ object DateUtil {
     fun formatToUi(dateStr: String): String {
         return formatDate(YYYY_MM_DD, DEFAULT_VIEW_FORMAT, dateStr)
     }
+
+}
+
+/**
+ * Function to format string to date
+ *
+ * @param format string input format eg. "yyyy-MM-dd", there are some available format above
+ *
+ * @return Date object from String input
+ */
+fun String?.toDate(format: String): Date {
+    this?.let {
+        val fromFormat: DateFormat = SimpleDateFormat(format, DateUtil.DEFAULT_LOCALE)
+        return try {
+            fromFormat.parse(it) ?: throw ParseException("Failed to parse", 0)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            throw RuntimeException("Date doesn't valid ($this) with format $format")
+        }
+    }
+    throw RuntimeException("Date doesn't valid ($this) with format $format")
+}
+
+/**
+ * Function to format date to string
+ *
+ * @param format expected result string format eg. "yyyy-MM-dd", there are some available format above
+ *
+ * @return String object from Date input with selected format
+ */
+fun Date.toString(format: String): String {
+    val formatDate: DateFormat = SimpleDateFormat(format, DateUtil.DEFAULT_LOCALE)
+    return formatDate.format(this)
+}
+
+/**
+ * Function to trim time in the date to be the last time of the day
+ * eg : 11-11-2021 23:59:59
+ *
+ * @return String with trimmed time
+ */
+fun Date.trimDate(): Date {
+    val calendar = Calendar.getInstance()
+    calendar.time = this
+    calendar[Calendar.HOUR_OF_DAY] = DateUtil.LAST_HOUR_IN_A_DAY
+    calendar[Calendar.MINUTE] = DateUtil.LAST_MIN_IN_AN_HOUR
+    calendar[Calendar.SECOND] = DateUtil.LAST_SEC_IN_A_MIN
+    return calendar.time
 }

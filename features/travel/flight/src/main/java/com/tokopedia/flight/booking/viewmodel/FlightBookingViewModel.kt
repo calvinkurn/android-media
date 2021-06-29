@@ -37,6 +37,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -136,7 +138,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     verifyCartData(verifyQuery, bookingVerifyParam, checkVoucherQuery)
                     isStillLoading = true
                 } else {
-                    flightBookingParam.departureDate = DateUtil.dateToString(DateUtil.YYYY_MM_DD, DateUtil.stringToDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, data.cartData.flight.journeys[0].departureTime))
+                    flightBookingParam.departureDate = data.cartData.flight.journeys[0].departureTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).toString(DateUtil.YYYY_MM_DD)
                     flightBookingParam.isDomestic = data.cartData.flight.isDomestic
                     flightBookingParam.isMandatoryDob = data.cartData.flight.mandatoryDob
                     flightDetailModels = FlightBookingMapper.mapToFlightDetail(data.cartData.flight, data.included, flightBookingParam.flightPriceModel)
@@ -367,7 +369,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                 flightVerifyPassenger.title = passenger.passengerTitleId
                 flightVerifyPassenger.firstName = passenger.passengerFirstName
                 flightVerifyPassenger.lastName = passenger.passengerLastName
-                if (passenger.passengerBirthdate.isNotEmpty()) flightVerifyPassenger.dob = DateUtil.dateToString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.stringToDate(DateUtil.YYYY_MM_DD, passenger.passengerBirthdate))
+                if (passenger.passengerBirthdate.isNotEmpty()) flightVerifyPassenger.dob = passenger.passengerBirthdate.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
                 if (!flightIsDomestic()) {
                     flightVerifyPassenger.nationality = passenger.passportNationality?.countryId
                             ?: ""
@@ -375,7 +377,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                     flightVerifyPassenger.passportCountry = passenger.passportIssuerCountry?.countryId
                             ?: ""
                     flightVerifyPassenger.passportExpire = passenger.passportExpiredDate?.let {
-                        DateUtil.dateToString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.stringToDate(DateUtil.YYYY_MM_DD, it))
+                        it.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
                     } ?: ""
                 }
 
@@ -456,7 +458,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
         passenger.flightBookingMealMetaViewModels = arrayListOf()
         passenger.headerTitle = userName
         passenger.passengerFirstName = userName
-        if (getMandatoryDOB()) passenger.passengerBirthdate = DateUtil.dateToString(DateUtil.YYYY_MM_DD, DateUtil.stringToDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, userProfile.birthday))
+        if (getMandatoryDOB()) passenger.passengerBirthdate = userProfile.birthday.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).toString(DateUtil.YYYY_MM_DD)
         return passenger
     }
 

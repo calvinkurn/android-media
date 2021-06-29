@@ -34,6 +34,8 @@ import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchA
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.SEARCH_TYPE
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.fragment_hotel_change_search.*
 import java.util.*
 
@@ -57,11 +59,11 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
             globalSearchModel.destinationType = it.getString(EXTRA_DESTINATION_TYPE) ?: ""
             globalSearchModel.destinationType
             globalSearchModel.checkInDate = it.getString(EXTRA_CHECK_IN_DATE)
-                    ?: DateUtil.dateToString(DateUtil.YYYY_MM_DD, DateUtil.addTimeToSpesificDate(DateUtil.getCurrentCalendar().time, Calendar.DATE, 1))
-            globalSearchModel.checkInDateFmt = DateUtil.dateToString(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.stringToDate(DateUtil.YYYY_MM_DD, it.getString(EXTRA_CHECK_IN_DATE) ?: ""))
+                    ?: DateUtil.addTimeToSpesificDate(DateUtil.getCurrentCalendar().time, Calendar.DATE, 1).toString(DateUtil.YYYY_MM_DD)
+            globalSearchModel.checkInDateFmt = it.getString(EXTRA_CHECK_IN_DATE).toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
             globalSearchModel.checkOutDate = it.getString(EXTRA_CHECK_OUT_DATE)
-                    ?: DateUtil.dateToString(DateUtil.YYYY_MM_DD, DateUtil.addTimeToSpesificDate(DateUtil.getCurrentCalendar().time, Calendar.DATE, 2))
-            globalSearchModel.checkOutDateFmt = DateUtil.dateToString(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.stringToDate(DateUtil.YYYY_MM_DD, it.getString(EXTRA_CHECK_OUT_DATE) ?: ""))
+                    ?: DateUtil.addTimeToSpesificDate(DateUtil.getCurrentCalendar().time, Calendar.DATE, 2).toString (DateUtil.YYYY_MM_DD)
+            globalSearchModel.checkOutDateFmt = it.getString(EXTRA_CHECK_OUT_DATE).toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
             globalSearchModel.numOfGuests = it.getInt(EXTRA_NUM_OF_GUESTS)
             globalSearchModel.numOfRooms = it.getInt(EXTRA_NUM_OF_ROOMS)
             globalSearchModel.locationLong = it.getDouble(EXTRA_DESTINATION_LONG, 0.0)
@@ -122,7 +124,7 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
                 val intent = Intent().apply {
                     putExtra(DESTINATION_ID, globalSearchModel.destinationId)
                     putExtra(DESTINATION_TYPE, globalSearchModel.destinationType)
-                    putExtra(DESTINATION_NAME,  globalSearchModel.destinationName)
+                    putExtra(DESTINATION_NAME, globalSearchModel.destinationName)
                     putExtra(DESTINATION_LAT, globalSearchModel.locationLat)
                     putExtra(DESTINATION_LONG, globalSearchModel.locationLong)
                     putExtra(CHECK_IN_DATE, globalSearchModel.checkInDate)
@@ -156,8 +158,10 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
                     }
                     data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID) -> {
                         onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME),
-                                searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID) ?: "",
-                                searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE) ?: "")
+                                searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID)
+                                        ?: "",
+                                searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE)
+                                        ?: "")
                     }
                 }
             }
@@ -183,7 +187,7 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
         renderView()
     }
 
-    private fun onDestinationChanged(name: String, destinationId: Long = 0, type: String  = "",
+    private fun onDestinationChanged(name: String, destinationId: Long = 0, type: String = "",
                                      searchId: String = "", searchType: String = "") {
         globalSearchModel.destinationName = name
         globalSearchModel.destinationId = destinationId
@@ -191,7 +195,7 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
         globalSearchModel.locationLat = 0.0
         globalSearchModel.locationLong = 0.0
         globalSearchModel.searchType = searchType
-        globalSearchModel.searchId =  searchId
+        globalSearchModel.searchId = searchId
         renderView()
     }
 

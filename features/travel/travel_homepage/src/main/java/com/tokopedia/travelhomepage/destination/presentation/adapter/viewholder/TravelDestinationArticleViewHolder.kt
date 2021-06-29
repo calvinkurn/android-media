@@ -13,6 +13,8 @@ import com.tokopedia.travelhomepage.destination.listener.OnViewHolderBindListene
 import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
 import com.tokopedia.travelhomepage.destination.presentation.adapter.TravelDestinationArticleAdapter
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.layout_travel_destination_article.view.*
 
 /**
@@ -41,7 +43,7 @@ class TravelDestinationArticleViewHolder(itemView: View,
 
                     iv_travel_destination_article_item.loadImage(element.items[0].imageUrl)
                     tv_travel_destination_article_item_title.text = element.items[0].title
-                    tv_travel_destination_article_item_subtitle.text = DateUtil.dateToString(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.stringToDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS, element.items[0].publishedDate))
+                    tv_travel_destination_article_item_subtitle.text = element.items[0].publishedDate.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS).toString(DateUtil.DEFAULT_VIEW_FORMAT)
                     travel_destination_highlight_article.setOnClickListener {
                         actionListener.onTrackArticleItemClick(element.items[0], adapterPosition)
                         actionListener.clickAndRedirect(element.items[0].appUrl,
