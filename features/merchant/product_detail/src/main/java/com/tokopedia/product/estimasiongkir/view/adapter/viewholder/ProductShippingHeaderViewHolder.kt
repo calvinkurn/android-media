@@ -99,6 +99,8 @@ class ProductShippingHeaderViewHolder(view: View,
         txtFreeOngkirEstimation?.shouldShowWithAction(isFreeOngkir && freeOngkirEstimation.isNotEmpty()) {
             txtFreeOngkirEstimation.text = freeOngkirEstimation
         }
+
+        txtTokoNow?.hide()
     }
 
     private fun renderBoTokoNow(shouldShowTxtTokoNow: Boolean, freeOngkirEstimation: String, freeOngkirPrice: String, freeOngkirTokoNowText: String) = with(itemView) {

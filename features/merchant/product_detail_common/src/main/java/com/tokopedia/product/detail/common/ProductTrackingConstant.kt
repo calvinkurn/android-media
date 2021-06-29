@@ -199,6 +199,8 @@ object ProductTrackingConstant {
 
         const val CLICK_VARIANT_BUY_BUTTON = "click - Beli Langsung on pdp - to global variant bottomsheet"
         const val CLICK_VARIANT_ATC_BUTTON = "click - tambah ke keranjang on pdp - to global variant bottomsheet"
+
+        const val CLICK_VARIANT_QUANTITY_EDITOR = "click - quantity editor"
     }
 
 

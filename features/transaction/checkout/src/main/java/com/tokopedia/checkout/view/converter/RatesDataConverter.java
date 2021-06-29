@@ -39,7 +39,9 @@ public class RatesDataConverter {
         shipmentDetailData.setShipmentCartData(shipmentCartData);
         int totalQuantity = 0;
         for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-            totalQuantity += cartItemModel.getQuantity();
+            if (!cartItemModel.isError()) {
+                totalQuantity += cartItemModel.getQuantity();
+            }
         }
         shipmentDetailData.setTotalQuantity(totalQuantity);
         shipmentDetailData.setShopId(String.valueOf(shipmentCartItemModel.getShopId()));
@@ -63,10 +65,12 @@ public class RatesDataConverter {
         int preOrderDuration = 0;
         if (shipmentCartItemModel.getCartItemModels() != null) {
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                orderValue += (cartItemModel.getQuantity() * cartItemModel.getPrice());
-                totalWeight += (cartItemModel.getQuantity() * cartItemModel.getWeight());
-                totalWeightActual += (cartItemModel.getQuantity() * cartItemModel.getWeightActual());
-                preOrderDuration = cartItemModel.getPreOrderDurationDay();
+                if (!cartItemModel.isError()) {
+                    orderValue += (cartItemModel.getQuantity() * cartItemModel.getPrice());
+                    totalWeight += (cartItemModel.getQuantity() * cartItemModel.getWeight());
+                    totalWeightActual += (cartItemModel.getQuantity() * cartItemModel.getWeightActual());
+                    preOrderDuration = cartItemModel.getPreOrderDurationDay();
+                }
             }
         }
         shipmentCartData.setOrderValue(orderValue);
@@ -112,9 +116,11 @@ public class RatesDataConverter {
     private String getCategoryIds(List<Product> products) {
         List<Integer> categoryIds = new ArrayList<>();
         for (int i = 0; i < products.size(); i++) {
-            int categoryId = products.get(i).getProductCatId();
-            if (!categoryIds.contains(categoryId)) {
-                categoryIds.add(categoryId);
+            if (!products.get(i).isError()) {
+                int categoryId = products.get(i).getProductCatId();
+                if (!categoryIds.contains(categoryId)) {
+                    categoryIds.add(categoryId);
+                }
             }
         }
         return UtilsKt.joinToStringFromListInt(categoryIds, ",");
@@ -122,7 +128,7 @@ public class RatesDataConverter {
 
     private boolean isForceInsurance(List<com.tokopedia.checkout.domain.model.cartshipmentform.Product> products) {
         for (com.tokopedia.checkout.domain.model.cartshipmentform.Product product : products) {
-            if (product.isProductFinsurance()) {
+            if (!product.isError() && product.isProductFinsurance()) {
                 return true;
             }
         }

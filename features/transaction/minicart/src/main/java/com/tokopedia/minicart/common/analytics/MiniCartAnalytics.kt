@@ -48,7 +48,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_CATEGORY_CLICK_BELI = "tokonow - %s"
 
         // EVENT ACTION
-        const val EVENT_ACTION_CLICK_PRODUCT = "click product"
+        const val EVENT_ACTION_CLICK_PRODUCT_NAME = "click product name"
         const val EVENT_ACTION_CLICK_BUTTON_PLUS = "click button +"
         const val EVENT_ACTION_CLICK_BUTTON_MINUS = "click button -"
         const val EVENT_ACTION_CLICK_INPUT_QUANTITY = "click input quantity"
@@ -181,7 +181,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     fun eventClickProductName(productId: String) {
         val data = getGtmData(
                 eventName = EVENT_NAME_CLICK_MINICART,
-                eventAction = EVENT_ACTION_CLICK_PRODUCT,
+                eventAction = EVENT_ACTION_CLICK_PRODUCT_NAME,
                 eventLabel = productId
         )
 
