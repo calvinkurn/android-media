@@ -946,7 +946,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     dialog.show()
                 }
             } else {
-                NetworkErrorHelper.showEmptyState(activity, view) {
+                NetworkErrorHelper.showEmptyState(activity, view, getString(com.tokopedia.globalerror.R.string.error500Title), getString(com.tokopedia.globalerror.R.string.error500Desc) ,getString(com.tokopedia.globalerror.R.string.error500Action), com.tokopedia.globalerror.R.drawable.unify_globalerrors_500) {
                     NetworkErrorHelper.hideEmptyState(view)
                     showLoadingDialog()
                     action()
