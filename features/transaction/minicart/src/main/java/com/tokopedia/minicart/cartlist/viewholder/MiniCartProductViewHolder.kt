@@ -267,6 +267,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 textFieldNotes.textFieldInput.setOnEditorActionListener { v, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         KeyboardHandler.DropKeyboard(it, v)
+                        textFieldNotes.textFieldInput.clearFocus()
                         if (element.productNotes.isNotBlank()) {
                             renderProductNotesFilled(element)
                         } else {
@@ -366,6 +367,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
             }
 
             qtyEditorProduct.show()
+            qtyEditorProduct.editText.clearFocus()
             if (qtyTextWatcher != null) {
                 // reset listener
                 qtyEditorProduct.editText.removeTextChangedListener(qtyTextWatcher)
@@ -411,6 +413,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                     qtyEditorProduct.editText.context?.let {
                         KeyboardHandler.DropKeyboard(it, v)
                     }
+                    qtyEditorProduct.editText.clearFocus()
                     true
                 } else false
             }
