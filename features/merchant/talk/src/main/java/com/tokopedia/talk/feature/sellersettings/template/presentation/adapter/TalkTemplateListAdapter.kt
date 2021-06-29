@@ -2,12 +2,11 @@ package com.tokopedia.talk.feature.sellersettings.template.presentation.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.touchhelper.ItemTouchHelperAdapter
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.talk.R
 import com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkTemplateListFragment
-import com.tokopedia.talk.feature.sellersettings.template.presentation.fragment.TalkTemplateListFragmentArgs
 import com.tokopedia.talk.feature.sellersettings.template.presentation.listener.TalkTemplateListListener
+import com.tokopedia.talk.feature.sellersettings.template.presentation.util.ItemTouchHelperAdapter
 
 class TalkTemplateListAdapter(private val talkTemplateListListener: TalkTemplateListListener) :
         RecyclerView.Adapter<TalkTemplateListViewHolder>(), ItemTouchHelperAdapter {

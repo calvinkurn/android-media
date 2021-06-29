@@ -10,6 +10,11 @@ object LoggingUtils {
     const val DEFAULT_RESP_SIZE_THRES = 10000L
 
     @JvmStatic
+    fun logGqlParseSuccess(classType: String, request: String) {
+        ServerLogger.log(Priority.P1, "GQL_PARSE_SUCCESS", mapOf("type" to classType, "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
+    }
+
+    @JvmStatic
     fun logGqlError(classType: String, request: String, throwable: Throwable) {
         ServerLogger.log(Priority.P1, "GQL_ERROR", mapOf("type" to classType, "err" to Log.getStackTraceString(throwable).take(Const.GQL_ERROR_MAX_LENGTH).trim(), "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
     }
@@ -20,8 +25,8 @@ object LoggingUtils {
     }
 
     @JvmStatic
-    fun logGqlErrorBackend(from: String, request: String, errorMessage: String) {
-        ServerLogger.log(Priority.P1, "GQL_ERROR_BACKEND", mapOf("from" to from, "err" to errorMessage, "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
+    fun logGqlErrorBackend(from: String, request: String, errorMessage: String, statusCode: String) {
+        ServerLogger.log(Priority.P1, "GQL_ERROR_BACKEND", mapOf("from" to from, "code" to statusCode, "err" to errorMessage, "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()))
     }
 
     @JvmStatic

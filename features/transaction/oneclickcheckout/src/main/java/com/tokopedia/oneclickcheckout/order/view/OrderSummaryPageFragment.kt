@@ -43,6 +43,7 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
@@ -217,26 +218,33 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun onResultFromPromo(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-            val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = data?.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT)
-            if (validateUsePromoRevampUiModel != null) {
-                viewModel.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
-                viewModel.updatePromoState(validateUsePromoRevampUiModel.promoUiModel)
-            }
+            val errorPromoExtra = data?.getStringExtra(ARGS_PROMO_ERROR) ?: ""
+            if (errorPromoExtra.isNotBlank()) {
+                if (errorPromoExtra.equals(ARGS_FINISH_ERROR, true)) {
+                    activity?.finish()
+                }
+            } else {
+                val validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel? = data?.getParcelableExtra(ARGS_VALIDATE_USE_DATA_RESULT)
+                if (validateUsePromoRevampUiModel != null) {
+                    viewModel.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel
+                    viewModel.updatePromoState(validateUsePromoRevampUiModel.promoUiModel)
+                }
 
-            val validateUsePromoRequest: ValidateUsePromoRequest? = data?.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
-            if (validateUsePromoRequest != null) {
-                viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
-            }
+                val validateUsePromoRequest: ValidateUsePromoRequest? = data?.getParcelableExtra(ARGS_LAST_VALIDATE_USE_REQUEST)
+                if (validateUsePromoRequest != null) {
+                    viewModel.lastValidateUsePromoRequest = validateUsePromoRequest
+                }
 
-            val clearPromoUiModel: ClearPromoUiModel? = data?.getParcelableExtra(ARGS_CLEAR_PROMO_RESULT)
-            if (clearPromoUiModel != null) {
-                //reset
-                viewModel.validateUsePromoRevampUiModel = null
-                viewModel.updatePromoState(PromoUiModel().apply {
-                    titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
-                })
-                // trigger validate to reset BBO benefit
-                viewModel.validateUsePromo()
+                val clearPromoUiModel: ClearPromoUiModel? = data?.getParcelableExtra(ARGS_CLEAR_PROMO_RESULT)
+                if (clearPromoUiModel != null) {
+                    //reset
+                    viewModel.validateUsePromoRevampUiModel = null
+                    viewModel.updatePromoState(PromoUiModel().apply {
+                        titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
+                    })
+                    // trigger validate to reset BBO benefit
+                    viewModel.validateUsePromo()
+                }
             }
         }
     }

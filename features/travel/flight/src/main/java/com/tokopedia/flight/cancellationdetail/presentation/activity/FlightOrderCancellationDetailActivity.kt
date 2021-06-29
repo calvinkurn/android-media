@@ -27,10 +27,10 @@ class FlightOrderCancellationDetailActivity : BaseFlightActivity(), HasComponent
 
     override fun getComponent(): FlightOrderDetailComponent =
             DaggerFlightOrderDetailComponent.builder()
-                    .flightComponent(flightComponent)
+                    .flightComponent(getFlightComponent())
                     .build()
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean = true
+    override fun onCreateOptionsMenu(menu: Menu): Boolean = true
 
     private fun setupToolbar() {
         toolbar.contentInsetStartWithNavigation = 0

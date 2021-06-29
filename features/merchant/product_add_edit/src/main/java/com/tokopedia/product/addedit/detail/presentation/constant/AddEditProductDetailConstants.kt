@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.detail.presentation.constant
 class AddEditProductDetailConstants {
     companion object {
         const val MAX_PRODUCT_PHOTOS = 5
+        const val MAX_PRODUCT_PHOTOS_OS = 7
         const val MAX_WHOLESALE_PRICES = 5
         const val UNIVERSE_SEARCH_TYPE = "AUTOCOMPLETE"
         const val REQUEST_CODE_IMAGE = 0

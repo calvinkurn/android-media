@@ -19,6 +19,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import id.co.bri.sdk.Brizzi
 import id.co.bri.sdk.BrizziCardObject
 import id.co.bri.sdk.Callback
@@ -36,12 +37,12 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
     var inquiryIdBrizzi: Int = 0
     var token: String = ""
 
-    val issuerId = com.tokopedia.common_electronic_money.util.SingleLiveEvent<Int>()
-    val emoneyInquiry = com.tokopedia.common_electronic_money.util.SingleLiveEvent<EmoneyInquiry>()
-    val tokenNeedRefresh = com.tokopedia.common_electronic_money.util.SingleLiveEvent<Boolean>()
-    val cardIsNotBrizzi = com.tokopedia.common_electronic_money.util.SingleLiveEvent<Boolean>()
-    val errorCardMessage = com.tokopedia.common_electronic_money.util.SingleLiveEvent<Throwable>()
-    val errorCommonBrizzi = com.tokopedia.common_electronic_money.util.SingleLiveEvent<Throwable>()
+    val issuerId = SingleLiveEvent<Int>()
+    val emoneyInquiry = SingleLiveEvent<EmoneyInquiry>()
+    val tokenNeedRefresh = SingleLiveEvent<Boolean>()
+    val cardIsNotBrizzi = SingleLiveEvent<Boolean>()
+    val errorCardMessage = SingleLiveEvent<Throwable>()
+    val errorCommonBrizzi = SingleLiveEvent<Throwable>()
 
     fun processBrizziTagIntent(intent: Intent, brizziInstance: Brizzi,
                                rawTokenQuery: String, rawLogBrizzi: String, refreshToken: Boolean) {

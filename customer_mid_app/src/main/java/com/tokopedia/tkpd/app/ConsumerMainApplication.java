@@ -229,7 +229,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
             }
             return signatureValid;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Map<String, String> messageMap = new HashMap<>();
             if (e instanceof PackageManager.NameNotFoundException) {
                 messageMap.put("type", "PackageManager.NameNotFoundException");
