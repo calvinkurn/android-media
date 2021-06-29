@@ -2,11 +2,14 @@ package com.tokopedia.notifications
 
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import com.google.gson.GsonBuilder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.google.gson.*
 import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
 import com.tokopedia.notifications.factory.CMNotificationFactory
@@ -170,7 +173,9 @@ class PushController(val context: Context) : CoroutineScope {
         try {
             val baseNotification = CMNotificationFactory
                     .getNotification(context.applicationContext, baseNotificationModel)
-            if (null != baseNotification) {
+            if (checkOtpPushNotif(baseNotificationModel.appLink)) {
+                goToOtpPushNotifReceiver(baseNotificationModel.appLink)
+            } else if (null != baseNotification) {
                 val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 val notification = baseNotification.createNotification()
                 notificationManager.notify(baseNotification.baseNotificationModel.notificationId, notification)
@@ -183,4 +188,13 @@ class PushController(val context: Context) : CoroutineScope {
         }
     }
 
+    private fun checkOtpPushNotif(applink: String?): Boolean {
+        return applink?.startsWith(ApplinkConst.OTP_PUSH_NOTIF_RECEIVER) == true
+    }
+
+    private fun goToOtpPushNotifReceiver(applink: String?) {
+        val intent = RouteManager.getIntent(context, applink)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        context.startActivity(intent)
+    }
 }
