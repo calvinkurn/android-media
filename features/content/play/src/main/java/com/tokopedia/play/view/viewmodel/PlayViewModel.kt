@@ -36,11 +36,11 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.domain.engagement.GetCurrentInteractiveUseCase
+import com.tokopedia.play.domain.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play.view.uimodel.action.InteractiveLiveFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
-import com.tokopedia.play.view.uimodel.engagement.PlayInteractiveTimeStatus
+import com.tokopedia.play.view.uimodel.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
@@ -1023,9 +1023,9 @@ class PlayViewModel @Inject constructor(
 //                        status = PlayInteractiveTimeStatus.Scheduled(20000, 1)
 //                ))
 //            }
-            _uiEvent.emit(
-                    ShowWinningDialogEvent("", "Selamat kamu pemenangnya", "Tunggu seller chat kamu untuk konfirmasi")
-            )
+//            _uiEvent.emit(
+//                    ShowWinningDialogEvent("", "Selamat kamu pemenangnya", "Tunggu seller chat kamu untuk konfirmasi")
+//            )
         }
     }
 

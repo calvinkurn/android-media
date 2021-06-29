@@ -1,4 +1,4 @@
-package com.tokopedia.play.data.engagement
+package com.tokopedia.play.data.interactive
 
 import com.google.gson.annotations.SerializedName
 

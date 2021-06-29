@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.viewcomponent.engagement
+package com.tokopedia.play.view.viewcomponent.interactive
 
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -10,16 +10,16 @@ import java.util.*
 /**
  * Created by jegul on 28/06/21
  */
-class EngagementToolsTapViewComponent(
+class InteractiveTapViewComponent(
         container: ViewGroup,
         listener: Listener
-) : ViewComponent(container, R.id.view_engagement_tap) {
+) : ViewComponent(container, R.id.view_interactive_tap) {
 
-    private val flEngagementTap = findViewById<FrameLayout>(R.id.fl_engagement_tap)
+    private val flInteractiveTap = findViewById<FrameLayout>(R.id.fl_interactive_tap)
     private val timerTap = findViewById<TimerUnifySingle>(R.id.timer_tap)
 
     init {
-        flEngagementTap.setOnClickListener {
+        flInteractiveTap.setOnClickListener {
 
         }
     }
@@ -41,6 +41,6 @@ class EngagementToolsTapViewComponent(
 
     interface Listener {
 
-        fun onTapClicked(view: EngagementToolsTapViewComponent)
+        fun onTapClicked(view: InteractiveTapViewComponent)
     }
 }

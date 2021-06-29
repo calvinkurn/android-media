@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.uimodel.engagement
+package com.tokopedia.play.view.uimodel.interactive
 
 /**
  * Created by jegul on 28/06/21

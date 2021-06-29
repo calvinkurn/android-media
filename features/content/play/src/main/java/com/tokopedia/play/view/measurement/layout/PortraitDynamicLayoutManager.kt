@@ -24,7 +24,7 @@ class PortraitDynamicLayoutManager(
     private val playButtonView: View = container.findViewById(R.id.view_play_button)
     private val statsInfoView: View = container.findViewById(R.id.view_stats_info)
     private val pinnedView: View = container.findViewById(R.id.view_pinned)
-    private val engagementToolsPreStartView: View = container.findViewById(R.id.view_engagement_prestart)
+    private val engagementToolsPreStartView: View = container.findViewById(R.id.view_interactive_prestart)
     private val immersiveBoxView: View = container.findViewById(R.id.v_immersive_box)
 
     override fun onVideoOrientationChanged(videoOrientation: VideoOrientation) {

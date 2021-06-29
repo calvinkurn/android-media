@@ -4,13 +4,13 @@ import com.tokopedia.play.data.ChannelStatusResponse
 import com.tokopedia.play.data.Product
 import com.tokopedia.play.data.ShopInfo
 import com.tokopedia.play.data.Voucher
-import com.tokopedia.play.data.engagement.GetCurrentInteractiveResponse
+import com.tokopedia.play.data.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.engagement.PlayInteractiveTimeStatus
-import com.tokopedia.play.view.uimodel.engagement.InteractiveType
-import com.tokopedia.play.view.uimodel.engagement.PlayCurrentInteractiveUiModel
+import com.tokopedia.play.view.uimodel.interactive.PlayInteractiveTimeStatus
+import com.tokopedia.play.view.uimodel.interactive.InteractiveType
+import com.tokopedia.play.view.uimodel.interactive.PlayCurrentInteractiveUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.ui.PlayChatUiModel

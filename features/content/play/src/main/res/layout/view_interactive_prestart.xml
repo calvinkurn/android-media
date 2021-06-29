@@ -5,17 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_play_engagement"
+    android:background="@drawable/bg_play_interactive"
     >
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl0"
         android:scaleType="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bg_play_engagement_decor"
+        app:srcCompat="@drawable/bg_play_interactive_decor"
     />
 
     <com.tokopedia.iconunify.IconUnify
@@ -47,7 +47,7 @@
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_engagement_title"
+        android:id="@+id/tv_interactive_title"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
@@ -63,7 +63,7 @@
         />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_engagement_follow"
+        android:id="@+id/btn_interactive_follow"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
@@ -72,7 +72,7 @@
         android:text="@string/play_engagement_prestart_follow_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_engagement_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_interactive_title"
         app:unifyButtonInvers="true"
         app:unifyButtonSize="micro"
         app:unifyButtonType="alternate"
@@ -84,12 +84,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:background="@drawable/bg_play_engagement_prestart_timer"
+        android:background="@drawable/bg_play_interactive_prestart_timer"
         android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_engagement_follow"
+        app:layout_constraintTop_toBottomOf="@id/btn_interactive_follow"
         >
 
         <com.tokopedia.unifyprinciples.Typography
@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:text="@string/play_engagement_prestart_timer_text"
-            android:textColor="@color/play_dms_timer_prestart_text"
+            android:textColor="@color/play_dms_interactive_timer_prestart_text"
             app:typographyType="small"
             />
 

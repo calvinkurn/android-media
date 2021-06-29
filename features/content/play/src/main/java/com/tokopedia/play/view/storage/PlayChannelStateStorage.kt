@@ -1,6 +1,6 @@
 package com.tokopedia.play.view.storage
 
-import com.tokopedia.play.view.uimodel.engagement.PlayInteractiveUiModel
+import com.tokopedia.play.view.uimodel.interactive.PlayInteractiveUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 
 /**

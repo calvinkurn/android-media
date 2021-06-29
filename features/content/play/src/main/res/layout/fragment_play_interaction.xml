@@ -34,7 +34,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        app:layout_constraintBottom_toTopOf="@id/view_engagement_prestart"
+        app:layout_constraintBottom_toTopOf="@id/view_interactive_prestart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_stats_info"
@@ -129,8 +129,8 @@
         />
 
     <include
-        android:id="@+id/view_engagement_prestart"
-        layout="@layout/view_engagement_prestart"
+        android:id="@+id/view_interactive_prestart"
+        layout="@layout/view_interactive_prestart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -141,26 +141,37 @@
         />
 
     <include
-        android:id="@+id/view_engagement_tap"
-        layout="@layout/view_engagement_tap"
+        android:id="@+id/view_interactive_tap"
+        layout="@layout/view_interactive_tap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_engagement_prestart"
+        app:layout_constraintBottom_toTopOf="@id/view_interactive_prestart"
         app:layout_constraintStart_toStartOf="@id/space_size"
         />
 
     <include
-        android:id="@+id/view_engagement_finish"
-        layout="@layout/view_engagement_finish"
-        android:layout_width="@dimen/play_engagement_finish_width"
-        android:layout_height="@dimen/play_engagement_finish_height"
+        android:id="@+id/view_interactive_finish"
+        layout="@layout/view_interactive_finish"
+        android:layout_width="@dimen/play_interactive_finish_width"
+        android:layout_height="@dimen/play_interactive_finish_height"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@id/view_engagement_tap"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/view_interactive_tap"
+        app:layout_constraintStart_toStartOf="@id/space_size"
+        />
+
+    <include
+        android:id="@+id/view_interactive_winner_badge"
+        layout="@layout/view_interactive_winner_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/play_interactive_winner_badge_height"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toTopOf="@id/view_chat_list"
         app:layout_constraintStart_toStartOf="@id/space_size"
         />
 

@@ -1,6 +1,6 @@
 package com.tokopedia.play.view.uimodel.state
 
-import com.tokopedia.play.view.uimodel.engagement.PlayInteractiveTimeStatus
+import com.tokopedia.play.view.uimodel.interactive.PlayInteractiveTimeStatus
 
 /**
  * Created by jegul on 28/06/21

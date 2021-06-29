@@ -60,14 +60,15 @@ import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.action.InteractiveLiveFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
-import com.tokopedia.play.view.uimodel.engagement.PlayInteractiveTimeStatus
+import com.tokopedia.play.view.uimodel.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play.view.viewcomponent.*
-import com.tokopedia.play.view.viewcomponent.engagement.EngagementToolsFinishedViewComponent
-import com.tokopedia.play.view.viewcomponent.engagement.EngagementToolsPreStartViewComponent
-import com.tokopedia.play.view.viewcomponent.engagement.EngagementToolsTapViewComponent
+import com.tokopedia.play.view.viewcomponent.interactive.InteractiveFinishedViewComponent
+import com.tokopedia.play.view.viewcomponent.interactive.InteractivePreStartViewComponent
+import com.tokopedia.play.view.viewcomponent.interactive.InteractiveTapViewComponent
+import com.tokopedia.play.view.viewcomponent.interactive.InteractiveWinnerBadgeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -110,8 +111,8 @@ class PlayUserInteractionFragment @Inject constructor(
         PiPViewComponent.Listener,
         ProductFeaturedViewComponent.Listener,
         PinnedVoucherViewComponent.Listener,
-        EngagementToolsPreStartViewComponent.Listener,
-        EngagementToolsTapViewComponent.Listener
+        InteractivePreStartViewComponent.Listener,
+        InteractiveTapViewComponent.Listener
 {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.main + job)
@@ -136,11 +137,12 @@ class PlayUserInteractionFragment @Inject constructor(
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
 
     /**
-     * EngagementTools
+     * Interactive
      */
-    private val engagementToolsPreStartView by viewComponentOrNull { EngagementToolsPreStartViewComponent(it, this) }
-    private val engagementToolsTapView by viewComponentOrNull { EngagementToolsTapViewComponent(it, this) }
-    private val engagementToolsFinishedView by viewComponentOrNull { EngagementToolsFinishedViewComponent(it) }
+    private val interactivePreStartView by viewComponentOrNull { InteractivePreStartViewComponent(it, this) }
+    private val interactiveTapView by viewComponentOrNull { InteractiveTapViewComponent(it, this) }
+    private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishedViewComponent(it) }
+    private val interactiveWinnerBadgeView by viewComponentOrNull { InteractiveWinnerBadgeViewComponent(it) }
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
@@ -432,17 +434,17 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     /**
-     * EngagementToolsPreStart View Component Listener
+     * InteractivePreStart View Component Listener
      */
-    override fun onFollowButtonClicked(view: EngagementToolsPreStartViewComponent) {
+    override fun onFollowButtonClicked(view: InteractivePreStartViewComponent) {
         val partnerId = playViewModel.partnerId ?: return
         doClickFollow(partnerId, PartnerFollowAction.Follow)
     }
 
     /**
-     * EngagementToolsTap View Component Listener
+     * InteractiveToolsTap View Component Listener
      */
-    override fun onTapClicked(view: EngagementToolsTapViewComponent) {
+    override fun onTapClicked(view: InteractiveTapViewComponent) {
         //TODO("TAP")
     }
     //endregion
@@ -672,7 +674,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeToolbarInfo() {
         playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, DistinctObserver {
             toolbarView.setPartnerInfo(it)
-            engagementToolsPreStartView?.showFollowButton(it.isFollowable && !it.isFollowed)
+            interactivePreStartView?.showFollowButton(it.isFollowable && !it.isFollowed)
         })
     }
 
@@ -932,7 +934,7 @@ class PlayUserInteractionFragment @Inject constructor(
         viewModel.doFollow(partnerId, action)
 
         toolbarView.setFollowStatus(action == PartnerFollowAction.Follow)
-        engagementToolsPreStartView?.showFollowButton(action == PartnerFollowAction.UnFollow)
+        interactivePreStartView?.showFollowButton(action == PartnerFollowAction.UnFollow)
     }
 
     //TODO("This action is duplicated with the one in PlayBottomSheetFragment, find a way to prevent duplication")
@@ -1375,37 +1377,37 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun interactiveViewOnStateChanged(state: PlayInteractiveUiState) {
         when (state.status) {
             is PlayInteractiveTimeStatus.Scheduled -> {
-                engagementToolsTapView?.hide()
-                engagementToolsFinishedView?.hide()
+                interactiveTapView?.hide()
+                interactiveFinishedView?.hide()
 
-                engagementToolsPreStartView?.setTitle(state.title)
-                engagementToolsPreStartView?.setTimer(state.status.liveTimeInMs) {
+                interactivePreStartView?.setTitle(state.title)
+                interactivePreStartView?.setTimer(state.status.liveTimeInMs) {
                     playViewModel.submitAction(InteractivePreStartFinishedAction)
                 }
-                engagementToolsPreStartView?.show()
+                interactivePreStartView?.show()
             }
             is PlayInteractiveTimeStatus.Live -> {
-                engagementToolsPreStartView?.hide()
-                engagementToolsFinishedView?.hide()
+                interactivePreStartView?.hide()
+                interactiveFinishedView?.hide()
 
-                engagementToolsPreStartView?.setTitle(state.title)
-                engagementToolsTapView?.setTimer(state.status.remainingTimeInMs) {
+                interactivePreStartView?.setTitle(state.title)
+                interactiveTapView?.setTimer(state.status.remainingTimeInMs) {
                     playViewModel.submitAction(InteractiveLiveFinishedAction)
                     doShowToaster(message = "Tap done")
                 }
-                engagementToolsTapView?.show()
+                interactiveTapView?.show()
             }
             PlayInteractiveTimeStatus.Finished -> {
-                engagementToolsPreStartView?.hide()
-                engagementToolsTapView?.hide()
+                interactivePreStartView?.hide()
+                interactiveTapView?.hide()
 
-                engagementToolsFinishedView?.setInfo(state.title)
-                engagementToolsFinishedView?.show()
+                interactiveFinishedView?.setInfo(state.title)
+                interactiveFinishedView?.show()
             }
             else -> {
-                engagementToolsPreStartView?.hide()
-                engagementToolsTapView?.hide()
-                engagementToolsFinishedView?.hide()
+                interactivePreStartView?.hide()
+                interactiveTapView?.hide()
+                interactiveFinishedView?.hide()
             }
         }
     }
