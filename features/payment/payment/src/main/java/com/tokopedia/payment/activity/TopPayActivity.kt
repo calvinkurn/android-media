@@ -89,8 +89,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     private val remoteConfig: RemoteConfig by lazy { FirebaseRemoteConfigImpl(this.applicationContext) }
 
-    private var isPaymentPageLoadingError : Boolean = false
-
     private var scroogeWebView: WebView? = null
     private var progressBar: ProgressBar? = null
     private var btnBack: View? = null
@@ -383,14 +381,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     override fun onBackPressed() {
-        if(isPaymentPageLoadingError){
-            callbackPaymentCanceled()
-        }else {
-            handleBackPress()
-        }
-    }
-
-    private fun handleBackPress(){
         val url = scroogeWebView?.url
         if (url != null && url.contains(getBaseUrlDomainPayment()) && isHasFinishedFirstLoad()) {
             scroogeWebView?.loadUrl(BACK_DIALOG_URL)
@@ -400,7 +390,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             callbackPaymentCanceled()
         }
     }
-
     private fun isHasFinishedFirstLoad(): Boolean {
         return hasFinishedFirstLoad
     }
@@ -574,12 +563,16 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         @TargetApi(Build.VERSION_CODES.M)
         override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
             super.onReceivedError(view, request, error)
-            isPaymentPageLoadingError = isMainPaymentPage(request?.url)
-            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
+            if(isMainPaymentPageTimeOut(request?.url,
+                error?.errorCode?:0)){
+                handleMainPaymentPageTimeOut(view, request, error)
+            } else {
+                ServerLogger.log(Priority.P1, "WEBVIEW_ERROR",
                     mapOf("type" to request?.url.toString(),
                             "error_code" to error?.errorCode.toString(),
                             "desc" to error?.description?.toString().orEmpty()
                     ))
+            }
         }
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -614,12 +607,37 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         }
     }
 
-    private fun isMainPaymentPage(url: Uri?) : Boolean{
-        url?.let {
-            return (url.toString().startsWith(getBaseUrlDomainPayment() + "/v2/payment"))
+    private fun isMainPaymentPageTimeOut(url: Uri?, errorCode : Int) : Boolean{
+        if(errorCode == WebViewClient.ERROR_TIMEOUT) {
+            url?.let {
+                return (url.toString().startsWith(getBaseUrlDomainPayment() + "/v2/payment"))
+            }
         }
-
         return false
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private fun handleMainPaymentPageTimeOut(view: WebView?, request: WebResourceRequest?, error: WebResourceError?){
+        ServerLogger.log(Priority.P1, "PAYMENT_PAGE_TIME_OUT",
+            mapOf("type" to request?.url.toString(),
+                "error_code" to error?.errorCode.toString(),
+                "desc" to error?.description?.toString().orEmpty()
+            ))
+        closePaymentPageOnTimeOut()
+    }
+
+    private fun closePaymentPageOnTimeOut(){
+        hideProgressLoading()
+        var hasClearRedState = false
+        intent?.extras?.let {
+            hasClearRedState = it.getBoolean(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT)
+        }
+        val intent = Intent()
+        intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+        intent.putExtra(PaymentConstant.EXTRA_HAS_CLEAR_RED_STATE_PROMO_BEFORE_CHECKOUT, hasClearRedState)
+        intent.putExtra(PaymentConstant.EXTRA_PAGE_TIME_OUT, true)
+        setResult(PaymentConstant.PAYMENT_CANCELLED, intent)
+        finish()
     }
 
     private fun getBaseUrlDomainPayment(): String {

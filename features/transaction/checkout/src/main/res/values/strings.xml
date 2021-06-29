@@ -124,4 +124,6 @@
     <string name="label_drop_off_cta">Cari Indomaret</string>
     <string name="checkout_label_per_insurance_price">per barang</string>
     <string name="label_ticker_trade_in">Tukar Tambah</string>
+    <string name="checkout_label_try_again">Coba Lagi</string>
+
 </resources>

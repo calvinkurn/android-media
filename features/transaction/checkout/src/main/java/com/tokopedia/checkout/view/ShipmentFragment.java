@@ -1212,6 +1212,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             false, null, getDeviceId(), getCheckoutLeasingId()
                     );
                 }
+                if(data!= null && data.getBooleanExtra(PaymentConstant.EXTRA_PAGE_TIME_OUT, false)){
+                    showToastError(getString(R.string.checkout_label_try_again));
+                }
                 break;
             default:
                 Activity activity = getActivity();
