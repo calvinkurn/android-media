@@ -343,14 +343,6 @@ class OtherMenuViewHolder(private val itemView: View,
         operationalHourLabel?.gone()
     }
 
-    private fun setupSuccessLayout() {
-        val successLayout = LayoutInflater.from(context).inflate(R.layout.view_sah_other_header, null, false)
-        (itemView.shopInfoLayout as? LinearLayout)?.run {
-            removeAllViews()
-            addView(successLayout)
-        }
-    }
-
     private fun setShopName(shopName: String) {
         shopNameText?.run {
             text = MethodChecker.fromHtml(shopName)
