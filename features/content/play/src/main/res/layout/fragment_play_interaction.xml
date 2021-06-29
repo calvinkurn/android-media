@@ -131,7 +131,7 @@
     <include
         android:id="@+id/view_engagement_prestart"
         layout="@layout/view_engagement_prestart"
-        android:layout_width="@dimen/play_engagement_prestart_width"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"

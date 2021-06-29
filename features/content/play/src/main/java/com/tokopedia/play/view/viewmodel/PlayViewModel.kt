@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
-import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.data.websocket.revamp.WebSocketAction
 import com.tokopedia.play.data.websocket.revamp.WebSocketClosedReason
@@ -37,13 +36,21 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.domain.engagement.GetCurrentInteractiveUseCase
+import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
+import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
+import com.tokopedia.play.view.uimodel.engagement.PlayInteractiveTimeStatus
 import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
+import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
+import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 /**
@@ -63,6 +70,7 @@ class PlayViewModel @Inject constructor(
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
+        private val getCurrentInteractiveUseCase: GetCurrentInteractiveUseCase,
         private val playSocketToModelMapper: PlaySocketToModelMapper,
         private val playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
@@ -111,6 +119,9 @@ class PlayViewModel @Inject constructor(
         get() = _observableEventPiPState
     val observableOnboarding: LiveData<Event<Unit>>
         get() = _observableOnboarding
+
+    val observableUiState: LiveData<PlayViewerNewUiState>
+        get() = _observableUiState
 
     val videoOrientation: VideoOrientation
         get() {
@@ -181,13 +192,11 @@ class PlayViewModel @Inject constructor(
             val pinnedMessage = _observablePinnedMessage.value ?: channelData.pinnedInfo.pinnedMessage
             val pinnedProduct = _observablePinnedProduct.value ?: channelData.pinnedInfo.pinnedProduct
 
-            return PlayChannelData(
-                    id = channelData.id,
+            return channelData.copy(
                     channelInfo = _observableChannelInfo.value ?: channelData.channelInfo,
                     partnerInfo = _observablePartnerInfo.value ?: channelData.partnerInfo,
                     likeInfo = _observableLikeInfo.value ?: channelData.likeInfo,
                     totalViewInfo = _observableTotalViews.value ?: channelData.totalViewInfo,
-                    shareInfo = channelData.shareInfo,
                     cartInfo = _observableCartInfo.value ?: channelData.cartInfo,
                     pinnedInfo = PlayPinnedInfoUiModel(
                             pinnedMessage = pinnedMessage,
@@ -195,7 +204,7 @@ class PlayViewModel @Inject constructor(
                     ),
                     quickReplyInfo = _observableQuickReply.value ?: channelData.quickReplyInfo,
                     videoMetaInfo = newVideoMeta,
-                    statusInfo = _observableStatusInfo.value ?: channelData.statusInfo
+                    statusInfo = _observableStatusInfo.value ?: channelData.statusInfo,
             )
         }
 
@@ -244,6 +253,7 @@ class PlayViewModel @Inject constructor(
     private val _observableShareInfo = MutableLiveData<PlayShareInfoUiModel>() /**Added**/
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
+    private val _observableUiState = MutableLiveData<PlayViewerNewUiState>(PlayViewerNewUiState())
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableProductSheetContent) {
             if (it is PlayResult.Success) {
@@ -317,6 +327,11 @@ class PlayViewModel @Inject constructor(
     }
 
     private val playVideoPlayer = playVideoBuilder.build()
+
+    /**
+     * Ui State
+     */
+    private val mutex = Mutex()
 
     /**
      * DO NOT CHANGE THIS TO LAMBDA
@@ -492,6 +507,19 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    fun submitAction(action: PlayViewerNewAction) {
+        when (action) {
+            InteractivePreStartFinishedAction -> {
+                //TODO("mock")
+                viewModelScope.launch {
+                    setUiState {
+                        copy(interactive = interactive?.copy(status = PlayInteractiveTimeStatus.Live(15000)))
+                    }
+                }
+            }
+        }
+    }
+
     private fun initiateVideo(videoPlayer: PlayVideoPlayerUiModel.General) {
         startVideoWithUrlString(
                 urlString = videoPlayer.params.videoUrl,
@@ -538,6 +566,8 @@ class PlayViewModel @Inject constructor(
         updateChannelInfo(channelData)
         startWebSocket(channelData.id)
         trackVisitChannel(channelData.id)
+
+        if (channelData.interactiveInfo.hasInteractive) checkInteractive(channelData.id)
     }
 
     fun defocusPage(shouldPauseVideo: Boolean) {
@@ -930,12 +960,34 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun trackVisitChannel(channelId: String) {
-        viewModelScope.launchCatchError(block = {
-            withContext(dispatchers.io) {
-                trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId))
-                trackVisitChannelBroadcasterUseCase.executeOnBackground()
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId))
+            trackVisitChannelBroadcasterUseCase.executeOnBackground()
+        }) {
+        }
+    }
+
+    private fun checkInteractive(channelId: String) {
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            getCurrentInteractiveUseCase.setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
+            val response = getCurrentInteractiveUseCase.executeOnBackground()
+            val interactive = playUiModelMapper.mapInteractive(response)
+            setUiState {
+                copy(
+                        interactive = PlayInteractiveUiState(
+                                title = interactive.title,
+                                status = interactive.timeStatus
+                        )
+                )
             }
         }) {
+            //TODO("This is mock")
+            setUiState {
+                copy(interactive = PlayInteractiveUiState(
+                        title = "Giveaway Tesla",
+                        status = PlayInteractiveTimeStatus.Scheduled(20000, 1)
+                ))
+            }
         }
     }
 
@@ -949,6 +1001,13 @@ class PlayViewModel @Inject constructor(
         stopWebSocket()
         stopPlayer()
         onKeyboardHidden()
+    }
+
+    private suspend fun setUiState(fn: PlayViewerNewUiState.() -> PlayViewerNewUiState) = mutex.withLock {
+        withContext(dispatchers.immediate) {
+            val state = _observableUiState.value ?: error("State cannot be null")
+            _observableUiState.value = state.fn()
+        }
     }
     //endregion
 

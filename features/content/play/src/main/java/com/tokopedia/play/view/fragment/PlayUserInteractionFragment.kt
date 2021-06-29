@@ -57,7 +57,11 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.action.InteractiveLiveFinishedAction
+import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
+import com.tokopedia.play.view.uimodel.engagement.PlayInteractiveTimeStatus
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -567,6 +571,8 @@ class PlayUserInteractionFragment @Inject constructor(
         observeShareInfo()
         observeProductContent()
 
+        observeUiState()
+
         observeLoggedInInteractionEvent()
     }
 
@@ -812,6 +818,12 @@ class PlayUserInteractionFragment @Inject constructor(
                 }
             }
         })
+    }
+
+    private fun observeUiState() {
+        playViewModel.observableUiState.observe(viewLifecycleOwner) { state ->
+            if (state.interactive != null) interactiveViewOnStateChanged(state.interactive)
+        }
     }
     //endregion
 
@@ -1334,6 +1346,34 @@ class PlayUserInteractionFragment @Inject constructor(
 
         if (!bottomInsets.isAnyShown) pipView?.show()
         else pipView?.hide()
+    }
+
+    private fun interactiveViewOnStateChanged(state: PlayInteractiveUiState) {
+        engagementToolsPreStartView?.setTitle(state.title)
+
+        when (state.status) {
+            is PlayInteractiveTimeStatus.Scheduled -> {
+                engagementToolsPreStartView?.setTimer(state.status.liveTimeInMs) {
+                    playViewModel.submitAction(InteractivePreStartFinishedAction)
+                }
+                engagementToolsPreStartView?.show()
+
+                engagementToolsTapView?.hide()
+            }
+            is PlayInteractiveTimeStatus.Live -> {
+                engagementToolsPreStartView?.hide()
+
+                engagementToolsTapView?.setTimer(state.status.remainingTimeInMs) {
+                    playViewModel.submitAction(InteractiveLiveFinishedAction)
+                    doShowToaster(message = "Tap done")
+                }
+                engagementToolsTapView?.show()
+            }
+            else -> {
+                engagementToolsPreStartView?.hide()
+                engagementToolsTapView?.hide()
+            }
+        }
     }
     //endregion
 

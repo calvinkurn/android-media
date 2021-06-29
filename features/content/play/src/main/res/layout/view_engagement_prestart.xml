@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/play_engagement_prestart_width"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_play_engagement"
     >
@@ -59,7 +59,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyWeight="bold"
         app:typographyType="body_2"
-        android:text="Giveaway Headset Wireless Xiaomi"
+        tools:text="Giveaway Headset Wireless Xiaomi"
         />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -69,7 +69,6 @@
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:text="Follow Buat Ikutan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_engagement_title"
@@ -77,21 +76,40 @@
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost"
         app:unifyButtonInvers="true"
+        tools:text="Follow Buat Ikutan"
         />
 
-    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
-        android:layout_width="@dimen/layout_lvl0"
+    <LinearLayout
+        android:id="@+id/ll_timer_prestart"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
+        android:background="@drawable/bg_play_engagement_prestart_timer"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_engagement_follow"
-        app:timer_unify_single_remainingMinutes="5"
-        app:timer_unify_single_text="Dimulai dalam:"
-        app:timer_unify_single_textWidth="full_radius"
-        app:timer_unify_single_type="hour"
-        app:timer_unify_single_variant="alternate"
-        />
+        >
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:text="@string/play_engagement_prestart_timer_text"
+            android:textColor="@color/play_dms_timer_prestart_text"
+            app:typographyType="small"
+            />
+
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/timer_prestart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl1"
+            app:timer_unify_single_type="hour"
+            app:timer_unify_single_variant="alternate"
+            />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

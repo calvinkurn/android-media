@@ -74,6 +74,7 @@
     <!--Engagement Tools-->
     <dimen name="play_engagement_prestart_width">152dp</dimen>
     <dimen name="play_engagement_prestart_radius">12dp</dimen>
+    <dimen name="play_engagement_prestart_timer_radius">10dp</dimen>
 
     <dimen name="play_engagement_live_width">174dp</dimen>
     <dimen name="play_engagement_live_height">82dp</dimen>
