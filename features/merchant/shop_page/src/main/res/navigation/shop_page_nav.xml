@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/shop_page_nav"
-    app:startDestination="@id/shopHeaderFragment"
+    app:startDestination="@id/test_fragment_df_graph"
     >
 
-    <fragment
-        android:id="@+id/shopHeaderFragment"
-        android:name="com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment">
-    </fragment>
+<!--    <fragment-->
+<!--        android:id="@+id/shopHeaderFragment"-->
+<!--        android:name="com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment">-->
+<!--    </fragment>-->
     <include-dynamic
         android:id="@+id/test_fragment_df_graph"
         app:moduleName="df_merchant_seller"

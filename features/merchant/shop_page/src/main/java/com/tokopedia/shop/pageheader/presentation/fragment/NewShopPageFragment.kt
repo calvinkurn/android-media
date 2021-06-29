@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
+import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.tabs.TabLayout
@@ -826,12 +827,16 @@ class NewShopPageFragment :
             observeLiveData(this)
             observeShopProductFilterParameterSharedViewModel()
             observeShopPageFollowingStatusSharedViewModel()
-            getInitialData()
-            view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
-            if (swipeToRefresh?.isRefreshing == false) {
-                setViewState(VIEW_LOADING)
-            }
-            initViews(view)
+//            getInitialData()
+//            view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
+//            if (swipeToRefresh?.isRefreshing == false) {
+//                setViewState(VIEW_LOADING)
+//            }
+//            initViews(view)
+            initToolbar()
+            val navHostFragment = childFragmentManager.findFragmentById(R.id.df_host_fragment) as NavHostFragment
+            val navController = navHostFragment.navController
+//            navController.navigate(R.id.test_fragment_df_graph)
         }
     }
 

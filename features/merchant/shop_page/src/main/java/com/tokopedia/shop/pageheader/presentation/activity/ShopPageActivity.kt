@@ -72,9 +72,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
         checkIfAppLinkToShopInfo()
         checkIfApplinkRedirectedForMigration()
         super.onCreate(savedInstanceState)
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.df_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        navController.navigate(R.id.test_fragment_df_graph)
+//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.df_host_fragment) as NavHostFragment
+//        val navController = navHostFragment.navController
+//        navController.navigate(R.id.test_fragment_df_graph)
     }
 
     override fun getLayoutRes(): Int {
@@ -82,11 +82,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
     }
 
     override fun getNewFragment(): Fragment? {
-//        return if(ShopUtil.isUsingNewShopPageHeader(this))
-//            NewShopPageFragment.createInstance()
-//        else
-//            ShopPageFragment.createInstance()
-        return null
+        return if(ShopUtil.isUsingNewShopPageHeader(this))
+            NewShopPageFragment.createInstance()
+        else
+            ShopPageFragment.createInstance()
     }
 
     override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)

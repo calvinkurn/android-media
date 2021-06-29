@@ -97,6 +97,14 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:background="@color/Unify_N75" />
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/df_host_fragment"
+        android:name="androidx.navigation.dynamicfeatures.fragment.DynamicNavHostFragment"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/shop_page_nav"
+        />
 
     <ViewStub
         android:id="@+id/view_stub_content_layout"
