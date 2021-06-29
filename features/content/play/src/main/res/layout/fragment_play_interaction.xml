@@ -147,8 +147,20 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_engagement_prestart"
+        app:layout_constraintStart_toStartOf="@id/space_size"
+        />
+
+    <include
+        android:id="@+id/view_engagement_finish"
+        layout="@layout/view_engagement_finish"
+        android:layout_width="@dimen/play_engagement_finish_width"
+        android:layout_height="@dimen/play_engagement_finish_height"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/view_engagement_tap"
         app:layout_constraintStart_toStartOf="@id/space_size"
         />
 

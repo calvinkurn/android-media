@@ -83,6 +83,9 @@
     <dimen name="play_engagement_tap_inside_margin">6dp</dimen>
     <dimen name="play_engagement_tap_timer_radius">14dp</dimen>
 
+    <dimen name="play_engagement_finish_width">152dp</dimen>
+    <dimen name="play_engagement_finish_height">62dp</dimen>
+
     <!--General Dimension-->
     <dimen name="play_offset_6">6dp</dimen>
     <dimen name="play_offset_10">10dp</dimen>
