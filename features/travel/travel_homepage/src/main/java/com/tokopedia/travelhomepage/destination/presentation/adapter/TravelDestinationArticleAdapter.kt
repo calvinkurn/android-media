@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.destination.listener.ActionListener
 import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
+import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.item_travel_destination_article.view.*
 
 /**
@@ -33,11 +33,11 @@ class TravelDestinationArticleAdapter(private var list: List<TravelArticleModel.
         notifyDataSetChanged()
     }
 
-    class ViewHolder(itemView: View, private val actionListener: ActionListener): RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, private val actionListener: ActionListener) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: TravelArticleModel.Item, position: Int) {
             with(itemView) {
                 iv_article.loadImage(item.imageUrl)
-                tv_article_subtitle.text = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS, item.publishedDate))
+                tv_article_subtitle.text = DateUtil.dateToString(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.stringToDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS, item.publishedDate))
                 tv_article_title.text = item.title
                 setOnClickListener {
                     actionListener.onTrackArticleItemClick(item, position)
