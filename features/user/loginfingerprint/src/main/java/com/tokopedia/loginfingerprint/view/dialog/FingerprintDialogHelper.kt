@@ -20,7 +20,7 @@ object FingerprintDialogHelper {
         }
     }
 
-    fun showNotRegisteredFingerprintDialog(context: Context?, onPositiveButtonClick: () -> Unit? = {}) {
+    fun showNotRegisteredFingerprintDialog(context: Context?, onPositiveButtonClick: () -> Unit? = {}, onDismiss: () -> Unit? = {}) {
         context?.run {
             val dialog = DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.error_fingerprint_not_registered))
@@ -32,6 +32,7 @@ object FingerprintDialogHelper {
                     dismiss()
                     onPositiveButtonClick()
                 }
+                setOnDismissListener { onDismiss() }
             }
             dialog.show()
         }

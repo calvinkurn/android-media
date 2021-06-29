@@ -41,12 +41,16 @@ class VerifyFingerprintActivity: BaseActivity() {
         if(BiometricPromptHelper.isBiometricAvailable(this)) {
             showBiometricPrompt()
         } else {
-            FingerprintDialogHelper.showNotRegisteredFingerprintDialog(this) {
-                setResult(Activity.RESULT_CANCELED)
-                finish()
-            }
+            FingerprintDialogHelper.showNotRegisteredFingerprintDialog(this, onPositiveButtonClick = {
+                finishWithCanceled()
+            }, onDismiss = { finishWithCanceled() })
         }
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    }
+
+    fun finishWithCanceled() {
+        setResult(Activity.RESULT_CANCELED)
+        finish()
     }
 
     fun initComponents() {

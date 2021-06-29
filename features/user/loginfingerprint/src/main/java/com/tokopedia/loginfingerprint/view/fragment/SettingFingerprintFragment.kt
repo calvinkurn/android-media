@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -75,9 +76,9 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
                 }
             }
         } else {
-            FingerprintDialogHelper.showNotRegisteredFingerprintDialog(activity) {
+            FingerprintDialogHelper.showNotRegisteredFingerprintDialog(context, onPositiveButtonClick = {
                 activity?.finish()
-            }
+            }, onDismiss = { activity?.finish() })
         }
     }
 
@@ -190,11 +191,14 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
                     },
                     onFailed = {
                         enableSwitch = true
-                    }, onError = {
+                    }, onError = { errCode ->
+                        if(errCode == BiometricPrompt.ERROR_LOCKOUT) {
+                            FingerprintDialogHelper.showFingerprintLockoutDialog(activity)
+                        }
                         enableSwitch = true
                     })
             } else {
-                FingerprintDialogHelper.showNotRegisteredFingerprintDialog(context)
+                FingerprintDialogHelper.showNotRegisteredFingerprintDialog(activity)
             }
         }
     }
