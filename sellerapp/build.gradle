@@ -31,7 +31,6 @@ def devMode() {
 
 buildscript {
     repositories {
-    google()
         mavenCentral()
         google()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
