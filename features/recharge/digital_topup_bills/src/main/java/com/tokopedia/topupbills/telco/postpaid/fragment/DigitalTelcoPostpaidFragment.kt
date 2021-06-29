@@ -474,10 +474,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.setContactName(contactName)
     }
 
-    override fun handleCallbackAnySearchNumber(clientNumber: String, productId: String, categoryId: String, inputNumberActionTypeIndex: Int) {
+    override fun handleCallbackAnySearchNumber(clientName: String, clientNumber: String, productId: String, categoryId: String, inputNumberActionTypeIndex: Int) {
         inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
-        postpaidClientNumberWidget.setInputNumber(clientNumber)
-        postpaidClientNumberWidget.clearFocusAutoComplete()
+        postpaidClientNumberWidget.run {
+            setContactName(clientName)
+            setInputNumber(clientNumber)
+            clearFocusAutoComplete()
+        }
     }
 
     override fun handleCallbackAnySearchNumberCancel() {
@@ -504,6 +507,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     override fun setSeamlessFavNumbers(data: TopupBillsSeamlessFavNumber) {
+        // TODO: [Misael] check di postpaid set nomor n contact name dmn
         performanceMonitoringStopTrace()
         seamlessFavNumberList.addAll(data.favoriteNumbers)
     }

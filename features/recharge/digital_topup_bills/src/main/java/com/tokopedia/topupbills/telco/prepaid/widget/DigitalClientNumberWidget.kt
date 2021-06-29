@@ -3,6 +3,7 @@ package com.tokopedia.topupbills.telco.prepaid.widget
 import android.content.Context
 import android.graphics.Color
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
@@ -53,10 +54,13 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         btnContactPicker.setOnClickListener { listener.onNavigateToContact() }
         btnClear.setOnClickListener {
             inputNumberField.textFieldInput.setText("")
+            inputNumberField.textFieldWrapper.hint = context.getString(R.string.digital_client_label)
             hideErrorInputNumber()
         }
 
-        inputNumberField.textFiedlLabelText.setTextColor(Color.RED)
+        inputNumberField.textFieldWrapper.run {
+
+        }
 
         inputNumberField.textFieldInput.run {
             isClickable = true
@@ -126,9 +130,8 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun setContactName(contactName: String) {
-        // TODO: [Misael] Jangan lupa nnti balik kesini, bug ni ga keganti textnya
         val validatedLabel = validateContactName(contactName)
-        inputNumberField.textFiedlLabelText.text = validatedLabel
+        inputNumberField.textFieldWrapper.hint = validatedLabel
     }
 
     fun setIconOperator(url: String) {
@@ -150,11 +153,19 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     private fun validateContactName(contactName: String): String {
-        return if (contactName.matches(REGEX_IS_ALPHABET_AND_SPACE_ONLY.toRegex())) {
+        val label = if (contactName.matches(REGEX_IS_ALPHABET_AND_SPACE_ONLY.toRegex()) && contactName.isNotEmpty()) {
             contactName
         } else {
             context.getString(R.string.digital_client_label)
         }
+
+        val validatedName = if (label.length > LABEL_MAX_CHAR) {
+            label.substring(0, LABEL_MAX_CHAR).plus(ELLIPSIZE)
+        } else {
+            label
+        }
+
+        return validatedName
     }
 
     private fun validatePrefixClientNumber(phoneNumber: String): String {
@@ -193,5 +204,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
 
     companion object {
         private const val REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z\\s]*$"
+        private const val LABEL_MAX_CHAR = 18
+        private const val ELLIPSIZE = "..."
     }
 }

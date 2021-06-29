@@ -11,12 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
+import com.tokopedia.common.topupbills.utils.covertContactUriToContactData
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
 import com.tokopedia.topupbills.searchnumber.di.DigitalTelcoSearchComponent
-import com.tokopedia.topupbills.telco.common.covertContactUriToContactData
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_search_number_telco.*
 import java.util.*

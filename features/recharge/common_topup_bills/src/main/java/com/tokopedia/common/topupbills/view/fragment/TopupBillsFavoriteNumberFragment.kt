@@ -24,6 +24,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
+import com.tokopedia.common.topupbills.utils.covertContactUriToContactData
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberListAdapter
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
@@ -219,7 +220,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
     }
 
     override fun onFavoriteNumberClick(clientNumber: TopupBillsSeamlessFavNumberItem) {
-        navigateToPDP(InputNumberActionType.FAVORITE)
+        navigateToPDP(InputNumberActionType.FAVORITE, clientNumber)
     }
 
     override fun onContinueClicked() {
@@ -236,6 +237,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
                     ?: TopupBillsSeamlessFavNumberItem(
                             clientNumber = binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.text.toString()
                     )
+
             intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, searchedClientNumber)
             intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, inputNumberActionType)
             setResult(Activity.RESULT_OK, intent)
@@ -295,6 +297,25 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
 
     enum class InputNumberActionType {
         MANUAL, CONTACT, FAVORITE
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        data?.let {
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == REQUEST_CODE_CONTACT_PICKER) {
+                    activity?.let {
+                        data.data?.run {
+                            val contact = this.covertContactUriToContactData(it.contentResolver)
+                            val clientNumber = TopupBillsSeamlessFavNumberItem(
+                                    clientName = contact.givenName,
+                                    clientNumber = contact.contactNumber)
+                            navigateToPDP(InputNumberActionType.CONTACT, clientNumber)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     companion object {
