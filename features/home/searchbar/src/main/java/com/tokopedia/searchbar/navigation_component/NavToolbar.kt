@@ -318,7 +318,9 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                        navSearchbarInterface: ((text: CharSequence?,
                                                 start: Int,
                                                 count: Int,
-                                                after: Int) -> Unit)? = null
+                                                after: Int) -> Unit)? = null,
+                       editorActionCallback: ((hint: String) -> Unit)? = null
+
     ) {
         showSearchbar()
 
@@ -331,13 +333,15 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 searchbarImpressionCallback = searchbarImpressionCallback,
                 topNavComponentListener = this,
                 disableDefaultGtmTracker = disableDefaultGtmTracker,
-                navSearchbarInterface = navSearchbarInterface
+                navSearchbarInterface = navSearchbarInterface,
+                editorActionCallback = editorActionCallback
         )
         if (searchbarType == SearchBarType.TYPE_CLICK) {
             navSearchBarController.setHint(hints, shouldShowTransition, durationAutoTransition)
         } else if (searchbarType == SearchBarType.TYPE_EDITABLE) {
             val hint = hints.getOrNull(0)
             navSearchBarController.setEditableSearchbar(hint?.placeholder?:"")
+
         }
     }
 

@@ -455,35 +455,21 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
         statusbar.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
         uoh_navtoolbar?.let {
-            var timerAction: CountDownTimer? = null
             it.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
                 HintData(getString(R.string.hint_cari_transaksi) )),
-                navSearchbarInterface = { query,_,_,_ ->
-                    if (timerAction != null) timerAction?.cancel()
-                    if (query.toString().length in 1 until MIN_KEYWORD_CHARACTER_COUNT) {
-
-                        showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
-                    }
-                    else
-                    {
-                        timerAction = object : CountDownTimer(800, 1000) {
-                            override fun onTick(l: Long) {}
-                            override fun onFinish() {
-                                searchQuery = query.toString()
-                                when {
-                                    searchQuery.isBlank() -> {
-                                        view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
-                                        triggerSearch()
-                                    }
-                                    searchQuery.length in 1 until MIN_KEYWORD_CHARACTER_COUNT -> {
-                                        showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
-                                    }
-                                    else -> {
-                                        triggerSearch()
-                                    }
-                                }
-                            }
-                        }.start()
+                editorActionCallback = {query ->
+                    searchQuery = query
+                    when {
+                        searchQuery.isBlank() -> {
+                            view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
+                            triggerSearch()
+                        }
+                        searchQuery.length in 1 until MIN_KEYWORD_CHARACTER_COUNT -> {
+                            showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
+                        }
+                        else -> {
+                            triggerSearch()
+                        }
                     }
                 }
             )

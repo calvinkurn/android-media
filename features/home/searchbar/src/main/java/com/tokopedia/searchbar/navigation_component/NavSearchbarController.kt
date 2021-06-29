@@ -5,6 +5,7 @@ import android.view.View
 import android.view.View.VISIBLE
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.EditorInfo
 import androidx.core.widget.addTextChangedListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.searchbar.R
@@ -14,6 +15,7 @@ import com.tokopedia.searchbar.helper.EasingInterpolator
 import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -27,7 +29,8 @@ class NavSearchbarController(val view: View,
                              val navSearchbarInterface: ((text: CharSequence?,
                                                       start: Int,
                                                       count: Int,
-                                                      after: Int) -> Unit)? = null
+                                                      after: Int) -> Unit)? = null,
+                             val editorActionCallback: ((hint: String)-> Unit)?
 ) : CoroutineScope {
     init {
         view.layout_search.visibility = VISIBLE
@@ -70,6 +73,7 @@ class NavSearchbarController(val view: View,
     }
 
     fun setEditableSearchbar(hint: String) {
+        setEditorActionListener()
         etSearch.isEnabled = true
         etSearch.hint = hint
         etSearch.addTextChangedListener(
@@ -79,6 +83,16 @@ class NavSearchbarController(val view: View,
                 )
             }
         )
+    }
+
+    private fun setEditorActionListener() {
+        etSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
+        etSearch.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                editorActionCallback?.invoke(etSearch.text.toString())
+                true
+            } else false
+        }
     }
 
     private fun setHintSingle(hint: HintData) {
