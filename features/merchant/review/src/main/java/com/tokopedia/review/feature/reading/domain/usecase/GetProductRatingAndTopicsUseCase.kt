@@ -25,7 +25,7 @@ class GetProductRatingAndTopicsUseCase @Inject constructor(graphqlRepository: Gr
                   detail {
                     rate
                     totalReviews
-                    percentage
+                    percentageFloat
                   }
                 }
                 topics {

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.reading.data.ProductReviewDetail
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -64,7 +63,7 @@ class ReadReviewStatisticsBottomSheet : BottomSheetUnify() {
     }
 
     private fun bindProgressBarData(progressBar: ReadReviewRatingBar?, reviewDetail: ProductReviewDetail) {
-        progressBar?.setProgressAndRatingCount(reviewDetail.percentage.toIntOrZero(), reviewDetail.totalReviews)
+        progressBar?.setProgressAndRatingCount(reviewDetail.percentage.toInt(), reviewDetail.totalReviews)
     }
 
     private fun getListOfProgressBars(): List<ReadReviewRatingBar?> {
