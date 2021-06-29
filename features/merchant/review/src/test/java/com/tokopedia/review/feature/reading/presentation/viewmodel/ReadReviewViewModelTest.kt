@@ -4,8 +4,10 @@ import com.tokopedia.review.common.data.ToggleLikeReviewResponse
 import com.tokopedia.review.common.data.ToggleProductReviewLike
 import com.tokopedia.review.feature.reading.data.*
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
+import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
 import com.tokopedia.review.feature.reading.presentation.uimodel.ToggleLikeUiModel
+import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
@@ -18,6 +20,15 @@ import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 
 class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
+
+    @Test
+    fun `when productId is not set should return empty`() {
+        val expectedProductId = ""
+
+        val actualProductId = viewModel.getProductId()
+
+        Assert.assertEquals(expectedProductId, actualProductId)
+    }
 
     @Test
     fun `when setProductId should call getRatingAndTopics and return expected results`() {
@@ -39,11 +50,13 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         viewModel.setProductId(productId)
         val actualSatisfactionRate = viewModel.getReviewSatisfactionRate()
         val actualStatistics = viewModel.getReviewStatistics()
+        val actualProductId = viewModel.getProductId()
 
         verifyGetProductRatingAndTopicsUseCaseExecuted()
         verifyRatingAndTopicSuccessEquals(Success(expectedResponse.productrevGetProductRatingAndTopics))
         Assert.assertEquals(expectedSatisfactionRate, actualSatisfactionRate)
         Assert.assertEquals(expectedStatistics, actualStatistics)
+        Assert.assertEquals(productId, actualProductId)
     }
 
     @Test
@@ -198,23 +211,103 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
     }
 
-//    @Test
-//    fun `when setFilter from rating should set expected filter, reset page and make network call with correct params`() {
-//
-//        val selectedFilters = listOf(ListItemUnify("5", ""), ListItemUnify("3", ""))
-//        val type = SortFilterBottomSheetType.RatingFilterBottomSheet
-//        val expectedRatingFilter = listOf("5","3")
-//        val expectedResponse =  ProductReviewList()
-//
-//        onGetProductReviewsSuccess_thenReturn(expectedResponse)
-//
-//        viewModel.setFilter(selectedFilters, type)
-//        val actualRatingFilter = viewModel.getSelectedRatingFilter()
-//
-//        verifyGetProductReviewListUseCase()
-//        verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
-//        Assert.assertEquals(expectedRatingFilter, actualRatingFilter)
-//    }
+    @Test
+    fun `when setFilter from rating should set expected filter, reset page and make network call with correct params`() {
+        val ratingFive = "5"
+        val ratingThree = "3"
+        val emptyDescription = ""
+        val selectedFilters = listOf(ListItemUnify(ratingFive, emptyDescription), ListItemUnify(ratingThree, emptyDescription))
+        val type = SortFilterBottomSheetType.RatingFilterBottomSheet
+        val expectedRatingFilter = listOf(ratingFive, ratingThree)
+        val expectedResponse = ProductReviewList()
+
+        onGetProductReviewsSuccess_thenReturn(expectedResponse)
+
+        viewModel.setFilter(selectedFilters, type)
+        val actualRatingFilter = viewModel.getSelectedRatingFilter()
+
+        verifyGetProductReviewListUseCaseExecuted()
+        verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
+        Assert.assertEquals(expectedRatingFilter, actualRatingFilter)
+    }
+
+    @Test
+    fun `when setFilter from topic should set expected filter, reset page and make network call with correct params`() {
+        val productId = anyString()
+        val productQualityTopic = "Kualitas Produk"
+        val shopServiceTopic = "Pelayanan Toko"
+        val productQualityTopicKey = "kualitas"
+        val shopServiceTopicKey = "pelayanan"
+        val expectedRatingAndTopicResponse = ProductRatingAndTopic(ProductrevGetProductRatingAndTopic(topics = listOf(ProductTopic(formatted = productQualityTopic, key = productQualityTopicKey), ProductTopic(formatted = shopServiceTopic, key = shopServiceTopicKey))))
+        val emptyDescription = ""
+        val selectedFilters = listOf(ListItemUnify(productQualityTopic, emptyDescription), ListItemUnify(shopServiceTopic, emptyDescription))
+        val type = SortFilterBottomSheetType.TopicFilterBottomSheet
+        val expectedTopicFilter = listOf(productQualityTopic, shopServiceTopic)
+        val expectedResponse = ProductReviewList()
+
+        onGetProductRatingAndTopicsSuccess_thenReturn(expectedRatingAndTopicResponse)
+
+        viewModel.setProductId(productId)
+
+        verifyGetProductRatingAndTopicsUseCaseExecuted()
+        verifyRatingAndTopicSuccessEquals(Success(expectedRatingAndTopicResponse.productrevGetProductRatingAndTopics))
+
+        onGetProductReviewsSuccess_thenReturn(expectedResponse)
+
+        viewModel.setFilter(selectedFilters, type)
+        val actualTopicFilter = viewModel.getSelectedTopicFilter()
+
+        verifyGetProductReviewListUseCaseExecuted()
+        verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
+        Assert.assertEquals(expectedTopicFilter, actualTopicFilter)
+    }
+
+    @Test
+    fun `when setFilter from rating bottom sheet is empty should set to null`() {
+        val selectedFilters = listOf<ListItemUnify>()
+        val type = SortFilterBottomSheetType.RatingFilterBottomSheet
+        val expectedRatingFilter = listOf<String>()
+        val expectedResponse = ProductReviewList()
+
+        onGetProductReviewsSuccess_thenReturn(expectedResponse)
+
+        viewModel.setFilter(selectedFilters, type)
+        val actualRatingFilter = viewModel.getSelectedRatingFilter()
+
+        verifyGetProductReviewListUseCaseExecuted()
+        verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
+        Assert.assertEquals(expectedRatingFilter, actualRatingFilter)
+    }
+
+    @Test
+    fun `when setFilter from topic bottom sheet is empty should set to null`() {
+        val selectedFilters = listOf<ListItemUnify>()
+        val type = SortFilterBottomSheetType.TopicFilterBottomSheet
+        val expectedTopicFilter = listOf<String>()
+        val expectedResponse = ProductReviewList()
+
+        onGetProductReviewsSuccess_thenReturn(expectedResponse)
+
+        viewModel.setFilter(selectedFilters, type)
+        val actualTopicFilter = viewModel.getSelectedTopicFilter()
+
+        verifyGetProductReviewListUseCaseExecuted()
+        verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
+        Assert.assertEquals(expectedTopicFilter, actualTopicFilter)
+    }
+
+    @Test
+    fun `when setSort to invalid value should set to default value`() {
+        val sort = ""
+        val expectedResponse = ProductReviewList()
+
+        onGetProductReviewsSuccess_thenReturn(expectedResponse)
+
+        viewModel.setSort(sort)
+
+        verifyGetProductReviewListUseCaseExecuted()
+        verifyProductReviewsSuccessEquals(Success(expectedResponse.productrevGetProductReviewList))
+    }
 
     private fun onGetProductRatingAndTopicsSuccess_thenReturn(expectedResponse: ProductRatingAndTopic) {
         coEvery { getProductRatingAndTopicsUseCase.executeOnBackground() } returns expectedResponse
