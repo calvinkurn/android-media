@@ -95,6 +95,7 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.junitJupiterEngine
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.spek2Api
     testImplementation rootProject.ext.testDependencies.spek2Dsl

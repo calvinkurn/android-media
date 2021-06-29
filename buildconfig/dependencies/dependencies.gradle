@@ -67,7 +67,7 @@ ext {
     bomVersion = '26.0.0'
 
     JunitVersion = '4.12'
-    JunitJupiterVersion = '5.1.1'
+    JunitJupiterVersion = '5.7.1'
     MockkVersion = '1.9.1'
     kotlinTestVersion = '1.3.70'
     KotlinMockitoVersion = '1.5.0'

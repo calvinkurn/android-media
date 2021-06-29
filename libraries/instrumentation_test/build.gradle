@@ -139,6 +139,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
 
     api rootProject.ext.miscDependencies.coroutineTest
+
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.junitJupiterEngine
 }
 
 project.ext {
