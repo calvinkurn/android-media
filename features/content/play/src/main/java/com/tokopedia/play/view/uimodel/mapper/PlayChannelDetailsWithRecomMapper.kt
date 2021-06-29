@@ -7,6 +7,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.engagement.PlayInteractiveUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -34,7 +35,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
                     videoMetaInfo = mapVideoMeta(it.video, it.id, extraParams),
-                    statusInfo = mapChannelStatusInfo(it.config, it.title)
+                    statusInfo = mapChannelStatusInfo(it.config, it.title),
+                    interactiveInfo = mapInteractiveInfo()
             )
         }
     }
@@ -195,6 +197,10 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         return if (isFreezed) PlayStatusType.Freeze
         else PlayStatusType.Active
     }
+
+    private fun mapInteractiveInfo() = PlayInteractiveUiModel.Incomplete(
+            hasInteractive = true
+    )
 
     companion object {
         private const val MS_PER_SECOND = 1000

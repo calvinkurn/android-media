@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:text="Tap terus!"
+        android:text="@string/play_engagement_tap_action_text"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="@id/fl_timer_tap"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,10 +89,9 @@
             android:layout_marginTop="@dimen/spacing_lvl1"
             android:layout_marginEnd="@dimen/spacing_lvl1"
             android:layout_marginBottom="@dimen/spacing_lvl1"
-            app:timer_unify_single_remainingMinutes="5"
-            app:timer_unify_single_text="Berakhir dalam:"
+            app:timer_unify_single_text="@string/play_engagement_live_timer_text"
             app:timer_unify_single_textWidth="wrap"
-            app:timer_unify_single_type="hour"
+            app:timer_unify_single_type="second"
             app:timer_unify_single_variant="main"
             />
 

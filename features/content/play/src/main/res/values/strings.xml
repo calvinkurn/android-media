@@ -58,4 +58,11 @@
     <string name="play_action_ok">Oke</string>
     <string name="play_out_of_stock">Stok habis</string>
 
+    <!--Engagement Tools-->
+    <string name="play_engagement_prestart_timer_text">Dimulai dalam:</string>
+
+    <string name="play_engagement_live_timer_text">Berakhir dalam:</string>
+
+    <string name="play_engagement_tap_action_text">Tap terus!</string>
+
 </resources>

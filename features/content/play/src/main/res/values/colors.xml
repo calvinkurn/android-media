@@ -42,6 +42,9 @@
     <color name="play_dms_engagement_live_bg_1">#FFC400</color>
     <color name="play_dms_engagement_live_bg_2">#FF8B00</color>
 
+    <color name="play_dms_timer_prestart_bg">#E5E7E9</color>
+    <color name="play_dms_timer_prestart_text">#F531353B</color>
+
     <!--General Color-->
     <color name="play_dms_R100">#FFEAEF</color>
     <color name="play_dms_G300">#82EF95</color>
