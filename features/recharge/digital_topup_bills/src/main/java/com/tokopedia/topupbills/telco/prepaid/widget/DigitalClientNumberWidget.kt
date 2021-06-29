@@ -203,7 +203,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     companion object {
-        private const val REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z\\s]*$"
+        private const val REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z0-9\\s]*$"
         private const val LABEL_MAX_CHAR = 18
         private const val ELLIPSIZE = "..."
     }
