@@ -606,11 +606,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         iuNoAddress?.setImageUrl(NO_ADDRESS_IMAGE)
         descNoAddress?.text = getString(R.string.occ_lbl_desc_no_address)
         btnAddNewAddress?.setOnClickListener {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
-                putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
-                putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
-            }, REQUEST_CODE_ADD_NEW_ADDRESS)
-            /*if (LogisticCommonUtil.isRollOutUserANARevamp()) {
+            if (LogisticCommonUtil.isRollOutUserANARevamp()) {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
                     putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
                     putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
@@ -620,7 +616,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
                     putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
                 }, REQUEST_CODE_ADD_NEW_ADDRESS)
-            }*/
+            }
         }
     }
 
