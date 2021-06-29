@@ -14,8 +14,9 @@ class GetGqlHowToPayInstructions @Inject constructor(
 ) : GraphqlUseCase<HowToPayGqlResponse>(graphqlRepository) {
 
     fun getGqlHowToPayInstruction(
-        appLinkPaymentInfo: AppLinkPaymentInfo,
-        onSuccess: (HowToPayGqlResponse, AppLinkPaymentInfo) -> Unit,
+        transactionId: String?,
+        merchantCode: String?,
+        onSuccess: (HowToPayGqlResponse) -> Unit,
         onFail: (Throwable) -> Unit
     ) {
         try {
@@ -23,13 +24,13 @@ class GetGqlHowToPayInstructions @Inject constructor(
             this.setTypeClass(HowToPayGqlResponse::class.java)
             this.setRequestParams(
                 getRequestParams(
-                    appLinkPaymentInfo.transaction_id,
-                    appLinkPaymentInfo.payment_code
+                    "appLinkPaymentInfo.transaction_id",
+                    "appLinkPaymentInfo.payment_code"
                 )
             )
             this.execute(
                 { result ->
-                    onSuccess(result, appLinkPaymentInfo)
+                    onSuccess(result)
                 }, { error ->
                     onFail(error)
                 }
@@ -39,8 +40,11 @@ class GetGqlHowToPayInstructions @Inject constructor(
         }
     }
 
-    private fun getRequestParams(transactionId: String, merchantCode: String) =
-        mapOf(TRANSACTION_ID to transactionId, MERCHANT_CODE to merchantCode)
+    private fun getRequestParams(transactionId: String, merchantCode: String): Map<String, Any?> {
+        var t = "11908463"
+        var m = "tokopedia"
+        return mapOf(TRANSACTION_ID to t, MERCHANT_CODE to m)
+    }
 
     companion object {
 
@@ -48,14 +52,23 @@ class GetGqlHowToPayInstructions @Inject constructor(
         const val MERCHANT_CODE = "merchantCode"
 
         const val GQL_HTP_DATA =
-            """query howToPayData(${'$'}transactionID: String!",${'$'}merchantCode:String!") {
-            howToPayData(${'$'}transactionID: String!",${'$'}merchantCode:String!") {
+            """query howToPayData(${'$'}transactionID: String!,${'$'}merchantCode:String!) {
+            howToPayData(transactionID: ${'$'}transactionID, merchantCode: ${'$'}merchantCode) {
                 expiredIn
                 nettAmount
                 combineAmount
                 gatewayImage
                 gatewayName
                 gatewayCode
+                transactionCode
+                paymentCodeHint
+                hideCopyAmount
+                hideCopyAccountNum
+                isOfflineStore
+                isManualTransfer
+                destBankName
+                destBankBranch
+                destAccountName
                 helpPageJSON
             }
         }

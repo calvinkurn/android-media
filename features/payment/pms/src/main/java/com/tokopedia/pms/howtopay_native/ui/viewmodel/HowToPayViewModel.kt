@@ -38,9 +38,9 @@ class HowToPayViewModel @Inject constructor(
         )*/
     }
 
-    fun getGqlHtpInstructions(appLinkPaymentInfo: AppLinkPaymentInfo) {
+    fun getGqlHtpInstructions() {
         getGqlHowToPayInstructions.getGqlHowToPayInstruction(
-            appLinkPaymentInfo,
+            "null" ,"",
             ::onHowToPayDataSuccess,
             ::onHowToPayDataFailure
         )
@@ -48,13 +48,11 @@ class HowToPayViewModel @Inject constructor(
 
     private fun onHowToPayDataSuccess(
         howToPayGqlResponse: HowToPayGqlResponse,
-        appLinkPaymentInfo: AppLinkPaymentInfo
     ) {
         getHowToPayInstructionsMapper.getHowToPayInstruction(
             howToPayGqlResponse,
-            appLinkPaymentInfo,
             { result -> howToPayLiveData.postValue(Success(result)) },
-            { howToPayLiveData.postValue(Fail(it))}
+            { onHowToPayDataFailure(it) }
         )
     }
 

@@ -11,49 +11,25 @@ class GetHowToPayInstructionsMapper @Inject constructor() : UseCase<HowToPayInst
 
     fun getHowToPayInstruction(
         htpResponse: HowToPayGqlResponse,
-        appLinkPaymentInfo: AppLinkPaymentInfo,
         onSuccess: (HowToPayInstruction) -> Unit,
         onFail: (Throwable) -> Unit
     ) {
         useCaseRequestParams = RequestParams().apply {
             putObject(KEY_HTP_RESPONSE, htpResponse)
-            putObject(Key_AppLinkPaymentInfo, appLinkPaymentInfo)
         }
         this.execute(onSuccess, onFail, useCaseRequestParams)
     }
 
     override suspend fun executeOnBackground(): HowToPayInstruction {
-        val appLinkPaymentInfo: AppLinkPaymentInfo = useCaseRequestParams
-            .getObject(Key_AppLinkPaymentInfo) as AppLinkPaymentInfo
-        val htpData: HowToPayGqlResponse = useCaseRequestParams
+        val htpResponse: HowToPayGqlResponse = useCaseRequestParams
             .getObject(KEY_HTP_RESPONSE) as HowToPayGqlResponse
+        htpResponse.howToPayData.let { htpData ->
+            val howToPayChannelData = getHowToPay(htpData.helpPageJSON)
+            htpData.helpPageData = howToPayChannelData
 
-        val howToPayChannelData = getHowToPay(htpData.howToPayData.helpPageJSON)
-        if (howToPayChannelData.channelList.isNullOrEmpty())
-            throw NoInstructionFoundException()
-        else
-            return when (appLinkPaymentInfo.payment_type) {
-                KEY_VA -> getChannelResult(VirtualAccount, howToPayChannelData)
-                KEY_SYARIAH -> getChannelResult(Syariah, howToPayChannelData)
-                KEY_TRANSFER -> getChannelResult(BankTransfer, howToPayChannelData)
-                KEY_STORE -> getChannelResult(Store, howToPayChannelData)
-                KEY_KLIKBCA -> getChannelResult(KlickBCA, howToPayChannelData)
-                else -> throw NoInstructionFoundException()
-            }
+            return HowToPayInstruction(htpData)
+        }
     }
-
-    private fun getChannelResult(
-        paymentType: PaymentType,
-        helpPageData: HelpPageData
-    ): HowToPayInstruction {
-        return if (
-            helpPageData.channelList.size > 1) MultiChannelGatewayResult(paymentType, helpPageData)
-        else helpPageData.channelList
-            .getOrNull(0)?.channelSteps?.let {
-                SingleChannelGatewayResult(paymentType, it)
-            } ?: kotlin.run { SingleChannelGatewayResult(paymentType, arrayListOf()) }
-    }
-
 
     private fun getHowToPay(helpPageJSON: String?): HelpPageData {
         try {

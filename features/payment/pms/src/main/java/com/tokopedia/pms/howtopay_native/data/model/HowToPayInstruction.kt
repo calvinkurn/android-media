@@ -1,11 +1,6 @@
 package com.tokopedia.pms.howtopay_native.data.model
 
-sealed class HowToPayInstruction
-data class SingleChannelGatewayResult(val type: PaymentType,
-                                      val instructions : ArrayList<String>) : HowToPayInstruction()
-data class MultiChannelGatewayResult(val type: PaymentType,
-                                     val gateway: HelpPageData) : HowToPayInstruction()
-
+data class HowToPayInstruction(val htpData: HowToPayData)
 
 sealed class PaymentType
 object VirtualAccount : PaymentType()

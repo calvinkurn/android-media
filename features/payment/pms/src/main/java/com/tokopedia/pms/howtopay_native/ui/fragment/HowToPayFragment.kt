@@ -24,7 +24,10 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.pms.R
 import com.tokopedia.pms.howtopay_native.analytics.HowToPayAnalytics
-import com.tokopedia.pms.howtopay_native.data.model.*
+import com.tokopedia.pms.howtopay_native.data.model.AppLinkPaymentInfo
+import com.tokopedia.pms.howtopay_native.data.model.HowToPayData
+import com.tokopedia.pms.howtopay_native.data.model.HowToPayInstruction
+import com.tokopedia.pms.howtopay_native.data.model.HtpPaymentChannel
 import com.tokopedia.pms.howtopay_native.ui.adapter.InstructionAdapter
 import com.tokopedia.pms.howtopay_native.ui.adapter.MultiChannelAdapter
 import com.tokopedia.pms.howtopay_native.ui.adapter.viewHolder.NonScrollLinerLayoutManager
@@ -35,6 +38,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.pms_hwp_info.*
 import javax.inject.Inject
 
@@ -92,7 +96,9 @@ class HowToPayFragment : BaseDaggerFragment() {
         arguments?.let {
             observeLiveData()
             loaderViewHowToPay.visible()
-            howToPayViewModel.getAppLinkPaymentInfoData(it)
+            howToPayViewModel.getGqlHtpInstructions()
+
+            //howToPayViewModel.getAppLinkPaymentInfoData(it)
         }
     }
 
@@ -127,7 +133,7 @@ class HowToPayFragment : BaseDaggerFragment() {
     private fun onAppLinkPaymentInfoLoaded(appLinkPaymentInfo: AppLinkPaymentInfo) {
         this.appLinkPaymentInfo = appLinkPaymentInfo
         howToPayAnalytics.get().eventOnScreenOpen(appLinkPaymentInfo.payment_type)
-        howToPayViewModel.getHowToPayInstruction(appLinkPaymentInfo)
+        //howToPayViewModel.getGqlHtpInstructions(appLinkPaymentInfo)
     }
 
     private fun onInstructionLoadingFailed() {
@@ -146,82 +152,105 @@ class HowToPayFragment : BaseDaggerFragment() {
     private fun onInstructionLoaded(data: HowToPayInstruction) {
         loaderViewHowToPay.gone()
         scrollViewHowToPay.visible()
-        when (data) {
-            is MultiChannelGatewayResult -> {
-                when (data.type) {
-                    is VirtualAccount -> addVirtualAccountPayment()
-                    is Syariah -> addSyariahPayment()
-                }
-                addMultipleChannelAdapter(data.gateway.channelList)
-            }
-            is SingleChannelGatewayResult -> {
-                when (data.type) {
-                    is BankTransfer -> addBankTransferPayment()
-                    is Store -> addStoreTransferPayment(data)
-                    is KlickBCA -> addKlikBCAPayment()
-                }
-                addSingleChannelInstruction(data.instructions)
+        setHeaderData(data.htpData)
+        data.htpData.helpPageData?.channelList?.let { channelList ->
+            if (channelList.size > 1) {
+                addMultipleChannelAdapter(channelList)
+            } else {
+                addSingleChannelInstruction(
+                    channelList.getOrNull(0)?.channelSteps
+                        ?: arrayListOf()
+                )
             }
         }
     }
 
-    private fun addVirtualAccountPayment() {
-        setPaymentInfo(
-            getString(R.string.pms_hwp_VA_code),
-            appLinkPaymentInfo.payment_code,
-            getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
-            getString(R.string.pms_hwp_copy),
-            IconUnify.COPY
-        ) {
-            copyTOClipBoard(context, appLinkPaymentInfo.payment_code)
-            showToast(getString(R.string.pms_hwp_va_copy_success))
-        }
-    }
+    private fun setHeaderData(data: HowToPayData) {
+        val paymentCodeHeading = if (data.paymentCodeHint.isNullOrEmpty())
+            getString(R.string.pms_hwp_payment_code) else data.paymentCodeHint
 
-    private fun addSyariahPayment() {
-        setPaymentInfo(
-            getString(R.string.pms_hwp_payment_code),
-            appLinkPaymentInfo.payment_code,
-            getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
-            getString(R.string.pms_hwp_copy),
-            IconUnify.COPY
-        ) {
-            copyTOClipBoard(context, appLinkPaymentInfo.payment_code)
-            showToast(getString(R.string.pms_hwp_code_copy_success))
-        }
-    }
+        val amount = if (data.combineAmount > 0)
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(data.combineAmount, false)
+        else data.netAmount
 
-    private fun addBankTransferPayment() {
-        setPaymentInfo(
-            getString(R.string.pms_hwp_account_number),
-            appLinkPaymentInfo.bank_num,
+        val displayAmount = if (data.isManualTransfer == true)
             highlightLastThreeDigits(
                 getString(
                     R.string.pms_hwp_rp,
-                    appLinkPaymentInfo.total_amount
+                    amount
                 )
-            ),
+            ) else amount
+
+        setCommonPaymentDetails(
+            data.gatewayName,
+            data.gatewayImage,
+            paymentCodeHeading,
+            data.transactionCode,
+            displayAmount
+        )
+        when {
+            data.isManualTransfer == true -> addBankTransferPayment(data, displayAmount)
+            data.isOfflineStore == true -> addStoreTransferPayment(data, displayAmount)
+            else -> {
+                setActionInfo(
+                    data,
+                    displayAmount,
+                    getString(R.string.pms_hwp_copy),
+                    IconUnify.COPY
+                ) {
+                    copyTOClipBoard(context, data.transactionCode ?: "")
+                    showToast(getString(R.string.pms_hwp_common_copy_success, data.paymentCodeHint))
+                }
+            }
+        }
+    }
+
+    private fun setCommonPaymentDetails(
+        gatewayName: String?,
+        gatewayImage: String?,
+        paymentCodeHeading: String,
+        paymentCode: String?,
+        displayAmount: CharSequence?
+    ) {
+        tvPaymentAccountTitle.text = paymentCodeHeading
+        tvGateWayName.text = gatewayName
+        tvPaymentAccountNumber.text = paymentCode
+        tvTotalPaymentAmount.text = displayAmount
+
+        ivGateWayImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+        val gatewayLogo = gatewayImage ?: ""
+        when {
+            gatewayLogo.isNotBlank() ->
+                ivGateWayImage.setImageUrl(gatewayLogo, ivGateWayImage.heightRatio)
+            else -> ivGateWayImage.gone()
+        }
+    }
+
+    private fun addBankTransferPayment(data: HowToPayData, displayAmount: CharSequence?) {
+        val bankInfo = getString(
+            R.string.pms_hwp_bank_info,
+            data.destAccountName, data.destBankBranch
+        )
+        tvAccountName.visible()
+        tvAccountName.text = bankInfo
+        tickerAmountNote.visible()
+        tickerAmountNote.setTextDescription(getString(R.string.pms_hwp_transfer_3_digit_info))
+
+        setActionInfo(
+            data,
+            displayAmount,
             getString(R.string.pms_hwp_copy),
             IconUnify.COPY
         ) {
-            copyTOClipBoard(context, appLinkPaymentInfo.payment_code)
-            showToast(getString(R.string.pms_hwp_bank_account_number_copy))
+            copyTOClipBoard(context, data.transactionCode ?: "")
+            showToast(getString(R.string.pms_hwp_common_copy_success, data.paymentCodeHint))
         }
-        tvAccountName.visible()
-        tvAccountName.text = getString(
-            R.string.pms_hwp_bank_info,
-            appLinkPaymentInfo.bank_name, appLinkPaymentInfo.bank_info
-        )
-        tickerAmountNote.visible()
-        tickerAmountNote.setTextDescription(getString(R.string.pms_hwp_transfer_3_digit_info))
     }
 
-    private fun addStoreTransferPayment(data: SingleChannelGatewayResult) {
-
-        setPaymentInfo(
-            getString(R.string.pms_hwp_payment_code),
-            appLinkPaymentInfo.payment_code,
-            getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
+    private fun addStoreTransferPayment(data: HowToPayData, displayAmount: CharSequence?) {
+        setActionInfo(
+            data,
+            displayAmount,
             getString(R.string.pms_hwp_screenshot),
             IconUnify.DOWNLOAD
         ) {
@@ -241,56 +270,39 @@ class HowToPayFragment : BaseDaggerFragment() {
         screenshotHelper.takeScreenShot(view, this)
     }
 
-    private fun addKlikBCAPayment() {
-        setPaymentInfo(
-            getString(R.string.pms_hwp_user_id),
-            appLinkPaymentInfo.payment_code,
-            getString(R.string.pms_hwp_rp, appLinkPaymentInfo.total_amount),
-            null, null, null
-        )
-    }
-
-    private fun setPaymentInfo(
-        accountTitle: String,
-        accountNumber: String,
-        amountStr: CharSequence,
+    private fun setActionInfo(
+        howToPayData: HowToPayData,
+        displayAmount: CharSequence?,
         actionText: String?,
-        actionIcon: Int?, clickAction: (() -> Unit)?
+        actionIcon: Int, clickAction: (() -> Unit)
     ) {
-        tvPaymentAccountTitle.text = accountTitle
-
-        tvGateWayName.text = appLinkPaymentInfo.gateway_name
-        tvPaymentAccountNumber.text = accountNumber
-        tvTotalPaymentAmount.text = amountStr
-
-        ivGateWayImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
-
-        val bankLogo = appLinkPaymentInfo.bank_logo ?: ""
-        val gatewayLogo = appLinkPaymentInfo.gateway_logo ?: ""
-        when {
-            bankLogo.isNotBlank() -> {
-                ivGateWayImage.setImageUrl(bankLogo, ivGateWayImage.heightRatio)
-            }
-            gatewayLogo.isNotBlank() -> {
-                ivGateWayImage.setImageUrl(gatewayLogo, ivGateWayImage.heightRatio)
-            }
-            else -> {
-                ivGateWayImage.gone()
-            }
-        }
-
-        actionIcon?.let {
+        // for account number copy
+        if (howToPayData.hideCopyAccountNum == false) {
             ivTakeScreenshot.setImage(actionIcon)
-            ivTakeScreenshot.setOnClickListener { clickAction?.invoke() }
-        } ?: run {
-            ivTakeScreenshot.gone()
-        }
+            ivTakeScreenshot.setOnClickListener { clickAction.invoke() }
 
-        actionText?.let {
             tvPaymentInfoAction.text = actionText
-            tvPaymentInfoAction.setOnClickListener { clickAction?.invoke() }
-        } ?: run {
+            tvPaymentInfoAction.setOnClickListener { clickAction.invoke() }
+
+        } else {
+            ivTakeScreenshot.gone()
             tvPaymentInfoAction.gone()
+        }
+        // for amount copy
+        if (howToPayData.hideCopyAmount == false) {
+            tvPaymentAmountAction.text = getString(R.string.pms_hwp_copy)
+            ivAmountAction.setImage(IconUnify.COPY)
+            tvPaymentAmountAction.setOnClickListener {
+                copyTOClipBoard(context, displayAmount?.toString() ?: "")
+                showToast(getString(R.string.pms_hwp_amount_copy_success))
+            }
+            ivAmountAction.setOnClickListener {
+                copyTOClipBoard(context, displayAmount?.toString() ?: "")
+                showToast(getString(R.string.pms_hwp_amount_copy_success))
+            }
+        } else {
+            tvPaymentAmountAction.gone()
+            ivAmountAction.gone()
         }
     }
 
@@ -395,6 +407,7 @@ class HowToPayFragment : BaseDaggerFragment() {
 
     companion object {
         private val COPY_BOARD_LABEL = "Tokopedia"
+
         fun getInstance(activity: Activity, bundle: Bundle?): HowToPayFragment? {
             if (bundle == null) {
                 activity.finish()
