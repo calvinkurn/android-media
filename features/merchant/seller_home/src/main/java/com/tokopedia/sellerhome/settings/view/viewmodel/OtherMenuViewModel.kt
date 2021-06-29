@@ -186,16 +186,17 @@ class OtherMenuViewModel @Inject constructor(
         getIsTopAdsAutoTopup()
     }
 
-    fun onReloadAndCheckDelayErrorResponseTrigger(shouldCheckDelay: Boolean = true) {
+    fun onReloadErrorData() {
         _hasShownMultipleErrorToaster.value = false
-        if (shouldCheckDelay) {
-            launch(coroutineContext) {
-                _isToasterAlreadyShown.value.let { isToasterAlreadyShown ->
-                    if (!isToasterAlreadyShown){
-                        _isToasterAlreadyShown.value = true
-                        delay(DELAY_TIME)
-                        _isToasterAlreadyShown.value = false
-                    }
+    }
+
+    fun onCheckDelayErrorResponseTrigger() {
+        launch(coroutineContext) {
+            _isToasterAlreadyShown.value.let { isToasterAlreadyShown ->
+                if (!isToasterAlreadyShown){
+                    _isToasterAlreadyShown.value = true
+                    delay(DELAY_TIME)
+                    _isToasterAlreadyShown.value = false
                 }
             }
         }

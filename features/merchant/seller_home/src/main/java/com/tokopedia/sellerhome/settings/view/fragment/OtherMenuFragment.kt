@@ -271,7 +271,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onRefreshData() {
-        otherMenuViewModel.onReloadAndCheckDelayErrorResponseTrigger()
+        otherMenuViewModel.onReloadErrorData()
     }
 
     override fun onShopBadgeRefresh() {
@@ -649,6 +649,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun showErrorToaster(throwable: Throwable, onRetryAction: () -> Unit = {}) {
+        otherMenuViewModel.onCheckDelayErrorResponseTrigger()
         val canShowToaster = currentFragmentType == FragmentType.OTHER && canShowErrorToaster
         if (canShowToaster) {
             val errorMessage = context?.let {
@@ -669,7 +670,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                             context?.getString(R.string.setting_toaster_error_retry).orEmpty())
                     {
                         otherMenuViewModel.reloadErrorData()
-                        otherMenuViewModel.onReloadAndCheckDelayErrorResponseTrigger(false)
+                        otherMenuViewModel.onReloadErrorData()
                     }
                 }
         multipleErrorSnackbar?.show()
