@@ -42,10 +42,37 @@ constructor(
                        xSource: String,
                        pageName: String,
                        productIds: List<String>): RequestParams {
-        return getRecomParams(pageNumber, xSource, pageName, productIds, "", false)
+        return getRecomParams(pageNumber, xSource, pageName, productIds, "")
     }
 
     fun getRecomParams(pageNumber: Int,
+                       xSource: String = DEFAULT_VALUE_X_SOURCE,
+                       pageName: String,
+                       productIds: List<String>,
+                       queryParam: String = ""): RequestParams {
+        val params = RequestParams.create()
+        val productIdsString = TextUtils.join(",", productIds)
+        val newQueryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(queryParam) ?: queryParam
+
+        if (userSession.isLoggedIn) {
+            params.putInt(USER_ID, userSession.userId.toInt())
+        } else {
+            params.putInt(USER_ID, 0)
+        }
+        if(xSource.isEmpty()) {
+            params.putString(X_SOURCE, DEFAULT_VALUE_X_SOURCE)
+        } else {
+            params.putString(X_SOURCE, xSource)
+        }
+        params.putInt(PAGE_NUMBER, pageNumber)
+        params.putString(PAGE_NAME, pageName)
+        params.putString(PRODUCT_IDS, productIdsString)
+        params.putString(QUERY_PARAM, newQueryParam)
+        params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
+        return params
+    }
+
+    fun getRecomTokonowParams(pageNumber: Int,
                        xSource: String = DEFAULT_VALUE_X_SOURCE,
                        pageName: String,
                        productIds: List<String>,
