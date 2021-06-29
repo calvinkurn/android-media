@@ -457,25 +457,20 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         uoh_navtoolbar?.let {
             it.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
                 HintData(getString(R.string.hint_cari_transaksi) )),
-                navSearchbarInterface = { query,_,_,_ ->
-                    object : CountDownTimer(500, 1000) {
-                        override fun onTick(l: Long) {}
-                        override fun onFinish() {
-                            searchQuery = query.toString()
-                            when {
-                                query.toString().isBlank() -> {
-                                    view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
-                                    triggerSearch()
-                                }
-                                query.toString().length in 1 until MIN_KEYWORD_CHARACTER_COUNT -> {
-                                    showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
-                                }
-                                else -> {
-                                    triggerSearch()
-                                }
-                            }
+                editorActionCallback = {query ->
+                    searchQuery = query
+                    when {
+                        searchQuery.isBlank() -> {
+                            view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
+                            triggerSearch()
                         }
-                    }.start()
+                        searchQuery.length in 1 until MIN_KEYWORD_CHARACTER_COUNT -> {
+                            showToaster(getString(R.string.error_message_minimum_search_keyword), Toaster.TYPE_ERROR)
+                        }
+                        else -> {
+                            triggerSearch()
+                        }
+                    }
                 }
             )
             val icons = IconBuilder(
@@ -1056,7 +1051,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         val listRecomm = arrayListOf<UohTypeData>()
         if (!onLoadMoreRecommendation) {
             val searchBarIsNotEmpty = searchQuery.isNotEmpty()
-//            val searchBarIsNotEmpty = search_bar?.searchBarTextField?.text?.isNotEmpty() ?: false
             val emptyStatus: UohEmptyState?
             when {
                 searchBarIsNotEmpty -> {
