@@ -1,29 +1,43 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.design.component.BottomSheets
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_FULL_FLOW
-import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_LOGISTIC_LABEL
+import com.tokopedia.logisticaddaddress.common.AddressConstants.*
+import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistrictRecommendationBinding
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
+import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.ZipCodeChipsAdapter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomAdapterRevamp
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomNewAdapter
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoCleared
+import kotlinx.android.synthetic.main.form_add_new_address_mismatch_data_item.*
 import rx.Emitter
 import rx.Observable
 import rx.Subscription
@@ -39,19 +53,15 @@ import javax.inject.Inject
 class DiscomBottomSheetFragment : BottomSheets(),
         PopularCityAdapter.ActionListener,
         DiscomContract.View,
-        DiscomNewAdapter.ActionListener {
+        DiscomNewAdapter.ActionListener,
+        DiscomAdapterRevamp.ActionListener,
+        ZipCodeChipsAdapter.ActionListener {
 
-    private var bottomSheetView: View? = null
     private lateinit var popularCityAdapter: PopularCityAdapter
     private lateinit var listDistrictAdapter: DiscomNewAdapter
-    private lateinit var rvChips: RecyclerView
-    private lateinit var etSearch: EditText
-    private lateinit var llListDistrict: LinearLayout
-    private lateinit var llPopularCity: LinearLayout
-    private lateinit var rvListDistrict: RecyclerView
-    private lateinit var icCloseBtn: ImageView
-    private lateinit var mProgressbar: ProgressBar
-    private lateinit var mMessage: TextView
+    private lateinit var listDistrictAdapterRevamp: DiscomAdapterRevamp
+    private lateinit var zipCodeChipsAdapter: ZipCodeChipsAdapter
+    private lateinit var chipsLayoutManagerZipCode: ChipsLayoutManager
     private var isLoading: Boolean = false
     private var input: String = ""
     private val mLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -66,15 +76,28 @@ class DiscomBottomSheetFragment : BottomSheets(),
     private lateinit var actionListener: ActionListener
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
+    private var isAnaRevamp: Boolean = true
+    private var staticDimen8dp: Int? = 0
+    private var districtAddressData: Address? = null
+    private var isPinpoint: Boolean = false
+    private var isKodePosShown: Boolean = false
+    private var postalCode: String = ""
+
+    private var binding by autoCleared<BottomsheetDistrictRecommendationBinding>()
 
     @Inject
     lateinit var presenter: DiscomContract.Presenter
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             isFullFlow = it.getBoolean(EXTRA_IS_FULL_FLOW, true)
             isLogisticLabel = it.getBoolean(EXTRA_IS_LOGISTIC_LABEL, true)
+            isAnaRevamp = it.getBoolean(EXTRA_IS_ANA_REVAMP, true)
+            isPinpoint = it.getBoolean(EXTRA_IS_PINPOINT, false)
         }
     }
 
@@ -83,22 +106,14 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     override fun initView(view: View) {
+        binding = BottomsheetDistrictRecommendationBinding.bind(view)
         prepareLayout(view)
         initInjector()
         setViewListener()
     }
 
     private fun prepareLayout(view: View) {
-        bottomSheetView = view
-        rvChips = view.findViewById(R.id.rv_chips)
-        etSearch = view.findViewById(R.id.et_search_district_recommendation)
-        llPopularCity = view.findViewById(R.id.ll_popular_city)
-        rvListDistrict = view.findViewById(R.id.rv_list_district)
-        icCloseBtn = view.findViewById(R.id.ic_close)
-        mProgressbar = view.findViewById(R.id.progress_bar)
-        llListDistrict = view.findViewById(R.id.ll_list_district)
-        mMessage = view.findViewById(R.id.tv_desc_input_district)
-        llListDistrict.visibility = View.GONE
+        binding.llListDistrict.visibility = View.GONE
 
         val cityList = resources.getStringArray(R.array.cityList)
         val chipsLayoutManager = ChipsLayoutManager.newBuilder(view.context)
@@ -106,11 +121,18 @@ class DiscomBottomSheetFragment : BottomSheets(),
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
 
-        ViewCompat.setLayoutDirection(rvChips, ViewCompat.LAYOUT_DIRECTION_LTR)
+        zipCodeChipsAdapter = ZipCodeChipsAdapter(context, this)
+
+        chipsLayoutManagerZipCode = ChipsLayoutManager.newBuilder(view.context)
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
+
+        ViewCompat.setLayoutDirection(binding.rvChips, ViewCompat.LAYOUT_DIRECTION_LTR)
         popularCityAdapter = PopularCityAdapter(context, this)
         popularCityAdapter.cityList = cityList.toMutableList()
 
-        rvChips.apply {
+        binding.rvChips.apply {
             val dist = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
             layoutManager = chipsLayoutManager
             adapter = popularCityAdapter
@@ -118,12 +140,23 @@ class DiscomBottomSheetFragment : BottomSheets(),
         }
 
         listDistrictAdapter = DiscomNewAdapter(this)
-        rvListDistrict.apply {
-            layoutManager = mLayoutManager
-            adapter = listDistrictAdapter
+        listDistrictAdapterRevamp = DiscomAdapterRevamp(this)
+
+        binding.llZipCode.visibility = View.GONE
+        binding.bottomChoooseZipcode.visibility = View.GONE
+        if (isAnaRevamp) {
+            binding.rvListDistrict.apply {
+                layoutManager = mLayoutManager
+                adapter = listDistrictAdapterRevamp
+            }
+        } else {
+            binding.rvListDistrict.apply {
+                layoutManager = mLayoutManager
+                adapter = listDistrictAdapter
+            }
         }
 
-        etSearch.setSelection(etSearch.text.length)
+        binding.etSearchDistrictRecommendation.setSelection(binding.etSearchDistrictRecommendation.text.length)
     }
 
     override fun onDetach() {
@@ -145,22 +178,35 @@ class DiscomBottomSheetFragment : BottomSheets(),
         parentView?.findViewById<View>(com.tokopedia.purchase_platform.common.R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(com.tokopedia.purchase_platform.common.R.id.btn_close)?.setOnClickListener {
             AddNewAddressAnalytics.eventClickBackArrowOnNegativePage(isFullFlow, isLogisticLabel)
-            onCloseButtonClick()
+            if (isAnaRevamp) {
+                if (isKodePosShown) {
+                    AddNewAddressRevampAnalytics.onClickBackArrowKodePos(userSession.userId)
+                    hideZipCode()
+                } else {
+                    AddNewAddressRevampAnalytics.onClickBackArrowDiscom(userSession.userId)
+                    onCloseButtonClick()
+                }
+            } else {
+                onCloseButtonClick()
+            }
+
         }
     }
 
     override fun renderData(list: List<Address>, hasNextPage: Boolean) {
         isLoading = false
-        llPopularCity.visibility = View.GONE
-        llListDistrict.visibility = View.VISIBLE
-        mMessage.visibility = View.VISIBLE
-        mMessage.setText(R.string.hint_advice_search_address)
+        binding.llPopularCity.visibility = View.GONE
+        binding.llListDistrict.visibility = View.VISIBLE
+        binding.tvDescInputDistrict.visibility = View.VISIBLE
+        binding.tvDescInputDistrict.setText(R.string.hint_advice_search_address)
         if (mIsInitialLoading) {
-            listDistrictAdapter.setData(list)
+            if (isAnaRevamp) listDistrictAdapterRevamp.setData(list)
+            else listDistrictAdapter.setData(list)
             mEndlessListener.resetState()
             mIsInitialLoading = false
         } else {
-            listDistrictAdapter.appendData(list)
+            if (isAnaRevamp) listDistrictAdapterRevamp.appendData(list)
+            else listDistrictAdapter.appendData(list)
             mEndlessListener.updateStateAfterGetData()
         }
         mEndlessListener.setHasNextPage(hasNextPage)
@@ -172,25 +218,25 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     override fun setLoadingState(active: Boolean) {
-        if (active) icCloseBtn.visibility = View.INVISIBLE
+        if (active) binding.icClose.visibility = View.INVISIBLE
         else {
-            icCloseBtn.visibility = View.VISIBLE
-            icCloseBtn.setOnClickListener {
-                etSearch.setText("")
-                llListDistrict.visibility = View.GONE
-                llPopularCity.visibility = View.VISIBLE
+            binding.icClose.visibility = View.VISIBLE
+            binding.icClose.setOnClickListener {
+                binding.etSearchDistrictRecommendation.setText("")
+                binding.llListDistrict.visibility = View.GONE
+                binding.llPopularCity.visibility = View.VISIBLE
                 popularCityAdapter.notifyDataSetChanged()
-                icCloseBtn.visibility = View.GONE
+                binding.icClose.visibility = View.GONE
             }
         }
-        mProgressbar.visibility = if (active) View.VISIBLE else View.INVISIBLE
+        binding.progressBar.visibility = if (active) View.VISIBLE else View.INVISIBLE
     }
 
     override fun showEmpty() {
-        mMessage.visibility = View.VISIBLE
-        mMessage.setText(R.string.hint_search_address_no_result)
-        llPopularCity.visibility = View.VISIBLE
-        llListDistrict.visibility = View.GONE
+        binding.tvDescInputDistrict.visibility = View.VISIBLE
+        binding.tvDescInputDistrict.setText(R.string.hint_search_address_no_result)
+        binding.llPopularCity.visibility = View.VISIBLE
+        binding.llListDistrict.visibility = View.GONE
     }
 
     override fun setResultDistrict(data: Data, lat: Double, long: Double) {
@@ -198,8 +244,9 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     override fun onCityChipClicked(city: String) {
-        etSearch.setText(city)
-        etSearch.setSelection(city.length)
+        if (isAnaRevamp) AddNewAddressRevampAnalytics.onClickChipsKotaKecamatanNegative(userSession.userId)
+        binding.etSearchDistrictRecommendation.setText(city)
+        binding.etSearchDistrictRecommendation.setSelection(city.length)
         AddNewAddressAnalytics.eventClickChipsKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
     }
 
@@ -219,11 +266,14 @@ class DiscomBottomSheetFragment : BottomSheets(),
     }
 
     private fun setViewListener() {
-        etSearch.apply {
+        binding.etSearchDistrictRecommendation.apply {
             isFocusableInTouchMode = true
             requestFocus()
+            setOnClickListener {
+                if (isAnaRevamp) AddNewAddressRevampAnalytics.onClickFieldCariKotaKecamatanNegative(userSession.userId)
+            }
         }
-        watchTextRx(etSearch)
+        watchTextRx(binding.etSearchDistrictRecommendation)
                 .subscribe { s ->
                     if (s.isNotEmpty()) {
                         input = s
@@ -232,14 +282,26 @@ class DiscomBottomSheetFragment : BottomSheets(),
                             presenter.loadData(input, 1)
                         }, 200)
                     } else {
-                        icCloseBtn.visibility = View.GONE
-                        mMessage.visibility = View.GONE
-                        llPopularCity.visibility = View.VISIBLE
-                        llListDistrict.visibility = View.GONE
+                        binding.icClose.visibility = View.GONE
+                        binding.tvDescInputDistrict.visibility = View.GONE
+                        binding.llPopularCity.visibility = View.VISIBLE
+                        binding.llListDistrict.visibility = View.GONE
                     }
                 }.toCompositeSubs()
 
-        rvListDistrict.addOnScrollListener(mEndlessListener)
+        binding.rvListDistrict.addOnScrollListener(mEndlessListener)
+
+        binding.btnChooseZipcode.setOnClickListener {
+            if (binding.etKodepos.textFieldInput.text.toString().length < 4) {
+                AddNewAddressRevampAnalytics.onViewErrorToasterPilih(userSession.userId)
+                AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
+                Toaster.build(it, "Kode pos terlalu pendek, min. 5 karakter.", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            } else {
+                AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
+                districtAddressData?.let { data -> actionListener.onChooseZipcode(data, postalCode, isPinpoint) }
+                dismiss()
+            }
+        }
     }
 
     override fun onDistrictItemClicked(districtModel: Address) {
@@ -248,6 +310,18 @@ class DiscomBottomSheetFragment : BottomSheets(),
                 actionListener.onGetDistrict(districtModel)
                 AddNewAddressAnalytics.eventClickSuggestionKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
                 dismiss()
+            }
+        }
+    }
+
+    override fun onDistrictItemRevampClicked(districtModel: Address) {
+        AddNewAddressRevampAnalytics.onClickDropDownSuggestionKotaNegative(userSession.userId)
+        context?.let {
+            districtModel.run {
+                actionListener.onGetDistrict(districtModel)
+                AddNewAddressAnalytics.eventClickSuggestionKotaKecamatanChangeAddressNegative(isFullFlow, isLogisticLabel)
+                setupRvZipCodeChips()
+                getDistrict(districtModel)
             }
         }
     }
@@ -275,18 +349,98 @@ class DiscomBottomSheetFragment : BottomSheets(),
         mCompositeSubs.add(this)
     }
 
+    fun getDistrict(data: Address) {
+        districtAddressData = data
+        binding.llZipCode.visibility = View.VISIBLE
+        binding.bottomChoooseZipcode.visibility = View.VISIBLE
+        binding.layoutSearch.visibility = View.GONE
+        binding.mapSearchDivider1.visibility = View.GONE
+        binding.tvDescInputDistrict.visibility = View.GONE
+        binding.llListDistrict.visibility = View.GONE
+        binding.llPopularCity.visibility = View.GONE
+
+        binding.cardAddress.addressDistrict.text = "${data?.districtName}, ${data?.cityName}, ${data?.provinceName}"
+        binding.etKodepos.textFieldInput.apply {
+            setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    AddNewAddressRevampAnalytics.onClickFieldKodePosNegative(userSession.userId)
+                    openSoftKeyboard()
+                    showZipCodes(data)
+                }
+            }
+            setOnClickListener {
+                AddNewAddressRevampAnalytics.onClickFieldKodePosNegative(userSession.userId)
+                openSoftKeyboard()
+                showZipCodes(data)
+            }
+        }
+    }
+
+    private fun setupRvZipCodeChips() {
+        binding.rvKodeposChips.apply {
+            staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
+            layoutManager = chipsLayoutManagerZipCode
+            adapter = zipCodeChipsAdapter
+        }
+    }
+
+    private fun showZipCodes(data: Address) {
+        isKodePosShown = true
+        ViewCompat.setLayoutDirection(binding.rvKodeposChips, ViewCompat.LAYOUT_DIRECTION_LTR)
+        data.zipCodes?.let {
+            binding.rvKodeposChips.visibility = View.VISIBLE
+            zipCodeChipsAdapter.zipCodes = it.toMutableList()
+            zipCodeChipsAdapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun hideZipCode() {
+        binding.llZipCode.visibility = View.GONE
+        binding.bottomChoooseZipcode.visibility = View.GONE
+        binding.layoutSearch.visibility = View.VISIBLE
+        binding.mapSearchDivider1.visibility = View.VISIBLE
+        binding.tvDescInputDistrict.visibility = View.VISIBLE
+        binding.llListDistrict.visibility = View.VISIBLE
+        binding.llPopularCity.visibility = View.VISIBLE
+        isKodePosShown = false
+    }
+
+    private fun openSoftKeyboard() {
+        binding.etKodepos?.textFieldInput?.let {
+            (it.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
+        }
+    }
+
     interface ActionListener {
         fun onGetDistrict(districtAddress: Address)
+        fun onChooseZipcode(districtAddress: Address, zipCode: String, isPinpoint: Boolean)
     }
 
     companion object {
+
+        private const val SUCCESS = "success"
+        private const val NOT_SUCCESS = "not success"
+
         @JvmStatic
-        fun newInstance(isLogisticLabel: Boolean): DiscomBottomSheetFragment {
+        fun newInstance(isLogisticLabel: Boolean, isAnaRevamp: Boolean, isPinpoint: Boolean?): DiscomBottomSheetFragment {
             return DiscomBottomSheetFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(EXTRA_IS_LOGISTIC_LABEL, isLogisticLabel)
+                    putBoolean(EXTRA_IS_ANA_REVAMP, isAnaRevamp)
+                    isPinpoint?.let { putBoolean(EXTRA_IS_PINPOINT, it) }
                 }
             }
         }
     }
+
+    override fun onZipCodeClicked(postalCode: String) {
+        this.postalCode = postalCode
+        AddNewAddressRevampAnalytics.onClickChipsKodePosNegative(userSession.userId)
+        binding.rvKodeposChips.visibility = View.GONE
+        binding.etKodepos.textFieldInput.run {
+            setText(postalCode)
+        }
+
+    }
+
 }

@@ -47,9 +47,5 @@ object ShopPageConstant {
     const val URL_IMAGE_BUYER_SHOP_SEARCH_EMPTY_STATE = "https://ecs7.tokopedia.net/android/empty_state_search_filter.png"
     const val DISABLE_SHOP_PAGE_CACHE_INITIAL_PRODUCT_LIST = "android_shop_page_disable_cache_initial_product_list"
     const val ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET = "android_shop_page_enable_choose_address_widget_on_shop_page_header"
-    const val REMOTE_CONFIG_ENABLE_NEW_SHOP_PAGE_HEADER = "android_shop_page_enable_new_shop_page_header"
-    const val AB_TEST_NEW_SHOP_HEADER_KEY = "shop_header_revamp"
-    const val AB_TEST_NEW_SHOP_HEADER_OLD_VALUE = "old_shop_header"
-    const val AB_TEST_NEW_SHOP_HEADER_NEW_VALUE = "new_shop_header"
     const val AB_TEST_ROLLOUT_NEW_SHOP_ETALASE = "etalase_revamp_new"
 }

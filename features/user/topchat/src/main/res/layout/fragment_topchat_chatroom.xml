@@ -196,7 +196,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/spacing_lvl4"
                 android:paddingTop="@dimen/unify_space_8"
-                android:paddingEnd="@dimen/spacing_lvl4">
+                android:paddingEnd="@dimen/unify_space_12">
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/send_but"
