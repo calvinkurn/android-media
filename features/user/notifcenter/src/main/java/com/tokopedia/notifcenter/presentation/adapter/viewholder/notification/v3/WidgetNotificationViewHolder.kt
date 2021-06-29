@@ -258,8 +258,10 @@ class WidgetNotificationViewHolder constructor(
     }
 
     private fun bindMessage(element: NotificationUiModel) {
+        val noWidgetWithTrackHistory = element.noWidgetWithTrackHistory() &&
+                element.shortDescHtml.isNotEmpty()
         message?.shouldShowWithAction(
-            element.widget.message.isNotEmpty() || element.shortDescHtml.isNotEmpty()
+            element.hasWidgetMsg() || noWidgetWithTrackHistory
         ) {
             bindMessageMargin(element)
             val widgetMessage = if (element.hasWidgetMsg()) {
