@@ -40,6 +40,7 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
+import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
@@ -102,7 +103,6 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.common.constant.LoggerConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
-import com.tokopedia.checkout.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.feature.localizationchooseaddress.request.ChosenAddress;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
@@ -3074,47 +3074,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void logOnErrorLoadCourier(Throwable throwable, int itemPosition) {
-        String errorMessage = getErrorMessage(throwable);
-        StringBuilder productIds = new StringBuilder();
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
         if (shipmentCartItemModel != null) {
-            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                productIds.append(cartItemModel.getProductId());
-                productIds.append(",");
-            }
+            CheckoutLogger.INSTANCE.logOnErrorLoadCourier(throwable, shipmentCartItemModel, isOneClickShipment(), isTradeIn(), isTradeInByDropOff());
         }
-
-        Map<String, String> payload = new HashMap<>();
-        payload.put(LoggerConstant.Key.TYPE, LoggerConstant.Type.LOAD_COURIER_ERROR);
-        payload.put(LoggerConstant.Key.IS_OCS, String.valueOf(isOneClickShipment()));
-        payload.put(LoggerConstant.Key.IS_TRADE_IN, String.valueOf(isTradeIn()));
-        payload.put(LoggerConstant.Key.IS_TRADE_IN_INDOPAKET, String.valueOf(isTradeInByDropOff()));
-        payload.put(LoggerConstant.Key.PRODUCT_ID_LIST, productIds.toString());
-        payload.put(LoggerConstant.Key.MESSAGE, !errorMessage.isEmpty() ? errorMessage : "unknown exception");
-        payload.put(LoggerConstant.Key.STACK_TRACE, Arrays.toString(throwable.getStackTrace()).substring(0, 50));
-        ServerLogger.log(
-                Priority.P1,
-                LoggerConstant.Tag.P2_BUYER_FLOW_CART,
-                payload
-        );
     }
 
     @Override
     public void logOnErrorCheckout(Throwable throwable, String request) {
-        String errorMessage = getErrorMessage(throwable);
-
-        Map<String, String> payload = new HashMap<>();
-        payload.put(LoggerConstant.Key.TYPE, LoggerConstant.Type.CHECKOUT_ERROR);
-        payload.put(LoggerConstant.Key.IS_OCS, String.valueOf(isOneClickShipment()));
-        payload.put(LoggerConstant.Key.IS_TRADE_IN, String.valueOf(isTradeIn()));
-        payload.put(LoggerConstant.Key.IS_TRADE_IN_INDOPAKET, String.valueOf(isTradeInByDropOff()));
-        payload.put(LoggerConstant.Key.REQUEST, request);
-        payload.put(LoggerConstant.Key.MESSAGE, !errorMessage.isEmpty() ? errorMessage : "unknown exception");
-        payload.put(LoggerConstant.Key.STACK_TRACE, Arrays.toString(throwable.getStackTrace()).substring(0, 50));
-        ServerLogger.log(
-                Priority.P1,
-                LoggerConstant.Tag.P2_BUYER_FLOW_CART,
-                payload
-        );
+        CheckoutLogger.INSTANCE.logOnErrorCheckout(throwable, request, isOneClickShipment(), isTradeIn(), isTradeInByDropOff());
     }
 }
