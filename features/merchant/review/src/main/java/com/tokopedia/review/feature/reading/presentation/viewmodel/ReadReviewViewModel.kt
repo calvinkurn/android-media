@@ -195,7 +195,7 @@ class ReadReviewViewModel @Inject constructor(
     private fun mapRatingFilterToFilterType(ratingFilters: Set<ListItemUnify>): FilterType.FilterRating {
         val selectedRatings = ratingFilters.map {
             it.listTitleText
-        }.joinToString { it }
+        }.joinToString(separator = ",") { it }
         return FilterType.FilterRating(selectedRatings)
     }
 
@@ -203,7 +203,7 @@ class ReadReviewViewModel @Inject constructor(
         val topicsMap = getTopicsMap()
         val selectedTopics = topicFilters.map {
             topicsMap[it.listTitleText] ?: ""
-        }.joinToString { it }
+        }.joinToString(separator = ",") { it }
         return FilterType.FilterTopic(selectedTopics)
     }
 
