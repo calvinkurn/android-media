@@ -204,16 +204,16 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             if (updateCartRequestList.isNotEmpty()) {
                 val requestParams = RequestParams.create()
-                requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
+                requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, cartItemDataList)
 
                 compositeSubscription.add(
                         updateCartUseCase?.createObservable(requestParams)
-                                ?.subscribe(UpdateCartSubscriber(view, this, fireAndForget))
+                                ?.subscribe(UpdateCartSubscriber(view, this, fireAndForget, cartItemDataList))
                 )
             } else {
                 if (!fireAndForget) {
                     it.hideProgressLoading()
-                    it.logOnErrorUpdateCartForCheckout(MessageErrorException("update cart empty product"))
+                    CartLogger.logOnErrorUpdateCartForCheckout(MessageErrorException("update cart empty product"), cartItemDataList)
                 }
             }
         }
