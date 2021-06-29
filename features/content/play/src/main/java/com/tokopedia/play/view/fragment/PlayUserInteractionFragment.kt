@@ -44,6 +44,7 @@ import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayFullscreenManager
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
+import com.tokopedia.play.view.custom.dialog.InteractiveWinningDialogFragment
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapKey
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapValue
@@ -60,6 +61,7 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.action.InteractiveLiveFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
 import com.tokopedia.play.view.uimodel.engagement.PlayInteractiveTimeStatus
+import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play.view.viewcomponent.*
@@ -81,6 +83,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 /**
@@ -580,6 +583,7 @@ class PlayUserInteractionFragment @Inject constructor(
         observeProductContent()
 
         observeUiState()
+        observeUiEvent()
 
         observeLoggedInInteractionEvent()
     }
@@ -829,8 +833,20 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeUiState() {
-        playViewModel.observableUiState.observe(viewLifecycleOwner) { state ->
+        playViewModel.uiState.observe(viewLifecycleOwner) { state ->
             if (state.interactive != null) interactiveViewOnStateChanged(state.interactive)
+        }
+    }
+
+    private fun observeUiEvent() {
+        scope.launch(dispatchers.immediate) {
+            playViewModel.uiEvent.collect { event ->
+                when (event) {
+                    is ShowWinningDialogEvent -> {
+                        getInteractiveWinningDialog().show(childFragmentManager)
+                    }
+                }
+            }
         }
     }
     //endregion
@@ -1457,6 +1473,14 @@ class PlayUserInteractionFragment @Inject constructor(
                 connect(quickReplyViewId, ConstraintSet.BOTTOM, topmostLikeView.id, ConstraintSet.TOP)
             }
         }
+    }
+
+    /**
+     * Dialog
+     */
+    private fun getInteractiveWinningDialog(): InteractiveWinningDialogFragment {
+        val existing = InteractiveWinningDialogFragment.get(childFragmentManager)
+        return existing ?: InteractiveWinningDialogFragment.newInstance()
     }
 
     companion object {

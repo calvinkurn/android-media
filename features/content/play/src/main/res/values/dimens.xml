@@ -86,6 +86,8 @@
     <dimen name="play_engagement_finish_width">152dp</dimen>
     <dimen name="play_engagement_finish_height">62dp</dimen>
 
+    <dimen name="play_interactive_winning_dialog_width">172dp</dimen>
+
     <!--General Dimension-->
     <dimen name="play_offset_6">6dp</dimen>
     <dimen name="play_offset_10">10dp</dimen>

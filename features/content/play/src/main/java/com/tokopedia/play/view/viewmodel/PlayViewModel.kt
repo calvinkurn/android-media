@@ -41,6 +41,8 @@ import com.tokopedia.play.view.uimodel.action.InteractiveLiveFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.engagement.PlayInteractiveTimeStatus
+import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
+import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
@@ -49,6 +51,8 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -121,8 +125,10 @@ class PlayViewModel @Inject constructor(
     val observableOnboarding: LiveData<Event<Unit>>
         get() = _observableOnboarding
 
-    val observableUiState: LiveData<PlayViewerNewUiState>
-        get() = _observableUiState
+    val uiState: LiveData<PlayViewerNewUiState>
+        get() = _uiState
+    val uiEvent: Flow<PlayViewerNewUiEvent>
+        get() = _uiEvent
 
     val videoOrientation: VideoOrientation
         get() {
@@ -254,7 +260,6 @@ class PlayViewModel @Inject constructor(
     private val _observableShareInfo = MutableLiveData<PlayShareInfoUiModel>() /**Added**/
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
-    private val _observableUiState = MutableLiveData<PlayViewerNewUiState>(PlayViewerNewUiState())
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableProductSheetContent) {
             if (it is PlayResult.Success) {
@@ -275,6 +280,9 @@ class PlayViewModel @Inject constructor(
             if (it.statusType.isFreeze || it.statusType.isBanned) doOnForbidden()
         }
     }
+
+    private val _uiState = MutableLiveData<PlayViewerNewUiState>(PlayViewerNewUiState())
+    private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 5)
 
     //region helper
     private val hasWordsOrDotsRegex = Regex("(\\.+|[a-z]+)")
@@ -536,6 +544,12 @@ class PlayViewModel @Inject constructor(
                                 status = PlayInteractiveTimeStatus.Finished
                         ))
                     }
+
+                    delay(4000)
+
+                    _uiEvent.emit(
+                            ShowWinningDialogEvent("", "Selamat kamu pemenangnya", "Tunggu seller chat kamu untuk konfirmasi")
+                    )
                 }
             }
         }
@@ -1003,12 +1017,15 @@ class PlayViewModel @Inject constructor(
             }
         }) {
             //TODO("This is mock")
-            setUiState {
-                copy(interactive = PlayInteractiveUiState(
-                        title = "Giveaway Tesla",
-                        status = PlayInteractiveTimeStatus.Scheduled(20000, 1)
-                ))
-            }
+//            setUiState {
+//                copy(interactive = PlayInteractiveUiState(
+//                        title = "Giveaway Tesla",
+//                        status = PlayInteractiveTimeStatus.Scheduled(20000, 1)
+//                ))
+//            }
+            _uiEvent.emit(
+                    ShowWinningDialogEvent("", "Selamat kamu pemenangnya", "Tunggu seller chat kamu untuk konfirmasi")
+            )
         }
     }
 
@@ -1026,8 +1043,8 @@ class PlayViewModel @Inject constructor(
 
     private suspend fun setUiState(fn: PlayViewerNewUiState.() -> PlayViewerNewUiState) = mutex.withLock {
         withContext(dispatchers.immediate) {
-            val state = _observableUiState.value ?: error("State cannot be null")
-            _observableUiState.value = state.fn()
+            val state = _uiState.value ?: error("State cannot be null")
+            _uiState.value = state.fn()
         }
     }
     //endregion
