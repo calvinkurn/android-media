@@ -6,7 +6,7 @@ import com.tokopedia.loginfingerprint.R
 
 object FingerprintDialogHelper {
 
-    fun showFingerprintLockoutDialog(context: Context?, onPositiveButtonClick: () -> Unit? = {}) {
+    fun showFingerprintLockoutDialog(context: Context?, onPositiveButtonClick: () -> Unit? = {}, onDismiss: () -> Unit? = {}) {
         context?.run {
             val dialog = DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(R.string.error_fingerprint_invalid_title))
@@ -16,6 +16,7 @@ object FingerprintDialogHelper {
                 dialog.dismiss()
                 onPositiveButtonClick()
             }
+            dialog.setOnDismissListener { onDismiss() }
             dialog.show()
         }
     }

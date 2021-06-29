@@ -94,7 +94,7 @@ class VerifyFingerprintActivity: BaseActivity() {
                 if(it == BiometricPrompt.ERROR_LOCKOUT) {
                     FingerprintDialogHelper.showFingerprintLockoutDialog(this, onPositiveButtonClick = {
                         onErrorVerifyFingerprint()
-                    })
+                    }, onDismiss = { onErrorVerifyFingerprint() })
                 } else {
                     onErrorVerifyFingerprint()
                 }
