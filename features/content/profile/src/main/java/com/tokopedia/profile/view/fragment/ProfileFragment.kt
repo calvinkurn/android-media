@@ -1015,6 +1015,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     ) {
     }
 
+    override fun userGridPostImpression(positionInFeed: Int, activityId: String, postType: String) {
+        TODO("Not yet implemented")
+    }
+
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
         if (adapter.list[positionInFeed] is DynamicPostViewModel) {
@@ -1156,6 +1160,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     redirectLink
             )
         }
+    }
+
+    override fun userProductImpression(
+        activityId: Int,
+        productId: String,
+        productName: String,
+        price: String,
+        positionInFeed: Int,
+    ) {
+        TODO("Not yet implemented")
     }
 
     override fun onVideoPlayerClicked(

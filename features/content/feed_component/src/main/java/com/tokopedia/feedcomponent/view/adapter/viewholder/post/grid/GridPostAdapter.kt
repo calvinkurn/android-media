@@ -100,6 +100,7 @@ class GridPostAdapter(private val contentPosition: Int,
         }
 
         fun bindProduct(postId: Int, item: GridItemViewModel, type: String, isFollowed: Boolean) {
+            listener.userProductImpression(postId, item.id, item.text, item.price, adapterPosition)
             itemView.extraProduct.background = null
             itemView.extraProduct.hide()
 
@@ -204,6 +205,13 @@ class GridPostAdapter(private val contentPosition: Int,
         fun onGridItemClick(
             positionInFeed: Int, activityId: Int, productId: Int,
             redirectLink: String, type: String, isFollowed: Boolean,
+        )
+        fun userProductImpression(
+            activityId: Int,
+            productId: String,
+            productName: String,
+            price: String,
+            positionInFeed: Int
         )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)

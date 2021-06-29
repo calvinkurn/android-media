@@ -1043,4 +1043,13 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
 
+    @Override
+    public void userProductImpression(int activityId, @NotNull String productId, @NotNull String productName, @NotNull String price, int positionInFeed) {
+
+    }
+
+    @Override
+    public void userGridPostImpression(int positionInFeed, @NotNull String activityId, @NotNull String postType) {
+
+    }
 }

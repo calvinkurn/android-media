@@ -1567,6 +1567,24 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedAnalytics.eventImpression(positionInFeed.toString(), media, type, isFollowed)
     }
 
+    override fun userGridPostImpression(positionInFeed: Int, activityId: String, postType: String) {
+        feedAnalytics.eventImpressionPostASGC(activityId, positionInFeed, "")
+    }
+
+    override fun userProductImpression(
+        activityId: Int,
+        productId: String,
+        productName: String,
+        price: String,
+        positionInFeed: Int
+    ) {
+        feedAnalytics.eventImpressionProductASGC(activityId.toString(),
+            productId,
+            productName,
+            price,
+            positionInFeed)
+    }
+
     override fun onImageClick(
         positionInFeed: Int, contentPosition: Int,
         redirectLink: String

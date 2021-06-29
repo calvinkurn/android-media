@@ -8,6 +8,7 @@ import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Categor
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE_BOTTOMSHEET
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE_COMMENT
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CATEGORY_FEED_TIMELINE_MENU
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Category.CONTENT_FEED_TIMELINE
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.CLICK_FEED
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.CONTENT
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.OPEN_SCREEN
@@ -564,6 +565,107 @@ class FeedAnalyticTracker
             list.add(map)
         }
         return list
+    }
+
+    private fun getImpressionPostASGC(imageUrl: String, activityId: String, position: Int): Any {
+        val map = mapOf(
+            "creative" to imageUrl,
+            "id" to activityId,
+            "name" to "/feed - asgc - post",
+            "position" to "{product horizontal position from $position}",
+        )
+
+        return map
+    }
+
+    private fun getImpressionProductASGC(
+        productId: String,
+        productName: String,
+        productPrice: String,
+        position: Int,
+        type: String,
+    ): Any {
+        val map = mapOf(
+            Product.CURRENCY_CODE to Product.CURRENCY_CODE_IDR,
+            Product.IMPRESSIONS to mapOf(
+                "creative" to type,
+                "id" to productId,
+                "list" to "/feed - asgc",
+                "name" to productName,
+                "position" to position,
+                "price" to productPrice)
+        )
+
+        return map
+    }
+
+fun eventImpressionProductASGC(
+    activityId: String,
+    productId: String,
+    productName: String,
+    price: String,
+    position: Int
+) {
+    var map = getCommonMap(PROMO_VIEW)
+    map = map.plus(
+        mutableMapOf(
+            KEY_EVENT_CATEGORY to CONTENT_FEED_TIMELINE,
+            KEY_EVENT_ACTION to String.format(
+                FORMAT_THREE_PARAM,
+                "impression",
+                "product",
+                "asgc"
+            ),
+            KEY_EVENT_LABEL to String.format(
+                FORMAT_THREE_PARAM,
+                activityId,
+                userSessionInterface.shopId,
+                productId
+            ),
+            ECOMMERCE to mapOf(
+                PROMO_VIEW to getImpressionProductASGC(productId,
+                    productName,
+                    price,
+                    position,
+                    type = "ASGC")
+            ),
+            KEY_BUSINESS_UNIT_EVENT to CONTENT,
+            KEY_SESSION_IRIS to getIrisSessionId(),
+            KEY_EVENT_USER_ID to userSessionInterface.userId
+        )
+    ) as MutableMap<String, String>
+    TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
+}
+
+    fun eventImpressionPostASGC(
+        activityId: String,
+        position: Int,
+        imageUrl: String
+    ) {
+        var map = getCommonMap(PROMO_VIEW)
+        map = map.plus(
+            mutableMapOf(
+                KEY_EVENT_CATEGORY to CONTENT_FEED_TIMELINE,
+                KEY_EVENT_ACTION to String.format(
+                    FORMAT_THREE_PARAM,
+                    "impression",
+                    "post",
+                    "asgc"
+                ),
+                KEY_EVENT_LABEL to String.format(
+                    FORMAT_TWO_PARAM,
+                    activityId,
+                    userSessionInterface.shopId
+                ),
+                KEY_BUSINESS_UNIT_EVENT to CONTENT,
+                ECOMMERCE to mapOf(
+                    PROMO_VIEW to getImpressionPostASGC(imageUrl, activityId, position)
+                ),
+                KEY_SESSION_IRIS to getIrisSessionId(),
+                KEY_EVENT_USER_ID to userSessionInterface.userId
+            )
+        ) as MutableMap<String, String>
+        TrackApp.getInstance().gtm.sendGeneralEvent(map.toMap())
     }
 
     fun eventImpression(

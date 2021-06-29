@@ -53,6 +53,8 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
             postType: String,
             isFollowed: Boolean
         )
+        fun userGridPostImpression(positionInFeed: Int,activityId: String, postType: String)
+
 
         fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
 

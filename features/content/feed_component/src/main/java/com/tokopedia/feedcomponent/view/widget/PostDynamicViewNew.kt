@@ -872,6 +872,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
         }
         gridList.layoutManager = layoutManager
+
+        imagePostListener.userGridPostImpression(positionInFeed, feedXCard.id,
+            feedXCard.typename)
+
         val adapter = GridPostAdapter(
             0,
             getGridPostModel(feedXCard, feedXCard.products),

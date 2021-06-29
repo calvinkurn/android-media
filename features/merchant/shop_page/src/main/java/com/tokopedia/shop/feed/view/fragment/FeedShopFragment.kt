@@ -731,6 +731,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     ) {
     }
 
+    override fun userGridPostImpression(positionInFeed: Int, activityId: String, postType: String) {
+        TODO("Not yet implemented")
+    }
+
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         onGoToLink(redirectLink)
         if (adapter.data[positionInFeed] is DynamicPostViewModel) {
@@ -823,6 +827,16 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isFollowed: Boolean
     ) {
         onGoToLink(redirectLink)
+    }
+
+    override fun userProductImpression(
+        activityId: Int,
+        productId: String,
+        productName: String,
+        price: String,
+        positionInFeed: Int,
+    ) {
+        TODO("Not yet implemented")
     }
 
     override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, postId: String, redirectUrl: String) {
