@@ -3,6 +3,7 @@ package com.tokopedia.carouselproductcard
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.productcard.ProductCardGridView
 import kotlinx.android.synthetic.main.carousel_product_card_item_grid_layout.view.*
 
 internal class CarouselProductCardGridViewHolder(
@@ -31,6 +32,8 @@ internal class CarouselProductCardGridViewHolder(
         val onItemImpressedListener = carouselProductCardModel.getOnItemImpressedListener()
         val onItemAddToCartListener = carouselProductCardModel.getOnItemAddToCartListener()
         val onItemThreeDotsClickListener = carouselProductCardModel.getOnItemThreeDotsClickListener()
+        val onAddVariantClickListener = carouselProductCardModel.getOnAddVariantClickListener()
+        val onAddToCartNonVariantClickListener = carouselProductCardModel.getOnAddToCartNonVariantClickListener()
 
         itemView.carouselProductCardItem?.setOnClickListener {
             onItemClickListener?.onItemClick(productCardModel, adapterPosition)
@@ -50,6 +53,16 @@ internal class CarouselProductCardGridViewHolder(
 
         itemView.carouselProductCardItem?.setThreeDotsOnClickListener {
             onItemThreeDotsClickListener?.onItemThreeDotsClick(productCardModel, adapterPosition)
+        }
+
+        itemView.carouselProductCardItem?.setAddToCartNonVariantClickListener(object : ProductCardGridView.ATCNonVariantListener{
+            override fun onQuantityChanged(quantity: Int) {
+                onAddToCartNonVariantClickListener?.onAddToCartNonVariantClick(productCardModel, adapterPosition, quantity)
+            }
+        })
+
+        itemView.carouselProductCardItem?.setAddVariantClickListener {
+            onAddVariantClickListener?.onAddVariantClick(productCardModel, adapterPosition)
         }
     }
 

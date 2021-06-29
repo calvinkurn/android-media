@@ -152,6 +152,23 @@ class ProductRecommendationViewHolder(
                         listener.onThreeDotsClick(productRecommendation, adapterPosition, carouselProductCardPosition)
                     }
                 },
+                carouselOnAddToCartNonVariantClickListener = object : CarouselProductCardListener.OnAddToCartNonVariantClickListener {
+                    override fun onAddToCartNonVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int, quantity: Int) {
+                        val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
+                        listener.onAddToCartNonVariantQuantityChangedClick(
+                                recomItem = productRecommendation,
+                                quantity = quantity,
+                                adapterPosition = adapterPosition)
+                    }
+                },
+                carouselOnAddVariantClickListener = object : CarouselProductCardListener.OnAddVariantClickListener {
+                    override fun onAddVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
+                        listener.onAddVariantClick(
+                                recomItem = productRecommendation,
+                                adapterPosition = adapterPosition)
+                    }
+                },
                 finishCalculate = {
                     view.rvProductRecom.show()
                     view.loadingRecom.gone()

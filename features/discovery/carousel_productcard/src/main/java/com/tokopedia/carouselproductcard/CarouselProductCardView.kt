@@ -81,18 +81,22 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
             carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
             carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
-            finishCalculate: (() -> Unit)? = null
+            finishCalculate: (() -> Unit)? = null,
+            carouselOnAddVariantClickListener: OnAddVariantClickListener? = null,
+            carouselOnAddToCartNonVariantClickListener: OnAddToCartNonVariantClickListener? = null
     ) {
         if (productCardModelList.isEmpty()) return
 
         initBindCarousel(true)
 
         val carouselProductCardListenerInfo = createCarouselProductCardListenerInfo(
-                carouselProductCardOnItemClickListener,
-                carouselProductCardOnItemImpressedListener,
-                carouselProductCardOnItemAddToCartListener,
-                carouselProductCardOnItemThreeDotsClickListener,
-                carouselSeeMoreClickListener
+                carouselProductCardOnItemClickListener = carouselProductCardOnItemClickListener,
+                carouselProductCardOnItemImpressedListener = carouselProductCardOnItemImpressedListener,
+                carouselProductCardOnItemAddToCartListener = carouselProductCardOnItemAddToCartListener,
+                carouselProductCardOnItemThreeDotsClickListener = carouselProductCardOnItemThreeDotsClickListener,
+                carouselSeeMoreClickListener = carouselSeeMoreClickListener,
+                carouselOnAddToCartNonVariantClickListener = carouselOnAddToCartNonVariantClickListener,
+                carouselOnAddVariantClickListener = carouselOnAddVariantClickListener
         )
 
         launch {
@@ -117,7 +121,9 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
             carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
-            carouselSeeMoreClickListener: OnSeeMoreClickListener? = null)
+            carouselSeeMoreClickListener: OnSeeMoreClickListener? = null,
+            carouselOnAddToCartNonVariantClickListener: OnAddToCartNonVariantClickListener? = null,
+            carouselOnAddVariantClickListener: OnAddVariantClickListener? = null)
     : CarouselProductCardListenerInfo {
 
         val carouselProductCardListenerInfo = CarouselProductCardListenerInfo()
@@ -127,6 +133,8 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         carouselProductCardListenerInfo.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
         carouselProductCardListenerInfo.onItemThreeDotsClickListener = carouselProductCardOnItemThreeDotsClickListener
         carouselProductCardListenerInfo.onSeeMoreClickListener = carouselSeeMoreClickListener
+        carouselProductCardListenerInfo.onAddToCartNonVariantClickListener = carouselOnAddToCartNonVariantClickListener
+        carouselProductCardListenerInfo.onAddVariantClickListener = carouselOnAddVariantClickListener
 
         return carouselProductCardListenerInfo
     }
@@ -245,11 +253,11 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         initBindCarousel(false)
 
         val carouselProductCardListenerInfo = createCarouselProductCardListenerInfo(
-                carouselProductCardOnItemClickListener,
-                carouselProductCardOnItemImpressedListener,
-                carouselProductCardOnItemAddToCartListener,
-                carouselProductCardOnItemThreeDotsClickListener,
-                carouselSeeMoreClickListener
+                carouselProductCardOnItemClickListener = carouselProductCardOnItemClickListener,
+                carouselProductCardOnItemImpressedListener = carouselProductCardOnItemImpressedListener,
+                carouselProductCardOnItemAddToCartListener = carouselProductCardOnItemAddToCartListener,
+                carouselProductCardOnItemThreeDotsClickListener = carouselProductCardOnItemThreeDotsClickListener,
+                carouselSeeMoreClickListener = carouselSeeMoreClickListener
         )
 
         launch {

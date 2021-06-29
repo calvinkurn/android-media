@@ -883,6 +883,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
+    override fun onAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int) {
+
+    }
+
+    override fun onAddVariantClick(recomItem: RecommendationItem, adapterPosition: Int) {
+
+    }
+
     override fun onChipFilterClicked(recommendationDataModel: ProductRecommendationDataModel, annotationChip: AnnotationChip, position: Int, filterPosition: Int) {
         DynamicProductDetailTracking.Click.eventClickSeeFilterAnnotation(annotationChip.recommendationFilterChip.value)
         viewModel.getRecommendation(recommendationDataModel, annotationChip, position, filterPosition)

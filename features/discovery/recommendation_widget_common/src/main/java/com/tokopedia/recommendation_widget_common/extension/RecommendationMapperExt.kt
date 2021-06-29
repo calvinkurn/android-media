@@ -103,8 +103,13 @@ fun RecommendationItem.toProductCardModel(
     var variant: ProductCardModel.Variant? = null
     var nonVariant: ProductCardModel.NonVariant? = null
     if (isRecomProductShowVariantAndCart) {
-        if (isProductHasParentID()) variant = ProductCardModel.Variant(quantity = quantity)
-        else nonVariant = ProductCardModel.NonVariant(quantity = quantity, minQuantity = minOrder, maxQuantity = stock)
+        if (isProductHasParentID()) {
+            variant = ProductCardModel.Variant(quantity = quantity)
+
+        }
+        else {
+            nonVariant = ProductCardModel.NonVariant(quantity = quantity, minQuantity = minOrder, maxQuantity = stock)
+        }
     }
     return ProductCardModel(
             slashedPrice = slashedPrice,

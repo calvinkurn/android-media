@@ -102,6 +102,9 @@ interface DynamicProductDetailListener {
     fun getRecommendationCarouselSavedState(): SparseIntArray
     fun sendTopAdsClick(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
     fun sendTopAdsImpression(topAdsUrl: String, productId: String, productName: String, productImageUrl: String)
+    fun onAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int)
+    fun onAddVariantClick(recomItem: RecommendationItem, adapterPosition: Int)
+
 
     /**
      * PdpComparisonWidgetViewHolder

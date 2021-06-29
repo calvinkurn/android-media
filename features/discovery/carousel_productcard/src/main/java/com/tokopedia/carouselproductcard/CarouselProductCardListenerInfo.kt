@@ -36,4 +36,18 @@ internal class CarouselProductCardListenerInfo {
                 field = value
             }
         }
+
+    var onAddToCartNonVariantClickListener: CarouselProductCardListener.OnAddToCartNonVariantClickListener? = null
+        set(value) {
+            if (value != null) {
+                field = value
+            }
+        }
+
+    var onAddVariantClickListener: CarouselProductCardListener.OnAddVariantClickListener? = null
+        set(value) {
+            if (value != null) {
+                field = value
+            }
+        }
 }
