@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/spacing_lvl4"
+    android:layout_marginTop="@dimen/spacing_lvl5"
     android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
+        android:maxEms="12"
         android:textColor="@color/Unify_N700"
         android:ellipsize="end"
         app:typographyType="heading_4"

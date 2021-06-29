@@ -6,7 +6,7 @@
     <string name="tokopedianow_common_empty_state_button_change_address">Ubah Alamat</string>
     <string name="tokopedianow_common_empty_state_button_return">Belanja di Tokopedia</string>
 
-    <string name="tokopedianow_category_list_bottom_sheet_title">Semua kategori di TokoNOW!</string>
+    <string name="tokopedianow_category_list_bottom_sheet_title">Semua kategori</string>
     <string name="tokopedianow_category_list_bottom_sheet_error_not_found_title">Oops, halaman ini gagal dimuat</string>
     <string name="tokopedianow_category_list_bottom_sheet_error_not_found_desc">Klik tombol di bawah ini untuk refresh halaman ini, ya!</string>
     <string name="tokopedianow_category_list_bottom_sheet_error_go_to_homepage">Ke Homepage</string>
