@@ -845,7 +845,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             oldToolbar?.showShadow()
                         }
                     }, ifNavRevamp = {
-                navToolbar?.showShadow(lineShadow = true)
+                navToolbar?.showShadow(lineShadow = false)
             })
             showFeedSectionViewHolderShadow(false)
             homeRecyclerView?.setNestedCanScroll(false)
@@ -856,7 +856,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             oldToolbar?.hideShadow()
                         }
                     }, ifNavRevamp = {
-                navToolbar?.hideShadow(lineShadow = true)
+                navToolbar?.hideShadow(lineShadow = false)
             }
             )
             showFeedSectionViewHolderShadow(true)
