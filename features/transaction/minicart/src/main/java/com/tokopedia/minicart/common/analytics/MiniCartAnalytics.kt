@@ -45,7 +45,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
         // EVENT CATEGORY
         const val EVENT_CATEGORY_MINICART = "minicart"
-        const val EVENT_CATEGORY_CLICK_BELI = "tokonow - %s"
+        const val EVENT_CATEGORY_CLICK_BELI = "tokonow %s"
 
         // EVENT ACTION
         const val EVENT_ACTION_CLICK_PRODUCT_NAME = "click product name"
