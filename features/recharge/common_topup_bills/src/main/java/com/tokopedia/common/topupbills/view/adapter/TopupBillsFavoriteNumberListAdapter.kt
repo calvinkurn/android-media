@@ -38,7 +38,7 @@ class TopupBillsFavoriteNumberListAdapter (
     }
 
     override fun getItemCount(): Int {
-        return if (visitables.isEmpty()) 1 else visitables.size
+        return visitables.size
     }
 
     fun setNumbers(clientNumbers: List<FavoriteNumberDataView>) {

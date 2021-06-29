@@ -24,6 +24,7 @@ import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberListAdapter
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
@@ -102,20 +103,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
                 }
             }
         }
-        if (clientNumbers.isEmpty()) {
-            binding?.commonTopupbillsFavoriteNumberClue?.hide()
-        } else {
-            binding?.commonTopupbillsFavoriteNumberClue?.show()
-        }
         val typeFactory = FavoriteNumberTypeFactoryImpl(this, this)
-
-        if (clientNumbers.isEmpty()) {
-            numberListAdapter = TopupBillsFavoriteNumberListAdapter(
-                    mapSeamlessFavNumberItemToDataView(clientNumbers), typeFactory)
-        } else {
-            numberListAdapter = TopupBillsFavoriteNumberListAdapter(
-                    listOf(FavoriteNumberNotFoundDataView()), typeFactory)
-        }
 
         binding?.commonTopupbillsSearchNumberInputView?.run {
             searchBarTextField.addTextChangedListener(getSearchTextWatcher)
@@ -125,9 +113,8 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
             searchBarTextField.imeOptions = EditorInfo.IME_ACTION_DONE
         }
 
-        binding?.commonTopupbillsFavoriteNumberRv?.run {
-            layoutManager = LinearLayoutManager(activity)
-            adapter = numberListAdapter
+        binding?.commonTopupbillsFavoriteNumberClue?.run {
+            if (clientNumbers.isNullOrEmpty()) hide() else show()
         }
 
         binding?.commonTopupbillsSearchNumberContactPicker?.setOnClickListener {
@@ -135,44 +122,17 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
             navigateContact()
         }
 
-        binding?.commonTopupbillsFavoriteNumberClue?.run {
-            if (clientNumbers.isNullOrEmpty()) hide() else show()
-        }
-    }
-
-    private fun navigateContact() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            activity?.let {
-                permissionCheckerHelper.checkPermission(it,
-                        PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
-                        object : PermissionCheckerHelper.PermissionCheckListener {
-                            override fun onPermissionDenied(permissionText: String) {
-                                permissionCheckerHelper.onPermissionDenied(it, permissionText)
-                            }
-
-                            override fun onNeverAskAgain(permissionText: String) {
-                                permissionCheckerHelper.onNeverAskAgain(it, permissionText)
-                            }
-
-                            override fun onPermissionGranted() {
-                                openContactPicker()
-                            }
-                        })
-            }
+        if (clientNumbers.isEmpty()) {
+            numberListAdapter = TopupBillsFavoriteNumberListAdapter(
+                    CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers), typeFactory)
         } else {
-            openContactPicker()
+            numberListAdapter = TopupBillsFavoriteNumberListAdapter(
+                    listOf(FavoriteNumberNotFoundDataView()), typeFactory)
         }
-    }
 
-    fun openContactPicker() {
-        val contactPickerIntent = Intent(
-                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
-        try {
-            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
-        } catch (e: ActivityNotFoundException) {
-            view?.let {
-                Toaster.build(it, getString(R.string.common_topup_contact_not_found), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
-            }
+        binding?.commonTopupbillsFavoriteNumberRv?.run {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = numberListAdapter
         }
     }
 
@@ -228,7 +188,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
 
         if (searchClientNumbers.isNotEmpty()) {
             numberListAdapter.setNumbers(
-                    mapSeamlessFavNumberItemToDataView(searchClientNumbers)
+                    CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(searchClientNumbers)
             )
         } else {
             numberListAdapter.setEmptyState(listOf(FavoriteNumberEmptyDataView()))
@@ -252,7 +212,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
     }
 
     fun onSearchDone(text: String) {
-        checkMatchesFavoriteNumber(text)
+        navigateToPDP(InputNumberActionType.MANUAL)
     }
 
     fun onSearchReset() {
@@ -260,40 +220,67 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         KeyboardHandler.hideSoftKeyboard(activity)
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun onFavoriteNumberClick(clientNumber: TopupBillsSeamlessFavNumberItem) {
-        // TODO: [Misael] check kondisi isFavorite
-        if (!::inputNumberActionType.isInitialized || inputNumberActionType != InputNumberActionType.CONTACT) {
-            val checkNumber = findNumber(
-                    clientNumber.clientNumber,
-                    mapSeamlessDataViewToItem(numberListAdapter.visitables as List<FavoriteNumberDataView>))
-            inputNumberActionType = if (checkNumber != null && checkNumber.isFavorite) {
-                InputNumberActionType.FAVORITE
-            } else {
-                InputNumberActionType.MANUAL
-            }
-        }
-
-        activity?.run {
-            val intent = Intent()
-            intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, clientNumber)
-            intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, inputNumberActionType.ordinal)
-            setResult(Activity.RESULT_OK, intent)
-            finish()
-        }
+        navigateToPDP(InputNumberActionType.FAVORITE)
     }
 
     override fun onContinueClicked() {
+        navigateToPDP(InputNumberActionType.MANUAL)
+    }
+
+    private fun navigateToPDP(
+            inputNumberActionType: InputNumberActionType,
+            clientNumber: TopupBillsSeamlessFavNumberItem? = null
+    ) {
         activity?.run {
             val intent = Intent()
-            val searchedClientNumber = binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.text.toString()
-            intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, TopupBillsSeamlessFavNumberItem(
-                    clientNumber = searchedClientNumber))
-            intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, InputNumberActionType.MANUAL)
+            val searchedClientNumber: TopupBillsSeamlessFavNumberItem = clientNumber
+                    ?: TopupBillsSeamlessFavNumberItem(
+                            clientNumber = binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.text.toString()
+                    )
+            intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER, searchedClientNumber)
+            intent.putExtra(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE, inputNumberActionType)
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
     }
+
+    private fun navigateContact() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            activity?.let {
+                permissionCheckerHelper.checkPermission(it,
+                        PermissionCheckerHelper.Companion.PERMISSION_READ_CONTACT,
+                        object : PermissionCheckerHelper.PermissionCheckListener {
+                            override fun onPermissionDenied(permissionText: String) {
+                                permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                            }
+
+                            override fun onNeverAskAgain(permissionText: String) {
+                                permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                            }
+
+                            override fun onPermissionGranted() {
+                                openContactPicker()
+                            }
+                        })
+            }
+        } else {
+            openContactPicker()
+        }
+    }
+
+    fun openContactPicker() {
+        val contactPickerIntent = Intent(
+                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+        try {
+            startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
+        } catch (e: ActivityNotFoundException) {
+            view?.let {
+                Toaster.build(it, getString(R.string.common_topup_contact_not_found), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+            }
+        }
+    }
+
     override fun onFavoriteNumberMenuClick(favNumberItem: TopupBillsSeamlessFavNumberItem) {
         // TODO: [Misael] use favNumberItem
         val bottomSheet = FavoriteNumberMenuBottomSheet.newInstance(this)
@@ -306,32 +293,6 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
 
     override fun onDeleteContactClicked() {
         // TODO: [Misael] delete contact
-    }
-
-    private fun checkMatchesFavoriteNumber(textNumber: String) {
-        val matchedFavoriteNumber = numberListAdapter.visitables.findLast {
-            if (it is FavoriteNumberDataView) {
-                it.favoriteNumber.clientNumber == textNumber
-            } else {
-                false
-            }
-        }
-        matchedFavoriteNumber?.let {
-            onFavoriteNumberClick((it as FavoriteNumberDataView).favoriteNumber)
-        }
-    }
-
-    // Data Mapper
-    private fun mapSeamlessFavNumberItemToDataView(clientNumbers: List<TopupBillsSeamlessFavNumberItem>): List<FavoriteNumberDataView> {
-        return clientNumbers.map {
-            FavoriteNumberDataView(it)
-        }
-    }
-
-    private fun mapSeamlessDataViewToItem(clientNumbers: List<FavoriteNumberDataView>): List<TopupBillsSeamlessFavNumberItem> {
-        return clientNumbers.map {
-            it.favoriteNumber
-        }
     }
 
     enum class InputNumberActionType {
