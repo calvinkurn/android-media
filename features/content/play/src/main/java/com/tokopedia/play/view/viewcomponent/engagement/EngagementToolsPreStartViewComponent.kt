@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.viewcomponent
+package com.tokopedia.play.view.viewcomponent.engagement
 
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.hide

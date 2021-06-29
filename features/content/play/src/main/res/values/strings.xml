@@ -60,6 +60,7 @@
 
     <!--Engagement Tools-->
     <string name="play_engagement_prestart_timer_text">Dimulai dalam:</string>
+    <string name="play_engagement_prestart_follow_button">Follow Buat Ikutan</string>
 
     <string name="play_engagement_live_timer_text">Berakhir dalam:</string>
 

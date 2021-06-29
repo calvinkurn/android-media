@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.viewcomponent
+package com.tokopedia.play.view.viewcomponent.engagement
 
 import android.view.ViewGroup
 import android.widget.FrameLayout

@@ -63,6 +63,9 @@ import com.tokopedia.play.view.uimodel.engagement.PlayInteractiveTimeStatus
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play.view.viewcomponent.*
+import com.tokopedia.play.view.viewcomponent.engagement.EngagementToolsFinishedViewComponent
+import com.tokopedia.play.view.viewcomponent.engagement.EngagementToolsPreStartViewComponent
+import com.tokopedia.play.view.viewcomponent.engagement.EngagementToolsTapViewComponent
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -128,8 +131,13 @@ class PlayUserInteractionFragment @Inject constructor(
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
+
+    /**
+     * EngagementTools
+     */
     private val engagementToolsPreStartView by viewComponentOrNull { EngagementToolsPreStartViewComponent(it, this) }
     private val engagementToolsTapView by viewComponentOrNull { EngagementToolsTapViewComponent(it, this) }
+    private val engagementToolsFinishedView by viewComponentOrNull { EngagementToolsFinishedViewComponent(it) }
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
@@ -1349,29 +1357,39 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun interactiveViewOnStateChanged(state: PlayInteractiveUiState) {
-        engagementToolsPreStartView?.setTitle(state.title)
-
         when (state.status) {
             is PlayInteractiveTimeStatus.Scheduled -> {
+                engagementToolsTapView?.hide()
+                engagementToolsFinishedView?.hide()
+
+                engagementToolsPreStartView?.setTitle(state.title)
                 engagementToolsPreStartView?.setTimer(state.status.liveTimeInMs) {
                     playViewModel.submitAction(InteractivePreStartFinishedAction)
                 }
                 engagementToolsPreStartView?.show()
-
-                engagementToolsTapView?.hide()
             }
             is PlayInteractiveTimeStatus.Live -> {
                 engagementToolsPreStartView?.hide()
+                engagementToolsFinishedView?.hide()
 
+                engagementToolsPreStartView?.setTitle(state.title)
                 engagementToolsTapView?.setTimer(state.status.remainingTimeInMs) {
                     playViewModel.submitAction(InteractiveLiveFinishedAction)
                     doShowToaster(message = "Tap done")
                 }
                 engagementToolsTapView?.show()
             }
+            PlayInteractiveTimeStatus.Finished -> {
+                engagementToolsPreStartView?.hide()
+                engagementToolsTapView?.hide()
+
+                engagementToolsFinishedView?.setInfo(state.title)
+                engagementToolsFinishedView?.show()
+            }
             else -> {
                 engagementToolsPreStartView?.hide()
                 engagementToolsTapView?.hide()
+                engagementToolsFinishedView?.hide()
             }
         }
     }

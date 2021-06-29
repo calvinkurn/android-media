@@ -37,6 +37,7 @@ import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.domain.engagement.GetCurrentInteractiveUseCase
+import com.tokopedia.play.view.uimodel.action.InteractiveLiveFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.engagement.PlayInteractiveTimeStatus
@@ -514,6 +515,26 @@ class PlayViewModel @Inject constructor(
                 viewModelScope.launch {
                     setUiState {
                         copy(interactive = interactive?.copy(status = PlayInteractiveTimeStatus.Live(15000)))
+                    }
+                }
+            }
+            InteractiveLiveFinishedAction -> {
+                //TODO("mock")
+                viewModelScope.launch {
+                    setUiState {
+                        copy(interactive = PlayInteractiveUiState(
+                                title = "Game selesai!",
+                                status = PlayInteractiveTimeStatus.Finished
+                        ))
+                    }
+
+                    delay(1500)
+
+                    setUiState {
+                        copy(interactive = PlayInteractiveUiState(
+                                title = "Memilih pemenang..",
+                                status = PlayInteractiveTimeStatus.Finished
+                        ))
                     }
                 }
             }
