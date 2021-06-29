@@ -57,11 +57,13 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             var totalValue = 0L
             var productFInsurance = 0
             orderProducts.forEach {
-                totalWeight += it.quantity.orderQuantity * it.weight
-                totalWeightActual += it.quantity.orderQuantity * it.weightActual
-                totalValue += it.quantity.orderQuantity * it.getPrice()
-                if (it.productFinsurance == 1) {
-                    productFInsurance = 1
+                if (!it.isError) {
+                    totalWeight += it.quantity.orderQuantity * it.weight
+                    totalWeightActual += it.quantity.orderQuantity * it.weightActual
+                    totalValue += it.quantity.orderQuantity * it.getPrice()
+                    if (it.productFinsurance == 1) {
+                        productFInsurance = 1
+                    }
                 }
             }
 

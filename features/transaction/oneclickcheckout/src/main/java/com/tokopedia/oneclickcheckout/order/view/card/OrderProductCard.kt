@@ -60,7 +60,12 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
     }
 
     private fun renderProductTicker() {
-        binding.tickerOrderProduct.gone()
+        if (product.isError) {
+            binding.tickerOrderProduct.setHtmlDescription(product.errorMessage)
+            binding.tickerOrderProduct.visible()
+        } else {
+            binding.tickerOrderProduct.gone()
+        }
     }
 
     private fun renderProductNames() {
@@ -77,6 +82,11 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             } else {
                 tvQtyLeft.gone()
             }
+
+            val alpha = if (product.isError) 0.5f else 1.0f
+            ivProductImage.alpha = alpha
+            tvProductName.alpha = alpha
+            flexboxOrderProductNames.alpha = alpha
         }
     }
 
@@ -98,11 +108,19 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             } else {
                 labelProductSlashPricePercentage.gone()
             }
+
+            flexboxOrderProductPrices.alpha = if (product.isError) 0.5f else 1.0f
         }
     }
 
     private fun renderNotes() {
         binding.apply {
+            if (product.isError) {
+                tfNote.gone()
+                tvProductNotesPlaceholder.gone()
+                return@apply
+            }
+            tfNote.visible()
             tfNote.textFieldInput.textSize = 16f
             tfNote.textFieldInput.isSingleLine = false
             tfNote.setCounter(MAX_NOTES_LENGTH)
@@ -136,6 +154,11 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
 
     private fun renderQuantity() {
         binding.apply {
+            if (product.isError) {
+                qtyEditorProduct.gone()
+                return@apply
+            }
+            qtyEditorProduct.visible()
             if (quantityTextWatcher != null) {
                 // reset listener
                 qtyEditorProduct.editText.removeTextChangedListener(quantityTextWatcher)
@@ -194,7 +217,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
 
     private fun renderPurchaseProtection() {
         binding.apply {
-            if (product.purchaseProtectionPlanData.isProtectionAvailable) {
+            if (!product.isError && product.purchaseProtectionPlanData.isProtectionAvailable) {
                 tvProtectionTitle.text = product.purchaseProtectionPlanData.protectionTitle
                 tvProtectionDescription.text = product.purchaseProtectionPlanData.protectionSubtitle
                 tvProtectionPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.purchaseProtectionPlanData.protectionPricePerProduct, false).removeDecimalSuffix()

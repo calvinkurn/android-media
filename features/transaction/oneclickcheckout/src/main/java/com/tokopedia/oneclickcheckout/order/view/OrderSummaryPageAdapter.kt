@@ -13,7 +13,7 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerD
 
 class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                               private val productListener: OrderProductCard.OrderProductCardListener,
-                              private val preferenceListener: NewOrderPreferenceCard.OrderPreferenceCardListener,
+                              private val preferenceListener: OrderPreferenceCard.OrderPreferenceCardListener,
                               private val insuranceListener: OrderInsuranceCard.OrderInsuranceCardListener,
                               private val promoCardListener: OrderPromoCard.OrderPromoCardListener,
                               private val paymentCardListener: OrderTotalPaymentCard.OrderTotalPaymentCardListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -49,8 +49,8 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
             OrderProductCard.VIEW_TYPE -> {
                 return OrderProductCard(CardOrderProductBinding.inflate(inflater, parent, false), productListener, analytics)
             }
-            NewOrderPreferenceCard.VIEW_TYPE -> {
-                return NewOrderPreferenceCard(CardOrderPreferenceNewBinding.inflate(inflater, parent, false), preferenceListener, analytics)
+            OrderPreferenceCard.VIEW_TYPE -> {
+                return OrderPreferenceCard(CardOrderPreferenceBinding.inflate(inflater, parent, false), preferenceListener, analytics)
             }
             OrderInsuranceCard.VIEW_TYPE -> {
                 return OrderInsuranceCard(CardOrderInsuranceBinding.inflate(inflater, parent, false), insuranceListener, analytics)
@@ -79,7 +79,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
             is OrderProductCard -> {
                 holder.setData(products[position - 3], shop, position - 3)
             }
-            is NewOrderPreferenceCard -> {
+            is OrderPreferenceCard -> {
                 holder.setPreference(preference)
                 holder.setShipment(shipment)
                 holder.setPayment(payment)
@@ -108,7 +108,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
             position == 1 -> OrderOnboardingCard.VIEW_TYPE
             position == 2 -> OrderShopCard.VIEW_TYPE
             bottomPosition < 3 -> OrderProductCard.VIEW_TYPE
-            bottomPosition == 3 -> NewOrderPreferenceCard.VIEW_TYPE
+            bottomPosition == 3 -> OrderPreferenceCard.VIEW_TYPE
             bottomPosition == 4 -> OrderInsuranceCard.VIEW_TYPE
             bottomPosition == 5 -> OrderPromoCard.VIEW_TYPE
             bottomPosition == 6 -> OrderTotalPaymentCard.VIEW_TYPE

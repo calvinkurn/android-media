@@ -43,12 +43,14 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
             var totalProductPrice = 0.0
             var totalPurchaseProtectionPrice = 0
             for (product in orderCart.products) {
-                totalProductPrice += product.quantity.orderQuantity * product.getPrice().toDouble()
-                var purchaseProtectionPriceMultiplier = product.quantity.orderQuantity
-                if (product.purchaseProtectionPlanData.source.equals(PurchaseProtectionPlanData.SOURCE_READINESS, true)) {
-                    purchaseProtectionPriceMultiplier = 1
+                if (!product.isError) {
+                    totalProductPrice += product.quantity.orderQuantity * product.getPrice().toDouble()
+                    var purchaseProtectionPriceMultiplier = product.quantity.orderQuantity
+                    if (product.purchaseProtectionPlanData.source.equals(PurchaseProtectionPlanData.SOURCE_READINESS, true)) {
+                        purchaseProtectionPriceMultiplier = 1
+                    }
+                    totalPurchaseProtectionPrice += if (product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED) purchaseProtectionPriceMultiplier * product.purchaseProtectionPlanData.protectionPricePerProduct else 0
                 }
-                totalPurchaseProtectionPrice += if (product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED) purchaseProtectionPriceMultiplier * product.purchaseProtectionPlanData.protectionPricePerProduct else 0
             }
             val totalShippingPrice = shipping.getRealOriginalPrice().toDouble()
             val insurancePrice = shipping.getRealInsurancePrice().toDouble()

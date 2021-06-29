@@ -31,7 +31,9 @@ data class OrderProduct(
         var productTrackerData: ProductTrackerData = ProductTrackerData(),
         var tickerMessage: ProductTickerMessage = ProductTickerMessage(),
         var purchaseProtectionPlanData: PurchaseProtectionPlanData = PurchaseProtectionPlanData(),
-        var preOrderDuration: Int = 0
+        var preOrderDuration: Int = 0,
+        //temp
+        var errorMessage: String = ""
 ): OrderItem {
 
     fun getPrice(): Long {
@@ -45,6 +47,9 @@ data class OrderProduct(
         }
         return finalPrice
     }
+
+    val isError: Boolean
+        get() = errorMessage.isNotBlank()
 }
 
 data class WholesalePrice(

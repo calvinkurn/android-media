@@ -769,7 +769,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             it.post {
                 try {
                     val scrollview = binding.rvOrderSummaryPage
-                    val childViewHolder = scrollview.findViewHolderForAdapterPosition(adapter.products.size + 2) as? NewOrderPreferenceCard
+                    val childViewHolder = scrollview.findViewHolderForAdapterPosition(adapter.products.size + 2) as? OrderPreferenceCard
                             ?: return@post
                     val coachMarkItems = ArrayList<CoachMark2Item>()
                     for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
@@ -815,7 +815,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun generateNewCoachMarkAnchorForNewBuyerRemoveProfile(view: NewOrderPreferenceCard, index: Int): View {
+    private fun generateNewCoachMarkAnchorForNewBuyerRemoveProfile(view: OrderPreferenceCard, index: Int): View {
         return when (index) {
             1 -> view.binding.btnChangeAddress
             else -> view.binding.tvProfileHeader
@@ -1026,7 +1026,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getNewOrderPreferenceCardListener(): NewOrderPreferenceCard.OrderPreferenceCardListener = object : NewOrderPreferenceCard.OrderPreferenceCardListener {
+    private fun getNewOrderPreferenceCardListener(): OrderPreferenceCard.OrderPreferenceCardListener = object : OrderPreferenceCard.OrderPreferenceCardListener {
 
         override fun getRemoveProfileTickerSharedPreference(): SharedPreferences? {
             return context?.applicationContext?.getSharedPreferences(SP_KEY_REMOVE_PROFILE_TICKER, Context.MODE_PRIVATE)
