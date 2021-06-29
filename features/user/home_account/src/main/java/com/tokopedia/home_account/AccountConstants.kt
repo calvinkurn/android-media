@@ -105,6 +105,7 @@ object AccountConstants {
             const val LABEL_STICKER_TOKOPEDIA = "Sticker Tokopedia"
             const val LABEL_IMAGE_QUALITY = "Kualitas Gambar"
             const val LABEL_CLEAN_CACHE = "Bersihkan Cache"
+            const val LABEL_SCREEN_RECORD = "Perekam Layar"
             const val LABEL_VIEW_MODE = "Mode Tampilan"
             const val LABEL_ABOUT_TOKOPEDIA = "Seputar Tokopedia"
             const val LABEL_GET_TO_KNOW_TOKOPEDIA = "Kenali Tokopedia"

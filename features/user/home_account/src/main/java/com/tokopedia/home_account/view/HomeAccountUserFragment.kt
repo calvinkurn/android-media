@@ -864,7 +864,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 showDialogClearCache()
             }
             AccountConstants.SettingCode.SETTING_APP_ADVANCED_SCREEN_RECORD -> {
-                context?.let { RouteManager.route(it, ApplinkConstInternalGlobal.SCREEN_RECORDER) }
+                context?.let {
+                    homeAccountAnalytic.eventClickAppSettingScreenRecord()
+                    RouteManager.route(it, ApplinkConstInternalGlobal.SCREEN_RECORDER)
+                }
             }
             AccountConstants.SettingCode.SETTING_SECURITY -> {
                 homeAccountAnalytic.eventClickAccountSettingAccountSecurity()
