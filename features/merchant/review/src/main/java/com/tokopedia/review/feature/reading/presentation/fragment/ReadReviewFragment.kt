@@ -303,9 +303,9 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun setupFab() {
-//        goToTopFab?.setOnClickListener {
-//            getRecyclerView(view)?.smoothScrollToPosition(0)
-//        }
+        goToTopFab?.circleMainMenu?.setOnClickListener {
+            getRecyclerView(view)?.smoothScrollToPosition(0)
+        }
     }
 
     private fun getProductReview(page: Int) {
@@ -363,6 +363,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         stopNetworkRequestPerformanceMonitoring()
         startRenderPerformanceMonitoring()
         hideError()
+        showFab()
         if (productrevGetProductReviewList.reviewList.isEmpty() && viewModel.isFilterSelected()) {
             showFilteredEmpty()
             return
@@ -383,8 +384,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun showError() {
-        globalError?.apply {
 
+        globalError?.apply {
             setActionClickListener {
                 loadInitialData()
             }
@@ -405,6 +406,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun showListOnlyLoading() {
+        hideFab()
         listOnlyLoading?.show()
     }
 
@@ -413,6 +415,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun showFullPageLoading() {
+        hideFab()
         loadingView?.show()
     }
 
@@ -421,6 +424,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun showFilteredEmpty() {
+        hideFab()
         emptyFilteredStateImage?.setImageUrl(EMPTY_FILTERED_STATE_IMAGE_URL)
         emptyFilteredState?.show()
     }
@@ -430,10 +434,19 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun showPageNotFound() {
+        hideFab()
         globalError?.apply {
             setType(GlobalError.PAGE_NOT_FOUND)
             show()
         }
+    }
+
+    private fun hideFab() {
+        goToTopFab?.hide()
+    }
+
+    private fun showFab() {
+        goToTopFab?.show()
     }
 
     private fun updateLike(toggleLikeUiModel: ToggleLikeUiModel) {
