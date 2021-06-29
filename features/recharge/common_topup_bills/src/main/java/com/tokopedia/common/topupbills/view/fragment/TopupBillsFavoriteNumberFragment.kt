@@ -120,7 +120,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
             navigateContact()
         }
 
-        if (clientNumbers.isEmpty()) {
+        if (clientNumbers.isNotEmpty()) {
             numberListAdapter = TopupBillsFavoriteNumberListAdapter(
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers), typeFactory)
         } else {
