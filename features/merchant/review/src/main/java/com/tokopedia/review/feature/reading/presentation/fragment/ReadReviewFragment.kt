@@ -173,7 +173,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         }
     }
 
-    override fun onFilterSubmitted(selectedFilter: List<ListItemUnify>, filterType: SortFilterBottomSheetType, index: Int) {
+    override fun onFilterSubmitted(selectedFilter: Set<ListItemUnify>, filterType: SortFilterBottomSheetType, index: Int) {
         clearAllData()
         viewModel.setFilter(selectedFilter, filterType)
         showListOnlyLoading()
@@ -193,7 +193,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onSortClicked(chipTitle: String) {
         val filterOptions = readReviewFilterFactory.getSortOptions(listOf(getString(R.string.review_reading_sort_most_helpful), getString(R.string.review_reading_sort_latest), getString(R.string.review_reading_sort_highest_rating), getString(R.string.review_reading_sort_lowest_rating)))
-        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_sort_title), filterOptions, this, SortFilterBottomSheetType.SortBottomSheet, listOf(), chipTitle, 0).show(it, ReadReviewFilterBottomSheet.TAG) }
+        activity?.supportFragmentManager?.let { ReadReviewFilterBottomSheet.newInstance(getString(R.string.review_reading_sort_title), filterOptions, this, SortFilterBottomSheetType.SortBottomSheet, setOf(), chipTitle, 0).show(it, ReadReviewFilterBottomSheet.TAG) }
     }
 
     override fun onClearFiltersClicked() {

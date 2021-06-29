@@ -184,8 +184,8 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
     @Test
     fun `when clearFilters should make all filters null`() {
-        val expectedSelectedRating = emptyList<String>()
-        val expectedSelectedTopic = emptyList<String>()
+        val expectedSelectedRating = emptySet<String>()
+        val expectedSelectedTopic = emptySet<String>()
 
         val actualSelectedRating = viewModel.getSelectedRatingFilter()
         val actualSelectedTopic = viewModel.getSelectedTopicFilter()
@@ -216,9 +216,9 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         val ratingFive = "5"
         val ratingThree = "3"
         val emptyDescription = ""
-        val selectedFilters = listOf(ListItemUnify(ratingFive, emptyDescription), ListItemUnify(ratingThree, emptyDescription))
+        val selectedFilters = setOf(ListItemUnify(ratingFive, emptyDescription), ListItemUnify(ratingThree, emptyDescription))
         val type = SortFilterBottomSheetType.RatingFilterBottomSheet
-        val expectedRatingFilter = listOf(ratingFive, ratingThree)
+        val expectedRatingFilter = setOf(ratingFive, ratingThree)
         val expectedResponse = ProductReviewList()
 
         onGetProductReviewsSuccess_thenReturn(expectedResponse)
@@ -240,9 +240,9 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         val shopServiceTopicKey = "pelayanan"
         val expectedRatingAndTopicResponse = ProductRatingAndTopic(ProductrevGetProductRatingAndTopic(topics = listOf(ProductTopic(formatted = productQualityTopic, key = productQualityTopicKey), ProductTopic(formatted = shopServiceTopic, key = shopServiceTopicKey))))
         val emptyDescription = ""
-        val selectedFilters = listOf(ListItemUnify(productQualityTopic, emptyDescription), ListItemUnify(shopServiceTopic, emptyDescription))
+        val selectedFilters = setOf(ListItemUnify(productQualityTopic, emptyDescription), ListItemUnify(shopServiceTopic, emptyDescription))
         val type = SortFilterBottomSheetType.TopicFilterBottomSheet
-        val expectedTopicFilter = listOf(productQualityTopic, shopServiceTopic)
+        val expectedTopicFilter = setOf(productQualityTopic, shopServiceTopic)
         val expectedResponse = ProductReviewList()
 
         onGetProductRatingAndTopicsSuccess_thenReturn(expectedRatingAndTopicResponse)
@@ -264,9 +264,9 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
     @Test
     fun `when setFilter from rating bottom sheet is empty should set to null`() {
-        val selectedFilters = listOf<ListItemUnify>()
+        val selectedFilters = setOf<ListItemUnify>()
         val type = SortFilterBottomSheetType.RatingFilterBottomSheet
-        val expectedRatingFilter = listOf<String>()
+        val expectedRatingFilter = setOf<String>()
         val expectedResponse = ProductReviewList()
 
         onGetProductReviewsSuccess_thenReturn(expectedResponse)
@@ -281,9 +281,9 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
 
     @Test
     fun `when setFilter from topic bottom sheet is empty should set to null`() {
-        val selectedFilters = listOf<ListItemUnify>()
+        val selectedFilters = setOf<ListItemUnify>()
         val type = SortFilterBottomSheetType.TopicFilterBottomSheet
-        val expectedTopicFilter = listOf<String>()
+        val expectedTopicFilter = setOf<String>()
         val expectedResponse = ProductReviewList()
 
         onGetProductReviewsSuccess_thenReturn(expectedResponse)

@@ -96,7 +96,7 @@ class ReadReviewViewModel @Inject constructor(
         }
     }
 
-    fun setFilter(selectedFilters: List<ListItemUnify>, type: SortFilterBottomSheetType) {
+    fun setFilter(selectedFilters: Set<ListItemUnify>, type: SortFilterBottomSheetType) {
         if (type == SortFilterBottomSheetType.RatingFilterBottomSheet) {
             if (selectedFilters.isEmpty()) {
                 this.filter.rating = null
@@ -127,18 +127,17 @@ class ReadReviewViewModel @Inject constructor(
         resetPage()
     }
 
-    fun getSelectedRatingFilter(): List<String> {
+    fun getSelectedRatingFilter(): Set<String> {
         val selectedFilters = filter.rating?.value
-        return selectedFilters?.split(",")?.map { it.trim() } ?: listOf()
+        return selectedFilters?.split(",")?.map { it.trim() }?.toSet() ?: setOf()
     }
 
-    fun getSelectedTopicFilter(): List<String> {
-        val selectedFilters = filter.topic?.value?.split(",")?.map { it.trim() }
-                ?: listOf()
+    fun getSelectedTopicFilter(): Set<String> {
+        val selectedFilters = filter.topic?.value?.split(",")?.map { it.trim() } ?: listOf()
         val topicsMap = getTopicsMap()
-        val result = mutableListOf<String>()
+        var result = setOf<String>()
         selectedFilters.forEach {
-            result.add(getKey(topicsMap, it))
+            result = result.plus(getKey(topicsMap, it))
         }
         return result
     }
@@ -193,14 +192,14 @@ class ReadReviewViewModel @Inject constructor(
         return FilterType.FilterWithImage()
     }
 
-    private fun mapRatingFilterToFilterType(ratingFilters: List<ListItemUnify>): FilterType.FilterRating {
+    private fun mapRatingFilterToFilterType(ratingFilters: Set<ListItemUnify>): FilterType.FilterRating {
         val selectedRatings = ratingFilters.map {
             it.listTitleText
         }.joinToString { it }
         return FilterType.FilterRating(selectedRatings)
     }
 
-    private fun mapTopicFilterToFilterType(topicFilters: List<ListItemUnify>): FilterType.FilterTopic {
+    private fun mapTopicFilterToFilterType(topicFilters: Set<ListItemUnify>): FilterType.FilterTopic {
         val topicsMap = getTopicsMap()
         val selectedTopics = topicFilters.map {
             topicsMap[it.listTitleText] ?: ""

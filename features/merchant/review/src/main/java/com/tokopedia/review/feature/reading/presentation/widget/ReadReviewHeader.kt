@@ -104,7 +104,7 @@ class ReadReviewHeader : BaseCustomView {
         return sortFilter?.chipItems?.indexOf(sortFilterItem) ?: 0
     }
 
-    private fun getTopicFilterTitleBasedOnCount(selectedFilter: List<ListItemUnify>): String {
+    private fun getTopicFilterTitleBasedOnCount(selectedFilter: Set<ListItemUnify>): String {
         return if (selectedFilter.size > 1) {
             context.getString(R.string.review_reading_filter_multiple_topic_selected, selectedFilter.size)
         } else {
@@ -113,7 +113,7 @@ class ReadReviewHeader : BaseCustomView {
         }
     }
 
-    private fun getRatingFilterTitleAndDrawableBasedOnCount(selectedFilter: List<ListItemUnify>): Pair<String, Drawable?> {
+    private fun getRatingFilterTitleAndDrawableBasedOnCount(selectedFilter: Set<ListItemUnify>): Pair<String, Drawable?> {
         return when {
             selectedFilter.size > 1 -> {
                 Pair(context.getString(R.string.review_reading_filter_multiple_rating_selected, selectedFilter.size), null)
@@ -152,7 +152,7 @@ class ReadReviewHeader : BaseCustomView {
         }
     }
 
-    fun updateFilter(selectedFilter: List<ListItemUnify>, sortFilterBottomSheetType: SortFilterBottomSheetType, index: Int) {
+    fun updateFilter(selectedFilter: Set<ListItemUnify>, sortFilterBottomSheetType: SortFilterBottomSheetType, index: Int) {
         if (sortFilterBottomSheetType is SortFilterBottomSheetType.RatingFilterBottomSheet) {
             val titleAndDrawable = getRatingFilterTitleAndDrawableBasedOnCount(selectedFilter)
             updateFilterChip(sortFilter?.chipItems?.get(index), selectedFilter.isEmpty(), titleAndDrawable.first, titleAndDrawable.second)

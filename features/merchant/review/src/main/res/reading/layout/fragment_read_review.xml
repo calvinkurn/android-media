@@ -18,8 +18,8 @@
             android:id="@+id/read_review_collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/layout_lvl2"
             android:minHeight="@dimen/layout_lvl7"
+            android:paddingBottom="@dimen/layout_lvl2"
             app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed">
 
             <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
@@ -40,31 +40,24 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/read_review_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/read_review_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent" />
+        <include
+            android:id="@+id/read_review_list_only_loading"
+            layout="@layout/partial_read_review_list_only_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
 
-            <include
-                android:id="@+id/read_review_list_only_loading"
-                layout="@layout/partial_read_review_list_only_loading"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone" />
-
-            <include
-                android:id="@+id/read_review_list_empty"
-                layout="@layout/partial_read_review_empty_filtered"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <include
+            android:id="@+id/read_review_list_empty"
+            layout="@layout/partial_read_review_empty_filtered"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
@@ -89,9 +82,10 @@
 
     <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
         android:id="@+id/read_review_go_to_top_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:fbType="back_to_top"
         android:layout_gravity="bottom|center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

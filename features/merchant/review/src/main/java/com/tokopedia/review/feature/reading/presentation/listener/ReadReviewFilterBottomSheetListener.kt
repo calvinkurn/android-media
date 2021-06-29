@@ -4,6 +4,6 @@ import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBotto
 import com.tokopedia.unifycomponents.list.ListItemUnify
 
 interface ReadReviewFilterBottomSheetListener {
-    fun onFilterSubmitted(selectedFilter: List<ListItemUnify>, filterType: SortFilterBottomSheetType, index: Int)
+    fun onFilterSubmitted(selectedFilter: Set<ListItemUnify>, filterType: SortFilterBottomSheetType, index: Int)
     fun onSortSubmitted(selectedSort: ListItemUnify)
 }
