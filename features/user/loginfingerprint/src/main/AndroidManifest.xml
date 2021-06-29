@@ -33,6 +33,7 @@
 
         <activity
             android:label="@string/title_login_fingerprint"
+            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar"
             android:name=".view.activity.VerifyFingerprintActivity">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
