@@ -631,7 +631,7 @@ class ShopPageHomeTracking(
 
         val widgetType = getShopPersoWidgetType(widgetName)
         val eventAction = when(widgetType){
-            WIDGET_TYPE_CAROUSELL, WIDGET_TYPE_REMINDER -> CLICK_ATC_RECOMMENDATION
+            WIDGET_TYPE_CAROUSELL -> CLICK_ATC_RECOMMENDATION
             WIDGET_TYPE_BUY_AGAIN -> CLICK_OCC_RECOMMENDATION
             else -> ""
         }

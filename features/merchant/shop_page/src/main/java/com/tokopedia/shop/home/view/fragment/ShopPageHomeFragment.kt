@@ -1370,7 +1370,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 itemPosition + 1,
                 shopHomeCarousellProductUiModel?.header?.title ?: "",
                 customDimensionShopPage
-        )    }
+        )
+    }
 
     override fun onCarouselProductItemClicked(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductUiModel?) {
         shopHomeProductViewModel?.let {
