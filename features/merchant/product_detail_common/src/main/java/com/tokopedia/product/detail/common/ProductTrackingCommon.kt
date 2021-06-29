@@ -50,7 +50,7 @@ object ProductTrackingCommon {
     fun onRemindMeClicked(productId: String, pageSource: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                "$pageSource - variant bottomsheet",
+                "$pageSource - global variant bottomsheet",
                 ProductTrackingConstant.Action.CLICK_NOTIFY_ME_VARIANT_BOTTOMSHEET,
                 "")
 
@@ -61,7 +61,7 @@ object ProductTrackingCommon {
         val label = "quantity button:${if (newQuantity > oldQuantity) "plus" else "minus"}"
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                "$pageSource - variant bottomsheet",
+                "$pageSource - global variant bottomsheet",
                 ProductTrackingConstant.Action.CLICK_VARIANT_QUANTITY_EDITOR,
                 label)
 
@@ -71,7 +71,7 @@ object ProductTrackingCommon {
     fun onWishlistCheckClicked(productId: String, pageSource: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                "$pageSource - variant bottomsheet",
+                "$pageSource - global variant bottomsheet",
                 ProductTrackingConstant.Action.CLICK_CHECK_WISHLIST,
                 "")
 
@@ -81,7 +81,7 @@ object ProductTrackingCommon {
     fun onSeeCartVariantBottomSheetClicked(message: String, productId: String, pageSource: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                "$pageSource - variant bottomsheet",
+                "$pageSource - global variant bottomsheet",
                 ProductTrackingConstant.Action.CLICK_TOASTER_LIHAT_SUCCESS_ATC,
                 "toaster message:$message")
 
@@ -91,7 +91,7 @@ object ProductTrackingCommon {
     fun onVariantImageBottomSheetClicked(productId: String, pageSource: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                "$pageSource - variant bottomsheet",
+                "$pageSource - global variant bottomsheet",
                 ProductTrackingConstant.Action.CLICK_PRODUCT_IMAGE,
                 "")
 
@@ -101,7 +101,7 @@ object ProductTrackingCommon {
     fun onVariantGuidelineClicked(productId: String, pageSource: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                "$pageSource - variant bottomsheet",
+                "$pageSource - global variant bottomsheet",
                 ProductTrackingConstant.Action.CLICK_VARIANT_BOTTOMSHEET_GUIDELINE,
                 "")
 
@@ -111,7 +111,7 @@ object ProductTrackingCommon {
     fun onVariantPartiallySelected(errorMessage: String, productId: String, pageSource: String) {
         val mapEvent = TrackAppUtils.gtmData(
                 ProductTrackingConstant.PDP.EVENT_VIEW_PDP_IRIS,
-                "$pageSource - variant bottomsheet",
+                "$pageSource - global variant bottomsheet",
                 ProductTrackingConstant.Action.VIEW_CHOOSE_VARIANT_ERROR,
                 "not success - $errorMessage")
 
@@ -128,7 +128,7 @@ object ProductTrackingCommon {
 
     fun eventEcommerceAtcError(errorMessage: String, productId: String, userId: String, pageSource: String) {
         val mapEvent = TrackAppUtils.gtmData(ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
-                "$pageSource - variant bottomsheet",
+                "$pageSource - global variant bottomsheet",
                 ProductTrackingConstant.Action.ACTION_VIEW_ERROR_WHEN_ADD_TO_CART,
                 "not success - $errorMessage")
         mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
@@ -161,8 +161,8 @@ object ProductTrackingCommon {
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 ProductTrackingConstant.Tracking.KEY_EVENT, "addToCart",
-                ProductTrackingConstant.Tracking.KEY_CATEGORY, "$pageSource - variant bottomsheet",
-                ProductTrackingConstant.Tracking.KEY_ACTION, "click - tambah ke keranjang on variant bottomsheet",
+                ProductTrackingConstant.Tracking.KEY_CATEGORY, "$pageSource - global variant bottomsheet",
+                ProductTrackingConstant.Tracking.KEY_ACTION, "click - tambah ke keranjang on global variant bottomsheet",
                 ProductTrackingConstant.Tracking.KEY_LABEL, if (buttonAction == ProductDetailCommonConstant.ATC_BUTTON) "" else "fitur : $generateButtonActionString",
                 KEY_PRODUCT_ID, productId,
                 ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
@@ -194,7 +194,7 @@ object ProductTrackingCommon {
                 ))))))
     }
 
-    private fun generateBusinessUnit(pageSource: String) = if (pageSource == AtcVariantHelper.PDP_PAGE_SOURCE) {
+    private fun generateBusinessUnit(pageSource: String) = if (pageSource == AtcVariantHelper.PDP_PAGESOURCE) {
         ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP
     } else {
         ProductTrackingConstant.Tracking.BUSINESS_UNIT
