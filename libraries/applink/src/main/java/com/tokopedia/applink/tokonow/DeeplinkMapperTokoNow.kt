@@ -2,6 +2,7 @@ package com.tokopedia.applink.tokonow
 
 import android.content.Context
 import android.net.Uri
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
@@ -14,36 +15,41 @@ object DeeplinkMapperTokopediaNow {
     private const val PARAM_CATEGORY_L1 = "category_l1"
     private const val PARAM_CATEGORY_L2 = "category_l2"
 
-    fun getRegisteredNavigationTokopediaNow(context: Context, deeplink: String): String {
-        return if (getRemoteConfigTokopediaNowEnabler(context)) deeplink
-        else ApplinkConstInternalTokopediaNow.OLD_TOKOMART
+    fun getRegisteredNavigationTokopediaNowHome(context: Context, deeplink: String): String {
+        return if (getRemoteConfigTokopediaNowEnabler(context)) ApplinkConstInternalTokopediaNow.HOME
+        else ApplinkConst.TokopediaNow.OLD_TOKONOW
     }
 
-    fun getRegisteredNavigationTokopediaNowSearch(deeplink: String): String {
-        val uri = Uri.parse(deeplink)
+    fun getRegisteredNavigationTokopediaNowSearch(context: Context, deeplink: String): String {
+        if (getRemoteConfigTokopediaNowEnabler(context)) {
+            val uri = Uri.parse(deeplink)
 
-        val query = uri.encodedQuery
-        val queryString = if (query.isNullOrEmpty()) "" else "?" + uri.encodedQuery
+            val query = uri.encodedQuery
+            val queryString = if (query.isNullOrEmpty()) "" else "?" + uri.encodedQuery
 
-        return ApplinkConstInternalTokopediaNow.SEARCH + queryString
+            return ApplinkConstInternalTokopediaNow.SEARCH + queryString
+        } else return ApplinkConst.TokopediaNow.OLD_TOKONOW
     }
 
-    fun getRegisteredNavigationTokopediaNowCategory(deeplink: String): String {
-        val uri = Uri.parse(deeplink)
+    fun getRegisteredNavigationTokopediaNowCategory(context: Context, deeplink: String): String {
+        if (getRemoteConfigTokopediaNowEnabler(context)) {
+            val uri = Uri.parse(deeplink)
 
-        val query = uri.encodedQuery
-        val queryString = if (query.isNullOrEmpty()) "" else "&" + uri.encodedQuery
+            val query = uri.encodedQuery
+            val queryString = if (query.isNullOrEmpty()) "" else "&" + uri.encodedQuery
 
-        val deeplinkWithoutQuery = if (queryString.isEmpty()) deeplink else deeplink.split("?")[0]
+            val deeplinkWithoutQuery = if (queryString.isEmpty()) deeplink else deeplink.split("?")[0]
 
-        val content = deeplinkWithoutQuery.split("/")
+            val content = deeplinkWithoutQuery.split("/")
 
-        val categoryL1 = "$PARAM_CATEGORY_L1=${content.getOrElse(INDEX_CATEGORY_L1) {""}}"
-        val categoryL2 = content.getOrElse(INDEX_CATEGORY_L2) {""}.let { it
-            if (!it.isEmpty()) "&$PARAM_CATEGORY_L2=$it" else ""
-        }
+            val categoryL1 = "$PARAM_CATEGORY_L1=${content.getOrElse(INDEX_CATEGORY_L1) { "" }}"
+            val categoryL2 = content.getOrElse(INDEX_CATEGORY_L2) { "" }.let {
+                it
+                if (!it.isEmpty()) "&$PARAM_CATEGORY_L2=$it" else ""
+            }
 
-        return "${ApplinkConstInternalTokopediaNow.CATEGORY}?$categoryL1$categoryL2$queryString"
+            return "${ApplinkConstInternalTokopediaNow.CATEGORY}?$categoryL1$categoryL2$queryString"
+        } else return ApplinkConst.TokopediaNow.OLD_TOKONOW
     }
 
     fun getRemoteConfigTokopediaNowEnabler(context: Context): Boolean{

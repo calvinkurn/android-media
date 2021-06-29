@@ -23,7 +23,4 @@ object ApplinkConstInternalTokopediaNow {
 
     @JvmField
     val CATEGORY = "$INTERNAL_TOKOPEDIA_NOW/category"
-
-    @JvmField
-    val OLD_TOKOMART = "tokopedia://discovery/tokomart"
 }
