@@ -70,7 +70,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
-    testImplementation rootProject.ext.testDependencies.junitJupiterEngine
+    testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
