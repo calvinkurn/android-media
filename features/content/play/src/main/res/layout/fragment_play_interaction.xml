@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     >
 
-    <Space
-        android:id="@+id/space_size"
+    <View
+        android:id="@+id/view_size"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginBottom="@dimen/spacing_lvl4"
@@ -50,7 +50,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/pcv_video"
         app:layout_constraintEnd_toStartOf="@id/view_like"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         tools:visibility="visible"
         />
 
@@ -63,8 +63,8 @@
         android:orientation="horizontal"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/rv_quick_reply"
-        app:layout_constraintEnd_toEndOf="@id/space_size"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         />
 
     <View
@@ -83,7 +83,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/pcv_video"
-        app:layout_constraintEnd_toEndOf="@id/space_size"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
         tools:visibility="visible"
         />
 
@@ -94,8 +94,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toTopOf="@id/view_product_featured"
-        app:layout_constraintStart_toStartOf="@id/space_size"
-        app:layout_constraintEnd_toEndOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
         />
 
     <include
@@ -109,7 +109,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_pinned_voucher"
         app:layout_constraintEnd_toStartOf="@id/view_like"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         tools:visibility="visible"
         />
 
@@ -124,7 +124,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_pinned"
         app:layout_constraintEnd_toStartOf="@id/view_like"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         tools:visibility="visible"
         />
 
@@ -137,7 +137,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_chat_list"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         />
 
     <include
@@ -149,7 +149,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_interactive_prestart"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         />
 
     <include
@@ -161,7 +161,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_interactive_tap"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         />
 
     <include
@@ -171,8 +171,8 @@
         android:layout_height="@dimen/play_interactive_winner_badge_height"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toTopOf="@id/view_chat_list"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintBottom_toTopOf="@id/view_interactive_prestart"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         />
 
     <com.google.android.exoplayer2.ui.PlayerControlView
@@ -183,9 +183,9 @@
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:controller_layout_id="@layout/layout_play_player_control"
-        app:layout_constraintBottom_toBottomOf="@id/space_size"
+        app:layout_constraintBottom_toBottomOf="@id/view_size"
         app:layout_constraintEnd_toStartOf="@id/view_like"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         app:show_timeout="-1"
         tools:visibility="visible"
         />
@@ -198,7 +198,7 @@
         android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/space_size"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
         app:layout_constraintTop_toBottomOf="@id/view_stats_info"
         tools:visibility="visible"
         />
@@ -211,7 +211,7 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/play_offset_12"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/space_size"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
         app:layout_constraintTop_toBottomOf="@id/view_toolbar"
         />
 
@@ -235,9 +235,9 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:layout_constraintEnd_toEndOf="@id/space_size"
-        app:layout_constraintStart_toStartOf="@id/space_size"
-        app:layout_constraintTop_toTopOf="@id/space_size"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
+        app:layout_constraintTop_toTopOf="@id/view_size"
         />
 
     <include
@@ -247,7 +247,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/play_offset_12"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         app:layout_constraintTop_toBottomOf="@id/view_toolbar"
         />
 
@@ -260,8 +260,8 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_topmost_like"
-        app:layout_constraintEnd_toEndOf="@id/space_size"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         tools:visibility="visible"
         />
 

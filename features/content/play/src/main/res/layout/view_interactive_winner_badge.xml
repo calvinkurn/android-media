@@ -9,6 +9,7 @@
     >
 
     <FrameLayout
+        android:id="@+id/fl_winner_badge"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/spacing_lvl2"

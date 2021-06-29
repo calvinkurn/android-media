@@ -117,7 +117,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.main + job)
 
-    private val spaceSize by viewComponent { EmptyViewComponent(it, R.id.space_size) }
+    private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
     private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
@@ -142,7 +142,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val interactivePreStartView by viewComponentOrNull { InteractivePreStartViewComponent(it, this) }
     private val interactiveTapView by viewComponentOrNull { InteractiveTapViewComponent(it, this) }
     private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishedViewComponent(it) }
-    private val interactiveWinnerBadgeView by viewComponentOrNull { InteractiveWinnerBadgeViewComponent(it) }
+    private val interactiveWinnerBadgeView by viewComponentOrNull(isEagerInit = true) { InteractiveWinnerBadgeViewComponent(it) }
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
@@ -230,7 +230,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
-        spaceSize.rootView.requestApplyInsetsWhenAttached()
+        viewSize.rootView.requestApplyInsetsWhenAttached()
     }
 
     override fun onPause() {
@@ -513,7 +513,7 @@ class PlayUserInteractionFragment @Inject constructor(
          */
         val realBottomMargin = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
-                val layoutParams = spaceSize.rootView.layoutParams as ViewGroup.MarginLayoutParams
+                val layoutParams = viewSize.rootView.layoutParams as ViewGroup.MarginLayoutParams
                 val initialBottomMargin = layoutParams.bottomMargin
                 val rootInsets = activity?.window?.decorView?.rootWindowInsets
                 if (portraitInsets == null && orientation.isPortrait) portraitInsets = rootInsets
@@ -525,7 +525,7 @@ class PlayUserInteractionFragment @Inject constructor(
             } catch (e: Throwable) { 0 }
         } else 0
 
-        spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, recordedMargin ->
+        viewSize.rootView.doOnApplyWindowInsets { v, insets, _, recordedMargin ->
             val skipTop = !isOpened && insets.systemWindowInsetTop == 0
             val skipBottom = !isOpened && insets.systemWindowInsetBottom == 0
 
