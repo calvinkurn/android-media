@@ -1238,12 +1238,10 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         }
     }
 
-    @SuppressLint("DialogUnifyUsage")
     private fun initPopUpDialog(productId: String): Dialog {
         context?.let { context ->
             activity?.let { activity ->
-                val dialog = Dialog(context)
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                val dialog = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
                 dialog.setCancelable(false)
                 dialog.setContentView(R.layout.dialog_product_add)
 
@@ -1280,7 +1278,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 return dialog
             }
         }
-        return Dialog(requireContext())
+        return DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
     }
 
     private fun onErrorGetPopUp() {
