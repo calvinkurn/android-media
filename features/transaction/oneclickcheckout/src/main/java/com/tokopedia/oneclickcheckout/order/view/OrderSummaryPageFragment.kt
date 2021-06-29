@@ -135,7 +135,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private var shouldUpdateCart: Boolean = true
     private var shouldDismissProgressDialog: Boolean = false
-    private var lastPurchaseProtectionCheckState = PurchaseProtectionPlanData.STATE_EMPTY
+
+    // Last saved PPP state based on productId
+    private val lastPurchaseProtectionCheckStates: HashMap<Long, Int> = HashMap()
 
     private var source: String = SOURCE_OTHERS
     private var shouldShowToaster: Boolean = false
@@ -1010,8 +1012,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, categoryId, "", protectionTitle)
         }
 
-        override fun onPurchaseProtectionCheckedChange(isChecked: Boolean) {
-            lastPurchaseProtectionCheckState = if (isChecked) {
+        override fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: Long) {
+            lastPurchaseProtectionCheckStates[productId] = if (isChecked) {
                 PurchaseProtectionPlanData.STATE_TICKED
             } else {
                 PurchaseProtectionPlanData.STATE_UNTICKED
@@ -1019,8 +1021,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             viewModel.calculateTotal()
         }
 
-        override fun getLastPurchaseProtectionCheckState(): Int {
-            return lastPurchaseProtectionCheckState
+        override fun getLastPurchaseProtectionCheckState(productId: Long): Int {
+            return lastPurchaseProtectionCheckStates[productId] ?: PurchaseProtectionPlanData.STATE_EMPTY
         }
     }
 

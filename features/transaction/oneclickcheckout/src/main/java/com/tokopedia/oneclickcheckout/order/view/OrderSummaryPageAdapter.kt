@@ -77,9 +77,7 @@ class OrderSummaryPageAdapter(private val analytics: OrderSummaryAnalytics,
                 holder.setShop(shop, product!!.freeOngkirImg, product!!.isFreeOngkirExtra)
             }
             is OrderProductCard -> {
-                holder.setProduct(products[position - 3])
-                holder.setShop(shop)
-                holder.initView()
+                holder.setData(products[position - 3], shop, position - 3)
             }
             is NewOrderPreferenceCard -> {
                 holder.setPreference(preference)

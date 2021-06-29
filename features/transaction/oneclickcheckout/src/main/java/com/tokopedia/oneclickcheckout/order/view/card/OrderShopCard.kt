@@ -8,16 +8,17 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import java.util.*
 
-class OrderShopCard(private val view: CardOrderShopBinding, private val orderSummaryAnalytics: OrderSummaryAnalytics): RecyclerView.ViewHolder(view.root) {
+class OrderShopCard(private val binding: CardOrderShopBinding, private val orderSummaryAnalytics: OrderSummaryAnalytics): RecyclerView.ViewHolder(binding.root) {
 
     companion object {
         const val VIEW_TYPE = 2
     }
 
-    private lateinit var shop: OrderShop
+    private var shop: OrderShop = OrderShop()
 
     fun setShop(orderShop: OrderShop, freeOngkirImg: String, freeOngkirExtra: Boolean) {
-        view.apply {
+        this.shop = orderShop
+        binding.apply {
             tvShopName.text = orderShop.shopName
             if (orderShop.shopBadge.isNotEmpty()) {
                 ivShopBadge.setImageUrl(orderShop.shopBadge)
@@ -39,13 +40,6 @@ class OrderShopCard(private val view: CardOrderShopBinding, private val orderSum
                 tvShopLocation.gone()
                 iuImageFulfill.gone()
             }
-            val error = orderShop.errors.firstOrNull()
-//            if (error?.isNotEmpty() == true) {
-//                labelError.setLabel(error)
-//                labelError.visible()
-//            } else {
-//                labelError.gone()
-//            }
 
             if (freeOngkirImg.isNotEmpty()) {
                 iuFreeShipping.let {
@@ -57,13 +51,12 @@ class OrderShopCard(private val view: CardOrderShopBinding, private val orderSum
                 } else {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
                 }
-                iuFreeShipping.contentDescription = view.root.context.getString(contentDescriptionStringResource)
+                iuFreeShipping.contentDescription = binding.root.context.getString(contentDescriptionStringResource)
                 separatorFreeShipping.visible()
             } else {
                 iuFreeShipping.gone()
                 separatorFreeShipping.gone()
             }
         }
-        this.shop = orderShop
     }
 }

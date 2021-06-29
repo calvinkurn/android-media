@@ -23,8 +23,9 @@ import kotlin.coroutines.CoroutineContext
 
 class OrderProductCard(private val binding: CardOrderProductBinding, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root), CoroutineScope {
 
-    private lateinit var product: OrderProduct
-    private lateinit var shop: OrderShop
+    private var product: OrderProduct = OrderProduct()
+    private var shop: OrderShop = OrderShop()
+    private var productIndex: Int = 0
 
     private var quantityTextWatcher: TextWatcher? = null
     private var noteTextWatcher: TextWatcher? = null
@@ -33,114 +34,161 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
 
     private var resetQuantityJob: Job? = null
 
-    fun setProduct(product: OrderProduct) {
+    fun setData(product: OrderProduct, shop: OrderShop, productIndex: Int) {
         this.product = product
+        this.shop = shop
+        this.productIndex = productIndex
+        initView()
     }
 
-    private fun isProductInitialized(): Boolean {
-        return ::product.isInitialized
+    private fun initView() {
+        renderDivider()
+        renderProductTicker()
+        renderProductNames()
+        renderPrice()
+        renderNotes()
+        renderQuantity()
+        renderPurchaseProtection()
     }
 
-    fun initView() {
+    private fun renderDivider() {
+        if (productIndex == 0) {
+            binding.dividerOrderProduct.gone()
+        } else {
+            binding.dividerOrderProduct.visible()
+        }
+    }
+
+    private fun renderProductTicker() {
+        binding.tickerOrderProduct.gone()
+    }
+
+    private fun renderProductNames() {
         binding.apply {
-            if (isProductInitialized()) {
-                ivProductImage.setImageUrl(product.productImageUrl)
-                tvProductName.text = product.productName
-                showPrice()
+            ivProductImage.setImageUrl(product.productImageUrl)
+            tvProductName.text = product.productName
+            if (product.tickerMessage.message.isNotEmpty()) {
+                var completeText = product.tickerMessage.message
+                for (replacement in product.tickerMessage.replacement) {
+                    completeText = completeText.replace("{{${replacement.identifier}}}", replacement.value)
+                }
+                tvQtyLeft.text = MethodChecker.fromHtml(completeText)
+                tvQtyLeft.visible()
+            } else {
+                tvQtyLeft.gone()
+            }
+        }
+    }
 
-                if (product.cashback.isNotEmpty()) {
-                    labelProductSlashPricePercentage.setLabel(product.cashback)
-                    labelProductSlashPricePercentage.visible()
-                } else {
-                    labelProductSlashPricePercentage.gone()
+    private fun renderPrice() {
+        binding.apply {
+            tvProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.getPrice(), false).removeDecimalSuffix()
+
+            if (product.originalPrice.isNotBlank()) {
+                tvProductSlashPrice.text = product.originalPrice
+                tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                tvProductSlashPrice.visible()
+            } else {
+                tvProductSlashPrice.gone()
+            }
+
+            if (product.cashback.isNotEmpty()) {
+                labelProductSlashPricePercentage.setLabel(product.cashback)
+                labelProductSlashPricePercentage.visible()
+            } else {
+                labelProductSlashPricePercentage.gone()
+            }
+        }
+    }
+
+    private fun renderNotes() {
+        binding.apply {
+            tfNote.textFieldInput.textSize = 16f
+            tfNote.textFieldInput.isSingleLine = false
+            tfNote.setCounter(MAX_NOTES_LENGTH)
+            tfNote.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
+            tfNote.textFieldInput.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
+                }
+            }
+            if (noteTextWatcher != null) {
+                tfNote.textFieldInput.removeTextChangedListener(noteTextWatcher)
+            }
+            tfNote.textFieldInput.setText(product.notes)
+            noteTextWatcher = object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    product.notes = s?.toString() ?: ""
+                    listener.onProductChange(product, false)
                 }
 
-                tfNote.textFieldInput.textSize = 16f
-                tfNote.textFieldInput.isSingleLine = false
-                tfNote.setCounter(MAX_NOTES_LENGTH)
-                tfNote.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
-                tfNote.textFieldInput.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                    if (hasFocus) {
-                        orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
-                    }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    /* no-op */
                 }
-                if (noteTextWatcher != null) {
-                    tfNote.textFieldInput.removeTextChangedListener(noteTextWatcher)
-                }
-                tfNote.textFieldInput.setText(product.notes)
-                noteTextWatcher = object : TextWatcher {
-                    override fun afterTextChanged(s: Editable?) {
-                        product.notes = s?.toString() ?: ""
-                        listener.onProductChange(product, false)
-                    }
 
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                        /* no-op */
-                    }
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    /* no-op */
+                }
+            }
+            tfNote.textFieldInput.addTextChangedListener(noteTextWatcher)
+        }
+    }
 
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        /* no-op */
-                    }
+    private fun renderQuantity() {
+        binding.apply {
+            if (quantityTextWatcher != null) {
+                // reset listener
+                qtyEditorProduct.editText.removeTextChangedListener(quantityTextWatcher)
+                qtyEditorProduct.setValueChangedListener { _, _, _ -> }
+            }
+            qtyEditorProduct.autoHideKeyboard = true
+            qtyEditorProduct.minValue = product.quantity.minOrderQuantity
+            qtyEditorProduct.maxValue = product.quantity.maxOrderStock
+            oldQtyValue = product.quantity.orderQuantity
+            qtyEditorProduct.setValue(product.quantity.orderQuantity)
+            qtyEditorProduct.setValueChangedListener { newValue, _, _ ->
+                // prevent multiple callback with same newValue
+                if (product.quantity.orderQuantity != newValue) {
+                    product.quantity.orderQuantity = newValue
+                    listener.onProductChange(product)
+                    renderPrice()
                 }
-                tfNote.textFieldInput.addTextChangedListener(noteTextWatcher)
-
-                if (quantityTextWatcher != null) {
-                    // reset listener
-                    qtyEditorProduct.editText.removeTextChangedListener(quantityTextWatcher)
-                    qtyEditorProduct.setValueChangedListener { _, _, _ -> }
-                }
-                qtyEditorProduct.autoHideKeyboard = true
-                qtyEditorProduct.minValue = product.quantity.minOrderQuantity
-                qtyEditorProduct.maxValue = product.quantity.maxOrderStock
-                oldQtyValue = product.quantity.orderQuantity
-                qtyEditorProduct.setValue(product.quantity.orderQuantity)
-                qtyEditorProduct.setValueChangedListener { newValue, _, _ ->
-                    // prevent multiple callback with same newValue
-                    if (product.quantity.orderQuantity != newValue) {
-                        product.quantity.orderQuantity = newValue
-                        listener.onProductChange(product)
-                        showPrice()
-                    }
-                }
-                qtyEditorProduct.setAddClickListener {
-                    orderSummaryAnalytics.eventEditQuantityIncrease(product.productId.toString(), shop.shopId.toString(), product.quantity.orderQuantity.toString())
-                }
-                qtyEditorProduct.setSubstractListener {
-                    orderSummaryAnalytics.eventEditQuantityDecrease(product.productId.toString(), shop.shopId.toString(), product.quantity.orderQuantity.toString())
-                }
-                quantityTextWatcher = object : TextWatcher {
-                    override fun afterTextChanged(s: Editable?) {
-                        // for automatic reload rates when typing
-                        val newValue = s.toString().replace("[^0-9]".toRegex(), "").toIntOrZero()
-                        if (newValue > 0 && oldQtyValue != newValue) {
-                            resetQuantityJob?.cancel()
-                            oldQtyValue = newValue
-                            qtyEditorProduct.setValue(newValue)
-                        } else if (newValue <= 0) {
-                            // trigger reset quantity debounce to prevent empty quantity edit text
-                            resetQuantityJob?.cancel()
-                            resetQuantityJob = launch {
-                                delay(DEBOUNCE_RESET_QUANTITY_MS)
-                                if (isActive) {
-                                    qtyEditorProduct.setValue(product.quantity.minOrderQuantity)
-                                }
+            }
+            qtyEditorProduct.setAddClickListener {
+                orderSummaryAnalytics.eventEditQuantityIncrease(product.productId.toString(), shop.shopId.toString(), product.quantity.orderQuantity.toString())
+            }
+            qtyEditorProduct.setSubstractListener {
+                orderSummaryAnalytics.eventEditQuantityDecrease(product.productId.toString(), shop.shopId.toString(), product.quantity.orderQuantity.toString())
+            }
+            quantityTextWatcher = object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    // for automatic reload rates when typing
+                    val newValue = s.toString().replace("[^0-9]".toRegex(), "").toIntOrZero()
+                    if (newValue > 0 && oldQtyValue != newValue) {
+                        resetQuantityJob?.cancel()
+                        oldQtyValue = newValue
+                        qtyEditorProduct.setValue(newValue)
+                    } else if (newValue <= 0) {
+                        // trigger reset quantity debounce to prevent empty quantity edit text
+                        resetQuantityJob?.cancel()
+                        resetQuantityJob = launch {
+                            delay(DEBOUNCE_RESET_QUANTITY_MS)
+                            if (isActive) {
+                                qtyEditorProduct.setValue(product.quantity.minOrderQuantity)
                             }
                         }
                     }
-
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                        /* no-op */
-                    }
-
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        /* no-op */
-                    }
                 }
-                qtyEditorProduct.editText.addTextChangedListener(quantityTextWatcher)
 
-                renderProductTickerMessage()
-                renderPurchaseProtection()
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    /* no-op */
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    /* no-op */
+                }
             }
+            qtyEditorProduct.editText.addTextChangedListener(quantityTextWatcher)
         }
     }
 
@@ -160,7 +208,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 cbPurchaseProtection.setOnCheckedChangeListener { _, isChecked ->
                     handleOnPurchaseProtectionCheckedChange(isChecked)
                 }
-                val lastState = listener.getLastPurchaseProtectionCheckState()
+                val lastState = listener.getLastPurchaseProtectionCheckState(product.productId)
                 if (lastState != PurchaseProtectionPlanData.STATE_EMPTY) {
                     val tmpIsChecked = lastState == PurchaseProtectionPlanData.STATE_TICKED
                     cbPurchaseProtection.isChecked = tmpIsChecked
@@ -180,39 +228,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
     private fun handleOnPurchaseProtectionCheckedChange(tmpIsChecked: Boolean) {
         product.purchaseProtectionPlanData.stateChecked = if (tmpIsChecked) PurchaseProtectionPlanData.STATE_TICKED else PurchaseProtectionPlanData.STATE_UNTICKED
         listener.onProductChange(product, false)
-        listener.onPurchaseProtectionCheckedChange(tmpIsChecked)
-    }
-
-    private fun renderProductTickerMessage() {
-        binding.apply {
-            if (product.tickerMessage.message.isNotEmpty()) {
-                var completeText = product.tickerMessage.message
-                for (replacement in product.tickerMessage.replacement) {
-                    completeText = completeText.replace("{{${replacement.identifier}}}", replacement.value)
-                }
-                tvQtyLeft.text = MethodChecker.fromHtml(completeText)
-            } else {
-                tvQtyLeft.text = ""
-            }
-        }
-    }
-
-    private fun showPrice() {
-        binding.apply {
-            tvProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.getPrice(), false).removeDecimalSuffix()
-
-            if (product.originalPrice.isNotBlank()) {
-                tvProductSlashPrice.text = product.originalPrice
-                tvProductSlashPrice.paintFlags = tvProductSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                tvProductSlashPrice.visible()
-            } else {
-                tvProductSlashPrice.gone()
-            }
-        }
-    }
-
-    fun setShop(orderShop: OrderShop) {
-        this.shop = orderShop
+        listener.onPurchaseProtectionCheckedChange(tmpIsChecked, product.productId)
     }
 
     interface OrderProductCardListener {
@@ -221,9 +237,9 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
 
         fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionTitle: String)
 
-        fun onPurchaseProtectionCheckedChange(isChecked: Boolean)
+        fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: Long)
 
-        fun getLastPurchaseProtectionCheckState(): Int
+        fun getLastPurchaseProtectionCheckState(productId: Long): Int
     }
 
     companion object {

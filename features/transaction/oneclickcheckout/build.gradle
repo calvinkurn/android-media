@@ -39,6 +39,7 @@ dependencies {
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 
+    implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.multiDex
 
