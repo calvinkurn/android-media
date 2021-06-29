@@ -14,6 +14,11 @@
     <string name="common_topup_fav_number_clue">Mau isi nomor yang mana, nih?</string>
     <string name="common_topup_title_fav_number">Nomor Favorit</string>
     <string name="common_topup_fav_number_input_hint">Masukkan nomor HP</string>
+    <string name="common_topup_fav_number_empty_state_title">Wah, nomor baru ya?</string>
+    <string name="common_topup_fav_number_not_found_state_title">Belum ada Nomor Favorite, Transaksi dulu, yuk!</string>
+    <string name="common_topup_fav_number_not_found_state_desc">Setelah transaksi, nomor bakal tersimpan di sini supaya kamu nggak perlu masukin lagi.</string>
+    <string name="common_topup_empty_state_desc">Nomor ini bakal otomatis tersimpan setelah transaksi selesai.</string>
+    <string name="common_topup_empty_state_continue">Lanjut Transaksi</string>
     <string name="common_topup_voucher_code_already_copied">Kode voucher telah tersalin</string>
 
     <string name="common_topup_enquiry_default_label">Lanjut</string>
@@ -23,5 +28,5 @@
     <string name="common_topup_checkout_view_total_value_label">Total Pembayaran</string>
     <string name="common_topup_contact_not_found">Aplikasi kontak tidak ditemukan</string>
     <string name="common_topup_fav_number_menu_change_name">Ubah Nama</string>
-    <string name="common_topupbills_favorite_number_delete">Hapus Nomor Ini</string>
+    <string name="common_topup_favorite_number_delete">Hapus Nomor Ini</string>
 </resources>

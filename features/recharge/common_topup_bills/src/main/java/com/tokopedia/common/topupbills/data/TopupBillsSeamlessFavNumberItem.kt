@@ -17,7 +17,5 @@ data class TopupBillsSeamlessFavNumberItem (
         @SerializedName("product_id")
         val productId: Int = -1,
         @SerializedName("icon_url")
-        val iconUrl: String = "",
-        @SerializedName("favorite")
-        val isFavorite: Boolean = true
-): Parcelable 
+        val iconUrl: String = ""
+): Parcelable
