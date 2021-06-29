@@ -17,7 +17,7 @@ object DeeplinkMapperTokopediaNow {
 
     fun getRegisteredNavigationTokopediaNowHome(context: Context, deeplink: String): String {
         return if (getRemoteConfigTokopediaNowEnabler(context)) ApplinkConstInternalTokopediaNow.HOME
-        else ApplinkConst.TokopediaNow.OLD_TOKONOW
+        else ApplinkConstInternalTokopediaNow.OLD_TOKOMART
     }
 
     fun getRegisteredNavigationTokopediaNowSearch(context: Context, deeplink: String): String {
@@ -28,7 +28,7 @@ object DeeplinkMapperTokopediaNow {
             val queryString = if (query.isNullOrEmpty()) "" else "?" + uri.encodedQuery
 
             return ApplinkConstInternalTokopediaNow.SEARCH + queryString
-        } else return ApplinkConst.TokopediaNow.OLD_TOKONOW
+        } else return ApplinkConstInternalTokopediaNow.OLD_TOKOMART
     }
 
     fun getRegisteredNavigationTokopediaNowCategory(context: Context, deeplink: String): String {
@@ -49,7 +49,7 @@ object DeeplinkMapperTokopediaNow {
             }
 
             return "${ApplinkConstInternalTokopediaNow.CATEGORY}?$categoryL1$categoryL2$queryString"
-        } else return ApplinkConst.TokopediaNow.OLD_TOKONOW
+        } else return ApplinkConstInternalTokopediaNow.OLD_TOKOMART
     }
 
     fun getRemoteConfigTokopediaNowEnabler(context: Context): Boolean{
