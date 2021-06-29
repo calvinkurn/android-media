@@ -84,8 +84,7 @@ class VerifyFingerprintActivity: BaseActivity() {
 
     private fun onErrorVerifyFingerprint() {
         fingerprint_landing_loader?.hide()
-        setResult(Activity.RESULT_CANCELED)
-        finish()
+        finishWithCanceled()
     }
 
     private fun showBiometricPrompt() {

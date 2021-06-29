@@ -1606,13 +1606,21 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     val validateToken = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: ""
                     if(validateToken.isNotEmpty()) {
                         onSuccessVerifyFingerprint(validateToken)
+                    } else {
+                        onErrorVerifyFingerprint()
                     }
+                } else {
+                    onErrorVerifyFingerprint()
                 }
             } else {
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
             }
         }
+    }
+
+    private fun onErrorVerifyFingerprint() {
+        NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.error_login_fp_error))
     }
 
     private fun onSuccessChooseAccountFingerprint(email: String, validateToken: String) {
