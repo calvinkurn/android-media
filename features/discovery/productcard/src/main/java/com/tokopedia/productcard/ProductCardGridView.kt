@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -230,15 +231,15 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         configureQuantitySettings(nonVariant)
 
         setAddClickListener {
-            quantityEditorDebounce?.onQuantityChanged(editText.text.toString().toIntOrZero())
+            editorChangeQuantity(editText.text.toString().toIntOrZero())
         }
 
         setSubstractListener {
-            quantityEditorDebounce?.onQuantityChanged(editText.text.toString().toIntOrZero())
+            editorChangeQuantity(editText.text.toString().toIntOrZero())
         }
 
         editText.setOnEditorActionListener { _, _, _ ->
-            quantityEditorDebounce?.onQuantityChanged(editText.text.toString().toIntOrZero())
+            onQuantityEditorActionEnter(nonVariant)
             true
         }
     }
@@ -254,6 +255,25 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         this.maxValue = nonVariant.maxQuantity
         this.minValue = nonVariant.minQuantity
+    }
+
+    private fun QuantityEditorUnify.onQuantityEditorActionEnter(nonVariant: ProductCardModel.NonVariant) {
+        val inputQuantity = editText.text.toString().toIntOrZero()
+
+        addButton.isEnabled = inputQuantity < nonVariant.maxQuantity
+        subtractButton.isEnabled = inputQuantity > nonVariant.minQuantity
+
+        editorChangeQuantity(inputQuantity)
+    }
+
+    private fun editorChangeQuantity(inputQuantity: Int) {
+        quantityEditorDebounce?.onQuantityChanged(inputQuantity)
+
+        dropKeyboard(this)
+    }
+
+    private fun dropKeyboard(view: View) {
+        context?.let { KeyboardHandler.DropKeyboard(it, view) }
     }
 
     private fun renderChooseVariant(productCardModel: ProductCardModel) {
@@ -274,12 +294,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     private fun renderTextVariantQuantity(quantity: Int) {
         if (quantity > 99) textVariantQuantity?.text = context.getString(R.string.product_card_text_variant_quantity_grid)
         else textVariantQuantity?.text = "$quantity pcs"
-    }
-
-
-    fun updateNonVariantQuantity(productCardModel: ProductCardModel) {
-        renderButtonAddToCart(productCardModel)
-        renderQuantityEditorNonVariant(productCardModel)
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots

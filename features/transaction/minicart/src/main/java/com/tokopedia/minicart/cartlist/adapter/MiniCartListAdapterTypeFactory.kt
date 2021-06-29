@@ -1,6 +1,8 @@
 package com.tokopedia.minicart.cartlist.adapter
 
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -8,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.minicart.cartlist.MiniCartListActionListener
 import com.tokopedia.minicart.cartlist.uimodel.*
 import com.tokopedia.minicart.cartlist.viewholder.*
+import com.tokopedia.minicart.databinding.*
 
 class MiniCartListAdapterTypeFactory(private val listener: MiniCartListActionListener)
     : BaseAdapterTypeFactory(), MiniCartListTypeFactory {
@@ -50,15 +53,42 @@ class MiniCartListAdapterTypeFactory(private val listener: MiniCartListActionLis
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         return when (viewType) {
-            MiniCartAccordionViewHolder.LAYOUT -> MiniCartAccordionViewHolder(view, listener)
-            MiniCartProductViewHolder.LAYOUT -> MiniCartProductViewHolder(view, listener)
-            MiniCartSeparatorViewHolder.LAYOUT -> MiniCartSeparatorViewHolder(view, listener)
-            MiniCartShopViewHolder.LAYOUT -> MiniCartShopViewHolder(view, listener)
-            MiniCartTickerErrorViewHolder.LAYOUT -> MiniCartTickerErrorViewHolder(view, listener)
-            MiniCartTickerWarningViewHolder.LAYOUT -> MiniCartTickerWarningViewHolder(view, listener)
-            MiniCartUnavailableHeaderViewHolder.LAYOUT -> MiniCartUnavailableHeaderViewHolder(view, listener)
-            MiniCartUnavailableReasonViewHolder.LAYOUT -> MiniCartUnavailableReasonViewHolder(view, listener)
-            MiniCartLoadingViewHolder.LAYOUT -> MiniCartLoadingViewHolder(view)
+            MiniCartAccordionViewHolder.LAYOUT -> {
+                val viewBinding = ItemMiniCartAccordionBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
+                MiniCartAccordionViewHolder(viewBinding, listener)
+            }
+            MiniCartProductViewHolder.LAYOUT -> {
+                val viewBinding = ItemMiniCartProductBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
+                MiniCartProductViewHolder(viewBinding, listener)
+            }
+            MiniCartSeparatorViewHolder.LAYOUT -> {
+                val viewBinding = ItemMiniCartSeparatorBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
+                MiniCartSeparatorViewHolder(viewBinding)
+            }
+            MiniCartShopViewHolder.LAYOUT -> {
+                val viewBinding = ItemMiniCartShopBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
+                MiniCartShopViewHolder(viewBinding)
+            }
+            MiniCartTickerErrorViewHolder.LAYOUT -> {
+                val viewBinding = ItemMiniCartTickerErrorBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
+                MiniCartTickerErrorViewHolder(viewBinding, listener)
+            }
+            MiniCartTickerWarningViewHolder.LAYOUT -> {
+                val viewBinding = ItemMiniCartTickerWarningBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
+                MiniCartTickerWarningViewHolder(viewBinding)
+            }
+            MiniCartUnavailableHeaderViewHolder.LAYOUT -> {
+                val viewBinding = ItemMiniCartUnavailableHeaderBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
+                MiniCartUnavailableHeaderViewHolder(viewBinding, listener)
+            }
+            MiniCartUnavailableReasonViewHolder.LAYOUT -> {
+                val viewBinding = ItemMiniCartUnavailableReasonBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
+                MiniCartUnavailableReasonViewHolder(viewBinding)
+            }
+            MiniCartLoadingViewHolder.LAYOUT -> {
+                val viewBinding = ItemMiniCartLoadingBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
+                MiniCartLoadingViewHolder(viewBinding)
+            }
             else -> super.createViewHolder(view, viewType)
         }
 

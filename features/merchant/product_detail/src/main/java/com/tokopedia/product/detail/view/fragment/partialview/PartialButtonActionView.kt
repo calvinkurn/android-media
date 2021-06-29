@@ -15,8 +15,14 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_ATC_
 import com.tokopedia.product.detail.view.listener.PartialButtonActionListener
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.utils.text.currency.StringUtils
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
+import rx.Observable
+import rx.Subscriber
+import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 
 class PartialButtonActionView private constructor(val view: View,
@@ -41,13 +47,17 @@ class PartialButtonActionView private constructor(val view: View,
     private var isVariant: Boolean = false
     private var minQuantity: Int = 0
     private var maxQuantity: Int = DEFAULT_ATC_MAX_ORDER
-    private var textWatchers: TextWatcher? = null
+    private var textWatcher: TextWatcher? = null
+    private var quantityDebounceSubscription: Subscription? = null
     private var localQuantity: Int = 0
 
     private val qtyButtonPdp = view.findViewById<QuantityEditorUnify>(R.id.qty_editor_pdp)
 
     companion object {
         fun build(_view: View, _buttonListener: PartialButtonActionListener) = PartialButtonActionView(_view, _buttonListener)
+
+        private const val QUANTITY_REGEX = "[^0-9]"
+        private const val TEXTWATCHER_QUANTITY_DEBOUNCE_TIME = 1000L
     }
 
     fun setButtonP1(preOrder: PreOrder?) {
@@ -154,37 +164,74 @@ class PartialButtonActionView private constructor(val view: View,
             maxValue = maxQuantity
             setValue(localQuantity)
 
-            if (textWatchers != null) {
-                editText.removeTextChangedListener(textWatchers)
+            if (textWatcher != null) {
+                editText.removeTextChangedListener(textWatcher)
+            }
+            if (quantityDebounceSubscription != null) {
+                buttonListener.getRxCompositeSubcription().remove(quantityDebounceSubscription)
+                quantityDebounceSubscription = null
             }
 
-            textWatchers = object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    val intValue = StringUtils.removePeriod(s.toString()).toIntOrZero()
-                    if (intValue < minQuantity) {
-                        setValue(minQuantity)
-                    } else if (intValue > maxQuantity) {
-                        setValue(maxQuantity)
-                    }
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                    val intValue = StringUtils.removePeriod(s.toString()).toIntOrZero()
-                    if (localQuantity != intValue && intValue != 0) {
-                        localQuantity = intValue
-                        buttonListener.updateQuantityNonVarTokoNow(getValue(), miniCartItem
-                                ?: MiniCartItem()
-                        )
-                        setValue(localQuantity)
-                        //fire again to update + and - button
-                    }
-                }
-            }
-            editText.addTextChangedListener(textWatchers)
+            initTextWatcherDebouncer()
             show()
+        }
+    }
+
+    private fun initTextWatcherDebouncer() {
+        quantityDebounceSubscription = Observable.create(
+                Observable.OnSubscribe<Int> { subscriber ->
+                    textWatcher = object : TextWatcher {
+                        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                        }
+
+                        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        }
+
+                        override fun afterTextChanged(s: Editable?) {
+                            val quantityInt: Int = s.toString().replace(QUANTITY_REGEX.toRegex(), "").toIntOrZero()
+                            subscriber.onNext(quantityInt)
+                        }
+                    }
+                    qtyButtonPdp?.editText?.addTextChangedListener(textWatcher)
+                })
+                .debounce(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<Int>() {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Timber.d(e)
+                    }
+
+                    override fun onNext(quantity: Int) {
+                        onNextValueQuantity(quantity)
+                    }
+                })
+
+        buttonListener.getRxCompositeSubcription().add(quantityDebounceSubscription)
+    }
+
+    private fun onNextValueQuantity(quantity: Int) {
+        qtyButtonPdp?.run {
+            if (quantity < minQuantity) {
+                setValue(minQuantity)
+            } else if (quantity > maxQuantity) {
+                setValue(maxQuantity)
+            } else {
+                if (localQuantity != quantity && quantity != 0) {
+                    buttonListener.updateQuantityNonVarTokoNow(
+                            quantity = getValue(),
+                            miniCart = miniCartItem ?: MiniCartItem(),
+                            oldValue = localQuantity
+                    )
+                    localQuantity = quantity
+                    //fire again to update + and - button
+                    setValue(localQuantity)
+                }
+            }
         }
     }
 

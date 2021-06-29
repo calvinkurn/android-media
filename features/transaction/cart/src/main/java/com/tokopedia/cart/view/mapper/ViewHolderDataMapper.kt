@@ -34,18 +34,17 @@ class ViewHolderDataMapper @Inject constructor() {
 
     fun mapDisabledItemHolderData(cartItemHolderData: CartItemHolderData, showDivider: Boolean): DisabledCartItemHolderData {
         return DisabledCartItemHolderData(
-                cartId = cartItemHolderData.cartItemData?.originData?.cartId ?: 0,
-                productId = cartItemHolderData.cartItemData?.originData?.productId ?: "0",
-                productImage = cartItemHolderData.cartItemData?.originData?.productImage ?: "",
-                productName = cartItemHolderData.cartItemData?.originData?.productName ?: "",
-                productPrice = cartItemHolderData.cartItemData?.originData?.pricePlan
-                        ?: 0.toDouble(),
-                isWishlisted = cartItemHolderData.cartItemData?.originData?.isWishlisted ?: false,
+                cartId = cartItemHolderData.cartItemData.originData.cartId,
+                productId = cartItemHolderData.cartItemData.originData.productId,
+                productImage = cartItemHolderData.cartItemData.originData.productImage,
+                productName = cartItemHolderData.cartItemData.originData.productName,
+                productPrice = cartItemHolderData.cartItemData.originData.pricePlan,
+                isWishlisted = cartItemHolderData.cartItemData.originData.isWishlisted,
                 showDivider = showDivider,
                 data = cartItemHolderData.cartItemData,
                 actionsData = cartItemHolderData.actionsData,
-                selectedUnavailableActionId = cartItemHolderData.cartItemData?.selectedUnavailableActionId ?: 0,
-                selectedUnavailableActionLink = cartItemHolderData.cartItemData?.selectedUnavailableActionLink ?: "",
+                selectedUnavailableActionId = cartItemHolderData.cartItemData.selectedUnavailableActionId,
+                selectedUnavailableActionLink = cartItemHolderData.cartItemData.selectedUnavailableActionLink,
                 errorType = cartItemHolderData.errorType
         )
     }

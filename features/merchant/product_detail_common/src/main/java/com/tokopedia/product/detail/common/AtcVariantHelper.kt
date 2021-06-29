@@ -9,6 +9,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
+import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
@@ -27,10 +28,16 @@ object AtcVariantHelper {
     const val ATC_VARIANT_RESULT_CODE = 19202
 
     const val WISHLIST_PAGESOURCE = "wishlist"
-    const val PDP_PAGESOURCE = "pdp"
+    const val PDP_PAGESOURCE = "product detail page"
     const val PLAY_PAGESOURCE = "play"
     const val TOPCHAT_PAGESOURCE = "topchat"
     const val NOTIFCENTER_PAGESOURCE = "notifcenter"
+    const val HOMEPAGE_PAGESOURCE = "homepage"
+    const val DISCOVERY_PAGESOURCE = "discovery page"
+    const val SHOP_PAGE_PAGESOURCE = "shop page - buyer"
+    const val CART_PAGESOURCE = "cart"
+    const val SEARCH_PAGESOURCE = "search result"
+    const val CATEGORY_PAGESOURCE = "category page"
 
     /**
      * For PDP only
@@ -40,12 +47,13 @@ object AtcVariantHelper {
                         warehouseId: String,
                         pdpSession: String,
                         isTokoNow: Boolean,
-                        isFreeOngkir:Boolean,
+                        isFreeOngkir: Boolean,
                         isShopOwner: Boolean,
                         productVariant: ProductVariant,
                         warehouseResponse: Map<String, WarehouseInfo>,
                         cartRedirection: Map<String, CartTypeData>,
                         miniCart: Map<String, MiniCartItem>?,
+                        alternateCopy: List<AlternateCopy>?,
                         startActivitResult: (Intent, Int) -> Unit) {
 
         val cacheManager = SaveInstanceCacheManager(context, true)
@@ -69,7 +77,8 @@ object AtcVariantHelper {
                 variantAggregator = ProductVariantAggregatorUiData(
                         variantData = productVariant,
                         cardRedirection = cartRedirection,
-                        nearestWarehouse = warehouseResponse
+                        nearestWarehouse = warehouseResponse,
+                        alternateCopy = alternateCopy ?: listOf()
                 ),
                 miniCartData = miniCart,
                 categoryName = categoryName,
@@ -81,7 +90,7 @@ object AtcVariantHelper {
         )
         cacheManager.put(PDP_PARCEL_KEY_RESPONSE, parcelData)
 
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productInfoP1.basic.productID, PDP_PAGESOURCE, "", "")
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productInfoP1.basic.productID, PDP_PAGESOURCE, "", "", "")
                 .putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
         startActivitResult.invoke(intent, ATC_VARIANT_RESULT_CODE)
     }
@@ -102,8 +111,9 @@ object AtcVariantHelper {
                        pageSource: String,
                        isTokoNow: Boolean = false,
                        shopId: String,
+                       trackerCdListName: String = "",
                        startActivitResult: (Intent, Int) -> Unit) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productId, shopId, pageSource, isTokoNow.toString())
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productId, shopId, pageSource, isTokoNow.toString(), trackerCdListName)
         startActivitResult(intent, ATC_VARIANT_RESULT_CODE)
     }
 }

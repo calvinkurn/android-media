@@ -10,10 +10,16 @@ import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
+import java.text.NumberFormat
+import java.util.*
 import javax.inject.Inject
 import kotlin.math.min
 
 class MiniCartListUiModelMapper @Inject constructor() {
+
+    companion object {
+        const val PLACEHOLDER_OVERWEIGHT_VALUE = "{{weight}}"
+    }
 
     fun mapUiModel(miniCartData: MiniCartData): MiniCartListUiModel {
         val totalProductAvailable = getTotalProductAvailable(miniCartData)
@@ -109,7 +115,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
         // Add unavailable separator
         if (totalProductUnavailable > 0 && totalProductAvailable > 0) {
-            val miniCartSeparatorUiModel = mapSeparatorUiModel(8)
+            val miniCartSeparatorUiModel = mapSeparatorUiModel(4)
             miniCartUnavailableSectionUiModels.add(miniCartSeparatorUiModel)
         }
 
@@ -144,7 +150,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         // Add unavailable accordion
         if (totalProductUnavailable > 1) {
             // Add unavailable accordion separator
-            val miniCartSeparatorUiModel = mapSeparatorUiModel(8)
+            val miniCartSeparatorUiModel = mapSeparatorUiModel(4)
             miniCartUnavailableSectionUiModels.add(miniCartSeparatorUiModel)
 
             val showLessUnavailableDataWording = miniCartData.data.unavailableSectionAction.find {
@@ -246,7 +252,10 @@ class MiniCartListUiModelMapper @Inject constructor() {
             } else {
                 productQtyLeft = cartDetail.product.productWarningMessage
             }
-            productCashbackPercentage = cartDetail.product.productCashback.replace("%", "").toIntOrZero()
+            productCashbackPercentage = cartDetail.product.productCashback
+                    .replace(" ", "")
+                    .replace("%", "")
+                    .toIntOrZero()
         }
     }
 
@@ -274,7 +283,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
     fun mapTickerWarningUiModel(overWeight: Float, warningWording: String): MiniCartTickerWarningUiModel {
         return MiniCartTickerWarningUiModel().apply {
-            warningMessage = warningWording.replace("{{weight}}", "$overWeight ")
+            val formattedOverWeight = NumberFormat.getNumberInstance(Locale("in", "id")).format(overWeight)
+            warningMessage = warningWording.replace(PLACEHOLDER_OVERWEIGHT_VALUE, "$formattedOverWeight ")
         }
     }
 

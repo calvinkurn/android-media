@@ -23,7 +23,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheet
 import com.tokopedia.minicart.cartlist.MiniCartListBottomSheetListener
-import com.tokopedia.minicart.cartlist.subpage.GlobalErrorBottomSheet
+import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheet
 import com.tokopedia.minicart.cartlist.subpage.globalerror.GlobalErrorBottomSheetActionListener
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData

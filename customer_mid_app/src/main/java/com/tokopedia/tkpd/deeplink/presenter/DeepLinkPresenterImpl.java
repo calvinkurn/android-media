@@ -48,6 +48,8 @@ import com.tokopedia.tkpd.deeplink.utils.URLParser;
 import com.tokopedia.tkpd.utils.ProductNotFoundException;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.url.Env;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
@@ -382,17 +384,25 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 String[] hotelNames = linkSegment.get(3).split("-");
                 String hotelId = hotelNames[hotelNames.length - 1];
                 if (uri.getQuery() != null) {
-                    RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + hotelId + "?" + uri.getQuery());
+                    String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DETAIL);
+                    RouteManager.route(context, applink + "/" + hotelId + "?" + uri.getQuery());
                 } else {
-                    RouteManager.route(context, ApplinkConstInternalTravel.HOTEL_DETAIL + "/" + hotelId);
+                    String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DETAIL);
+                    RouteManager.route(context, applink + "/" + hotelId);
                 }
                 context.finish();
-            } else {
-                RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_HOTEL));
+            }else if(uri.getQuery() != null && uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase("false")){
+                prepareOpenWebView(uri);
+            } else{
+                String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DASHBOARD);
+                RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, applink));
                 context.finish();
             }
+        }else if(uri.getQuery() != null && uri.getQueryParameter(ALLOW_OVERRIDE).equalsIgnoreCase("false")) {
+            prepareOpenWebView(uri);
         } else {
-            RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_HOTEL));
+            String applink = DeeplinkMapperTravel.getRegisteredNavigationTravel(context, ApplinkConst.HOTEL_DASHBOARD);
+            RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, applink));
             context.finish();
         }
     }
@@ -538,7 +548,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                             shopId = shopInfo.getInfo().getShopId();
                         }
                         String lastSegment = linkSegment.get(linkSegment.size() - 1);
-                        if (shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID)) {
+                        if (isTokopediaNowShopId(shopId)) {
                             RouteManager.route(context,
                                     bundle,
                                     ApplinkConst.TokopediaNow.HOME);
@@ -594,6 +604,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 }
             }
         });
+    }
+
+    private boolean isTokopediaNowShopId(String shopId) {
+        if(TokopediaUrl.getInstance().getTYPE() == Env.STAGING) {
+            return shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_STAGING_SHOP_ID);
+        } else {
+            return shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_1) || shopId.equals(ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2);
+        }
     }
 
     private boolean isEtalase(List<String> linkSegment) {
@@ -681,9 +699,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     if (shopInfo != null && shopInfo.getInfo() != null) {
                         //Add Affiliate string for tracking
                         String affiliateString = "";
+                        String affiliateUUID = "";
                         String layoutTesting = "";
                         if (!TextUtils.isEmpty(uriData.getQueryParameter("aff"))) {
                             affiliateString = uriData.getQueryParameter("aff");
+                        }
+
+                        if (!TextUtils.isEmpty(uriData.getQueryParameter("aff_unique_id"))) {
+                            affiliateUUID = uriData.getQueryParameter("aff_unique_id");
                         }
 
                         if (!TextUtils.isEmpty(uriData.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_LAYOUT_ID))) {
@@ -694,7 +717,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE,
                                 linkSegment.get(0),
                                 linkSegment.get(1),
-                                affiliateString);
+                                affiliateString,
+                                affiliateUUID);
                         productIntent.putExtra("layoutID", layoutTesting);
                         context.startActivity(productIntent);
                     } else {

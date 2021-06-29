@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.ADD_PATH
+import com.tokopedia.applink.ApplinkConst.AFFILIATE_UNIQUE_ID
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -11,6 +12,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.salam.DeeplinkMapperSalam
 import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.applink.statistic.DeepLinkMapperStatistic
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 
 /**
  * Created by Irfan Khoirul on 2019-10-08.
@@ -37,6 +40,8 @@ object DeeplinkMapperMarketplace {
     fun getTokopediaInternalProduct(uri:Uri, idList: List<String>?):String {
         return if (uri.pathSegments[0] == ADD_PATH) {
             ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
+        } else if (uri.queryParameterNames.contains(AFFILIATE_UNIQUE_ID)){
+            UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE_UUID, idList?.getOrNull(0), uri.getQueryParameter("aff_unique_id"))
         } else {
             UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, idList?.getOrNull(0))
         }
@@ -45,7 +50,7 @@ object DeeplinkMapperMarketplace {
     fun getShopPageInternalAppLink(ctx: Context, uri: Uri, deeplink: String, internalAppLink: String, shopId: String):String {
         return if (isSpecialShop(shopId) && uri.pathSegments.size == 1) {
             DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop(deeplink, ctx)
-        } else if(isTokoNowShopId(shopId)){
+        } else if(isTokopediaNowShopId(shopId)){
             ApplinkConstInternalTokopediaNow.HOME
         } else {
             internalAppLink
@@ -56,8 +61,12 @@ object DeeplinkMapperMarketplace {
         return shopId == ApplinkConst.SALAM_UMRAH_SHOP_ID
     }
 
-    private fun isTokoNowShopId(shopId: String): Boolean {
-        return shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID
+    private fun isTokopediaNowShopId(shopId: String): Boolean {
+        return if(TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_STAGING_SHOP_ID
+        } else {
+            shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_1 || shopId == ApplinkConst.TokopediaNow.TOKOPEDIA_NOW_PRODUCTION_SHOP_ID_2
+        }
     }
 
 }

@@ -5,7 +5,7 @@
     android:id="@+id/variant_img_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/dp_2">
+    android:layout_marginEnd="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -43,7 +43,7 @@
             android:gravity="center"
             android:background="@drawable/bg_round_corner_atc_variant_overlay"
             android:text="@string/atc_variant_empty"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_Static_White"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -6,9 +6,9 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.tkpd.atcvariant.R
-import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tkpd.atcvariant.view.bottomsheet.AtcVariantBottomSheet
 import com.tkpd.atcvariant.view.listener.AtcVariantBottomSheetListener
+import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.detail.common.AtcVariantHelper.ATC_VARIANT_CACHE_ID
@@ -24,7 +24,7 @@ class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
     companion object {
         const val TOKO_NOW_EXTRA = "isTokoNow"
         const val PAGE_SOURCE_EXTRA = "pageSource"
-        const val PARENT_ID_EXTRA = "parentId"
+        const val CD_LIST_EXTRA = "cdListName"
     }
 
     private val sharedViewModel by lazy {
@@ -64,7 +64,7 @@ class AtcVariantActivity : BaseSimpleActivity(), AtcVariantBottomSheetListener {
             if (data == null) {
                 paramsData.isTokoNow = bundle.getString(TOKO_NOW_EXTRA, "false").toBoolean()
                 paramsData.pageSource = bundle.getString(PAGE_SOURCE_EXTRA, "")
-                paramsData.productParentId = bundle.getString(PARENT_ID_EXTRA, "")
+                paramsData.trackerCdListName = bundle.getString(CD_LIST_EXTRA, "")
                 paramsData.productId = productId
                 paramsData.shopId = shopId
             } else {
