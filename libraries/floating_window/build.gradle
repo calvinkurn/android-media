@@ -17,8 +17,8 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
-    implementation project(rootProject.ext.features.pushNotificationCommon)
-    implementation project(rootProject.ext.libraries.pushNotification)
+    implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
+    implementation projectOrAar(rootProject.ext.libraries.pushNotification)
 }
 
 project.ext {

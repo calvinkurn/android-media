@@ -9,15 +9,17 @@ task("configDebugTools") {
         rootProject.ext.debugToolsEnabled = true
         println("Debug tools set true. No task is defined")
     } else {
-        rootProject.ext.debugToolsEnabled = false
+        rootProject.ext.debugToolsEnabled = true
         for ( taskName in taskNames ) {
-            if ( taskName.toLowerCase().contains("debug") ||
-                    taskName.toLowerCase().contains("dev") ) {
-                rootProject.ext.debugToolsEnabled = true
-                println("Debug tools set true. Task is debug or dev")
+            if ( !taskName.toLowerCase().contains("debug") &&
+                    !taskName.toLowerCase().contains("dev") &&
+                    taskName.toLowerCase().contains("release")) {
+                rootProject.ext.debugToolsEnabled = false
+                println("Debug tools set false. Task is release")
                 break
             }
         }
+        println("Debug tools set to true.")
     }
 }
 
@@ -27,4 +29,5 @@ def allowDistributionLocal() {
     }
     return "false";
 }
+
 preBuild.dependsOn configDebugTools

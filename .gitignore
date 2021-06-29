@@ -5,6 +5,7 @@
 .DS_Store
 /build
 /captures
+/localMavenRepository
 
 *.ap_
 
@@ -24,9 +25,7 @@ build/
 .idea/
 .idea/workspace.xml
 .metadata/
-.idea/workspace.xml
 .metadata
-.metadata/
 *.iml
 *.log
 
@@ -38,9 +37,6 @@ project.properties
 .project
 assets/crashlytics-build.properties
 res/values/com_crashlytics_export_strings.xml
-
-.DS_Store
-/.idea/workspace.xml
 
 # react native
 node_modules/

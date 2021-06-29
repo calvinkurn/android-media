@@ -50,5 +50,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.app.customerapp)
 
-    implementation project(rootProject.ext.features.digitalEmoney)
+    implementation projectOrAar(rootProject.ext.features.digitalEmoney)
 }

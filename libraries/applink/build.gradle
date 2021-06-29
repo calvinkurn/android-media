@@ -26,9 +26,9 @@ android {
 dependencies {
 
     if (rootProject.ext.debugToolsEnabled) {
-        implementation project(rootProject.ext.libraries.analyticsDebugger)
+        implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
     } else {
-        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+        implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
@@ -37,11 +37,11 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.playServicesDependencies.core
-    implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.devMonitoringTools)
-    implementation project(rootProject.ext.libraries.logger)
-    implementation project(rootProject.ext.libraries.deviceInfo)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.devMonitoringTools)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.robolectric

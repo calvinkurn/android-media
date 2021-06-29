@@ -49,11 +49,11 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
 
-    implementation project(rootProject.ext.features.favorite)
-    implementation project(rootProject.ext.features.orderhistory)
-    implementation project(rootProject.ext.features.report)
-    implementation project(rootProject.ext.features.recentview)
-    implementation project(rootProject.ext.features.attachinvoice)
-    implementation project(rootProject.ext.features.attachvoucher)
-    implementation project(rootProject.ext.features.attachproduct)
+    implementation projectOrAar(rootProject.ext.features.favorite)
+    implementation projectOrAar(rootProject.ext.features.orderhistory)
+    implementation projectOrAar(rootProject.ext.features.report)
+    implementation projectOrAar(rootProject.ext.features.recentview)
+    implementation projectOrAar(rootProject.ext.features.attachinvoice)
+    implementation projectOrAar(rootProject.ext.features.attachvoucher)
+    implementation projectOrAar(rootProject.ext.features.attachproduct)
 }

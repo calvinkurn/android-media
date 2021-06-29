@@ -17,8 +17,8 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 }
 
 project.ext {

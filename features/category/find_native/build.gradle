@@ -13,36 +13,36 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.features.filter)
-    implementation project(rootProject.ext.features.discoveryCommon)
+    implementation projectOrAar(rootProject.ext.features.filter)
+    implementation projectOrAar(rootProject.ext.features.discoveryCommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.features.wishlistCommon)
-    implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.libraries.core_legacy)
-    implementation project(rootProject.ext.features.commonCategory)
-    implementation project(rootProject.ext.libraries.linker)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
+    implementation projectOrAar(rootProject.ext.features.topAdsSdk)
+    implementation projectOrAar(rootProject.ext.libraries.core_legacy)
+    implementation projectOrAar(rootProject.ext.features.commonCategory)
+    implementation projectOrAar(rootProject.ext.libraries.linker)
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
-    implementation project(rootProject.ext.features.basemvvm)
+    implementation projectOrAar(rootProject.ext.features.basemvvm)
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.viewModelKtx
     testImplementation rootProject.ext.testDependencies.mockk

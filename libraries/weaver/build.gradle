@@ -18,7 +18,7 @@ dependencies {
     implementation (rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
     }
-    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 }
 
 project.ext {

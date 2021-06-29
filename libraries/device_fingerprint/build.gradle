@@ -23,17 +23,17 @@ dependencies {
     implementation files('libs/tkpd_util_obs.jar')
     implementation files('libs/vangogh-release.aar')
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.playServicesDependencies.ads
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.miscDependencies.workManager
-    implementation project(rootProject.ext.libraries.deviceInfo)
-    implementation project(rootProject.ext.libraries.encryption)
-    implementation project(rootProject.ext.libraries.logger)
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
+    implementation projectOrAar(rootProject.ext.libraries.encryption)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url

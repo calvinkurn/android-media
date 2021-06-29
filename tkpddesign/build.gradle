@@ -14,7 +14,7 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.unifyDependencies.principles
-    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
 
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.supportLibDependencies.appCompactV7
@@ -22,7 +22,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.networkDependencies.glide
 
-    implementation project(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     androidTestImplementation rootProject.ext.testDependencies.mockitorCore
 }

@@ -13,7 +13,7 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation rootProject.ext.testDependencies.androidAnnotation
 }
 

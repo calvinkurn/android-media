@@ -262,6 +262,7 @@ ext {
             liveDataKtx           : "androidx.lifecycle:lifecycle-livedata-ktx:$lifeCycleVersion",
             archCoreRuntime       : "androidx.arch.core:core-runtime:$archCoreVersion",
             archCoreCommon        : "androidx.arch.core:core-common:$archCoreVersion",
+            traceroute            : "com.tokopedia.traceroute:traceroute:1.0.1@aar",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
             laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.1.13",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",

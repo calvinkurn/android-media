@@ -47,57 +47,56 @@ android {
 
 dependencies {
     // Feature
-    implementation project(rootProject.ext.features.atc_common)
-    implementation project(rootProject.ext.features.commonDigital)
-    implementation project(rootProject.ext.features.commonWallet)
-    implementation project(rootProject.ext.features.discoveryCommon)
-    implementation project(rootProject.ext.features.recommendationWidgetCommon)
-    implementation project(rootProject.ext.features.dynamicBanner)
-    implementation project(rootProject.ext.features.homeComponent)
-    implementation project(rootProject.ext.features.goldMerchantCommon)
-    implementation project(rootProject.ext.features.kolCommon)
-    implementation project(rootProject.ext.features.loyalty)
-    implementation project(rootProject.ext.features.loyaltyCommon)
-    implementation project(rootProject.ext.features.navigationCommon)
-    implementation project(rootProject.ext.features.medialoader)
-    implementation project(rootProject.ext.features.productCard)
-    implementation project(rootProject.ext.features.promoGamificationCommon)
-    implementation project(rootProject.ext.features.reputationCommon)
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.searchbar)
-    implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.stickyLogin)
-    implementation project(rootProject.ext.features.tokopointsNotification)
-    implementation project(rootProject.ext.features.topAdsSdk)
-    implementation project(rootProject.ext.features.wishlistCommon)
-    implementation project(rootProject.ext.features.homeNav)
-    implementation project(rootProject.ext.features.playCommon)
-    implementation project(rootProject.ext.features.playWidget)
-    implementation project(rootProject.ext.features.rechargeComponent)
+    implementation projectOrAar(rootProject.ext.features.atc_common)
+    implementation projectOrAar(rootProject.ext.features.commonDigital)
+    implementation projectOrAar(rootProject.ext.features.commonWallet)
+    implementation projectOrAar(rootProject.ext.features.discoveryCommon)
+    implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
+    implementation projectOrAar(rootProject.ext.features.dynamicBanner)
+    implementation projectOrAar(rootProject.ext.features.homeComponent)
+    implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
+    implementation projectOrAar(rootProject.ext.features.kolCommon)
+    implementation projectOrAar(rootProject.ext.features.loyalty)
+    implementation projectOrAar(rootProject.ext.features.loyaltyCommon)
+    implementation projectOrAar(rootProject.ext.features.navigationCommon)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.productCard)
+    implementation projectOrAar(rootProject.ext.features.promoGamificationCommon)
+    implementation projectOrAar(rootProject.ext.features.reputationCommon)
+    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.features.searchbar)
+    implementation projectOrAar(rootProject.ext.features.shopCommon)
+    implementation projectOrAar(rootProject.ext.features.stickyLogin)
+    implementation projectOrAar(rootProject.ext.features.tokopointsNotification)
+    implementation projectOrAar(rootProject.ext.features.topAdsSdk)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
+    implementation projectOrAar(rootProject.ext.features.homeNav)
+    implementation projectOrAar(rootProject.ext.features.playCommon)
+    implementation projectOrAar(rootProject.ext.features.playWidget)
+    implementation projectOrAar(rootProject.ext.features.rechargeComponent)
 
     // Library
-    implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.circularViewPager)
-    implementation project(rootProject.ext.libraries.collapsingTabLayout)
-    implementation project(rootProject.ext.libraries.coreNetwork)
-    implementation project(rootProject.ext.libraries.core_legacy)
-    implementation project(rootProject.ext.libraries.diffUtilRecycler)
-    implementation project(rootProject.ext.libraries.imagePickerCommon)
-    implementation project(rootProject.ext.libraries.iris)
-    implementation project(rootProject.ext.libraries.irisSession)
-    implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.libraries.locationmanager)
-    implementation project(rootProject.ext.libraries.utils)
-    implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation project(rootProject.ext.libraries.baseList)
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.trackingOptimizer)
-    implementation project(rootProject.ext.libraries.traceroute)
-    implementation project(rootProject.ext.libraries.deviceInfo)
-    implementation project(rootProject.ext.libraries.remoteResourceRequest)
-    implementation project(rootProject.ext.libraries.logger)
+    implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.circularViewPager)
+    implementation projectOrAar(rootProject.ext.libraries.collapsingTabLayout)
+    implementation projectOrAar(rootProject.ext.libraries.coreNetwork)
+    implementation projectOrAar(rootProject.ext.libraries.core_legacy)
+    implementation projectOrAar(rootProject.ext.libraries.diffUtilRecycler)
+    implementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
+    implementation projectOrAar(rootProject.ext.libraries.iris)
+    implementation projectOrAar(rootProject.ext.libraries.irisSession)
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.locationmanager)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation projectOrAar(rootProject.ext.libraries.baseList)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
+    implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
+    implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
@@ -116,13 +115,14 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
+    implementation rootProject.ext.miscDependencies.traceroute
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation(rootProject.ext.miscDependencies.viewPager2) {
@@ -151,11 +151,11 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.playServicesDependencies.location
-    implementation project(rootProject.ext.libraries.weaver)
+    implementation projectOrAar(rootProject.ext.libraries.weaver)
 
     implementation rootProject.ext.miscDependencies.exoPlayer
     implementation rootProject.ext.miscDependencies.apacheLang
-    implementation project(rootProject.ext.features.localizationchooseaddress)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
@@ -164,19 +164,19 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
-    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
 
     // Unit test
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
-    testImplementation project(rootProject.ext.libraries.unitTest)
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

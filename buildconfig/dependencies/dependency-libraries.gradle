@@ -99,7 +99,6 @@ ext {
             tkpddesign              : ":tkpddesign",
             translator              : ":libraries:translator",
             screenshot_observer     : ":libraries:screenshot_observer",
-            traceroute              : ":libraries:traceroute",
             utils                   : ":libraries:utils",
             imagePreviewSlider      : ":libraries:imagepreviewslider",
             mapviewer               : ":libraries:mapviewer",
