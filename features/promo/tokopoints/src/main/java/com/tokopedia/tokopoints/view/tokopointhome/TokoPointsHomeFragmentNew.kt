@@ -492,6 +492,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 AnalyticsTrackerUtil.impressionProductRecomItem(
                     productIdString,
                     position,
+                    item.recommendationType,
+                    item.isTopAds,
                     "none / other",
                     item.categoryBreadcrumbs,
                     item.name,
@@ -515,12 +517,13 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 AnalyticsTrackerUtil.clickProductRecomItem(
                     item.productId.toString(),
                     position[0],
+                    item.recommendationType,
+                    item.isTopAds,
                     "none / other",
                     item.categoryBreadcrumbs,
                     item.name,
                     "none / other",
-                    item.price,
-                    trackingQueue
+                    item.price
                 )
 
                 val intent = RouteManager.getIntent(

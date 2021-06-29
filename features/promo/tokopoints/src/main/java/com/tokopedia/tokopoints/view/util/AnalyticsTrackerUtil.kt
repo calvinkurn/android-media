@@ -9,7 +9,6 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import timber.log.Timber
 
 object AnalyticsTrackerUtil {
 
@@ -109,26 +108,26 @@ object AnalyticsTrackerUtil {
 
     fun clickProductRecomItem(productId: String,
                               productPositionIndex: Int,
+                              recommendationType: String,
+                              isTopads: Boolean,
                               productBrand: String,
                               itemCategory: String,
                               productName: String,
                               productVariant: String,
                               productPrice: String,
-                              trackingQueue: TrackingQueue
     ) {
         val map = mutableMapOf<String, Any>()
+        val price = CurrencyFormatHelper?.convertRupiahToInt(productPrice)
         map[EventKeys.EVENT] = EventKeys.EVENT_CLICK_RECOM
         map[EventKeys.EVENT_CATEGORY] = CategoryKeys.EVENT_CATEGORY_RECOM
         map[EventKeys.EVENT_ACTION] = ActionKeys.CLICK_RECOM_ACTION
         map[EventKeys.EVENT_LABEL] = ""
         map[EventKeys.EVENT_BUSINESSUNIT]= EcommerceKeys.BUSINESSUNIT
         map[EventKeys.EVENT_CURRENTSITE]=EcommerceKeys.CURRENTSITE
-
-        val price = CurrencyFormatHelper?.convertRupiahToInt(productPrice)
-
+        map[EcommerceKeys.ITEM_LIST] = getItemList(recommendationType,isTopads)
         map[EventKeys.ECOMMERCE] = DataLayer.mapOf(
             EcommerceKeys.CLICK, DataLayer.mapOf(EcommerceKeys.ACTION_FIELD,
-                DataLayer.mapOf(EcommerceKeys.LIST,""),
+                DataLayer.mapOf(EcommerceKeys.LIST,EcommerceKeys.NONE),
                 EcommerceKeys.PRODUCTS, DataLayer.listOf(getItemsMapList(productId,
                     productPositionIndex,
                     productBrand,
@@ -162,6 +161,8 @@ object AnalyticsTrackerUtil {
 
     fun impressionProductRecomItem(productId: String,
                                    productPositionIndex: Int,
+                                   recommendationType: String,
+                                   isTopads: Boolean,
                                    productBrand: String,
                                    itemCategory: String,
                                    productName: String,
@@ -169,14 +170,14 @@ object AnalyticsTrackerUtil {
                                    productPrice: String,
                                    trackingQueue: TrackingQueue) {
         val map = mutableMapOf<String, Any>()
+        val price = CurrencyFormatHelper.convertRupiahToInt(productPrice)
         map[EventKeys.EVENT] = EventKeys.EVENT_VIEW_RECOM
         map[EventKeys.EVENT_CATEGORY] = CategoryKeys.EVENT_CATEGORY_RECOM
         map[EventKeys.EVENT_ACTION] = ActionKeys.IMPRESSION_RECOM_ACTION
         map[EventKeys.EVENT_LABEL] = ""
         map[EventKeys.EVENT_BUSINESSUNIT]= EcommerceKeys.BUSINESSUNIT
         map[EventKeys.EVENT_CURRENTSITE]= EcommerceKeys.CURRENTSITE
-
-        val price = CurrencyFormatHelper.convertRupiahToInt(productPrice)
+        map[EcommerceKeys.ITEM_LIST] = getItemList(recommendationType,isTopads)
         map[EventKeys.ECOMMERCE] = DataLayer.mapOf(
             EcommerceKeys.CURRENCY_CODE, EcommerceKeys.IDR,
             EcommerceKeys.ITEMS,
@@ -190,6 +191,17 @@ object AnalyticsTrackerUtil {
             )
         )
         trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    private fun getItemList(recommendationType: String, isTopads: Boolean) : String {
+        var list: String = String.format(
+            EcommerceKeys.ITEM_LIST_V2,
+            recommendationType
+        )
+        if (isTopads) {
+            list += EcommerceKeys.VALUE_PRODUCT_TOPADS
+        }
+        return list
     }
 
     interface EventKeys {
@@ -310,6 +322,9 @@ object AnalyticsTrackerUtil {
             const val CLICK = "click"
             const val LIST = "list"
             const val PRODUCTS = "products"
+            const val NONE = "none / other"
+            const val ITEM_LIST_V2 = "/rewards page - rekomendasi untuk anda - %s"
+            const val VALUE_PRODUCT_TOPADS = " - product topads"
         }
     }
 
