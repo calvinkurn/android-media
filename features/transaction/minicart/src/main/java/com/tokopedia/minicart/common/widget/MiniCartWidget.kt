@@ -395,6 +395,8 @@ class MiniCartWidget @JvmOverloads constructor(
                 setAmount("")
                 setCtaText(context.getString(R.string.mini_cart_widget_label_buy_empty))
                 amountCtaView.isEnabled = false
+                amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
+                amountCtaView.requestLayout()
             }
             labelUnavailable?.apply {
                 text = context.getString(R.string.mini_cart_widget_label_unavailable, miniCartSimplifiedData.miniCartWidgetData.unavailableItemsCount)
@@ -407,6 +409,8 @@ class MiniCartWidget @JvmOverloads constructor(
                 setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartSimplifiedData.miniCartWidgetData.totalProductPrice, false))
                 setCtaText(String.format(context.getString(R.string.mini_cart_widget_label_buy), miniCartSimplifiedData.miniCartWidgetData.totalProductCount))
                 amountCtaView.isEnabled = true
+                amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
+                amountCtaView.requestLayout()
             }
             labelUnavailable?.gone()
             imageChevronUnavailable?.gone()

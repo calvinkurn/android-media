@@ -406,6 +406,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 amountCtaView.isEnabled = true
                 enableAmountChevron(true)
             }
+            amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
+            amountCtaView.requestLayout()
         }
         setTotalAmountLoading(viewBinding, false)
     }
