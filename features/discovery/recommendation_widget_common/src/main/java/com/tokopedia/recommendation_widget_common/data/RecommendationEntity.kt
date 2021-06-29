@@ -86,7 +86,7 @@ data class RecommendationEntity (
         @SerializedName("minOrder")
         val minOrder: Int = 0
         @SerializedName("specificationLabels")
-        val specificationsLabels: List<SpecificationsLabels> = listOf(),
+        val specificationsLabels: List<SpecificationsLabels> = listOf()
         @SerializedName("parentID")
         val parentID: Int = 0
 
