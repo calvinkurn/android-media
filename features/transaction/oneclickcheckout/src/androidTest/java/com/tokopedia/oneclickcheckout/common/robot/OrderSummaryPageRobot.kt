@@ -109,6 +109,8 @@ class OrderSummaryPageRobot {
     }
 
     fun clickButtonContinueWithRedPromo() {
+        // Wait for bottom sheet to fully appear
+        Thread.sleep(1000)
         onView(withId(com.tokopedia.purchase_platform.common.R.id.btn_continue)).perform(click())
     }
 
