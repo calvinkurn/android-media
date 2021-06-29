@@ -1,22 +1,20 @@
 package com.tokopedia.common.topupbills.view.viewholder
 
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.R
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoritNumberBinding
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
-import com.tokopedia.common.topupbills.view.model.FavoriteNumberDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 
 class FavoriteNumberViewHolder(
         private val binding: ItemTopupBillsFavoritNumberBinding,
         private val favoriteNumberListener: OnFavoriteNumberClickListener
-): AbstractViewHolder<FavoriteNumberDataView>(binding.root) {
+): AbstractViewHolder<TopupBillsFavNumberDataView>(binding.root) {
 
-    override fun bind(item: FavoriteNumberDataView) {
+    override fun bind(item: TopupBillsFavNumberDataView) {
         binding.run {
 
             if (item.favoriteNumber.clientName.isNotEmpty()) {

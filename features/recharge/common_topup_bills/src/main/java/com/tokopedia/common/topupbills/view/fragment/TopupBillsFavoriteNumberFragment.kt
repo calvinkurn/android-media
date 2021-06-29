@@ -8,7 +8,6 @@ import android.os.Parcelable
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.InputType
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -31,9 +30,8 @@ import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateLis
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberMenuBottomSheet
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberMenuListener
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
-import com.tokopedia.common.topupbills.view.model.FavoriteNumberDataView
-import com.tokopedia.common.topupbills.view.model.FavoriteNumberEmptyDataView
-import com.tokopedia.common.topupbills.view.model.FavoriteNumberNotFoundDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberEmptyDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberNotFoundDataView
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactoryImpl
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
@@ -127,7 +125,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(clientNumbers), typeFactory)
         } else {
             numberListAdapter = TopupBillsFavoriteNumberListAdapter(
-                    listOf(FavoriteNumberNotFoundDataView()), typeFactory)
+                    listOf(TopupBillsFavNumberNotFoundDataView()), typeFactory)
         }
 
         binding?.commonTopupbillsFavoriteNumberRv?.run {
@@ -191,7 +189,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
                     CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(searchClientNumbers)
             )
         } else {
-            numberListAdapter.setEmptyState(listOf(FavoriteNumberEmptyDataView()))
+            numberListAdapter.setEmptyState(listOf(TopupBillsFavNumberEmptyDataView()))
         }
     }
 

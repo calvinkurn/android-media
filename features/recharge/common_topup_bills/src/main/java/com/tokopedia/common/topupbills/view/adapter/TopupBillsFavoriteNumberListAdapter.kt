@@ -5,19 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
-import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoritNumberBinding
-import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberEmptyStateBinding
-import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
-import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
-import com.tokopedia.common.topupbills.view.model.FavoriteNumberDataView
-import com.tokopedia.common.topupbills.view.model.FavoriteNumberEmptyDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberEmptyDataView
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactory
-import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberEmptyViewHolder
-import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 
 class TopupBillsFavoriteNumberListAdapter (
         var visitables: List<Visitable<FavoriteNumberTypeFactory>>,
@@ -41,12 +31,12 @@ class TopupBillsFavoriteNumberListAdapter (
         return visitables.size
     }
 
-    fun setNumbers(clientNumbers: List<FavoriteNumberDataView>) {
+    fun setNumbers(clientNumbers: List<TopupBillsFavNumberDataView>) {
         this.visitables = clientNumbers
         notifyDataSetChanged()
     }
 
-    fun setEmptyState(emptyStateDataView: List<FavoriteNumberEmptyDataView>) {
+    fun setEmptyState(emptyStateDataView: List<TopupBillsFavNumberEmptyDataView>) {
         this.visitables = emptyStateDataView
         notifyDataSetChanged()
     }

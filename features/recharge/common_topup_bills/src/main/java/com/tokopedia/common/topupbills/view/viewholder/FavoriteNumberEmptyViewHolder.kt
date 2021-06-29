@@ -5,14 +5,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberEmptyStateBinding
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
-import com.tokopedia.common.topupbills.view.model.FavoriteNumberEmptyDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberEmptyDataView
 
 class FavoriteNumberEmptyViewHolder(
         private val binding: ItemTopupBillsFavoriteNumberEmptyStateBinding,
         private val emptyStateListener: FavoriteNumberEmptyStateListener
-): AbstractViewHolder<FavoriteNumberEmptyDataView>(binding.root) {
+): AbstractViewHolder<TopupBillsFavNumberEmptyDataView>(binding.root) {
 
-    override fun bind(element: FavoriteNumberEmptyDataView?) {
+    override fun bind(element: TopupBillsFavNumberEmptyDataView?) {
         binding.run {
             commonTopupbillsEmptyStateButton.setOnClickListener {
                 emptyStateListener.onContinueClicked()

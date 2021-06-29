@@ -5,16 +5,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberNotFoundBinding
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
-import com.tokopedia.common.topupbills.view.model.FavoriteNumberNotFoundDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberNotFoundDataView
 
 class FavoriteNumberNotFoundViewHolder(
         private val binding: ItemTopupBillsFavoriteNumberNotFoundBinding,
         private val emptyStateListener: FavoriteNumberEmptyStateListener
-): AbstractViewHolder<FavoriteNumberNotFoundDataView>(binding.root) {
+): AbstractViewHolder<TopupBillsFavNumberNotFoundDataView>(binding.root) {
 
-    override fun bind(element: FavoriteNumberNotFoundDataView?) {
+    override fun bind(element: TopupBillsFavNumberNotFoundDataView?) {
         binding.run {
-            commonTopupbillsEmptyStateButton.setOnClickListener {
+            commonTopupbillsNotFoundStateButton.setOnClickListener {
                 emptyStateListener.onContinueClicked()
             }
         }
