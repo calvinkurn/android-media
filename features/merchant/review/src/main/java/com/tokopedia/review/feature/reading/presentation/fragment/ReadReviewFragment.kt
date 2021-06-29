@@ -197,8 +197,13 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     override fun onClearFiltersClicked() {
+        clearAllData()
         viewModel.clearFilters()
         viewModel.setSort(SortTypeConstants.MOST_HELPFUL_PARAM)
+        viewModel.getSelectedRatingFilter()
+        with(viewModel.getRatingAndTopics()) {
+            reviewHeader?.setAvailableFilters(topics, availableFilters, this@ReadReviewFragment)
+        }
     }
 
     override fun onAttachedImagesClicked(productReview: ProductReview, positionClicked: Int, shopId: String) {
