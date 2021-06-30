@@ -18,6 +18,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSession
@@ -120,5 +121,8 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
     override fun onTopAdsImageViewImpression(viewUrl: String) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerImpression(viewModel.components, UserSession(fragment.context).userId,
                 viewModel.position, topAdsModel.bannerId ?: "", topAdsModel.shopId)
+        fragment.context?.let {
+            TopAdsUrlHitter(it).hitImpressionUrl(this.javaClass.canonicalName,viewUrl,"","","")
+        }
     }
 }
