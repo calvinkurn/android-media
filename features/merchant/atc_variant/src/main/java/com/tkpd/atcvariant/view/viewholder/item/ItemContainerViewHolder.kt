@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.AtcVariantOptionAdapter
+import java.util.*
 
 
 /**
@@ -91,7 +92,7 @@ class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) 
     }
 
     private fun setSelectedOptionText(data: VariantCategory) {
-        txtVariantCategoryName.text = context.getString(R.string.atc_variant_option_builder_1, data.name)
+        txtVariantCategoryName.text = context.getString(R.string.atc_variant_option_builder_3, data.name).capitalize(Locale.getDefault())
 
         if (data.getSelectedOption() == null || isTokonow()) {
             txtVariantSelectedOption.text = ""
