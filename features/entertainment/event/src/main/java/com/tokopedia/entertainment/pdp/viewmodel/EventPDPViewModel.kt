@@ -69,7 +69,7 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
                 }
 
                 is Fail -> {
-                    isErrorMutable.value = EventPDPErrorEntity(true, result.throwable.message)
+                    isErrorMutable.value = EventPDPErrorEntity(true, result.throwable)
                 }
             }
 

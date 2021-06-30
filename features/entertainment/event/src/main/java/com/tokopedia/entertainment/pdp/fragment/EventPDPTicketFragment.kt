@@ -60,6 +60,7 @@ import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.listener.OnBindItemTicketListener
 import com.tokopedia.entertainment.pdp.listener.OnCoachmarkListener
 import com.tokopedia.entertainment.pdp.viewmodel.EventPDPTicketViewModel
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -314,7 +315,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
-            NetworkErrorHelper.createSnackbarRedWithAction(activity, String.format(it)) {
+            val errorMessage = ErrorHandler.getErrorMessage(context, it)
+            NetworkErrorHelper.createSnackbarRedWithAction(activity, errorMessage) {
                 showViewBottom(false)
                 loadInitialData()
             }.showRetrySnackbar()

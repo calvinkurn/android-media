@@ -23,7 +23,7 @@ object EventGlobalError {
                 defaultAction()
             }, {
                 globalError.show()
-                showUnexpectedError(context, globalError, throwable)
+                showUnexpectedError(context, globalError, throwable, defaultAction)
             })
 
             findViewById<GlobalError>(com.tokopedia.globalerror.R.id.globalerror_view)?.let {

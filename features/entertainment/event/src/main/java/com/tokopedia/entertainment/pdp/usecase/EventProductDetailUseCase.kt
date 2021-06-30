@@ -31,7 +31,6 @@ class EventProductDetailUseCase @Inject constructor(private val useCase: MultiRe
             useCase.clearRequest()
             useCase.addRequest(contentRequest)
             val contentData = useCase.executeOnBackground().getSuccessData<EventContentByIdEntity>()
-
             return Success(combineProductandContent(pdpData, contentData))
         } catch (throwable: Throwable) {
             return Fail(throwable)

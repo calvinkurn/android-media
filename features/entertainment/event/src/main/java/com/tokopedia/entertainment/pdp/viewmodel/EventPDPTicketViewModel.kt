@@ -15,6 +15,7 @@ import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -31,7 +32,8 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
                                                   private val usecase: EventProductDetailUseCase,
                                                   private val useCaseHoliday: TravelCalendarHolidayUseCase) : BaseViewModel(dispatcher) {
 
-    val error: MutableLiveData<String> by lazy { MutableLiveData<String>() }
+    private val mutableError = MutableLiveData<Throwable>()
+    val error: LiveData<Throwable> get() = mutableError
 
     private val _ticketModel = MutableLiveData<List<EventPDPTicketModel>>()
     val ticketModel: LiveData<List<EventPDPTicketModel>> get() = _ticketModel
@@ -58,13 +60,13 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
     var categoryData = Category()
 
     fun getData(url: String, selectedDateString: String, state: Boolean, rawQueryPDP: String, rawQueryContent: String) {
-        launch {
+        launchCatchError(block = {
             lists.clear()
             recommendationList.clear()
             val data = usecase.executeUseCase(rawQueryPDP, rawQueryContent, state, url)
             val dataHoliday = useCaseHoliday.execute()
             val selectedDate = removeTime(Date(selectedDateString.toLong() * SECOND_IN_MILIS))
-
+            throw RuntimeException("404")
             when (data) {
                 is Success -> {
                     productDetailEntityMutable.value = data.data.eventProductDetailEntity
@@ -88,12 +90,11 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
 
                     if (data.data.eventProductDetailEntity.eventProductDetail.productDetailData.category.isNotEmpty())
                         categoryData = data.data.eventProductDetailEntity.eventProductDetail.productDetailData.category[0]
-
                     _ticketModel.value = lists
                     _recommendationTicketModel.value = recommendationList
                 }
                 is Fail -> {
-                    error.value = data.throwable.message
+                    mutableError.value = data.throwable
                 }
             }
 
@@ -106,6 +107,8 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
                     eventHolidayMutable.value = arrayListOf()
                 }
             }
+        }){
+            mutableError.value = it
         }
     }
 
@@ -119,10 +122,10 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
             if (data.eventVerify.error.isNullOrEmpty()) {
                 mutableVerifyResponse.value = data
             } else {
-                error.value = data.eventVerify.errorDescription
+                mutableError.value = MessageErrorException(data.eventVerify.errorDescription)
             }
         }) {
-            error.value = it.message
+            mutableError.value = it
         }
     }
 

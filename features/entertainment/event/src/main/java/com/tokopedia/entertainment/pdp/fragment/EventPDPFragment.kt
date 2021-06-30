@@ -28,6 +28,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.common.util.EventGlobalError
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
 import com.tokopedia.entertainment.navigation.EventNavigationActivity
@@ -146,12 +147,13 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         })
 
         eventPDPViewModel.isError.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                if (it.error) {
-                    NetworkErrorHelper.showEmptyState(context, view?.rootView) {
-                        loadDataAll()
-                        performanceMonitoring.stopTrace()
+            it?.let { error ->
+                if (error.error) {
+                    context?.let {
+                        EventGlobalError.errorEventHandlerGlobalError(it, error.throwable, container_error_event_pdp,
+                                global_error_pdp_event, { loadDataAll() })
                     }
+                    performanceMonitoring.stopTrace()
                 }
             }
         })
@@ -174,6 +176,8 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     }
 
     private fun loadDataAll() {
+        container_error_event_pdp.hide()
+        global_error_pdp_event.hide()
         eventPDPViewModel.getIntialList()
         requestData()
     }

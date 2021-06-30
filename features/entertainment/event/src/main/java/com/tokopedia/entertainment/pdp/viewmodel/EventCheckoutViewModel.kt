@@ -59,7 +59,7 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                     eventProductDetailMutable.value = result.data.eventProductDetailEntity
                 }
                 is Fail -> {
-                    isErrorMutable.value = EventPDPErrorEntity(true, result.throwable.message)
+                    isErrorMutable.value = EventPDPErrorEntity(true, result.throwable)
                 }
             }
         }
