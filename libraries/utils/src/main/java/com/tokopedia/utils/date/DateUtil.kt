@@ -119,9 +119,9 @@ object DateUtil {
         return formatDate(currentFormat,
                 newFormat,
                 dateString,
-                DEFAULT_LOCALE,
                 DEFAULT_TIMEZONE,
-                timeZone)
+                timeZone,
+                DEFAULT_LOCALE)
     }
 
     /**
@@ -144,12 +144,9 @@ object DateUtil {
             fromFormat.isLenient = false
             val toFormat: DateFormat = SimpleDateFormat(newFormat, locale)
             toFormat.isLenient = false
+
             val date = fromFormat.parse(dateString)
-            if (date != null) {
-                return toFormat.format(date)
-            } else {
-                ""
-            }
+            toFormat.format(date)
         } catch (e: ParseException) {
             e.printStackTrace()
             dateString
@@ -171,9 +168,9 @@ object DateUtil {
     fun formatDate(currentFormat: String,
                    newFormat: String,
                    dateString: String,
-                   locale: Locale = DEFAULT_LOCALE,
                    fromTimeZone: TimeZone,
-                   toTimezone: TimeZone): String {
+                   toTimezone: TimeZone,
+                   locale: Locale = DEFAULT_LOCALE): String {
         return try {
             val fromFormat: DateFormat = SimpleDateFormat(currentFormat, locale)
             fromFormat.timeZone = fromTimeZone
@@ -181,12 +178,9 @@ object DateUtil {
             val toFormat: DateFormat = SimpleDateFormat(newFormat, locale)
             toFormat.isLenient = false
             toFormat.timeZone = toTimezone
+
             val date = fromFormat.parse(dateString)
-            if (date != null) {
-                toFormat.format(date)
-            } else {
-                ""
-            }
+            toFormat.format(date)
         } catch (e: ParseException) {
             e.printStackTrace()
             dateString
@@ -253,5 +247,6 @@ fun Date.trimDate(): Date {
     calendar[Calendar.HOUR_OF_DAY] = DateUtil.LAST_HOUR_IN_A_DAY
     calendar[Calendar.MINUTE] = DateUtil.LAST_MIN_IN_AN_HOUR
     calendar[Calendar.SECOND] = DateUtil.LAST_SEC_IN_A_MIN
+    calendar[Calendar.MILLISECOND] = 0
     return calendar.time
 }
