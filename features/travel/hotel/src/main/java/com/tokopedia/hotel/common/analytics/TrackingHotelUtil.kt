@@ -148,7 +148,7 @@ class TrackingHotelUtil {
 
     fun searchClickMyLocation(context: Context?, destType: String, destination: String, screenName: String) {
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
-        val eventLabel = "$HOTEL_LABEL - $LABEL_HOTEL_SEARCH_MAP - $destType - $destination"
+        val eventLabel = "$HOTEL_LABEL - $destType - $destination"
         map.addGeneralEvent(CLICK_HOTEL, CLICK_MY_LOCATION, eventLabel)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }

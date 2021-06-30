@@ -99,10 +99,6 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-    override fun getAnalytic(): NotificationUpdateAnalytics {
-        return NotificationUpdateAnalytics()
-    }
-
     override fun showNotificationDetail(bottomSheet: BottomSheetType, element: NotificationItemViewBean) {
         when (bottomSheet) {
             is BottomSheetType.LongerContent -> showLongerContent(element)
@@ -144,6 +140,8 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
             putString(PARAM_BUTTON_TEXT, element.btnText)
             putString(PARAM_TEMPLATE_KEY, element.templateKey)
             putString(PARAM_NOTIF_ID, element.notificationId)
+            putString(PARAM_PRODUCT_ID, element.getAtcProduct()?.productId.toString())
+            putString(PARAM_SHOP_ID, element.getAtcProduct()?.shop?.id.toString())
         }
 
         if (longerTextDialog == null) {
@@ -240,5 +238,7 @@ abstract class BaseNotificationFragment : BaseListFragment<Visitable<*>,
         const val PARAM_BUTTON_TEXT = "button text"
         const val PARAM_TEMPLATE_KEY = "template key"
         const val PARAM_NOTIF_ID = "notification id"
+        const val PARAM_PRODUCT_ID = "product_id"
+        const val PARAM_SHOP_ID = "shop_id"
     }
 }

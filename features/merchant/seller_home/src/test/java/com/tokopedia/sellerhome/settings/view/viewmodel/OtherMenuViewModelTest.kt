@@ -2,14 +2,12 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.gm.common.constant.END_PERIOD
-import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
-import com.tokopedia.seller.menu.common.domain.entity.UserShopInfoResponse
 import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
@@ -33,7 +31,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.*
+import org.junit.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
@@ -70,7 +68,7 @@ class OtherMenuViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
-    protected lateinit var isToasterAlreadyShownField: Field
+    private lateinit var isToasterAlreadyShownField: Field
 
     private lateinit var mViewModel: OtherMenuViewModel
 
@@ -148,7 +146,7 @@ class OtherMenuViewModelTest {
 
             mockViewModel.getAllSettingShopInfo(true)
 
-            coVerify {
+            verify {
                 mockViewModel["checkDelayErrorResponseTrigger"]()
             }
 

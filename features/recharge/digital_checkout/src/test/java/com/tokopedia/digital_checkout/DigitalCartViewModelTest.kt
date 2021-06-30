@@ -610,6 +610,25 @@ class DigitalCartViewModelTest {
     }
 
     @Test
+    fun onCheckout_onFailedWithPromoCode() {
+        // given
+        coEvery { digitalCheckoutUseCase.executeOnBackground() } throws IOException("error")
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.userId } returns "123"
+
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        onApplyDiscountPromoCode_updateCheckoutSummary()
+        digitalCartViewModel.proceedToCheckout(RequestBodyIdentifier())
+
+        // then
+        val paymentPassDataValue = digitalCartViewModel.paymentPassData.value
+        assert(paymentPassDataValue == null)
+        assert(!digitalCartViewModel.showLoading.value!!)
+        assert(digitalCartViewModel.errorThrowable.value!!.throwable is IOException)
+    }
+
+    @Test
     fun onCheckout_onPromoCodeEmptyAndCartEmpty_shouldNotCheckout() {
         // given
         coEvery { digitalCheckoutUseCase.executeOnBackground() } throws IOException("error")
@@ -658,7 +677,6 @@ class DigitalCartViewModelTest {
         assert(digitalCartViewModel.totalPrice.value == getDummyGetCartResponse().price + getDummyGetCartResponse().adminFee)
     }
 
-
     @Test
     fun onResetVoucherCart_addOnAdditionalInfoAndUpdateTotalPayment() {
         // given
@@ -677,6 +695,7 @@ class DigitalCartViewModelTest {
         assert(digitalCartViewModel.totalPrice.value == getDummyGetCartResponseWithDefaultCrossSellType().adminFee + getDummyGetCartResponse().price)
     }
 
+
     @Test
     fun onApplyDiscountPromoCode_updateCheckoutSummary() {
         // given
@@ -691,8 +710,79 @@ class DigitalCartViewModelTest {
         digitalCartViewModel.applyPromoData(promoData)
 
         val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
-            it.title == STRING_KODE_PROMO}
+            it.title == STRING_KODE_PROMO
+        }
         assert(summary?.priceAmount == String.format("-%s", getStringIdrFormat(promoData.amount.toDouble())))
+    }
+
+    @Test
+    fun onApplyDiscountPromoCode_withEmptyState_updateCheckoutSummary() {
+        // given
+        val promoData = PromoData()
+        promoData.amount = 12000
+        promoData.promoCode = "dummyPromoCode"
+        promoData.state = TickerCheckoutView.State.EMPTY
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.setPromoData(promoData)
+        digitalCartViewModel.applyPromoData(promoData)
+
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
+            it.title == STRING_KODE_PROMO
+        }
+        assertNull(summary)
+    }
+
+    @Test
+    fun onApplyDiscountPromoCode_withFailedState_updateCheckoutSummary() {
+        // given
+        val promoData = PromoData()
+        promoData.amount = 12000
+        promoData.promoCode = "dummyPromoCode"
+        promoData.state = TickerCheckoutView.State.FAILED
+
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.setPromoData(promoData)
+        digitalCartViewModel.applyPromoData(promoData)
+
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
+            it.title == STRING_KODE_PROMO
+        }
+        assertNull(summary)
+    }
+
+    @Test
+    fun onApplyDiscountPromoCode_withInactiveState_updateCheckoutSummary() {
+        // given
+        val promoData = PromoData()
+        promoData.state = TickerCheckoutView.State.INACTIVE
+
+        // when
+        getCart_onSuccess_NoNeedOtpAndIsSubscribed()
+        digitalCartViewModel.setPromoData(promoData)
+        digitalCartViewModel.applyPromoData(promoData)
+
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
+            it.title == STRING_KODE_PROMO
+        }
+        assertNull(summary)
+    }
+
+    @Test
+    fun onReceivedPromoCode_withoutSetPromoData() {
+        // given
+        val promoData = PromoData()
+        promoData.state = TickerCheckoutView.State.ACTIVE
+
+        // when
+        digitalCartViewModel.applyPromoData(promoData)
+
+        //then
+        val summary = digitalCartViewModel.payment.value!!.summaries.firstOrNull() {
+            it.title == STRING_KODE_PROMO
+        }
+        assertNull(summary)
     }
 
     @Test
@@ -856,6 +946,20 @@ class DigitalCartViewModelTest {
     }
 
     @Test
+    fun updateTotalPriceWithFintechProduct_nullCartDigitalInfoData() {
+        // given
+        val fintechProduct = FintechProduct(tierId = "3", fintechAmount = 2000.0)
+        val userInputPrice = 30000.0
+
+        // when
+        digitalCartViewModel.onFintechProductChecked(fintechProduct, false, userInputPrice)
+
+        // then
+        // if fintech product checked, update total price
+        assertNull(digitalCartViewModel.totalPrice.value)
+    }
+
+    @Test
     fun setTotalPrice_afterUserInputNumber() {
         // given
         val userInput = 100000.0
@@ -932,6 +1036,46 @@ class DigitalCartViewModelTest {
 
     @Test
     fun getPromoDigitalModel_whenCartPassDataEqualsToNull_shouldReturnCorrectData() {
+        //given
+        val digitalCheckoutPassData = DigitalCheckoutPassData()
+        digitalCheckoutPassData.categoryId = null
+        digitalCheckoutPassData.productId = null
+        digitalCheckoutPassData.clientNumber = null
+
+        //given
+        val promoDigitalModel = digitalCartViewModel.getPromoDigitalModel(digitalCheckoutPassData, null)
+
+        //then
+        assert(promoDigitalModel.categoryId == 0)
+        assert(promoDigitalModel.productId == 0)
+        assert(promoDigitalModel.clientNumber == "")
+        assert(promoDigitalModel.categoryName == "")
+        assert(promoDigitalModel.operatorName == "")
+        assert(promoDigitalModel.price == 0L)
+    }
+
+    @Test
+    fun getPromoDigitalModel_whenCartPassDataNotValid_shouldReturnCorrectData() {
+        //given
+        val digitalCheckoutPassData = DigitalCheckoutPassData()
+        digitalCheckoutPassData.categoryId = "AAB"
+        digitalCheckoutPassData.productId = "AAC"
+        digitalCheckoutPassData.clientNumber = null
+
+        //given
+        val promoDigitalModel = digitalCartViewModel.getPromoDigitalModel(digitalCheckoutPassData, null)
+
+        //then
+        assert(promoDigitalModel.categoryId == 0)
+        assert(promoDigitalModel.productId == 0)
+        assert(promoDigitalModel.clientNumber == "")
+        assert(promoDigitalModel.categoryName == "")
+        assert(promoDigitalModel.operatorName == "")
+        assert(promoDigitalModel.price == 0L)
+    }
+
+    @Test
+    fun getPromoDigitalModel_whenCartPassDataEqualsToNull_shouldReturnCorrectData2() {
         //when
         val promoDigitalModel = digitalCartViewModel.getPromoDigitalModel(null, null)
 
@@ -943,6 +1087,7 @@ class DigitalCartViewModelTest {
         assert(promoDigitalModel.operatorName == "")
         assert(promoDigitalModel.price == 0L)
     }
+
 
     @Test
     fun getPromoDigitalModel_withoutUserInputPrice_shouldReturnCorrectData() {

@@ -94,6 +94,7 @@ query SearchShop(${'$'}params : String!) {
             reputation_score
             is_official
             ga_key
+            is_pm_pro
         }
         top_shop {
             shop_id

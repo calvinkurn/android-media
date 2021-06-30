@@ -254,9 +254,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     }
 
     private fun isDomainWhitelisted(domain: String): Boolean {
-        if(whiteListedDomains.isEnabled) {
+        if (whiteListedDomains.isEnabled) {
             whiteListedDomains.domains.forEach {
-                if(it.contains(domain)) {
+                if (it.contains(domain)) {
                     return true
                 }
             }
@@ -287,12 +287,12 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         const val TOKOPEDIA_DOMAIN = "tokopedia"
 
         fun getStartIntent(
-                context: Context,
-                url: String,
-                showToolbar: Boolean = true,
-                allowOverride: Boolean = true,
-                needLogin: Boolean = false,
-                title: String = ""
+            context: Context,
+            url: String,
+            showToolbar: Boolean = true,
+            allowOverride: Boolean = true,
+            needLogin: Boolean = false,
+            title: String = ""
         ): Intent {
             return Intent(context, BaseSimpleWebViewActivity::class.java).apply {
                 putExtra(KEY_URL, url.encodeOnce())
@@ -311,8 +311,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
         const val CHROME_PACKAGE = "com.android.chrome"
 
-        private const val EXAMPLE_DOMAIN = "http://example.com/"
-
         @DeepLink(ApplinkConst.WEBVIEW_PARENT_HOME)
         @JvmStatic
         fun getInstanceIntentAppLinkBackToHome(context: Context, extras: Bundle): TaskStackBuilder {
@@ -325,11 +323,15 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             return taskStackBuilder
         }
 
-        @DeepLink(ApplinkConst.WEBVIEW, ApplinkConst.SellerApp.WEBVIEW, ApplinkConst.SELLER_INFO_DETAIL)
+        @DeepLink(
+            ApplinkConst.WEBVIEW,
+            ApplinkConst.SellerApp.WEBVIEW,
+            ApplinkConst.SELLER_INFO_DETAIL
+        )
         @JvmStatic
         fun getInstanceIntentAppLink(context: Context, extras: Bundle): Intent {
             var webUrl = extras.getString(
-                    KEY_URL, TokopediaUrl.getInstance().WEB
+                KEY_URL, TokopediaUrl.getInstance().WEB
             )
             var showToolbar: Boolean
             var needLogin: Boolean
@@ -363,11 +365,19 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         @DeepLink(ApplinkConst.BROWSER, ApplinkConst.SellerApp.BROWSER)
         @JvmStatic
         fun getCallingIntentOpenBrowser(context: Context?, extras: Bundle): Intent? {
-            val webUrl = extras.getString("url", getInstance().WEB).decode()
+            val webUrl = extras.getString(KEY_URL, getInstance().WEB).decode()
+            val ext = extras.getString(KEY_EXT, "false").toBoolean()
             val webUri = Uri.parse(webUrl)
 
             val destinationIntent = Intent(Intent.ACTION_VIEW)
             if (context == null) return destinationIntent.apply { data = webUri }
+
+            if (ext) {
+                val intent = WebViewHelper.actionViewIntent(context, webUri)
+                if (intent != null) {
+                    return intent
+                }
+            }
 
             // hacky way: to avoid looping forever
             destinationIntent.data = Uri.parse(EXAMPLE_DOMAIN)
@@ -385,23 +395,24 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             // return when the device has a browser app
             return if (resolveInfos.size >= 1) {
                 // open chrome app by default
-                val resolveInfo = resolveInfos.find { it.resolvePackageName == CHROME_PACKAGE }?: resolveInfos.first()
+                val resolveInfo = resolveInfos.find { it.resolvePackageName == CHROME_PACKAGE }
+                    ?: resolveInfos.first()
                 getBrowserIntent(resolveInfo, webUri)
             } else getSimpleWebViewActivityIntent(context, webUrl)
         }
 
         private fun getBrowserIntent(resolveInfo: ResolveInfo, webUri: Uri) =
-                Intent().apply {
-                    setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
-                    data = webUri
-                }
+            Intent().apply {
+                setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
+                data = webUri
+            }
 
         private fun getSimpleWebViewActivityIntent(context: Context, webUrl: String) =
-                // param external set to false (if any) is to
-                // prevent infinite loop from webview -> browser -> webview
-                Intent(context, BaseSimpleWebViewActivity::class.java).apply {
-                    putExtra(KEY_URL, webUrl.replaceFirst(PARAM_EXTERNAL_TRUE, PARAM_EXTERNAL_FALSE))
-                }
+        // param external set to false (if any) is to
+            // prevent infinite loop from webview -> browser -> webview
+            Intent(context, BaseSimpleWebViewActivity::class.java).apply {
+                putExtra(KEY_URL, webUrl.replaceFirst(PARAM_EXTERNAL_TRUE, PARAM_EXTERNAL_FALSE))
+            }
     }
 
 }

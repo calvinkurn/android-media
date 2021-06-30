@@ -13,7 +13,7 @@ object ApplinkConstInternalTravel {
     const val HOST_TRAVEL_HOMEPAGE = "travelentertainment"
     const val HOST_TRAVEL_SLICE = "travelslice"
 
-    const val INTERNAL_HOTEL = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_HOTEL"
+    const val INTERNAL_HOTEL = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_HOTEL"
     const val INTERNAL_FLIGHT = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_FLIGHT"
     const val INTERNAL_TRAVEL_HOMEPAGE = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_TRAVEL_HOMEPAGE"
 
