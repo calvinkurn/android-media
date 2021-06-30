@@ -11,36 +11,36 @@ class HowToPayAnalytics @Inject constructor(val userSessionInterface: UserSessio
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
 
-    fun eventOnScreenOpen(paymentType: String) {
+    fun eventOnScreenOpen(gatewayCode: String?) {
         val map = TrackAppUtils.gtmData(OPEN_SCREEN,
                 CATEGORY_HWP, IMPRESSION_HTP_PAGE,
-                paymentType
+            gatewayCode
         )
         map[BUSINESS_UNIT] = PAYMENT
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
-        map[SCREEN_NAME] = paymentType
+        map[SCREEN_NAME] = "$CATEGORY_HWP - $gatewayCode"
         map[IS_LOGGED_IN_STATUS] = userSessionInterface.isLoggedIn.toString()
         map[USER_ID] = userSessionInterface.userId
         analyticTracker.sendGeneralEvent(map)
     }
 
-    fun eventOnCopyCodeClick(paymentType: String){
+    fun eventOnCopyCodeClick(gatewayCode: String){
         val map = TrackAppUtils.gtmData(CLICK_PAYMENT,
                 CATEGORY_HWP, COPY_CODE, "")
         map[BUSINESS_UNIT] = PAYMENT
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
-        map[SCREEN_NAME] = paymentType
+        map[SCREEN_NAME] = "$CATEGORY_HWP - $gatewayCode"
         map[IS_LOGGED_IN_STATUS] = userSessionInterface.isLoggedIn.toString()
         map[USER_ID] = userSessionInterface.userId
         analyticTracker.sendGeneralEvent(map)
     }
 
-    fun eventOnScreenShotClick(paymentType: String){
+    fun eventOnScreenShotClick(gatewayCode: String){
         val map = TrackAppUtils.gtmData(CLICK_PAYMENT,
                 CATEGORY_HWP, CLICK_SCREENSHOT, "")
         map[BUSINESS_UNIT] = PAYMENT
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
-        map[SCREEN_NAME] = paymentType
+        map[SCREEN_NAME] = "$CATEGORY_HWP - $gatewayCode"
         map[IS_LOGGED_IN_STATUS] = userSessionInterface.isLoggedIn.toString()
         map[USER_ID] = userSessionInterface.userId
         analyticTracker.sendGeneralEvent(map)

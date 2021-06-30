@@ -7,11 +7,11 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetHowToPayInstructionsMapper @Inject constructor() : UseCase<HowToPayInstruction>() {
+class GetHowToPayInstructionsMapper @Inject constructor() : UseCase<HowToPayData>() {
 
     fun getHowToPayInstruction(
         htpResponse: HowToPayGqlResponse,
-        onSuccess: (HowToPayInstruction) -> Unit,
+        onSuccess: (HowToPayData) -> Unit,
         onFail: (Throwable) -> Unit
     ) {
         useCaseRequestParams = RequestParams().apply {
@@ -20,14 +20,13 @@ class GetHowToPayInstructionsMapper @Inject constructor() : UseCase<HowToPayInst
         this.execute(onSuccess, onFail, useCaseRequestParams)
     }
 
-    override suspend fun executeOnBackground(): HowToPayInstruction {
+    override suspend fun executeOnBackground(): HowToPayData {
         val htpResponse: HowToPayGqlResponse = useCaseRequestParams
             .getObject(KEY_HTP_RESPONSE) as HowToPayGqlResponse
         htpResponse.howToPayData.let { htpData ->
             val howToPayChannelData = getHowToPay(htpData.helpPageJSON)
             htpData.helpPageData = howToPayChannelData
-
-            return HowToPayInstruction(htpData)
+            return htpData
         }
     }
 
@@ -40,16 +39,7 @@ class GetHowToPayInstructionsMapper @Inject constructor() : UseCase<HowToPayInst
     }
 
     companion object {
-
         private const val KEY_HTP_RESPONSE = "key_htp_response"
-        private const val Key_AppLinkPaymentInfo = "key_applinkpaymentinfo"
-
-        const val KEY_VA = "VA"
-        const val KEY_SYARIAH = "SYARIAH"
-        const val KEY_TRANSFER = "TRANSFER"
-        const val KEY_STORE = "STORE"
-        const val KEY_KLIKBCA = "KLIKBCA"
-
     }
 }
 

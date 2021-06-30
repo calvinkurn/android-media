@@ -14,19 +14,15 @@ class GetGqlHowToPayInstructions @Inject constructor(
 ) : GraphqlUseCase<HowToPayGqlResponse>(graphqlRepository) {
 
     fun getGqlHowToPayInstruction(
-        transactionId: String?,
-        merchantCode: String?,
         onSuccess: (HowToPayGqlResponse) -> Unit,
-        onFail: (Throwable) -> Unit
+        onFail: (Throwable) -> Unit,
+        appLinkPaymentInfo: AppLinkPaymentInfo
     ) {
         try {
             this.setGraphqlQuery(HowToPay.GQL_QUERY)
             this.setTypeClass(HowToPayGqlResponse::class.java)
             this.setRequestParams(
-                getRequestParams(
-                    "appLinkPaymentInfo.transaction_id",
-                    "appLinkPaymentInfo.payment_code"
-                )
+                getRequestParams(appLinkPaymentInfo)
             )
             this.execute(
                 { result ->
@@ -40,9 +36,9 @@ class GetGqlHowToPayInstructions @Inject constructor(
         }
     }
 
-    private fun getRequestParams(transactionId: String, merchantCode: String): Map<String, Any?> {
-        var t = "11908463"
-        var m = "tokopedia"
+    private fun getRequestParams(appLinkPaymentInfo: AppLinkPaymentInfo): Map<String, Any?> {
+        var t = appLinkPaymentInfo.transactionId
+        var m = appLinkPaymentInfo.merchantCode
         return mapOf(TRANSACTION_ID to t, MERCHANT_CODE to m)
     }
 

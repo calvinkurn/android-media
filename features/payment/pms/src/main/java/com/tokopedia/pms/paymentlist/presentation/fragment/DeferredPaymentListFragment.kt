@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -195,7 +196,9 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     private fun redirectToHowToPay(model: BasePaymentModel) {
         sendEventToAnalytics(PmsEvents.HowToPayRedirectionEvent(15))
-        RouteManager.route(context, model.howtoPayAppLink)
+        val codePair = model.extractValues()
+        RouteManager.route(context, ApplinkConstInternalPayment.INTERNAL_HOW_TO_PAY +
+                "?transaction_id=${codePair.first}&merchant_code=${codePair.second}")
     }
 
     private fun checkAndOpenInvoiceDetail(model: BasePaymentModel) {

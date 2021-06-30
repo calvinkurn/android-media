@@ -26,8 +26,6 @@ class AppLinkPaymentUseCase @Inject constructor() : UseCase<AppLinkPaymentInfo>(
             for (key in keys)
                 json.put(key, bundle.getString(key, ""))
             val appLinkPaymentInfo: AppLinkPaymentInfo = Gson().fromJson(json.toString(), AppLinkPaymentInfo::class.java)
-            if (appLinkPaymentInfo.bank_code.isNullOrBlank())
-                appLinkPaymentInfo.bank_code = null
             return appLinkPaymentInfo
         } catch (e: Exception) {
             throw InvalidAppLinkException()

@@ -26,7 +26,6 @@ import com.tokopedia.pms.R
 import com.tokopedia.pms.howtopay_native.analytics.HowToPayAnalytics
 import com.tokopedia.pms.howtopay_native.data.model.AppLinkPaymentInfo
 import com.tokopedia.pms.howtopay_native.data.model.HowToPayData
-import com.tokopedia.pms.howtopay_native.data.model.HowToPayInstruction
 import com.tokopedia.pms.howtopay_native.data.model.HtpPaymentChannel
 import com.tokopedia.pms.howtopay_native.ui.adapter.InstructionAdapter
 import com.tokopedia.pms.howtopay_native.ui.adapter.MultiChannelAdapter
@@ -45,12 +44,6 @@ import javax.inject.Inject
 
 class HowToPayFragment : BaseDaggerFragment() {
 
-    private lateinit var appLinkPaymentInfo: AppLinkPaymentInfo
-    private val HIGHLIGHT_DIGIT_COUNT = 3
-
-    private val TIMBER_CHAR_MAX_LIMIT = 1000
-
-
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
@@ -60,6 +53,10 @@ class HowToPayFragment : BaseDaggerFragment() {
     @Inject
     lateinit var howToPayAnalytics: dagger.Lazy<HowToPayAnalytics>
 
+    private lateinit var appLinkPaymentInfo: AppLinkPaymentInfo
+    private val HIGHLIGHT_DIGIT_COUNT = 3
+    private val TIMBER_CHAR_MAX_LIMIT = 1000
+
     private val screenshotHelper: ScreenshotHelper by lazy(LazyThreadSafetyMode.NONE) {
         ScreenshotHelper { showToast(getString(R.string.pms_hwp_screenshot_success)) }
     }
@@ -68,13 +65,9 @@ class HowToPayFragment : BaseDaggerFragment() {
         ViewModelProvider(this, viewModelFactory.get()).get(HowToPayViewModel::class.java)
     }
 
-    override fun getScreenName(): String {
-        return ""
-    }
-
-    override fun initInjector() {
+    override fun getScreenName() = ""
+    override fun initInjector() =
         getComponent(PmsComponent::class.java).inject(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,9 +89,7 @@ class HowToPayFragment : BaseDaggerFragment() {
         arguments?.let {
             observeLiveData()
             loaderViewHowToPay.visible()
-            howToPayViewModel.getGqlHtpInstructions()
-
-            //howToPayViewModel.getAppLinkPaymentInfoData(it)
+            howToPayViewModel.getAppLinkPaymentInfoData(it)
         }
     }
 
@@ -132,8 +123,7 @@ class HowToPayFragment : BaseDaggerFragment() {
 
     private fun onAppLinkPaymentInfoLoaded(appLinkPaymentInfo: AppLinkPaymentInfo) {
         this.appLinkPaymentInfo = appLinkPaymentInfo
-        howToPayAnalytics.get().eventOnScreenOpen(appLinkPaymentInfo.payment_type)
-        //howToPayViewModel.getGqlHtpInstructions(appLinkPaymentInfo)
+        howToPayViewModel.getGqlHtpInstructions(appLinkPaymentInfo)
     }
 
     private fun onInstructionLoadingFailed() {
@@ -149,11 +139,12 @@ class HowToPayFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun onInstructionLoaded(data: HowToPayInstruction) {
+    private fun onInstructionLoaded(data: HowToPayData) {
         loaderViewHowToPay.gone()
         scrollViewHowToPay.visible()
-        setHeaderData(data.htpData)
-        data.htpData.helpPageData?.channelList?.let { channelList ->
+        howToPayAnalytics.get().eventOnScreenOpen(data.gatewayCode)
+        setHeaderData(data)
+        data.helpPageData?.channelList?.let { channelList ->
             if (channelList.size > 1) {
                 addMultipleChannelAdapter(channelList)
             } else {
@@ -198,7 +189,7 @@ class HowToPayFragment : BaseDaggerFragment() {
                     getString(R.string.pms_hwp_copy),
                     IconUnify.COPY
                 ) {
-                    copyTOClipBoard(context, data.transactionCode ?: "")
+                    copyTOClipBoard(context, data.transactionCode ?: "", data.gatewayCode ?: "")
                     showToast(getString(R.string.pms_hwp_common_copy_success, data.paymentCodeHint))
                 }
             }
@@ -242,7 +233,7 @@ class HowToPayFragment : BaseDaggerFragment() {
             getString(R.string.pms_hwp_copy),
             IconUnify.COPY
         ) {
-            copyTOClipBoard(context, data.transactionCode ?: "")
+            copyTOClipBoard(context, data.transactionCode ?: "", data.gatewayCode ?: "")
             showToast(getString(R.string.pms_hwp_common_copy_success, data.paymentCodeHint))
         }
     }
@@ -254,7 +245,7 @@ class HowToPayFragment : BaseDaggerFragment() {
             getString(R.string.pms_hwp_screenshot),
             IconUnify.DOWNLOAD
         ) {
-            takeScreenShot()
+            takeScreenShot(data.gatewayCode ?: "")
         }
         tvStorePaymentNote.visible()
         context?.let {
@@ -264,9 +255,9 @@ class HowToPayFragment : BaseDaggerFragment() {
     }
 
 
-    private fun takeScreenShot() {
+    private fun takeScreenShot(gatewayCode: String) {
         if (::appLinkPaymentInfo.isInitialized)
-            howToPayAnalytics.get().eventOnScreenShotClick(appLinkPaymentInfo.payment_type)
+            howToPayAnalytics.get().eventOnScreenShotClick(gatewayCode)
         screenshotHelper.takeScreenShot(view, this)
     }
 
@@ -293,11 +284,19 @@ class HowToPayFragment : BaseDaggerFragment() {
             tvPaymentAmountAction.text = getString(R.string.pms_hwp_copy)
             ivAmountAction.setImage(IconUnify.COPY)
             tvPaymentAmountAction.setOnClickListener {
-                copyTOClipBoard(context, displayAmount?.toString() ?: "")
+                copyTOClipBoard(
+                    context,
+                    displayAmount?.toString() ?: "",
+                    howToPayData.gatewayCode ?: ""
+                )
                 showToast(getString(R.string.pms_hwp_amount_copy_success))
             }
             ivAmountAction.setOnClickListener {
-                copyTOClipBoard(context, displayAmount?.toString() ?: "")
+                copyTOClipBoard(
+                    context,
+                    displayAmount?.toString() ?: "",
+                    howToPayData.gatewayCode ?: ""
+                )
                 showToast(getString(R.string.pms_hwp_amount_copy_success))
             }
         } else {
@@ -367,7 +366,7 @@ class HowToPayFragment : BaseDaggerFragment() {
         return SpannableStringBuilder.valueOf(storeNote).append(" ").append(spannableString)
     }
 
-    private fun copyTOClipBoard(context: Context?, dataStr: String) {
+    private fun copyTOClipBoard(context: Context?, dataStr: String, gatewayCode: String) {
         context?.let {
             try {
                 val extraSpaceRegexStr = "\\s+".toRegex()
@@ -381,7 +380,7 @@ class HowToPayFragment : BaseDaggerFragment() {
             } catch (e: Exception) {
             }
             if (::appLinkPaymentInfo.isInitialized)
-                howToPayAnalytics.get().eventOnCopyCodeClick(appLinkPaymentInfo.payment_type)
+                howToPayAnalytics.get().eventOnCopyCodeClick(gatewayCode)
         }
     }
 
