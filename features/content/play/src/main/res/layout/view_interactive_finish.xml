@@ -2,6 +2,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/play_interactive_finish_width"
     android:layout_height="@dimen/play_interactive_finish_height"
     android:background="@drawable/bg_play_interactive"
@@ -14,22 +15,22 @@
         app:srcCompat="@drawable/bg_play_interactive_decor"
         />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/ic_play_interactive_confetti_small"
-        />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_interactive_finish_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Game Selesai!"
         android:textColor="@color/Unify_Static_White"
         app:typographyType="body_3"
         app:typographyWeight="bold"
+        tools:text="Game Selesai"
+        />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/ic_play_interactive_confetti_small"
         />
 
 </FrameLayout>
