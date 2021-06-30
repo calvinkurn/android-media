@@ -290,5 +290,4 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
             return com.tokopedia.unifyprinciples.R.color.Unify_N700_96
         }
     }
-
 }
