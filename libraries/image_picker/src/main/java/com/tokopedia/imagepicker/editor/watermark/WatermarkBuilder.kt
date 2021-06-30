@@ -138,7 +138,7 @@ open class WatermarkBuilder {
 
         @JvmStatic
         fun createWithSize(context: Context): WatermarkBuilder {
-            val bitmap = createBitmap(2300, 2300, ARGB_8888)
+            val bitmap = createBitmap(2000, 2000, ARGB_8888)
             return WatermarkBuilder(context, bitmap)
         }
 
