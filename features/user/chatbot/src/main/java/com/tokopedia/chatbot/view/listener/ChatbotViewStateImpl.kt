@@ -78,6 +78,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         rvQuickReply.adapter = quickReplyAdapter
 
         super.initView()
+        (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = true
     }
 
     private fun getQuickReplyList(): List<QuickReplyViewModel> {
@@ -100,10 +101,18 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         checkShowQuickReply(chatroomViewModel)
     }
 
+    override fun OnConnectWebSocket() {
+        showReplyBox(true)
+    }
+
     override fun loadAvatar(avatarUrl: String) {
         val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
         ImageHandler.loadImageCircle2(avatar.context, avatar, avatarUrl,
                 R.drawable.chatbot_avatar)
+    }
+
+    override fun clearChatOnLoadChatHistory() {
+        adapter.data.clear()
     }
 
     private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {

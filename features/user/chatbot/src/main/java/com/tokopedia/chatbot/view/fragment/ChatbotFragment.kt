@@ -17,6 +17,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -155,6 +156,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var invoiceRefNum = ""
     private var replyText = ""
     private var isStickyButtonClicked = false
+    private var isChatRefreshed = false
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -312,12 +314,26 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
         super.onViewCreated(view, savedInstanceState)
         viewState.initView()
-        loadInitialData()
+        presenter.checkForSession(messageId)
         showTicker()
 
         if (savedInstanceState != null)
             this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
 
+    }
+
+    override fun isLoadMoreEnabledByDefault(): Boolean {
+        return false
+    }
+
+    override fun loadChatHistory() {
+        loadInitialData()
+        presenter.connectWebSocket(messageId)
+    }
+
+    override fun startNewSession() {
+        presenter.connectWebSocket(messageId)
+        getViewState().OnConnectWebSocket()
     }
 
     override fun onCreateViewState(view: View): BaseChatViewState {
@@ -400,6 +416,24 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
+    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
+        return view?.findViewById(R.id.swipe_refresh_layout)
+    }
+
+    override fun onSwipeRefresh() {
+        if (!isChatRefreshed){
+            hideSnackBarRetry()
+            loadInitialData()
+            swipeToRefresh.isRefreshing = true
+            isChatRefreshed = true
+        } else{
+            swipeToRefresh.isRefreshing = false
+            swipeToRefresh.isEnabled = false
+            swipeToRefresh.setOnRefreshListener(null)
+        }
+
+    }
+
     override fun getSwipeRefreshLayoutResourceId() = 0
 
     override fun getRecyclerViewResourceId(): Int {
@@ -407,14 +441,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun loadInitialData() {
+        getViewState().clearChatOnLoadChatHistory()
         showLoading()
         presenter.getExistingChat(messageId, onError(), onSuccessGetExistingChatFirstTime(), onGetChatRatingListMessageError)
-        presenter.connectWebSocket(messageId)
     }
 
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel) -> Unit {
         return {
-
             val list = it.listChat.filter {
                 !((it is FallbackAttachmentViewModel && it.message.isEmpty()) ||
                         (it is MessageViewModel && it.message.isEmpty()))
@@ -424,6 +457,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             renderList(list, it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it)
             checkShowLoading(it.canLoadMore)
+            enableLoadMore()
         }
     }
 
@@ -817,9 +851,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view)?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 showLoading()
-                if (page != FIRST_PAGE) {
-                    loadData(page)
-                }
+                loadData(page + FIRST_PAGE)
             }
         }
     }
