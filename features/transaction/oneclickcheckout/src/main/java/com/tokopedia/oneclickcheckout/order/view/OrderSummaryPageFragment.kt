@@ -45,7 +45,6 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
@@ -365,6 +364,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         viewModel.orderPayment.observe(viewLifecycleOwner) {
+            if (shouldShowToaster) showToasterSuccess()
             newOrderPreferenceCard.setPayment(it)
         }
 
@@ -621,8 +621,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         } else {
             newOnboardingCard?.gone()
         }
-
-        if (shouldShowToaster) showToasterSuccess()
     }
 
     private fun showPreferenceTicker(preference: OrderPreference) {
@@ -1292,10 +1290,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun showToasterSuccess() {
-        view?.let {
-            it.post {
-                Toaster.build(it, viewModel.getActivationData().successToaster,
-                    actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+        shouldShowToaster = false
+        if (viewModel.orderPreference.value is OccState.FirstLoad) {
+            view?.let {
+                it.post {
+                    Toaster.build(it, viewModel.getActivationData().successToaster,
+                            actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+                }
             }
         }
     }
