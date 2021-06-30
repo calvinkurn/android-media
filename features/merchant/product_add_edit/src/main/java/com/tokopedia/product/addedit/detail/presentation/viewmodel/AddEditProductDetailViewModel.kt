@@ -43,6 +43,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -68,6 +69,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     var isReloadingShowCase = false
     var isFirstMoved = false
     var shouldUpdateVariant = false
+    var usingNewProductTitleRequest = false
 
     var productInputModel = ProductInputModel()
     val hasVariants get() = productInputModel.variantInputModel.selections.isNotEmpty()
@@ -78,7 +80,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     var productShowCases: MutableList<ShowcaseItemPicker> = mutableListOf()
 
     var isAddingWholeSale = false
-
     var isAddingValidationWholeSale = false
 
     private var isMultiLocationShop = false
@@ -264,17 +265,26 @@ class AddEditProductDetailViewModel @Inject constructor(
             productNameTips?.let { productNameMessage = it }
             mIsProductNameInputError.value = false
 
-            if (productNameInput != productInputModel.detailInputModel.currentProductName) {
+            if (productNameInput.trim() != productInputModel.detailInputModel.currentProductName) {
                 // remote product name validation
                 launchCatchError(block = {
                     productNameValidationResult = withContext(dispatchers.io) {
-                        getProductTitleValidationUseCase.setParam(productNameInput)
-                        getProductTitleValidationUseCase.getDataModelOnBackground()
+                        if (usingNewProductTitleRequest) {
+                            getProductTitleValidationUseCase.setParam(productNameInput)
+                            getProductTitleValidationUseCase.getDataModelOnBackground()
+                        } else {
+                            validateProductUseCase.setParamsProductName(productNameInput)
+                            validateProductUseCase.getDataModelOnBackground()
+                        }
                     }
 
                     productNameMessage = when {
                         productNameValidationResult.isBlacklistKeyword -> {
-                            provider.getTitleValidationErrorBlacklisted()
+                            if (usingNewProductTitleRequest) {
+                                provider.getTitleValidationErrorBlacklisted()
+                            } else {
+                                productNameValidationResult.errorKeywords.joinToString("\n")
+                            }
                         }
                         productNameValidationResult.isTypoDetected -> {
                             provider.getTitleValidationErrorTypo()

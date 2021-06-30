@@ -108,6 +108,8 @@ object ProductDetailConstant {
     const val MVC = "mvc"
     const val MINI_SHOP_WIDGET = "mini_shop_widget"
 
+    const val BEST_SELLER = "best_seller"
+    const val ONE_LINERS = "one_liners"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"

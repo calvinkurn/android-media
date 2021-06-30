@@ -13,7 +13,9 @@ data class KeroPlacesGetDistrict(
         @SerializedName("message_error")
         var messageError: List<String> = listOf(),
         @SerializedName("status")
-        var status: String = ""
+        var status: String = "",
+        @SerializedName("error_code")
+        var errorCode: Int = 0
 )
 
 data class Data(
