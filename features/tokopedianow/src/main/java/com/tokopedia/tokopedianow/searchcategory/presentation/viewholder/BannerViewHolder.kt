@@ -157,6 +157,7 @@ class BannerViewHolder(
         val adapter = BannerChannelAdapter(list, this)
         rvBanner.adapter = adapter
         adapter.setItemList(list)
+        adapter.setImageRatio(imageRatio)
     }
 
     private fun setScrollListener() {
@@ -217,5 +218,7 @@ class BannerViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_search_category_banner
+
+        private const val imageRatio = "H,4:1"
     }
 }
