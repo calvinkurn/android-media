@@ -10,6 +10,10 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.gallery.R
 import com.tokopedia.gallery.customview.RatingView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 
 class ImageSliderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -23,8 +27,11 @@ class ImageSliderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     private val name: TextView = itemView.findViewById(R.id.review_image_slider_name)
     private val reviewContainer: View = itemView.findViewById(R.id.review_image_slider_container)
     private val rating: ImageView = itemView.findViewById(R.id.review_image_slider_rating)
+    private val seeAllContainer: View = itemView.findViewById(R.id.review_image_slider_item_see_all_container)
+    private val seeAllText: Typography = itemView.findViewById(R.id.review_image_slider_item_image_count)
+    private val seeAllButton: UnifyButton = itemView.findViewById(R.id.review_image_slider_item_see_all_button)
 
-    fun bind(item: ImageReviewItem) {
+    fun bind(item: ImageReviewItem, isLastIndex: Boolean) {
         ImageHandler.LoadImage(imageView, item.imageUrlLarge)
 
         if (!TextUtils.isEmpty(item.reviewerName)) {
@@ -46,6 +53,16 @@ class ImageSliderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
             rating.visibility = View.VISIBLE
         } else {
             rating.visibility = View.GONE
+        }
+
+        if(isLastIndex) {
+            seeAllButton.setOnClickListener {
+
+            }
+            seeAllText.text = itemView.context.getString(R.string.review_image_slider_count, item.imageCount ?: "")
+            seeAllContainer.show()
+        } else {
+            seeAllContainer.hide()
         }
     }
 }

@@ -19,7 +19,7 @@ class SliderAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ImageSliderViewHolder) {
-            holder.bind(imageReviewItemList[position])
+            holder.bind(imageReviewItemList[position], position == imageReviewItemList.lastIndex)
         }
     }
 

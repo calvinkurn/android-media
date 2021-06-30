@@ -33,7 +33,7 @@ class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_review_gallery, container, false)
+        return inflater.inflate(R.layout.fragment_review_gallery_pdp, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

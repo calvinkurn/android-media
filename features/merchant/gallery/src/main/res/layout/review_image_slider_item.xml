@@ -1,34 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="@color/Unify_Static_Black">
+    android:background="@color/Unify_Static_Black"
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/review_image_slider_item_image_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:contentDescription="@null"
         android:layout_marginTop="@dimen/review_image_slider_item_image_view_vertical_spacing"
-        android:layout_marginBottom="@dimen/review_image_slider_item_image_view_vertical_spacing"/>
+        android:layout_marginBottom="@dimen/review_image_slider_item_image_view_vertical_spacing"
+        android:contentDescription="@null"
+        app:layout_constraintBottom_toBottomOf="@id/review_image_slider_rating_and_date_container"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/review_image_slider_item_see_all_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        android:background="@color/Neutral_N700_68"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/review_image_slider_item_image_view"
+        app:layout_constraintTop_toTopOf="@id/review_image_slider_item_image_view">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/review_image_slider_item_image_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Unify_Static_White"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/review_image_slider_item_see_all_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_12"
+                android:text="@string/review_image_slider_see_all_images"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/review_image_slider_item_image_count"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:unifyButtonInvers="true"
+                app:unifyButtonSize="medium"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="ghost" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/review_image_slider_rating_and_date_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginStart="@dimen/dp_17"
-        android:gravity="center_vertical">
+        android:layout_marginBottom="@dimen/dp_2"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/review_image_slider_container">
 
         <ImageView
             android:id="@+id/review_image_slider_rating"
             android:layout_width="@dimen/review_image_slider_rating_width"
             android:layout_height="@dimen/review_image_slider_rating_height"
             android:contentDescription="@null"
-            tools:src="@drawable/ic_gold_star_five"/>
+            tools:src="@drawable/ic_gold_star_five" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/review_image_slider_date"
@@ -43,11 +90,11 @@
         android:id="@+id/review_image_slider_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/dp_2"
-        android:layout_marginBottom="@dimen/dp_24"
         android:layout_marginStart="@dimen/dp_17"
-        android:gravity="center_vertical">
+        android:layout_marginBottom="@dimen/dp_24"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tokopedia.unifyprinciples.Typography
             style="@style/TextView.Micro.WhitePrimary"
@@ -64,4 +111,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
