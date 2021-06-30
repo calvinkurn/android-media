@@ -26,10 +26,12 @@ class ProductRecomWidgetViewHolder (
     companion object {
         val LAYOUT = R.layout.item_dynamic_widget_recom
     }
+    private var productRecom: ProductRecomWidgetDataModel? = null
 
     private lateinit var componentTrackDataModel: ComponentTrackDataModel
 
     override fun bind(element: ProductRecomWidgetDataModel) {
+        productRecom = element
         val recomWidget : RecommendationCarouselWidgetView = itemView.findViewById(R.id.widget_recom)
         itemView.visible()
         if (element.recomWidgetData == null || element.recomWidgetData?.recommendationItemList?.isEmpty() == true) {
@@ -96,6 +98,10 @@ class ProductRecomWidgetViewHolder (
 
     override fun onRecomBannerClicked(data: RecommendationCarouselData, applink: String, adapterPosition: Int) {
         listener.goToApplink(applink)
+    }
+
+    override fun onChannelWidgetEmpty() {
+        listener.onChannelRecommendationEmpty(adapterPosition, productRecom?.recomWidgetData)
     }
 
     private fun getComponentTrackData(element: ProductRecomWidgetDataModel?) = ComponentTrackDataModel(element?.type

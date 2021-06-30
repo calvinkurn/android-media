@@ -137,22 +137,25 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         }
         val productDataList = carouselData.recommendationData.recommendationItemList.toRecomCarouselItems(listener = this)
         cardList.addAll(productDataList)
-        if (carouselData.recommendationData.seeMoreAppLink.isNotEmpty()) {
-            cardList.add(RecomCarouselSeeMoreDataModel(carouselData.recommendationData.seeMoreAppLink))
-        }
-        adapter = RecommendationCarouselAdapter(cardList, typeFactory)
-
-        layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = adapter
-
-        launch {
-            try {
-                recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
+        if (cardList.size != 0) {
+            if (carouselData.recommendationData.seeMoreAppLink.isNotEmpty()) {
+                cardList.add(RecomCarouselSeeMoreDataModel(carouselData.recommendationData.seeMoreAppLink))
             }
-            catch (throwable: Throwable) {
-                throwable.printStackTrace()
+            adapter = RecommendationCarouselAdapter(cardList, typeFactory)
+
+            layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+            recyclerView.layoutManager = layoutManager
+            recyclerView.adapter = adapter
+
+            launch {
+                try {
+                    recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map { it.productModel })
+                } catch (throwable: Throwable) {
+                    throwable.printStackTrace()
+                }
             }
+        } else {
+            widgetListener?.onChannelWidgetEmpty()
         }
     }
 

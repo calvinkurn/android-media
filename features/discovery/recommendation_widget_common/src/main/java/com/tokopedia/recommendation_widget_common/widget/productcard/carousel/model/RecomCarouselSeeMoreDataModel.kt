@@ -12,7 +12,7 @@ import com.tokopedia.recommendation_widget_common.widget.productcard.common.Reco
  * Created by yfsx on 5/3/21.
  */
 data class RecomCarouselSeeMoreDataModel(
-        val applink: String,
+        val applink: String = "",
         val backgroundImage: String = "",
         val componentName: String = "",
         val listener: RecomCommonProductCardListener? = null

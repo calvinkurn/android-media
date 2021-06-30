@@ -524,6 +524,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
+    fun removeEmptyRecommendation(data: RecommendationWidget) {
+        removeComponent(data.pageName)
+    }
+
     fun updateComparisonDataModel(data: RecommendationWidget) {
         val recomModel = mapOfData[data.pageName] as? PdpComparisonWidgetDataModel
         if (recomModel != null) {
