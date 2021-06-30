@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.FragmentConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
@@ -835,7 +836,17 @@ class NewShopPageFragment :
 //            initViews(view)
             initToolbar()
             val navHostFragment = childFragmentManager.findFragmentById(R.id.df_host_fragment) as NavHostFragment
-            val navController = navHostFragment.navController
+            val fragTrans = childFragmentManager.beginTransaction()
+            val frag = RouteManager.instantiateFragment(activity as AppCompatActivity, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, intentData.getExtras())
+//            fragTrans.add(R.id.df_host_fragment, RouteManager.instantiateFragment(
+//                    activity as AppCompatActivity,
+//                    "com.example.test_fragment_df.TestDfFragment",
+//                    intentData.extras
+//            ))
+            fragTrans.add(R.id.df_host_fragment, frag)
+            fragTrans.commit()
+//            navHostFragment.navController.navigate()
+//            val navController = navHostFragment.navController
 //            navController.navigate(R.id.test_fragment_df_graph)
         }
     }

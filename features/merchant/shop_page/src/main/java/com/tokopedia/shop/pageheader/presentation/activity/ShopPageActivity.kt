@@ -8,6 +8,7 @@ import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
@@ -17,6 +18,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.FragmentConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.config.GlobalConfig
@@ -72,6 +74,15 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
         checkIfAppLinkToShopInfo()
         checkIfApplinkRedirectedForMigration()
         super.onCreate(savedInstanceState)
+        val fragTrans = supportFragmentManager.beginTransaction()
+        val frag = RouteManager.instantiateFragment(this, "com.example.test_fragment_df.TestDfFragment", intent.extras)
+//            fragTrans.add(R.id.df_host_fragment, RouteManager.instantiateFragment(
+//                    activity as AppCompatActivity,
+//                    "com.example.test_fragment_df.TestDfFragment",
+//                    intentData.extras
+//            ))
+        fragTrans.add(R.id.parent_view, frag)
+        fragTrans.commit()
 //        val navHostFragment = supportFragmentManager.findFragmentById(R.id.df_host_fragment) as NavHostFragment
 //        val navController = navHostFragment.navController
 //        navController.navigate(R.id.test_fragment_df_graph)
@@ -82,10 +93,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
     }
 
     override fun getNewFragment(): Fragment? {
-        return if(ShopUtil.isUsingNewShopPageHeader(this))
-            NewShopPageFragment.createInstance()
-        else
-            ShopPageFragment.createInstance()
+//        return if(ShopUtil.isUsingNewShopPageHeader(this))
+//            NewShopPageFragment.createInstance()
+//        else
+//            ShopPageFragment.createInstance()
+        return null
     }
 
     override fun getComponent(): ShopComponent = ShopComponentHelper().getComponent(application, this)
