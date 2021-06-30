@@ -171,7 +171,8 @@
         android:layout_height="@dimen/play_interactive_winner_badge_height"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        app:layout_constraintBottom_toTopOf="@id/view_interactive_prestart"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/view_interactive_finish"
         app:layout_constraintStart_toStartOf="@id/view_size"
         />
 

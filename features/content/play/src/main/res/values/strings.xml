@@ -67,4 +67,6 @@
 
     <string name="play_interactive_tap_action_text">Tap terus!</string>
 
+    <string name="play_interactive_winner_badge_text">Pemenang</string>
+
 </resources>

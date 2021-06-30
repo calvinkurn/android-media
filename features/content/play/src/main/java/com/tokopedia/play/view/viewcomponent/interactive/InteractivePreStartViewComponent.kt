@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.viewcomponent.interactive
 
+import android.os.CountDownTimer
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -32,7 +33,10 @@ class InteractivePreStartViewComponent(
         tvInteractiveTitle.text = title
     }
 
-    fun setTimer(durationInMs: Long, onFinished: () -> Unit) {
+    fun setTimer(
+            durationInMs: Long,
+            onFinished: () -> Unit
+    ) {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MILLISECOND, durationInMs.toInt())
 

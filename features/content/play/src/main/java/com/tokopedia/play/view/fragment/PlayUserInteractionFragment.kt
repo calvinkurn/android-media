@@ -58,9 +58,10 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.action.InteractiveLiveFinishedAction
+import com.tokopedia.play.view.uimodel.action.InteractiveOngoingFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
-import com.tokopedia.play.view.uimodel.interactive.PlayInteractiveTimeStatus
+import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
+import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
@@ -112,7 +113,8 @@ class PlayUserInteractionFragment @Inject constructor(
         ProductFeaturedViewComponent.Listener,
         PinnedVoucherViewComponent.Listener,
         InteractivePreStartViewComponent.Listener,
-        InteractiveTapViewComponent.Listener
+        InteractiveTapViewComponent.Listener,
+        InteractiveWinnerBadgeViewComponent.Listener
 {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.main + job)
@@ -142,7 +144,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val interactivePreStartView by viewComponentOrNull { InteractivePreStartViewComponent(it, this) }
     private val interactiveTapView by viewComponentOrNull { InteractiveTapViewComponent(it, this) }
     private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishedViewComponent(it) }
-    private val interactiveWinnerBadgeView by viewComponentOrNull(isEagerInit = true) { InteractiveWinnerBadgeViewComponent(it) }
+    private val interactiveWinnerBadgeView by viewComponentOrNull(isEagerInit = true) { InteractiveWinnerBadgeViewComponent(it, this) }
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
@@ -446,6 +448,13 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     override fun onTapClicked(view: InteractiveTapViewComponent) {
         //TODO("TAP")
+    }
+
+    /**
+     * InteractiveWinnerBadge View Component Listener
+     */
+    override fun onBadgeClicked(view: InteractiveWinnerBadgeViewComponent) {
+        playViewModel.submitAction(InteractiveWinnerBadgeClickedAction)
     }
     //endregion
 
@@ -836,7 +845,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeUiState() {
         playViewModel.uiState.observe(viewLifecycleOwner) { state ->
-            if (state.interactive != null) interactiveViewOnStateChanged(state.interactive)
+            interactiveViewOnStateChanged(state.interactive)
+            interactiveWinnerBadgeOnStateChanged(state.showWinningBadge)
         }
     }
 
@@ -846,6 +856,10 @@ class PlayUserInteractionFragment @Inject constructor(
                 when (event) {
                     is ShowWinningDialogEvent -> {
                         getInteractiveWinningDialog().show(childFragmentManager)
+                    }
+                    is ShowCoachMarkWinnerEvent -> {
+                        if (interactiveWinnerBadgeView?.isHidden() == true) return@collect
+                        interactiveWinnerBadgeView?.showCoachMark(event.title, event.subtitle)
                     }
                 }
             }
@@ -1375,33 +1389,33 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun interactiveViewOnStateChanged(state: PlayInteractiveUiState) {
-        when (state.status) {
-            is PlayInteractiveTimeStatus.Scheduled -> {
+        when (state) {
+            is PlayInteractiveUiState.PreStart -> {
                 interactiveTapView?.hide()
                 interactiveFinishedView?.hide()
 
                 interactivePreStartView?.setTitle(state.title)
-                interactivePreStartView?.setTimer(state.status.liveTimeInMs) {
+                interactivePreStartView?.setTimer(state.timeToStartInMs) {
                     playViewModel.submitAction(InteractivePreStartFinishedAction)
                 }
                 interactivePreStartView?.show()
             }
-            is PlayInteractiveTimeStatus.Live -> {
+            is PlayInteractiveUiState.Ongoing -> {
                 interactivePreStartView?.hide()
                 interactiveFinishedView?.hide()
 
                 interactivePreStartView?.setTitle(state.title)
-                interactiveTapView?.setTimer(state.status.remainingTimeInMs) {
-                    playViewModel.submitAction(InteractiveLiveFinishedAction)
+                interactiveTapView?.setTimer(state.timeRemainingInMs) {
+                    playViewModel.submitAction(InteractiveOngoingFinishedAction)
                     doShowToaster(message = "Tap done")
                 }
                 interactiveTapView?.show()
             }
-            PlayInteractiveTimeStatus.Finished -> {
+            is PlayInteractiveUiState.Finished -> {
                 interactivePreStartView?.hide()
                 interactiveTapView?.hide()
 
-                interactiveFinishedView?.setInfo(state.title)
+                interactiveFinishedView?.setInfo(state.info)
                 interactiveFinishedView?.show()
             }
             else -> {
@@ -1410,6 +1424,11 @@ class PlayUserInteractionFragment @Inject constructor(
                 interactiveFinishedView?.hide()
             }
         }
+    }
+
+    private fun interactiveWinnerBadgeOnStateChanged(shouldShow: Boolean) {
+        if (shouldShow) interactiveWinnerBadgeView?.show()
+        else interactiveWinnerBadgeView?.hide()
     }
     //endregion
 

@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl3"
-        android:text="Pemenang"
+        android:text="@string/play_interactive_winner_badge_text"
         android:textColor="@color/Unify_Static_White"
         app:typographyType="body_3"
         />

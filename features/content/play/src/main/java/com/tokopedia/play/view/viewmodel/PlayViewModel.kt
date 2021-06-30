@@ -37,11 +37,13 @@ import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.domain.interactive.GetCurrentInteractiveUseCase
-import com.tokopedia.play.view.uimodel.action.InteractiveLiveFinishedAction
+import com.tokopedia.play.view.uimodel.action.InteractiveOngoingFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
+import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
+import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
@@ -518,40 +520,9 @@ class PlayViewModel @Inject constructor(
 
     fun submitAction(action: PlayViewerNewAction) {
         when (action) {
-            InteractivePreStartFinishedAction -> {
-                //TODO("mock")
-                viewModelScope.launch {
-                    setUiState {
-                        copy(interactive = interactive?.copy(status = PlayInteractiveTimeStatus.Live(15000)))
-                    }
-                }
-            }
-            InteractiveLiveFinishedAction -> {
-                //TODO("mock")
-                viewModelScope.launch {
-                    setUiState {
-                        copy(interactive = PlayInteractiveUiState(
-                                title = "Game selesai!",
-                                status = PlayInteractiveTimeStatus.Finished
-                        ))
-                    }
-
-                    delay(1500)
-
-                    setUiState {
-                        copy(interactive = PlayInteractiveUiState(
-                                title = "Memilih pemenang..",
-                                status = PlayInteractiveTimeStatus.Finished
-                        ))
-                    }
-
-                    delay(4000)
-
-                    _uiEvent.emit(
-                            ShowWinningDialogEvent("", "Selamat kamu pemenangnya", "Tunggu seller chat kamu untuk konfirmasi")
-                    )
-                }
-            }
+            InteractivePreStartFinishedAction -> handleInteractivePreStartFinished()
+            InteractiveOngoingFinishedAction -> handleInteractiveOngoingFinished()
+            InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked()
         }
     }
 
@@ -1007,25 +978,22 @@ class PlayViewModel @Inject constructor(
             getCurrentInteractiveUseCase.setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
             val response = getCurrentInteractiveUseCase.executeOnBackground()
             val interactive = playUiModelMapper.mapInteractive(response)
-            setUiState {
-                copy(
-                        interactive = PlayInteractiveUiState(
-                                title = interactive.title,
-                                status = interactive.timeStatus
-                        )
-                )
-            }
+//            setUiState {
+//                copy(
+//                        interactive = PlayInteractiveUiState(
+//                                title = interactive.title,
+//                                status = interactive.timeStatus
+//                        )
+//                )
+//            }
         }) {
             //TODO("This is mock")
-//            setUiState {
-//                copy(interactive = PlayInteractiveUiState(
-//                        title = "Giveaway Tesla",
-//                        status = PlayInteractiveTimeStatus.Scheduled(20000, 1)
-//                ))
-//            }
-//            _uiEvent.emit(
-//                    ShowWinningDialogEvent("", "Selamat kamu pemenangnya", "Tunggu seller chat kamu untuk konfirmasi")
-//            )
+            setUiState {
+                copy(interactive = PlayInteractiveUiState.PreStart(
+                        timeToStartInMs = 10000,
+                        "Giveaway Tesla"
+                ))
+            }
         }
     }
 
@@ -1148,6 +1116,60 @@ class PlayViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    /**
+     * Handle UI Action
+     */
+    private fun handleInteractivePreStartFinished() {
+        //TODO("mock")
+        viewModelScope.launch {
+            setUiState {
+                copy(interactive = PlayInteractiveUiState.Ongoing(
+                        5000,
+                        "Tap terus!"
+                ))
+            }
+        }
+    }
+
+    private fun handleInteractiveOngoingFinished() {
+        //TODO("mock")
+        viewModelScope.launch {
+            setUiState {
+                copy(interactive = PlayInteractiveUiState.Finished(
+                        info = "Game selesai!",
+                ))
+            }
+
+            delay(1500)
+
+            setUiState {
+                copy(interactive = PlayInteractiveUiState.Finished(
+                        info = "Memilih pemenang..",
+                ))
+            }
+
+            delay(2000)
+
+            _uiEvent.emit(
+                    ShowWinningDialogEvent("", "Selamat kamu pemenangnya", "Tunggu seller chat kamu untuk konfirmasi")
+            )
+
+            delay(1000)
+
+            setUiState {
+                copy(showWinningBadge = true)
+            }
+
+            _uiEvent.emit(
+                    ShowCoachMarkWinnerEvent("Pemenangnya Eggy!", "Coba ikut main lagi nanti, ya. Siapa tahu kamu yang menang.")
+            )
+        }
+    }
+
+    private fun handleWinnerBadgeClicked() {
+
     }
 
     companion object {
