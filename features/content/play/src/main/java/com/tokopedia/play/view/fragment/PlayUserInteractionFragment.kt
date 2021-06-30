@@ -1407,7 +1407,6 @@ class PlayUserInteractionFragment @Inject constructor(
                 interactivePreStartView?.setTitle(state.title)
                 interactiveTapView?.setTimer(state.timeRemainingInMs) {
                     playViewModel.submitAction(InteractiveOngoingFinishedAction)
-                    doShowToaster(message = "Tap done")
                 }
                 interactiveTapView?.show()
             }

@@ -2,12 +2,12 @@ package com.tokopedia.play.view.uimodel.mapper
 
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
+import com.tokopedia.play.data.dto.interactive.PlayInteractiveModel
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
-import com.tokopedia.play.view.uimodel.interactive.PlayInteractiveUiModel
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -198,7 +198,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         else PlayStatusType.Active
     }
 
-    private fun mapInteractiveInfo() = PlayInteractiveUiModel.Incomplete(
+    private fun mapInteractiveInfo() = PlayInteractiveModel.Incomplete(
             hasInteractive = true
     )
 

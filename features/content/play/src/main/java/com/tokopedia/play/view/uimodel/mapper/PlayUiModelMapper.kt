@@ -4,14 +4,11 @@ import com.tokopedia.play.data.ChannelStatusResponse
 import com.tokopedia.play.data.Product
 import com.tokopedia.play.data.ShopInfo
 import com.tokopedia.play.data.Voucher
+import com.tokopedia.play.data.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play.data.interactive.ChannelInteractive
-import com.tokopedia.play.data.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.interactive.PlayInteractiveTimeStatus
-import com.tokopedia.play.view.uimodel.interactive.InteractiveType
-import com.tokopedia.play.view.uimodel.interactive.PlayCurrentInteractiveUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -51,7 +48,7 @@ class PlayUiModelMapper @Inject constructor(
             isFollowed = input.favoriteData.alreadyFavorited == 1
     )
 
-    fun mapInteractive(input: ChannelInteractive): PlayCurrentInteractiveUiModel {
+    fun mapInteractive(input: ChannelInteractive): PlayCurrentInteractiveModel {
         return channelInteractiveMapper.mapInteractive(input)
     }
 }

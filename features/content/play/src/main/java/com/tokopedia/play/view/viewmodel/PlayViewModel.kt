@@ -36,17 +36,17 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.data.dto.interactive.PlayCurrentInteractiveModel
+import com.tokopedia.play.data.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play.data.interactive.ChannelInteractive
-import com.tokopedia.play.domain.interactive.GetCurrentInteractiveUseCase
+import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.view.uimodel.action.InteractiveOngoingFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
-import com.tokopedia.play.view.uimodel.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
-import com.tokopedia.play.view.uimodel.interactive.PlayCurrentInteractiveUiModel
 import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
@@ -79,7 +79,6 @@ class PlayViewModel @Inject constructor(
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
-        private val getCurrentInteractiveUseCase: GetCurrentInteractiveUseCase,
         private val playSocketToModelMapper: PlaySocketToModelMapper,
         private val playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
@@ -88,6 +87,7 @@ class PlayViewModel @Inject constructor(
         private val playPreference: PlayPreference,
         private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
         private val playChannelWebSocket: PlayChannelWebSocket,
+        private val interactiveRepo: PlayViewerInteractiveRepository
 ) : ViewModel() {
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
@@ -979,9 +979,7 @@ class PlayViewModel @Inject constructor(
     private fun checkInteractive(channelId: String) {
         if (!channelType.isLive) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
-            getCurrentInteractiveUseCase.setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
-            val response = getCurrentInteractiveUseCase.executeOnBackground()
-            val interactive = playUiModelMapper.mapInteractive(response.data.interactive)
+            val interactive = interactiveRepo.getCurrentInteractive(channelId)
             handleInteractiveFromNetwork(interactive)
         }) {
             setUiState {
@@ -990,7 +988,7 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun mapInteractiveToState(interactive: PlayCurrentInteractiveUiModel): PlayInteractiveUiState {
+    private fun mapInteractiveToState(interactive: PlayCurrentInteractiveModel): PlayInteractiveUiState {
         return when (val status = interactive.timeStatus) {
             is PlayInteractiveTimeStatus.Scheduled -> PlayInteractiveUiState.PreStart(status.liveTimeInMs, interactive.title)
             is PlayInteractiveTimeStatus.Live -> PlayInteractiveUiState.Ongoing(status.remainingTimeInMs, interactive.title)
@@ -998,7 +996,7 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleInteractiveFromNetwork(interactive: PlayCurrentInteractiveUiModel) {
+    private suspend fun handleInteractiveFromNetwork(interactive: PlayCurrentInteractiveModel) {
         val interactiveUiState = mapInteractiveToState(interactive)
         setUiState {
             copy(interactive = interactiveUiState)
@@ -1174,10 +1172,13 @@ class PlayViewModel @Inject constructor(
                     ShowWinningDialogEvent("", "Selamat kamu pemenangnya", "Tunggu seller chat kamu untuk konfirmasi")
             )
 
-            delay(1000)
+            delay(2000)
 
             setUiState {
-                copy(showWinningBadge = true)
+                copy(
+                        showWinningBadge = true,
+                        interactive = PlayInteractiveUiState.NoInteractive
+                )
             }
 
             _uiEvent.emit(
@@ -1187,7 +1188,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleWinnerBadgeClicked() {
-
+        //TODO("Show Leaderboard")
     }
 
     companion object {

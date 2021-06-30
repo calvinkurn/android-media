@@ -1,9 +1,9 @@
 package com.tokopedia.play.view.uimodel.mapper
 
+import com.tokopedia.play.data.dto.interactive.InteractiveType
+import com.tokopedia.play.data.dto.interactive.PlayCurrentInteractiveModel
+import com.tokopedia.play.data.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play.data.interactive.ChannelInteractive
-import com.tokopedia.play.view.uimodel.interactive.InteractiveType
-import com.tokopedia.play.view.uimodel.interactive.PlayCurrentInteractiveUiModel
-import com.tokopedia.play.view.uimodel.interactive.PlayInteractiveTimeStatus
 import javax.inject.Inject
 
 /**
@@ -11,7 +11,7 @@ import javax.inject.Inject
  */
 class PlayChannelInteractiveMapper @Inject constructor() {
 
-    fun mapInteractive(input: ChannelInteractive) = PlayCurrentInteractiveUiModel(
+    fun mapInteractive(input: ChannelInteractive) = PlayCurrentInteractiveModel(
             id = input.interactiveID,
             type = InteractiveType.getByValue(input.interactiveType),
             title = input.title,
