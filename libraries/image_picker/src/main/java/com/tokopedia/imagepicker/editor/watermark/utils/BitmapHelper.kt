@@ -212,7 +212,6 @@ object BitmapHelper {
     }
 
     private fun downscaleToMaxAllowedDimension(bitmap: Bitmap): Bitmap? {
-        val ratioThreshold: Int
         val outWidth: Int
         val outHeight: Int
 
@@ -220,18 +219,26 @@ object BitmapHelper {
         val inHeight = bitmap.height
 
         if (inWidth > inHeight) {
-            ratioThreshold = inWidth / 2
+            val ratioThreshold = inWidth.ratioThreesHold()
 
             outWidth = ratioThreshold
             outHeight = inHeight * ratioThreshold / inWidth
         } else {
-            ratioThreshold = inHeight / 2
+            val ratioThreshold = inHeight.ratioThreesHold()
 
             outHeight = ratioThreshold
             outWidth = inWidth * ratioThreshold / inHeight
         }
 
         return Bitmap.createScaledBitmap(bitmap, outWidth, outHeight, false)
+    }
+
+    private fun Int.ratioThreesHold(): Int {
+        return if (this <= 800) {
+            this / 6
+        } else {
+            this / 2
+        }
     }
 
     /**
