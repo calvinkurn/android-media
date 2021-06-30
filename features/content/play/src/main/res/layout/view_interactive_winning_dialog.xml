@@ -2,55 +2,69 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="@dimen/play_interactive_winning_dialog_width"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_play_interactive"
     >
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:scaleType="fitStart"
-        app:srcCompat="@drawable/bg_play_interactive_decor"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_play_interactive_confetti_big"
         />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/spacing_lvl4"
-        android:paddingEnd="@dimen/spacing_lvl4"
+    <FrameLayout
+        android:layout_width="@dimen/play_interactive_winning_dialog_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_play_interactive"
         >
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:layout_width="@dimen/layout_lvl4"
-            android:layout_height="@dimen/layout_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            />
-
-        <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:text="Selamat kamu pemenangnya!"
-            android:textAlignment="center"
-            android:textColor="@color/Unify_Static_White"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
+            android:layout_height="match_parent"
+            android:scaleType="fitStart"
+            app:srcCompat="@drawable/bg_play_interactive_decor"
             />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl2"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:text="Tunggu seller chat kamu untuk konfirmasi."
-            android:textAlignment="center"
-            android:textColor="@color/Unify_Static_White"
-            app:typographyType="body_3"
-            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/spacing_lvl4"
+            android:paddingEnd="@dimen/spacing_lvl4"
+            >
 
-    </LinearLayout>
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:layout_width="@dimen/layout_lvl4"
+                android:layout_height="@dimen/layout_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:text="Selamat kamu pemenangnya!"
+                android:textAlignment="center"
+                android:textColor="@color/Unify_Static_White"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:text="Tunggu seller chat kamu untuk konfirmasi."
+                android:textAlignment="center"
+                android:textColor="@color/Unify_Static_White"
+                app:typographyType="body_3"
+                />
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 </FrameLayout>

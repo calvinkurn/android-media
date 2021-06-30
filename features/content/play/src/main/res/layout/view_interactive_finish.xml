@@ -14,6 +14,13 @@
         app:srcCompat="@drawable/bg_play_interactive_decor"
         />
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/ic_play_interactive_confetti_small"
+        />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_interactive_finish_info"
         android:layout_width="wrap_content"

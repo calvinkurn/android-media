@@ -35,9 +35,8 @@ class InteractiveWinningDialogFragment : DialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        val context = this.context ?: return
         val params = dialog?.window?.attributes ?: return
-        params.width = context.resources.getDimensionPixelSize(R.dimen.play_interactive_winning_dialog_width)
+        params.width = ViewGroup.LayoutParams.WRAP_CONTENT
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT
         dialog?.window?.attributes = params
     }
