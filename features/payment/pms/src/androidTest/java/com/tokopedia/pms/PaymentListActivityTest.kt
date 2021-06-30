@@ -40,6 +40,7 @@ class PaymentListActivityTest {
     var cassavaTestRule = CassavaTestRule(false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
+    private val idlingRes = PmsIdlingResource.getIdlingResource()
 
     @Before
     fun setUp() {
@@ -51,7 +52,7 @@ class PaymentListActivityTest {
             )
         )
 
-        IdlingRegistry.getInstance().register(PmsIdlingResource.getIdlingResource())
+        IdlingRegistry.getInstance().register(idlingRes)
         login()
         setupGraphqlMockResponse {
             addMockResponse(
@@ -84,7 +85,7 @@ class PaymentListActivityTest {
     @After
     fun finish() {
         Intents.release()
-        IdlingRegistry.getInstance().unregister(PmsIdlingResource.getIdlingResource())
+        IdlingRegistry.getInstance().unregister(idlingRes)
     }
 
     @Test

@@ -40,7 +40,7 @@ class UploadPaymentProofActivityTest {
     var cassavaTestRule = CassavaTestRule(false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-
+    private val idlingResource = PmsIdlingResource.getIdlingResource()
     @Before
     fun setUp() {
         Intents.init()
@@ -50,14 +50,14 @@ class UploadPaymentProofActivityTest {
                 null
             )
         )
-        IdlingRegistry.getInstance().register(PmsIdlingResource.getIdlingResource())
+        IdlingRegistry.getInstance().register(idlingResource)
         login()
         launchActivity()
     }
 
     @After
     fun finish() {
-        IdlingRegistry.getInstance().unregister(PmsIdlingResource.getIdlingResource())
+        IdlingRegistry.getInstance().unregister(idlingResource)
     }
 
     private fun stubImagePicker() {
