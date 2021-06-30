@@ -2,7 +2,6 @@ package com.tokopedia.oneclickcheckout.order.domain.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.oneclickcheckout.common.WALLET_TYPE_GOPAY
 import com.tokopedia.oneclickcheckout.common.data.model.*
 import com.tokopedia.oneclickcheckout.order.data.get.*
 import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
@@ -194,11 +193,9 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapProfile(profileResponse: ProfileResponse): OrderProfile {
-        return OrderProfile(profileResponse.onboardingHeaderMessage, profileResponse.onboardingComponent, profileResponse.hasPreference,
-                profileResponse.profileRevampWording, profileResponse.isRecom,
-                profileResponse.profileId, profileResponse.status, profileResponse.enable,
-                profileResponse.message, mapAddress(profileResponse.address), mapPayment(profileResponse.payment),
-                mapShipment(profileResponse.shipment))
+        return OrderProfile(profileResponse.onboardingHeaderMessage, profileResponse.onboardingComponent,
+                profileResponse.profileId, profileResponse.enable, profileResponse.message,
+                mapAddress(profileResponse.address), mapPayment(profileResponse.payment), mapShipment(profileResponse.shipment))
     }
 
     private fun mapShipment(shipment: Shipment): OrderProfileShipment {

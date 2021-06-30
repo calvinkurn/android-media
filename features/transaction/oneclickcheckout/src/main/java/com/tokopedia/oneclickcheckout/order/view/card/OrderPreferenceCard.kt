@@ -17,23 +17,15 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
-import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
-import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
-import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheet
-import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheetListener
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.oneclickcheckout.R
-import com.tokopedia.oneclickcheckout.address.AddressListBottomSheet
 import com.tokopedia.oneclickcheckout.databinding.CardOrderPreferenceBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.oneclickcheckout.order.view.model.*
-import com.tokopedia.oneclickcheckout.payment.creditcard.installment.InstallmentDetailBottomSheet
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -638,42 +630,42 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         binding.tvAddressName.setMargin(if (isMainAddress) MAIN_ADDRESS_LEFT_MARGIN.dpToPx(displayMetrics) else NOT_MAIN_ADDRESS_LEFT_MARGIN.dpToPx(displayMetrics), ADDRESS_TOP_MARGIN.dpToPx(displayMetrics), ADDRESS_RIGHT_MARGIN, ADDRESS_BOTTOM_MARGIN)
     }
 
-    fun showAddressBottomSheet(fragment: OrderSummaryPageFragment, usecase: GetAddressCornerUseCase, addressState: Int) {
-        AddressListBottomSheet(usecase, object : AddressListBottomSheet.AddressListBottomSheetListener {
-            override fun onSelect(addressModel: RecipientAddressModel) {
-                listener.onAddressChange(addressModel)
-            }
+//    fun showAddressBottomSheet(fragment: OrderSummaryPageFragment, usecase: GetAddressCornerUseCase, addressState: Int) {
+//        AddressListBottomSheet(usecase, object : AddressListBottomSheet.AddressListBottomSheetListener {
+//            override fun onSelect(addressModel: RecipientAddressModel) {
+//                listener.onAddressChange(addressModel)
+//            }
+//
+//            override fun onAddAddress(token: Token?) {
+//                listener.onAddAddress(token)
+//            }
+//        }).show(fragment, preference.preference.address.addressId.toString(), addressState)
+//    }
 
-            override fun onAddAddress(token: Token?) {
-                listener.onAddAddress(token)
-            }
-        }).show(fragment, preference.preference.address.addressId.toString(), addressState)
-    }
-
-    fun showCourierBottomSheet(fragment: OrderSummaryPageFragment) {
-        val shippingRecommendationData = shipment?.shippingRecommendationData
-        if (shippingRecommendationData != null) {
-            val list: ArrayList<RatesViewModelType> = ArrayList()
-            for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
-                if (shippingDurationViewModel.isSelected) {
-                    if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
-                        list.add(NotifierModel())
-                    }
-                    list.addAll(shippingDurationViewModel.shippingCourierViewModelList)
-                    break
-                }
-            }
-            ShippingCourierOccBottomSheet().showBottomSheet(fragment, list, object : ShippingCourierOccBottomSheetListener {
-                override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
-                    listener.onCourierChange(shippingCourierViewModel)
-                }
-
-                override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
-                    listener.onLogisticPromoClick(data)
-                }
-            })
-        }
-    }
+//    fun showCourierBottomSheet(fragment: OrderSummaryPageFragment) {
+//        val shippingRecommendationData = shipment?.shippingRecommendationData
+//        if (shippingRecommendationData != null) {
+//            val list: ArrayList<RatesViewModelType> = ArrayList()
+//            for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
+//                if (shippingDurationViewModel.isSelected) {
+//                    if (shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
+//                        list.add(NotifierModel())
+//                    }
+//                    list.addAll(shippingDurationViewModel.shippingCourierViewModelList)
+//                    break
+//                }
+//            }
+//            ShippingCourierOccBottomSheet().showBottomSheet(fragment, list, object : ShippingCourierOccBottomSheetListener {
+//                override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
+//                    listener.onCourierChange(shippingCourierViewModel)
+//                }
+//
+//                override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
+//                    listener.onLogisticPromoClick(data)
+//                }
+//            })
+//        }
+//    }
 
     private fun isCourierInstantOrSameday(shipperId: Int): Boolean {
         val ids = CourierConstant.INSTANT_SAMEDAY_COURIER
@@ -683,38 +675,38 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         return false
     }
 
-    fun showDurationBottomSheet(fragment: OrderSummaryPageFragment) {
-        val shippingRecommendationData = shipment?.shippingRecommendationData
-        if (shippingRecommendationData != null) {
-            val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels)
-            if (shippingRecommendationData.logisticPromo != null) {
-                list.add(0, shippingRecommendationData.logisticPromo)
-                if (shippingRecommendationData.logisticPromo.disabled && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
-                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
-                }
-            }
-            ShippingDurationOccBottomSheet().showBottomSheet(fragment, list, object : ShippingDurationOccBottomSheetListener {
-                override fun onDurationChosen(serviceData: ServiceData, selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
-                    listener.onDurationChange(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
-                }
+//    fun showDurationBottomSheet(fragment: OrderSummaryPageFragment) {
+//        val shippingRecommendationData = shipment?.shippingRecommendationData
+//        if (shippingRecommendationData != null) {
+//            val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels)
+//            if (shippingRecommendationData.logisticPromo != null) {
+//                list.add(0, shippingRecommendationData.logisticPromo)
+//                if (shippingRecommendationData.logisticPromo.disabled && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+//                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+//                }
+//            }
+//            ShippingDurationOccBottomSheet().showBottomSheet(fragment, list, object : ShippingDurationOccBottomSheetListener {
+//                override fun onDurationChosen(serviceData: ServiceData, selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
+//                    listener.onDurationChange(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
+//                }
+//
+//                override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
+//                    listener.onLogisticPromoClick(data)
+//                }
+//            })
+//        }
+//    }
 
-                override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
-                    listener.onLogisticPromoClick(data)
-                }
-            })
-        }
-    }
-
-    fun showInstallmentDetailBottomSheet(fragment: OrderSummaryPageFragment) {
-        val creditCard = payment?.creditCard
-        if (creditCard != null && creditCard.availableTerms.isNotEmpty()) {
-            InstallmentDetailBottomSheet().show(fragment, creditCard, object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
-                    listener.onInstallmentDetailChange(installment)
-                }
-            })
-        }
-    }
+//    fun showInstallmentDetailBottomSheet(fragment: OrderSummaryPageFragment) {
+//        val creditCard = payment?.creditCard
+//        if (creditCard != null && creditCard.availableTerms.isNotEmpty()) {
+//            InstallmentDetailBottomSheet().show(fragment, creditCard, object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+//                override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
+//                    listener.onInstallmentDetailChange(installment)
+//                }
+//            })
+//        }
+//    }
 
     companion object {
         const val VIEW_TYPE = 4
