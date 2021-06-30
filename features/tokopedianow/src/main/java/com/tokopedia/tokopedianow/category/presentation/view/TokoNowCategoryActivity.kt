@@ -1,10 +1,8 @@
 package com.tokopedia.tokopedianow.category.presentation.view
 
 import android.net.Uri
-import android.os.Bundle
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.discovery.common.utils.URLParser
-import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.di.CategoryComponent
 import com.tokopedia.tokopedianow.category.di.CategoryContextModule
 import com.tokopedia.tokopedianow.category.di.CategoryParamModule
@@ -12,17 +10,6 @@ import com.tokopedia.tokopedianow.category.di.DaggerCategoryComponent
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryActivity
 
 class TokoNowCategoryActivity: BaseSearchCategoryActivity(), HasComponent<CategoryComponent> {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tokopedianow_search_category)
-
-        val fragment = TokoNowCategoryFragment.create()
-
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.parent_view, fragment)
-                .commit()
-    }
 
     override fun getComponent(): CategoryComponent {
         val uri = intent.data
@@ -37,6 +24,8 @@ class TokoNowCategoryActivity: BaseSearchCategoryActivity(), HasComponent<Catego
                 .categoryParamModule(CategoryParamModule(categoryL1, categoryL2, queryParamMap))
                 .build()
     }
+
+    override fun getFragment() = TokoNowCategoryFragment.create()
 
     private fun Uri?.getCategoryL1(): String =
             this?.getQueryParameter(PARAM_CATEGORY_L1) ?: ""
