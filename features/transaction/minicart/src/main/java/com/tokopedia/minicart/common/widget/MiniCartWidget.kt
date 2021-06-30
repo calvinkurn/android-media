@@ -441,7 +441,7 @@ class MiniCartWidget @JvmOverloads constructor(
 
     private fun validateTotalAmountView() {
         totalAmount?.context?.let { context ->
-            val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_GN500))
+            val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             totalAmount?.setAdditionalButton(chatIcon)
             totalAmount?.totalAmountAdditionalButton?.setOnClickListener {
                 analytics.eventClickChatOnMiniCart()
