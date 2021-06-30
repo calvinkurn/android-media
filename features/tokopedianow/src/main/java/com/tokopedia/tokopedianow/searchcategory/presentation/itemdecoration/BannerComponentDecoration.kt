@@ -14,6 +14,6 @@ class BannerComponentDecoration: RecyclerView.ItemDecoration() {
             outRect.left = view.context.resources.getDimensionPixelSize(R.dimen.banner_component_margin_default)
         }
 
-        outRect.right = view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+        outRect.right = view.context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
     }
 }
