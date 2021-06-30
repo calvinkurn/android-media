@@ -27,7 +27,8 @@ class OSMixTopComponentCallback (private val dcEventHandler: DynamicChannelEvent
                         channel.channelBanner.cta.couponCode
                 ),
                 channel.id,
-                channel.channelBanner.applink
+                channel.channelBanner.applink,
+                channel.channelBanner.attribution
         )
     }
 

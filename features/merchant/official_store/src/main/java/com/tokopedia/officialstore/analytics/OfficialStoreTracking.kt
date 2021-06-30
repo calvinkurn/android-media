@@ -40,6 +40,7 @@ class OfficialStoreTracking(context: Context) {
     private val EVENT_CATEGORY = "eventCategory"
     private val EVENT_ACTION = "eventAction"
     private val EVENT_LABEL = "eventLabel"
+    private val EVENT_ATTRIBUTION = "attribution"
 
     private val ATTRIBUTION = "attribution"
     private val AFFINITY_LABEL = "affinityLabel"
@@ -79,6 +80,7 @@ class OfficialStoreTracking(context: Context) {
     private val FIELD_SHOP_ID = "shop_id"
     private val FIELD_SHOP_TYPE = "shop_type"
     private val FIELD_SHOP_NAME = "shop_name"
+    private val FIELD_DIMENSION_38 = "dimension38"
 
     private val VALUE_NONE_OTHER = "none / other"
     private val VALUE_NONE = "none"
@@ -765,6 +767,7 @@ class OfficialStoreTracking(context: Context) {
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_IMPRESSIONS, DataLayer.listOf(
                             createFlashSaleCardProductItemMapComponent(
+                                    channel,
                                     productItem,
                                     productPosition,
                                     isLogin,
@@ -801,6 +804,7 @@ class OfficialStoreTracking(context: Context) {
     }
 
     private fun createFlashSaleCardProductItemMapComponent(
+            channelModel: ChannelModel,
             gridData: ChannelGrid,
             position: String,
             isLogin: Boolean,
@@ -820,7 +824,8 @@ class OfficialStoreTracking(context: Context) {
                 FIELD_PRODUCT_CATEGORY, VALUE_NONE,
                 FIELD_PRODUCT_VARIANT, VALUE_NONE,
                 FIELD_PRODUCT_LIST, listKeyValue,
-                FIELD_PRODUCT_POSITION, position
+                FIELD_PRODUCT_POSITION, position,
+                FIELD_DIMENSION_38, channelModel.channelBanner.attribution
         )
     }
 
@@ -901,7 +906,9 @@ class OfficialStoreTracking(context: Context) {
                     CLICK , DataLayer.mapOf(
                         FIELD_ACTION_FIELD , DataLayer.mapOf( FIELD_PRODUCT_LIST , listKeyValue),
                         FIELD_PRODUCTS, DataLayer.listOf(
-                            createFlashSaleCardProductItemMapComponent(productItem,
+                            createFlashSaleCardProductItemMapComponent(
+                                    channel,
+                                    productItem,
                                     productPosition.toString(),
                                     isLogin,
                                     valueDynamicMix
@@ -939,7 +946,8 @@ class OfficialStoreTracking(context: Context) {
                 EVENT, CLICK_OS_MICROSITE,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
                 EVENT_ACTION, eventActionValue,
-                EVENT_LABEL, channel.id + " - " + channel.channelHeader.name
+                EVENT_LABEL, channel.id + " - " + channel.channelHeader.name,
+                EVENT_ATTRIBUTION, channel.channelBanner.attribution
         ))
     }
 
@@ -954,18 +962,21 @@ class OfficialStoreTracking(context: Context) {
                 EVENT, CLICK_OS_MICROSITE,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
                 EVENT_ACTION, eventActionValue,
-                EVENT_LABEL, channel.id + " - " + channel.channelHeader.name
+                EVENT_LABEL, channel.id + " - " + channel.channelHeader.name,
+                EVENT_ATTRIBUTION, channel.channelBanner.attribution
         ))
     }
 
-    fun mixTopBannerCtaButtonClicked(categoryName: String, buttonName: String, channelId: String) {
+    fun mixTopBannerCtaButtonClicked(categoryName: String, buttonName: String, channelId: String, channelBannerAttribution: String = "") {
         val eventActionValue = "$CLICK $buttonName on $VALUE_DYNAMIC_MIX_TOP_CAROUSEL"
-        tracker.sendGeneralEvent(DataLayer.mapOf(
-                EVENT, CLICK_OS_MICROSITE,
-                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
-                EVENT_ACTION, eventActionValue,
-                EVENT_LABEL, channelId
-        ))
+        val mapTracking = DataLayer.mapOf(
+            EVENT, CLICK_OS_MICROSITE,
+            EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+            EVENT_ACTION, eventActionValue,
+            EVENT_LABEL, channelId,
+            EVENT_ATTRIBUTION, channelBannerAttribution
+        )
+        tracker.sendGeneralEvent(mapTracking)
     }
 
     private fun formatPrice(price: String): String? {

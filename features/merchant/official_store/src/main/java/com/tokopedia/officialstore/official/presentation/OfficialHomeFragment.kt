@@ -524,7 +524,7 @@ class OfficialHomeFragment :
         RouteManager.route(context, applink)
     }
 
-    override fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String) {
+    override fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String, channelBannerAttribution: String) {
         tracking?.mixTopBannerCtaButtonClicked(
                 viewModel.currentSlug,
                 cta.text,
