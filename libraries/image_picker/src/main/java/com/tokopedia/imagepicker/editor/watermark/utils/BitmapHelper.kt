@@ -234,10 +234,15 @@ object BitmapHelper {
     }
 
     private fun Int.ratioThreesHold(): Int {
-        return if (this <= 800) {
-            this / 6
-        } else {
-            this / 2
+        return when(this) {
+            // for small image
+            in 0..500 -> this / 6
+
+            // for medium image
+            in 500..1000 -> this / 3
+
+            // for large image
+            else -> this / 2
         }
     }
 
