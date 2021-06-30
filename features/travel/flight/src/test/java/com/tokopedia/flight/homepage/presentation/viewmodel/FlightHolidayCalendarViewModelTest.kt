@@ -9,6 +9,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Before
@@ -69,7 +70,7 @@ class FlightHolidayCalendarViewModelTest {
 
         for ((index, item) in viewModel.holidayCalendarData.value!!.withIndex()) {
             item.getTitle() shouldBe HOLIDAY_WITH_DATA.data[index].attribute.label
-            item.getDate().time shouldBe DateUtil.stringToDate(DateUtil.YYYY_MM_DD, HOLIDAY_WITH_DATA.data[index].attribute.date).time
+            item.getDate().time shouldBe HOLIDAY_WITH_DATA.data[index].attribute.date.toDate(DateUtil.YYYY_MM_DD).time
         }
     }
 }
