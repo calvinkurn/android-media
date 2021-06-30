@@ -484,7 +484,6 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
     private fun renderProductAlpha(element: MiniCartProductUiModel) {
         with(viewBinding) {
             if (element.isProductDisabled) {
-                listener.onShowUnavailableItem(element)
                 imageProduct.alpha = 0.5f
                 textProductName.alpha = 0.5f
                 textProductVariant.alpha = 0.5f

@@ -195,12 +195,14 @@ class MiniCartWidget @JvmOverloads constructor(
                 analytics.eventClickBuyThenGetBottomSheetError(data.outOfService.description)
             } else {
                 // Show toaster error if have no out of service data
-                var ctaText = "Oke"
+                var ctaText = context.getString(R.string.mini_cart_cta_ok)
                 if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
                     ctaText = data.toasterAction.text
                 }
                 if (data.toasterAction.showCta) {
-                    showToaster(view, data.error, Toaster.TYPE_ERROR, ctaText, isShowCta = true)
+                    showToaster(view, data.error, Toaster.TYPE_ERROR, ctaText) {
+                        analytics.eventClickUpdateCartToasterErrorCta(data.error, ctaText)
+                    }
                 } else {
                     showToaster(view, data.error, Toaster.TYPE_ERROR, isShowCta = false)
                 }
@@ -228,12 +230,18 @@ class MiniCartWidget @JvmOverloads constructor(
                 }
                 is SocketTimeoutException -> {
                     val message = context.getString(R.string.mini_cart_message_error_checkout_timeout)
-                    showToaster(view, message, Toaster.TYPE_ERROR)
+                    val ctaText = context.getString(R.string.mini_cart_cta_ok)
+                    showToaster(view, message, Toaster.TYPE_ERROR, ctaText) {
+                        analytics.eventClickUpdateCartToasterErrorCta(message, ctaText)
+                    }
                     analytics.eventClickBuyThenGetToasterError(message)
                 }
                 else -> {
                     val message = context.getString(R.string.mini_cart_message_error_checkout_failed)
-                    showToaster(view, message, Toaster.TYPE_ERROR)
+                    val ctaText = context.getString(R.string.mini_cart_cta_ok)
+                    showToaster(view, message, Toaster.TYPE_ERROR, ctaText) {
+                        analytics.eventClickUpdateCartToasterErrorCta(message, ctaText)
+                    }
                     analytics.eventClickBuyThenGetToasterError(message)
                 }
             }

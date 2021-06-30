@@ -65,6 +65,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_CLICK_SEE_SIMILAR_PRODUCT_ON_UNAVAILABLE_SECTION = "click lihat produk serupa on unavailable section"
         const val EVENT_CLICK_BUY_THEN_GET_TOASTER_ERROR = "click beli - toaster not success"
         const val EVENT_CLICK_BUY_THEN_GET_BOTTOM_SHEET_ERROR = "click beli - bottomsheet not success"
+        const val EVENT_CLICK_BUTTON_ON_ERROR_TOASTER = "click button on error toaster"
         const val EVENT_VIEW_TICKER_ERROR_UNAVAILABLE_PRODUCT = "view ticker error for unavailable product in cart page"
         const val EVENT_ACTION_VIEW_MINI_CART_PAGE = "view minicart page"
         const val EVENT_ACTION_CLICK_KNOB_MINI_CART_BOTTOM_SHEET = "click knob action"
@@ -421,6 +422,16 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
     }
 
     // 19 invalid
+    fun eventClickUpdateCartToasterErrorCta(errorMessage: String, ctaWording: String) {
+        val data = getGtmData(
+                eventName = EVENT_NAME_CLICK_MINICART,
+                eventAction = EVENT_CLICK_BUTTON_ON_ERROR_TOASTER,
+                eventLabel = "$errorMessage - $ctaWording"
+        )
+
+        sendGeneralEvent(data)
+    }
+
 
     // 20 - DONE
     fun eventClickBuyThenGetBottomSheetError(errorMessage: String) {
