@@ -3,7 +3,7 @@ package com.tokopedia.home.viewModel.homepageRevamp
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccUseCase
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelGrid
@@ -28,7 +28,7 @@ class HomeViewModelOneClickCheckoutTest {
         val atc = AddToCartDataModel(status = AddToCartDataModel.STATUS_OK, data = DataModel(
                 success = 1
         ))
-        coEvery { addToCartOccUseCase.createObservable(any()).toBlocking().first() } returns atc
+        coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground() } returns atc
         homeViewModel = createHomeViewModel(getAtcUseCase = addToCartOccUseCase)
         homeViewModel.getOneClickCheckoutHomeComponent(mockk(), ChannelGrid(), 1)
         assert(homeViewModel.oneClickCheckoutHomeComponent.value?.peekContent() !is Throwable)
@@ -38,7 +38,7 @@ class HomeViewModelOneClickCheckoutTest {
     @Test
     fun `one click checkout error response`(){
         val atc = AddToCartDataModel(status = AddToCartDataModel.STATUS_ERROR)
-        coEvery { addToCartOccUseCase.createObservable(any()).toBlocking().first() } returns atc
+        coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground() } returns atc
         homeViewModel = createHomeViewModel(getAtcUseCase = addToCartOccUseCase)
         homeViewModel.getOneClickCheckoutHomeComponent(mockk(), ChannelGrid(), 1)
         assert(homeViewModel.oneClickCheckoutHomeComponent.value?.peekContent() != null)
@@ -46,7 +46,7 @@ class HomeViewModelOneClickCheckoutTest {
 
     @Test
     fun `one click checkout error`(){
-        coEvery { addToCartOccUseCase.createObservable(any()).toBlocking().first() } throws Throwable()
+        coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground() } throws Throwable()
         homeViewModel = createHomeViewModel(getAtcUseCase = addToCartOccUseCase)
         homeViewModel.getOneClickCheckoutHomeComponent(mockk(), ChannelGrid(), 1)
         assert(homeViewModel.oneClickCheckoutHomeComponent.value?.peekContent() != null)

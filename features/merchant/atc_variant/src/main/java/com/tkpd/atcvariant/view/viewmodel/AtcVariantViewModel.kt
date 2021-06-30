@@ -18,9 +18,9 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.usecase.UpdateCartUseCase
@@ -374,7 +374,7 @@ class AtcVariantViewModel @Inject constructor(
                     getAddToCartOcsUseCase(requestParams)
                 }
                 is AddToCartOccRequestParams -> {
-                    getAddToCartOccUseCase(requestParams)
+                    getAddToCartOccUseCase(atcParams)
                 }
             }
         }) {
@@ -432,11 +432,11 @@ class AtcVariantViewModel @Inject constructor(
     }
 
 
-    private suspend fun getAddToCartOccUseCase(requestParams: RequestParams) {
+    private suspend fun getAddToCartOccUseCase(atcParams: AddToCartOccRequestParams) {
         val result = withContext(dispatcher.io) {
-            addToCartOccUseCase.createObservable(requestParams).toBlocking().single()
+            addToCartOccUseCase.setParams(atcParams).executeOnBackground()
         }
-        if (result.isDataError()) {
+        if (result.isStatusError()) {
             val errorMessage = result.getAtcErrorMessage() ?: ""
             _addToCartLiveData.postValue(MessageErrorException(errorMessage).asFail())
         } else {

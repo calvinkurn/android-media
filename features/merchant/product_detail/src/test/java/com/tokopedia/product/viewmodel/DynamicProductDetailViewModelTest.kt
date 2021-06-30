@@ -521,7 +521,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify(inverse = true) {
-            addToCartOccUseCase.createObservable(any()).toBlocking()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
@@ -547,7 +547,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify(inverse = true) {
-            addToCartOccUseCase.createObservable(any()).toBlocking()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
@@ -573,7 +573,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify(inverse = true) {
-            addToCartOccUseCase.createObservable(any()).toBlocking()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
@@ -599,7 +599,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         coVerify(inverse = true) {
-            addToCartOccUseCase.createObservable(any()).toBlocking()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
@@ -611,13 +611,13 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
 
         coEvery {
-            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         } returns atcResponseSuccess
 
         viewModel.addToCart(addToCartOccRequestParams)
 
         coVerify {
-            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         coVerify(inverse = true) {
@@ -637,13 +637,13 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
 
         coEvery {
-            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         } returns atcResponseError
 
         viewModel.addToCart(addToCartOccRequestParams)
 
         coVerify {
-            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         coVerify(inverse = true) {

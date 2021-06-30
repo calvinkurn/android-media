@@ -558,7 +558,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
 
         coEvery {
-            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         } returns atcResponseError
 
         viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
@@ -576,7 +576,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L), status = "OK")
 
         coEvery {
-            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         } returns atcResponseSuccess
 
         viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", true)
@@ -594,7 +594,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L), status = "OK")
 
         coEvery {
-            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         } returns atcResponseSuccess
 
         viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0, "", "", false)
@@ -619,7 +619,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         }
 
         coVerify(inverse = inverseOcc) {
-            addToCartOccUseCase.createObservable(any()).toBlocking()
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
         }
 
         coVerify(inverse = inverseUpdateAtc) {
