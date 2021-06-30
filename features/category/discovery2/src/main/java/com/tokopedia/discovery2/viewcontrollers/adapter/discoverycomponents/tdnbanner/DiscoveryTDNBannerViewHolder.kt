@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -111,6 +112,9 @@ class DiscoveryTDNBannerViewHolder(itemView: View, val fragment: Fragment) : Abs
     override fun onTopAdsImageViewClicked(applink: String?) {
         (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackTDNBannerClick(viewModel.components, UserSession(fragment.context).userId,
                 viewModel.position, topAdsModel.bannerId ?: "", topAdsModel.shopId)
+        if (!applink.isNullOrEmpty() && fragment.context != null)
+            RouteManager.route(fragment.context, applink)
+
     }
 
     override fun onTopAdsImageViewImpression(viewUrl: String) {
