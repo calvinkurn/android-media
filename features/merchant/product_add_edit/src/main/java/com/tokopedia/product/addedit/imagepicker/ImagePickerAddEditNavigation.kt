@@ -48,6 +48,7 @@ object ImagePickerAddEditNavigation {
                             placeholderImagePathResList = ArrayList(listPlaceholderImage)
                     )
                 }
+                .withWatermarkEditor()
     }
 
     private fun setUpTrackingForImagePicker(ctx: Context, isAdding: Boolean) {

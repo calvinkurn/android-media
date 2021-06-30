@@ -94,11 +94,25 @@ data class Watermark (
     ) {
         if (config == null) return
 
-        val hasWatermarkBitmap = bitmap
-            .adjustRotation(config.position.rotation)
+        val paint = Paint().apply {
+            val bitmapAlpha = when (config) {
+                is TextUIModel -> config.textAlpha
+                is ImageUIModel -> config.imageAlpha
+                else -> 0
+            }
 
-        canvasBitmap = hasWatermarkBitmap
-        outputImage = hasWatermarkBitmap
+            alpha = bitmapAlpha
+        }
+
+        bitmap.adjustRotation(config.position.rotation).let {
+            val newBitmap = createBitmap(it.width, it.height, it.config)
+            val canvas = Canvas(newBitmap)
+
+            canvas.drawBitmap(it, 0f, 0f, paint)
+
+            canvasBitmap = newBitmap
+            outputImage = newBitmap
+        }
     }
 
     private fun createWatermark(
