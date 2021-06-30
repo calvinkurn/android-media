@@ -1,5 +1,7 @@
 package com.tokopedia.product.detail.ui
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Context
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -7,9 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.ui.base.BaseProductDetailUiTest
@@ -153,7 +159,6 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.btn_buy_now)).assertNotVisible()
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
         onView(withId(R.id.base_btn_affiliate_dynamic)).assertNotVisible()
-        onView(withId(R.id.btn_apply_leasing)).assertNotVisible()
         onView(withId(R.id.seller_button_container)).assertNotVisible()
 
         onView(withId(R.id.btn_empty_stock)) .assertVisible()
@@ -195,6 +200,147 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.base_btn_affiliate_dynamic)).assertNotVisible()
         support_button_not_visible()
     }
+
+    @Test
+    fun check_button_atc_tokonow_variant() {
+        // else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType)
+
+        setupGraphqlMockResponse{
+            addMockResponse("pdpGetLayout", InstrumentationMockHelper.getRawString(context,  com.tokopedia.product.detail.test.R.raw.response_mock_p1_tokonow_variant), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse("GetPdpGetData", InstrumentationMockHelper.getRawString(context,  com.tokopedia.product.detail.test.R.raw.response_mock_p2_tokonow_variant), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse("mini_cart", InstrumentationMockHelper.getRawString(context,  com.tokopedia.product.detail.test.R.raw.response_mock_mini_cart), MockModelConfig.FIND_BY_CONTAINS)
+        }
+
+        activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
+
+        onView(withId(R.id.btn_topchat)).assertVisible()
+
+        onView(withId(R.id.btn_buy_now))
+                .assertVisible()
+                .check(matches(ViewMatchers.withText("+ Keranjang")))
+                .check(matches(ViewAttributeMatcher {
+                    val buttonUnify = (it as UnifyButton)
+                    buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
+                }))
+
+        onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
+        onView(withId(R.id.base_btn_affiliate_dynamic)).assertNotVisible()
+        support_button_not_visible()
+    }
+
+    @Test
+    fun check_button_atc_tokonow_non_variant_non_login() {
+        // else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType)
+
+        setupGraphqlMockResponse{
+            addMockResponse("pdpGetLayout", InstrumentationMockHelper.getRawString(context,  com.tokopedia.product.detail.test.R.raw.response_mock_p1_tokonow_nonvar), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse("GetPdpGetData", InstrumentationMockHelper.getRawString(context,  com.tokopedia.product.detail.test.R.raw.response_mock_p2_tokonow_nonvar), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse("mini_cart", InstrumentationMockHelper.getRawString(context,  com.tokopedia.product.detail.test.R.raw.response_mock_mini_cart), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse("add_to_cart_v2", InstrumentationMockHelper.getRawString(context,  com.tokopedia.product.detail.test.R.raw.response_mock_success_atc_tokonow_nonvar), MockModelConfig.FIND_BY_CONTAINS)
+        }
+
+        activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
+
+        onView(withId(R.id.btn_topchat)).assertVisible()
+
+        onView(withId(R.id.btn_buy_now))
+                .assertVisible()
+                .check(matches(ViewMatchers.withText("+ Keranjang")))
+                .check(matches(ViewAttributeMatcher {
+                    val buttonUnify = (it as UnifyButton)
+                    buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
+                }))
+
+        onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
+        onView(withId(R.id.base_btn_affiliate_dynamic)).assertNotVisible()
+        support_button_not_visible()
+    }
+
+    @Test
+    fun check_quantity_editor_button_tokonow_non_variant_login() {
+        // else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1() //given user logged in
+        setupGraphqlMockResponse{
+            addMockResponse("pdpGetLayout", InstrumentationMockHelper.getRawString(context,  com.tokopedia.product.detail.test.R.raw.response_mock_p1_tokonow_nonvar), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse("GetPdpGetData", InstrumentationMockHelper.getRawString(context,  com.tokopedia.product.detail.test.R.raw.response_mock_p2_tokonow_nonvar), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse("mini_cart", InstrumentationMockHelper.getRawString(context,  com.tokopedia.product.detail.test.R.raw.response_mock_mini_cart_non_var), MockModelConfig.FIND_BY_CONTAINS)
+        }
+
+        activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
+
+        onView(withId(R.id.qty_editor_pdp)).assertVisible()
+        onView(withId(R.id.btn_topchat)).assertVisible()
+        onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
+        onView(withId(R.id.btn_buy_now)).assertNotVisible()
+    }
+
+    @Test
+    fun check_button_atc_tokonow_non_variant_login() {
+        // else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1() //given user logged in
+
+        setupGraphqlMockResponse{
+            addMockResponse("pdpGetLayout", InstrumentationMockHelper.getRawString(context,  com.tokopedia.product.detail.test.R.raw.response_mock_p1_tokonow_nonvar), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse("GetPdpGetData", InstrumentationMockHelper.getRawString(context,  com.tokopedia.product.detail.test.R.raw.response_mock_p2_tokonow_nonvar), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse("mini_cart", InstrumentationMockHelper.getRawString(context,  com.tokopedia.product.detail.test.R.raw.response_mock_mini_cart), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse("add_to_cart_v2", InstrumentationMockHelper.getRawString(context,  com.tokopedia.product.detail.test.R.raw.response_mock_success_atc_tokonow_nonvar), MockModelConfig.FIND_BY_CONTAINS)
+        }
+
+        activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
+
+        onView(withId(R.id.btn_topchat)).assertVisible()
+
+        onView(withId(R.id.btn_buy_now))
+                .assertVisible()
+                .check(matches(ViewMatchers.withText("+ Keranjang")))
+                .check(matches(ViewAttributeMatcher {
+                    val buttonUnify = (it as UnifyButton)
+                    buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
+                }))
+
+        onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
+        onView(withId(R.id.base_btn_affiliate_dynamic)).assertNotVisible()
+        support_button_not_visible()
+    }
+
+    @Test
+    fun check_click_atc_tokonow_non_variant_login() {
+        // else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType)
+        InstrumentationAuthHelper.loginInstrumentationTestUser1() //given user logged in
+        check_button_atc_tokonow_non_variant_login()
+        intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
+        onView(withId(R.id.btn_buy_now)).perform(click())
+        Thread.sleep(300)
+        //gotologin page
+        onView(withId(R.id.qty_editor_pdp)).assertVisible()
+        onView(withId(R.id.btn_topchat)).assertVisible()
+        onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
+        onView(withId(R.id.btn_buy_now)).assertNotVisible()
+    }
+
+    @Test
+    fun check_click_atc_tokonow_non_variant() {
+        // else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType)
+        check_button_atc_tokonow_non_variant_non_login()
+        intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
+        onView(withId(R.id.btn_buy_now)).perform(click()).check(matches(isDisplayed()))
+
+        onView(withId(R.id.btn_topchat)).assertVisible()
+
+        //gotologin page
+        onView(withId(R.id.btn_buy_now))
+                .assertVisible()
+                .check(matches(ViewMatchers.withText("+ Keranjang")))
+                .check(matches(ViewAttributeMatcher {
+                    val buttonUnify = (it as UnifyButton)
+                    buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.MAIN
+                }))
+
+        onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
+    }
+
     //endregion
 
     //region seller side
@@ -239,7 +385,6 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
     }
 
     private fun support_button_not_visible() {
-        onView(withId(R.id.btn_apply_leasing)).assertNotVisible()
         onView(withId(R.id.seller_button_container)).assertNotVisible()
         onView(withId(R.id.btn_empty_stock)).assertNotVisible()
     }
