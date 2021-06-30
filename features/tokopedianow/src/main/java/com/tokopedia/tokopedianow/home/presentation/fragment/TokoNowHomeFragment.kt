@@ -323,7 +323,8 @@ class TokoNowHomeFragment: Fragment(),
         navToolbar?.let { toolbar ->
             viewLifecycleOwner.lifecycle.addObserver(toolbar)
             //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder
-            setHint(SearchPlaceholder(Data(null, "Cari di TokoNOW!","")))
+            val placeholder = getString(R.string.tokopedianow_search_placeholder)
+            setHint(SearchPlaceholder(Data(null, placeholder,"")))
             addNavBarScrollListener()
             activity?.let {
                 toolbar.setupToolbarWithStatusBar(it)

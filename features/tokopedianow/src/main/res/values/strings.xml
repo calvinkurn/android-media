@@ -38,4 +38,5 @@
 
     <!-- Content Description -->
     <string name="tokopedianow_header_background_content_description">Header Background</string>
+    <string name="tokopedianow_search_placeholder">Cari di TokoNOW!</string>
 </resources>
