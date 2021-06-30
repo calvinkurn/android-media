@@ -93,7 +93,7 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
                     }
                 }
                 is Fail ->{
-                    setupNextButton()
+                    showFullLoading()
                     showGetListError(it.throwable)
                 }
             }
