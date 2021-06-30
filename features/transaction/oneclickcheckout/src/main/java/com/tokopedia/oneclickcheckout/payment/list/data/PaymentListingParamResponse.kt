@@ -34,5 +34,7 @@ data class ListingParam(
         @SerializedName("callback_url")
         val callbackUrl: String = "",
         @SerializedName("hash")
-        val hash: String = ""
+        val hash: String = "",
+        @SerializedName("bid")
+        val bid: String = ""
 )

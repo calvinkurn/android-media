@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
-import com.tokopedia.oneclickcheckout.payment.list.domain.GetPaymentListingParamUseCase
 import com.tokopedia.oneclickcheckout.payment.list.data.ListingParam
 import com.tokopedia.oneclickcheckout.payment.list.data.PaymentListingParamRequest
+import com.tokopedia.oneclickcheckout.payment.list.domain.GetPaymentListingParamUseCase
 import java.net.URLEncoder
 import javax.inject.Inject
 
@@ -17,16 +17,16 @@ class PaymentListingViewModel @Inject constructor(private val getPaymentListingP
     val paymentListingPayload: LiveData<OccState<String>>
         get() = _paymentListingPayload
 
-    fun getPaymentListingPayload(request: PaymentListingParamRequest, amount: Double, bid: String) {
+    fun getPaymentListingPayload(request: PaymentListingParamRequest, amount: Double) {
         _paymentListingPayload.value = OccState.Loading
         getPaymentListingParamUseCase.execute(request, {
-            _paymentListingPayload.value = OccState.Success(generatePayload(it, request.version, amount, bid))
+            _paymentListingPayload.value = OccState.Success(generatePayload(it, request.version, amount))
         }, {
             _paymentListingPayload.value = OccState.Failed(Failure(it))
         })
     }
 
-    private fun generatePayload(param: ListingParam, version: String, amount: Double, bid: String): String {
+    private fun generatePayload(param: ListingParam, version: String, amount: Double): String {
         return "merchant_code=${getUrlEncoded(param.merchantCode)}&" +
                 "profile_code=${getUrlEncoded(param.profileCode)}&" +
                 "user_id=${getUrlEncoded(param.userId)}&" +
@@ -38,7 +38,7 @@ class PaymentListingViewModel @Inject constructor(private val getPaymentListingP
                 "version=${getUrlEncoded(version)}&" +
                 "signature=${getUrlEncoded(param.hash)}&" +
                 "amount=${getUrlEncoded(amount.toString())}&" +
-                "bid=${getUrlEncoded(bid)}"
+                "bid=${getUrlEncoded(param.bid)}"
     }
 
     private fun getUrlEncoded(valueStr: String): String {

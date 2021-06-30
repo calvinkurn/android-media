@@ -921,7 +921,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             val currentGatewayCode = preference.preference.payment.gatewayCode
             orderSummaryAnalytics.eventClickArrowToChangePaymentOption(currentGatewayCode, userSession.get().userId)
             val intent = Intent(context, PaymentListingActivity::class.java).apply {
-                putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, preference.preference.address.addressId)
+                putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, preference.preference.address.addressId.toString())
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
                 val orderCost = viewModel.orderTotal.value.orderCost
                 val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee

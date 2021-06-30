@@ -154,7 +154,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
             }
         }
 
-        viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount, bid)
+        viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount)
     }
 
     private fun loadWebView(param: String) {
@@ -203,7 +203,7 @@ class PaymentListingFragment : BaseDaggerFragment() {
     private fun showGlobalError(type: Int) {
         globalError?.setType(type)
         globalError?.setActionClickListener {
-            viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount, bid)
+            viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount)
         }
         globalError?.visible()
         webView?.gone()
