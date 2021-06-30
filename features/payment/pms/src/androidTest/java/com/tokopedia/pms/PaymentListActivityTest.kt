@@ -51,7 +51,7 @@ class PaymentListActivityTest {
             )
         )
 
-        IdlingRegistry.getInstance().register(PmsIdlingResource.idlingResource)
+        IdlingRegistry.getInstance().register(PmsIdlingResource.getIdlingResource())
         login()
         setupGraphqlMockResponse {
             addMockResponse(
@@ -84,7 +84,7 @@ class PaymentListActivityTest {
     @After
     fun finish() {
         Intents.release()
-        IdlingRegistry.getInstance().unregister(PmsIdlingResource.idlingResource)
+        IdlingRegistry.getInstance().unregister(PmsIdlingResource.getIdlingResource())
     }
 
     @Test

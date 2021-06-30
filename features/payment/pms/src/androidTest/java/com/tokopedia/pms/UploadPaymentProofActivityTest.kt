@@ -50,14 +50,14 @@ class UploadPaymentProofActivityTest {
                 null
             )
         )
-        IdlingRegistry.getInstance().register(PmsIdlingResource.idlingResource)
+        IdlingRegistry.getInstance().register(PmsIdlingResource.getIdlingResource())
         login()
         launchActivity()
     }
 
     @After
     fun finish() {
-        IdlingRegistry.getInstance().unregister(PmsIdlingResource.idlingResource)
+        IdlingRegistry.getInstance().unregister(PmsIdlingResource.getIdlingResource())
     }
 
     private fun stubImagePicker() {
@@ -77,7 +77,7 @@ class UploadPaymentProofActivityTest {
     }
 
     @Test
-    fun validateChangeUserIdKlicBCAEvents() {
+    fun validateUploadPaymentProofEvents() {
         stubImagePicker()
         Thread.sleep(3000)
 

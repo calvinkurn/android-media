@@ -29,7 +29,6 @@ class PaymentListViewModelTest {
     private val dispatcher = TestCoroutineDispatcher()
     private lateinit var viewModel: PaymentListViewModel
 
-
     private val fetchFailedErrorMessage = "Fetch Failed"
     private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
 
