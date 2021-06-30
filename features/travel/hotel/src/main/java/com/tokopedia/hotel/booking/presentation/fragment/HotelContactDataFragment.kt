@@ -125,8 +125,9 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
         }
         sp_contact_phone_code.adapter = spinnerAdapter
         sp_contact_phone_code.setSelection(0)
-        sp_contact_phone_code.setOnTouchListener { _, event ->
+        sp_contact_phone_code.setOnTouchListener {v, event ->
             if (event.action == MotionEvent.ACTION_UP) {
+                v.performClick()
                 startActivityForResult(PhoneCodePickerActivity.getCallingIntent(requireContext()), REQUEST_CODE_PHONE_CODE)
             }
             true
