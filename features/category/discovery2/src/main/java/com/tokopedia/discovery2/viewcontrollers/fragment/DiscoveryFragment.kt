@@ -246,7 +246,6 @@ class DiscoveryFragment :
                 val percentageWithScreen = 100.0f * (offset  + extent).toFloat() / range
                 Log.d("percentageWithScreen", "${Math.round(percentageWithScreen)}%")
 
-                // recyclerView.computeVerticalScrollRange() = recyclerView.computeVerticalScrollOffset() + recyclerView.computeVerticalScrollExtent()
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
