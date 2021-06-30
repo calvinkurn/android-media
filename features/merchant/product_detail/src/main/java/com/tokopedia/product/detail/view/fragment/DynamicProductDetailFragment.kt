@@ -2186,11 +2186,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun goToHomePage(){
-//        val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
-//        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//        startActivity(intent)
-
-        RouteManager.route(context, ApplinkConst.HOME)
+        val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 
     private fun goToShipmentErrorAddressOrChat(errorCode: Int) {
