@@ -5,17 +5,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
-
-
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.product.detail.di.DaggerProductDetailComponent
+import com.tokopedia.product.detail.di.ProductDetailComponent
 /**
  * Created by Yehezkiel on 10/01/21
  * Activity mock for testing, use this if you want to adding new function on activity
  */
-class ProductDetailActivityCommonTest : BaseSimpleActivity() {
+class ProductDetailActivityCommonTest : BaseSimpleActivity(), HasComponent<ProductDetailComponent> {
 
     var productId: String = ""
+    private var productDetailComponent: ProductDetailComponent? = null
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -62,4 +65,16 @@ class ProductDetailActivityCommonTest : BaseSimpleActivity() {
         val fragment = supportFragmentManager.findFragmentByTag(PRODUCT_DETAIL_TAG) as DynamicProductDetailFragment
         return fragment.productAdapter?.currentList?.size ?: 0
     }
+
+    override fun getComponent(): ProductDetailComponent {
+        return productDetailComponent ?: initializeComponent()
+    }
+
+    private fun initializeComponent(): ProductDetailComponent {
+        val baseComponent = (applicationContext as BaseMainApplication).baseAppComponent
+        return DaggerProductDetailComponent.builder()
+            .baseAppComponent(baseComponent)
+            .build()
+    }
+
 }

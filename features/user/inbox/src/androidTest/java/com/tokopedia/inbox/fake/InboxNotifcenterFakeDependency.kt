@@ -44,9 +44,7 @@ class InboxNotifcenterFakeDependency {
     }
 
     private fun initResponse() {
-        notifcenterDetailUseCase.response = AndroidFileUtil.parseRaw(
-            R.raw.notifcenter_detail_v3, NotifcenterDetailResponse::class.java
-        )
+        notifcenterDetailUseCase.initialize()
         getRecommendationUseCase.response = AndroidFileUtil.parseRaw(
             R.raw.notifcenter_recom, RecommendationEntity::class.java
         )

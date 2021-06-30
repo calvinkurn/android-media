@@ -727,7 +727,7 @@ class FlightBookingViewModel @Inject constructor(private val graphqlRepository: 
                                       contactPhone: String, contactCountry: String) {
         val passengerViewModels = flightPassengersData.value!!
         for (passenger in passengerViewModels) {
-            passenger.flightBookingLuggageMetaViewModels = listOf()
+            passenger.flightBookingLuggageMetaViewModels = mutableListOf()
         }
         _flightPassengersData.value = passengerViewModels
 

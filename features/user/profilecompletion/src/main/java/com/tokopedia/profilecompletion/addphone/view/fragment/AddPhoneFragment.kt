@@ -269,9 +269,13 @@ open class AddPhoneFragment : BaseDaggerFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.addPhoneResponse.removeObservers(this)
-        viewModel.userValidateResponse.removeObservers(this)
-        viewModel.flush()
+        try {
+            viewModel.addPhoneResponse.removeObservers(this)
+            viewModel.userValidateResponse.removeObservers(this)
+            viewModel.flush()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
     }
 
 }

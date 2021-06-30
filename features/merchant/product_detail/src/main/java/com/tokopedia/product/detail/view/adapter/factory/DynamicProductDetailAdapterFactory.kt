@@ -30,5 +30,6 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: PdpComparisonWidgetDataModel): Int
     fun type(data: ProductSingleVariantDataModel): Int
     fun type(data: ProductMiniShopWidgetDataModel): Int
+    fun type(data: BestSellerInfoDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }
