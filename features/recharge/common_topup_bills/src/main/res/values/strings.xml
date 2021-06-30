@@ -29,4 +29,7 @@
     <string name="common_topup_contact_not_found">Aplikasi kontak tidak ditemukan</string>
     <string name="common_topup_fav_number_menu_change_name">Ubah Nama</string>
     <string name="common_topup_favorite_number_delete">Hapus Nomor Ini</string>
+    <string name="common_topup_favorite_number_modify_name">Nama</string>
+    <string name="common_topup_favorite_number_modify_phone">Nomor HP</string>
+    <string name="common_topup_favorite_number_modify_button">Simpan</string>
 </resources>

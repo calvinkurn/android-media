@@ -13,9 +13,11 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -24,15 +26,19 @@ import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberListAdapter
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberMenuBottomSheet
+import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberModifyBottomSheet
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberMenuListener
+import com.tokopedia.common.topupbills.view.listener.FavoriteNumberModifyListener
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberEmptyDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberNotFoundDataView
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactoryImpl
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -40,15 +46,27 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.ArrayList
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
-class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberClickListener, FavoriteNumberMenuListener, FavoriteNumberEmptyStateListener {
-
+class TopupBillsFavoriteNumberFragment :
+        BaseDaggerFragment(),
+        OnFavoriteNumberClickListener,
+        FavoriteNumberMenuListener,
+        FavoriteNumberEmptyStateListener,
+        FavoriteNumberModifyListener
+{
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
+    private val topUpBillsViewModel by lazy { viewModelFragmentProvider.get(TopupBillsViewModel::class.java) }
 
     private lateinit var numberListAdapter: TopupBillsFavoriteNumberListAdapter
     private lateinit var clientNumbers: List<TopupBillsSeamlessFavNumberItem>
     private lateinit var clientNumberType: String
+    private var categoryId by Delegates.notNull<Int>()
 
     private var number: String = ""
     protected lateinit var inputNumberActionType: InputNumberActionType
@@ -67,8 +85,8 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         arguments?.run {
             clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
             number = arguments.getString(ARG_PARAM_EXTRA_NUMBER, "")
-            clientNumbers = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST)
-                    ?: listOf()
+            clientNumbers = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST) ?: listOf()
+            categoryId = arguments.getInt(ARG_PARAM_CATEGORY_ID, 0) // TODO: [Misael] categoryid default apa?
         }
     }
 
@@ -281,16 +299,29 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
 
     override fun onFavoriteNumberMenuClick(favNumberItem: TopupBillsSeamlessFavNumberItem) {
         // TODO: [Misael] use favNumberItem
-        val bottomSheet = FavoriteNumberMenuBottomSheet.newInstance(this)
+        val bottomSheet = FavoriteNumberMenuBottomSheet.newInstance(favNumberItem, this)
         bottomSheet.show(childFragmentManager, "")
     }
 
-    override fun onChangeNameClicked() {
-        // TODO: [Misael] ("Not yet implemented")
+    override fun onChangeNameMenuClicked(favNumberItem: TopupBillsSeamlessFavNumberItem) {
+        val bottomSheet = FavoriteNumberModifyBottomSheet.newInstance(favNumberItem, this)
+        bottomSheet.show(childFragmentManager, "")
     }
 
     override fun onDeleteContactClicked() {
         // TODO: [Misael] delete contact
+    }
+
+    override fun onChangeName(newName: String, clientNumber: String) {
+        topUpBillsViewModel.updateSeamlessFavoriteNumber(
+                CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
+                topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
+                        categoryId = categoryId,
+                        clientNumber = clientNumber,
+                        totalTransaction = 0, // TODO: [Misael] 0 itu default value, cek dulu ini apa
+                        label = newName
+                )
+        )
     }
 
     enum class InputNumberActionType {
@@ -303,13 +334,17 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         const val ARG_PARAM_EXTRA_NUMBER_LIST = "ARG_PARAM_EXTRA_NUMBER_LIST"
         const val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
+        const val ARG_PARAM_CATEGORY_ID = "ARG_PARAM_CATEGORY_ID"
 
         fun newInstance(clientNumberType: String, number: String,
-                        numberList: List<TopupBillsSeamlessFavNumberItem>): Fragment {
+                        numberList: List<TopupBillsSeamlessFavNumberItem>,
+                        categoryId: Int
+        ): Fragment {
             val fragment = TopupBillsFavoriteNumberFragment()
             val bundle = Bundle()
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumberType)
             bundle.putString(ARG_PARAM_EXTRA_NUMBER, number)
+            bundle.putInt(ARG_PARAM_CATEGORY_ID, categoryId)
             bundle.putParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST, numberList as ArrayList<out Parcelable>)
             fragment.arguments = bundle
             return fragment

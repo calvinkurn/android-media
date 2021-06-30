@@ -472,7 +472,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             if (isSeamlessFavoriteNumber) {
                 startActivityForResult(activity?.let {
                     TopupBillsFavoriteNumberActivity.getCallingIntent(it,
-                        ClientNumberType.TYPE_INPUT_TEL, clientNumber, seamlessFavNumberList)
+                        ClientNumberType.TYPE_INPUT_TEL,
+                        clientNumber,
+                        seamlessFavNumberList,
+                        TelcoCategoryType.CATEGORY_PASCABAYAR
+                    )
                 },
                         REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             } else {

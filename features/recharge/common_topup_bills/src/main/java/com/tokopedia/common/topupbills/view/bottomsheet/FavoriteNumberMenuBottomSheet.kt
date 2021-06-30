@@ -3,13 +3,13 @@ package com.tokopedia.common.topupbills.view.bottomsheet
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberMenuListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_seamless_favorite_number_menu.*
-import kotlinx.android.synthetic.main.bottom_sheet_seamless_favorite_number_menu.common_topup_bills_favorite_number_delete
 import kotlinx.android.synthetic.main.bottom_sheet_seamless_favorite_number_menu.view.*
 
 class FavoriteNumberMenuBottomSheet(
+        private val favNumberItem: TopupBillsSeamlessFavNumberItem,
         private val listener: FavoriteNumberMenuListener
 ): BottomSheetUnify() {
 
@@ -32,7 +32,7 @@ class FavoriteNumberMenuBottomSheet(
     private fun initListener() {
         with(childView) {
             common_topupbills_favorite_number_change_name.setOnClickListener {
-                listener.onChangeNameClicked()
+                listener.onChangeNameMenuClicked(favNumberItem)
                 dismiss()
             }
 
@@ -45,8 +45,8 @@ class FavoriteNumberMenuBottomSheet(
 
     companion object {
 
-        fun newInstance(listener: FavoriteNumberMenuListener): FavoriteNumberMenuBottomSheet {
-            return FavoriteNumberMenuBottomSheet(listener)
+        fun newInstance(favNumberItem: TopupBillsSeamlessFavNumberItem, listener: FavoriteNumberMenuListener): FavoriteNumberMenuBottomSheet {
+            return FavoriteNumberMenuBottomSheet(favNumberItem, listener)
         }
     }
 }

@@ -58,6 +58,10 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     val seamlessFavNumberData: LiveData<Result<TopupBillsSeamlessFavNumber>>
         get() = _seamlessFavNumberData
 
+    private val _seamlessFavNumberUpdateData = MutableLiveData<Result<UpdateFavoriteDetail>>()
+    val seamlessFavNumberUpdateData: LiveData<Result<UpdateFavoriteDetail>>
+        get() = _seamlessFavNumberUpdateData
+
     private val _checkVoucherData = MutableLiveData<Result<PromoData>>()
     val checkVoucherData : LiveData<Result<PromoData>>
         get() = _checkVoucherData
@@ -154,6 +158,19 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
             _seamlessFavNumberData.postValue(Success(data.seamlessFavoriteNumber))
         }) {
             _seamlessFavNumberData.postValue(Fail(it))
+        }
+    }
+
+    fun updateSeamlessFavoriteNumber(rawQuery: String, mapParam: Map<String, Any>) {
+        launchCatchError(block = {
+            val data = withContext(dispatcher.io) {
+                val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsSeamlessFavNumberModData::class.java, mapParam)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<TopupBillsSeamlessFavNumberModData>()
+
+            _seamlessFavNumberUpdateData.postValue(Success(data.updateFavoriteDetail))
+        }) {
+            _seamlessFavNumberUpdateData.postValue(Fail(it))
         }
     }
 
@@ -265,6 +282,27 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         ))
     }
 
+    fun createSeamlessFavoriteNumberUpdateParams(
+            categoryId: Int,
+            clientNumber: String,
+            totalTransaction: Int,
+            label: String
+    ): Map<String, Any> {
+        return mapOf(
+               FAVORITE_NUMBER_PARAM_UPDATE_REQUEST to mapOf(
+                       FAVORITE_NUMBER_PARAM_CATEGORY_ID to categoryId, // TODO: [Misael] ganti ini pake category id beneran
+                       FAVORITE_NUMBER_PARAM_CLIENT_NUMBER to clientNumber,
+                       FAVORITE_NUMBER_PARAM_LAST_PRODUCT to 108, //TODO: [Misael] ini isi apa
+                       FAVORITE_NUMBER_PARAM_LABEL to label, //TODO: [Misael] ini isi apa
+                       FAVORITE_NUMBER_PARAM_TOTAL_TRANSACTION to totalTransaction,
+                       FAVORITE_NUMBER_PARAM_UPDATE_LAST_ORDER_DATE to false,
+                       FAVORITE_NUMBER_PARAM_SOURCE to "PDP",
+                       FAVORITE_NUMBER_PARAM_UPDATE_STATUS to false,
+                       FAVORITE_NUMBER_PARAM_WISHLIST to false
+               )
+        )
+    }
+
     fun createExpressCheckoutParams(productId: Int,
                                     inputs: Map<String, String>,
                                     transactionAmount: Int = 0,
@@ -334,6 +372,16 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         const val FAVORITE_NUMBER_PARAM_SERVICE_PLAN_TYPE = "service_plan_type"
         const val FAVORITE_NUMBER_PARAM_SUBSCRIPTION = "subscription"
         const val FAVORITE_NUMBER_PARAM_LIMIT = "limit"
+
+        const val FAVORITE_NUMBER_PARAM_UPDATE_REQUEST = "updateRequest"
+        const val FAVORITE_NUMBER_PARAM_CATEGORY_ID ="categoryID"
+        const val FAVORITE_NUMBER_PARAM_CLIENT_NUMBER = "clientNumber"
+        const val FAVORITE_NUMBER_PARAM_LAST_PRODUCT = "lastProduct"
+        const val FAVORITE_NUMBER_PARAM_LABEL = "label"
+        const val FAVORITE_NUMBER_PARAM_TOTAL_TRANSACTION = "totalTransaction"
+        const val FAVORITE_NUMBER_PARAM_UPDATE_LAST_ORDER_DATE = "updateLastOrderDate"
+        const val FAVORITE_NUMBER_PARAM_UPDATE_STATUS = "updateStatus"
+        const val FAVORITE_NUMBER_PARAM_WISHLIST = "wishlist"
 
         const val STATUS_DONE = "DONE"
         const val STATUS_PENDING = "PENDING"

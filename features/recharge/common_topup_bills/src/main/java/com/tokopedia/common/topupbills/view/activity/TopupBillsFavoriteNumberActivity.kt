@@ -8,19 +8,19 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.common.topupbills.R
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
 import com.tokopedia.header.HeaderUnify
 import java.util.ArrayList
+import kotlin.properties.Delegates
 
 class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<CommonTopupBillsComponent> {
 
-    protected lateinit var categoryId: String
     protected lateinit var clientNumberType: String
     protected lateinit var number: String
     protected lateinit var numberList: List<TopupBillsSeamlessFavNumberItem>
+    protected var categoryId by Delegates.notNull<Int>()
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_digital_search_number_rev
@@ -48,6 +48,7 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
             this.clientNumberType = extras.getString(EXTRA_CLIENT_NUMBER, "")
             this.number = extras.getString(EXTRA_NUMBER, "")
             this.numberList = extras.getParcelableArrayList(EXTRA_NUMBER_LIST) ?: listOf()
+            this.categoryId = extras.getInt(EXTRA_CATEGORY_ID, 0)
         }
         super.onCreate(savedInstanceState)
         updateTitle(getString(R.string.common_topup_title_fav_number))
@@ -61,7 +62,7 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
 
     override fun getNewFragment(): androidx.fragment.app.Fragment {
         return TopupBillsFavoriteNumberFragment
-                .newInstance(clientNumberType, number, numberList)
+                .newInstance(clientNumberType, number, numberList, categoryId)
     }
 
     companion object {
@@ -69,15 +70,16 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
         const val EXTRA_NUMBER_LIST = "EXTRA_NUMBER_LIST"
         const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
         const val EXTRA_NUMBER = "EXTRA_NUMBER"
-
-        const val EXTRA_CALLBACK_CLIENT_NUMBER = "EXTRA_CALLBACK_CLIENT_NUMBER"
-        const val EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE = "EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE"
+        const val EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID"
 
         fun getCallingIntent(context: Context, clientNumberType: String,
-                             number: String, numberList: List<TopupBillsSeamlessFavNumberItem>): Intent {
+                             number: String, numberList: List<TopupBillsSeamlessFavNumberItem>,
+                             categoryId: Int
+        ): Intent {
             val intent = Intent(context, TopupBillsFavoriteNumberActivity::class.java)
             intent.putExtra(EXTRA_CLIENT_NUMBER, clientNumberType)
             intent.putExtra(EXTRA_NUMBER, number)
+            intent.putExtra(EXTRA_CATEGORY_ID, categoryId)
             intent.putParcelableArrayListExtra(EXTRA_NUMBER_LIST, numberList as ArrayList<out Parcelable>)
             return intent
         }
