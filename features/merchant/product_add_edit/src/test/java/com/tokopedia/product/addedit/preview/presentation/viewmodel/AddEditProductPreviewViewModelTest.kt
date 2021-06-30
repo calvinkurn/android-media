@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.preview.presentation.viewmodel
 
 import androidx.lifecycle.MediatorLiveData
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
@@ -26,6 +27,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import junit.framework.Assert
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
@@ -269,6 +271,17 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
+    fun `when getMaxProductPhotos, expect correct max product picture`() {
+        every { userSession.isShopOfficialStore } returns true
+        var maxPicture = viewModel.getMaxProductPhotos()
+        Assert.assertEquals(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS_OS, maxPicture)
+
+        every { userSession.isShopOfficialStore } returns false
+        maxPicture = viewModel.getMaxProductPhotos()
+        Assert.assertEquals(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS, maxPicture)
+    }
+
+    @Test
     fun `When update product photos Expect updated product photos`() {
         var pictureInputModel = PictureInputModel().apply {
             urlOriginal = "www.blank.com"
@@ -405,6 +418,25 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         viewModel.saveShopShipmentLocationResponse.getOrAwaitValue()
         verifyGetShopInfoLocation()
+    }
+
+    @Test
+    fun  `When validate product name and product name unchanged Expect return success result`() = runBlocking {
+        val productName = "testing"
+
+        viewModel.setProductId("123")
+        viewModel.isEditing.getOrAwaitValue()
+        viewModel.productInputModel.value = ProductInputModel(
+                detailInputModel = DetailInputModel(currentProductName = productName)
+        )
+
+        viewModel.validateProductNameInput("not same")
+        val failedResult = viewModel.validationResult.getOrAwaitValue()
+        assertEquals(ValidationResultModel.Result.VALIDATION_ERROR, failedResult.result)
+
+        viewModel.validateProductNameInput(productName)
+        val successResult = viewModel.validationResult.getOrAwaitValue()
+        assertEquals(ValidationResultModel.Result.VALIDATION_SUCCESS, successResult.result)
     }
 
     @Test

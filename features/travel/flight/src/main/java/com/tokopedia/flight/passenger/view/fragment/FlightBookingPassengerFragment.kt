@@ -282,12 +282,12 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     private fun getPassportNumber(): String = til_passport_no.textFieldInput.text.toString().trim()
 
     private fun renderPassengerData() {
-        if (!passengerModel.passengerFirstName.isNullOrBlank()) {
+        if (passengerModel.passengerFirstName.isNotEmpty()) {
             et_first_name.setText(passengerModel.passengerFirstName)
             til_last_name.textFieldInput.setText(passengerModel.passengerLastName)
         }
 
-        if (passengerModel.passengerBirthdate != null)
+        if (passengerModel.passengerBirthdate.isNotEmpty())
             til_birth_date.textFieldInput.setText(DateUtil.formatDate(DateUtil.YYYY_MM_DD,
                     DateUtil.DEFAULT_VIEW_FORMAT, passengerModel.passengerBirthdate))
 
@@ -349,12 +349,12 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         })
     }
 
-    fun clearAllKeyboardFocus() {
+    private fun clearAllKeyboardFocus() {
         KeyboardHandler.hideSoftKeyboard(activity)
     }
 
-    fun renderPassengerMeals(flightBookingMealRouteModels: List<FlightBookingAmenityMetaModel>,
-                             selecteds: List<FlightBookingAmenityMetaModel>) {
+    private fun renderPassengerMeals(flightBookingMealRouteModels: List<FlightBookingAmenityMetaModel>,
+                                     selecteds: List<FlightBookingAmenityMetaModel>) {
         meals_container.visibility = View.VISIBLE
 
         var models = arrayListOf<SimpleModel>()
@@ -432,21 +432,19 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         luggage_container.visibility = View.VISIBLE
 
         val models = arrayListOf<SimpleModel>()
-        if (flightBookingLuggageRouteModels != null) {
-            for (luggage in flightBookingLuggageRouteModels) {
-                val model = SimpleModel(luggage.description, getString(R.string.flight_booking_passenger_choose_label))
-                for (selected in selecteds) {
-                    if (selected.key.equals(luggage.key, true)) {
-                        val selectedLuggages = arrayListOf<String>()
-                        for (aminity in selected.amenities) {
-                            selectedLuggages.add("${aminity.title} - ${aminity.price}")
-                        }
-                        model.description = TextUtils.join(",", selectedLuggages)
-                        break
+        for (luggage in flightBookingLuggageRouteModels) {
+            val model = SimpleModel(luggage.description, getString(R.string.flight_booking_passenger_choose_label))
+            for (selected in selecteds) {
+                if (selected.key.equals(luggage.key, true)) {
+                    val selectedLuggages = arrayListOf<String>()
+                    for (aminity in selected.amenities) {
+                        selectedLuggages.add("${aminity.title} - ${aminity.price}")
                     }
+                    model.description = TextUtils.join(",", selectedLuggages)
+                    break
                 }
-                models.add(model)
             }
+            models.add(model)
         }
 
         val luggageAdapter = FlightSimpleAdapter()
@@ -680,7 +678,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     private fun onAmenitiesDataChange(flightBookingLuggageMetaModel: FlightBookingAmenityMetaModel, passengerModelAmenities: MutableList<FlightBookingAmenityMetaModel>): List<FlightBookingAmenityMetaModel> {
         val index = passengerModelAmenities.indexOf(flightBookingLuggageMetaModel)
 
-        if (flightBookingLuggageMetaModel.amenities.size != 0) {
+        if (flightBookingLuggageMetaModel.amenities.isNotEmpty()) {
             if (index != -1) {
                 passengerModelAmenities[index] = flightBookingLuggageMetaModel
             } else {
@@ -950,7 +948,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                     if (data != null) {
                         val flightBookingLuggageMetaViewModel = data.getParcelableExtra<FlightBookingAmenityMetaModel>(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES)
                         flightBookingLuggageMetaViewModel?.let {
-                            renderPassengerLuggages(luggageModels, onAmenitiesDataChange(flightBookingLuggageMetaViewModel, passengerModel.flightBookingLuggageMetaViewModels.toMutableList()))
+                            renderPassengerLuggages(luggageModels, onAmenitiesDataChange(flightBookingLuggageMetaViewModel, passengerModel.flightBookingLuggageMetaViewModels))
                         }
                     }
                 }
@@ -959,7 +957,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                     if (data != null) {
                         val flightBookingMealMetaViewModel = data.getParcelableExtra<FlightBookingAmenityMetaModel>(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES)
                         flightBookingMealMetaViewModel?.let {
-                            renderPassengerMeals(mealModels, onAmenitiesDataChange(flightBookingMealMetaViewModel, passengerModel.flightBookingMealMetaViewModels.toMutableList()))
+                            renderPassengerMeals(mealModels, onAmenitiesDataChange(flightBookingMealMetaViewModel, passengerModel.flightBookingMealMetaViewModels))
                         }
                     }
                 }
