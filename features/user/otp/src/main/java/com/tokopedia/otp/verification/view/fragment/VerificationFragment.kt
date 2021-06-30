@@ -228,19 +228,20 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     userIdEnc = otpData.userIdEnc,
                     validateToken = otpData.accessToken
             )
+        } else {
+            viewModel.otpValidate(
+                    code = code,
+                    otpType = otpData.otpType.toString(),
+                    msisdn = otpData.msisdn,
+                    email = otpData.email,
+                    mode = modeListData.modeText,
+                    userId = otpData.userId.toIntOrZero(),
+                    fpData = "",
+                    getSL = "",
+                    signature = "",
+                    timeUnix = ""
+            )
         }
-        viewModel.otpValidate(
-                code = code,
-                otpType = otpData.otpType.toString(),
-                msisdn = otpData.msisdn,
-                email = otpData.email,
-                mode = modeListData.modeText,
-                userId = otpData.userId.toIntOrZero(),
-                fpData = "",
-                getSL = "",
-                signature = "",
-                timeUnix = ""
-        )
     }
 
     private fun initObserver() {
