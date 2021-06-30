@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-//apply plugin: "de.mannodermaus.android-junit5"
 
 
 repositories {
@@ -11,6 +10,7 @@ repositories {
     google()
 }
 
+
 buildscript {
     repositories {
     google()
@@ -19,7 +19,6 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-//        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 

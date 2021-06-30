@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-//apply plugin: "de.mannodermaus.android-junit5"
+apply plugin: "de.mannodermaus.android-junit5"
 
 buildscript {
     repositories {
@@ -12,7 +12,7 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-//        classpath rootProject.ext.miscDependencies.androidjunit5
+        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
@@ -52,6 +52,9 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation rootProject.ext.testDependencies.json
 //    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:5.3.2" //to run junit test case + spek
+
+    testImplementation rootProject.ext.testDependencies.junitJupiterApi
+    testImplementation rootProject.ext.testDependencies.junitJupiterEngine
 }
 
 project.ext {

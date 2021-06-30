@@ -4,7 +4,6 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
-    google()
         google()
         maven { url 'https://maven.fabric.io/public' }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }

@@ -25,7 +25,6 @@ android{
 
 buildscript {
     repositories {
-    google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
