@@ -25,6 +25,7 @@
         android:id="@+id/image_view_selection"
         android:layout_width="20dp"
         android:layout_height="20dp"
+        android:contentDescription="@null"
         app:srcCompat="@drawable/ic_check_green_24dp_shop_page" />
 
 </LinearLayout>

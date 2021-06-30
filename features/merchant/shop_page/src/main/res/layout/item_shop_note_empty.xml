@@ -17,15 +17,17 @@
         tools:text="@string/app_name"
         android:id="@+id/title"/>
 
-    <Button
+    <com.tokopedia.unifycomponents.UnifyButton
         android:layout_marginTop="@dimen/dp_8"
         android:id="@+id/buttonAddNote"
-        style="@style/Button.Shop.Page.Header"
         android:textColor="@color/Unify_N700_68"
         android:layout_width="match_parent"
+        app:unifyButtonSize="medium"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonType="main"
         android:layout_height="@dimen/dp_40"
         android:text="@string/label_add"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:visibility="visible"/>
 
 </LinearLayout>

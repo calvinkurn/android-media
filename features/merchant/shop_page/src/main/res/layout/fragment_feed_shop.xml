@@ -28,7 +28,7 @@
             android:layout_gravity="center" />
     </FrameLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
         android:id="@+id/fab_feed"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
