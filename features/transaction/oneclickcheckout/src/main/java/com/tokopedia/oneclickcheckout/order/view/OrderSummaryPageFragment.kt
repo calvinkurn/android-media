@@ -1294,8 +1294,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         if (viewModel.orderPreference.value is OccState.FirstLoad) {
             view?.let {
                 it.post {
-                    Toaster.build(it, viewModel.getActivationData().successToaster,
-                            actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+                    val successToaster = viewModel.getActivationData().successToaster
+                    if (successToaster.isNotBlank()) {
+                        Toaster.build(it, successToaster, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+                    }
                 }
             }
         }
