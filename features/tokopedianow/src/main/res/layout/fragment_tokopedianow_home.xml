@@ -1,73 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:descendantFocusability="blocksDescendants"
-    android:orientation="vertical">
+    android:descendantFocusability="blocksDescendants">
 
-    <FrameLayout
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/view_background_image"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/tokopedianow_header_background_content_description"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/view_background_image"
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/spacing_lvl4"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvHome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/tokopedianow_header_background_content_description"
-            android:scaleType="fitXY" />
+            android:clipToPadding="false"
+            android:descendantFocusability="beforeDescendants" />
 
-        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-            android:id="@+id/swipe_refresh_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:visibility="gone"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvHome"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:descendantFocusability="beforeDescendants" />
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/navToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:toolbarAlwaysShowShadow="false"
+        app:toolbarBackButton="back"
+        app:toolbarContentType="typeSearchbar"
+        app:toolbarInitialFillColor="transparent"
+        app:toolbarInitialTheme="light"
+        app:toolbarInvertSearchBarColor="true"
+        app:toolbarPageName="/" />
 
-        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-
-        <com.tokopedia.searchbar.navigation_component.NavToolbar
-            android:id="@+id/navToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="top"
-            android:minHeight="?actionBarSize"
-            android:visibility="visible"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:toolbarAlwaysShowShadow="true"
-            app:toolbarBackButton="back"
-            app:toolbarContentType="typeSearchbar"
-            app:toolbarInitialFillColor="transparent"
-            app:toolbarInitialTheme="light"
-            app:toolbarInvertSearchBarColor="true"
-            app:toolbarPageName="/" />
-
-        <View
-            android:id="@+id/status_bar_bg"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_25"
-            android:layout_gravity="top"
-            android:background="@color/Unify_G500"
-            android:visibility="visible" />
-    </FrameLayout>
+    <View
+        android:id="@+id/status_bar_bg"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_25"
+        android:background="@color/Unify_G500"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.minicart.common.widget.MiniCartWidget
         android:id="@+id/miniCartWidget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_height="100dp"
         tools:visibility="visible" />
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

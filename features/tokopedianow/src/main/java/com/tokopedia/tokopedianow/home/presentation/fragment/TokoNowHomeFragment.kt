@@ -129,7 +129,15 @@ class TokoNowHomeFragment: Fragment(),
     private var isFirstImpressionOnBanner = false
 
     private val homeMainToolbarHeight: Int
-        get() = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height)
+        get() {
+            val defaultHeight = resources.getDimensionPixelSize(
+                R.dimen.tokopedianow_default_toolbar_status_height)
+            val height = (navToolbar?.height ?: defaultHeight)
+            val padding = resources.getDimensionPixelSize(
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+
+            return height + padding
+        }
     private val spaceZero: Int
         get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
 
@@ -188,6 +196,7 @@ class TokoNowHomeFragment: Fragment(),
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
         }
+        setupPadding(miniCartSimplifiedData)
     }
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
@@ -439,6 +448,7 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.miniCart) {
             if(it is Success) {
                 setupMiniCart(it.data)
+                setupPadding(it.data)
             }
         }
 
@@ -484,6 +494,18 @@ class TokoNowHomeFragment: Fragment(),
             miniCartWidget.show()
         } else {
             miniCartWidget.hide()
+        }
+    }
+
+    private fun setupPadding(data: MiniCartSimplifiedData) {
+        miniCartWidget.post {
+            val paddingBottom = if(data.isShowMiniCartWidget) {
+                miniCartWidget.height
+            } else {
+                activity?.resources?.getDimensionPixelSize(
+                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+            }
+            swipeLayout?.setPadding(0, 0, 0, paddingBottom)
         }
     }
 
