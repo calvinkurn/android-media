@@ -1,4 +1,4 @@
-query topAdsPDPAffiliate($productId:[String]!, $shopId:String, $includeUI: Boolean){
+query topAdsPDPAffiliate($productId:[Int]!, $shopId:Int, $includeUI: Boolean){
  topAdsPDPAffiliate(productId:$productId, shopId:$shopId, includeUI:$includeUI){
    data{
      affiliate{
