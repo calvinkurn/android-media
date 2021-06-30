@@ -6,33 +6,7 @@
           "available_section": {
             "available_group": [
               {
-                "cart_details": [
-                  {
-                    "cart_id": "2909682704",
-                    "product": {
-                      "campaign_id": 0,
-                      "category": "",
-                      "category_id": 5071,
-                      "parent_id": 1920777124,
-                      "product_id": 1920777124,
-                      "product_name": "PDP D4G1NG 1G4 N0NV4R H",
-                      "product_notes": "",
-                      "product_price": 1000,
-                      "product_quantity": 1,
-                      "product_tracker_data": {
-                        "attribution": ""
-                      },
-                      "product_weight": 100,
-                      "slash_price_label": "",
-                      "variant_description_detail": {
-                        "variant_name": [
-                          "Putih"
-                        ]
-                      },
-                      "warehouse_id": 11528233
-                    }
-                  }
-                ],
+                "cart_details": [],
                 "shipment_information": {
                   "free_shipping": {
                     "eligible": false

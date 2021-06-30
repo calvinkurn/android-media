@@ -25,6 +25,7 @@ import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
 import org.hamcrest.core.AllOf
@@ -269,6 +270,11 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         activityCommonRule.activity.setupTestFragment(productDetailTestComponent)
 
         onView(withId(R.id.qty_editor_pdp)).assertVisible()
+                .check(matches(ViewAttributeMatcher {
+                    val qtyEditor = (it as QuantityEditorUnify)
+                    qtyEditor.getValue() == 5
+                }))
+
         onView(withId(R.id.btn_topchat)).assertVisible()
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
         onView(withId(R.id.btn_buy_now)).assertNotVisible()
@@ -312,8 +318,17 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
         onView(withId(R.id.btn_buy_now)).perform(click())
         Thread.sleep(300)
-        //gotologin page
+
         onView(withId(R.id.qty_editor_pdp)).assertVisible()
+                .check(matches(ViewAttributeMatcher {
+                    val qtyEditor = (it as QuantityEditorUnify)
+                    qtyEditor.getValue() == 2
+                }))
+                .check(matches(ViewAttributeMatcher {
+                    val qtyEditor = (it as QuantityEditorUnify)
+                    !qtyEditor.subtractButton.isEnabled && qtyEditor.addButton.isEnabled
+                }))
+
         onView(withId(R.id.btn_topchat)).assertVisible()
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
         onView(withId(R.id.btn_buy_now)).assertNotVisible()
