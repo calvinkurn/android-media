@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     >
 
-    <FrameLayout
+    <com.tokopedia.play_common.view.RoundedFrameLayout
         android:id="@+id/fl_engagement_background"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/play_interactive_live_height"
         android:layout_marginTop="@dimen/play_offset_6"
         android:background="@drawable/bg_play_interactive"
+        app:cornerRadius="@dimen/play_interactive_prestart_radius"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,7 +30,7 @@
             app:srcCompat="@drawable/bg_play_interactive_decor"
             />
 
-    </FrameLayout>
+    </com.tokopedia.play_common.view.RoundedFrameLayout>
 
     <FrameLayout
         android:id="@+id/fl_interactive_tap"

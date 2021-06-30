@@ -20,12 +20,12 @@ class GetCurrentInteractiveUseCase @Inject constructor(
             channelID: ${"$$PARAM_CHANNEL_ID"}
           }){
             interactive {
-              interactiveID
-              interactiveType
+              interactive_id: interactiveID
+              interactive_type: interactiveType
               title
               status
-              countdownStart
-              countdownEnd
+              countdown_start: countdownStart
+              countdown_end: countdownEnd
             }
           }
         }

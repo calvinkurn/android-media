@@ -36,6 +36,7 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.data.interactive.ChannelInteractive
 import com.tokopedia.play.domain.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play.view.uimodel.action.InteractiveOngoingFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
@@ -45,6 +46,7 @@ import com.tokopedia.play.view.uimodel.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
+import com.tokopedia.play.view.uimodel.interactive.PlayCurrentInteractiveUiModel
 import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
@@ -573,6 +575,7 @@ class PlayViewModel @Inject constructor(
         startWebSocket(channelData.id)
         trackVisitChannel(channelData.id)
 
+        //TODO("This is mock")
         if (channelData.interactiveInfo.hasInteractive) checkInteractive(channelData.id)
     }
 
@@ -974,26 +977,34 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun checkInteractive(channelId: String) {
+        if (!channelType.isLive) return
         viewModelScope.launchCatchError(dispatchers.io, block = {
             getCurrentInteractiveUseCase.setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
             val response = getCurrentInteractiveUseCase.executeOnBackground()
-            val interactive = playUiModelMapper.mapInteractive(response)
-//            setUiState {
-//                copy(
-//                        interactive = PlayInteractiveUiState(
-//                                title = interactive.title,
-//                                status = interactive.timeStatus
-//                        )
-//                )
-//            }
+            val interactive = playUiModelMapper.mapInteractive(response.data.interactive)
+            handleInteractiveFromNetwork(interactive)
         }) {
-            //TODO("This is mock")
             setUiState {
-                copy(interactive = PlayInteractiveUiState.PreStart(
-                        timeToStartInMs = 10000,
-                        "Giveaway Tesla"
-                ))
+                copy(interactive = PlayInteractiveUiState.NoInteractive)
             }
+        }
+    }
+
+    private fun mapInteractiveToState(interactive: PlayCurrentInteractiveUiModel): PlayInteractiveUiState {
+        return when (val status = interactive.timeStatus) {
+            is PlayInteractiveTimeStatus.Scheduled -> PlayInteractiveUiState.PreStart(status.liveTimeInMs, interactive.title)
+            is PlayInteractiveTimeStatus.Live -> PlayInteractiveUiState.Ongoing(status.remainingTimeInMs, interactive.title)
+            else -> PlayInteractiveUiState.NoInteractive
+        }
+    }
+
+    private suspend fun handleInteractiveFromNetwork(interactive: PlayCurrentInteractiveUiModel) {
+        val interactiveUiState = mapInteractiveToState(interactive)
+        setUiState {
+            copy(interactive = interactiveUiState)
+        }
+        if (interactive.timeStatus is PlayInteractiveTimeStatus.Finished) {
+            //TODO("Get Leaderboard")
         }
     }
 
@@ -1114,6 +1125,13 @@ class PlayViewModel @Inject constructor(
                             )
                     )
                 }
+            }
+            is ChannelInteractiveStatus -> {
+                if (result.isExist) checkInteractive(channelId)
+            }
+            is ChannelInteractive -> {
+                val interactive = playSocketToModelMapper.mapInteractive(result)
+                handleInteractiveFromNetwork(interactive)
             }
         }
     }

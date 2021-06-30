@@ -4,6 +4,7 @@ import com.tokopedia.play.data.ChannelStatusResponse
 import com.tokopedia.play.data.Product
 import com.tokopedia.play.data.ShopInfo
 import com.tokopedia.play.data.Voucher
+import com.tokopedia.play.data.interactive.ChannelInteractive
 import com.tokopedia.play.data.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
@@ -26,6 +27,7 @@ class PlayUiModelMapper @Inject constructor(
         private val merchantVoucherMapper: PlayMerchantVoucherUiMapper,
         private val chatMapper: PlayChatUiMapper,
         private val channelStatusMapper: PlayChannelStatusMapper,
+        private val channelInteractiveMapper: PlayChannelInteractiveMapper,
 ) {
 
     fun mapProductTags(input: List<Product>): List<PlayProductUiModel> {
@@ -49,14 +51,7 @@ class PlayUiModelMapper @Inject constructor(
             isFollowed = input.favoriteData.alreadyFavorited == 1
     )
 
-    fun mapInteractive(input: GetCurrentInteractiveResponse) = PlayCurrentInteractiveUiModel(
-            id = input.data.interactive.interactiveID,
-            type = InteractiveType.getByValue(input.data.interactive.interactiveType),
-            title = input.data.interactive.title,
-            timeStatus = PlayInteractiveTimeStatus.getByValue(
-                    status = input.data.interactive.status,
-                    countdownStartInSec = input.data.interactive.countdownStart,
-                    countdownEndInSec = input.data.interactive.countdownEnd,
-            )
-    )
+    fun mapInteractive(input: ChannelInteractive): PlayCurrentInteractiveUiModel {
+        return channelInteractiveMapper.mapInteractive(input)
+    }
 }
