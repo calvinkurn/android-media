@@ -126,7 +126,6 @@ dependencies {
 
     //Travel
     implementation project(rootProject.ext.features.travelHomepage)
-    implementation project(rootProject.ext.features.hotel)
 
     //User
     implementation project(rootProject.ext.features.settingnotif)

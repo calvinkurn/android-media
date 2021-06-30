@@ -51,4 +51,6 @@ dependencies {
     implementation project(rootProject.ext.app.customerapp_pro)
 
     implementation project(rootProject.ext.features.flight)
+
+    implementation project(rootProject.ext.features.hotel)
 }

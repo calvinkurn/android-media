@@ -26,6 +26,7 @@ interface InboxListContract {
         fun hideChatBotWidget()
         fun showBottomFragment()
         fun hideBottomFragment()
+        fun showSerVicePriorityBottomSheet()
     }
 
     interface Presenter : InboxBasePresenter {
@@ -41,5 +42,6 @@ interface InboxListContract {
         fun getWelcomeMessage(): CharSequence
         fun getNotifiactionIndiactor(): Boolean
         fun getBottomFragment(resID: Int): BottomSheetDialogFragment?
+        fun showSerVicePriorityBottomSheet()
     }
 }

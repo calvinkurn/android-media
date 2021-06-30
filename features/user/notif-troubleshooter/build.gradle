@@ -25,6 +25,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.fcm_common)
+    implementation project(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)

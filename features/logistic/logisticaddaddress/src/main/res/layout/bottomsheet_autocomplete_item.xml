@@ -29,7 +29,7 @@
         android:layout_toEndOf="@id/ic_location"
         android:orientation="vertical">
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/place_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
             android:textStyle="bold"
             android:layout_marginBottom="@dimen/dp_2"/>
         
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/place_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
