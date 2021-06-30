@@ -237,18 +237,14 @@ class DiscoveryFragment :
                 scrollDist += dy
 
                 val offset = recyclerView.computeVerticalScrollOffset() // area of view not visible on screen
-                val extent = recyclerView.computeVerticalScrollExtent() // area of visible on screen
-                val range = recyclerView.computeVerticalScrollRange() // max scroll
-
+                val extent = recyclerView.computeVerticalScrollExtent() // area of view visible on screen
+                val range = recyclerView.computeVerticalScrollRange() // max scroll height
                 val percentage = 100.0f * offset / (range - extent).toFloat()
 
                 Log.d("Percentage", "${Math.round(percentage)}%")
 
-
                 val percentageWithScreen = 100.0f * (offset  + extent).toFloat() / range
-
                 Log.d("percentageWithScreen", "${Math.round(percentageWithScreen)}%")
-
 
                 // recyclerView.computeVerticalScrollRange() = recyclerView.computeVerticalScrollOffset() + recyclerView.computeVerticalScrollExtent()
             }
