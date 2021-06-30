@@ -147,9 +147,9 @@ object VariantMapper {
         return DynamicProductInfoP1(
             basic = basic,
             data = data,
+            bestSellerContent = oldData.bestSellerContent,
             layoutName = oldData.layoutName,
-            pdpSession = oldData.pdpSession,
-            bestSellerContent = oldData.bestSellerContent
+            pdpSession = oldData.pdpSession
         )
     }
 
@@ -161,8 +161,8 @@ object VariantMapper {
         return DynamicProductInfoP1(
             basic = basic ?: BasicInfo(),
             data = data ?: ComponentData(),
-            layoutName = oldData?.layoutName ?: "",
-            bestSellerContent = oldData?.bestSellerContent)
+            bestSellerContent = oldData?.bestSellerContent,
+            layoutName = oldData?.layoutName ?: "")
     }
 
     fun generateVariantString(variantData: ProductVariant?): String {
