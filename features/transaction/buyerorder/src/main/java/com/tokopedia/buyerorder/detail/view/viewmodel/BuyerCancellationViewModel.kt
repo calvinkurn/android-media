@@ -70,15 +70,15 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
                         var isButtonEnable = false
                         if (it.isBlank()) {
                             message = resourceProvider.getBuyerRequestCancelReasonShouldNotContainsSpecialCharsErrorMessage()
+                        } else if (!buyerRequestCancelReasonValidationRegex.matches(it)) {
+                            message = resourceProvider.getBuyerRequestCancelReasonShouldNotContainsSpecialCharsErrorMessage()
+                            isError = true
                         } else if (it.length < BUYER_REQUEST_CANCEL_REASON_MINIMAL_CHARACTER) {
                             message = resourceProvider.getBuyerRequestCancelReasonMinCharMessage()
                             isError = true
-                        } else if (buyerRequestCancelReasonValidationRegex.matches(it)) {
-                            message = resourceProvider.getBuyerRequestCancelReasonShouldNotContainsSpecialCharsErrorMessage()
-                            isButtonEnable = true
                         } else {
                             message = resourceProvider.getBuyerRequestCancelReasonShouldNotContainsSpecialCharsErrorMessage()
-                            isButtonEnable = false
+                            isButtonEnable = true
                         }
                         _buyerRequestCancelReasonValidationResult.postValue(BuyerCancelRequestReasonValidationResult(message, isError, isButtonEnable))
                     }
