@@ -22,6 +22,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quic
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs.TabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewModel
 import dagger.Subcomponent
 
 
@@ -49,5 +50,6 @@ interface UIWidgetComponent {
     fun inject(carouselErrorLoadViewModel: CarouselErrorLoadViewModel)
     fun inject(errorLoadViewModel: ErrorLoadViewModel)
     fun inject(categoryBestSellerViewModel: CategoryBestSellerViewModel)
+    fun inject(topAdsHeadlineViewModel: TopAdsHeadlineViewModel)
 
 }

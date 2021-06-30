@@ -137,7 +137,6 @@ public class TopChatAnalytics {
         public static final String CLICK_PRODUCT_IMAGE = "click on product thumbnail";
         public static final String VIEW_PRODUCT_PREVIEW = "view on product thumbnail";
         public static final String CLICK_THUMBNAIL = "click on thumbnail";
-        public static final String CLICK_COPY_VOUCHER_THUMBNAIL = "click copy on shop voucher thumbnail";
         public static final String CLICK_VOUCHER_THUMBNAIL = "click shop voucher thumbnail";
         public static final String CLICK_ATC_PRODUCT_THUMBNAIL = "click atc on product thumbnail";
         public static final String CLICK_BUY_PRODUCT_THUMBNAIL = "click buy on product thumbnail";
@@ -288,16 +287,6 @@ public class TopChatAnalytics {
                 ChatSettingsAnalytics.CHAT_OPEN_CATEGORY,
                 ChatSettingsAnalytics.CHAT_ENABLE_TEXT_LINK_ACTION,
                 String.valueOf(shopId)));
-    }
-
-    //#AV4
-    public void eventVoucherCopyClicked(@NotNull String voucherCode) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                Name.CHAT_DETAIL,
-                Category.CHAT_DETAIL,
-                Action.CLICK_COPY_VOUCHER_THUMBNAIL,
-                voucherCode
-        );
     }
 
     //#AV5

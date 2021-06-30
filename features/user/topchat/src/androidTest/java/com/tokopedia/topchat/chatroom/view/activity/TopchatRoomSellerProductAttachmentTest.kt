@@ -19,10 +19,9 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     @Test
     fun assert_product_card_gravity() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // Then
         onView(
@@ -51,10 +50,9 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     @Test
     fun assert_normal_product_stock_info() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // Then
         assertProductStockType(R.id.recycler_view, 1, isDisplayed())
@@ -66,12 +64,11 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     @Test
     fun assert_campaign_product_stock_info() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment.setCampaignStock(
                 0, true
         )
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // Then
         assertProductStockType(R.id.recycler_view, 1, isDisplayed())
@@ -83,13 +80,12 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     @Test
     fun user_update_stock_single_product_active() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment
+        launchChatRoomActivity()
         createSuccessUpdateStockIntentResult(
-                "1261590628", 55, ProductStatus.ACTIVE
+            "1261590628", 55, ProductStatus.ACTIVE
         )
-        inflateTestFragment()
 
         // When
         clickChangeStockBtn(R.id.recycler_view, 1)
@@ -103,13 +99,12 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     fun user_update_stock_single_product_active_snackbar() {
         // Given
         val productName = "Product Testing"
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment
+        launchChatRoomActivity()
         createSuccessUpdateStockIntentResult(
-                "1261590628", 55, ProductStatus.ACTIVE, productName
+            "1261590628", 55, ProductStatus.ACTIVE, productName
         )
-        inflateTestFragment()
 
         // When
         clickChangeStockBtn(R.id.recycler_view, 1)
@@ -123,13 +118,12 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         // Given
         val productName = "Long product name testing"
         val subProductName = productName.substring(0, 20)
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment
+        launchChatRoomActivity()
         createSuccessUpdateStockIntentResult(
-                "1261590628", 55, ProductStatus.ACTIVE, productName
+            "1261590628", 55, ProductStatus.ACTIVE, productName
         )
-        inflateTestFragment()
 
         // When
         clickChangeStockBtn(R.id.recycler_view, 1)
@@ -141,13 +135,12 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     @Test
     fun user_update_stock_single_product_inactive() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment
+        launchChatRoomActivity()
         createSuccessUpdateStockIntentResult(
-                "1261590628", 55, ProductStatus.INACTIVE
+            "1261590628", 55, ProductStatus.INACTIVE
         )
-        inflateTestFragment()
 
         // When
         clickChangeStockBtn(R.id.recycler_view, 1)
@@ -162,13 +155,12 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     @Test
     fun user_update_stock_normal_carousel_product_active() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductCarouselChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment
+        launchChatRoomActivity()
         createSuccessUpdateStockIntentResult(
-                "1261590628", 55, ProductStatus.ACTIVE
+            "1261590628", 55, ProductStatus.ACTIVE
         )
-        inflateTestFragment()
 
         // When
         clickChangeStockBtn(R.id.rv_product, 0)
@@ -181,13 +173,12 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     @Test
     fun user_update_stock_normal_carousel_product_inactive() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductCarouselChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment
+        launchChatRoomActivity()
         createSuccessUpdateStockIntentResult(
-                "1261590628", 55, ProductStatus.INACTIVE
+            "1261590628", 55, ProductStatus.INACTIVE
         )
-        inflateTestFragment()
 
         // When
         clickChangeStockBtn(R.id.rv_product, 0)
@@ -202,13 +193,12 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     @Test
     fun user_update_stock_broadcast_carousel_product_active() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = sellerBroadcastProductCarouselChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment
+        launchChatRoomActivity()
         createSuccessUpdateStockIntentResult(
-                "1261590628", 55, ProductStatus.ACTIVE
+            "1261590628", 55, ProductStatus.ACTIVE
         )
-        inflateTestFragment()
 
         // When
         clickChangeStockBtn(R.id.rv_product_carousel, 0)
@@ -221,13 +211,12 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     @Test
     fun user_update_stock_broadcast_carousel_product_inactive() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = sellerBroadcastProductCarouselChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment
+        launchChatRoomActivity()
         createSuccessUpdateStockIntentResult(
-                "1261590628", 55, ProductStatus.INACTIVE
+            "1261590628", 55, ProductStatus.INACTIVE
         )
-        inflateTestFragment()
 
         // When
         clickChangeStockBtn(R.id.rv_product_carousel, 0)
@@ -242,11 +231,10 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     @Test
     fun srw_not_displayed_if_seller_attach_from_attach_product() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatSrwUseCase.response = chatSrwResponse
-        inflateTestFragment()
+        launchChatRoomActivity()
         intendingAttachProduct(1)
 
         // When
@@ -254,18 +242,18 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         clickAttachProductMenu()
 
         // Then
-        assertSrwContentIsHidden()
+        assertSrwPreviewContentIsHidden()
+        assertTemplateChatVisibility(isDisplayed())
     }
 
     @Test
     fun update_stock_btn_is_hidden_if_stock_campaign() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment.setCampaignStock(
                 0, true
         )
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // Then
         assertStockCountBtnVisibilityAt(
@@ -277,11 +265,10 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     fun fail_update_stock_show_error_toaster() {
         // Given
         val errorMsg = "Gagal update stok."
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment
+        launchChatRoomActivity()
         createErrorUpdateStockIntentResult(errorMsg)
-        inflateTestFragment()
 
         // When
         clickChangeStockBtn(R.id.recycler_view, 1)
@@ -293,10 +280,9 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     @Test
     fun header_msg_from_smart_reply() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = sellerSmartReply
         chatAttachmentUseCase.response = sellerProductAttachment
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // Then
         assertHeaderRightMsgBubbleVisibility(0, isDisplayed())
@@ -307,10 +293,9 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     @Test
     fun header_msg_from_topbot() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = sellerTopBot
         chatAttachmentUseCase.response = sellerProductAttachment
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // Then
         assertHeaderRightMsgBubbleVisibility(0, isDisplayed())
@@ -321,10 +306,9 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     @Test
     fun header_msg_from_auto_reply() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = sellerAutoReply
         chatAttachmentUseCase.response = sellerProductAttachment
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // Then
         assertHeaderRightMsgBubbleVisibility(0, isDisplayed())
@@ -335,10 +319,9 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     @Test
     fun header_msg_from_normal_inbox() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = sellerSourceInbox
         chatAttachmentUseCase.response = sellerProductAttachment
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // Then
         assertHeaderRightMsgBubbleVisibility(0, not(isDisplayed()))
@@ -348,12 +331,11 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     @Test
     fun tokocabang_status_on_product_card() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment.setFulFillment(
                 0, true
         )
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // Then
         assertTokoCabangVisibility(
@@ -369,12 +351,11 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     @Test
     fun tokocabang_status_on_product_card_disabled() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment.setFulFillment(
                 0, false
         )
-        inflateTestFragment()
+        launchChatRoomActivity()
 
         // Then
         assertTokoCabangVisibility(
@@ -395,13 +376,12 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         val variantMapResult = hashMapOf(
                 productId to variantResult
         )
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductVariantChatReplies
         chatAttachmentUseCase.response = sellerProductVariantAttachment
+        launchChatRoomActivity()
         createSuccessUpdateStockIntentResult(
-                productId, 55, ProductStatus.ACTIVE, productName, variantMapResult
+            productId, 55, ProductStatus.ACTIVE, productName, variantMapResult
         )
-        inflateTestFragment()
 
         // When
         clickChangeStockBtn(R.id.recycler_view, 1)
@@ -434,13 +414,12 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         val variantMapResult = hashMapOf(
                 productId to variantResult
         )
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductVariantChatReplies
         chatAttachmentUseCase.response = sellerProductVariantAttachment
+        launchChatRoomActivity()
         createSuccessUpdateStockIntentResult(
-                productId, 55, ProductStatus.ACTIVE, productName, variantMapResult
+            productId, 55, ProductStatus.ACTIVE, productName, variantMapResult
         )
-        inflateTestFragment()
 
         // When
         clickChangeStockBtn(R.id.recycler_view, 1)
@@ -462,15 +441,14 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     fun should_show_deactivate_toaster_when_deactivate_product_from_update_stock() {
         // Given
         val productName = "Sepatu"
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment.setEmptyStock(
                 0, false
         )
+        launchChatRoomActivity()
         createSuccessUpdateStockIntentResult(
-                "1261590628", 0, ProductStatus.INACTIVE, productName
+            "1261590628", 0, ProductStatus.INACTIVE, productName
         )
-        inflateTestFragment()
 
         // When
         clickChangeStockBtn(R.id.recycler_view, 1)
@@ -485,15 +463,14 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
     fun should_show_activate_toaster_when_activate_product_from_update_stock() {
         // Given
         val productName = "Sepatu"
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductChatReplies
         chatAttachmentUseCase.response = sellerProductAttachment.setEmptyStock(
                 0, true
         )
+        launchChatRoomActivity()
         createSuccessUpdateStockIntentResult(
-                "1261590628", 20, ProductStatus.ACTIVE, productName
+            "1261590628", 20, ProductStatus.ACTIVE, productName
         )
-        inflateTestFragment()
 
         // When
         clickChangeStockBtn(R.id.recycler_view, 1)
@@ -518,13 +495,12 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         val variantMapResult = hashMapOf(
                 productId to variantResult
         )
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductVariantChatReplies
         chatAttachmentUseCase.response = sellerProductVariantAttachmentWithParentId
+        launchChatRoomActivity()
         createSuccessUpdateStockIntentResult(
-                parentId, 55, ProductStatus.ACTIVE, productName, variantMapResult
+            parentId, 55, ProductStatus.ACTIVE, productName, variantMapResult
         )
-        inflateTestFragment()
 
         // When
         clickChangeStockBtn(R.id.recycler_view, 1)
@@ -555,13 +531,12 @@ class TopchatRoomSellerProductAttachmentTest : BaseSellerTopchatRoomTest() {
         val variantMapResult = hashMapOf(
                 productId to variantResult
         )
-        setupChatRoomActivity()
         getChatUseCase.response = sellerProductVariantChatReplies
         chatAttachmentUseCase.response = sellerProductVariantAttachmentWithParentId
+        launchChatRoomActivity()
         createSuccessUpdateStockIntentResult(
-                parentId, 5, ProductStatus.ACTIVE, productName, variantMapResult
+            parentId, 5, ProductStatus.ACTIVE, productName, variantMapResult
         )
-        inflateTestFragment()
 
         // When
         clickChangeStockBtn(R.id.recycler_view, 1)

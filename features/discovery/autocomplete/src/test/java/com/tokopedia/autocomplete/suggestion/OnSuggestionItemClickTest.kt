@@ -96,7 +96,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
         verify {
             suggestionView.showSuggestionResult(any())
-            suggestionView.trackEventClickKeyword(expectedEventLabel)
+            suggestionView.trackEventClickKeyword(expectedEventLabel, item.dimension90)
             suggestionView.onClickSuggestion(item.applink)
         }
 
@@ -123,7 +123,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
         verify {
             suggestionView.showSuggestionResult(any())
-            suggestionView.trackEventClickCurated(expectedEventLabel, item.trackingCode)
+            suggestionView.trackEventClickCurated(expectedEventLabel, item.trackingCode, item.dimension90)
             suggestionView.onClickSuggestion(item.applink)
         }
 
@@ -149,7 +149,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
         verify {
             suggestionView.showSuggestionResult(any())
-            suggestionView.trackEventClickShop(expectedEventLabel)
+            suggestionView.trackEventClickShop(expectedEventLabel, item.dimension90)
             suggestionView.onClickSuggestion(item.applink)
         }
 
@@ -211,11 +211,9 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
     }
 
     private fun `then verify view tracking click item recent keyword is correct`(item: BaseSuggestionDataView) {
-        val expectedEventLabel = item.title
-
         verify {
             suggestionView.showSuggestionResult(any())
-            suggestionView.trackEventClickRecentKeyword(expectedEventLabel)
+            suggestionView.trackEventClickRecentKeyword(item.title, item.dimension90)
             suggestionView.onClickSuggestion(item.applink)
         }
 
