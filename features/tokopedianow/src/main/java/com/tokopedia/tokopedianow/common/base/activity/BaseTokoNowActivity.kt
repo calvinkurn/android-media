@@ -23,7 +23,10 @@ abstract class BaseTokoNowActivity : BaseActivity() {
         setContentView(R.layout.activity_tokopedianow_base)
         setStatusBarColor()
         setBackgroundColor()
-        attachFragment()
+
+        if(savedInstanceState == null) {
+            attachFragment()
+        }
     }
 
     private fun setStatusBarColor() {
