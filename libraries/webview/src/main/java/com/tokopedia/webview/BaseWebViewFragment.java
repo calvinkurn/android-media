@@ -681,6 +681,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
         if (goToLoginGoogle(uri)) return true;
+        if (uri.getHost() == null) {
+            return false;
+        }
 
         String queryParam = null;
         String headerText = null;

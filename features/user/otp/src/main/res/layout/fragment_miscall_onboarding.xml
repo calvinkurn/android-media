@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_N0">
@@ -18,18 +19,38 @@
             android:fitsSystemWindows="true"
             android:orientation="vertical"
             android:paddingBottom="@dimen/spacing_lvl4">
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/img_animation_miscall_onboarding"
+            
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_image_onboarding_miscall"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/img_miscall_onboarding_height"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginEnd="@dimen/spacing_lvl4"
-                android:layout_marginBottom="@dimen/spacing_lvl4"
-                app:layout_constraintTop_toTopOf="parent"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
-                app:lottie_rawRes="@raw/otp_miscall_animation" />
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+    
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/img_animation_miscall_onboarding"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/img_miscall_onboarding_height"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:layout_marginEnd="@dimen/spacing_lvl4"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/otp_miscall_animation" />
+    
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/img_miscall_onboarding"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/img_miscall_onboarding_height"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    android:layout_marginEnd="@dimen/spacing_lvl4"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/title"
@@ -42,7 +63,7 @@
                 android:text="@string/cotp_miscall_onboarding_title"
                 android:textAlignment="center"
                 android:textColor="@color/Unify_N700"
-                app:layout_constraintTop_toBottomOf="@id/img_animation_miscall_onboarding"
+                app:layout_constraintTop_toBottomOf="@id/layout_image_onboarding_miscall"
                 app:typographyType="heading_3"
                 app:typographyWeight="bold" />
 

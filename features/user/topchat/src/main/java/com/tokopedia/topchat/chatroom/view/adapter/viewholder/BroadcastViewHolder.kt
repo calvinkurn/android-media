@@ -160,7 +160,7 @@ class BroadcastViewHolder constructor(
         val voucher = element.voucherUiModel
         if (voucher != null) {
             voucherView?.show()
-            TopChatVoucherViewHolderBinder.bindVoucherView(voucher, voucherView, voucherListener)
+            TopChatVoucherViewHolderBinder.bindVoucherView(voucher, voucherView)
             TopChatVoucherViewHolderBinder.bindClick(voucher, voucherView, voucherListener)
         } else {
             voucherView?.gone()

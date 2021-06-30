@@ -41,7 +41,6 @@ import com.tokopedia.play.view.measurement.scaling.PlayVideoScalingManager
 import com.tokopedia.play.view.measurement.scaling.VideoScalingManager
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.recom.PlayPinnedUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.FragmentBottomSheetViewComponent
@@ -57,7 +56,6 @@ import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -216,6 +214,14 @@ class PlayFragment @Inject constructor(
      */
     override fun onFinalBottomMostBoundsScalingCalculated(bottomMostBounds: Int) {
         fragmentUserInteractionView.setScaledVideoBottomBounds(bottomMostBounds)
+    }
+
+    override fun onAnimationStart(isHidingInsets: Boolean) {
+        fragmentUserInteractionView.startAnimateInsets(isHidingInsets)
+    }
+
+    override fun onAnimationFinish(isHidingInsets: Boolean) {
+        fragmentUserInteractionView.finishAnimateInsets(isHidingInsets)
     }
 
     fun onFirstTopBoundsCalculated() {
@@ -380,6 +386,7 @@ class PlayFragment @Inject constructor(
                 dismissToaster()
 
                 if (!playViewModel.bottomInsets.isAnyBottomSheetsShown && it.shouldAutoSwipeOnFreeze) doAutoSwipe()
+                else if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) onBottomInsetsViewHidden()
 
             } else if (it.statusType.isBanned) {
                 showEventDialog(it.bannedModel.title, it.bannedModel.message, it.bannedModel.btnTitle)
@@ -419,8 +426,8 @@ class PlayFragment @Inject constructor(
     }
 
     private fun observePinned() {
-        playViewModel.observablePinned.observe(viewLifecycleOwner, DistinctObserver {
-            if (it is PlayPinnedUiModel.PinnedProduct) fragmentBottomSheetView.safeInit()
+        playViewModel.observablePinnedProduct.observe(viewLifecycleOwner, DistinctObserver {
+            fragmentBottomSheetView.safeInit()
         })
     }
 
