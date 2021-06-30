@@ -19,6 +19,7 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
