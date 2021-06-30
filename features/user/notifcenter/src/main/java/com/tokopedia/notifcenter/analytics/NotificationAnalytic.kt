@@ -57,6 +57,7 @@ class NotificationAnalytic @Inject constructor(
             const val ACTION_VIEW_NOTIF_LIST = "view on notif list"
             const val EVENT_ACTION_CLICK_NOTIF_LIST = "click on notif list"
             const val ACTION_CLICK_LONGER_CONTENT_BUTTON = "click on text (longer content)"
+            const val SCROL_TO_BOTTOM = "scroll to bottom"
         }
     }
 
@@ -450,6 +451,19 @@ class NotificationAnalytic @Inject constructor(
                     OtherAttr.SHOP_ID to notification.product?.shop?.id.toString(),
                     OtherAttr.USER_ID to userSession.userId
                 )
+            )
+        )
+    }
+
+    fun trackScrollToBottom(notificationSise: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            InboxAnalyticCommon.createGeneralEvent(
+                event = Event.CLICK_NOTIF_CENTER,
+                eventAction = EventAction.SCROL_TO_BOTTOM,
+                eventCategory = EventCategory.NOTIFCENTER,
+                eventLabel = notificationSise,
+                businessUnit = BusinessUnit.COMMUNICATION,
+                currentSite = CurrentSite.MARKETPLACE
             )
         )
     }
