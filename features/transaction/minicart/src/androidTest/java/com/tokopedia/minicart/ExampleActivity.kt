@@ -1,9 +1,9 @@
-package com.tokopedia.minicart.example
+package com.tokopedia.minicart
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.tokopedia.minicart.R
+import com.tokopedia.minicart.test.R
 
 class ExampleActivity : AppCompatActivity() {
 

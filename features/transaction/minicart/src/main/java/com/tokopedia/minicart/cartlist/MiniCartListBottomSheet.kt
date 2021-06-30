@@ -242,6 +242,12 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 if (overweightData != null) {
                     analytics.eventViewErrorTickerOverweightInMiniCart(overweightData.warningMessage)
                 }
+                val tickerErrorUiModel = it.getMiniCartTickerErrorUiModel()
+                if (tickerErrorUiModel != null) {
+                    val message = bottomSheet?.context?.getString(R.string.mini_cart_message_ticker_error, tickerErrorUiModel.unavailableItemCount)
+                            ?: ""
+                    analytics.eventViewTickerErrorUnavailableProduct(message)
+                }
             }
 
             if (it.needToCalculateAfterLoad) {
@@ -539,10 +545,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     override fun onChangeNotesClicked() {
         analytics.eventClickChangeNotes()
-    }
-
-    override fun onShowUnavailableItem(element: MiniCartProductUiModel) {
-        analytics.eventViewTickerErrorUnavailableProduct(element.errorType)
     }
 
 }
