@@ -1,8 +1,6 @@
 package com.tokopedia.hotel.common.util
 
-import com.tokopedia.utils.date.DateUtil
-import com.tokopedia.utils.date.toDate
-import com.tokopedia.utils.date.toString
+import com.tokopedia.utils.date.*
 import java.util.*
 
 class HotelUtils {
@@ -10,9 +8,9 @@ class HotelUtils {
     companion object {
 
         fun validateCheckInAndCheckOutDate(checkInDate: String, checkOutDate: String): Pair<String, String> {
-            val todayWithoutTime = DateUtil.removeTime(DateUtil.getCurrentCalendar().time)
-            val tomorrow = DateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 1)
-            val dayAfterTomorrow = DateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 2)
+            val todayWithoutTime = DateUtil.getCurrentCalendar().time.removeTime()
+            val tomorrow = todayWithoutTime.addTimeToSpesificDate(Calendar.DATE, 1)
+            val dayAfterTomorrow = todayWithoutTime.addTimeToSpesificDate(Calendar.DATE, 2)
 
             var updatedCheckInDate = checkInDate
             var updatedCheckOutDate = checkOutDate
@@ -23,11 +21,11 @@ class HotelUtils {
                 updatedCheckOutDate = dayAfterTomorrow.toString(DateUtil.YYYY_MM_DD)
             } else if (updatedCheckInDate.isBlank()) {
                 val checkout = updatedCheckOutDate.toDate(DateUtil.YYYY_MM_DD)
-                val dayBeforeCheckOut = DateUtil.addTimeToSpesificDate(checkout, Calendar.DATE, -1)
+                val dayBeforeCheckOut = checkout.addTimeToSpesificDate(Calendar.DATE, -1)
                 updatedCheckInDate = dayBeforeCheckOut.toString(DateUtil.YYYY_MM_DD)
             } else if (updatedCheckOutDate.isBlank()) {
                 val checkin = updatedCheckInDate.toDate(DateUtil.YYYY_MM_DD)
-                val dayAfterCheckIn = DateUtil.addTimeToSpesificDate(checkin, Calendar.DATE, 1)
+                val dayAfterCheckIn = checkin.addTimeToSpesificDate(Calendar.DATE, 1)
                 updatedCheckOutDate = dayAfterCheckIn.toString(DateUtil.YYYY_MM_DD)
             }
 
@@ -38,7 +36,7 @@ class HotelUtils {
             //if check out date has passed or check out date < check in date
             if (DateUtil.getDayDiffFromToday(updatedCheckOutDate) < 1) {
                 val checkin = updatedCheckInDate.toDate(DateUtil.YYYY_MM_DD)
-                val dayAfterCheckIn = DateUtil.addTimeToSpesificDate(checkin, Calendar.DATE, 1)
+                val dayAfterCheckIn = checkin.addTimeToSpesificDate(Calendar.DATE, 1)
                 updatedCheckOutDate = dayAfterCheckIn.toString(DateUtil.YYYY_MM_DD)
             }
 

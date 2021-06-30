@@ -34,6 +34,7 @@ import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchA
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.SEARCH_TYPE
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.fragment_hotel_change_search.*
@@ -59,10 +60,10 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
             globalSearchModel.destinationType = it.getString(EXTRA_DESTINATION_TYPE) ?: ""
             globalSearchModel.destinationType
             globalSearchModel.checkInDate = it.getString(EXTRA_CHECK_IN_DATE)
-                    ?: DateUtil.addTimeToSpesificDate(DateUtil.getCurrentCalendar().time, Calendar.DATE, 1).toString(DateUtil.YYYY_MM_DD)
+                    ?: DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 1).toString(DateUtil.YYYY_MM_DD)
             globalSearchModel.checkInDateFmt = it.getString(EXTRA_CHECK_IN_DATE).toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
             globalSearchModel.checkOutDate = it.getString(EXTRA_CHECK_OUT_DATE)
-                    ?: DateUtil.addTimeToSpesificDate(DateUtil.getCurrentCalendar().time, Calendar.DATE, 2).toString (DateUtil.YYYY_MM_DD)
+                    ?: DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.DATE, 2).toString(DateUtil.YYYY_MM_DD)
             globalSearchModel.checkOutDateFmt = it.getString(EXTRA_CHECK_OUT_DATE).toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)
             globalSearchModel.numOfGuests = it.getInt(EXTRA_NUM_OF_GUESTS)
             globalSearchModel.numOfRooms = it.getInt(EXTRA_NUM_OF_ROOMS)

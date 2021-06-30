@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailUseCase
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailDataModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
@@ -36,7 +35,10 @@ class FlightOrderDetailWebCheckInViewModel @Inject constructor(private val order
         val orderData = orderDetailData.value
         if (orderData != null && orderData is Success) {
             val airlineName = if (journey.airlineName.isNotEmpty()) journey.airlineName else "Multi Maskapai"
-            val departureDate = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, journey.departureTime)
+            val departureDate = DateUtil.formatDate(
+                    DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                    DateUtil.YYYYMMDD,
+                    journey.departureTime)
             flightAnalytics.eventClickOnWebCheckIn(
                     "${journey.departureId}${journey.arrivalId} - $airlineName - $departureDate - $orderId",
                     userSession.userId,
@@ -92,9 +94,13 @@ class FlightOrderDetailWebCheckInViewModel @Inject constructor(private val order
 
     private fun getDepartureDateAndTime(journey: FlightOrderDetailJourneyModel): Pair<String, String> {
 
-        val time = "${DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                DateUtil.HH_MM, journey.departureTime)} - ${DateUtil.formatDate(
-                DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.HH_MM, journey.arrivalTime)}"
+        val time = "${
+            DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                    DateUtil.HH_MM, journey.departureTime)
+        } - ${
+            DateUtil.formatDate(
+                    DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.HH_MM, journey.arrivalTime)
+        }"
 
         return Pair(
                 DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, DateUtil.EEE_DD_MMM_YY, journey.departureTime),

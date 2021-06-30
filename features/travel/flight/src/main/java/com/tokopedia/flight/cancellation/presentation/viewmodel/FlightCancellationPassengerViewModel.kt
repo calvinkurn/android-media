@@ -8,7 +8,6 @@ import com.tokopedia.flight.cancellation.domain.FlightCancellationGetPassengerUs
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationModel
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
@@ -38,7 +37,10 @@ class FlightCancellationPassengerViewModel @Inject constructor(
     fun trackOnNext() {
         for (item in selectedCancellationPassengerList) {
             val route = "${item.flightCancellationJourney.departureAirportId}${item.flightCancellationJourney.arrivalAirportId}"
-            val departureDate = FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, item.flightCancellationJourney.departureTime)
+            val departureDate = DateUtil.formatDate(
+                    DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
+                    DateUtil.YYYYMMDD,
+                    item.flightCancellationJourney.departureTime)
 
             flightAnalytics.eventClickNextOnCancellationPassenger(
                     "$route - ${item.flightCancellationJourney.airlineName} - $departureDate - $invoiceId",

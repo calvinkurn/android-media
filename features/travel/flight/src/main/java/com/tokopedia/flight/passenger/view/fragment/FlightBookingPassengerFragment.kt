@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.flight.R
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightPassengerInfoValidator
 import com.tokopedia.flight.common.view.enum.FlightPassengerTitle
 import com.tokopedia.flight.detail.view.adapter.FlightSimpleAdapter
@@ -58,6 +57,10 @@ import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAda
 import com.tokopedia.travel.passenger.util.TravelPassengerGqlMutation
 import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.*
 import java.util.*
 import javax.inject.Inject
@@ -226,10 +229,12 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             passengerModel.passengerTitleId = getPassengerTitleId(getPassengerTitle())
             passengerModel.passengerFirstName = getFirstName()
             passengerModel.passengerLastName = getLastName()
-            if (isMandatoryDoB() || !isDomestic) passengerModel.passengerBirthdate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassengerBirthDate())
+            if (isMandatoryDoB() || !isDomestic) passengerModel.passengerBirthdate = DateUtil
+                    .formatDate(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.YYYY_MM_DD, getPassengerBirthDate())
             if (!isDomestic) {
                 passengerModel.passportNumber = getPassportNumber()
-                passengerModel.passportExpiredDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassportExpiryDate())
+                passengerModel.passportExpiredDate = DateUtil
+                        .formatDate(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.YYYY_MM_DD, getPassportExpiryDate())
             }
 
             upsertContactList()
@@ -243,14 +248,14 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         contact.lastName = getLastName()
         contact.title = getPassengerTitle()
         if (isMandatoryDoB() || !isDomestic)
-            contact.birthDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
-                    FlightDateUtil.DEFAULT_FORMAT, getPassengerBirthDate())
+            contact.birthDate = DateUtil.formatDate(DateUtil.DEFAULT_VIEW_FORMAT,
+                    DateUtil.YYYY_MM_DD, getPassengerBirthDate())
         if (!isDomestic) {
             contact.nationality = passengerModel.passportNationality?.countryId ?: "ID"
             contact.idList = listOf(TravelContactIdCard(type = "passport", title = "Paspor",
                     number = getPassportNumber(), country = passengerModel.passportIssuerCountry?.countryId
                     ?: "ID",
-                    expiry = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassportExpiryDate())))
+                    expiry = DateUtil.formatDate(DateUtil.DEFAULT_VIEW_FORMAT, DateUtil.YYYY_MM_DD, getPassportExpiryDate())))
         }
 
         passengerViewModel.updateContactList(TravelPassengerGqlMutation.UPSERT_CONTACT, contact)
@@ -283,8 +288,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         }
 
         if (passengerModel.passengerBirthdate != null)
-            til_birth_date.textFieldInput.setText(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
-                    FlightDateUtil.DEFAULT_VIEW_FORMAT, passengerModel.passengerBirthdate))
+            til_birth_date.textFieldInput.setText(DateUtil.formatDate(DateUtil.YYYY_MM_DD,
+                    DateUtil.DEFAULT_VIEW_FORMAT, passengerModel.passengerBirthdate))
 
         rv_passenger_title.listener = object : FilterChipAdapter.OnClickListener {
             override fun onChipClickListener(string: String, isSelected: Boolean) {
@@ -320,25 +325,25 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         val minDate: Date
         var selectedDate: Date
 
-        val tmpDepatureDate = FlightDateUtil.stringToDate(depatureDate)
-        minDate = FlightDateUtil.addTimeToSpesificDate(tmpDepatureDate, Calendar.MONTH, PLUS_SIX)
-        val maxDate: Date = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, PLUS_TWENTY)
+        val tmpDepatureDate = depatureDate.toDate(DateUtil.YYYY_MM_DD)
+        minDate = tmpDepatureDate.addTimeToSpesificDate(Calendar.MONTH, PLUS_SIX)
+        val maxDate: Date = DateUtil.getCurrentDate().addTimeToSpesificDate(Calendar.YEAR, PLUS_TWENTY)
         selectedDate = minDate
 
         if (getPassportExpiryDate().isNotBlank()) {
-            selectedDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getPassportExpiryDate())
+            selectedDate = getPassportExpiryDate().toDate(DateUtil.DEFAULT_VIEW_FORMAT)
         }
 
         showCalendarPickerDialog(selectedDate, minDate, maxDate, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-            val calendar = FlightDateUtil.currentCalendar
+            val calendar = DateUtil.getCurrentCalendar()
             calendar.set(Calendar.YEAR, year)
             calendar.set(Calendar.MONTH, month)
             calendar.set(Calendar.DATE, dayOfMonth)
             val passportExpiryDate = calendar.time
 
-            val passportExpiryDateStr = FlightDateUtil.dateToString(passportExpiryDate, FlightDateUtil.DEFAULT_VIEW_FORMAT)
-            passengerModel.passportExpiredDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
-                    FlightDateUtil.DEFAULT_FORMAT, passportExpiryDateStr)
+            val passportExpiryDateStr = passportExpiryDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)
+            passengerModel.passportExpiredDate = DateUtil.formatDate(DateUtil.DEFAULT_VIEW_FORMAT,
+                    DateUtil.YYYY_MM_DD, passportExpiryDateStr)
             til_passport_expiration_date.textFieldInput.setText(passportExpiryDateStr)
             validatePassportExpiredDate(true)
         })
@@ -487,9 +492,9 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 til_passport_no.textFieldInput.setText(it)
             }
             passengerModel.passportExpiredDate?.let {
-                til_passport_expiration_date.textFieldInput.setText(FlightDateUtil
-                        .formatDate(FlightDateUtil.DEFAULT_FORMAT,
-                                FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                til_passport_expiration_date.textFieldInput.setText(DateUtil
+                        .formatDate(DateUtil.YYYY_MM_DD,
+                                DateUtil.DEFAULT_VIEW_FORMAT,
                                 it))
             }
             passengerModel.passportNationality?.let {
@@ -538,46 +543,46 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         lateinit var maxDate: Date
         var minDate: Date? = null
         lateinit var selectedDate: Date
-        val depatureDate = FlightDateUtil.stringToDate(depatureDate)
+        val departureDate = depatureDate.toDate(DateUtil.YYYY_MM_DD)
 
         when {
             isChildPassenger() -> {
-                minDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, MINUS_TWELVE)
-                minDate = FlightDateUtil.addTimeToSpesificDate(minDate, Calendar.DATE, PLUS_ONE)
-                maxDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, MINUS_TWO)
+                minDate = departureDate.addTimeToSpesificDate(Calendar.YEAR, MINUS_TWELVE)
+                minDate = minDate.addTimeToSpesificDate(Calendar.DATE, PLUS_ONE)
+                maxDate = departureDate.addTimeToSpesificDate(Calendar.YEAR, MINUS_TWO)
                 selectedDate = maxDate
             }
             isAdultPassenger() -> {
-                maxDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, MINUS_TWELVE)
+                maxDate = departureDate.addTimeToSpesificDate(Calendar.YEAR, MINUS_TWELVE)
                 selectedDate = maxDate
             }
             else -> {
-                minDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, MINUS_TWO)
-                minDate = FlightDateUtil.addTimeToSpesificDate(minDate, Calendar.DATE, PLUS_ONE)
-                maxDate = FlightDateUtil.currentDate
+                minDate = departureDate.addTimeToSpesificDate(Calendar.YEAR, MINUS_TWO)
+                minDate = minDate.addTimeToSpesificDate(Calendar.DATE, PLUS_ONE)
+                maxDate = DateUtil.getCurrentDate()
                 selectedDate = maxDate
             }
         }
 
-        if (til_birth_date.textFieldInput.text.toString().isNotEmpty()) selectedDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, til_birth_date.textFieldInput.text.toString())
+        if (til_birth_date.textFieldInput.text.toString().isNotEmpty()) selectedDate = til_birth_date.textFieldInput.text.toString().toDate(DateUtil.DEFAULT_VIEW_FORMAT)
 
-        val currentTime = FlightDateUtil.currentCalendar
+        val currentTime = DateUtil.getCurrentCalendar()
         currentTime.time = maxDate
         currentTime.set(Calendar.HOUR_OF_DAY, DEFAULT_LAST_HOUR_IN_DAY)
         currentTime.set(Calendar.MINUTE, DEFAULT_LAST_MIN_IN_DAY)
         currentTime.set(Calendar.SECOND, DEFAULT_LAST_SEC_IN_DAY)
 
         var onDateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-            val calendar = FlightDateUtil.currentCalendar
+            val calendar = DateUtil.getCurrentCalendar()
             calendar.set(Calendar.YEAR, year)
             calendar.set(Calendar.MONTH, month)
             calendar.set(Calendar.DATE, dayOfMonth)
             val birthDate = calendar.time
 
-            val birthDateStr = FlightDateUtil.dateToString(birthDate, FlightDateUtil.DEFAULT_VIEW_FORMAT)
+            val birthDateStr = birthDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)
             if (validateBirthDate(birthDateStr)) {
-                passengerModel.passengerBirthdate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
-                        FlightDateUtil.DEFAULT_FORMAT, birthDateStr)
+                passengerModel.passengerBirthdate = DateUtil.formatDate(DateUtil.DEFAULT_VIEW_FORMAT,
+                        DateUtil.YYYY_MM_DD, birthDateStr)
                 til_birth_date.textFieldInput.setText(birthDateStr)
             }
         }
@@ -626,8 +631,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             }
             if (contact.birthDate.isNotBlank() && (!isDomestic || isMandatoryDoB())) {
                 passengerModel.passengerBirthdate = contact.birthDate
-                til_birth_date.textFieldInput.setText(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
-                        FlightDateUtil.DEFAULT_VIEW_FORMAT, contact.birthDate))
+                til_birth_date.textFieldInput.setText(DateUtil.formatDate(DateUtil.YYYY_MM_DD,
+                        DateUtil.DEFAULT_VIEW_FORMAT, contact.birthDate))
             }
 
             if (contact.idList.isNotEmpty() && !isDomestic) {
@@ -636,8 +641,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                         passengerModel.passportNumber = id.number
                         passengerModel.passportExpiredDate = id.expiry
                         til_passport_no.textFieldInput.setText(id.number)
-                        til_passport_expiration_date.textFieldInput.setText(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
-                                FlightDateUtil.DEFAULT_VIEW_FORMAT, id.expiry))
+                        til_passport_expiration_date.textFieldInput.setText(DateUtil.formatDate(DateUtil.YYYY_MM_DD,
+                                DateUtil.DEFAULT_VIEW_FORMAT, id.expiry))
                         passengerViewModel.getNationalityById(TravelCountryCodeGqlQuery.ALL_COUNTRY, contact.nationality)
                         passengerViewModel.getPassportIssuerCountryById(TravelCountryCodeGqlQuery.ALL_COUNTRY, id.country)
                         break
@@ -775,10 +780,11 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             }
 
     private fun validateBirthDate(passengerBirthDate: String): Boolean {
-        val twelveYearsAgo = FlightDateUtil.addTimeToSpesificDate(FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.stringToDate(depatureDate), Calendar.YEAR, MINUS_TWELVE), Calendar.DATE, PLUS_ONE)
-        val twoYearsAgo = FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.stringToDate(depatureDate), Calendar.YEAR, MINUS_TWO)
+        val twelveYearsAgo = depatureDate.toDate(DateUtil.YYYY_MM_DD)
+                .addTimeToSpesificDate(Calendar.YEAR, MINUS_TWELVE)
+                .addTimeToSpesificDate(Calendar.DATE, PLUS_ONE)
+        val twoYearsAgo = depatureDate.toDate(DateUtil.YYYY_MM_DD)
+                .addTimeToSpesificDate(Calendar.YEAR, MINUS_TWO)
 
         return if ((isChildPassenger() || isInfantPassenger()) && !flightPassengerInfoValidator.validateBirthdateNotEmpty(passengerBirthDate)) {
 
@@ -846,10 +852,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             }
 
     private fun validatePassportExpiredDate(isNeedPassport: Boolean): Boolean {
-        val sixMonthFromDeparture = FlightDateUtil.addTimeToSpesificDate(
-                FlightDateUtil.stringToDate(depatureDate),
-                Calendar.MONTH, PLUS_SIX)
-        val twentyYearsFromToday = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, PLUS_TWENTY)
+        val sixMonthFromDeparture = depatureDate.toDate(DateUtil.YYYY_MM_DD)
+                .addTimeToSpesificDate(Calendar.MONTH, PLUS_SIX)
+        val twentyYearsFromToday = DateUtil.getCurrentDate()
+                .addTimeToSpesificDate(Calendar.YEAR, PLUS_TWENTY)
 
         return if (isNeedPassport && passengerModel.passportExpiredDate == null) {
             til_passport_expiration_date.setMessage(getString(R.string.flight_booking_passport_expired_date_empty_error))
@@ -864,7 +870,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                         getPassportExpiryDate(), twentyYearsFromToday)) {
             til_passport_expiration_date.setMessage(getString(
                     R.string.flight_passenger_passport_expired_date_more_than_20_year_error,
-                    FlightDateUtil.dateToString(twentyYearsFromToday, FlightDateUtil.DEFAULT_VIEW_FORMAT)))
+                    twentyYearsFromToday.toString(DateUtil.DEFAULT_VIEW_FORMAT)))
             til_passport_expiration_date.setError(true)
             false
         } else {

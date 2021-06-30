@@ -47,7 +47,10 @@ import com.tokopedia.flight.booking.viewmodel.FlightBookingViewModel
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.data.model.FlightError
-import com.tokopedia.flight.common.util.*
+import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
+import com.tokopedia.flight.common.util.FlightFlowUtil
+import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
@@ -77,6 +80,9 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.fragment_flight_booking_v3.*
 import kotlinx.android.synthetic.main.layout_flight_booking_v3_error.view.*
 import kotlinx.android.synthetic.main.layout_flight_booking_v3_loading.*
@@ -436,7 +442,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun setUpTimer(timeStamp: Date) {
-        orderDueTimeStampString = FlightDateUtil.dateToString(timeStamp, FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+        orderDueTimeStampString = timeStamp.toString(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
         countdown_timeout.setListener(object : CountdownTimeView.OnActionListener {
             override fun onFinished() {
                 if (context != null) {
@@ -637,7 +643,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         bookingViewModel.setCartId(cartId)
 
         orderDueTimeStampString = args.getString(EXTRA_ORDER_DUE, "")
-        if (orderDueTimeStampString.isNotEmpty()) setUpTimer(FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, orderDueTimeStampString))
+        if (orderDueTimeStampString.isNotEmpty()) setUpTimer(orderDueTimeStampString.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z))
 
         val profileData = args.getParcelable(EXTRA_CONTACT_DATA) ?: FlightContactData()
         renderProfileData(profileData)

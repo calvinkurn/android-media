@@ -53,6 +53,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.fragment_hotel_room_list.*
@@ -265,8 +266,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         hotelRoomListPageModel.checkInDateFmt = newCheckInDate.toString(DateUtil.DEFAULT_VIEW_FORMAT)
 
         if (newCheckInDate >= hotelRoomListPageModel.checkOut.toDate(DateUtil.YYYY_MM_DD)) {
-            val tomorrow = DateUtil.addTimeToSpesificDate(newCheckInDate,
-                    Calendar.DATE, 1)
+            val tomorrow = newCheckInDate.addTimeToSpesificDate(Calendar.DATE, 1)
             hotelRoomListPageModel.checkOut = tomorrow.toString(DateUtil.YYYY_MM_DD)
             hotelRoomListPageModel.checkOutDateFmt = tomorrow.toString(DateUtil.DEFAULT_VIEW_FORMAT)
         }

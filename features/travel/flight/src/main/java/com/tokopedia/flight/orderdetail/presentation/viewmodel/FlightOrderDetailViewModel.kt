@@ -8,7 +8,6 @@ import com.tokopedia.common.travel.data.TravelCrossSellingGQLQuery
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.view.enum.FlightPassengerType
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailGetInvoiceEticketUseCase
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailUseCase
@@ -25,6 +24,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -116,13 +116,13 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
 
     fun isWebCheckInAvailable(flightOrderDetailData: FlightOrderDetailDataModel): Pair<Boolean, String> {
         var checkInAvailable = false
-        val today = FlightDateUtil.currentDate
-        var subtitle: String = ""
+        val today = DateUtil.getCurrentDate()
+        var subtitle = ""
 
         if (FlightOrderDetailStatusMapper.getStatusOrder(flightOrderDetailData.status) == FlightOrderDetailStatusMapper.SUCCESS) {
             for (journey in flightOrderDetailData.journeys) {
-                val webCheckInOpenTime = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, journey.webCheckIn.startTime)
-                val webCheckInCloseTime = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, journey.webCheckIn.endTime)
+                val webCheckInOpenTime = journey.webCheckIn.startTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
+                val webCheckInCloseTime = journey.webCheckIn.endTime.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z)
                 if (webCheckInOpenTime.before(today) && webCheckInCloseTime.after(today)) {
                     checkInAvailable = true
                     subtitle = journey.webCheckIn.subtitle

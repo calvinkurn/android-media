@@ -51,15 +51,13 @@ object DateUtil {
     /**
      * Function to get the day difference from input date and today
      *
-     * @param inputDate date string
+     * @param dateStr date in string object
      *
      * @return Long object of day difference between two dates
      */
-    fun getDayDiffFromToday(inputDate: String): Long {
-        val leftDate = inputDate.toDate(YYYY_MM_DD_T_HH_MM_SS_Z).trimDate()
-        val rightDate = getCurrentCalendar().time.trimDate()
-        val diff = leftDate.time - rightDate.time
-        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
+    fun getDayDiffFromToday(dateStr: String): Long {
+        val date = dateStr.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).trimDate()
+        return date.getDayDiffFromToday()
     }
 
     /**
@@ -70,37 +68,11 @@ object DateUtil {
     fun getCurrentCalendar(): Calendar = Calendar.getInstance()
 
     /**
-     * Function to add some value for specific field in Date
+     * Function to get current date
      *
-     * @param date date that want to be changed, eg. Date(2021-10-10)
-     * @param field field that want to be changed from date, eg. Calendar.MINUTE, Calendar.YEAR, etc
-     * @param value additional value for the selected field
-     *
-     * @return Date object
+     * @return current Date
      */
-    fun addTimeToSpesificDate(date: Date, field: Int, value: Int): Date {
-        val now = getCurrentCalendar()
-        now.time = date
-        now.add(field, value)
-        return now.time
-    }
-
-    /**
-     * Function to remove time from date, so hour, minute, second and ms will be 0
-     *
-     * @param date date that want to be changed, eg. Date(2021-10-10)
-     *
-     * @return Date object without 0 time, only date
-     */
-    fun removeTime(date: Date): Date {
-        val cal = Calendar.getInstance()
-        cal.time = date
-        cal[Calendar.HOUR_OF_DAY] = 0
-        cal[Calendar.MINUTE] = 0
-        cal[Calendar.SECOND] = 0
-        cal[Calendar.MILLISECOND] = 0
-        return cal.time
-    }
+    fun getCurrentDate(): Date = getCurrentCalendar().time
 
     /**
      * Function to format date based on user timezone
@@ -249,4 +221,46 @@ fun Date.trimDate(): Date {
     calendar[Calendar.SECOND] = DateUtil.LAST_SEC_IN_A_MIN
     calendar[Calendar.MILLISECOND] = 0
     return calendar.time
+}
+
+/**
+ * Function to remove time from date, so hour, minute, second and ms will be 0
+ *
+ * @return Date object with value 0 for hour, minute, second and ms
+ */
+fun Date.removeTime(): Date {
+    val cal = Calendar.getInstance()
+    cal.time = this
+    cal[Calendar.HOUR_OF_DAY] = 0
+    cal[Calendar.MINUTE] = 0
+    cal[Calendar.SECOND] = 0
+    cal[Calendar.MILLISECOND] = 0
+    return cal.time
+}
+
+/**
+ * Function to add some value for specific field in Date
+ *
+ * @param field field that want to be changed from date, eg. Calendar.MINUTE, Calendar.YEAR, etc
+ * @param value additional value for the selected field
+ *
+ * @return Date object
+ */
+fun Date.addTimeToSpesificDate(field: Int, value: Int): Date {
+    val now = DateUtil.getCurrentCalendar()
+    now.time = this
+    now.add(field, value)
+    return now.time
+}
+
+/**
+ * Function to get the day difference from input date and today
+ *
+ * @return Long object of day difference between two dates
+ */
+fun Date.getDayDiffFromToday(): Long {
+    val leftDate = this.trimDate()
+    val rightDate = DateUtil.getCurrentCalendar().time.trimDate()
+    val diff = leftDate.time - rightDate.time
+    return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
 }
