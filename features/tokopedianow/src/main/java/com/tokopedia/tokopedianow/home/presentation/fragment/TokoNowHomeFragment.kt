@@ -263,6 +263,7 @@ class TokoNowHomeFragment: Fragment(),
     private fun showEmptyState(id: String) {
         rvLayoutManager?.setScrollEnabled(false)
         viewModelTokoNow.getEmptyState(id)
+        miniCartWidget?.hide()
     }
 
     private fun showFailedToFetchData() {
@@ -616,7 +617,9 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun getMiniCart()  {
-        viewModelTokoNow.getMiniCart(listOf(localCacheModel?.shop_id.orEmpty()))
+        if (localCacheModel?.warehouse_id?.toLongOrZero() != 0L) {
+            viewModelTokoNow.getMiniCart(listOf(localCacheModel?.shop_id.orEmpty()))
+        }
     }
 
     private fun loadLayout() {
