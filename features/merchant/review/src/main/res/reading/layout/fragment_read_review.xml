@@ -77,15 +77,12 @@
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/read_review_network_error"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/Unify_N0"
         android:gravity="center"
         android:visibility="gone"
-        app:globalerrors_type="NO_CONNECTION"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:globalerrors_type="PAGE_NOT_FOUND" />
 
     <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
         android:id="@+id/read_review_go_to_top_fab"

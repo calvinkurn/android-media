@@ -287,6 +287,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         return view?.findViewById(R.id.read_review_swipe_refresh_layout)
     }
 
+    override fun showEmpty() {
+        // No Op
+    }
+
     private fun getProductIdFromArguments() {
         viewModel.setProductId(arguments?.getString(ReviewConstants.ARGS_PRODUCT_ID, "") ?: "")
     }
@@ -344,6 +348,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private fun onSuccessGetRatingAndTopic(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
         if (ratingAndTopics.rating.totalRating == 0) {
             showPageNotFound()
+            hideFullPageLoading()
             return
         }
         reviewHeader?.apply {
@@ -363,18 +368,14 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         stopNetworkRequestPerformanceMonitoring()
         startRenderPerformanceMonitoring()
         hideError()
-        showFab()
         if (productrevGetProductReviewList.reviewList.isEmpty() && viewModel.isFilterSelected()) {
             showFilteredEmpty()
             return
         }
         hideFilteredEmpty()
         with(productrevGetProductReviewList) {
-            if (productrevGetProductReviewList.reviewList.isEmpty()) {
-                showEmpty()
-                return
-            }
             renderList(viewModel.mapProductReviewToReadReviewUiModel(reviewList, shopInfo.shopID, shopInfo.name), hasNext)
+            if(isListEmpty) hideFab() else showFab()
         }
     }
 

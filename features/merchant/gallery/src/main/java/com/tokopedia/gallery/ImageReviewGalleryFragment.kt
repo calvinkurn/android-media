@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.gallery.adapter.GalleryAdapter
 import com.tokopedia.gallery.adapter.TypeFactory
 import com.tokopedia.gallery.customview.BottomSheetImageReviewSlider
+import com.tokopedia.gallery.customview.BottomSheetImageReviewSliderCallback
 import com.tokopedia.gallery.domain.GetImageReviewUseCase
 import com.tokopedia.gallery.presenter.ReviewGalleryPresenterContract
 import com.tokopedia.gallery.presenter.ReviewGalleryPresenter
@@ -18,7 +19,7 @@ import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import java.util.*
 
-class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory>(), BottomSheetImageReviewSlider.Callback, GalleryView {
+class ImageReviewGalleryFragment : BaseListFragment<ImageReviewItem, TypeFactory>(), BottomSheetImageReviewSliderCallback, GalleryView {
 
     private var presenter: ReviewGalleryPresenterContract? = null
     private var activity: ImageReviewGalleryActivity? = null
