@@ -155,6 +155,7 @@ class ProductRecommendationViewHolder(
                 carouselOnAddToCartNonVariantClickListener = object : CarouselProductCardListener.OnAddToCartNonVariantClickListener {
                     override fun onAddToCartNonVariantClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int, quantity: Int) {
                         val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
+                        productRecommendation.currentStock = quantity
                         listener.onAddToCartNonVariantQuantityChangedClick(
                                 recomItem = productRecommendation,
                                 quantity = quantity,
