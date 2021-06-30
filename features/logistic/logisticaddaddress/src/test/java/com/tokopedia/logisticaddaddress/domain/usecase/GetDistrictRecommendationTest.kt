@@ -8,14 +8,15 @@ import com.tokopedia.logisticaddaddress.helper.DiscomDummyProvider
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import org.junit.Before
+import org.junit.Test
 import rx.Observable
 import rx.Scheduler
 import rx.observers.TestSubscriber
 import rx.schedulers.Schedulers
 
-object GetDistrictRecommendationTest: Spek({
+class GetDistrictRecommendationTest {
+
     lateinit var usecaseUt: GetDistrictRecommendation
     val gqlUsecaseMock: GraphqlUseCase = mockk(relaxed = true)
     val queryMapMock: Map<String, String> = mockk()
@@ -29,7 +30,8 @@ object GetDistrictRecommendationTest: Spek({
         }
     }
 
-    beforeEachTest {
+    @Before
+    fun setup() {
         val queryTest = """
         query GetDistrictRecommendation(${"$"}query: String, ${"$"}page: String){
           kero_district_recommendation(query: ${"$"}query, page: ${"$"}page) {
@@ -51,28 +53,20 @@ object GetDistrictRecommendationTest: Spek({
         usecaseUt = GetDistrictRecommendation(queryMapMock, gqlUsecaseMock, testSchedProvider)
     }
 
-    Feature("execute district response") {
+    @Test
+    fun `execute district response success return object response`() {
         val subscriber = TestSubscriber<DistrictRecommendationResponse>()
-        Scenario("success return object respone") {
-            Given("success response") {
-                every { gqlUsecaseMock.getExecuteObservable(null)
-                } answers {
-                    Observable.just(DiscomDummyProvider.getSuccessGqlResponse())
-                }
-            }
 
-            When("executed") {
-                val actual = usecaseUt.execute("jak", 1)
-                actual.subscribe(subscriber)
-            }
-
-            Then("return object response") {
-                subscriber.assertCompleted()
-                subscriber.assertNoErrors()
-                Assert.assertTrue(subscriber.onNextEvents[0].keroDistrictRecommendation.district.isNotEmpty())
-            }
+        every { gqlUsecaseMock.getExecuteObservable(null)
+        } answers {
+            Observable.just(DiscomDummyProvider.getSuccessGqlResponse())
         }
-    }
 
-})
+        usecaseUt.execute("jak", 1).subscribe(subscriber)
+
+        subscriber.assertCompleted()
+        subscriber.assertNoErrors()
+        Assert.assertTrue(subscriber.onNextEvents[0].keroDistrictRecommendation.district.isNotEmpty())
+    }
+}
 

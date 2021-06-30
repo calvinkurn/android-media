@@ -55,7 +55,7 @@ class TopChatVoucherViewHolder constructor(
 
     override fun bind(element: TopChatVoucherUiModel) {
         super.bind(element)
-        TopChatVoucherViewHolderBinder.bindVoucherView(element, merchantVoucherView, voucherListener)
+        TopChatVoucherViewHolderBinder.bindVoucherView(element, merchantVoucherView)
         TopChatVoucherViewHolderBinder.bindClick(element, merchantVoucherView, voucherListener)
         bindChatBubbleAlignment(element)
         bindBackground(element)
