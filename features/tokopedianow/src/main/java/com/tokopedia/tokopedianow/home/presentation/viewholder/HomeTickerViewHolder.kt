@@ -24,7 +24,7 @@ class HomeTickerViewHolder(
     }
 
     override fun bind(data: HomeTickerUiModel) {
-        val closeBtn = itemView.findViewById<AppCompatImageButton>(R.id.ticker_close_icon)
+        val closeBtn = itemView.findViewById<AppCompatImageButton>(com.tokopedia.unifycomponents.R.id.ticker_close_icon)
         val ticker = itemView.findViewById<Ticker>(R.id.ticker_announcement)
         closeBtn.setOnClickListener {
             listener?.onTickerDismissed()

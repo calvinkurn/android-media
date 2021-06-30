@@ -200,6 +200,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_ENTERTAINMENT = "df_entertainment"
     const val DF_MERCHANT_LOGIN = "df_merchant_login"
     const val DF_CONTENT_PROFILE = "df_content_profile"
+    const val DF_TOKOPEDIA_NOW = "df_tokopedianow"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -518,6 +519,16 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Revamped buyer order detail (features/ordermanagement/buyer_order_detail)
             add(DFP({ it.startsWith(MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL) }, DF_BASE, R.string.title_revamped_buyer_order_detail))
+
+            // Tokopedia NOW!
+            add(DFP({
+                it.startsWith(TokopediaNow.HOME) ||
+                    it.startsWith(TokopediaNow.CATEGORY) ||
+                    it.startsWith(TokopediaNow.SEARCH) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.HOME) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.CATEGORY) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.SEARCH)
+            }, DF_TOKOPEDIA_NOW, R.string.title_tokopedia_now))
         }
     }
 

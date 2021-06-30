@@ -369,4 +369,7 @@
     <string name="vidpick_app_name">Video Recorder</string>
     <string name="album">Album</string>
     <string name="edit_image">Edit Gambar</string>
+
+    <!--Dynamic feature TokopediaNOW! -->
+    <string name="title_tokopedia_now">Tokopedia NOW</string>
 </resources>
