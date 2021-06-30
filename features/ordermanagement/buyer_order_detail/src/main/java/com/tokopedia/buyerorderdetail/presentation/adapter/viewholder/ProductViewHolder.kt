@@ -24,7 +24,7 @@ class ProductViewHolder(
         itemView: View?,
         private val listener: ProductViewListener,
         private val navigator: BuyerOrderDetailNavigator
-) : AbstractViewHolder<ProductListUiModel.ProductUiModel>(itemView), View.OnClickListener {
+) : BaseToasterViewHolder<ProductListUiModel.ProductUiModel>(itemView), View.OnClickListener {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_product_list_item
@@ -99,8 +99,12 @@ class ProductViewHolder(
 
     private fun goToProductSnapshotPage() {
         element?.let {
-            navigator.goToProductSnapshotPage(it.orderId, it.orderDetailId)
-            BuyerOrderDetailTracker.eventClickProduct(it.orderStatusId, it.orderId)
+            if (it.orderId != "0") {
+                navigator.goToProductSnapshotPage(it.orderId, it.orderDetailId)
+                BuyerOrderDetailTracker.eventClickProduct(it.orderStatusId, it.orderId)
+            } else {
+                showToaster(getString(R.string.buyer_order_detail_error_message_cant_open_snapshot_when_waiting_invoice))
+            }
         }
     }
 

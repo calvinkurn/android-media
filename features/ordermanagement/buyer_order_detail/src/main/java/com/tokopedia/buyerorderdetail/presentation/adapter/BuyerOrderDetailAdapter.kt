@@ -20,9 +20,9 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderStatusSection(orderStatusUiModel: OrderStatusUiModel) {
-        addOrderStatusHeaderSection(orderStatusUiModel.orderStatusHeaderUiModel)
-        addTickerSection(orderStatusUiModel.ticker)
-        addThinDividerSection()
+        if (addOrderStatusHeaderSection(orderStatusUiModel.orderStatusHeaderUiModel) || addTickerSection(orderStatusUiModel.ticker)) {
+            addThinDividerSection()
+        }
         addOrderStatusInfoSection(orderStatusUiModel.orderStatusInfoUiModel)
     }
 
@@ -58,8 +58,11 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         if (headerUiModel.shouldShow()) add(headerUiModel)
     }
 
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addTickerSection(tickerUiModel: TickerUiModel) {
-        if (tickerUiModel.shouldShow()) add(tickerUiModel)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addTickerSection(tickerUiModel: TickerUiModel): Boolean {
+        return if (tickerUiModel.shouldShow()) {
+            add(tickerUiModel)
+            true
+        } else false
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addThinDashedDividerSection() {
@@ -74,8 +77,11 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         add(ThinDividerUiModel())
     }
 
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderStatusHeaderSection(orderStatusHeaderUiModel: OrderStatusUiModel.OrderStatusHeaderUiModel) {
-        if (orderStatusHeaderUiModel.shouldShow()) add(orderStatusHeaderUiModel)
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderStatusHeaderSection(orderStatusHeaderUiModel: OrderStatusUiModel.OrderStatusHeaderUiModel): Boolean {
+        return if (orderStatusHeaderUiModel.shouldShow()) {
+            add(orderStatusHeaderUiModel)
+            true
+        } else false
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderStatusInfoSection(orderStatusInfoUiModel: OrderStatusUiModel.OrderStatusInfoUiModel) {
