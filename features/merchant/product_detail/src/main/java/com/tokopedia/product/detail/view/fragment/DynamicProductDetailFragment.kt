@@ -2179,12 +2179,18 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         DynamicProductDetailTracking.BottomSheetErrorShipment.eventClickButtonShipmentErrorBottomSheet(viewModel.getDynamicProductInfoP1, viewModel.userId, bottomSheetData.title, errorCode)
                         goToShipmentErrorAddressOrChat(errorCode)
                     },
-                    onHomeClicked = {
-                        goToHomePageClicked()
-                    }
+                    onHomeClicked = { goToHomePage() }
             ).show(childFragmentManager, ProductDetailConstant.BS_SHIPMENT_ERROR_TAG)
             return true
         } ?: return false
+    }
+
+    private fun goToHomePage(){
+//        val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+//        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//        startActivity(intent)
+
+        RouteManager.route(context, ApplinkConst.HOME)
     }
 
     private fun goToShipmentErrorAddressOrChat(errorCode: Int) {
