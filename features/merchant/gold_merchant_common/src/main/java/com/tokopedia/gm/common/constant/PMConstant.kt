@@ -57,4 +57,12 @@ object PMConstant {
         const val OFFICIAL_STORE = 2
         const val POWER_MERCHANT_PRO = 3
     }
+
+    object ShopLevel {
+        const val NO_LEVEL = 0
+        const val ONE = 1
+        const val TWO = 2
+        const val THREE = 3
+        const val FOUR = 4
+    }
 }

@@ -5,7 +5,11 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.*
-import com.tokopedia.catalog.viewholder.*
+import com.tokopedia.catalog.viewholder.components.CatalogInfoViewHolder
+import com.tokopedia.catalog.viewholder.containers.CatalogComparisionContainerViewHolder
+import com.tokopedia.catalog.viewholder.containers.CatalogProductsContainerViewHolder
+import com.tokopedia.catalog.viewholder.containers.CatalogSpecificationsContainerViewHolder
+import com.tokopedia.catalog.viewholder.containers.CatalogVideosContainerViewHolder
 
 class CatalogDetailAdapterFactoryImpl(private val catalogDetailListener: CatalogDetailListener) : BaseAdapterTypeFactory() , CatalogDetailAdapterFactory {
 
@@ -32,11 +36,11 @@ class CatalogDetailAdapterFactoryImpl(private val catalogDetailListener: Catalog
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type){
-            CatalogInfoViewHolder.LAYOUT -> CatalogInfoViewHolder(view,catalogDetailListener)
-            CatalogSpecificationsContainerViewHolder.LAYOUT -> CatalogSpecificationsContainerViewHolder(view,catalogDetailListener)
-            CatalogVideosContainerViewHolder.LAYOUT -> CatalogVideosContainerViewHolder(view,catalogDetailListener)
-            CatalogComparisionContainerViewHolder.LAYOUT -> CatalogComparisionContainerViewHolder(view,catalogDetailListener)
-            CatalogProductsContainerViewHolder.LAYOUT -> CatalogProductsContainerViewHolder(view,catalogDetailListener)
+            CatalogInfoViewHolder.LAYOUT -> CatalogInfoViewHolder(view, catalogDetailListener)
+            CatalogSpecificationsContainerViewHolder.LAYOUT -> CatalogSpecificationsContainerViewHolder(view, catalogDetailListener)
+            CatalogVideosContainerViewHolder.LAYOUT -> CatalogVideosContainerViewHolder(view, catalogDetailListener)
+            CatalogComparisionContainerViewHolder.LAYOUT -> CatalogComparisionContainerViewHolder(view, catalogDetailListener)
+            CatalogProductsContainerViewHolder.LAYOUT -> CatalogProductsContainerViewHolder(view, catalogDetailListener)
             else -> super.createViewHolder(view,type)
         }
     }

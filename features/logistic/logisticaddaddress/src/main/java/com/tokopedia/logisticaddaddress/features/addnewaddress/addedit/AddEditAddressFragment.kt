@@ -577,7 +577,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.length < 9 && s.isNotEmpty()) {
+                if (s.isNotEmpty() && s.length < 9) {
                     setWrapperError(wrapper, textWatcher)
                 } else {
                     setWrapperError(wrapper, null)
@@ -795,7 +795,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     private fun showDistrictRecommendationBottomSheet() {
         val districtRecommendationBottomSheetFragment =
-                DiscomBottomSheetFragment.newInstance(isLogisticLabel)
+                DiscomBottomSheetFragment.newInstance(isLogisticLabel, false, null)
         districtRecommendationBottomSheetFragment.setActionListener(this)
         fragmentManager?.run {
             districtRecommendationBottomSheetFragment.show(this, "")
@@ -999,6 +999,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         saveAddressDataModel?.longitude = ""
         saveAddressDataModel?.zipCodes = districtAddress.zipCodes
         presenter.getAutoComplete(districtName)
+    }
+
+    override fun onChooseZipcode(districtAddress: Address, zipCode: String, isPinpoint: Boolean) {
+        //no-op
     }
 
     override fun moveMap(latitude: Double, longitude: Double) {

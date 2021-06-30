@@ -39,6 +39,7 @@ class MaximumHeightRecyclerView : RecyclerView {
     }
 
     fun setMaxHeight(maxHeight: Float) {
+        if (mMaxHeight == maxHeight) return
         mMaxHeight = maxHeight
         requestLayout()
         invalidate()

@@ -28,7 +28,7 @@ public class UserDataDomain {
         this.userReputation = userReputation;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 

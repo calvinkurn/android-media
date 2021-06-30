@@ -2,11 +2,11 @@ package com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationsItem
+import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationItem
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.listener.DigitalRecommendationViewListener
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendationWidget
 
-class DigitalRecommendationAdapter(val items: List<RecommendationsItem>,
+class DigitalRecommendationAdapter(val items: List<RecommendationItem>,
                                    private val onItemBindListener: DigitalRecommendationViewListener)
     : RecyclerView.Adapter<DigitalRecommendationAdapter.DigitalRecommendationViewHolder>() {
 
