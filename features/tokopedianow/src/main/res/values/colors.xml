@@ -6,4 +6,9 @@
     <color name="tokopedianow_toolbar_dms_shadow_color_4">#20CCCCCC</color>
     <color name="tokopedianow_toolbar_dms_shadow_color_5">#25CCCCCC</color>
     <color name="tokopedianow_dms_transparent">#00000000</color>
+    <color name="tokopedianow_header_background_dms_color_1">#FFFFF5CC</color>
+    <color name="tokopedianow_header_background_dms_color_2">#FFB4FFD8</color>
+    <color name="tokopedianow_header_background_dms_color_3">#83ECB2</color>
+    <color name="tokopedianow_header_background_dms_color_4">#83ECB2</color>
+    <color name="tokopedianow_header_background_dms_color_5">#C9FDE0</color>
 </resources>
