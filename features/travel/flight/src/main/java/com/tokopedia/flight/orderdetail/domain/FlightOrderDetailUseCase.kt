@@ -14,6 +14,9 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 /**
@@ -22,7 +25,7 @@ import javax.inject.Inject
 class FlightOrderDetailUseCase @Inject constructor(
         private val useCase: MultiRequestGraphqlUseCase) {
 
-    suspend fun execute(invoiceId: String, isFromCloud: Boolean = true): FlightOrderDetailDataModel {
+    suspend fun execute(invoiceId: String, isFromCloud: Boolean = true): Result<FlightOrderDetailDataModel> {
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(
                 if (isFromCloud) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
         useCase.clearRequest()
@@ -37,9 +40,9 @@ class FlightOrderDetailUseCase @Inject constructor(
         val orderDetailEntity = orderDetailResponse.flightGetOrderDetail
 
         if (orderDetailEntity.errors.isEmpty()) {
-            return transformEntityToModel(orderDetailEntity.data)
+            return Success(transformEntityToModel(orderDetailEntity.data))
         } else {
-            throw MessageErrorException(orderDetailEntity.errors.joinToString(separator = ";") { it.message })
+            return Fail(MessageErrorException(orderDetailEntity.errors.joinToString(separator = ";") { it.message }))
         }
     }
 
