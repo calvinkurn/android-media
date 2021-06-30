@@ -2,6 +2,7 @@ package com.tokopedia.flight.search.domain
 
 import com.tokopedia.flight.search.data.FlightSearchRepository
 import com.tokopedia.flight.search.data.cloud.combine.FlightCombineRequestModel
+import com.tokopedia.flight.search.presentation.model.FlightSearchCombine
 import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -12,7 +13,7 @@ import javax.inject.Inject
 class FlightSearchCombineUseCase @Inject constructor(private val flightSearchRepository: FlightSearchRepository) {
 
     suspend fun execute(combineParams: FlightCombineRequestModel)
-            : Boolean {
+            : FlightSearchCombine.Response {
 
         val numOfAttempts = intArrayOf(0)
         val pollDelay = intArrayOf(0)
@@ -29,7 +30,7 @@ class FlightSearchCombineUseCase @Inject constructor(private val flightSearchRep
             }
         } while (!isStopLooping)
 
-        return isStopLooping
+        return FlightSearchCombine.Response(FlightSearchCombine(isCombineDone = isStopLooping))
     }
 
 }

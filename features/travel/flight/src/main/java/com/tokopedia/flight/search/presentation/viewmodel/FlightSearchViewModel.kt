@@ -29,6 +29,7 @@ import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.statistics.FlightSearchStatisticModel
 import com.tokopedia.flight.search.presentation.util.FlightSearchCache
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -164,8 +165,11 @@ class FlightSearchViewModel @Inject constructor(
                     !flightSearchPassData.isOneWay,
                     isReturnTrip,
                     filterModel.journeyId)
-
-            onGetSearchMeta(data, isReturnTrip)
+            if(data.flightSearchModel.flightErrorResponse.errorList.isEmpty()){
+                onGetSearchMeta(data.flightSearchModel.flightSearchMetaModel, isReturnTrip)
+            }else{
+                mutableJourneyList.postValue(Fail(MessageErrorException(data.flightSearchModel.flightErrorResponse.errorList[0].message ?:"", data.flightSearchModel.flightErrorResponse.errorList[0].status ?: "")))
+            }
         }) {
             mutableJourneyList.postValue(Fail(it))
         }
@@ -207,8 +211,13 @@ class FlightSearchViewModel @Inject constructor(
                 flightSearchPassData.searchRequestId)
 
         launchCatchError(context = dispatcherProvider.main, block = {
-            isCombineDone = flightSearchCombineUseCase.execute(combineRequestModel)
-            fetchSortAndFilter()
+            val data = flightSearchCombineUseCase.execute(combineRequestModel)
+            if(data.flightSearchCombine.flightErrorResponse.errorList.isEmpty()){
+                isCombineDone = data.flightSearchCombine.isCombineDone
+                fetchSortAndFilter()
+            }else{
+                mutableJourneyList.postValue(Fail(MessageErrorException(data.flightSearchCombine.flightErrorResponse.errorList[0].message ?:"", data.flightSearchCombine.flightErrorResponse.errorList[0].status ?: "")))
+            }
         }) {
             it.printStackTrace()
         }
