@@ -211,38 +211,42 @@ object BitmapHelper {
         return bitmap
     }
 
-    private fun downscaleToMaxAllowedDimension(bitmap: Bitmap): Bitmap? {
+    private fun downscaleToScaledAllowedDimension(
+        watermarkBitmap: Bitmap,
+        mainBitmap: Bitmap
+    ): Bitmap? {
+        val ratioThreshold = mainBitmap.scaleByDividedOfThreesHold()
+
+        val inWidth = watermarkBitmap.width
+        val inHeight = watermarkBitmap.height
+
         val outWidth: Int
         val outHeight: Int
 
-        val inWidth = bitmap.width
-        val inHeight = bitmap.height
-
+        // scaling based on bitmap orientation
         if (inWidth > inHeight) {
-            val ratioThreshold = inWidth.ratioThreesHold()
-
             outWidth = ratioThreshold
             outHeight = inHeight * ratioThreshold / inWidth
         } else {
-            val ratioThreshold = inHeight.ratioThreesHold()
-
             outHeight = ratioThreshold
             outWidth = inWidth * ratioThreshold / inHeight
         }
 
-        return Bitmap.createScaledBitmap(bitmap, outWidth, outHeight, false)
+        return Bitmap.createScaledBitmap(
+            watermarkBitmap,
+            outWidth,
+            outHeight,
+            false
+        )
     }
 
-    private fun Int.ratioThreesHold(): Int {
-        return when(this) {
-            // for small image
-            in 0..500 -> this / 6
+    private fun Bitmap.scaleByDividedOfThreesHold(): Int {
+        val threesHold = 3
 
-            // for medium image
-            in 500..1000 -> this / 3
-
-            // for large image
-            else -> this / 2
+        return if (this.width > this.height) {
+            this.width / threesHold
+        } else {
+            this.height / threesHold
         }
     }
 
@@ -257,8 +261,8 @@ object BitmapHelper {
         val widthMainBitmap = mainBitmap.width
         val heightMainBitmap = mainBitmap.height
 
-        // scaled resize the watermark container
-        val scaledWatermarkBitmap = downscaleToMaxAllowedDimension(watermarkBitmap!!)
+        // scaled resize the watermark container with divided by three
+        val scaledWatermarkBitmap = downscaleToScaledAllowedDimension(watermarkBitmap!!, mainBitmap)
 
         // merge the main bitmap with scaled watermark bitmap
         val resultBitmap = Bitmap.createBitmap(
