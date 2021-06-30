@@ -1,34 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/spacing_lvl5"
+    android:layout_marginTop="@dimen/spacing_lvl4"
     android:orientation="vertical">
 
-    <ViewStub
-        android:id="@+id/vs_title"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:inflatedId="@+id/channel_title"
-        android:layout="@layout/view_stub_dc_title"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_see_all"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_see_all"
-        tools:text="Kategori di TokoNOW!" />
+        android:layout_height="wrap_content">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_see_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="@string/tokopedianow_see_all"
-        android:textColor="@color/unify_G500"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5" />
+        <ViewStub
+            android:id="@+id/vs_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:inflatedId="@+id/channel_title"
+            android:layout="@layout/view_stub_dc_title"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_see_all"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_see_all"
+            tools:text="Kategori di TokoNOW!" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_see_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_toEndOf="@id/vs_title"
+            android:gravity="center_horizontal"
+            android:layout_alignParentEnd="true"
+            android:text="@string/tokopedianow_see_all"
+            android:textColor="@color/unify_G500"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5" />
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_category"
@@ -37,8 +45,7 @@
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl1"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/tv_see_all" />
+        android:visibility="gone" />
 
     <com.tokopedia.unifycomponents.LocalLoad
         android:id="@+id/ll_category"
@@ -47,19 +54,13 @@
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl1"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@+id/tv_see_all"
-        app:layout_constraintStart_toStartOf="@+id/tv_see_all"
-        app:layout_constraintTop_toTopOf="@+id/rv_category" />
+        android:visibility="gone" />
 
     <include
         layout="@layout/partial_tokopedianow_home_category_multiple_linearlayout_shimmering"
         android:id="@+id/category_shimmering"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rv_category" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:visibility="gone" />
+</LinearLayout>

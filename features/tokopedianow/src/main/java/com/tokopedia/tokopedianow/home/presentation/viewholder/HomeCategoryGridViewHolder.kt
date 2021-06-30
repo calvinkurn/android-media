@@ -68,10 +68,10 @@ class HomeCategoryGridViewHolder(
     }
 
     private fun showLoadingState(data: HomeCategoryGridUiModel) {
+        tvTitle?.text = data.title
         llCategory?.hide()
         rvCategory?.hide()
         categoryShimmering?.show()
-        tvTitle?.text = data.title
     }
 
     private fun showCategoryGrid(data: HomeCategoryGridUiModel) {
