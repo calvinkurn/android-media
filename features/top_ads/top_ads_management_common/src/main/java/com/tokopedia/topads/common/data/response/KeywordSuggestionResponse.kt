@@ -10,7 +10,7 @@ data class KeywordSuggestionResponse(
         val result: Result = Result()
 ) {
     data class Result(
-            @field:SerializedName("topAdsGetKeywordSuggestionV3")
+            @field:SerializedName("topAdsGetKeywordSuggestionV3_1")
             val topAdsGetKeywordSuggestionV3: TopAdsGetKeywordSuggestionV3 = TopAdsGetKeywordSuggestionV3()
     )
 }
