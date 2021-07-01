@@ -71,6 +71,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.FROM_WIDGET_TAG
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_PRINT_AWB
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_NEW_ORDER
@@ -703,6 +704,9 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     }
                     SomAnalytics.eventClickBulkPrintAwb(userSession.userId)
                 }
+            }
+            KEY_REQUEST_PICKUP -> {
+
             }
         }
     }
@@ -1820,6 +1824,11 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                                 getString(R.string.som_list_bulk_print_button),
                                 true
                         ))
+                        add(SomListBulkProcessOrderMenuItemUiModel(
+                                KEY_REQUEST_PICKUP,
+                                getString(R.string.som_list_bulk_request_pickup_button),
+                                isEligibleRequestPickup()
+                        ))
                     }
                     bottomSheet.init(fragmentView)
                     bottomSheet.setTitle(getString(R.string.som_list_bulk_confirm_shipping_order_button))
@@ -1834,6 +1843,12 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             }
         }
         showCommonToaster(view, "Terjadi kesalahan, silahkan coba lagi.")
+    }
+
+    private fun isEligibleRequestPickup(): Boolean {
+        return adapter.data.filterIsInstance<SomListOrderUiModel>().filter { it.isChecked }.any {
+                it.buttons.firstOrNull()?.key == KEY_REQUEST_PICKUP
+        }
     }
 
     private fun getOrdersProducts(orders: List<SomListOrderUiModel>): List<SomListBulkProcessOrderProductUiModel> {

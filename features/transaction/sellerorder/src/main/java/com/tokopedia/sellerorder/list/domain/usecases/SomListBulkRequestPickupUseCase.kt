@@ -40,7 +40,7 @@ class SomListBulkRequestPickupUseCase @Inject constructor(
         params = RequestParams.create().apply {
             putObject(SomConsts.PARAM_INPUT, SomListBulkRequestPickupParam(
                     data = orderIds.map {
-                        SomListBulkRequestPickupParam.MPLogisticBulkRequestPickupInputData(
+                        SomListBulkRequestPickupParam.BulkRequestPickupInputData(
                                 orderId = it
                         )
                     }

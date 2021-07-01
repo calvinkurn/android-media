@@ -259,6 +259,7 @@
     <string name="som_list_bulk_print_dialog_print_button">Ya, Cetak Label</string>
     <string name="som_list_bulk_print_dialog_cancel_print_button">Batal</string>
     <string name="som_list_bulk_print_button">Cetak Label Sekaligus</string>
+    <string name="som_list_bulk_request_pickup_button">Request Pick-up Sekaligus</string>
     <string name="som_print_awb_error_message">Terjadi kesalahan, silahkan coba lagi.</string>
 
     <string name="som_detail_som_print_not_available">Fitur ini hanya tersedia di aplikasi Tokopedia Seller</string>
