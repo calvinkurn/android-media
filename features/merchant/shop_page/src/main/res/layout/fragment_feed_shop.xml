@@ -22,13 +22,13 @@
         android:layout_height="match_parent"
         android:visibility="gone">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
             android:layout_gravity="center" />
     </FrameLayout>
 
-    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_feed"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
