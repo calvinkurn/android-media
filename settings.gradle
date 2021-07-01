@@ -19,6 +19,12 @@ gradleEnterprise {
                 tag agentName
                 value 'CI node name', agentName
             }
+            if (System.getenv('JOB_NAME')) {
+                def jobNameLabel = 'CI job'
+                def jobName = System.getenv('JOB_NAME')
+                tag jobName
+                value jobNameLabel, jobName
+            }
         }
         background {
             def gitCommitId = "git rev-parse --verify HEAD".execute().text.trim()
