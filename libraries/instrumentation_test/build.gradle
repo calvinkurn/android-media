@@ -9,7 +9,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
-    google()
+        google()
         jcenter()
         mavenCentral()
         maven { url 'https://maven.fabric.io/public' }

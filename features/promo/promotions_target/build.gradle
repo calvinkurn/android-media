@@ -5,7 +5,7 @@ apply plugin: "de.mannodermaus.android-junit5"
 
 buildscript {
     repositories {
-    google()
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
         jcenter()

@@ -24,7 +24,7 @@ dependencies {
 
 buildscript {
     repositories {
-    google()
+        google()
         mavenCentral()
     }
     dependencies {

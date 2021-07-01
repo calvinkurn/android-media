@@ -6,7 +6,7 @@ repositories {
 
 buildscript {
     repositories {
-    google()
+        google()
         mavenCentral()
     }
 }
