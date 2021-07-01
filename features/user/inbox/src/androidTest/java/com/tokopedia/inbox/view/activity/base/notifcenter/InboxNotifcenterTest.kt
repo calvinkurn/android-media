@@ -12,15 +12,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.inbox.R
-import com.tokopedia.inbox.common.viewassertion.hasHolderItemAtPosition
 import com.tokopedia.inbox.common.viewmatcher.withRecyclerView
 import com.tokopedia.inbox.fake.InboxNotifcenterFakeDependency
 import com.tokopedia.inbox.fake.di.notifcenter.DaggerFakeNotificationComponent
 import com.tokopedia.inbox.view.activity.base.InboxTest
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationTopAdsBannerViewHolder
 import com.tokopedia.test.application.matcher.withTotalItem
 import org.hamcrest.Matcher
-import org.hamcrest.core.IsInstanceOf
 
 open class InboxNotifcenterTest : InboxTest() {
 
@@ -84,15 +81,6 @@ object NotifcenterAssertion {
             withRecyclerView(R.id.recycler_view)
                 .atPositionOnView(position, R.id.tp_message)
         ).check(matches(visibilityMatcher))
-    }
-
-    fun assertTdnExistAtPosition(position: Int) {
-        onView(withId(R.id.recycler_view))
-            .check(
-                hasHolderItemAtPosition(
-                    position, IsInstanceOf(NotificationTopAdsBannerViewHolder::class.java)
-                )
-            )
     }
 
     fun assertItemListSize(size: Int) {

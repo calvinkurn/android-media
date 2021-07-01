@@ -4,6 +4,7 @@ import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAction
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAssertion
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationTopAdsBannerViewHolder
+import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
 import com.tokopedia.test.application.matcher.hasViewHolderOf
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
@@ -22,7 +23,11 @@ class NotifcenterTDNTest : InboxNotifcenterTest() {
         NotifcenterAction.scrollNotificationToPosition(6)
 
         // Then
-        NotifcenterAssertion.assertTdnExistAtPosition(6)
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                6, NotificationTopAdsBannerViewHolder::class.java
+            )
+        )
     }
 
     @Test
