@@ -229,9 +229,9 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         })
 
         tapcashBalanceViewModel.recheckBalanceV6.observe(this, Observer {
-            if(it){
+            if(it.status){
                 tapcashBalanceViewModel.processTapCashTagIntent(IsoDep.get(tag),
-                        DigitalEmoneyGqlQuery.rechargeBniTapcashQuery)
+                        DigitalEmoneyGqlQuery.rechargeBniTapcashQuery, it)
             }
         })
 

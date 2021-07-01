@@ -8,7 +8,10 @@ import com.tokopedia.emoney.data.BalanceTapcash
 
 object TapcashObjectMapper {
 
-    fun mapTapcashtoEmoney(tapcash: BalanceTapcash, balance: String = ""): EmoneyInquiry {
+    fun mapTapcashtoEmoney(tapcash: BalanceTapcash,
+                           balance: String = "",
+                           messageRecheckV6: String = ""
+    ): EmoneyInquiry {
         val attributes = tapcash.rechargeUpdateBalance.attributes
         val error = tapcash.rechargeUpdateBalance.error
         val emoneyInquiry =  EmoneyInquiry(
@@ -26,7 +29,7 @@ object TapcashObjectMapper {
                 ),
                 error = EmoneyInquiryError(
                         error.id,
-                        error.title,
+                        if(messageRecheckV6.isEmpty()) error.title else messageRecheckV6,
                         error.status,
                         needAction = true
                 )
