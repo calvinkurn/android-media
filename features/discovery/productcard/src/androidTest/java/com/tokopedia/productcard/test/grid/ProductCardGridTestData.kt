@@ -25,7 +25,7 @@ internal val productCardGridTestData = productCardModelMatcherData + mutableList
     it.add(testAddToCartVariantWithQuantityAbove99())
 }
 
-private const val PLUS_VARIAN_LAIN_TEXT = "+ Varian Lain"
+private const val PLUS_VARIAN_LAIN_TEXT = "+ Keranjang"
 
 private fun testOutOfStock(): ProductCardModelMatcher {
     val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Stok habis", type = TRANSPARENT_BLACK)
@@ -204,7 +204,7 @@ private fun testAddToCartVariantWithNoQuantity(): ProductCardModelMatcher {
         it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.buttonAddVariant] = isDisplayedWithText("Pilih Varian")
+        it[R.id.buttonAddVariant] = isDisplayedWithText(PLUS_VARIAN_LAIN_TEXT)
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
