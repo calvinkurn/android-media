@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_sah_other_success"
+        android:id="@+id/group_sah_other_header_success"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="shopStatus, freeShippingLayout, divider_sah_other_free_shipping, shopOperationalHour, divider_sah_other_operational, layout_sah_other_saldo, layout_sah_other_topads"/>
@@ -62,12 +62,43 @@
         android:layout_height="@dimen/setting_divider_thin"
         app:layout_constraintTop_toBottomOf="@id/shopOperationalHour"/>
 
+    <LinearLayout
+        android:id="@+id/view_local_load_sah_others_balance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/divider_sah_other_operational"
+        android:background="@color/Unify_N0">
+
+        <com.tokopedia.unifycomponents.LocalLoad
+            android:id="@+id/local_load_sah_others_balance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/layout_lvl2"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_sah_other_saldo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="layout_sah_other_saldo"/>
+
     <include
         layout="@layout/setting_balance"
         android:id="@+id/layout_sah_other_saldo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/divider_sah_other_operational"/>
+        app:layout_constraintTop_toBottomOf="@id/view_local_load_sah_others_balance"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_sah_other_topads"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="layout_sah_other_topads"/>
 
     <include
         layout="@layout/setting_balance_topads"

@@ -66,6 +66,7 @@ class OtherMenuViewModel @Inject constructor(
     private val _isStatusBarInitialState = MutableLiveData<Boolean>().apply { value = true }
     private val _isFreeShippingActive = MutableLiveData<Boolean>()
     private val _shopPeriodType = MutableLiveData<Result<ShopInfoPeriodUiModel>>()
+    private val _oldShopOperationalLiveData = MutableLiveData<Result<ShopOperationalUiModel>>()
 
     private val _shopBadgeLiveData = MutableLiveData<SettingResponseState<ShopBadgeUiModel>>()
     private val _shopTotalFollowersLiveData = MutableLiveData<SettingResponseState<ShopFollowersUiModel>>()
@@ -168,6 +169,8 @@ class OtherMenuViewModel @Inject constructor(
         get() = _shopPeriodType
     val settingShopInfoLiveData: LiveData<Result<SettingShopInfoUiModel>>
         get() = _settingShopInfoLiveData
+    val oldShopOperationalLiveData: LiveData<Result<ShopOperationalUiModel>>
+        get() = _oldShopOperationalLiveData
     val isStatusBarInitialState: LiveData<Boolean>
         get() = _isStatusBarInitialState
     val isToasterAlreadyShown: LiveData<Boolean>
@@ -328,6 +331,19 @@ class OtherMenuViewModel @Inject constructor(
         )
     }
 
+    fun getOldShopOperational() {
+        launchCatchError(
+                block = {
+                    val shopOperational = withContext(dispatcher.io) {
+                        getShopOperationalUseCase.executeOnBackground()
+                    }
+                    _oldShopOperationalLiveData.value = Success(shopOperational)
+                },
+                onError = {
+                    _oldShopOperationalLiveData.value = Fail(it)
+                }
+        )
+    }
 
     fun getBalanceInfo() {
         _balanceInfoLiveData.value = SettingResponseState.SettingLoading

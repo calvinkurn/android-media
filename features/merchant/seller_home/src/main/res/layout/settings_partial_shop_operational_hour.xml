@@ -91,12 +91,13 @@
         android:layout_width="@dimen/setting_zero_dp"
         android:layout_height="@dimen/layout_lvl2"
         android:gravity="center_vertical"
-        android:visibility="visible"
+        android:visibility="gone"
         app:corners="@integer/setting_shimmer_radius"
         app:layout_constraintWidth_percent="0.38"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/guidelineRight"/>
+        app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        tools:visibility="visible"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineLeft"

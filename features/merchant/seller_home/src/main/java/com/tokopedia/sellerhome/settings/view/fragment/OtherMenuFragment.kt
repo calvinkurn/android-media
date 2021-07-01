@@ -704,7 +704,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 userSession = userSession
             )
         }
-        otherMenuViewHolder?.setupInitialLayout()
+        otherMenuViewHolder?.setupInitialLayout(isOtherMenuErrorNewFlow)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (isDefaultDarkStatusBar) {
                 activity?.requestStatusBarDark()
@@ -743,16 +743,16 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 setDarkStatusBar()
                 otherMenuViewModel.setIsStatusBarInitialState(false)
             }
-            shopStatusHeader?.gone()
-            shopStatusHeaderIcon?.gone()
+            iv_sah_other_status_header?.gone()
+            iv_sah_other_status_icon?.gone()
             bg_white_other_menu?.gone()
         } else {
             if (!isInitialStatusBar) {
                 setLightStatusBar()
                 otherMenuViewModel.setIsStatusBarInitialState(true)
             }
-            shopStatusHeader?.visible()
-            shopStatusHeaderIcon?.visible()
+            iv_sah_other_status_header?.visible()
+            iv_sah_other_status_icon?.visible()
             bg_white_other_menu?.visible()
         }
     }

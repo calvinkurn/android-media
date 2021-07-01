@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/shopStatusHeader"
+        android:id="@+id/iv_sah_other_status_header"
         android:layout_width="match_parent"
         android:layout_height="@dimen/setting_header_height_extra"
         android:focusable="true"
@@ -18,14 +18,14 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/shopStatusHeaderIcon"
+        android:id="@+id/iv_sah_other_status_icon"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintWidth_percent="0.117"
         app:layout_constraintHorizontal_bias="0.867"
-        app:layout_constraintBottom_toBottomOf="@id/shopStatusHeader"
-        app:layout_constraintStart_toStartOf="@id/shopStatusHeader"
-        app:layout_constraintEnd_toEndOf="@id/shopStatusHeader"
+        app:layout_constraintBottom_toBottomOf="@id/iv_sah_other_status_header"
+        app:layout_constraintStart_toStartOf="@id/iv_sah_other_status_header"
+        app:layout_constraintEnd_toEndOf="@id/iv_sah_other_status_header"
         tools:src="@drawable/ic_pm_icon_header"/>
 
     <androidx.core.widget.NestedScrollView
@@ -48,9 +48,49 @@
                 android:background="@color/Unify_N0"
                 app:layout_constraintTop_toTopOf="parent"/>
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_sah_other_loading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="shopInfoLoading, shopInfoLayout, shopInfoError"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_sah_other_loading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="shopInfoLoading"/>
+
+            <include
+                android:id="@+id/shopInfoLoading"
+                layout="@layout/setting_partial_shop_info_loading"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_sah_other_success"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="shopInfoLayout"/>
+
             <include
                 android:id="@+id/shopInfoLayout"
                 layout="@layout/view_sah_other_header"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_sah_other_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="shopInfoError"/>
+
+            <include
+                android:id="@+id/shopInfoError"
+                android:visibility="gone"
+                layout="@layout/setting_partial_shop_info_error"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -58,7 +98,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                app:layout_constraintTop_toBottomOf="@id/shopInfoLayout"/>
+                app:layout_constraintTop_toBottomOf="@id/barrier_sah_other_loading"
+                tools:layout_constraintTop_toBottomOf="@id/shopInfoLayout"/>
 
             <View
                 android:layout_width="match_parent"
