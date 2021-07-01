@@ -103,12 +103,12 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             } else {
                 // nfc enabled and process Mandiri NFC as default
                 showLoading()
-                executeMandiri(intent)
+                executeCard(intent)
             }
         }
     }
 
-    private fun executeMandiri(intent: Intent) {
+    private fun executeCard(intent: Intent) {
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
         if (CardUtils.isTapcashCard(intent)) {
             tapcashBalanceViewModel.processTapCashTagIntent(IsoDep.get(tag),
@@ -227,14 +227,6 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 }
             }
         })
-
-        tapcashBalanceViewModel.recheckBalanceV6.observe(this, Observer {
-            if(it.status){
-                tapcashBalanceViewModel.processTapCashTagIntent(IsoDep.get(tag),
-                        DigitalEmoneyGqlQuery.rechargeBniTapcashQuery, it)
-            }
-        })
-
     }
 
     protected open fun processBrizzi(intent: Intent) {
