@@ -131,11 +131,11 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.tokopedia.unifycomponents.DividerUnify
-            android:id="@+id/dividerUnify"
+        <View
+            android:id="@+id/divider"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:background="@color/Unify_N200"/>
+            android:background="@color/Unify_NN50"/>
     </LinearLayout>
 </androidx.appcompat.widget.Toolbar>
