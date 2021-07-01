@@ -865,8 +865,8 @@ abstract class BaseSearchCategoryViewModel(
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
             sendAddToCartTracking(quantity, it.data.cartId, productItem)
-            updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
             onAddToCartSuccess(productItem, it.data.quantity, )
+            updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
         }, {
             onAddToCartFailed(it)
         })
