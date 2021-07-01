@@ -5,6 +5,7 @@ import android.net.Uri
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -17,7 +18,7 @@ import com.tokopedia.inbox.fake.InboxNotifcenterFakeDependency
 import com.tokopedia.inbox.fake.di.notifcenter.DaggerFakeNotificationComponent
 import com.tokopedia.inbox.view.activity.base.InboxTest
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationTopAdsBannerViewHolder
-import org.hamcrest.CoreMatchers.not
+import com.tokopedia.test.application.matcher.withTotalItem
 import org.hamcrest.Matcher
 import org.hamcrest.core.IsInstanceOf
 
@@ -61,6 +62,13 @@ object NotifcenterAction {
             scrollToPosition<RecyclerView.ViewHolder>(position)
         )
     }
+
+    fun clickFilterAt(position: Int) {
+        onView(
+            withRecyclerView(R.id.rv_filter)
+                .atPositionOnView(position, R.id.chips_filter)
+        ).perform(click())
+    }
 }
 
 object NotifcenterAssertion {
@@ -87,12 +95,13 @@ object NotifcenterAssertion {
             )
     }
 
-    fun assertTdnNotExistAtPosition(position: Int) {
+    fun assertItemListSize(size: Int) {
         onView(withId(R.id.recycler_view))
-            .check(
-                hasHolderItemAtPosition(
-                    position, not(IsInstanceOf(NotificationTopAdsBannerViewHolder::class.java))
-                )
-            )
+            .check(matches(withTotalItem(size)))
+    }
+
+    fun assertRecyclerviewItem(matcher: Matcher<in View>) {
+        onView(withId(R.id.recycler_view))
+            .check(matches(matcher))
     }
 }

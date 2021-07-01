@@ -3,6 +3,9 @@ package com.tokopedia.inbox.view.activity.notifcenter.buyer
 import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAction
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAssertion
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationTopAdsBannerViewHolder
+import com.tokopedia.test.application.matcher.hasViewHolderOf
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 class NotifcenterTDNTest : InboxNotifcenterTest() {
@@ -17,7 +20,6 @@ class NotifcenterTDNTest : InboxNotifcenterTest() {
 
         // When
         NotifcenterAction.scrollNotificationToPosition(6)
-
 
         // Then
         NotifcenterAssertion.assertTdnExistAtPosition(6)
@@ -34,11 +36,28 @@ class NotifcenterTDNTest : InboxNotifcenterTest() {
         // When
         NotifcenterAction.scrollNotificationToPosition(6)
 
-
         // Then
-        NotifcenterAssertion.assertTdnNotExistAtPosition(6)
+        NotifcenterAssertion.assertRecyclerviewItem(
+            not(hasViewHolderOf(NotificationTopAdsBannerViewHolder::class.java))
+        )
     }
 
-    //TODO: should hide TDN when user has notification filter
+    @Test
+    fun should_hide_TDN_when_user_has_notification_filter() {
+        // Given
+        inboxNotifcenterDep.apply {
+            topAdsRepository.response = topAdsRepository.defaultResponse
+        }
+        startInboxActivity()
+
+        // When
+        NotifcenterAction.clickFilterAt(0)
+
+        // Then
+        NotifcenterAssertion.assertItemListSize(2)
+        NotifcenterAssertion.assertRecyclerviewItem(
+            not(hasViewHolderOf(NotificationTopAdsBannerViewHolder::class.java))
+        )
+    }
 
 }
