@@ -23,11 +23,9 @@ class PlayEngagementLeaderboardViewHolder(itemView: View, listener: Listener) : 
     private val tvEmpty = itemView.findViewById<Typography>(R.id.tv_leaderboard_empty)
 
     private val winnerAdapter = PlayEngagementWinnerAdapter(object : PlayEngagementWinnerViewHolder.Listener{
-
         override fun onChatButtonClicked(item: PlayWinnerUiModel, position: Int) {
             listener.onChatWinnerButtonClicked(item, position)
         }
-
     })
 
     init {

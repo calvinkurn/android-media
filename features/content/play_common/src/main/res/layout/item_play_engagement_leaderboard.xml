@@ -3,17 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/spacing_lvl5">
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/spacing_lvl5">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_leaderboard_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:typographyType="heading_5"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5"
         tools:text="Giveaway Kotak Pensil" />
 
     <androidx.recyclerview.widget.RecyclerView
