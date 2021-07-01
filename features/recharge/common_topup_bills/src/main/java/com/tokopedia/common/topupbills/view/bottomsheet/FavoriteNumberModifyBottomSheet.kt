@@ -44,9 +44,18 @@ class FavoriteNumberModifyBottomSheet(
     private fun initListener() {
         with(childView) {
             common_topupbills_favorite_number_modify_button.setOnClickListener {
-                if (common_topupbills_favorite_number_name_field.isTextFieldError) {
-                    // TODO: [Misael] kalau masih ada error, show sesuatu
-                } else {
+                common_topupbills_favorite_number_name_field.run {
+                    val newClientName = textFieldInput.text.toString()
+                    val errMsg = validateClientName(newClientName)
+                    if (errMsg.isNullOrEmpty()) {
+                        setMessage("")
+                        setError(false)
+                    } else {
+                        setMessage(errMsg)
+                        setError(true)
+                    }
+                }
+                if (!common_topupbills_favorite_number_name_field.isTextFieldError) {
                     listener.onChangeName(
                             common_topupbills_favorite_number_name_field.textFieldInput.text.toString(),
                             favNumberItem

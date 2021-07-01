@@ -17,12 +17,15 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberModData
+import com.tokopedia.common.topupbills.data.UpdateFavoriteDetail
 import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
@@ -44,6 +47,8 @@ import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.ArrayList
 import javax.inject.Inject
@@ -99,6 +104,7 @@ class TopupBillsFavoriteNumberFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        observeData()
         binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.requestFocus()
         KeyboardHandler.showSoftKeyboard(activity)
     }
@@ -151,6 +157,32 @@ class TopupBillsFavoriteNumberFragment :
             layoutManager = LinearLayoutManager(activity)
             adapter = numberListAdapter
         }
+    }
+
+    var INDEX = 0
+    private fun observeData() {
+        topUpBillsViewModel.seamlessFavNumberUpdateData.observe(viewLifecycleOwner, Observer {
+            val dummy = UpdateFavoriteDetail(
+                    categoryID = 0,
+                    clientNumber = "123123",
+                    label = "Misael Baru",
+                    lastOrderDate = "",
+                    lastUpdated = "",
+                    operatorID = 0,
+                    productID = 0,
+                    subscribed = true,
+                    totalTransaction = 0,
+                    wishlist = true
+            )
+//            when (it) {
+//                is Success -> onSuccessUpdateClientName(it.data.first, it.data.second)
+//                is Fail -> onFailedUpdateClientName()
+//            }
+            when (it) {
+                is Success -> onSuccessUpdateClientName(dummy, it.data.second)
+                is Fail -> onSuccessUpdateClientName(dummy, INDEX++)
+            }
+        })
     }
 
     private val getFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
@@ -299,9 +331,27 @@ class TopupBillsFavoriteNumberFragment :
         }
     }
 
+    private fun onSuccessUpdateClientName(client: UpdateFavoriteDetail, position: Int) {
+        // TODO: [Misael] ini mending fetch ulang atau update locally aja ya?
+        clientNumbers.get(position).clientName = client.label
+        numberListAdapter.setNumbers(CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(
+                clientNumbers
+        ))
+
+        view?.let {
+            Toaster.build(it, "Oke, nama berhasil diubah.", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
+    }
+
+    private fun onFailedUpdateClientName() {
+        view?.let {
+            Toaster.build(it, "Maaf, belum berhasil diubah. Coba lagi, ya.")
+        }
+    }
+
     override fun onFavoriteNumberMenuClick(favNumberItem: TopupBillsSeamlessFavNumberItem) {
-        // TODO: [Misael] use favNumberItem
-        val bottomSheet = FavoriteNumberMenuBottomSheet.newInstance(favNumberItem, this)
+        val bottomSheet = FavoriteNumberMenuBottomSheet.newInstance(
+                favNumberItem, this)
         bottomSheet.show(childFragmentManager, "")
     }
 
@@ -315,8 +365,12 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     override fun onChangeName(newName: String, favNumberItem: TopupBillsSeamlessFavNumberItem) {
+        // TODO: [Misael] ini rawan sekaly
+        val position = clientNumbers.indices.firstOrNull { idx  ->
+             clientNumbers[idx] == favNumberItem } ?: -1
         topUpBillsViewModel.updateSeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
+                position,
                 topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
                         categoryId = favNumberItem.categoryId,
                         productId = favNumberItem.productId,
@@ -325,6 +379,7 @@ class TopupBillsFavoriteNumberFragment :
                         label = newName
                 )
         )
+
     }
 
     enum class InputNumberActionType {
