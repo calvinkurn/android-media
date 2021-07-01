@@ -50,6 +50,7 @@ import com.tokopedia.flight.search.presentation.util.unselect
 import com.tokopedia.flight.search.presentation.viewmodel.FlightSearchViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -138,7 +139,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                             }
                         }
                     }else{
-                        showGetListError(it.throwable)
+                        showGetListError(Throwable())
                     }
                 }
             }
@@ -190,6 +191,14 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     override fun getAdapterTypeFactory(): FlightSearchAdapterTypeFactory =
             FlightSearchAdapterTypeFactory(this)
+
+    override fun onGetListErrorWithEmptyData(throwable: Throwable?) {
+        adapter.errorNetworkModel.iconDrawableRes = R.drawable.ic_flight_empty_state
+        adapter.errorNetworkModel.errorMessage = throwable?.message ?: ErrorHandler.getErrorMessage(context, throwable)
+        adapter.errorNetworkModel.subErrorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        adapter.errorNetworkModel.onRetryListener = this
+        adapter.showErrorNetwork()
+    }
 
     override fun createAdapterInstance(): BaseListAdapter<FlightJourneyModel, FlightSearchAdapterTypeFactory> {
         val adapter: BaseListAdapter<FlightJourneyModel, FlightSearchAdapterTypeFactory> = super.createAdapterInstance()
