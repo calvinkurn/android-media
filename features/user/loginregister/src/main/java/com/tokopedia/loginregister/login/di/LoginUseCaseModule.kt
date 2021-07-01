@@ -12,6 +12,7 @@ import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginFingerprintUseCase
@@ -64,9 +65,9 @@ class LoginUseCaseModule {
 
     @Provides
     fun provideLoginFingerprintUsecase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers, @Named(
-        SessionModule.SESSION_MODULE) userSessionInterface: UserSessionInterface
+        SessionModule.SESSION_MODULE) userSessionInterface: UserSessionInterface, fingerprintPreference: FingerprintPreference
     ): LoginFingerprintUseCase {
         val useCase = GraphqlUseCase<LoginTokenPojo>(graphqlRepository)
-        return LoginFingerprintUseCase(useCase, dispatchers, userSessionInterface)
+        return LoginFingerprintUseCase(useCase, dispatchers, userSessionInterface, fingerprintPreference)
     }
 }
