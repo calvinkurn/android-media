@@ -568,7 +568,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         RecipientAddressModel newAddress = shipmentDataConverter
                 .getRecipientAddressModel(cartShipmentAddressFormData);
-        newAddress.setEnabled(!shipmentTickerErrorModel.isError());
         setRecipientAddressModel(newAddress);
 
         if (cartShipmentAddressFormData.getDonation() != null) {
