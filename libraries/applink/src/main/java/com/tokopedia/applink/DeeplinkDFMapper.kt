@@ -2,7 +2,9 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
@@ -126,12 +128,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_ORDER_SNAPSHOT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.INTERNAL_TRANSACTION_ORDERLIST
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MODALTOKO_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDERLIST_DIGITAL_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PESAWAT_INTERNAL_ORDER
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.TRACK
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment.PAYMENT_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo.INTERNAL_TOKOPOINTS
@@ -430,7 +432,7 @@ object DeeplinkDFMapper : CoroutineScope {
             // Travel
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DF_BASE, R.string.title_travel_homepage))
             add(DFP({ it.startsWith(FLIGHT) || it.startsWith(INTERNAL_FLIGHT) }, DF_TRAVEL, R.string.title_flight, { DFWebviewFallbackUrl.TRAVEL_FLIGHT }))
-            add(DFP({ it.startsWith(HOTEL) || it.startsWith(INTERNAL_HOTEL)}, DF_TRAVEL, R.string.title_hotel, {DFWebviewFallbackUrl.TRAVEL_HOTEL}))
+            add(DFP({ it.startsWith(HOTEL) || it.startsWith(INTERNAL_HOTEL) }, DF_TRAVEL, R.string.title_hotel, { DFWebviewFallbackUrl.TRAVEL_HOTEL }))
 
             // User
             add(DFP({ it.startsWith(PROMO_CAMPAIGN_SHAKE_LANDING_PREFIX) }, DF_BASE, R.string.title_applink_campaign_shake_landing))
@@ -535,14 +537,15 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(TOPADS_DASHBOARD_INTERNAL)
             }, DF_BASE_SELLER_APP, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(MERCHANT_SHOP_SHOWCASE_LIST) }, DF_BASE_SELLER_APP, R.string.merchant_seller))
-            add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE)
-                    || it.startsWith(SHOP_SCORE_DETAIL)
-                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL)
-                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
-                    || it.startsWith(SHOP_PENALTY)
-                    || it.startsWith(SHOP_PENALTY_DETAIL)
-                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY)
-                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
+            add(DFP({
+                it.startsWith(MERCHANT_SHOP_SCORE)
+                        || it.startsWith(SHOP_SCORE_DETAIL)
+                        || it.startsWith(ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL)
+                        || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
+                        || it.startsWith(SHOP_PENALTY)
+                        || it.startsWith(SHOP_PENALTY_DETAIL)
+                        || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY)
+                        || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
             }, DF_SHOP_SCORE, R.string.title_shop_score_sellerapp))
             add(DFP({
                 it.startsWith(CREATE_VOUCHER) ||
@@ -758,6 +761,50 @@ object DeeplinkDFMapper : CoroutineScope {
         } catch (e: FileNotFoundException) {
             null
         }
+    }
+
+    val moduleDFMapper: List<DFP> by lazy {
+        mutableListOf<DFP>().apply {
+            // Test
+            add(DFP({
+                listOf(
+                        "test_fragment_df"
+                ).contains(it)
+            }, DF_MERCHANT_SELLER, R.string.applink_title_affiliate))
+        }
+    }
+
+    @JvmStatic
+    fun checkIfModuleIsInstalled(context: Context, moduleName: String): Boolean? {
+        moduleDFMapper?.forEach {
+            return if(it.logic(moduleName)){
+                true
+            } else{
+                null
+            }
+        }
+        return null
+    }
+
+    @JvmStatic
+    fun getFragmentDFDownloader(activity: AppCompatActivity, moduleId: String, fragmentContainerResourceId: Int): Fragment? {
+        getSplitManager(activity)?.let {
+            val hasInstalled = it.installedModules.contains(moduleId)
+            return if (hasInstalled) {
+                null
+            } else {
+//                UriUtil.buildUri(
+//                        DYNAMIC_FEATURE_INSTALL,
+//                        moduleId,
+//                        moduleName,
+//                        Uri.encode(deeplink).toString(),
+//                        fallbackUrl)
+                val bundle = Bundle()
+                bundle.putString("MODULE_ID", DF_MERCHANT_SELLER)
+                bundle.putInt("FRAGMENT_CONTAINER_ID", fragmentContainerResourceId)
+                RouteManager.instantiateFragment(activity, "com.tokopedia.dynamicfeatures.DFInstallerFragment", bundle)
+            }
+        } ?: return null
     }
 
     override val coroutineContext: CoroutineContext

@@ -75,7 +75,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>, Shop
         checkIfApplinkRedirectedForMigration()
         super.onCreate(savedInstanceState)
         val fragTrans = supportFragmentManager.beginTransaction()
-        val frag = RouteManager.instantiateFragment(this, "com.example.test_fragment_df.TestDfFragment", intent.extras)
+        val frag = RouteManager.instantiateFragmentDF(
+                this,
+                parentViewResourceID,
+                "com.example.test_fragment_df.TestDfFragment",
+                intent.extras)
 //            fragTrans.add(R.id.df_host_fragment, RouteManager.instantiateFragment(
 //                    activity as AppCompatActivity,
 //                    "com.example.test_fragment_df.TestDfFragment",
