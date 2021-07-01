@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:id="@+id/layout_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl4"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl5"
+    android:background="?attr/selectableItemBackground">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+        android:id="@+id/radio_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_item_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/iv_item_image" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_item_image"
+        android:layout_width="@dimen/layout_lvl7"
+        android:layout_height="@dimen/layout_lvl7"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:layout_constraintStart_toEndOf="@+id/radio_item"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="8"
+        app:unify_image_type="rect" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_item_bundle_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        tool:labelTitle="Paket isi 3"
+        app:labelType="general_light_green"
+        app:layout_constraintStart_toEndOf="@+id/iv_item_image"
+        app:layout_constraintTop_toTopOf="@+id/iv_item_image" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_item_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_item_image"
+        app:layout_constraintTop_toBottomOf="@+id/label_item_bundle_name"
+        app:typographyType="body_1"
+        tool:text="Women’s Breathable Low-cut Short Socks Cotton Blend" />
+
+    <com.tokopedia.product_bundle.common.customview.SpinnerView
+        android:id="@+id/spinner_item_variant"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_item_image"
+        app:layout_constraintTop_toBottomOf="@+id/tv_item_title"
+        app:spinner_placeholder_text="Pilih Varian" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_item_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        tool:text="Rp36.000"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintStart_toEndOf="@+id/iv_item_image"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_item_variant"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_item_discount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        tool:labelTitle="30%"
+        app:labelType="general_light_red"
+        app:layout_constraintStart_toEndOf="@+id/tv_item_price"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_item_variant" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_item_slash_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        tool:text="Rp36.000"
+        android:textColor="@color/Unify_N700_44"
+        app:typographyType="body_2"
+        app:layout_constraintStart_toEndOf="@+id/label_item_discount"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_item_variant" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
