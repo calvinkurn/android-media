@@ -16,10 +16,13 @@ class EmptyStateUseCase @Inject constructor() {
             it.selectedFilters = null
             it.selectedSort = null
             it.noOfPagesLoaded = 0
-            getComponent(it.parentComponentId, it.pageEndPoint)?.let { item ->
-                item.getComponentsItem()?.find { childItem ->
-                    childItem.name == ComponentNames.QuickFilter.componentName
-                }.apply {
+            getComponent(it.parentFilterComponentId?:it.parentComponentId, it.pageEndPoint)?.let { item ->
+                val filterItem = if (item.name == ComponentNames.QuickFilter.componentName)
+                    item else
+                    item.getComponentsItem()?.find { childItem ->
+                        childItem.name == ComponentNames.QuickFilter.componentName
+                    }
+                filterItem.apply {
                     this?.searchParameter?.getSearchParameterHashMap()?.clear()
                     val optionLists = addFilterOptions(this?.data?.firstOrNull()?.filter
                             ?: arrayListOf())
@@ -33,6 +36,7 @@ class EmptyStateUseCase @Inject constructor() {
                                     isCleanUpExistingFilterWithSameKey = false)
                         }
                     }
+                    this?.shouldRefreshComponent = true
                 }
             }
             return true

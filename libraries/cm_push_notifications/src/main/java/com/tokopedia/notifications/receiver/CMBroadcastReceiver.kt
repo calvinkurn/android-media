@@ -33,6 +33,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import org.json.JSONObject
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -469,9 +470,39 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     appLinkIntent.putExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID,
                         dataIntent.getStringExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID))
                 }
+                //to support video push and extra params
+                appLinkIntent.putExtras(getCustomDataBundle(dataIntent))
             }
         }catch (e : Exception){}
 
+    }
+
+    private fun getCustomDataBundle(dataIntent: Intent): Bundle {
+        val baseNotificationModel: BaseNotificationModel?
+                = dataIntent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
+        var bundle = Bundle()
+        if(baseNotificationModel!= null) {
+            baseNotificationModel.videoPushModel?.let {
+                bundle = jsonToBundle(bundle, JSONObject(it))
+            }
+            baseNotificationModel.customValues?.let {
+                if (it.isNotEmpty())
+                    bundle = jsonToBundle(bundle, JSONObject(it))
+            }
+        }
+        return bundle
+    }
+
+    private fun jsonToBundle(bundle: Bundle, jsonObject: JSONObject?): Bundle {
+        jsonObject?.let {
+            val iterator = it.keys()
+            while (iterator.hasNext()) {
+                val key = iterator.next() as String
+                val value = it.getString(key)
+                bundle.putString(key, value)
+            }
+        }
+        return bundle
     }
 
     private fun getAppLinkIntent(context: Context, appLink: String?) : Intent{
