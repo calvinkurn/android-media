@@ -60,6 +60,7 @@ import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.action.InteractiveOngoingFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
+import com.tokopedia.play.view.uimodel.action.InteractiveTapTapAction
 import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
 import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
@@ -447,7 +448,7 @@ class PlayUserInteractionFragment @Inject constructor(
      * InteractiveToolsTap View Component Listener
      */
     override fun onTapClicked(view: InteractiveTapViewComponent) {
-        //TODO("TAP")
+        playViewModel.submitAction(InteractiveTapTapAction)
     }
 
     /**

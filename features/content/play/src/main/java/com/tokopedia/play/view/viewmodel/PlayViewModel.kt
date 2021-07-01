@@ -40,10 +40,7 @@ import com.tokopedia.play.data.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play.data.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play.data.interactive.ChannelInteractive
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
-import com.tokopedia.play.view.uimodel.action.InteractiveOngoingFinishedAction
-import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
-import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
-import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
+import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
@@ -525,6 +522,7 @@ class PlayViewModel @Inject constructor(
             InteractivePreStartFinishedAction -> handleInteractivePreStartFinished()
             InteractiveOngoingFinishedAction -> handleInteractiveOngoingFinished()
             InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked()
+            InteractiveTapTapAction -> handleTapTapAction()
         }
     }
 
@@ -1142,7 +1140,7 @@ class PlayViewModel @Inject constructor(
         viewModelScope.launch {
             setUiState {
                 copy(interactive = PlayInteractiveUiState.Ongoing(
-                        5000,
+                        50000,
                         "Tap terus!"
                 ))
             }
@@ -1189,6 +1187,10 @@ class PlayViewModel @Inject constructor(
 
     private fun handleWinnerBadgeClicked() {
         //TODO("Show Leaderboard")
+    }
+
+    private fun handleTapTapAction() {
+
     }
 
     companion object {
