@@ -26,6 +26,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_search_category_emptystate.*
@@ -160,7 +161,7 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
 
     private fun observeErrorReport(){
         viewModel.errorReport.observe(viewLifecycleOwner, Observer {
-            NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.ent_search_error_message)) {
+            NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
                 recycler_viewParent.addOnScrollListener(endlessScroll)
                 viewModel.page = "1"
                 viewModel.getData(CacheType.ALWAYS_CLOUD,getQueryCategory())

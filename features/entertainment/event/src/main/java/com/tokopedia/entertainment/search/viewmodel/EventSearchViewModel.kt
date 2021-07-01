@@ -42,7 +42,7 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
     val listViewHolder : MutableList<SearchEventItem<*>> = mutableListOf()
     val isItRefreshing = MutableLiveData<Boolean>()
 
-    val errorReport : MutableLiveData<String> by lazy { MutableLiveData<String>() }
+    val errorReport : MutableLiveData<Throwable> by lazy { MutableLiveData<Throwable>() }
 
     fun getHistorySearch(cacheType: CacheType, query: String){
         launchCatchError(
@@ -61,7 +61,7 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
                     }
                 },
                 onError = {
-                    errorReport.value = it.message
+                    errorReport.value = it
                     isItRefreshing.postValue(false)
                 }
         )
@@ -77,7 +77,7 @@ class EventSearchViewModel(private val dispatcher: CoroutineDispatcher,
                     }
                 },
                 onError = {
-                    errorReport.value = it.message
+                    errorReport.value = it
                     isItRefreshing.value = false
                 }
         )

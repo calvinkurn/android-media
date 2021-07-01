@@ -28,6 +28,7 @@ import com.tokopedia.entertainment.search.di.EventSearchComponent
 import com.tokopedia.entertainment.search.viewmodel.EventSearchViewModel
 import com.tokopedia.entertainment.search.viewmodel.factory.EventSearchViewModelFactory
 import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_search_activity.*
 import kotlinx.android.synthetic.main.ent_search_fragment.*
@@ -119,7 +120,7 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
 
         viewModel.isItRefreshing.observe(viewLifecycleOwner, Observer { swipe_refresh_layout.isRefreshing = it })
 
-        viewModel.errorReport.observe(viewLifecycleOwner, Observer { NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.ent_search_error_message)){ getData() }.showRetrySnackbar()})
+        viewModel.errorReport.observe(viewLifecycleOwner, Observer { NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)){ getData() }.showRetrySnackbar()})
     }
 
     private fun getData(cacheType: CacheType = CacheType.CACHE_FIRST){
