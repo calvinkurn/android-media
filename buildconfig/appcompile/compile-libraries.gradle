@@ -74,4 +74,4 @@ include ':libraries:annotation_proc_central'
 include "libraries:screen_recorder"
 include "libraries:screenshot_observer"
 include "libraries:unit_test"
-include 'macrobenchmark'
+include 'libraries:macrobenchmark'
