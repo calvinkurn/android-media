@@ -88,7 +88,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
     private var isCircuitBreaker: Boolean = false
-    private val toppers: String = "Toppers"
+    private val toppers: String = "Toppers-"
 
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private lateinit var localCacheHandler: LocalCacheHandler
@@ -577,7 +577,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.isNotEmpty() && s.length < 9) {
+                if (s.length < 9 && s.isNotEmpty()) {
                     setWrapperError(wrapper, textWatcher)
                 } else {
                     setWrapperError(wrapper, null)
@@ -795,7 +795,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     private fun showDistrictRecommendationBottomSheet() {
         val districtRecommendationBottomSheetFragment =
-                DiscomBottomSheetFragment.newInstance(isLogisticLabel, false, null)
+                DiscomBottomSheetFragment.newInstance(isLogisticLabel, isAnaRevamp = false, isPinpoint = false)
         districtRecommendationBottomSheetFragment.setActionListener(this)
         fragmentManager?.run {
             districtRecommendationBottomSheetFragment.show(this, "")
