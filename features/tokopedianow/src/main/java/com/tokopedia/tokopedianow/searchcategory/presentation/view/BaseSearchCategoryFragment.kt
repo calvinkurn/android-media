@@ -630,7 +630,7 @@ abstract class BaseSearchCategoryFragment:
         if (message.isEmpty()) return
 
         val miniCartWidget = miniCartWidget
-        miniCartWidget?.height?.let { Toaster.toasterCustomBottomHeight = it - 8.toDp() }
+        miniCartWidget?.height?.let { Toaster.toasterCustomBottomHeight = it }
 
         Toaster.build(
                 view,
