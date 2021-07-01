@@ -1,9 +1,0 @@
-query cancelDetail($transactionID: String!, $merchantCode: String!) {
-  cancelDetail(transactionID: $transactionID, merchantCode: $merchantCode) {
-      success
-      hasRefund
-      refundCCAmount
-      refundWalletAmount
-      refundMessage
-    }
-}

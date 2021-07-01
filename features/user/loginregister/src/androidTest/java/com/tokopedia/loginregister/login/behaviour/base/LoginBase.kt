@@ -88,9 +88,6 @@ open class LoginBase {
     lateinit var loginTokenUseCaseStub: LoginTokenUseCaseStub
 
     @Inject
-    lateinit var statusPinUseCaseStub: StatusPinUseCaseStub
-
-    @Inject
     lateinit var tickerInfoUseCaseStub: TickerInfoUseCaseStub
 
     @Inject

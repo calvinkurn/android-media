@@ -2,6 +2,7 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
 import android.view.View
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -11,7 +12,6 @@ import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductListHeaderViewHolder(
@@ -24,7 +24,7 @@ class ProductListHeaderViewHolder(
     }
 
     private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
-    private val icBuyerOrderDetailSeeShopBadge = itemView?.findViewById<ImageUnify>(R.id.icBuyerOrderDetailSeeShopBadge)
+    private val icBuyerOrderDetailSeeShopBadge = itemView?.findViewById<ImageView>(R.id.icBuyerOrderDetailSeeShopBadge)
     private val icBuyerOrderDetailSeeShopPage = itemView?.findViewById<IconUnify>(R.id.icBuyerOrderDetailSeeShopPage)
     private val tvBuyerOrderDetailShopName = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailShopName)
 

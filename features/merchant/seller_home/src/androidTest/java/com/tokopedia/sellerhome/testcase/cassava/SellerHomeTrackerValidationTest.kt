@@ -192,7 +192,7 @@ class SellerHomeTrackerValidationTest {
 
             var postWidgetItemClickCount = 0
             mockRouteManager { postWidgetItemClickCount++ }
-            clickAllItemInChildRecyclerView<PostListWidgetUiModel, PostUiModel>(activityRule.activity, R.id.recycler_view, com.tokopedia.sellerhomecommon.R.id.rvPostList)
+            clickAllItemInChildRecyclerView<PostListWidgetUiModel, PostItemUiModel>(activityRule.activity, R.id.recycler_view, com.tokopedia.sellerhomecommon.R.id.rvPostList)
 
             validate(gtmLogDBSource, postWidgetItemClickCount)
         }
