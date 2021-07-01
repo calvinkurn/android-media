@@ -132,7 +132,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                                 flightSearchViewModel.sendProductNotFoundTrack()
                                 break
                             }else{
-                                showGetListError(it.throwable)
+                                val flightSearchThrow = Throwable(error.title)
+                                showGetListError(flightSearchThrow)
                                 break
                             }
                         }
