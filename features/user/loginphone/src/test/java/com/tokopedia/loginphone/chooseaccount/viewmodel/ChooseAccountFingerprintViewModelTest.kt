@@ -2,9 +2,9 @@ package com.tokopedia.loginphone.chooseaccount.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.loginphone.chooseaccount.data.AccountList
-import com.tokopedia.loginphone.chooseaccount.data.AccountListPojo
-import com.tokopedia.loginphone.chooseaccount.data.Error
+import com.tokopedia.loginphone.chooseaccount.data.AccountListDataModel
+import com.tokopedia.loginphone.chooseaccount.data.AccountsDataModel
+import com.tokopedia.loginphone.chooseaccount.data.ErrorResponseDataModel
 import com.tokopedia.loginphone.chooseaccount.domain.usecase.GetAccountListUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
@@ -35,7 +35,7 @@ class ChooseAccountFingerprintViewModelTest {
     val getProfileUseCase = mockk<GetProfileUseCase>(relaxed = true)
     val getAdminTypeUseCase = mockk<GetAdminTypeUseCase>(relaxed = true)
 
-    private var getAccountListObserver = mockk<Observer<Result<AccountList>>>(relaxed = true)
+    private var getAccountListObserver = mockk<Observer<Result<AccountListDataModel>>>(relaxed = true)
 
     @Before
     fun setUp() {
@@ -46,38 +46,38 @@ class ChooseAccountFingerprintViewModelTest {
             getAdminTypeUseCase,
             CoroutineTestDispatchersProvider
         )
-        viewModel.getAccountListResponse.observeForever(getAccountListObserver)
+        viewModel.getAccountListDataModelResponse.observeForever(getAccountListObserver)
     }
 
     @Test
     fun `on Success Get Account List`() {
-        val resp = AccountListPojo()
+        val resp = AccountsDataModel()
 
         every { getAccountListUseCase.getAccounts(any(), any(), any(), any()) } answers {
-            arg<(AccountListPojo) -> Unit>(2).invoke(resp)
+            arg<(AccountsDataModel) -> Unit>(2).invoke(resp)
         }
 
         viewModel.getAccountListFingerprint("abc123")
 
-        verify { getAccountListObserver.onChanged(Success(resp.accountList)) }
+        verify { getAccountListObserver.onChanged(Success(resp.accountListDataModel)) }
     }
 
     @Test
     fun `on Success Get Account List has errors`() {
         val msg = "error message"
-        val accountList = AccountList(errors = listOf(Error("error", message = msg)))
-        val resp = AccountListPojo(accountList = accountList)
+        val accountList = AccountListDataModel(errorResponseDataModels = listOf(ErrorResponseDataModel("error", message = msg)))
+        val resp = AccountsDataModel(accountListDataModel = accountList)
 
         every { getAccountListUseCase.getAccounts(any(), any(), any(), any()) } answers {
-            arg<(AccountListPojo) -> Unit>(2).invoke(resp)
+            arg<(AccountsDataModel) -> Unit>(2).invoke(resp)
         }
 
         viewModel.getAccountListFingerprint("abc123")
 
         /* Then */
-        MatcherAssert.assertThat(viewModel.getAccountListResponse.value, CoreMatchers.instanceOf(Fail::class.java))
+        MatcherAssert.assertThat(viewModel.getAccountListDataModelResponse.value, CoreMatchers.instanceOf(Fail::class.java))
         Assert.assertEquals(
-            (viewModel.getAccountListResponse.value as Fail).throwable.message,
+            (viewModel.getAccountListDataModelResponse.value as Fail).throwable.message,
             msg
         )
     }

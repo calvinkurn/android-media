@@ -3,8 +3,8 @@ package com.tokopedia.loginphone.chooseaccount.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.loginphone.chooseaccount.data.AccountList
-import com.tokopedia.loginphone.chooseaccount.data.AccountListPojo
+import com.tokopedia.loginphone.chooseaccount.data.AccountListDataModel
+import com.tokopedia.loginphone.chooseaccount.data.AccountsDataModel
 import com.tokopedia.loginphone.chooseaccount.domain.usecase.GetAccountListUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.di.SessionModule
@@ -25,8 +25,8 @@ class ChooseAccountFingerprintViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers
 ): BaseChooseAccountViewModel(userSessionInterface, getProfileUseCase, getAdminTypeUseCase, dispatcher) {
 
-    private val mutableGetAccountListResponse = MutableLiveData<Result<AccountList>>()
-    val getAccountListResponse: LiveData<Result<AccountList>>
+    private val mutableGetAccountListResponse = MutableLiveData<Result<AccountListDataModel>>()
+    val getAccountListDataModelResponse: LiveData<Result<AccountListDataModel>>
         get() = mutableGetAccountListResponse
 
 
@@ -38,14 +38,14 @@ class ChooseAccountFingerprintViewModel @Inject constructor(
         )
     }
 
-    private fun onSuccessGetAccountListBiometric(): (AccountListPojo) -> Unit {
+    private fun onSuccessGetAccountListBiometric(): (AccountsDataModel) -> Unit {
         return {
             when {
-                it.accountList.errors.isEmpty() -> {
-                    mutableGetAccountListResponse.value = Success(it.accountList)
+                it.accountListDataModel.errorResponseDataModels.isEmpty() -> {
+                    mutableGetAccountListResponse.value = Success(it.accountListDataModel)
                 }
-                it.accountList.errors[0].message.isNotEmpty() -> {
-                    mutableGetAccountListResponse.value = Fail(MessageErrorException(it.accountList.errors[0].message))
+                it.accountListDataModel.errorResponseDataModels[0].message.isNotEmpty() -> {
+                    mutableGetAccountListResponse.value = Fail(MessageErrorException(it.accountListDataModel.errorResponseDataModels[0].message))
                 }
                 else -> mutableGetAccountListResponse.value = Fail(RuntimeException())
             }

@@ -169,11 +169,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     protected var isAutoLogin: Boolean = false
     private var isShowTicker: Boolean = false
     private var isShowBanner: Boolean = false
-    protected var isEnableFingerprint = true
+    private var isEnableFingerprint = true
     private var isHitRegisterPushNotif: Boolean = false
     private var isEnableEncryptConfig: Boolean = false
     private var activityShouldEnd = true
     private var isFromRegister = false
+    private var isFromChooseAccount = false
     private var isUseHash = false
     private var validateToken = ""
     private var isLoginAfterSq = false
@@ -304,9 +305,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_login_with_phone, container, false)
         partialRegisterInputView = view.findViewById(R.id.login_input_view)
@@ -1045,6 +1044,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 seamlessAnalytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
             } else {
                 analytics.eventSuccessLogin(userSession.loginMethod, isFromRegister, isLoginAfterSq)
+
+                if (isFromChooseAccount) {
+                    analytics.eventSuccessLoginFromChooseAccount(userSession.loginMethod, isFromRegister)
+                    isFromChooseAccount = false
+                }
             }
 
             setTrackingUserId(userSession.userId)
@@ -1481,8 +1485,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun goToChooseAccountPageFacebook(accessToken: String) {
         activity?.let {
-            val intent = RouteManager.getIntent(it,
-                    ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, FACEBOOK_LOGIN_TYPE)
 
@@ -1507,9 +1510,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (requestCode == REQUEST_LOGIN_GOOGLE && data != null) run {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 handleGoogleSignInResult(task)
-            } else if (requestCode == REQUEST_SECURITY_QUESTION
-                    && resultCode == Activity.RESULT_OK
-                    && data != null) {
+            } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK && data != null) {
                 data.extras?.let {
                     isLoginAfterSq = true
                     tempValidateToken = it.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
@@ -1519,26 +1520,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 logoutGoogleAccountIfExist()
                 dismissLoadingLogin()
                 activity?.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
-                onSuccessLogin()
-            } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
-                analytics.eventFailedLogin(userSession.loginMethod, getString(R.string.error_login_user_cancel_create_password))
-                dismissLoadingLogin()
-                activity?.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
-                onSuccessLogin()
-            } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
-                analytics.eventFailedLogin(userSession.loginMethod, getString(R.string.error_login_user_cancel_activate_account))
-                dismissLoadingLogin()
-                activity?.setResult(Activity.RESULT_CANCELED)
-            } else if (requestCode == REQUEST_VERIFY_PHONE) {
-                onSuccessLogin()
-            } else if (requestCode == REQUEST_REGISTER_PHONE
-                    && resultCode == Activity.RESULT_OK && data != null
-                    && data.extras != null) {
-                val uuid = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
-                val msisdn = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "") ?: ""
-                validateToken = data.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
+            } else if (requestCode == REQUEST_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
+                val uuid = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "") ?: ""
+                val msisdn = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "") ?: ""
+                validateToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).toString()
                 goToAddNameFromRegisterPhone(uuid, msisdn)
             } else if (requestCode == REQUEST_ADD_NAME) {
                 onSuccessLogin()
@@ -1548,47 +1533,31 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 showLoading(true)
                 activityShouldEnd = false
                 processAfterAddNameRegisterPhone(data?.extras)
-            } else if (requestCode == REQUEST_LOGIN_PHONE
-                    && resultCode == Activity.RESULT_OK
-                    && data != null
-                    && data.extras != null) {
-                data.extras?.run {
+            } else if (requestCode == REQUEST_LOGIN_PHONE) {
+                data?.extras?.run {
                     val accessToken = getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                     val phoneNumber = getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
                     goToChooseAccountPage(accessToken, phoneNumber)
                 }
-            } else if (requestCode == REQUEST_CHOOSE_ACCOUNT
-                    && resultCode == Activity.RESULT_OK) {
+            } else if (requestCode == REQUEST_CHOOSE_ACCOUNT && resultCode == Activity.RESULT_OK) {
                 activityShouldEnd = false
-                if (data != null) {
-                    data.extras?.let {
-                        if (it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
-                            onGoToSecurityQuestion("")
-                        } else {
-                            onSuccessLogin()
-                        }
+                isFromChooseAccount = true
+                data?.extras?.let {
+                    if (it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
+                        onGoToSecurityQuestion("")
+                    } else {
+                        viewModel.getUserInfo()
                     }
-                } else {
-                    onSuccessLogin()
                 }
-            } else if (requestCode == REQUEST_CHOOSE_ACCOUNT_FINGERPRINT
-                && resultCode == Activity.RESULT_OK) {
-                    data?.extras?.let {
-                        val email = it.getString(ApplinkConstInternalGlobal.PARAM_EMAIL) ?: ""
-                        val token = it.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: ""
-                        onSuccessChooseAccountFingerprint(email, token)
-                    }
-            }
-            else if (requestCode == REQUEST_LOGIN_PHONE
-                    || requestCode == REQUEST_CHOOSE_ACCOUNT) {
+            } else if (requestCode == REQUEST_CHOOSE_ACCOUNT_FINGERPRINT && resultCode == Activity.RESULT_OK) {
+                data?.extras?.let {
+                    val email = it.getString(ApplinkConstInternalGlobal.PARAM_EMAIL) ?: ""
+                    val token = it.getString(ApplinkConstInternalGlobal.PARAM_TOKEN) ?: ""
+                    onSuccessChooseAccountFingerprint(email, token)
+                }
+            } else if (requestCode == REQUEST_LOGIN_PHONE || requestCode == REQUEST_CHOOSE_ACCOUNT) {
                 analytics.trackLoginPhoneNumberFailed(getString(R.string.error_login_user_cancel_login_phone))
                 dismissLoadingLogin()
-            } else if (requestCode == REQUEST_ADD_PIN) {
-                onSuccessLogin()
-            } else if (requestCode == REQUEST_ADD_PIN_AFTER_SQ) {
-                onSuccessLogin()
-            } else if (requestCode == REQUEST_COTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
-                onSuccessLogin()
             } else if (requestCode == REQUEST_ADD_PIN_AFTER_REGISTER_PHONE) {
                 viewModel.getUserInfo()
             } else if (requestCode == REQUEST_PENDING_OTP_VALIDATE && resultCode == Activity.RESULT_OK) {
@@ -1974,21 +1943,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         const val ID_ACTION_REGISTER = 111
         const val ID_ACTION_DEVOPS = 112
 
-        const val REQUEST_SMART_LOCK = 101
-        const val REQUEST_SAVE_SMART_LOCK = 102
         const val REQUEST_SECURITY_QUESTION = 104
-        const val REQUESTS_CREATE_PASSWORD = 106
-        const val REQUEST_ACTIVATE_ACCOUNT = 107
-        const val REQUEST_VERIFY_PHONE = 108
         const val REQUEST_ADD_NAME = 109
         const val REQUEST_CHOOSE_ACCOUNT = 110
         const val REQUEST_LOGIN_PHONE = 112
         const val REQUEST_REGISTER_PHONE = 113
         const val REQUEST_ADD_NAME_REGISTER_PHONE = 114
         const val REQUEST_LOGIN_GOOGLE = 116
-        const val REQUEST_ADD_PIN = 117
-        const val REQUEST_COTP_PHONE_VERIFICATION = 118
-        const val REQUEST_ADD_PIN_AFTER_SQ = 119
         private val REQUEST_PENDING_OTP_VALIDATE = 121
         const val REQUEST_ADD_PIN_AFTER_REGISTER_PHONE = 122
         const val REQUEST_CHOOSE_ACCOUNT_FINGERPRINT = 123
@@ -1996,9 +1957,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         private const val PHONE_TYPE = "phone"
         private const val EMAIL_TYPE = "email"
-        private const val GOOGLE_TYPE = "google"
-        private const val GPLUS_TYPE = "gplus"
-        private const val FACEBOOK_TYPE = "facebook"
 
         private const val OTP_SECURITY_QUESTION = 134
         private const val OTP_LOGIN_PHONE_NUMBER = 112
@@ -2012,7 +1970,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         private const val SOURCE_ATC = "atc"
 
         private const val FACEBOOK_LOGIN_TYPE = "fb"
-        private const val GMAIL_LOGIN_TYPE = "fb"
 
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 

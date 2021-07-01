@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.loginphone.chooseaccount.data.AccountList
-import com.tokopedia.loginphone.chooseaccount.data.AccountListPojo
+import com.tokopedia.loginphone.chooseaccount.data.AccountListDataModel
+import com.tokopedia.loginphone.chooseaccount.data.AccountsDataModel
 import com.tokopedia.loginphone.chooseaccount.di.ChooseAccountQueryConstant.PARAM_LOGIN_TYPE
 import com.tokopedia.loginphone.chooseaccount.di.ChooseAccountQueryConstant.PARAM_PHONE
 import com.tokopedia.loginphone.chooseaccount.di.ChooseAccountQueryConstant.PARAM_VALIDATE_TOKEN
@@ -32,13 +32,13 @@ import javax.inject.Named
  */
 
 open class ChooseAccountViewModel @Inject constructor(
-    private val getAccountsListPojoUseCase: GraphqlUseCase<AccountListPojo>,
-    @param:Named(SessionModule.SESSION_MODULE) private val userSessionInterface: UserSessionInterface,
-    private val loginTokenUseCase: LoginTokenUseCase,
-    getProfileUseCase: GetProfileUseCase,
-    getAdminTypeUseCase: GetAdminTypeUseCase,
-    private val rawQueries: Map<String, String>,
-    dispatcher: CoroutineDispatchers
+        private val getAccountsListPojoUseCase: GraphqlUseCase<AccountsDataModel>,
+        @param:Named(SessionModule.SESSION_MODULE) private val userSessionInterface: UserSessionInterface,
+        private val loginTokenUseCase: LoginTokenUseCase,
+        getProfileUseCase: GetProfileUseCase,
+        getAdminTypeUseCase: GetAdminTypeUseCase,
+        private val rawQueries: Map<String, String>,
+        dispatcher: CoroutineDispatchers
 ) : BaseChooseAccountViewModel(
     userSessionInterface,
     getProfileUseCase,
@@ -46,12 +46,12 @@ open class ChooseAccountViewModel @Inject constructor(
     dispatcher
 ) {
 
-    private val mutableGetAccountListFBResponse = MutableLiveData<Result<AccountList>>()
-    val getAccountListFBResponse: LiveData<Result<AccountList>>
+    private val mutableGetAccountListFBResponse = MutableLiveData<Result<AccountListDataModel>>()
+    val getAccountListDataModelFBResponse: LiveData<Result<AccountListDataModel>>
         get() = mutableGetAccountListFBResponse
 
-    private val mutableGetAccountListPhoneResponse = MutableLiveData<Result<AccountList>>()
-    val getAccountListPhoneResponse: LiveData<Result<AccountList>>
+    private val mutableGetAccountListPhoneResponse = MutableLiveData<Result<AccountListDataModel>>()
+    val getAccountListDataModelPhoneResponse: LiveData<Result<AccountListDataModel>>
         get() = mutableGetAccountListPhoneResponse
 
     private val mutableLoginPhoneNumberResponse = MutableLiveData<Result<LoginToken>>()
@@ -99,7 +99,7 @@ open class ChooseAccountViewModel @Inject constructor(
             )
 
             getAccountsListPojoUseCase.apply {
-                setTypeClass(AccountListPojo::class.java)
+                setTypeClass(AccountsDataModel::class.java)
                 setRequestParams(params)
                 setGraphqlQuery(query)
                 execute(
@@ -119,7 +119,7 @@ open class ChooseAccountViewModel @Inject constructor(
             )
 
             getAccountsListPojoUseCase.apply {
-                setTypeClass(AccountListPojo::class.java)
+                setTypeClass(AccountsDataModel::class.java)
                 setRequestParams(params)
                 setGraphqlQuery(query)
                 execute(
@@ -156,13 +156,13 @@ open class ChooseAccountViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetAccountListPhoneNumber(): (AccountListPojo) -> Unit {
+    private fun onSuccessGetAccountListPhoneNumber(): (AccountsDataModel) -> Unit {
         return {
-            if (it.accountList.errors.isEmpty()) {
-                mutableGetAccountListPhoneResponse.value = Success(it.accountList)
-            } else if (it.accountList.errors[0].message.isNotEmpty()) {
+            if (it.accountListDataModel.errorResponseDataModels.isEmpty()) {
+                mutableGetAccountListPhoneResponse.value = Success(it.accountListDataModel)
+            } else if (it.accountListDataModel.errorResponseDataModels[0].message.isNotEmpty()) {
                 mutableGetAccountListPhoneResponse.value =
-                    Fail(MessageErrorException(it.accountList.errors[0].message))
+                    Fail(MessageErrorException(it.accountListDataModel.errorResponseDataModels[0].message))
             } else {
                 mutableGetAccountListPhoneResponse.value = Fail(RuntimeException())
             }
@@ -175,13 +175,13 @@ open class ChooseAccountViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessGetAccountListFacebook(): (AccountListPojo) -> Unit {
+    private fun onSuccessGetAccountListFacebook(): (AccountsDataModel) -> Unit {
         return {
-            if (it.accountList.errors.isEmpty()) {
-                mutableGetAccountListFBResponse.value = Success(it.accountList)
-            } else if (it.accountList.errors[0].message.isNotEmpty()) {
+            if (it.accountListDataModel.errorResponseDataModels.isEmpty()) {
+                mutableGetAccountListFBResponse.value = Success(it.accountListDataModel)
+            } else if (it.accountListDataModel.errorResponseDataModels[0].message.isNotEmpty()) {
                 mutableGetAccountListFBResponse.value =
-                    Fail(MessageErrorException(it.accountList.errors[0].message))
+                    Fail(MessageErrorException(it.accountListDataModel.errorResponseDataModels[0].message))
             } else {
                 mutableGetAccountListFBResponse.value = Fail(RuntimeException())
             }

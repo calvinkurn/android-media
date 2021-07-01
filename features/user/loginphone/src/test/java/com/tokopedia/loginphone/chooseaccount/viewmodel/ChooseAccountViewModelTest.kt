@@ -4,8 +4,8 @@ import FileUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.loginphone.chooseaccount.data.AccountList
-import com.tokopedia.loginphone.chooseaccount.data.AccountListPojo
+import com.tokopedia.loginphone.chooseaccount.data.AccountListDataModel
+import com.tokopedia.loginphone.chooseaccount.data.AccountsDataModel
 import com.tokopedia.loginphone.chooseaccount.di.ChooseAccountQueryConstant
 import com.tokopedia.loginphone.chooseaccount.domain.subscriber.LoginFacebookSubscriber
 import com.tokopedia.network.exception.MessageErrorException
@@ -41,7 +41,7 @@ class ChooseAccountViewModelTest {
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var getAccountsListUseCase: GraphqlUseCase<AccountListPojo>
+    lateinit var getAccountsListUseCase: GraphqlUseCase<AccountsDataModel>
     @RelaxedMockK
     lateinit var loginTokenUseCase: LoginTokenUseCase
     @RelaxedMockK
@@ -51,9 +51,9 @@ class ChooseAccountViewModelTest {
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
     @RelaxedMockK
-    lateinit var getAccountListFBResponseObserver: Observer<Result<AccountList>>
+    lateinit var getAccountListDataModelFBResponseObserver: Observer<Result<AccountListDataModel>>
     @RelaxedMockK
-    lateinit var getAccountListPhoneResponseObserver: Observer<Result<AccountList>>
+    lateinit var getAccountListDataModelPhoneResponseObserver: Observer<Result<AccountListDataModel>>
     @RelaxedMockK
     lateinit var loginPhoneNumberResponseObserver: Observer<Result<LoginToken>>
     @RelaxedMockK
@@ -212,24 +212,24 @@ class ChooseAccountViewModelTest {
 
     @Test
     fun `Success get account list phone`() {
-        viewmodel.getAccountListPhoneResponse.observeForever(getAccountListPhoneResponseObserver)
+        viewmodel.getAccountListDataModelPhoneResponse.observeForever(getAccountListDataModelPhoneResponseObserver)
 
         coEvery { getAccountsListUseCase.execute(any(), any()) } coAnswers {
-            firstArg<(AccountListPojo) -> Unit>().invoke(successGetAccountsListResponse)
+            firstArg<(AccountsDataModel) -> Unit>().invoke(SUCCESS_GET_ACCOUNTS_LIST_RESPONSE)
         }
 
         viewmodel.getAccountListPhoneNumber("", "")
 
-        verify { getAccountListPhoneResponseObserver.onChanged(any<Success<AccountList>>()) }
-        assert(viewmodel.getAccountListPhoneResponse.value is Success)
+        verify { getAccountListDataModelPhoneResponseObserver.onChanged(any<Success<AccountListDataModel>>()) }
+        assert(viewmodel.getAccountListDataModelPhoneResponse.value is Success)
 
-        val result = viewmodel.getAccountListPhoneResponse.value as Success<AccountList>
-        assert(result.data == successGetAccountsListResponse.accountList)
+        val result = viewmodel.getAccountListDataModelPhoneResponse.value as Success<AccountListDataModel>
+        assert(result.data == SUCCESS_GET_ACCOUNTS_LIST_RESPONSE.accountListDataModel)
     }
 
     @Test
     fun `Failed get account list phone`() {
-        viewmodel.getAccountListPhoneResponse.observeForever(getAccountListPhoneResponseObserver)
+        viewmodel.getAccountListDataModelPhoneResponse.observeForever(getAccountListDataModelPhoneResponseObserver)
 
         coEvery { getAccountsListUseCase.execute(any(), any()) } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
@@ -237,33 +237,33 @@ class ChooseAccountViewModelTest {
 
         viewmodel.getAccountListPhoneNumber("", "")
 
-        verify { getAccountListPhoneResponseObserver.onChanged(any<Fail>()) }
-        assert(viewmodel.getAccountListPhoneResponse.value is Fail)
+        verify { getAccountListDataModelPhoneResponseObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.getAccountListDataModelPhoneResponse.value is Fail)
 
-        val result = viewmodel.getAccountListPhoneResponse.value as Fail
+        val result = viewmodel.getAccountListDataModelPhoneResponse.value as Fail
         assertEquals(throwable, result.throwable)
     }
 
     @Test
     fun `Success get account list fb`() {
-        viewmodel.getAccountListFBResponse.observeForever(getAccountListFBResponseObserver)
+        viewmodel.getAccountListDataModelFBResponse.observeForever(getAccountListDataModelFBResponseObserver)
 
         coEvery { getAccountsListUseCase.execute(any(), any()) } coAnswers {
-            firstArg<(AccountListPojo) -> Unit>().invoke(successGetAccountsListResponse)
+            firstArg<(AccountsDataModel) -> Unit>().invoke(SUCCESS_GET_ACCOUNTS_LIST_RESPONSE)
         }
 
         viewmodel.getAccountListFacebook("")
 
-        verify { getAccountListFBResponseObserver.onChanged(any<Success<AccountList>>()) }
-        assert(viewmodel.getAccountListFBResponse.value is Success)
+        verify { getAccountListDataModelFBResponseObserver.onChanged(any<Success<AccountListDataModel>>()) }
+        assert(viewmodel.getAccountListDataModelFBResponse.value is Success)
 
-        val result = viewmodel.getAccountListFBResponse.value as Success<AccountList>
-        assert(result.data == successGetAccountsListResponse.accountList)
+        val result = viewmodel.getAccountListDataModelFBResponse.value as Success<AccountListDataModel>
+        assert(result.data == SUCCESS_GET_ACCOUNTS_LIST_RESPONSE.accountListDataModel)
     }
 
     @Test
     fun `Failed get account list fb`() {
-        viewmodel.getAccountListFBResponse.observeForever(getAccountListFBResponseObserver)
+        viewmodel.getAccountListDataModelFBResponse.observeForever(getAccountListDataModelFBResponseObserver)
 
         coEvery { getAccountsListUseCase.execute(any(), any()) } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
@@ -271,10 +271,10 @@ class ChooseAccountViewModelTest {
 
         viewmodel.getAccountListFacebook("")
 
-        verify { getAccountListFBResponseObserver.onChanged(any<Fail>()) }
-        assert(viewmodel.getAccountListFBResponse.value is Fail)
+        verify { getAccountListDataModelFBResponseObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.getAccountListDataModelFBResponse.value is Fail)
 
-        val result = viewmodel.getAccountListFBResponse.value as Fail
+        val result = viewmodel.getAccountListDataModelFBResponse.value as Fail
         assertEquals(throwable, result.throwable)
     }
 
@@ -352,9 +352,9 @@ class ChooseAccountViewModelTest {
                 "/success_login_token_sq_check_false.json",
                 LoginTokenPojo::class.java
         )
-        private val successGetAccountsListResponse: AccountListPojo = FileUtil.parse(
+        private val SUCCESS_GET_ACCOUNTS_LIST_RESPONSE: AccountsDataModel = FileUtil.parse(
                 "/success_get_account_list.json",
-                AccountListPojo::class.java
+                AccountsDataModel::class.java
         )
         private val successGetUserInfoResponse: ProfilePojo = FileUtil.parse(
                 "/success_get_user_info.json",
