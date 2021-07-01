@@ -6,4 +6,6 @@ package com.tokopedia.play.view.uimodel.action
 sealed class PlayViewerNewAction
 
 object InteractivePreStartFinishedAction : PlayViewerNewAction()
-object InteractiveLiveFinishedAction : PlayViewerNewAction()
+object InteractiveOngoingFinishedAction : PlayViewerNewAction()
+
+object InteractiveWinnerBadgeClickedAction : PlayViewerNewAction()

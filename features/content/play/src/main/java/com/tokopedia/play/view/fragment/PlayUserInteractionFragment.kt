@@ -44,6 +44,7 @@ import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayFullscreenManager
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
+import com.tokopedia.play.view.custom.dialog.InteractiveWinningDialogFragment
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapKey
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapValue
@@ -57,12 +58,18 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.action.InteractiveLiveFinishedAction
+import com.tokopedia.play.view.uimodel.action.InteractiveOngoingFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
-import com.tokopedia.play.view.uimodel.engagement.PlayInteractiveTimeStatus
+import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
+import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
+import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play.view.viewcomponent.*
+import com.tokopedia.play.view.viewcomponent.interactive.InteractiveFinishedViewComponent
+import com.tokopedia.play.view.viewcomponent.interactive.InteractivePreStartViewComponent
+import com.tokopedia.play.view.viewcomponent.interactive.InteractiveTapViewComponent
+import com.tokopedia.play.view.viewcomponent.interactive.InteractiveWinnerBadgeViewComponent
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -78,6 +85,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 /**
@@ -104,13 +112,14 @@ class PlayUserInteractionFragment @Inject constructor(
         PiPViewComponent.Listener,
         ProductFeaturedViewComponent.Listener,
         PinnedVoucherViewComponent.Listener,
-        EngagementToolsPreStartViewComponent.Listener,
-        EngagementToolsTapViewComponent.Listener
+        InteractivePreStartViewComponent.Listener,
+        InteractiveTapViewComponent.Listener,
+        InteractiveWinnerBadgeViewComponent.Listener
 {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.main + job)
 
-    private val spaceSize by viewComponent { EmptyViewComponent(it, R.id.space_size) }
+    private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
     private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
@@ -128,8 +137,14 @@ class PlayUserInteractionFragment @Inject constructor(
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
-    private val engagementToolsPreStartView by viewComponentOrNull { EngagementToolsPreStartViewComponent(it, this) }
-    private val engagementToolsTapView by viewComponentOrNull { EngagementToolsTapViewComponent(it, this) }
+
+    /**
+     * Interactive
+     */
+    private val interactivePreStartView by viewComponentOrNull { InteractivePreStartViewComponent(it, this) }
+    private val interactiveTapView by viewComponentOrNull { InteractiveTapViewComponent(it, this) }
+    private val interactiveFinishedView by viewComponentOrNull { InteractiveFinishedViewComponent(it) }
+    private val interactiveWinnerBadgeView by viewComponentOrNull(isEagerInit = true) { InteractiveWinnerBadgeViewComponent(it, this) }
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
@@ -217,7 +232,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
-        spaceSize.rootView.requestApplyInsetsWhenAttached()
+        viewSize.rootView.requestApplyInsetsWhenAttached()
     }
 
     override fun onPause() {
@@ -421,18 +436,25 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     /**
-     * EngagementToolsPreStart View Component Listener
+     * InteractivePreStart View Component Listener
      */
-    override fun onFollowButtonClicked(view: EngagementToolsPreStartViewComponent) {
+    override fun onFollowButtonClicked(view: InteractivePreStartViewComponent) {
         val partnerId = playViewModel.partnerId ?: return
         doClickFollow(partnerId, PartnerFollowAction.Follow)
     }
 
     /**
-     * EngagementToolsTap View Component Listener
+     * InteractiveToolsTap View Component Listener
      */
-    override fun onTapClicked(view: EngagementToolsTapViewComponent) {
+    override fun onTapClicked(view: InteractiveTapViewComponent) {
         //TODO("TAP")
+    }
+
+    /**
+     * InteractiveWinnerBadge View Component Listener
+     */
+    override fun onBadgeClicked(view: InteractiveWinnerBadgeViewComponent) {
+        playViewModel.submitAction(InteractiveWinnerBadgeClickedAction)
     }
     //endregion
 
@@ -500,7 +522,7 @@ class PlayUserInteractionFragment @Inject constructor(
          */
         val realBottomMargin = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             try {
-                val layoutParams = spaceSize.rootView.layoutParams as ViewGroup.MarginLayoutParams
+                val layoutParams = viewSize.rootView.layoutParams as ViewGroup.MarginLayoutParams
                 val initialBottomMargin = layoutParams.bottomMargin
                 val rootInsets = activity?.window?.decorView?.rootWindowInsets
                 if (portraitInsets == null && orientation.isPortrait) portraitInsets = rootInsets
@@ -512,7 +534,7 @@ class PlayUserInteractionFragment @Inject constructor(
             } catch (e: Throwable) { 0 }
         } else 0
 
-        spaceSize.rootView.doOnApplyWindowInsets { v, insets, _, recordedMargin ->
+        viewSize.rootView.doOnApplyWindowInsets { v, insets, _, recordedMargin ->
             val skipTop = !isOpened && insets.systemWindowInsetTop == 0
             val skipBottom = !isOpened && insets.systemWindowInsetBottom == 0
 
@@ -572,6 +594,7 @@ class PlayUserInteractionFragment @Inject constructor(
         observeProductContent()
 
         observeUiState()
+        observeUiEvent()
 
         observeLoggedInInteractionEvent()
     }
@@ -660,7 +683,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeToolbarInfo() {
         playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, DistinctObserver {
             toolbarView.setPartnerInfo(it)
-            engagementToolsPreStartView?.showFollowButton(it.isFollowable && !it.isFollowed)
+            interactivePreStartView?.showFollowButton(it.isFollowable && !it.isFollowed)
         })
     }
 
@@ -821,8 +844,25 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeUiState() {
-        playViewModel.observableUiState.observe(viewLifecycleOwner) { state ->
-            if (state.interactive != null) interactiveViewOnStateChanged(state.interactive)
+        playViewModel.uiState.observe(viewLifecycleOwner) { state ->
+            interactiveViewOnStateChanged(state.interactive)
+            interactiveWinnerBadgeOnStateChanged(state.showWinningBadge)
+        }
+    }
+
+    private fun observeUiEvent() {
+        scope.launch(dispatchers.immediate) {
+            playViewModel.uiEvent.collect { event ->
+                when (event) {
+                    is ShowWinningDialogEvent -> {
+                        getInteractiveWinningDialog().show(childFragmentManager)
+                    }
+                    is ShowCoachMarkWinnerEvent -> {
+                        if (interactiveWinnerBadgeView?.isHidden() == true) return@collect
+                        interactiveWinnerBadgeView?.showCoachMark(event.title, event.subtitle)
+                    }
+                }
+            }
         }
     }
     //endregion
@@ -908,7 +948,7 @@ class PlayUserInteractionFragment @Inject constructor(
         viewModel.doFollow(partnerId, action)
 
         toolbarView.setFollowStatus(action == PartnerFollowAction.Follow)
-        engagementToolsPreStartView?.showFollowButton(action == PartnerFollowAction.UnFollow)
+        interactivePreStartView?.showFollowButton(action == PartnerFollowAction.UnFollow)
     }
 
     //TODO("This action is duplicated with the one in PlayBottomSheetFragment, find a way to prevent duplication")
@@ -1349,31 +1389,45 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun interactiveViewOnStateChanged(state: PlayInteractiveUiState) {
-        engagementToolsPreStartView?.setTitle(state.title)
+        when (state) {
+            is PlayInteractiveUiState.PreStart -> {
+                interactiveTapView?.hide()
+                interactiveFinishedView?.hide()
 
-        when (state.status) {
-            is PlayInteractiveTimeStatus.Scheduled -> {
-                engagementToolsPreStartView?.setTimer(state.status.liveTimeInMs) {
+                interactivePreStartView?.setTitle(state.title)
+                interactivePreStartView?.setTimer(state.timeToStartInMs) {
                     playViewModel.submitAction(InteractivePreStartFinishedAction)
                 }
-                engagementToolsPreStartView?.show()
-
-                engagementToolsTapView?.hide()
+                interactivePreStartView?.show()
             }
-            is PlayInteractiveTimeStatus.Live -> {
-                engagementToolsPreStartView?.hide()
+            is PlayInteractiveUiState.Ongoing -> {
+                interactivePreStartView?.hide()
+                interactiveFinishedView?.hide()
 
-                engagementToolsTapView?.setTimer(state.status.remainingTimeInMs) {
-                    playViewModel.submitAction(InteractiveLiveFinishedAction)
-                    doShowToaster(message = "Tap done")
+                interactivePreStartView?.setTitle(state.title)
+                interactiveTapView?.setTimer(state.timeRemainingInMs) {
+                    playViewModel.submitAction(InteractiveOngoingFinishedAction)
                 }
-                engagementToolsTapView?.show()
+                interactiveTapView?.show()
+            }
+            is PlayInteractiveUiState.Finished -> {
+                interactivePreStartView?.hide()
+                interactiveTapView?.hide()
+
+                interactiveFinishedView?.setInfo(state.info)
+                interactiveFinishedView?.show()
             }
             else -> {
-                engagementToolsPreStartView?.hide()
-                engagementToolsTapView?.hide()
+                interactivePreStartView?.hide()
+                interactiveTapView?.hide()
+                interactiveFinishedView?.hide()
             }
         }
+    }
+
+    private fun interactiveWinnerBadgeOnStateChanged(shouldShow: Boolean) {
+        if (shouldShow) interactiveWinnerBadgeView?.show()
+        else interactiveWinnerBadgeView?.hide()
     }
     //endregion
 
@@ -1439,6 +1493,14 @@ class PlayUserInteractionFragment @Inject constructor(
                 connect(quickReplyViewId, ConstraintSet.BOTTOM, topmostLikeView.id, ConstraintSet.TOP)
             }
         }
+    }
+
+    /**
+     * Dialog
+     */
+    private fun getInteractiveWinningDialog(): InteractiveWinningDialogFragment {
+        val existing = InteractiveWinningDialogFragment.get(childFragmentManager)
+        return existing ?: InteractiveWinningDialogFragment.newInstance()
     }
 
     companion object {

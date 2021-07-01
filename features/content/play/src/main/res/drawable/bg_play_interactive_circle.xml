@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <size
+        android:width="@dimen/layout_lvl3"
+        android:height="@dimen/layout_lvl3"
+        />
+    <gradient
+        android:startColor="@color/play_dms_interactive_prestart_bg_g1"
+        android:endColor="@color/play_dms_interactive_prestart_bg_g2"
+        android:angle="135"
+        />
+    <corners
+        android:radius="@dimen/play_interactive_prestart_radius"
+        />
+</shape>

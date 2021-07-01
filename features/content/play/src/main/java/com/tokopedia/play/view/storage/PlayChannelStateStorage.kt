@@ -1,6 +1,6 @@
 package com.tokopedia.play.view.storage
 
-import com.tokopedia.play.view.uimodel.engagement.PlayInteractiveUiModel
+import com.tokopedia.play.data.dto.interactive.PlayInteractiveModel
 import com.tokopedia.play.view.uimodel.recom.*
 
 /**
@@ -33,5 +33,5 @@ data class PlayChannelData(
         val quickReplyInfo: PlayQuickReplyInfoUiModel,
         val videoMetaInfo: PlayVideoMetaInfoUiModel,
         val statusInfo: PlayStatusInfoUiModel,
-        val interactiveInfo: PlayInteractiveUiModel,
+        val interactiveInfo: PlayInteractiveModel,
 )

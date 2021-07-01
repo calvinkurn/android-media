@@ -4,13 +4,11 @@ import com.tokopedia.play.data.ChannelStatusResponse
 import com.tokopedia.play.data.Product
 import com.tokopedia.play.data.ShopInfo
 import com.tokopedia.play.data.Voucher
-import com.tokopedia.play.data.engagement.GetCurrentInteractiveResponse
+import com.tokopedia.play.data.dto.interactive.PlayCurrentInteractiveModel
+import com.tokopedia.play.data.interactive.ChannelInteractive
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.engagement.PlayInteractiveTimeStatus
-import com.tokopedia.play.view.uimodel.engagement.InteractiveType
-import com.tokopedia.play.view.uimodel.engagement.PlayCurrentInteractiveUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -26,6 +24,7 @@ class PlayUiModelMapper @Inject constructor(
         private val merchantVoucherMapper: PlayMerchantVoucherUiMapper,
         private val chatMapper: PlayChatUiMapper,
         private val channelStatusMapper: PlayChannelStatusMapper,
+        private val channelInteractiveMapper: PlayChannelInteractiveMapper,
 ) {
 
     fun mapProductTags(input: List<Product>): List<PlayProductUiModel> {
@@ -49,14 +48,7 @@ class PlayUiModelMapper @Inject constructor(
             isFollowed = input.favoriteData.alreadyFavorited == 1
     )
 
-    fun mapInteractive(input: GetCurrentInteractiveResponse) = PlayCurrentInteractiveUiModel(
-            id = input.data.interactive.interactiveID,
-            type = InteractiveType.getByValue(input.data.interactive.interactiveType),
-            title = input.data.interactive.title,
-            timeStatus = PlayInteractiveTimeStatus.getByValue(
-                    status = input.data.interactive.status,
-                    countdownStartInSec = input.data.interactive.countdownStart,
-                    countdownEndInSec = input.data.interactive.countdownEnd,
-            )
-    )
+    fun mapInteractive(input: ChannelInteractive): PlayCurrentInteractiveModel {
+        return channelInteractiveMapper.mapInteractive(input)
+    }
 }

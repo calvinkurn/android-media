@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     >
 
-    <Space
-        android:id="@+id/space_size"
+    <View
+        android:id="@+id/view_size"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginBottom="@dimen/spacing_lvl4"
@@ -34,7 +34,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        app:layout_constraintBottom_toTopOf="@id/view_engagement_prestart"
+        app:layout_constraintBottom_toTopOf="@id/view_interactive_prestart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_stats_info"
@@ -50,7 +50,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/pcv_video"
         app:layout_constraintEnd_toStartOf="@id/view_like"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         tools:visibility="visible"
         />
 
@@ -63,8 +63,8 @@
         android:orientation="horizontal"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/rv_quick_reply"
-        app:layout_constraintEnd_toEndOf="@id/space_size"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         />
 
     <View
@@ -83,7 +83,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/pcv_video"
-        app:layout_constraintEnd_toEndOf="@id/space_size"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
         tools:visibility="visible"
         />
 
@@ -94,8 +94,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toTopOf="@id/view_product_featured"
-        app:layout_constraintStart_toStartOf="@id/space_size"
-        app:layout_constraintEnd_toEndOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
         />
 
     <include
@@ -109,7 +109,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_pinned_voucher"
         app:layout_constraintEnd_toStartOf="@id/view_like"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         tools:visibility="visible"
         />
 
@@ -124,32 +124,56 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_pinned"
         app:layout_constraintEnd_toStartOf="@id/view_like"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         tools:visibility="visible"
         />
 
     <include
-        android:id="@+id/view_engagement_prestart"
-        layout="@layout/view_engagement_prestart"
+        android:id="@+id/view_interactive_prestart"
+        layout="@layout/view_interactive_prestart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_chat_list"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         />
 
     <include
-        android:id="@+id/view_engagement_tap"
-        layout="@layout/view_engagement_tap"
+        android:id="@+id/view_interactive_tap"
+        layout="@layout/view_interactive_tap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@id/view_engagement_prestart"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/view_interactive_prestart"
+        app:layout_constraintStart_toStartOf="@id/view_size"
+        />
+
+    <include
+        android:id="@+id/view_interactive_finish"
+        layout="@layout/view_interactive_finish"
+        android:layout_width="@dimen/play_interactive_finish_width"
+        android:layout_height="@dimen/play_interactive_finish_height"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/view_interactive_tap"
+        app:layout_constraintStart_toStartOf="@id/view_size"
+        />
+
+    <include
+        android:id="@+id/view_interactive_winner_badge"
+        layout="@layout/view_interactive_winner_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/play_interactive_winner_badge_height"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/view_interactive_finish"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         />
 
     <com.google.android.exoplayer2.ui.PlayerControlView
@@ -160,9 +184,9 @@
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:controller_layout_id="@layout/layout_play_player_control"
-        app:layout_constraintBottom_toBottomOf="@id/space_size"
+        app:layout_constraintBottom_toBottomOf="@id/view_size"
         app:layout_constraintEnd_toStartOf="@id/view_like"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         app:show_timeout="-1"
         tools:visibility="visible"
         />
@@ -175,7 +199,7 @@
         android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/space_size"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
         app:layout_constraintTop_toBottomOf="@id/view_stats_info"
         tools:visibility="visible"
         />
@@ -188,7 +212,7 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/play_offset_12"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/space_size"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
         app:layout_constraintTop_toBottomOf="@id/view_toolbar"
         />
 
@@ -212,9 +236,9 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        app:layout_constraintEnd_toEndOf="@id/space_size"
-        app:layout_constraintStart_toStartOf="@id/space_size"
-        app:layout_constraintTop_toTopOf="@id/space_size"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
+        app:layout_constraintTop_toTopOf="@id/view_size"
         />
 
     <include
@@ -224,7 +248,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/play_offset_12"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         app:layout_constraintTop_toBottomOf="@id/view_toolbar"
         />
 
@@ -237,8 +261,8 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_topmost_like"
-        app:layout_constraintEnd_toEndOf="@id/space_size"
-        app:layout_constraintStart_toStartOf="@id/space_size"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintStart_toStartOf="@id/view_size"
         tools:visibility="visible"
         />
 
