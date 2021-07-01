@@ -35,7 +35,7 @@ class CalculationTest {
     }
 
     @Test
-    fun `WHEN calculate product after first load mini cart list THEN isFirstLoad flag should be false`() {
+    fun `WHEN calculate product after first load mini cart list THEN isFirstLoad flag should be true`() {
         //given
         val mockResponse = DataProvider.provideGetMiniCartListSuccessAllAvailable()
         coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
@@ -48,7 +48,7 @@ class CalculationTest {
         viewModel.calculateProduct()
 
         //then
-        assert(viewModel.miniCartListBottomSheetUiModel.value?.isFirstLoad == false)
+        assert(viewModel.miniCartListBottomSheetUiModel.value?.isFirstLoad == true)
     }
 
     @Test
