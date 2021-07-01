@@ -434,7 +434,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
         if (tmpUnavailableProducts.size > 2) {
             val updatedAccordionUiModel = accordionUiModel.deepCopy().apply {
-                isCollapsed = !isCollapsed
+                isCollapsed = true
             }
             visitables[indexAccordionUiModel] = updatedAccordionUiModel
 
@@ -450,7 +450,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
     private fun expandUnavailableItems(visitables: MutableList<Visitable<*>>, accordionUiModel: MiniCartAccordionUiModel, indexAccordionUiModel: Int) {
         val updatedAccordionUiModel = accordionUiModel.deepCopy().apply {
-            isCollapsed = !isCollapsed
+            isCollapsed = false
         }
         visitables[indexAccordionUiModel] = updatedAccordionUiModel
 
@@ -609,6 +609,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             }
 
             val warningWording = miniCartListBottomSheetUiModel.value?.maximumShippingWeightErrorMessage
+                    ?: ""
             val overWeight = (totalWeight - maxWeight) / 1000.0f
             if (tickerWarning == null) {
                 tickerWarning = miniCartListUiModelMapper.mapTickerWarningUiModel(overWeight, warningWording)
@@ -623,8 +624,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             } else {
                 val updatedTickerWarning = tickerWarning.deepCopy()
                 val formattedOverWeight = NumberFormat.getNumberInstance(Locale("in", "id")).format(overWeight)
-                updatedTickerWarning.warningMessage = warningWording?.replace(MiniCartListUiModelMapper.PLACEHOLDER_OVERWEIGHT_VALUE, "$formattedOverWeight ")
-                        ?: ""
+                updatedTickerWarning.warningMessage = warningWording.replace(MiniCartListUiModelMapper.PLACEHOLDER_OVERWEIGHT_VALUE, "$formattedOverWeight ")
                 visitables[tickerWarningIndex] = updatedTickerWarning
             }
         } else {
