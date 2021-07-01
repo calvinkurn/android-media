@@ -12,6 +12,7 @@ import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -117,9 +118,6 @@ class PlayUserInteractionFragment @Inject constructor(
         InteractiveTapViewComponent.Listener,
         InteractiveWinnerBadgeViewComponent.Listener
 {
-    private val job = SupervisorJob()
-    private val scope = CoroutineScope(dispatchers.main + job)
-
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
     private val toolbarView by viewComponent { ToolbarViewComponent(it, R.id.view_toolbar, this) }
@@ -283,7 +281,6 @@ class PlayUserInteractionFragment @Inject constructor(
         cancelAllAnimations()
 
         super.onDestroyView()
-        job.cancelChildren()
     }
 
     //region ComponentListener
@@ -467,7 +464,7 @@ class PlayUserInteractionFragment @Inject constructor(
     fun maxTopOnChatMode(maxTopPosition: Int) {
         mMaxTopChatMode = maxTopPosition
         if (!playViewModel.bottomInsets.isKeyboardShown) return
-        scope.launch(dispatchers.immediate) {
+        viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) {
              invalidateChatListBounds(maxTopPosition = maxTopPosition)
         }
     }
@@ -481,12 +478,12 @@ class PlayUserInteractionFragment @Inject constructor(
         /**
          * The first one is to handle fast changes when insets transition from show to hide
          */
-        if (isHidingInsets) scope.launch(dispatchers.immediate) { invalidateChatListBounds() }
+        if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds() }
         view?.show()
         /**
          * The second one is to handle edge cases when somehow any interaction has changed while insets is shown
          */
-        if (isHidingInsets) scope.launch { invalidateChatListBounds() }
+        if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) { invalidateChatListBounds() }
     }
 
     private fun initAnalytic() {
@@ -615,7 +612,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun handleVideoHorizontalTopBounds() {
-        scope.launch {
+        viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
             val toolbarMeasure = asyncCatchError(block = {
                 measureWithTimeout { toolbarView.rootView.awaitMeasured() }
              }, onError = {})
@@ -637,7 +634,7 @@ class PlayUserInteractionFragment @Inject constructor(
             changeLayoutBasedOnVideoOrientation(meta.videoStream.orientation)
             triggerImmersive(false)
 
-            scope.launch(dispatchers.immediate) {
+            viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) {
                 playFragment.setCurrentVideoTopBounds(meta.videoStream.orientation, getVideoTopBounds(meta.videoStream.orientation))
                 if (playViewModel.channelType.isLive) invalidateChatListBounds(videoOrientation = meta.videoStream.orientation, videoPlayer = meta.videoPlayer)
             }
@@ -857,7 +854,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeUiEvent() {
-        scope.launch(dispatchers.immediate) {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             playViewModel.uiEvent.collect { event ->
                 when (event) {
                     is ShowWinningDialogEvent -> {
@@ -1097,7 +1094,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
         val hasQuickReply = !playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()
 
-        scope.launch(dispatchers.immediate) {
+        viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) {
             playFragment.onBottomInsetsViewShown(getVideoBottomBoundsOnKeyboardShown(estimatedKeyboardHeight, hasQuickReply))
         }
     }
@@ -1191,7 +1188,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun doAutoSwipe() {
-        scope.launch {
+        viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
             delay(AUTO_SWIPE_DELAY)
             playNavigation.navigateToNextPage()
         }
@@ -1267,7 +1264,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         changePinnedMessageConstraint()
 
-        if (shouldTriggerChatHeightCalculation) scope.launch(dispatchers.immediate) { invalidateChatListBounds(shouldForceInvalidate = true) }
+        if (shouldTriggerChatHeightCalculation) viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds(shouldForceInvalidate = true) }
 
         changeQuickReplyConstraint()
     }
@@ -1299,7 +1296,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         changePinnedMessageConstraint()
 
-        if (shouldTriggerChatHeightCalculation) scope.launch(dispatchers.immediate) { invalidateChatListBounds() }
+        if (shouldTriggerChatHeightCalculation) viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds() }
     }
 
     private fun gradientBackgroundViewOnStateChanged(
@@ -1475,7 +1472,7 @@ class PlayUserInteractionFragment @Inject constructor(
         val quickReplyViewId = quickReplyView?.id ?: return
         val topmostLikeView = this.topmostLikeView ?: return
         if (videoPlayer.isYouTube && channelType.isVod) {
-            scope.launch {
+            viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
                 val pinnedView = this@PlayUserInteractionFragment.pinnedView
                 val anchorId = if (pinnedView == null) topmostLikeView.id
                 else {
