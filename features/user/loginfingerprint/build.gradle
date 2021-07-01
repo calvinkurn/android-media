@@ -62,7 +62,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
-    //Support Libs Dependencies
+    implementation project(rootProject.ext.libraries.deviceInfo)
 
     //Misc Dependencies
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
