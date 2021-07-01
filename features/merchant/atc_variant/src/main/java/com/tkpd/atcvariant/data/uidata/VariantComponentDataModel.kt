@@ -16,10 +16,6 @@ data class VariantComponentDataModel(
         var isTokoCabang: Boolean = false
 ) : AtcVariantVisitable {
 
-    fun getSelectedVariantName(): String {
-        return listOfVariantCategory?.mapNotNull { it.getSelectedOption()?.variantName }?.joinToString() ?: ""
-    }
-
     override fun uniqueId(): Long = position
 
     override fun isEqual(newData: AtcVariantVisitable): Boolean {
