@@ -249,8 +249,11 @@ class OfficialStoreTracking(context: Context) {
             featuredBrandId: String,
             isLogin: Boolean,
             shopId: String,
-            campaignCode: String
+            campaignCode: String,
+            isFromDC: Boolean = false,
+            attribute: String = ""
     ) {
+        val creativeName = if (isFromDC) attribute else "$shopName - $additionalInformation"
         val statusLogin = if (isLogin) "login" else "nonlogin"
         val data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
@@ -265,7 +268,7 @@ class OfficialStoreTracking(context: Context) {
                         "id", featuredBrandId,
                         "name", "/official-store/$categoryName - popular brands",
                         "position", "$shopPosition",
-                        "creative", "$shopName - $additionalInformation",
+                        "creative", creativeName,
                         "creative_url", url,
                         "promo_id", null,
                         "promo_code", null
@@ -285,8 +288,11 @@ class OfficialStoreTracking(context: Context) {
             additionalInformation: String,
             featuredBrandId: String,
             isLogin: Boolean,
-            shopId: String
+            shopId: String,
+            isFromDC: Boolean = false,
+            attribute: String = "",
     ) {
+        val creativeName = if (isFromDC) attribute else "$shopName - $additionalInformation"
         val statusLogin = if (isLogin) "login" else "nonlogin"
         val data = DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
@@ -300,7 +306,7 @@ class OfficialStoreTracking(context: Context) {
                         "id", featuredBrandId,
                         "name", "/official-store/$categoryName - popular brands",
                         "position", "$shopPosition",
-                        "creative", "$shopName - $additionalInformation",
+                        "creative", creativeName,
                         "creative_url", url,
                         "promo_id", VALUE_NONE_OTHER,
                         "promo_code", VALUE_NONE_OTHER

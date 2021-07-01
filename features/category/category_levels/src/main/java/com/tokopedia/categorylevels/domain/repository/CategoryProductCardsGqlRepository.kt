@@ -5,6 +5,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.LihatSemua
+import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
 import com.tokopedia.discovery2.datamapper.getComponent
@@ -106,6 +107,9 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
             dataItem.goldMerchant = it.isGold
             dataItem.officialStore = it.isOfficial
             dataItem.labelsGroupList = labelsGroupList
+            dataItem.badges = it.badgesUrl.map {
+                Badges("", image_url = it)
+            }
             dataItems.add(dataItem)
             componentsItem.id = it.productId.toString()
             componentsItem.data = dataItems

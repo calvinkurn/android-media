@@ -74,6 +74,7 @@
     <!-- Dynamic feature for Fintech-->
     <string name="saldo_deposit_app_name">Saldo</string>
     <string name="ovop2p_app_name">Saldo</string>
+    <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
 
     <!-- Dynamic feature for Travel Subhomepage-->
     <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
@@ -201,6 +202,10 @@
     <string name="title_shipping_editor">Pengiriman</string>
 
     <string name="label_image_preview">Gambar Bukti</string>
+
+    <string name="title_pinpoint_new">Tentukan Pinpoint Lokasi</string>
+
+    <string name="title_address_form">Detail Alamat</string>
 
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
