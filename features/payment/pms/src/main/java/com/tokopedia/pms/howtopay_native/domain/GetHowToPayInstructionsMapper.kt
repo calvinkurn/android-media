@@ -1,8 +1,9 @@
 package com.tokopedia.pms.howtopay_native.domain
 
 import com.google.gson.Gson
-import com.tokopedia.pms.howtopay_native.data.model.*
-import com.tokopedia.pms.howtopay_native.util.NoInstructionFoundException
+import com.tokopedia.pms.howtopay_native.data.model.HelpPageData
+import com.tokopedia.pms.howtopay_native.data.model.HowToPayData
+import com.tokopedia.pms.howtopay_native.data.model.HowToPayGqlResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject

@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.pms.R
 import com.tokopedia.pms.howtopay_native.data.model.HtpPaymentChannel
-import com.tokopedia.pms.howtopay_native.data.model.PaymentChannel
 import com.tokopedia.pms.howtopay_native.ui.adapter.viewHolder.MultiChannelViewHolder
 
 class MultiChannelAdapter (private val paymentChannels: ArrayList<HtpPaymentChannel>) :

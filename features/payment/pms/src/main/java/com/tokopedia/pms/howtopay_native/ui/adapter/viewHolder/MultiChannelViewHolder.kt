@@ -9,7 +9,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pms.howtopay_native.data.model.HtpPaymentChannel
-import com.tokopedia.pms.howtopay_native.data.model.PaymentChannel
 import com.tokopedia.pms.howtopay_native.ui.adapter.InstructionAdapter
 import kotlinx.android.synthetic.main.pms_hwp_item_multi_channel.view.*
 
