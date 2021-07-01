@@ -8,7 +8,7 @@
     >
 
     <com.tokopedia.play_common.view.RoundedFrameLayout
-        android:id="@+id/fl_engagement_background"
+        android:id="@+id/fl_tap_background"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/play_interactive_live_height"
         android:layout_marginTop="@dimen/play_offset_6"
@@ -38,12 +38,12 @@
         android:layout_height="@dimen/play_interactive_tap_action"
         android:layout_marginEnd="@dimen/play_offset_12"
         android:background="@drawable/bg_play_interactive_tap_action"
-        app:layout_constraintEnd_toEndOf="@id/fl_engagement_background"
+        app:layout_constraintEnd_toEndOf="@id/fl_tap_background"
         app:layout_constraintTop_toTopOf="parent"
         >
 
         <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/icon_gift"
+            android:id="@+id/icon_tap"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_gravity="center"
@@ -57,16 +57,16 @@
     </FrameLayout>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_engagement_action"
+        android:id="@+id/tv_tap_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:text="@string/play_interactive_tap_action_text"
+        android:text="@string/play_interactive_tap_action_tap_text"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="@id/fl_timer_tap"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/fl_engagement_background"
+        app:layout_constraintTop_toTopOf="@id/fl_tap_background"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         />
@@ -76,9 +76,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_play_interactive_tap_timer"
-        app:layout_constraintBottom_toBottomOf="@id/fl_engagement_background"
-        app:layout_constraintEnd_toEndOf="@id/fl_engagement_background"
-        app:layout_constraintStart_toStartOf="@id/fl_engagement_background"
+        app:layout_constraintBottom_toBottomOf="@id/fl_tap_background"
+        app:layout_constraintEnd_toEndOf="@id/fl_tap_background"
+        app:layout_constraintStart_toStartOf="@id/fl_tap_background"
         app:layout_constraintTop_toBottomOf="@id/fl_interactive_tap"
         app:layout_constraintVertical_bias="1"
         >

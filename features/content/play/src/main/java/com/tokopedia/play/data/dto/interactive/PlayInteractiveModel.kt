@@ -1,5 +1,8 @@
 package com.tokopedia.play.data.dto.interactive
 
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
+
 /**
  * Created by jegul on 28/06/21
  */
@@ -41,7 +44,7 @@ sealed class PlayInteractiveTimeStatus {
     /**
      * 1
      */
-    data class Scheduled(val liveTimeInMs: Long, val durationInMs: Long) : PlayInteractiveTimeStatus()
+    data class Scheduled(val timeToStartInMs: Long, val interactiveDurationInMs: Long) : PlayInteractiveTimeStatus()
 
     /**
      * 2
@@ -60,7 +63,8 @@ sealed class PlayInteractiveTimeStatus {
                 1 -> {
                     requireNotNull(countdownStartInSec)
                     requireNotNull(countdownEndInSec)
-                    Scheduled(countdownStartInSec * 1000L, countdownEndInSec * 1000L)
+                    require(countdownEndInSec > countdownStartInSec)
+                    Scheduled(countdownStartInSec * 1000L, (countdownEndInSec - countdownStartInSec) * 1000L)
                 }
                 2 -> {
                     requireNotNull(countdownEndInSec)
@@ -71,4 +75,12 @@ sealed class PlayInteractiveTimeStatus {
             }
         }
     }
+}
+
+@OptIn(ExperimentalContracts::class)
+fun PlayInteractiveTimeStatus.isScheduled(): Boolean {
+    contract {
+        returns(true) implies (this@isScheduled is PlayInteractiveTimeStatus.Scheduled)
+    }
+    return this is PlayInteractiveTimeStatus.Scheduled
 }
