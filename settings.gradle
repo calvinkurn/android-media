@@ -15,7 +15,13 @@ gradleEnterprise {
                 value 'CI build number', System.getenv('BUILD_NUMBER')
             }
             if (System.getenv('NODE_NAME')) {
-                def agentName = System.getenv('NODE_NAME') == 'master' ? 'master-node' : System.getenv('NODE_NAME')
+                def nodeName = System.getenv('NODE_NAME')
+                def agentName = nodeName
+                if (nodeName.contains("kube-build")) {
+                    agentName = "kube-node"
+                } else if (nodeName == 'master') {
+                    agentName = "master-node"
+                }
                 tag agentName
                 value 'CI node name', agentName
             }
