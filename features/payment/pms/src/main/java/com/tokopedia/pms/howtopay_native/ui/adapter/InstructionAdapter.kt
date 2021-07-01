@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.pms.R
 import com.tokopedia.pms.howtopay_native.ui.adapter.viewHolder.InstructionViewHolder
-import java.util.ArrayList
+import java.util.*
 
 class InstructionAdapter(private val instructions: ArrayList<String>,
                          private val note: String?)
