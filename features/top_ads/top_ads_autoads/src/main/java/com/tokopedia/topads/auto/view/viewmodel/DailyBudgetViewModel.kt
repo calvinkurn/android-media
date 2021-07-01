@@ -45,7 +45,7 @@ class DailyBudgetViewModel @Inject constructor(
 
     fun getBudgetInfo(requestType: String, source: String, onSuccess: (ResponseBidInfo.Result) -> Unit) {
         launchCatchError(block = {
-            val dummyId: MutableList<Long> = mutableListOf()
+            val dummyId: MutableList<String> = mutableListOf()
             val suggestionsDefault = ArrayList<DataSuggestions>()
             suggestionsDefault.add(DataSuggestions(PRODUCT, dummyId))
             bidInfoUseCase.setParams(suggestionsDefault, requestType, source)
