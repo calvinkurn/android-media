@@ -66,6 +66,7 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -965,6 +966,48 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun shouldHideFloatingButton(): Boolean {
         return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID)?.hideFloatingButton
                 ?: false
+    }
+
+    fun onAtcNonVariantQuantityChanged(recomItem: RecommendationItem, quantity: Int) {
+        if (recomItem.currentStock == quantity) return
+        launchCatchError(block = {
+            if (recomItem.currentStock == 0) {
+                atcNonVariant(recomItem, quantity)
+            } else {
+                updateCartNonVariant(recomItem, quantity)
+            }
+        }){
+
+        }
+    }
+
+    private suspend fun atcNonVariant(recomItem: RecommendationItem, quantity: Int) {
+        val param = AddToCartUseCase.getMinimumParams(
+                recomItem.productId.toString(),
+                recomItem.shopId.toString(),
+                quantity
+        )
+        val result = withContext(dispatcher.io) {
+            addToCartUseCase.get().createObservable(param).toBlocking().single()
+        }
+        if (result.isStatusError()) {
+
+        } else {
+            updateMiniCartAfterATC(result)
+        }
+    }
+
+    private fun updateCartNonVariant(recomItem: RecommendationItem, quantity: Int) {
+        _miniCartData.value
+    }
+
+    private fun updateMiniCartAfterATC(result: AddToCartDataModel) {
+        updateMiniCartData(
+                productId = result.data.productId.toString(),
+                cartId = result.data.cartId,
+                quantity = result.data.quantity,
+                notes = result.data.notes
+        )
     }
 
     private fun assignTradeinParams() {

@@ -884,7 +884,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun onAddToCartNonVariantQuantityChangedClick(recomItem: RecommendationItem, quantity: Int, adapterPosition: Int) {
-
+        viewModel.onAtcNonVariantQuantityChanged(recomItem, quantity)
     }
 
     override fun onAddVariantClick(recomItem: RecommendationItem, adapterPosition: Int) {
