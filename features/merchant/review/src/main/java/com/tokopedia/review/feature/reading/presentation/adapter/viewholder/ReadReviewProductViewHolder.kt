@@ -117,19 +117,19 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
     private fun setLikeButton(reviewId: String, shopId: String, likeDislike: LikeDislike) {
         if (likeDislike.isLiked()) {
             likeImage?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_read_review_liked))
+            likeCount?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
         } else {
             likeImage?.setImageDrawable(ContextCompat.getDrawable(itemView.context, R.drawable.ic_read_review_like))
+            likeCount?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         }
         likeImage?.setOnClickListener {
             readReviewItemListener.onLikeButtonClicked(reviewId, shopId, likeDislike.likeStatus, adapterPosition)
         }
         likeCount?.apply {
-            if (likeDislike.totalLike == 0) {
-                text = getString(R.string.review_reading_like)
-                setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            text = if (likeDislike.totalLike == 0) {
+                getString(R.string.review_reading_like)
             } else {
-                text = likeDislike.totalLike.toString()
-                setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                likeDislike.totalLike.toString()
             }
         }
     }
