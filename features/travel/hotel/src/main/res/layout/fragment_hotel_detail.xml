@@ -475,7 +475,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:clipToPadding="false"
-                            android:paddingTop="@dimen/layout_lvl2"/>
+                            android:paddingTop="@dimen/layout_lvl1"/>
 
                         <com.tokopedia.unifyprinciples.Typography
                             android:id="@+id/tv_hotel_nearby_landmark_info"
@@ -497,7 +497,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/layout_lvl2"
-                            android:layout_marginTop="@dimen/layout_lvl2"
                             android:layout_marginRight="@dimen/layout_lvl2"
                             android:orientation="horizontal"
                             android:paddingTop="@dimen/layout_lvl1">

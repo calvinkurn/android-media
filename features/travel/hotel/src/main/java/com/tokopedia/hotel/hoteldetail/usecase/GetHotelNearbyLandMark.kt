@@ -14,15 +14,15 @@ import javax.inject.Inject
  * @author by astidhiyaa on 01/07/2021
  */
 class GetHotelNearbyLandMark @Inject constructor(val graphqlRepository: GraphqlRepository):
-        GraphqlUseCase<HotelNearbyLandmark>(graphqlRepository) {
+        GraphqlUseCase<HotelNearbyLandmark.Response>(graphqlRepository) {
     suspend fun execute(rawQuery: String, param: HotelNearbyLandmarkParam): Result<HotelNearbyLandmark> {
         return try {
-            this.setTypeClass(HotelNearbyLandmark::class.java)
+            this.setTypeClass(HotelNearbyLandmark.Response::class.java)
             this.setGraphqlQuery(rawQuery)
             this.setRequestParams(mapOf(HotelDetailViewModel.PARAM_HOTEL_INFO_PROPERTY to param))
 
             val data = this.executeOnBackground()
-            Success(data)
+            Success(data.response)
         } catch (t: Throwable) {
             Fail(t)
         }

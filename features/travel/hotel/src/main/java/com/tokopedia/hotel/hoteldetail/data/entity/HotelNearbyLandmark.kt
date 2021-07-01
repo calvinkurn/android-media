@@ -14,4 +14,10 @@ data class HotelNearbyLandmark(
         @SerializedName("information")
         @Expose
         val information: String = ""
-)
+){
+        data class Response(
+                @SerializedName("propertySearchPlace")
+                @Expose
+                val response: HotelNearbyLandmark = HotelNearbyLandmark()
+        )
+}
