@@ -82,8 +82,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     // Setter & Getter
-    // some setter & getter is for value initialization,
-    // some for reduce complexity (due to nullability) so we can increase unit test coverage
+    // Some of setter & getter here added to reduce complexity (due to nullability) so we can increase unit test coverage
 
     fun initializeCurrentPage(currentPage: MiniCartAnalytics.Page) {
         _currentPage.value = currentPage
