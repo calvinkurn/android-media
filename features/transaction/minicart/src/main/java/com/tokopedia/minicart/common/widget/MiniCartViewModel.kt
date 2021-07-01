@@ -519,7 +519,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             it.miniCartSummaryTransactionUiModel.discountValue = totalDiscount
             it.miniCartSummaryTransactionUiModel.paymentTotal = totalPrice
             it.miniCartSummaryTransactionUiModel.sellerCashbackValue = sellerCashbackValue
-            it.isFirstLoad = false
             it.needToCalculateAfterLoad = false
         }
 
