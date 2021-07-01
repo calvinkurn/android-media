@@ -54,6 +54,11 @@
     <!--    Dynamic feature for Liveness Detection-->
     <string name="title_liveness_detection">Liveness Detection</string>
 
+    <!--    Dynamic feature for Login Fingerprint-->
+    <string name="title_feature_login_fingerprint_setting">Sidik Jari</string>
+    <string name="title_login_fingerprint">Masuk dengan Sidik Jari</string>
+    <string name="title_base_login_fingerprint">Masuk dengan Sidik Jari</string>
+
     <!--    Change Phone Number-->
     <string name="change_phone_number_app_module_name">changephonenumber</string>
 

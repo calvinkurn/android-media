@@ -9,3 +9,5 @@ object InteractivePreStartFinishedAction : PlayViewerNewAction()
 object InteractiveOngoingFinishedAction : PlayViewerNewAction()
 
 object InteractiveWinnerBadgeClickedAction : PlayViewerNewAction()
+
+object InteractiveTapTapAction : PlayViewerNewAction()

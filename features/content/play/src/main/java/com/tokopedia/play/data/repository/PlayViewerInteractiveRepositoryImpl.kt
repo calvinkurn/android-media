@@ -1,11 +1,13 @@
-package com.tokopedia.play.data
+package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.data.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play.domain.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play.domain.interactive.PostInteractiveTapUseCase
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
+import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -16,8 +18,9 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
         private val getCurrentInteractiveUseCase: GetCurrentInteractiveUseCase,
         private val postInteractiveTapUseCase: PostInteractiveTapUseCase,
         private val mapper: PlayUiModelMapper,
-        private val dispatchers: CoroutineDispatchers
-) : PlayViewerInteractiveRepository {
+        private val dispatchers: CoroutineDispatchers,
+        private val interactiveStorage: PlayInteractiveStorage
+) : PlayViewerInteractiveRepository, PlayInteractiveStorage by interactiveStorage {
 
     override suspend fun getCurrentInteractive(channelId: String): PlayCurrentInteractiveModel = withContext(dispatchers.io) {
         val response = getCurrentInteractiveUseCase.apply {

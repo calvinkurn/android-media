@@ -29,6 +29,11 @@ class InteractivePreStartViewComponent(
         }
     }
 
+    override fun hide() {
+        super.hide()
+        timerPreStart.pause()
+    }
+
     fun setTitle(title: String) {
         tvInteractiveTitle.text = title
     }
@@ -52,11 +57,6 @@ class InteractivePreStartViewComponent(
         } else {
             btnInteractiveFollow.hide()
         }
-    }
-
-    override fun hide() {
-        super.hide()
-        timerPreStart.resume()
     }
 
     interface Listener {

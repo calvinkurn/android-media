@@ -134,7 +134,6 @@ dependencies {
     implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.changePhoneNumber)
     implementation project(rootProject.ext.features.kyccentralized)
-    implementation project(rootProject.ext.features.loginfingerprint)
     implementation project(rootProject.ext.features.managename)
     implementation project(rootProject.ext.features.managepassword)
     implementation project(rootProject.ext.features.notifCenter)
@@ -144,6 +143,7 @@ dependencies {
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.inbox)
+    implementation project(rootProject.ext.features.loginfingerprint)
 
     //Transaction
     implementation project(rootProject.ext.features.cart)
