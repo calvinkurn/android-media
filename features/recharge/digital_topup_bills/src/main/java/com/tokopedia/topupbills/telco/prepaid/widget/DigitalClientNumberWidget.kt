@@ -58,10 +58,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             hideErrorInputNumber()
         }
 
-        inputNumberField.textFieldWrapper.run {
-
-        }
-
         inputNumberField.textFieldInput.run {
             isClickable = true
             isFocusable = false
