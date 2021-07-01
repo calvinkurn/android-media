@@ -38,6 +38,10 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
     val tapcashInquiry: LiveData<EmoneyInquiry>
         get() = tapcashInquiryMutable
 
+    private var recheckBalanceV6Mutable = SingleLiveEvent<Boolean>()
+    val recheckBalanceV6: LiveData<Boolean>
+        get() = recheckBalanceV6Mutable
+
     lateinit var isoDep: IsoDep
 
     fun processTapCashTagIntent(isoDep: IsoDep, balanceRawQuery: String) {
@@ -97,7 +101,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
             }.getSuccessData<BalanceTapcash>()
 
             if (data.rechargeUpdateBalance.attributes.cryptogram.isNotEmpty()) {
-                writeBalance(data, cardData, balanceRawQuery, terminalRandomNumber)
+                writeBalance(data, terminalRandomNumber)
             } else {
                 tapcashInquiryMutable.postValue(mapTapcashtoEmoney(data))
             }
@@ -107,9 +111,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         }
     }
 
-    fun writeBalance(tapcash: BalanceTapcash, cardData: String,
-                     balanceRawQuery: String,
-                     terminalRandomNumber: ByteArray) {
+    fun writeBalance(tapcash: BalanceTapcash, terminalRandomNumber: ByteArray) {
         val attributesTapcash = tapcash.rechargeUpdateBalance.attributes
         if (::isoDep.isInitialized && isoDep.isConnected) {
             try {
@@ -123,7 +125,8 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                 } else if(writeResultString.length == MAX_WRITE_RESULT_SIZE){
                     tapcashInquiryMutable.postValue(mapTapcashtoEmoney(tapcash, getStringFromNormalPosition(writeResultString, 48, 54)))
                 } else if(writeResultString.length == MAX_WRITE_RESULT_SIZE_V6){
-                    updateBalance(cardData, terminalRandomNumber, balanceRawQuery)
+                    isoDep.close()
+                    recheckBalanceV6Mutable.postValue(true)
                 } else {
                     ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_ISSUE_WRITE_RESULT_LENGTH"))
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))

@@ -228,6 +228,13 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             }
         })
 
+        tapcashBalanceViewModel.recheckBalanceV6.observe(this, Observer {
+            if(it){
+                tapcashBalanceViewModel.processTapCashTagIntent(IsoDep.get(tag),
+                        DigitalEmoneyGqlQuery.rechargeBniTapcashQuery)
+            }
+        })
+
     }
 
     protected open fun processBrizzi(intent: Intent) {
