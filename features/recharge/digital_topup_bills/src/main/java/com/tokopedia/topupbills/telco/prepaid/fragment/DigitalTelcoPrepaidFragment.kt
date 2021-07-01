@@ -603,7 +603,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         seamlessFavNumberList.addAll(favNumbers)
         if (clientNumber.isEmpty() && favNumbers.isNotEmpty() && ::viewPager.isInitialized) {
             autoSelectTabProduct = true
-            telcoClientNumberWidget.setInputNumber(favNumbers[0].clientNumber)
+            telcoClientNumberWidget.run {
+                setInputNumber(favNumbers[0].clientNumber)
+                setContactName(favNumbers[0].clientName)
+            }
         }
     }
 
@@ -618,7 +621,13 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         }
     }
 
-    override fun handleCallbackAnySearchNumber(clientNumber: String, productId: String, categoryId: String, inputNumberActionTypeIndex: Int) {
+    override fun handleCallbackAnySearchNumber(
+            clientName: String,
+            clientNumber: String,
+            productId: String,
+            categoryId: String,
+            inputNumberActionTypeIndex: Int
+    ) {
         inputNumberActionType = InputNumberActionType.values()[inputNumberActionTypeIndex]
         autoSelectTabProduct = true
         if (productId.isNotEmpty() && categoryId.toIntOrNull() ?: 0 == this@DigitalTelcoPrepaidFragment.categoryId) {
@@ -626,8 +635,11 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
         }
 
-        telcoClientNumberWidget.setInputNumber(clientNumber)
-        telcoClientNumberWidget.clearFocusAutoComplete()
+        telcoClientNumberWidget.run {
+            setContactName(clientName)
+            setInputNumber(clientNumber)
+            clearFocusAutoComplete()
+        }
     }
 
     override fun handleCallbackAnySearchNumberCancel() {
