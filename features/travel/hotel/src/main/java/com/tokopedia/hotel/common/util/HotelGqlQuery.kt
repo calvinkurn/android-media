@@ -673,6 +673,24 @@ object HotelGqlQuery {
     """.trimIndent()
 
     val HOTEL_NEARBY_LANDMARKS = """
-        
+        query propertySearchPlace(${'$'}data :PropertySearchPlaceRequest!){
+          propertySearchPlace(input:${'$'}data){
+            result{
+              type
+              header
+              icon
+              places{
+                name
+                icon
+                geoLocation{
+                  latitude
+                  longitude
+                }
+                distance
+              }
+            }
+            information
+          }
+        }
     """.trimIndent()
 }

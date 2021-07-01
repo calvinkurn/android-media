@@ -159,14 +159,14 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     HotelGqlQuery.PROPERTY_DETAIL,
                     HotelGqlQuery.PROPERTY_ROOM_LIST,
                     HotelGqlQuery.PROPERTY_REVIEW,
-//                    HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
+                    HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
                     hotelHomepageModel.locId,
                     hotelHomepageModel, source)
         } else {
             detailViewModel.getHotelDetailDataWithoutRoom(
                     HotelGqlQuery.PROPERTY_DETAIL,
                     HotelGqlQuery.PROPERTY_REVIEW,
-                    //                    HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
+                    HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
                     hotelHomepageModel.locId, source)
         }
 
@@ -238,8 +238,6 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             }
         })
 
-        /** testing purpose only*/
-        detailViewModel.getNearbyLandMarks(requireContext())
         detailViewModel.hotelNearbyLandmarks.observe(viewLifecycleOwner,{
             when(it){
                 is Success->{
@@ -729,12 +727,14 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     HotelGqlQuery.PROPERTY_DETAIL,
                     HotelGqlQuery.PROPERTY_ROOM_LIST,
                     HotelGqlQuery.PROPERTY_REVIEW,
+                    HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
                     hotelHomepageModel.locId,
                     hotelHomepageModel, source)
         } else {
             detailViewModel.getHotelDetailDataWithoutRoom(
                     HotelGqlQuery.PROPERTY_DETAIL,
                     HotelGqlQuery.PROPERTY_REVIEW,
+                    HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
                     hotelHomepageModel.locId, source)
         }
     }
@@ -764,13 +764,17 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     }
 
     private fun showNearbyLandmarks(){
-        rv_nearby_landmarks.visible()
-        tv_hotel_nearby_landmark_info.visible()
+        view?.let {
+            rv_nearby_landmarks.visible()
+            tv_hotel_nearby_landmark_info.visible()
+        }
     }
 
     private fun hideNearbyLandmarks(){
-        rv_nearby_landmarks.gone()
-        tv_hotel_nearby_landmark_info.gone()
+       view?.let {
+           rv_nearby_landmarks.gone()
+           tv_hotel_nearby_landmark_info.gone()
+       }
     }
 
     private fun stopTrace() {
