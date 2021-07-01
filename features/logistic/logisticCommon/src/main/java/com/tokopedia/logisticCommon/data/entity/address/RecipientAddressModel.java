@@ -56,7 +56,7 @@ public class RecipientAddressModel implements Parcelable {
     private boolean isStateChosenAddress;
     private boolean radioButtonChecked;
 
-    private boolean isEnabled;
+    private boolean isEnabled = true;
 
     public RecipientAddressModel() {
     }
