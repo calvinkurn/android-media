@@ -67,12 +67,8 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
         } else {
             renderNormalAddress(recipientAddress)
         }
-        if (recipientAddress.isEnabled) {
-            rlRecipientAddressLayout.foreground = ContextCompat.getDrawable(rlRecipientAddressLayout.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
-            showOnboarding(isShowOnboarding)
-        } else {
-            rlRecipientAddressLayout.foreground = ContextCompat.getDrawable(rlRecipientAddressLayout.context, com.tokopedia.purchase_platform.common.R.drawable.fg_disabled_item)
-        }
+        rlRecipientAddressLayout.foreground = ContextCompat.getDrawable(rlRecipientAddressLayout.context, com.tokopedia.purchase_platform.common.R.drawable.fg_enabled_item)
+        showOnboarding(isShowOnboarding)
     }
 
     private fun renderTradeInAddressWithTabs(recipientAddress: RecipientAddressModel) {
@@ -82,9 +78,7 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
         imgButtonTradeInInfo.visibility = View.VISIBLE
         separator.visibility = View.GONE
         imgButtonTradeInInfo.setOnClickListener {
-            if (recipientAddress.isEnabled) {
-                shipmentAdapterActionListener.onClickTradeInInfo()
-            }
+            shipmentAdapterActionListener.onClickTradeInInfo()
         }
         if (tabUnifyTradeInAddress.getUnifyTabLayout().tabCount == 0) {
             tabUnifyTradeInAddress.addNewTab(tabUnifyTradeInAddress.context.getString(R.string.label_tab_trade_in_address_deliver))
@@ -96,7 +90,7 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
         tabUnifyTradeInAddress.getUnifyTabLayout().addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION && recipientAddress.isEnabled) {
+                if (position != RecyclerView.NO_POSITION) {
                     if (!recipientAddress.isIgnoreSelectionAction) {
                         recipientAddress.isIgnoreSelectionAction = true
                         recipientAddress.selectedTabIndex = tab.position
@@ -109,9 +103,7 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
         tvChangeDropOff.setOnClickListener {
-            if (recipientAddress.isEnabled) {
-                shipmentAdapterActionListener.onChangeTradeInDropOffClicked()
-            }
+            shipmentAdapterActionListener.onChangeTradeInDropOffClicked()
         }
     }
 
@@ -254,9 +246,7 @@ class ShipmentRecipientAddressViewHolder(itemView: View, private val shipmentAda
         if (recipientAddress.selectedTabIndex == 0) {
             tvChangeAddressTop.visibility = View.VISIBLE
             tvChangeAddressTop.setOnClickListener {
-                if (recipientAddress.isEnabled) {
-                    shipmentAdapterActionListener.onChangeAddress()
-                }
+                shipmentAdapterActionListener.onChangeAddress()
             }
         } else {
             tvChangeAddressTop.visibility = View.GONE
