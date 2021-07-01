@@ -446,7 +446,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         input.group.suggestedBidValue = stepperModel?.suggestedBidPerClick?.toDouble() ?: 0.0
         keywordsList.clear()
         adsItemsList.clear()
-        if (stepperModel?.selectedKeywordStage?.count() ?: 0 > 0) {
+        if (stepperModel?.autoBidState?.isNotEmpty() == true && stepperModel?.selectedKeywordStage?.count() ?: 0 > 0) {
             stepperModel?.selectedKeywordStage?.forEachIndexed { index, _ ->
                 addKeywords(index)
             }
