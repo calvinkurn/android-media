@@ -21,10 +21,6 @@
 
     <color name="play_dms_pip_control_bg">#AD31353B</color>
 
-    <color name="play_dms_bottom_sheet_background">#FFFFFF</color>
-    <color name="play_dms_bottom_sheet_action_close">#F531353B</color>
-    <color name="play_dms_bottom_sheet_title">#F531353B</color>
-
     <color name="play_dms_discount_badge">#FFEAEF</color>
     <color name="play_dms_discount_price">#FF5C84</color>
 

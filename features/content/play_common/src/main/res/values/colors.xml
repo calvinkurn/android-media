@@ -10,6 +10,10 @@
     <color name="play_dms_bottom_gradient_lighter">#00000000</color>
     <color name="play_dms_bottom_gradient_darker">#B331353B</color>
 
+    <color name="play_dms_bottom_sheet_background">#FFFFFF</color>
+    <color name="play_dms_bottom_sheet_action_close">#F531353B</color>
+    <color name="play_dms_bottom_sheet_title">#F531353B</color>
+
     <color name="play_dms_B600">#0066A9</color>
     <color name="play_dms_N700_68">#AD31353B</color>
     <color name="play_dms_R400">#FF5C84</color>

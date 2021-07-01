@@ -1,10 +1,19 @@
 package com.tokopedia.play_common.ui.leaderboard
 
+import android.app.Dialog
+import android.graphics.Color
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
@@ -16,7 +25,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 /**
  * Created by mzennis on 29/06/21.
  */
-class PlayEngagementLeaderboardBottomSheet : BottomSheetUnify() {
+class PlayEngagementLeaderboardBottomSheet : BottomSheetDialogFragment() {
 
     private lateinit var rvLeaderboard: RecyclerView
 
@@ -32,6 +41,16 @@ class PlayEngagementLeaderboardBottomSheet : BottomSheetUnify() {
         setupBottomSheet()
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.bottom_sheet_play_engagement_leaderboard, container, false)
+        dialog?.let { setupDialog(it) }
+        return view
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
@@ -43,19 +62,22 @@ class PlayEngagementLeaderboardBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupBottomSheet() {
-        setChild(getContentView())
     }
 
-    private fun getContentView(): View {
-        val view = View.inflate(requireContext(), R.layout.bottom_sheet_play_engagement_leaderboard, null)
-        rvLeaderboard = view.findViewById(R.id.rv_leaderboard)
-        return view
+    private fun setupDialog(dialog: Dialog) {
+        dialog.setOnShowListener {
+            val bottomSheetDialog = dialog as BottomSheetDialog
+            val bottomSheet = bottomSheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
+
+            isCancelable = true
+        }
     }
 
     private fun setupView(view: View) {
-        setTitle(getString(R.string.play_engage_leaderboard_title))
-        isFullpage = false
+        rvLeaderboard = view.findViewById(R.id.rv_leaderboard)
 
+//        setTitle(getString(R.string.play_engage_leaderboard_title))ø
         rvLeaderboard.adapter = leaderboardAdapter
     }
 
@@ -63,7 +85,7 @@ class PlayEngagementLeaderboardBottomSheet : BottomSheetUnify() {
         leaderboardAdapter.setItems(mockLeaderboardItems)
     }
 
-    private val mockLeaderboardItems = List(3) {
+    private val mockLeaderboardItems = List(2) {
         PlayLeaderboardUiModel(
             title = listOf("Giveaway Kotak Pensil", "Giveaway LCD tv", "Giveaway CD Blackpink").random(),
             winners = if (it == 1) emptyList() else List(5) { child ->
