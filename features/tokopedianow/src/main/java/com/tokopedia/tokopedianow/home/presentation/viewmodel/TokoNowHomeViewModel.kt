@@ -11,16 +11,17 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutState
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.isNotStaticLayout
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapGlobalHomeLayoutData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.shouldLoadLayout
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateStateToLoading
 import com.tokopedia.tokopedianow.home.domain.mapper.TickerMapper.mapTickerData
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
@@ -108,7 +109,7 @@ class TokoNowHomeViewModel @Inject constructor(
             val isInitialLoadFinished = lastItemLoaded || !isLayoutVisible
             val item = homeLayoutItemList.getOrNull(index)
 
-            if (item != null && isLayoutVisible && item.shouldLoadLayout()) {
+            if (item != null && isLayoutVisible && shouldLoadLayout(item)) {
                 setItemStateToLoading(item)
                 when (val layout = item.layout) {
                     is HomeComponentVisitable -> {
@@ -141,7 +142,7 @@ class TokoNowHomeViewModel @Inject constructor(
             for (index in firstVisibleItemIndex..lastVisibleItemIndex) {
                 val item = homeLayoutItemList.getOrNull(index)
 
-                if (item != null && item.shouldLoadLayout()) {
+                if (item != null && shouldLoadLayout(item)) {
                     setItemStateToLoading(item)
                     when (val layout = item.layout) {
                         is HomeComponentVisitable -> {
@@ -246,6 +247,12 @@ class TokoNowHomeViewModel @Inject constructor(
         val channelId = item.visitableId()
         val response = getHomeLayoutDataUseCase.execute(channelId)
         return homeLayoutItemList.mapGlobalHomeLayoutData(item, response)
+    }
+
+    private fun shouldLoadLayout(item: HomeLayoutItemUiModel): Boolean {
+        return item.state != HomeLayoutItemState.LOADING &&
+                item.state != HomeLayoutItemState.LOADED &&
+                item.layout.isNotStaticLayout()
     }
 
     private fun setItemStateToLoading(item: HomeLayoutItemUiModel) {
