@@ -11,7 +11,7 @@ class ExampleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_example)
 
-        val newFragment: Fragment = ExampleFragment()
+        val newFragment: Fragment = MinicartTestFragment()
         supportFragmentManager.beginTransaction()
                 .replace(R.id.parent_view_example, newFragment, "")
                 .commit()

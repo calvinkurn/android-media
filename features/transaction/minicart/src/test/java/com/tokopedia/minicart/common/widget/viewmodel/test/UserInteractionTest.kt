@@ -120,7 +120,7 @@ class UserInteractionTest {
     @Test
     fun `WHEN user toggle accordion from collapsed to expanded THEN temporary collapsed data should be empty`() {
         //given
-        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllUnavailable()
+        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAvailableAndUnavailable()
         viewModel.setMiniCartListUiModel(miniCartListUiModel)
         val miniCartSimplifiedData = DataProvider.provideMiniCartSimplifiedDataAllUnavailable()
         viewModel.setMiniCartSimplifiedData(miniCartSimplifiedData)

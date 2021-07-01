@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
 import com.tokopedia.minicart.common.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.minicart.common.domain.data.RemoveFromCartDomainModel
@@ -287,4 +288,28 @@ class DeleteCartTest {
         assert(viewModel.globalEvent.value?.throwable?.message?.equals(errorMessage) == true)
     }
 
+    @Test
+    fun `WHEN delete single cart item success but somehow data is empty THEN global event state should not be updated`() {
+        //given
+        viewModel.initializeGlobalState()
+
+        val productId = "1920796612"
+        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+        val miniCartProductUiModel = miniCartListUiModel.getMiniCartProductUiModelByProductId(productId) ?: MiniCartProductUiModel()
+
+        val mockResponse = DataProvider.provideDeleteFromCartSuccess()
+        coEvery { deleteCartUseCase.setParams(any()) } just Runs
+        coEvery { deleteCartUseCase.execute(any(), any()) } answers {
+            firstArg<(RemoveFromCartData) -> Unit>().invoke(mockResponse)
+        }
+
+        viewModel.setMiniCartListUiModel(MiniCartListUiModel())
+
+        //when
+        viewModel.deleteSingleCartItem(miniCartProductUiModel)
+
+        //then
+        assert(viewModel.globalEvent.value?.state == 0)
+    }
 }

@@ -56,8 +56,6 @@ public class RecipientAddressModel implements Parcelable {
     private boolean isStateChosenAddress;
     private boolean radioButtonChecked;
 
-    private boolean isEnabled;
-
     public RecipientAddressModel() {
     }
 
@@ -332,14 +330,6 @@ public class RecipientAddressModel implements Parcelable {
 
     public void setIgnoreSelectionAction(boolean ignoreSelectionAction) {
         this.ignoreSelectionAction = ignoreSelectionAction;
-    }
-
-    public boolean isEnabled() {
-        return isEnabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
     }
 
     public boolean equalCorner(RecipientAddressModel that) {
