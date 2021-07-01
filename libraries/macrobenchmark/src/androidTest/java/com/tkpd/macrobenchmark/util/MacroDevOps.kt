@@ -8,7 +8,7 @@ object MacroDevOps {
     fun setupHomeEnvironment() {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         instrumentation.targetContext.startActivity(MacroIntent.Home.getHomeMacroSetupIntent())
-        Thread.sleep(5000)
+        Thread.sleep(10000)
         val device = UiDevice.getInstance(instrumentation)
         killProcess(device, MacroIntent.TKPD_PACKAGE_NAME)
     }

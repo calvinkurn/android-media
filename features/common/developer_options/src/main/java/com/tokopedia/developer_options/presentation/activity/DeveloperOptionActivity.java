@@ -249,7 +249,7 @@ public class DeveloperOptionActivity extends BaseActivity {
                 .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, false)
                 .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true).apply();
 
-        userSession.setFirstTimeUser(false);
+        userSession.setFirstTimeUserOnboarding(false);
 
         RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_REVAMP);
     }
