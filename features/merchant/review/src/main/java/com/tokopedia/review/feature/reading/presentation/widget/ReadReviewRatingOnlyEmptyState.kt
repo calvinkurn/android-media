@@ -4,11 +4,19 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ProgressBar
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.review.R
+import com.tokopedia.review.feature.reading.data.ProductRating
+import com.tokopedia.review.feature.reading.data.ProductReviewDetail
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 
 class ReadReviewRatingOnlyEmptyState : BaseCustomView {
+
+    companion object {
+        private const val MAX_RATING = 5
+        private const val PERCENT_MULTIPLIER = 100
+    }
 
     constructor(context: Context) : super(context) {
         init()
@@ -22,6 +30,7 @@ class ReadReviewRatingOnlyEmptyState : BaseCustomView {
         init()
     }
 
+    private var rating: ReadReviewRating? = null
     private var circularProgressBar: ProgressBar? = null
     private var satisfactionRate: Typography? = null
     private var ratingCount: Typography? = null
@@ -37,6 +46,7 @@ class ReadReviewRatingOnlyEmptyState : BaseCustomView {
     }
 
     private fun bindViews() {
+        rating = findViewById(R.id.rating_only_rating_score)
         circularProgressBar = findViewById(R.id.rating_only_circular_progress_bar)
         satisfactionRate = findViewById(R.id.rating_only_satisfaction_rate)
         ratingCount = findViewById(R.id.rating_only_count)
@@ -47,7 +57,33 @@ class ReadReviewRatingOnlyEmptyState : BaseCustomView {
         oneStarProgressBar = findViewById(R.id.rating_only_statistic_one_progress_bar)
     }
 
-    fun setEmptyData() {
+    private fun bindProgressBarData(progressBar: ReadReviewRatingBar?, reviewDetail: ProductReviewDetail) {
+        progressBar?.setProgressAndRatingCount(reviewDetail.percentage.toInt(), reviewDetail.totalReviews)
+    }
 
+    private fun getListOfProgressBars(): List<ReadReviewRatingBar?> {
+        return listOf(fiveStarProgressBar, fourStarProgressBar, threeStarProgressBar, twoStarProgressBar, oneStarProgressBar)
+    }
+
+    private fun setRatingProgress(ratingDetail: List<ProductReviewDetail>) {
+        val progressBars = getListOfProgressBars()
+        ratingDetail.forEachIndexed { index, productReviewDetail ->
+            if (productReviewDetail.rate == ratingDetail.size - index) {
+                bindProgressBarData(progressBars[index], productReviewDetail)
+            }
+        }
+    }
+
+    private fun setCircularProgressBarProgress(ratingScore: Float) {
+        val rating = ratingScore.div(MAX_RATING).times(PERCENT_MULTIPLIER).toInt()
+        circularProgressBar?.progress = rating
+    }
+
+    fun setRatingData(productRating: ProductRating) {
+        rating?.setRating(productRating.ratingScore)
+        setCircularProgressBarProgress(productRating.ratingScore.toFloatOrZero())
+        this.satisfactionRate?.text = productRating.satisfactionRate
+        this.ratingCount?.text = context.getString(R.string.review_reading_rating_only_count, productRating.totalRating)
+        setRatingProgress(productRating.detail)
     }
 }

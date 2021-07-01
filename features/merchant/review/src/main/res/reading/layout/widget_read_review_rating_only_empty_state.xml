@@ -13,17 +13,32 @@
         android:background="@drawable/review_reading_rating_only_progress_bar_background"
         android:indeterminate="false"
         android:max="100"
-        android:progress="65"
         android:progressDrawable="@drawable/review_reading_rating_only_progress_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <FrameLayout
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        app:layout_constraintTop_toTopOf="@id/rating_only_circular_progress_bar"
+        app:layout_constraintBottom_toBottomOf="@id/rating_only_circular_progress_bar"
+        app:layout_constraintStart_toStartOf="@id/rating_only_circular_progress_bar"
+        app:layout_constraintEnd_toEndOf="@id/rating_only_circular_progress_bar">
+
+        <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRating
+            android:id="@+id/rating_only_rating_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+
+    </FrameLayout>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/rating_only_satisfaction_rate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +51,6 @@
         android:id="@+id/rating_only_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rating_only_satisfaction_rate"

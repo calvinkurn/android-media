@@ -5,39 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/read_review_rating_star"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRating
+        android:id="@+id/read_review_header_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl3"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/layout_lvl2"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_rating_star_item" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/read_review_overall_rating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        app:layout_constraintBottom_toBottomOf="@id/read_review_rating_star"
-        app:layout_constraintStart_toEndOf="@id/read_review_rating_star"
-        app:layout_constraintTop_toTopOf="@id/read_review_rating_star"
-        app:typographyType="heading_1"
-        app:typographyWeight="bold"
-        tools:text="4.7" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/read_review_maximum_rating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lvl2"
-        android:text="@string/review_reading_header_maximum_score"
-        android:textColor="@color/Unify_N700_32"
-        app:layout_constraintBottom_toBottomOf="@id/read_review_overall_rating"
-        app:layout_constraintStart_toEndOf="@id/read_review_overall_rating"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/read_review_satisfaction_rate"
@@ -45,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:layout_constraintStart_toEndOf="@id/read_review_maximum_rating"
+        app:layout_constraintStart_toEndOf="@id/read_review_header_rating"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
@@ -56,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl3"
-        app:layout_constraintStart_toEndOf="@id/read_review_maximum_rating"
+        app:layout_constraintStart_toEndOf="@id/read_review_header_rating"
         app:layout_constraintTop_toBottomOf="@id/read_review_satisfaction_rate"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
@@ -83,10 +58,10 @@
         android:id="@+id/read_review_sort_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        app:layout_constraintTop_toBottomOf="@id/read_review_filter_divider"
         app:sort_filter_relationship="AND"
-        app:sort_filter_type="quick"
-        app:layout_constraintTop_toBottomOf="@id/read_review_filter_divider" />
+        app:sort_filter_type="quick" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

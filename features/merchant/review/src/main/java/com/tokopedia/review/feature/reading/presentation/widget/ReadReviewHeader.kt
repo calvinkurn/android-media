@@ -35,7 +35,7 @@ class ReadReviewHeader : BaseCustomView {
         init()
     }
 
-    private var rating: Typography? = null
+    private var rating: ReadReviewRating? = null
     private var satisfactionRate: Typography? = null
     private var ratingAndReviewCount: Typography? = null
     private var chevron: IconUnify? = null
@@ -47,7 +47,7 @@ class ReadReviewHeader : BaseCustomView {
     }
 
     private fun bindViews() {
-        rating = findViewById(R.id.read_review_overall_rating)
+        rating = findViewById(R.id.read_review_header_rating)
         satisfactionRate = findViewById(R.id.read_review_satisfaction_rate)
         ratingAndReviewCount = findViewById(R.id.read_review_rating_and_review_count)
         chevron = findViewById(R.id.read_review_header_chevron_right)
@@ -129,7 +129,7 @@ class ReadReviewHeader : BaseCustomView {
     }
 
     fun setRatingData(productRating: ProductRating) {
-        rating?.text = productRating.ratingScore
+        rating?.setRating(productRating.ratingScore)
         this.satisfactionRate?.text = productRating.satisfactionRate
         this.ratingAndReviewCount?.text = context.getString(R.string.review_reading_rating_and_review_count, productRating.totalRating, productRating.totalRatingTextAndImage)
     }

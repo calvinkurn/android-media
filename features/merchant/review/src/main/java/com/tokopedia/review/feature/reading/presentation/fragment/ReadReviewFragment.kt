@@ -48,6 +48,7 @@ import com.tokopedia.review.feature.reading.presentation.uimodel.ToggleLikeUiMod
 import com.tokopedia.review.feature.reading.presentation.viewmodel.ReadReviewViewModel
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewFilterBottomSheet
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
+import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -92,6 +93,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private var globalError: GlobalError? = null
     private var emptyFilteredState: View? = null
     private var emptyFilteredStateImage: ImageUnify? = null
+    private var emptyRatingOnly: ReadReviewRatingOnlyEmptyState? = null
     private var goToTopFab: FloatingButtonUnify? = null
 
     private val readReviewFilterFactory by lazy {
@@ -304,6 +306,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         emptyFilteredState = view.findViewById(R.id.read_review_list_empty)
         emptyFilteredStateImage = view.findViewById(R.id.read_review_empty_list_image)
         goToTopFab = view.findViewById(R.id.read_review_go_to_top_fab)
+        emptyRatingOnly = view.findViewById(R.id.read_review_rating_only)
     }
 
     private fun setupFab() {
@@ -351,13 +354,22 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             hideFullPageLoading()
             return
         }
+        hideError()
+        if (ratingAndTopics.rating.totalRatingTextAndImage == 0 && ratingAndTopics.rating.totalRatingWithImage == 0) {
+            emptyRatingOnly?.apply {
+                setRatingData(ratingAndTopics.rating)
+                show()
+            }
+            hideFullPageLoading()
+            hideListOnlyLoading()
+            return
+        }
         reviewHeader?.apply {
             setRatingData(ratingAndTopics.rating)
             setListener(this@ReadReviewFragment)
             setAvailableFilters(ratingAndTopics.topics, ratingAndTopics.availableFilters, this@ReadReviewFragment)
             show()
         }
-        hideError()
     }
 
     private fun onFailGetRatingAndTopic() {
@@ -385,7 +397,6 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun showError() {
-
         globalError?.apply {
             setActionClickListener {
                 loadInitialData()
