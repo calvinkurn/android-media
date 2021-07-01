@@ -20,6 +20,7 @@ data class OrderProduct(
         var weightActual: Int = 0,
         var quantity: QuantityUiModel = QuantityUiModel(),
         var notes: String = "",
+        var isEditingNotes: Boolean = false,
         var cashback: String = "",
         var warehouseId: Long = 0,
         var isPreOrder: Int = 0,

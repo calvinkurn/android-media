@@ -5,7 +5,9 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -118,9 +120,41 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             if (product.isError) {
                 tfNote.gone()
                 tvProductNotesPlaceholder.gone()
+                tvProductNotesPreview.gone()
+                tvProductNotesEdit.gone()
                 return@apply
             }
+            if (product.isEditingNotes) {
+                showNotesTextField()
+                return@apply
+            }
+            if (product.notes.isEmpty()) {
+                tfNote.gone()
+                tvProductNotesPreview.gone()
+                tvProductNotesEdit.gone()
+                tvProductNotesPlaceholder.visible()
+                tvProductNotesPlaceholder.setOnClickListener {
+                    showNotesTextField()
+                }
+                return@apply
+            }
+            tvProductNotesPreview.text = product.notes
+            tvProductNotesPlaceholder.gone()
+            tvProductNotesPreview.visible()
+            tvProductNotesEdit.visible()
+            tvProductNotesEdit.setOnClickListener {
+                showNotesTextField()
+            }
+        }
+    }
+
+    private fun showNotesTextField() {
+        binding.apply {
+            tvProductNotesPlaceholder.gone()
+            tvProductNotesPreview.gone()
+            tvProductNotesEdit.gone()
             tfNote.visible()
+            product.isEditingNotes = true
             tfNote.textFieldInput.textSize = 16f
             tfNote.textFieldInput.isSingleLine = false
             tfNote.setCounter(MAX_NOTES_LENGTH)
@@ -149,6 +183,13 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 }
             }
             tfNote.textFieldInput.addTextChangedListener(noteTextWatcher)
+            tfNote.textFieldInput.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    product.isEditingNotes = false
+                    KeyboardHandler.DropKeyboard(binding.tfNote.context, itemView)
+                    true
+                } else false
+            }
         }
     }
 
