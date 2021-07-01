@@ -42,7 +42,7 @@ ext {
     swipeRefreshVersion = '1.0.0'
 
     exoPlayerVersion = '2.11.8'
-    stfalconVersion = '1.0.0'
+    stfalconVersion = '1.0.10'
 
     playServiceFirebaseConfig = '16.1.3'
     playServiceBaseVersion = '17.3.0'
