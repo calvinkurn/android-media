@@ -315,7 +315,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
         postpaidClientNumberWidget.setPostpaidListener(object : ClientNumberPostpaidListener {
             override fun enquiryNumber() {
-                if (userSession.isLoggedIn) {
+                if (postpaidClientNumberWidget.getInputNumber().isEmpty()) {
+                    postpaidClientNumberWidget.setErrorInputNumber(getString(R.string.telco_number_invalid_empty_string))
+                } else if (userSession.isLoggedIn) {
                     getEnquiryNumber()
                 } else {
                     navigateToLoginPage()

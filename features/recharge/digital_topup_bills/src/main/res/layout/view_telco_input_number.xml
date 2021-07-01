@@ -9,7 +9,8 @@
         android:id="@+id/telco_input_number_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/layout_lvl1">
+        android:layout_marginHorizontal="@dimen/spacing_lvl2"
+        android:layout_marginVertical="@dimen/spacing_lvl3">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/telco_input_number_label"
@@ -110,7 +111,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:layout_marginLeft="@dimen/spacing_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl1"
             android:paddingBottom="@dimen/spacing_lvl2"
             android:textColor="@color/Unify_R600"
             android:textSize="@dimen/fontSize_lvl3"
