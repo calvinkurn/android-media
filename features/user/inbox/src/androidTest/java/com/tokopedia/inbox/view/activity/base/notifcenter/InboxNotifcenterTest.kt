@@ -2,6 +2,7 @@ package com.tokopedia.inbox.view.activity.base.notifcenter
 
 import android.content.Intent
 import android.net.Uri
+import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -11,6 +12,7 @@ import com.tokopedia.inbox.common.viewmatcher.withRecyclerView
 import com.tokopedia.inbox.fake.InboxNotifcenterFakeDependency
 import com.tokopedia.inbox.fake.di.notifcenter.DaggerFakeNotificationComponent
 import com.tokopedia.inbox.view.activity.base.InboxTest
+import org.hamcrest.Matcher
 
 open class InboxNotifcenterTest : InboxTest() {
 
@@ -52,5 +54,12 @@ object NotifcenterAssertion {
             withRecyclerView(R.id.recycler_view)
                 .atPositionOnView(position, R.id.tp_message)
         ).check(matches(withText(msg)))
+    }
+
+    fun assertNotifWidgetVisibility(position: Int, visibilityMatcher: Matcher<in View>) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.tp_message)
+        ).check(matches(visibilityMatcher))
     }
 }
