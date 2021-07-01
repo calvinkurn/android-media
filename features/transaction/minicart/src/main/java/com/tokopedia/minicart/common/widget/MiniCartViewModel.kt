@@ -384,8 +384,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     fun toggleUnavailableItemsAccordion() {
-        val visitables = miniCartListBottomSheetUiModel.value?.visitables?.toMutableList()
-                ?: mutableListOf()
+        val visitables = miniCartListBottomSheetUiModel.value?.visitables ?: mutableListOf()
         var miniCartAccordionUiModel: MiniCartAccordionUiModel? = null
         var indexAccordionUiModel: Int = -1
         loop@ for ((index, visitable) in visitables.withIndex()) {
@@ -594,7 +593,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             }
 
             val warningWording = miniCartListBottomSheetUiModel.value?.maximumShippingWeightErrorMessage
-                    ?: ""
             val overWeight = (totalWeight - maxWeight) / 1000.0f
             if (tickerWarning == null) {
                 tickerWarning = miniCartListUiModelMapper.mapTickerWarningUiModel(overWeight, warningWording)
@@ -609,7 +607,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             } else {
                 val updatedTickerWarning = tickerWarning.deepCopy()
                 val formattedOverWeight = NumberFormat.getNumberInstance(Locale("in", "id")).format(overWeight)
-                updatedTickerWarning.warningMessage = warningWording.replace(MiniCartListUiModelMapper.PLACEHOLDER_OVERWEIGHT_VALUE, "$formattedOverWeight ")
+                updatedTickerWarning.warningMessage = warningWording?.replace(MiniCartListUiModelMapper.PLACEHOLDER_OVERWEIGHT_VALUE, "$formattedOverWeight ") ?: ""
                 visitables[tickerWarningIndex] = updatedTickerWarning
             }
         } else {

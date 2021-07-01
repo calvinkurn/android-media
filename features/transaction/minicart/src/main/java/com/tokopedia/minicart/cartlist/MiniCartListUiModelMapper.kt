@@ -281,10 +281,10 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-    fun mapTickerWarningUiModel(overWeight: Float, warningWording: String): MiniCartTickerWarningUiModel {
+    fun mapTickerWarningUiModel(overWeight: Float, warningWording: String?): MiniCartTickerWarningUiModel {
         return MiniCartTickerWarningUiModel().apply {
             val formattedOverWeight = NumberFormat.getNumberInstance(Locale("in", "id")).format(overWeight)
-            warningMessage = warningWording.replace(PLACEHOLDER_OVERWEIGHT_VALUE, "$formattedOverWeight ")
+            warningMessage = warningWording?.replace(PLACEHOLDER_OVERWEIGHT_VALUE, "$formattedOverWeight ") ?: ""
         }
     }
 
