@@ -1620,7 +1620,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun onErrorVerifyFingerprint() {
-        NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.error_login_fp_error))
+        view?.run {
+            Toaster.build(
+                this,
+                getString(R.string.error_login_fp_error),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
+        }
     }
 
     private fun onSuccessChooseAccountFingerprint(email: String, validateToken: String) {
