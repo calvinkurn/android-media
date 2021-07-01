@@ -176,4 +176,7 @@
     <string name="play_broadcast_schedule_deleted">Jadwal sudah dihapus</string>
 
     <string name="album">Album</string>
+
+    <string name="play_engage_time_picker_title">Atur waktu mulai</string>
+    <string name="play_engage_time_picker_apply"><![CDATA[Terapkan & Mulai]]></string>
 </resources>

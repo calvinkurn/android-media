@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.custom.behavior
+package com.tokopedia.play_common.util.behavior
 
 import android.content.Context
 import android.util.AttributeSet
