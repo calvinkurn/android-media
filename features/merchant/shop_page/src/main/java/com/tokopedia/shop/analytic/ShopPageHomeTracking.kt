@@ -1411,6 +1411,7 @@ class ShopPageHomeTracking(
                 EVENT_LABEL to productId,
                 BUSINESS_UNIT to PHYSICAL_GOODS,
                 CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                PAGE_TYPE to SHOPPAGE,
                 USER_ID to userId
         )
         eventMap[ECOMMERCE] = mutableMapOf(

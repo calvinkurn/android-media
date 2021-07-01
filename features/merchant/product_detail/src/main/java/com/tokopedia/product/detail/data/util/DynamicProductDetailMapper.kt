@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
 import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.track.TrackApp
 import com.tokopedia.variant_common.model.*
 import com.tokopedia.variant_common.model.ThematicCampaign
@@ -55,7 +56,12 @@ object DynamicProductDetailMapper {
                     )
                 }
                 ProductDetailConstant.PRODUCT_LIST -> {
-                    listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
+                    when (component.componentName) {
+                        PDP_7 ->
+                            listOfComponent.add(ProductRecomWidgetDataModel(type = component.type, name = component.componentName, position = index))
+                        else ->
+                            listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
+                    }
                 }
                 ProductDetailConstant.SHOP_VOUCHER -> {
                     listOfComponent.add(ProductMerchantVoucherDataModel(type = component.type, name = component.componentName))
@@ -95,6 +101,11 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.MVC -> {
                     listOfComponent.add(ProductMerchantVoucherSummaryDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.ONE_LINERS -> {
+                    listOfComponent.add(
+                        BestSellerInfoDataModel(type = component.type, name = component.componentName)
+                    )
+                }
             }
         }
         return listOfComponent
@@ -114,11 +125,32 @@ object DynamicProductDetailMapper {
             it.type == ProductDetailConstant.MEDIA
         }?.componentData?.firstOrNull() ?: ComponentData()
 
+        val bestSellerComponent = data.components.find {
+            it.componentName == ProductDetailConstant.BEST_SELLER
+        }?.componentData?.map {
+            BestSellerInfoContent (
+                productID = it.productId,
+                content = it.oneLinerContent,
+                linkText = it.linkText,
+                color = it.color,
+                applink = it.applink,
+                separator = it.separator,
+                icon = it.icon,
+                isVisible = it.isVisible
+            )
+        }?.associateBy { it.productID }
+
         val newDataWithMedia = contentData?.copy(media = mediaData.media, youtubeVideos = mediaData.youtubeVideos)
                 ?: ComponentData()
         assignIdToMedia(newDataWithMedia.media)
 
-        return DynamicProductInfoP1(layoutName = data.generalName, basic = data.basicInfo, data = newDataWithMedia, pdpSession = data.pdpSession)
+        return DynamicProductInfoP1(
+            layoutName = data.generalName,
+            basic = data.basicInfo,
+            data = newDataWithMedia,
+            pdpSession = data.pdpSession,
+            bestSellerContent = bestSellerComponent
+        )
     }
 
     private fun assignIdToMedia(listOfMedia: List<Media>) {

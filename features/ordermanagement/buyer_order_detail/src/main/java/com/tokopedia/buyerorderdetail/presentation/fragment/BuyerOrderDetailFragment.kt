@@ -492,17 +492,19 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(), ProductViewHolder.Product
         } else if (resultCode == RESULT_CODE_CANCEL_ORDER_DISABLE) {
             loadBuyerOrderDetail()
         }
-        bottomSheetManager.finishReceiveConfirmationBottomSheetLoading()
+        bottomSheetManager.dismissBottomSheets()
     }
 
     private fun handleComplaintResult() {
         swipeRefreshBuyerOrderDetail?.isRefreshing = true
         loadBuyerOrderDetail()
+        bottomSheetManager.dismissBottomSheets()
     }
 
     private fun handleResultRefreshOnly() {
         swipeRefreshBuyerOrderDetail?.isRefreshing = true
         loadBuyerOrderDetail()
+        bottomSheetManager.dismissBottomSheets()
     }
 
     private fun stopLoadTimeMonitoring() {
