@@ -1,4 +1,4 @@
-package com.tokopedia.product_bundle.multiple.presentation
+package com.tokopedia.product_bundle.multiple.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -30,13 +30,12 @@ class MultipleProductBundleFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_multiple_product_bundle, container, false)
     }
 
     override fun getScreenName(): String {
-        TODO("Not yet implemented")
+        return getString(R.string.product_bundle_page_title)
     }
 
     override fun initInjector() {

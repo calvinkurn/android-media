@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
-import com.tokopedia.product_bundle.single.presentation.SingleProductBundleFragment
+import com.tokopedia.product_bundle.multiple.presentation.fragment.MultipleProductBundleFragment
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
 import javax.inject.Inject
 
@@ -30,7 +30,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return SingleProductBundleFragment.newInstance()
+        return MultipleProductBundleFragment.newInstance()
     }
 
     private fun initInjector() {

@@ -1,8 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".multiple.presentation.MultipleProductBundleFragment">
+    tools:context=".multiple.presentation.fragment.MultipleProductBundleFragment">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_product_bundle_master"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_6"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/du_top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rv_product_bundle_master" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_sold_product_bundle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/du_top"
+        app:typographyType="body_3"
+        tools:text="Terjual 50 paket" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_product_bundle_detail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_font_16"
+        app:layout_constraintBottom_toTopOf="@id/ta_product_bundle_sum"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_sold_product_bundle" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/du_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        app:layout_constraintBottom_toTopOf="@id/ta_product_bundle_sum" />
+
+    <com.tokopedia.totalamount.TotalAmount
+        android:id="@+id/ta_product_bundle_sum"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
