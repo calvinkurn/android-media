@@ -131,4 +131,25 @@ class UndoDeleteCartTest {
         assert(viewModel.globalEvent.value?.state == GlobalEvent.STATE_FAILED_UNDO_DELETE_CART_ITEM)
     }
 
+    @Test
+    fun `WHEN undo delete but temporary deleted item is null THEN global event state should not be updated`() {
+        //given
+        viewModel.initializeGlobalState()
+
+        val miniCartListUiModel = DataProvider.provideMiniCartListUiModelAllAvailable()
+        viewModel.setMiniCartListUiModel(miniCartListUiModel)
+
+        val mockResponse = DataProvider.provideUndoDeleteFromCartSuccess()
+        coEvery { undoDeleteCartUseCase.setParams(any()) } just Runs
+        coEvery { undoDeleteCartUseCase.execute(any(), any()) } answers {
+            firstArg<(UndoDeleteCartDataResponse) -> Unit>().invoke(mockResponse)
+        }
+
+        //when
+        viewModel.undoDeleteCartItem(false)
+
+        //then
+        assert(viewModel.globalEvent.value?.state == 0)
+    }
+
 }
