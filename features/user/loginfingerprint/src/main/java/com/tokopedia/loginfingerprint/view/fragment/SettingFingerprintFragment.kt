@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginfingerprint.R
@@ -23,6 +24,7 @@ import com.tokopedia.loginfingerprint.di.LoginFingerprintComponent
 import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.loginfingerprint.viewmodel.SettingFingerprintViewModel
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -42,6 +44,9 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var fingerprintPreference: FingerprintPreference
 
     private var enableSwitch = true
 
@@ -133,7 +138,10 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_SECURITY_QUESTION) {
             if(resultCode == Activity.RESULT_OK && data != null) {
-                viewModel.registerFingerprint()
+                val uniqueId = if(fingerprintPreference.isUniqueIdEmpty())
+                                    DeviceInfo.getUUID(requireContext())
+                                else fingerprintPreference.getUniqueId()
+                viewModel.registerFingerprint(uniqueId)
             } else if(resultCode == Activity.RESULT_CANCELED) {
                 enableSwitch = true
                 onErrorRegisterFingerprint(Throwable(getString(R.string.error_failed_register_fingerprint)))
