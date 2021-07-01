@@ -243,6 +243,7 @@ abstract class BaseSearchCategoryViewModel(
     private fun showOutOfCoverage() {
         updateRecyclerViewScrollable(false)
         updateHeaderBackgroundVisibility(false)
+        updateMiniCartVisibility(false)
 
         createVisitableListWithOutOfCoverageView()
         clearVisitableListLiveData()
@@ -564,6 +565,7 @@ abstract class BaseSearchCategoryViewModel(
         updateNextPageData()
         updateHeaderBackgroundVisibility(!isEmptyProductList)
         updateRecyclerViewScrollable(!isEmptyProductList)
+        updateMiniCartVisibility(!isEmptyProductList)
 
         showPageContent()
     }
@@ -823,7 +825,11 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun onGetMiniCartDataFailed(throwable: Throwable) {
-        isShowMiniCartMutableLiveData.value = false
+        updateMiniCartVisibility(false)
+    }
+
+    private fun updateMiniCartVisibility(isVisible: Boolean) {
+        isShowMiniCartMutableLiveData.value = isVisible
     }
 
     private fun getIsChooseAddressUpdated(): Boolean {
