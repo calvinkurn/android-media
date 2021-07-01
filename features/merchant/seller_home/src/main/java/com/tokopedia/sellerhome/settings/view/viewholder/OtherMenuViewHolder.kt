@@ -172,6 +172,89 @@ class OtherMenuViewHolder(private val itemView: View,
             topAdsErrorLayout = findViewById(R.id.layout_sah_other_topads_failed)
         }
     }
+    
+    fun onSuccessGetSettingShopInfoData(uiModel: SettingShopInfoUiModel) {
+        with(uiModel) {
+            when {
+                partialResponseStatus.first && partialResponseStatus.second -> {
+                    setupSuccessLayout()
+                    shopStatusUiModel?.let { setShopStatusType(it) }
+                    saldoBalanceUiModel?.let { setSaldoBalance(it) }
+                    topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
+                    shopBadgeUiModel?.let { setShopBadge(it) }
+                    shopFollowersUiModel?.let {
+                        setShopTotalFollowers(it)
+                        setDotVisibility(it.shopFollowers)
+                    }
+
+                    allErrorLocalLoad?.gone()
+                    balanceErrorLocalLoad?.gone()
+                    shopStatusContainer?.visible()
+                    saldoLayout?.visible()
+                    topAdsLayout?.visible()
+                }
+                partialResponseStatus.first -> {
+                    setupSuccessLayout()
+                    shopStatusUiModel?.let { setShopStatusType(it) }
+                    shopBadgeUiModel?.let { setShopBadge(it) }
+                    shopFollowersUiModel?.let {
+                        setShopTotalFollowers(it)
+                        setDotVisibility(it.shopFollowers)
+                    }
+
+                    shopStatusContainer?.visible()
+                    allErrorLocalLoad?.gone()
+                    balanceErrorLocalLoad?.run {
+                        setup()
+                        visible()
+                    }
+                    saldoLayout?.gone()
+                    topAdsLayout?.gone()
+                }
+                partialResponseStatus.second -> {
+                    setupSuccessLayout()
+                    saldoBalanceUiModel?.let { setSaldoBalance(it) }
+                    topadsBalanceUiModel?.let { setKreditTopadsBalance(it) }
+
+                    shopBadgeFollowersDot?.gone()
+                    shopStatusContainer?.gone()
+                    allErrorLocalLoad?.run {
+                        setup()
+                        visible()
+                    }
+                    balanceErrorLocalLoad?.gone()
+                    saldoLayout?.visible()
+                    topAdsLayout?.visible()
+                }
+                else -> {
+                    onErrorGetSettingShopInfoData()
+                }
+            }
+        }
+    }
+
+    fun onLoadingGetSettingShopInfoData() {
+        itemView.run {
+            loadingLayout?.visible()
+            successLayout?.gone()
+            errorLayoutGroup?.gone()
+        }
+    }
+
+    fun onErrorGetSettingShopInfoData() {
+        itemView.run {
+            loadingLayout?.gone()
+            successLayout?.gone()
+            errorLayoutGroup?.visible()
+            errorLayout?.run {
+                findViewById<Typography>(R.id.dot)?.gone()
+                findViewById<LocalLoad>(R.id.settingLocalLoad)?.setup()
+                findViewById<Typography>(R.id.shopName)?.setShopName(userSession.shopName)
+                findViewById<ImageUnify>(R.id.shopImage)?.setShopAvatar(ShopAvatarUiModel(userSession.shopAvatar))
+                setOnClickAction()
+            }
+        }
+    }
 
     fun setBadgeFollowersLoading(isLoading: Boolean) {
         shopBadgeFollowersShimmer?.showWithCondition(isLoading)
@@ -741,6 +824,13 @@ class OtherMenuViewHolder(private val itemView: View,
                 .build()
         powerMerchantProIcon.loadImage(if (goldOS?.badge?.isBlank() == true) PMProURL.ICON_URL else goldOS?.badge)
         return this
+    }
+
+    private fun View.setOnClickAction() {
+        findViewById<AppCompatImageView>(R.id.settingShopNext)?.setOnClickListener {
+            listener.onShopInfoClicked()
+            sendShopInfoClickNextButtonTracking()
+        }
     }
 
     private fun LocalLoad.setup() {

@@ -18,6 +18,7 @@ import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.domain.usecase.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.BalanceType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
+import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
@@ -35,6 +36,7 @@ import javax.inject.Inject
 
 class OtherMenuViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatchers,
+        private val getAllShopInfoUseCase: GetAllShopInfoUseCase,
         private val getShopFreeShippingInfoUseCase: GetShopFreeShippingInfoUseCase,
         private val getShopOperationalUseCase: GetShopOperationalUseCase,
         private val getShopInfoPeriodUseCase: GetShopInfoPeriodUseCase,
@@ -51,6 +53,7 @@ class OtherMenuViewModel @Inject constructor(
     companion object {
         private const val DELAY_TIME = 5000L
 
+        private const val CUSTOM_ERROR_EXCEPTION_MESSAGE = "both shop info and topads response are failed"
         private const val INVALID_FOLLOWERS_ERROR_MESSAGE =  "Shop followers value is invalid"
 
         private const val ERROR_BADGE = 1
@@ -178,7 +181,16 @@ class OtherMenuViewModel @Inject constructor(
     val isFreeShippingActive: LiveData<Boolean>
         get() = _isFreeShippingActive
 
-    fun getAllShopInfoData() {
+    fun getAllSettingShopInfo(isToasterRetry: Boolean = false) {
+        if (isToasterRetry) {
+            launch(coroutineContext) {
+                checkDelayErrorResponseTrigger()
+            }
+        }
+        getAllShopInfoData()
+    }
+
+    fun getAllOtherMenuData() {
         getShopBadge()
         getShopTotalFollowers()
         getUserShopInfo()
@@ -255,7 +267,7 @@ class OtherMenuViewModel @Inject constructor(
 
     fun getShopBadgeAndFollowers() {
         if (_shouldShowAllError.value == true) {
-            getAllShopInfoData()
+            getAllOtherMenuData()
         } else {
             getShopBadge()
             getShopTotalFollowers()
@@ -392,6 +404,34 @@ class OtherMenuViewModel @Inject constructor(
                     _isTopAdsAutoTopupLiveData.value = Fail(it)
                 }
         )
+    }
+
+    private fun getAllShopInfoData() {
+        launchCatchError(block = {
+            _settingShopInfoLiveData.value = Success(
+                    withContext(dispatcher.io) {
+                        with(getAllShopInfoUseCase.executeOnBackground()) {
+                            if (first is PartialSettingSuccessInfoType || second is PartialSettingSuccessInfoType) {
+                                SettingShopInfoUiModel(first, second, userSession)
+                            } else {
+                                throw MessageErrorException(CUSTOM_ERROR_EXCEPTION_MESSAGE)
+                            }
+                        }
+                    }
+            )
+        }, onError = {
+            _settingShopInfoLiveData.value = Fail(it)
+        })
+    }
+
+    private suspend fun checkDelayErrorResponseTrigger() {
+        _isToasterAlreadyShown.value.let { isToasterAlreadyShown ->
+            if (!isToasterAlreadyShown){
+                _isToasterAlreadyShown.value = true
+                delay(DELAY_TIME)
+                _isToasterAlreadyShown.value = false
+            }
+        }
     }
 
     private fun SettingResponseState<*>.isError(): Boolean =
