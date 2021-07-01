@@ -256,9 +256,9 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val dummyId: MutableList<Long> = mutableListOf()
+        val dummyId: MutableList<String> = mutableListOf()
         val productIds = stepperModel?.selectedProductIds?.map {
-            it.toLong()
+            it
         }
         val suggestions = ArrayList<DataSuggestions>()
         suggestions.add(DataSuggestions("group", dummyId))
