@@ -565,7 +565,8 @@ abstract class BaseSearchCategoryViewModel(
         updateNextPageData()
         updateHeaderBackgroundVisibility(!isEmptyProductList)
         updateRecyclerViewScrollable(!isEmptyProductList)
-        updateMiniCartVisibility(!isEmptyProductList)
+
+        if (isEmptyProductList) updateMiniCartVisibility(!isEmptyProductList)
 
         showPageContent()
     }
