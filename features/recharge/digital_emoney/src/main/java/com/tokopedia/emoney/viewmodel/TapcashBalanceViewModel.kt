@@ -1,7 +1,6 @@
 package com.tokopedia.emoney.viewmodel
 
 import android.nfc.tech.IsoDep
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
@@ -13,6 +12,8 @@ import com.tokopedia.emoney.util.TapcashObjectMapper.mapTapcashtoEmoney
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -50,38 +51,37 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                     isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC // 5 sec time out
 
                     val challangeRequest = NFCUtils.toHex(COMMAND_GET_CHALLENGE)
-                    Log.d("TAPCASH_CHALLANGE_REQ", challangeRequest)
-                    Log.d("TAPCASH_TERMINAL_RANDOM", NFCUtils.toHex(terminalRandomNumber))
                     val result = isoDep.transceive(COMMAND_GET_CHALLENGE)
                     if (isCommandFailed(result)) {
                         isoDep.close()
+                        ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_PURSE_CHALLANGE_FAILED"))
                         errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                     } else {
                         val resultString = NFCUtils.toHex(result)
-                        Log.d("TAPCASH_CHALLANGERESULT", resultString)
                         val securePurseRequest = NFCUtils.toHex(secureReadPurse(terminalRandomNumber))
-                        Log.d("TAPCASH_SECUREREQUEST", securePurseRequest)
                         val secureResult = isoDep.transceive(secureReadPurse(terminalRandomNumber))
                         if (isCommandFailed(secureResult)) {
+                            ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_SECURE_PURSE_FAILED"))
                             errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                         } else {
                             val secureResultString = NFCUtils.toHex(secureResult)
-                            Log.d("TAPCASH_SECURERESULT", secureResultString)
                             val cardData = getCardData(secureResultString, NFCUtils.toHex(terminalRandomNumber), resultString)
                             if(!cardData.isNullOrEmpty()) {
                                 updateBalance(cardData, terminalRandomNumber, balanceRawQuery)
-                                Log.d("TAPCASH_CARDDATA", cardData)
                             } else {
+                                ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_CARD_DATA_EMPTY"))
                                 errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                             }
                         }
                     }
                 } catch (e: IOException) {
                     isoDep.close()
+                    ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_ISODEP_ISSUE_IOException"))
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
             }
         } else {
+            ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_ISODEP_NULL"))
             errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
         }
     }
@@ -97,37 +97,42 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
             }.getSuccessData<BalanceTapcash>()
 
             if (data.rechargeUpdateBalance.attributes.cryptogram.isNotEmpty()) {
-                writeBalance(data, terminalRandomNumber)
+                writeBalance(data, cardData, balanceRawQuery, terminalRandomNumber)
             } else {
                 tapcashInquiryMutable.postValue(mapTapcashtoEmoney(data))
             }
         }) {
+            ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_UPDATE_BALANCE:${it.message}"))
             errorInquiryMutable.postValue(it)
         }
     }
 
-    fun writeBalance(tapcash: BalanceTapcash, terminalRandomNumber: ByteArray) {
+    fun writeBalance(tapcash: BalanceTapcash, cardData: String,
+                     balanceRawQuery: String,
+                     terminalRandomNumber: ByteArray) {
         val attributesTapcash = tapcash.rechargeUpdateBalance.attributes
         if (::isoDep.isInitialized && isoDep.isConnected) {
             try {
                 val command = writeBalanceRequest(attributesTapcash.cryptogram, terminalRandomNumber)
                 val commandString = NFCUtils.toHex(command)
-                Log.d("TAPCASH_REQUESTDATA", commandString)
                 val writeResult = isoDep.transceive(command)
                 val writeResultString = NFCUtils.toHex(writeResult)
-                Log.d("TAPCASH_RESULTDATA", writeResultString)
                 if (isCommandFailed(writeResult)) {
+                    ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_ISSUE_WRITE_FAILED"))
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 } else if(writeResultString.length == MAX_WRITE_RESULT_SIZE){
                     tapcashInquiryMutable.postValue(mapTapcashtoEmoney(tapcash, getStringFromNormalPosition(writeResultString, 48, 54)))
                 } else {
+                    ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_ISSUE_WRITE_RESULT_LENGTH"))
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 }
             } catch (e: IOException) {
                 isoDep.close()
+                ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_ISODEP_ISSUE_WRITE_IOException"))
                 errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
             }
         } else {
+            ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_ISODEP_ISSUE_WRITE_IsNotConnected"))
             errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
         }
     }
@@ -244,6 +249,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
 
         const val CARD_DATA = "cardData"
 
+        private const val TAPCASH_TAG = "TAPCASH"
         private const val TRANSCEIVE_TIMEOUT_IN_SEC = 5000
 
         private const val MAX_WRITE_RESULT_SIZE = 100
