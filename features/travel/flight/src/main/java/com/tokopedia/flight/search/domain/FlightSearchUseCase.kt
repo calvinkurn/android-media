@@ -4,7 +4,6 @@ import com.tokopedia.flight.search.data.FlightSearchRepository
 import com.tokopedia.flight.search.data.cloud.single.FlightSearchMetaEntity
 import com.tokopedia.flight.search.data.cloud.single.FlightSearchRequestModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchMetaModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchModel
 import javax.inject.Inject
 
 /**
@@ -15,7 +14,7 @@ class FlightSearchUseCase @Inject constructor(private val flightSearchRepository
     suspend fun execute(searchParams: FlightSearchRequestModel,
                         isRoundTrip: Boolean,
                         isReturnTrip: Boolean,
-                        onwardJourneyId: String = ""): FlightSearchModel.Response =
+                        onwardJourneyId: String = ""): FlightSearchMetaModel =
             if (isRoundTrip && !isReturnTrip) {
                 mapToFlightSearchMetaViewModel(flightSearchRepository.getSearchSingleCombined(searchParams, isReturnTrip), searchParams)
             } else if (isRoundTrip && isReturnTrip) {
@@ -26,20 +25,19 @@ class FlightSearchUseCase @Inject constructor(private val flightSearchRepository
 
     private fun mapToFlightSearchMetaViewModel(meta: FlightSearchMetaEntity,
                                                flightSearchApiRequestModel: FlightSearchRequestModel):
-            FlightSearchModel.Response {
+            FlightSearchMetaModel {
         with(meta) {
-            return FlightSearchModel.Response(
-                    FlightSearchModel(FlightSearchMetaModel(
-                            flightSearchApiRequestModel.departure,
-                            flightSearchApiRequestModel.arrival,
-                            flightSearchApiRequestModel.date,
-                            needRefresh,
-                            refreshTime,
-                            maxRetry,
-                            airlineList,
-                            requestId,
-                            internationalTag,
-                            backgroundRefreshTime))
+            return FlightSearchMetaModel(
+                    flightSearchApiRequestModel.departure,
+                    flightSearchApiRequestModel.arrival,
+                    flightSearchApiRequestModel.date,
+                    needRefresh,
+                    refreshTime,
+                    maxRetry,
+                    airlineList,
+                    requestId,
+                    internationalTag,
+                    backgroundRefreshTime
             )
         }
     }

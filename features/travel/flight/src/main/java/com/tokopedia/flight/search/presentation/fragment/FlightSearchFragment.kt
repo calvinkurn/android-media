@@ -131,6 +131,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                                 showNoRouteFlightEmptyState(error.title)
                                 flightSearchViewModel.sendProductNotFoundTrack()
                                 break
+                            }else{
+                                showGetListError(it.throwable)
+                                break
                             }
                         }
                     }else{
