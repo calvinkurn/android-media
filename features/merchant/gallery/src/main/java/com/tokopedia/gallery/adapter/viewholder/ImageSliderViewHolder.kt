@@ -8,6 +8,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.gallery.R
+import com.tokopedia.gallery.customview.BottomSheetImageReviewSliderCallback
 import com.tokopedia.gallery.customview.RatingView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.hide
@@ -31,7 +32,7 @@ class ImageSliderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     private val seeAllText: Typography = itemView.findViewById(R.id.review_image_slider_item_image_count)
     private val seeAllButton: UnifyButton = itemView.findViewById(R.id.review_image_slider_item_see_all_button)
 
-    fun bind(item: ImageReviewItem, isLastIndex: Boolean) {
+    fun bind(item: ImageReviewItem, shouldShowSeeAllButton: Boolean, callback: BottomSheetImageReviewSliderCallback) {
         ImageHandler.LoadImage(imageView, item.imageUrlLarge)
 
         if (!TextUtils.isEmpty(item.reviewerName)) {
@@ -55,11 +56,12 @@ class ImageSliderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
             rating.visibility = View.GONE
         }
 
-        if(isLastIndex) {
+        if (shouldShowSeeAllButton) {
             seeAllButton.setOnClickListener {
-
+                callback.onSeeAllButtonClicked()
             }
-            seeAllText.text = itemView.context.getString(R.string.review_image_slider_count, item.imageCount ?: "")
+            seeAllText.text = itemView.context.getString(R.string.review_image_slider_count, item.imageCount
+                    ?: "")
             seeAllContainer.show()
         } else {
             seeAllContainer.hide()

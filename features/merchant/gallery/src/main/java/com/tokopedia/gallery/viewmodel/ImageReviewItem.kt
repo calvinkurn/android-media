@@ -12,7 +12,9 @@ data class ImageReviewItem(var reviewId: String? = null,
                            var imageUrlLarge: String? = null,
                            var rating: Int = NO_RATING_DATA,
                            var hasNext: Boolean = false,
-                           var imageCount: String? = null) : Visitable<TypeFactory>, Parcelable {
+                           var imageCount: String? = null,
+                           var rawImageCount: String? = null
+) : Visitable<TypeFactory>, Parcelable {
 
     override fun type(typeFactory: TypeFactory): Int = typeFactory.type(this)
 

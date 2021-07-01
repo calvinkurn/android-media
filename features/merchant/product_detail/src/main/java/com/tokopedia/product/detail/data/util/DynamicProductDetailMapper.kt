@@ -315,7 +315,7 @@ object DynamicProductDetailMapper {
             } ?: return@forEach
             result.add(ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
                     review.reviewer?.fullName, it.uriThumbnail,
-                    it.uriLarge, review.rating, data.isHasNext, data.detail?.imageCountFmt))
+                    it.uriLarge, review.rating, data.isHasNext, data.detail?.imageCountFmt, data.detail?.imageCount))
         }
 
         return ImageReview(result, data.detail?.imageCount ?: "")

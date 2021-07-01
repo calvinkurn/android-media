@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
-import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.util.OnImageReviewClick
@@ -54,7 +54,7 @@ class ImageReviewAdapter(private val imageReviews: MutableList<ImageReviewItem> 
                     overlay_see_all.gone()
                     txt_see_all.gone()
                     setOnClickListener {
-                        onOnImageReviewClick?.invoke(listItem, adapterPosition, componentTrackDataModel)
+                        onOnImageReviewClick?.invoke(listItem, adapterPosition, componentTrackDataModel, item.rawImageCount ?: "")
                     }
                 }
             }

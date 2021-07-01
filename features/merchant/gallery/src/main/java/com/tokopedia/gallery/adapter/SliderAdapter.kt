@@ -5,10 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.adapter.viewholder.ImageSliderViewHolder
 import com.tokopedia.gallery.adapter.viewholder.LoadingSliderViewHolder
+import com.tokopedia.gallery.customview.BottomSheetImageReviewSliderCallback
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import java.util.*
 
-class SliderAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SliderAdapter(private val shouldShowSeeAllButton: Boolean, private val callback: BottomSheetImageReviewSliderCallback) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val imageReviewItemList = ArrayList<ImageReviewItem>()
     var isLoadingItemEnabled = true
@@ -19,7 +20,7 @@ class SliderAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ImageSliderViewHolder) {
-            holder.bind(imageReviewItemList[position], position == imageReviewItemList.lastIndex)
+            holder.bind(imageReviewItemList[position], position == imageReviewItemList.lastIndex && shouldShowSeeAllButton, callback)
         }
     }
 
@@ -56,7 +57,7 @@ class SliderAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyDataSetChanged()
     }
 
-    fun isGalleryItem(position: Int): Boolean {
+    private fun isGalleryItem(position: Int): Boolean {
         return position < imageReviewItemList.size
     }
 
