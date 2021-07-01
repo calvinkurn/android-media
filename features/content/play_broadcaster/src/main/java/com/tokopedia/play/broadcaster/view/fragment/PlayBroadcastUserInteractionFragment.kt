@@ -36,7 +36,6 @@ import com.tokopedia.play.broadcaster.view.state.PlayLivePusherState
 import com.tokopedia.play.broadcaster.view.state.PlayTimerState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.play_common.ui.leaderboard.PlayEngagementLeaderboardBottomSheet
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
