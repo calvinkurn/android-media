@@ -386,6 +386,7 @@ class PlayFragment @Inject constructor(
                 dismissToaster()
 
                 if (!playViewModel.bottomInsets.isAnyBottomSheetsShown && it.shouldAutoSwipeOnFreeze) doAutoSwipe()
+                else if (!playViewModel.bottomInsets.isAnyBottomSheetsShown) onBottomInsetsViewHidden()
 
             } else if (it.statusType.isBanned) {
                 showEventDialog(it.bannedModel.title, it.bannedModel.message, it.bannedModel.btnTitle)

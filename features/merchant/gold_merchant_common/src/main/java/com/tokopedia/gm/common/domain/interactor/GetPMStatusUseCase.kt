@@ -1,11 +1,9 @@
 package com.tokopedia.gm.common.domain.interactor
 
-import com.tokopedia.gm.common.data.source.cloud.model.PMShopStatusResponse
+import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatusModel
 import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.domain.mapper.PMShopStatusMapper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
@@ -22,19 +20,19 @@ class GetPMStatusUseCase @Inject constructor(
 ) : BaseGqlUseCase<PMStatusUiModel>() {
 
     override suspend fun executeOnBackground(): PMStatusUiModel {
-        val gqlRequest = GraphqlRequest(QUERY, PMShopStatusResponse::class.java, params.parameters)
+        val gqlRequest = GraphqlRequest(QUERY, GoldGetPmOsStatusModel::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
 
-        val gqlErrors = gqlResponse.getError(PMShopStatusResponse::class.java)
+        val gqlErrors = gqlResponse.getError(GoldGetPmOsStatusModel::class.java)
         if (gqlErrors.isNullOrEmpty()) {
-            val data = gqlResponse.getData<PMShopStatusResponse>()
-            return if (data.shopStatus?.data != null) {
-                mapper.mapRemoteModelToUiModel(data.shopStatus.data)
+            val data = gqlResponse.getData<GoldGetPmOsStatusModel>(GoldGetPmOsStatusModel::class.java)
+            return if (data.result?.data != null) {
+                mapper.mapRemoteModelToUiModel(data.result.data)
             } else {
                 throw RuntimeException("power merchant data is null from backend")
             }
         } else {
-            throw MessageErrorException(gqlErrors.joinToString(" - ") { it.message })
+            throw MessageErrorException(gqlErrors.firstOrNull()?.message.orEmpty())
         }
     }
 
@@ -45,7 +43,13 @@ class GetPMStatusUseCase @Inject constructor(
         private val QUERY = """
            query goldGetPMOSStatus(${'$'}shopID: Int!, ${'$'}includeOS: Boolean!) {
              goldGetPMOSStatus(shopID: ${'$'}shopID, includeOS: ${'$'}includeOS) {
+               header {
+                 messages
+                 reason
+                 error_code
+               }
                data {
+                 shopID
                  power_merchant {
                    status
                    expired_time
@@ -62,10 +66,10 @@ class GetPMStatusUseCase @Inject constructor(
            }
         """.trimIndent()
 
-        fun createParams(shopId: String): RequestParams {
+        fun createParams(shopId: String, shouldIncludeOS: Boolean = true): RequestParams {
             return RequestParams.create().apply {
                 putLong(KEY_SHOP_ID, shopId.toLongOrZero())
-                putBoolean(KEY_INCLUDE_OS, true)
+                putBoolean(KEY_INCLUDE_OS, shouldIncludeOS)
             }
         }
     }
