@@ -114,9 +114,10 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     var message = ""
                     try {
                         val gson = Gson()
-                        val errorData = gson.fromJson<FlightOrderDetailErrorModel>(it.throwable.message, FlightOrderDetailErrorModel::class.java)
-                        title = errorData.title
-                        message = errorData.message
+                        val itemType = object : TypeToken<List<FlightOrderDetailErrorModel>>() {}.type
+                        val errorData = gson.fromJson<List<FlightOrderDetailErrorModel>>(it.throwable.message, itemType)
+                        title = errorData[0].title
+                        message = errorData[0].message
                     } catch (t: Throwable) {
                         message = ErrorHandler.getErrorMessage(requireContext(), t)
                     }
