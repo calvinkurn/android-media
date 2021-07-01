@@ -14,7 +14,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 
-class ExampleFragment : Fragment(), MiniCartWidgetListener {
+class MinicartTestFragment : Fragment(), MiniCartWidgetListener {
 
     companion object {
         const val SHOP_ID_STAGING = "480552"
