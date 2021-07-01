@@ -314,13 +314,14 @@ class TopupBillsFavoriteNumberFragment :
         // TODO: [Misael] delete contact
     }
 
-    override fun onChangeName(newName: String, clientNumber: String) {
+    override fun onChangeName(newName: String, favNumberItem: TopupBillsSeamlessFavNumberItem) {
         topUpBillsViewModel.updateSeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
                 topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
-                        categoryId = categoryId,
-                        clientNumber = clientNumber,
-                        totalTransaction = 0, // TODO: [Misael] 0 itu default value, cek dulu ini apa
+                        categoryId = favNumberItem.categoryId,
+                        productId = favNumberItem.productId,
+                        clientNumber = favNumberItem.clientNumber,
+                        totalTransaction = 0,
                         label = newName
                 )
         )

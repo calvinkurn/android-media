@@ -49,7 +49,7 @@ class FavoriteNumberModifyBottomSheet(
                 } else {
                     listener.onChangeName(
                             common_topupbills_favorite_number_name_field.textFieldInput.text.toString(),
-                            favNumberItem.clientNumber
+                            favNumberItem
                     )
                     dismiss()
                 }

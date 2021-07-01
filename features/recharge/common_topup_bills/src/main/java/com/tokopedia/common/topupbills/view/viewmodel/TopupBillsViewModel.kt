@@ -284,16 +284,17 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
     fun createSeamlessFavoriteNumberUpdateParams(
             categoryId: Int,
+            productId: Int,
             clientNumber: String,
             totalTransaction: Int,
             label: String
     ): Map<String, Any> {
         return mapOf(
                FAVORITE_NUMBER_PARAM_UPDATE_REQUEST to mapOf(
-                       FAVORITE_NUMBER_PARAM_CATEGORY_ID to categoryId, // TODO: [Misael] ganti ini pake category id beneran
+                       FAVORITE_NUMBER_PARAM_CATEGORY_ID to categoryId,
                        FAVORITE_NUMBER_PARAM_CLIENT_NUMBER to clientNumber,
-                       FAVORITE_NUMBER_PARAM_LAST_PRODUCT to 108, //TODO: [Misael] ini isi apa
-                       FAVORITE_NUMBER_PARAM_LABEL to label, //TODO: [Misael] ini isi apa
+                       FAVORITE_NUMBER_PARAM_LAST_PRODUCT to productId,
+                       FAVORITE_NUMBER_PARAM_LABEL to label,
                        FAVORITE_NUMBER_PARAM_TOTAL_TRANSACTION to totalTransaction,
                        FAVORITE_NUMBER_PARAM_UPDATE_LAST_ORDER_DATE to false,
                        FAVORITE_NUMBER_PARAM_SOURCE to "PDP",
