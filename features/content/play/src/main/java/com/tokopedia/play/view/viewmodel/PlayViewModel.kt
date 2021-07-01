@@ -36,6 +36,7 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play.data.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play.data.interactive.ChannelInteractive
@@ -46,6 +47,7 @@ import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
+import com.tokopedia.play.view.uimodel.state.PlayToolbarFollowUiState
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -84,7 +86,7 @@ class PlayViewModel @Inject constructor(
         private val playPreference: PlayPreference,
         private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
         private val playChannelWebSocket: PlayChannelWebSocket,
-        private val interactiveRepo: PlayViewerInteractiveRepository
+        private val interactiveRepo: PlayViewerInteractiveRepository,
 ) : ViewModel() {
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
@@ -280,6 +282,11 @@ class PlayViewModel @Inject constructor(
         addSource(observableStatusInfo) {
             if (it.statusType.isFreeze || it.statusType.isBanned) doOnForbidden()
         }
+        addSource(_observablePartnerInfo) { partner ->
+            viewModelScope.launch {
+                setUiState { copy(showInteractiveFollow = partner.isFollowable && !partner.isFollowed) }
+            }
+        }
     }
 
     private val _uiState = MutableLiveData<PlayViewerNewUiState>(PlayViewerNewUiState())
@@ -344,6 +351,11 @@ class PlayViewModel @Inject constructor(
     private val mutex = Mutex()
 
     /**
+     * Interactive
+     */
+    private val interactiveFlow = MutableSharedFlow<Unit>(extraBufferCapacity = 5)
+
+    /**
      * DO NOT CHANGE THIS TO LAMBDA
      */
     private val stateHandlerObserver = object : Observer<Unit> {
@@ -363,6 +375,10 @@ class PlayViewModel @Inject constructor(
         stateHandler.observeForever(stateHandlerObserver)
 
         _observableChatList.value = mutableListOf()
+
+        viewModelScope.launch {
+            interactiveFlow.collect(::onReceivedInteractiveAction)
+        }
     }
 
     //region lifecycle
@@ -996,10 +1012,16 @@ class PlayViewModel @Inject constructor(
 
     private suspend fun handleInteractiveFromNetwork(interactive: PlayCurrentInteractiveModel) {
         val interactiveUiState = mapInteractiveToState(interactive)
+        if (interactive.timeStatus is PlayInteractiveTimeStatus.Scheduled || interactive.timeStatus is PlayInteractiveTimeStatus.Live) {
+            interactiveRepo.setActive(interactive.id.toString())
+        } else {
+            interactiveRepo.setInactive(interactive.id.toString())
+        }
         setUiState {
             copy(interactive = interactiveUiState)
         }
         if (interactive.timeStatus is PlayInteractiveTimeStatus.Finished) {
+            interactiveRepo.setInactive(interactive.id.toString())
             //TODO("Get Leaderboard")
         }
     }
@@ -1132,6 +1154,17 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    private suspend fun onReceivedInteractiveAction(action: Unit) = withContext(dispatchers.io) {
+        try {
+            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@withContext
+            if (interactiveRepo.hasJoined(activeInteractiveId)) return@withContext
+
+            val channelId = mChannelData?.id ?: return@withContext
+            val isSuccess = interactiveRepo.postInteractiveTap(channelId, activeInteractiveId)
+            if (isSuccess) interactiveRepo.setJoined(activeInteractiveId)
+        } catch (ignored: MessageErrorException) {}
+    }
+
     /**
      * Handle UI Action
      */
@@ -1190,7 +1223,9 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleTapTapAction() {
-
+        viewModelScope.launch {
+            interactiveFlow.emit(Unit)
+        }
     }
 
     companion object {

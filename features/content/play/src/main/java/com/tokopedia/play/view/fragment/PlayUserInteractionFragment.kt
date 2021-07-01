@@ -451,6 +451,11 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.submitAction(InteractiveTapTapAction)
     }
 
+    override fun onFollowClicked(view: InteractiveTapViewComponent) {
+        val partnerId = playViewModel.partnerId ?: return
+        doClickFollow(partnerId, PartnerFollowAction.Follow)
+    }
+
     /**
      * InteractiveWinnerBadge View Component Listener
      */
@@ -846,8 +851,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeUiState() {
         playViewModel.uiState.observe(viewLifecycleOwner) { state ->
-            interactiveViewOnStateChanged(state.interactive)
-            interactiveWinnerBadgeOnStateChanged(state.showWinningBadge)
+            renderInteractiveView(state.interactive, state.showInteractiveFollow)
+            renderWinnerBadgeView(state.showWinningBadge)
         }
     }
 
@@ -950,6 +955,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         toolbarView.setFollowStatus(action == PartnerFollowAction.Follow)
         interactivePreStartView?.showFollowButton(action == PartnerFollowAction.UnFollow)
+        interactiveTapView?.showFollowMode(action == PartnerFollowAction.UnFollow)
     }
 
     //TODO("This action is duplicated with the one in PlayBottomSheetFragment, find a way to prevent duplication")
@@ -1389,7 +1395,7 @@ class PlayUserInteractionFragment @Inject constructor(
         else pipView?.hide()
     }
 
-    private fun interactiveViewOnStateChanged(state: PlayInteractiveUiState) {
+    private fun renderInteractiveView(state: PlayInteractiveUiState, showFollowButton: Boolean) {
         when (state) {
             is PlayInteractiveUiState.PreStart -> {
                 interactiveTapView?.hide()
@@ -1399,16 +1405,17 @@ class PlayUserInteractionFragment @Inject constructor(
                 interactivePreStartView?.setTimer(state.timeToStartInMs) {
                     playViewModel.submitAction(InteractivePreStartFinishedAction)
                 }
+                interactivePreStartView?.showFollowButton(showFollowButton)
                 interactivePreStartView?.show()
             }
             is PlayInteractiveUiState.Ongoing -> {
                 interactivePreStartView?.hide()
                 interactiveFinishedView?.hide()
 
-                interactivePreStartView?.setTitle(state.title)
                 interactiveTapView?.setTimer(state.timeRemainingInMs) {
                     playViewModel.submitAction(InteractiveOngoingFinishedAction)
                 }
+                interactiveTapView?.showFollowMode(showFollowButton)
                 interactiveTapView?.show()
             }
             is PlayInteractiveUiState.Finished -> {
@@ -1426,7 +1433,7 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun interactiveWinnerBadgeOnStateChanged(shouldShow: Boolean) {
+    private fun renderWinnerBadgeView(shouldShow: Boolean) {
         if (shouldShow) interactiveWinnerBadgeView?.show()
         else interactiveWinnerBadgeView?.hide()
     }
