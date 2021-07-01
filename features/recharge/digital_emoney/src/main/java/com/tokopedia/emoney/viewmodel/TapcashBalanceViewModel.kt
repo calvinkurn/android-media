@@ -122,6 +122,8 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
                 } else if(writeResultString.length == MAX_WRITE_RESULT_SIZE){
                     tapcashInquiryMutable.postValue(mapTapcashtoEmoney(tapcash, getStringFromNormalPosition(writeResultString, 48, 54)))
+                } else if(writeResultString.length == MAX_WRITE_RESULT_SIZE_V6){
+                    updateBalance(cardData, terminalRandomNumber, balanceRawQuery)
                 } else {
                     ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_ISSUE_WRITE_RESULT_LENGTH"))
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))
@@ -253,6 +255,7 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         private const val TRANSCEIVE_TIMEOUT_IN_SEC = 5000
 
         private const val MAX_WRITE_RESULT_SIZE = 100
+        private const val MAX_WRITE_RESULT_SIZE_V6 = 52
         private const val MAX_SECURE_PURSE_LENGTH = 230
         private const val MAX_16_LENGTH = 16
         private const val MAX_CHALLAGE_LENGTH = 20
