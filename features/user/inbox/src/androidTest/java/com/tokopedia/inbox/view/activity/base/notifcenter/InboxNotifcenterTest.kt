@@ -3,16 +3,22 @@ package com.tokopedia.inbox.view.activity.base.notifcenter
 import android.content.Intent
 import android.net.Uri
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.inbox.R
+import com.tokopedia.inbox.common.viewassertion.hasHolderItemAtPosition
 import com.tokopedia.inbox.common.viewmatcher.withRecyclerView
 import com.tokopedia.inbox.fake.InboxNotifcenterFakeDependency
 import com.tokopedia.inbox.fake.di.notifcenter.DaggerFakeNotificationComponent
 import com.tokopedia.inbox.view.activity.base.InboxTest
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationTopAdsBannerViewHolder
 import org.hamcrest.Matcher
+import org.hamcrest.core.IsInstanceOf
 
 open class InboxNotifcenterTest : InboxTest() {
 
@@ -48,6 +54,14 @@ open class InboxNotifcenterTest : InboxTest() {
 
 }
 
+object NotifcenterAction {
+    fun scrollNotificationToPosition(position: Int) {
+        onView(withId(R.id.recycler_view)).perform(
+            scrollToPosition<RecyclerView.ViewHolder>(position)
+        )
+    }
+}
+
 object NotifcenterAssertion {
     fun assertNotifWidgetMsg(position: Int, msg: String) {
         onView(
@@ -61,5 +75,14 @@ object NotifcenterAssertion {
             withRecyclerView(R.id.recycler_view)
                 .atPositionOnView(position, R.id.tp_message)
         ).check(matches(visibilityMatcher))
+    }
+
+    fun assertTdnExistAtPosition(position: Int) {
+        onView(withId(R.id.recycler_view))
+            .check(
+                hasHolderItemAtPosition(
+                    position, IsInstanceOf(NotificationTopAdsBannerViewHolder::class.java)
+                )
+            )
     }
 }
