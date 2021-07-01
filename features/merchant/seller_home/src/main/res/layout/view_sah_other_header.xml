@@ -9,7 +9,7 @@
         android:id="@+id/group_sah_other_header_success"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="shopStatus, freeShippingLayout, divider_sah_other_free_shipping, shopOperationalHour, divider_sah_other_operational, layout_sah_other_saldo, layout_sah_other_topads"/>
+        app:constraint_referenced_ids="shopStatus, freeShippingLayout, divider_sah_other_free_shipping, shopOperationalHour, divider_sah_other_operational, group_sah_other_saldo, group_sah_other_topads"/>
 
     <include
         layout="@layout/view_sah_other_shop_info"
