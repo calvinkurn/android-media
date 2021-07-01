@@ -1,5 +1,10 @@
 package com.tokopedia.tokopedianow.data
 
+import com.tokopedia.home_component.model.ChannelConfig
+import com.tokopedia.home_component.model.ChannelHeader
+import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.ChannelStyle
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.response.Tokonow
@@ -40,6 +45,41 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
                             name = "Banner Tokonow",
                             serverTimeUnix = 0
                     )
+            )
+    )
+}
+
+fun createHomeLayoutItemUiModelList(): List<HomeLayoutItemUiModel> {
+    return listOf(
+            HomeLayoutItemUiModel(
+                    BannerDataModel(
+                            channelModel= ChannelModel(
+                                    id="2222",
+                                    groupId="",
+                                    style= ChannelStyle.ChannelHome,
+                                    channelHeader= ChannelHeader(name="Banner Tokonow"),
+                                    channelConfig= ChannelConfig(layout="banner_carousel_v2") ,
+                                    layout="banner_carousel_v2")
+                    ),
+                    HomeLayoutItemState.LOADED
+            ),
+            HomeLayoutItemUiModel(
+                    BannerDataModel(
+                            channelModel= ChannelModel(
+                                    id="2222",
+                                    groupId="",
+                                    style= ChannelStyle.ChannelHome,
+                                    channelHeader= ChannelHeader(name="Banner Tokonow"),
+                                    channelConfig= ChannelConfig(layout="banner_carousel_v2") ,
+                                    layout="banner_carousel_v2")
+                    ),
+                    HomeLayoutItemState.LOADING
+            ),
+            HomeLayoutItemUiModel(
+                    HomeChooseAddressWidgetUiModel(
+                            id = HomeStaticLayoutId.CHOOSE_ADDRESS_WIDGET_ID,
+                    ),
+                    HomeLayoutItemState.NOT_LOADED
             )
     )
 }

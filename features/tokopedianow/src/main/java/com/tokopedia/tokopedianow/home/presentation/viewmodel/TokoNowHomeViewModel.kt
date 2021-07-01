@@ -251,8 +251,8 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun shouldLoadLayout(item: HomeLayoutItemUiModel): Boolean {
         return item.state != HomeLayoutItemState.LOADING &&
-            item.state != HomeLayoutItemState.LOADED &&
-            item.layout.isNotStaticLayout()
+                item.state != HomeLayoutItemState.LOADED &&
+                item.layout.isNotStaticLayout()
     }
 
     private fun setItemStateToLoading(item: HomeLayoutItemUiModel) {
