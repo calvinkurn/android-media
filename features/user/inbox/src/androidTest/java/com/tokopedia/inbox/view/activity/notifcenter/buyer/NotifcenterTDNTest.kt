@@ -11,7 +11,7 @@ class NotifcenterTDNTest : InboxNotifcenterTest() {
     fun should_show_TDN_when_ad_exist() {
         // Given
         inboxNotifcenterDep.apply {
-            topAdsRepository.response = topAdsRepository.response
+            topAdsRepository.response = topAdsRepository.defaultResponse
         }
         startInboxActivity()
 
@@ -23,7 +23,22 @@ class NotifcenterTDNTest : InboxNotifcenterTest() {
         NotifcenterAssertion.assertTdnExistAtPosition(6)
     }
 
-    //TODO: should hide TDN when ad does not exist
+    @Test
+    fun should_hide_TDN_when_ad_does_not_exist() {
+        // Given
+        inboxNotifcenterDep.apply {
+            topAdsRepository.response = topAdsRepository.noDataResponse
+        }
+        startInboxActivity()
+
+        // When
+        NotifcenterAction.scrollNotificationToPosition(6)
+
+
+        // Then
+        NotifcenterAssertion.assertTdnNotExistAtPosition(6)
+    }
+
     //TODO: should hide TDN when user has notification filter
 
 }

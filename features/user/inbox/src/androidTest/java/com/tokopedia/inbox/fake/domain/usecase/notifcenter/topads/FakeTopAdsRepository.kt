@@ -1,6 +1,8 @@
 package com.tokopedia.inbox.fake.domain.usecase.notifcenter.topads
 
+import com.google.gson.JsonObject
 import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.inbox.common.AndroidFileUtil
 import com.tokopedia.inbox.test.R
 import com.tokopedia.topads.sdk.domain.model.TopAdsmageViewResponse
@@ -18,6 +20,17 @@ class FakeTopAdsRepository : TopAdsRepository() {
         get() = AndroidFileUtil.parseRaw(
             R.raw.notifcenter_tdn, TopAdsmageViewResponse::class.java
         )
+
+    val noDataResponse: TopAdsmageViewResponse
+        get() {
+            val responseObj: JsonObject = AndroidFileUtil.parseRaw(
+                R.raw.notifcenter_tdn, JsonObject::class.java
+            )
+            responseObj.getAsJsonArray("data").remove(0)
+            return CommonUtil.fromJson(
+                responseObj.toString(), TopAdsmageViewResponse::class.java
+            )
+        }
 
     private val repository = FakeTopAdsRestRepository()
 

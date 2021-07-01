@@ -17,6 +17,7 @@ import com.tokopedia.inbox.fake.InboxNotifcenterFakeDependency
 import com.tokopedia.inbox.fake.di.notifcenter.DaggerFakeNotificationComponent
 import com.tokopedia.inbox.view.activity.base.InboxTest
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationTopAdsBannerViewHolder
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 import org.hamcrest.core.IsInstanceOf
 
@@ -82,6 +83,15 @@ object NotifcenterAssertion {
             .check(
                 hasHolderItemAtPosition(
                     position, IsInstanceOf(NotificationTopAdsBannerViewHolder::class.java)
+                )
+            )
+    }
+
+    fun assertTdnNotExistAtPosition(position: Int) {
+        onView(withId(R.id.recycler_view))
+            .check(
+                hasHolderItemAtPosition(
+                    position, not(IsInstanceOf(NotificationTopAdsBannerViewHolder::class.java))
                 )
             )
     }
