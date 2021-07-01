@@ -34,6 +34,13 @@
         tools:background="@drawable/bg_other_rounded"
         tools:layout_marginHorizontal="@dimen/layout_lvl2"/>
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_sah_other_free_shipping"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="freeShippingLayout"/>
+
     <include
         layout="@layout/setting_partial_free_shipping"
         android:id="@+id/freeShippingLayout"

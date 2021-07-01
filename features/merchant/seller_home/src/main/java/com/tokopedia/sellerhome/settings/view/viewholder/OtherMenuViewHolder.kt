@@ -91,6 +91,7 @@ class OtherMenuViewHolder(private val itemView: View,
     private var shopStatusContainer: LinearLayout? = null
 
     private var freeShippingLayout: FrameLayout? = null
+    private var freeShippingGroup: Group? = null
 
     private var operationalHourView: View? = null
     private var operationalHourText: Typography? = null
@@ -152,6 +153,7 @@ class OtherMenuViewHolder(private val itemView: View,
             shopStatusContainer = findViewById(R.id.shopStatus)
 
             freeShippingLayout = findViewById(R.id.freeShippingLayout)
+            freeShippingGroup = findViewById(R.id.group_sah_other_free_shipping)
 
             operationalHourView = findViewById(R.id.shopOperationalHour)
             operationalHourText = findViewById(R.id.textOperationalHour)
@@ -350,6 +352,7 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     fun setupFreeShippingLayout() {
+        freeShippingGroup?.show()
         freeShippingLayout?.run {
             setOnClickListener {
                 listener.onFreeShippingClicked()
@@ -362,7 +365,7 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     fun hideFreeShippingLayout() {
-        freeShippingLayout?.hide()
+        freeShippingGroup?.hide()
     }
 
     fun showOperationalHourLayout(shopOperational: ShopOperationalUiModel) {
