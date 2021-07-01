@@ -48,7 +48,10 @@ https://phab.tokopedia.com/XXXXX
 - **/check vector** - run vector drawable optimizer
 
 ## Gatekeeper Spells
-- **approved for app-size** - send along with the approval to cast the magic 
+- **approved for customer app-size** - send along with the approval to cast the magic
+*(more info: @tokopedia/android-gatekeeper-app-size)*
+
+- **approved for seller app-size** - send along with the approval to cast the magic
 *(more info: @tokopedia/android-gatekeeper-app-size)*
 
 - **approved for risk** - send along with the approval to cast the magic 
