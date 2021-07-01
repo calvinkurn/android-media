@@ -37,7 +37,7 @@ class FilterSortViewHolder(view: View, val listener: OnSelectedFilterChangedList
         with(itemView) {
             hotel_filter_selection_title.text = filter.displayName
             var hotelFilterItems = filter.options.map {
-                com.tokopedia.hotel.search_map.presentation.adapter.HotelSearchResultFilterAdapter.HotelFilterItem(it, it)
+               HotelSearchResultFilterAdapter.HotelFilterItem(it, it)
             }
 
             hotel_filter_selection_rv.layoutManager = ChipsLayoutManager.newBuilder(context)
