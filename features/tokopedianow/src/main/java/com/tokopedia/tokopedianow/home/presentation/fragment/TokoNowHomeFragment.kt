@@ -617,9 +617,9 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun getMiniCart()  {
-        if (localCacheModel?.warehouse_id?.toLongOrZero() != 0L) {
-            viewModelTokoNow.getMiniCart(listOf(localCacheModel?.shop_id.orEmpty()))
-        }
+        val shopId = listOf(localCacheModel?.shop_id.orEmpty())
+        val warehouseId = localCacheModel?.warehouse_id
+        viewModelTokoNow.getMiniCart(shopId, warehouseId)
     }
 
     private fun loadLayout() {
