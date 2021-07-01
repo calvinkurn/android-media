@@ -3,9 +3,11 @@ package com.tokopedia.loginfingerprint.domain.usecase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.loginfingerprint.constant.BiometricConstant
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.SignatureData
 import com.tokopedia.loginfingerprint.di.LoginFingerprintQueryConstant
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
@@ -19,12 +21,14 @@ import kotlin.coroutines.CoroutineContext
 
 class RegisterFingerprintUseCase @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase<RegisterFingerprintPojo>,
-        private var dispatchers: CoroutineDispatchers)
-    : CoroutineScope {
+        private var dispatchers: CoroutineDispatchers,
+        private val fingerprintPreferenceManager: FingerprintPreference
+) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 
     fun registerFingerprint(
+        uniqueId: String,
         signature: SignatureData,
         publicKey: String,
         onSuccess: (RegisterFingerprintPojo) -> Unit,
@@ -34,7 +38,7 @@ class RegisterFingerprintUseCase @Inject constructor(
                     graphqlUseCase.apply {
                             setTypeClass(RegisterFingerprintPojo::class.java)
                             setGraphqlQuery(query)
-                            setRequestParams(createRequestParam(signature, publicKey))
+                            setRequestParams(createRequestParam(uniqueId, signature, publicKey))
                     }.executeOnBackground()
                 withContext(dispatchers.main) {
                     onSuccess(data)
@@ -46,11 +50,12 @@ class RegisterFingerprintUseCase @Inject constructor(
             })
     }
 
-    private fun createRequestParam(signature: SignatureData, publicKey: String): Map<String, String>{
+    private fun createRequestParam(uniqueId: String, signature: SignatureData, publicKey: String): Map<String, String>{
         return mapOf(
                 LoginFingerprintQueryConstant.PARAM_PUBLIC_KEY to publicKey,
                 LoginFingerprintQueryConstant.PARAM_SIGNATURE to signature.signature,
-                LoginFingerprintQueryConstant.PARAM_DATETIME to signature.datetime
+                LoginFingerprintQueryConstant.PARAM_DATETIME to signature.datetime,
+                BiometricConstant.PARAM_BIOMETRIC_ID to uniqueId
         )
     }
 

@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
 import com.tokopedia.sessioncommon.util.TokenGenerator
@@ -21,7 +22,8 @@ class LoginFingerprintUseCase @Inject constructor(
     private val graphqlUseCase: GraphqlUseCase<LoginTokenPojo>,
     private var dispatchers: CoroutineDispatchers,
     @Named(SessionModule.SESSION_MODULE)
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    val fingerprintPreferenceManager: FingerprintPreference
 ): CoroutineScope {
 
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
@@ -56,11 +58,13 @@ class LoginFingerprintUseCase @Inject constructor(
             PARAM_GRANT_TYPE to TokenGenerator().encode(TYPE_EXTENSION),
             PARAM_SOCIAL_TYPE to SOCIAL_TYPE_BIOMETRIC,
             PARAM_USERNAME to TokenGenerator().encode(email),
-            PARAM_VALIDATE_TOKEN to validateToken
+            PARAM_VALIDATE_TOKEN to validateToken,
+            PARAM_BIOMETRIC_ID to fingerprintPreferenceManager.getUniqueId()
         )
     }
 
     companion object {
+        const val PARAM_BIOMETRIC_ID = "device_biometrics"
         const val PARAM_GRANT_TYPE = "grant_type"
         const val PARAM_SOCIAL_TYPE = "social_type"
         const val PARAM_USERNAME = "username"

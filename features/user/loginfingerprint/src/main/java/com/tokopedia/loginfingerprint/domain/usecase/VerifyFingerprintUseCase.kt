@@ -3,9 +3,11 @@ package com.tokopedia.loginfingerprint.domain.usecase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.loginfingerprint.constant.BiometricConstant
 import com.tokopedia.loginfingerprint.data.model.SignatureData
 import com.tokopedia.loginfingerprint.data.model.VerifyFingerprintPojo
 import com.tokopedia.loginfingerprint.di.LoginFingerprintQueryConstant
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
@@ -14,7 +16,8 @@ import kotlin.coroutines.CoroutineContext
 
 class VerifyFingerprintUseCase @Inject constructor(
     private val graphqlUseCase: GraphqlUseCase<VerifyFingerprintPojo>,
-    private var dispatchers: CoroutineDispatchers
+    private var dispatchers: CoroutineDispatchers,
+    private val fingerprintPreferenceManager: FingerprintPreference
 ): CoroutineScope {
 
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
@@ -44,7 +47,8 @@ class VerifyFingerprintUseCase @Inject constructor(
         return mapOf(
             LoginFingerprintQueryConstant.PARAM_OTP_TYPE to LoginFingerprintQueryConstant.VALIDATE_OTP_TYPE,
             LoginFingerprintQueryConstant.PARAM_SIGNATURE to signature.signature,
-            LoginFingerprintQueryConstant.PARAM_DATETIME to signature.datetime
+            LoginFingerprintQueryConstant.PARAM_DATETIME to signature.datetime,
+            BiometricConstant.PARAM_BIOMETRIC_ID to fingerprintPreferenceManager.getUniqueId()
         )
     }
 

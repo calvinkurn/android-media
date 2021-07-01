@@ -3,7 +3,9 @@ package com.tokopedia.loginfingerprint.domain.usecase
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.loginfingerprint.constant.BiometricConstant
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
@@ -12,7 +14,8 @@ import kotlin.coroutines.CoroutineContext
 
 class CheckFingerprintToggleStatusUseCase @Inject constructor(
     private val graphqlUseCase: GraphqlUseCase<CheckFingerprintPojo>,
-    private var dispatchers: CoroutineDispatchers
+    private var dispatchers: CoroutineDispatchers,
+    private val fingerprintPreferenceManager: FingerprintPreference
 ): CoroutineScope {
 
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
@@ -24,7 +27,8 @@ class CheckFingerprintToggleStatusUseCase @Inject constructor(
                 graphqlUseCase.apply {
                     setTypeClass(CheckFingerprintPojo::class.java)
                     setRequestParams(mapOf(
-                        PARAM_USER_ID to userId
+                        PARAM_USER_ID to userId,
+                        BiometricConstant.PARAM_BIOMETRIC_ID to fingerprintPreferenceManager.getUniqueId()
                     ))
                     setGraphqlQuery(query)
                 }.executeOnBackground()
