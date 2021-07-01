@@ -72,6 +72,7 @@ import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.logisticCommon.util.LogisticCommonUtil;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet;
@@ -791,11 +792,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         token.setUt(shipmentAddressFormData.getKeroUnixTime());
         token.setDistrictRecommendation(shipmentAddressFormData.getKeroDiscomToken());
 
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
-        intent.putExtra(KERO_TOKEN, token);
-        intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER);
-
-        startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
+        if (LogisticCommonUtil.INSTANCE.isRollOutUserANARevamp()) {
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V3);
+            intent.putExtra(KERO_TOKEN, token);
+            intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER);
+            startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
+        } else {
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
+            intent.putExtra(KERO_TOKEN, token);
+            intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER);
+            startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
+        }
     }
 
     @Override

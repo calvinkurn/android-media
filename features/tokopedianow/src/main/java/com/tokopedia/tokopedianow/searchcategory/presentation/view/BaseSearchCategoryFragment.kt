@@ -124,7 +124,7 @@ abstract class BaseSearchCategoryFragment:
                     .getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height)
 
             val height = (navToolbar?.height ?: defaultHeight)
-            val padding = resources.getDimensionPixelSize(R.dimen.dp_8)
+            val padding = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
 
             return height + padding
         }
@@ -628,6 +628,9 @@ abstract class BaseSearchCategoryFragment:
         val view = view ?: return
         message ?: return
         if (message.isEmpty()) return
+
+        val miniCartWidget = miniCartWidget
+        miniCartWidget?.height?.let { Toaster.toasterCustomBottomHeight = it }
 
         Toaster.build(
                 view,

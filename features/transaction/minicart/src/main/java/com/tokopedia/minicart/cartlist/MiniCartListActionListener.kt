@@ -29,6 +29,4 @@ interface MiniCartListActionListener {
     fun onWriteNotesClicked()
 
     fun onChangeNotesClicked()
-
-    fun onShowUnavailableItem(element: MiniCartProductUiModel)
 }

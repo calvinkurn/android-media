@@ -35,6 +35,16 @@ data class MiniCartListUiModel(
         return null
     }
 
+    fun getMiniCartTickerErrorUiModel(): MiniCartTickerErrorUiModel? {
+        loop@ for (visitable in visitables) {
+            if (visitable is MiniCartTickerErrorUiModel) {
+                return visitable
+            }
+        }
+
+        return null
+    }
+
     fun getMiniCartProductUiModelByProductId(productId: String): MiniCartProductUiModel? {
         loop@ for (visitable in visitables) {
             if (visitable is MiniCartProductUiModel && visitable.productId == productId) {
