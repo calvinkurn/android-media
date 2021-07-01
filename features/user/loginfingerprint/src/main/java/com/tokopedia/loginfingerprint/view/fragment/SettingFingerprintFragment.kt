@@ -165,7 +165,9 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
     }
 
     fun onErrorRegisterFingerprint(throwable: Throwable) {
-        NetworkErrorHelper.showRedSnackbar(activity, throwable.message)
+        view?.run {
+            Toaster.build(this, throwable.message?: getString(R.string.error_failed_register_fingerprint), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
     }
 
     fun onSuccessGetFingerprintStatus(checkFingerprintResponse: CheckFingerprintPojo) {
