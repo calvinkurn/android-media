@@ -895,12 +895,12 @@ class FlightAnalytics @Inject constructor() {
         val layoverDayDiff: Long = DateUtil.getDayDiff(
                 DateUtil.formatDate(
                         DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                        DateUtil.YYYYMMDD,
+                        DateUtil.YYYY_MM_DD,
                         detailModel.routeList[0].departureTimestamp
                 ),
                 DateUtil.formatDate(
                         DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                        DateUtil.YYYYMMDD,
+                        DateUtil.YYYY_MM_DD,
                         detailModel.routeList[detailModel.routeList.size - 1].arrivalTimestamp
                 )
         )

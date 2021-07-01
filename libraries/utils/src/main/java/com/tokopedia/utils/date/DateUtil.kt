@@ -42,8 +42,8 @@ object DateUtil {
      * @return Long object of day difference between two dates
      */
     fun getDayDiff(date1: String, date2: String): Long {
-        val leftDate = date2.toDate(YYYY_MM_DD_T_HH_MM_SS_Z).trimDate()
-        val rightDate = date1.toDate(YYYY_MM_DD_T_HH_MM_SS_Z).trimDate()
+        val leftDate = date2.toDate(YYYY_MM_DD).trimDate()
+        val rightDate = date1.toDate(YYYY_MM_DD).trimDate()
         val diff = leftDate.time - rightDate.time
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
     }
@@ -56,7 +56,7 @@ object DateUtil {
      * @return Long object of day difference between two dates
      */
     fun getDayDiffFromToday(dateStr: String): Long {
-        val date = dateStr.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z).trimDate()
+        val date = dateStr.toDate(YYYY_MM_DD).trimDate()
         return date.getDayDiffFromToday()
     }
 
