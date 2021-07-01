@@ -887,7 +887,6 @@ class OfficialStoreTracking(context: Context) {
         val list = mutableListOf(String.format(SLASH_OFFICIAL_STORE_WITHCATEGORY, categoryName))
         if (valueDynamicMix.isNotEmpty())
             list.add(valueDynamicMix)
-        list.add(channel.trackingAttributionModel.campaignId)
         if (!isLogin)
             list.add(VALUE_NON_LOGIN_NEW)
         else list.add(VALUE_LOGIN_NEW)
@@ -944,10 +943,12 @@ class OfficialStoreTracking(context: Context) {
         val eventActionValue = "click view all card on $valueDynamicMix"
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, CLICK_OS_MICROSITE,
-                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_CATEGORY, OS_MICROSITE_SINGLE,
                 EVENT_ACTION, eventActionValue,
-                EVENT_LABEL, channel.id + " - " + channel.channelHeader.name,
-                EVENT_ATTRIBUTION, channel.channelBanner.attribution
+                EVENT_LABEL, channel.id + " - " + categoryName,
+                EVENT_ATTRIBUTION, channel.channelBanner.attribution,
+                FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
+                FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT
         ))
     }
 
@@ -960,10 +961,12 @@ class OfficialStoreTracking(context: Context) {
         val eventActionValue = "click view all on $valueDynamicMix"
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, CLICK_OS_MICROSITE,
-                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_CATEGORY, OS_MICROSITE_SINGLE,
                 EVENT_ACTION, eventActionValue,
-                EVENT_LABEL, channel.id + " - " + channel.channelHeader.name,
-                EVENT_ATTRIBUTION, channel.channelBanner.attribution
+                EVENT_LABEL, channel.id + " - " + categoryName,
+                EVENT_ATTRIBUTION, channel.channelBanner.attribution,
+                FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
+                FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT
         ))
     }
 
