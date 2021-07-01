@@ -55,9 +55,6 @@ buildscript {
     }
 }
 
-apply plugin: 'com.gradle.build-scan'
-apply from: 'buildconfig/build-scan.gradle'
-
 if (hasProperty('buildScan')) {
     buildScan {
         termsOfServiceUrl = 'https://gradle.com/terms-of-service'
