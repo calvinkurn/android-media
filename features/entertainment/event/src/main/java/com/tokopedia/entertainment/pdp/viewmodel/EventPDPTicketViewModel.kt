@@ -35,6 +35,9 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
     private val mutableError = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = mutableError
 
+    private val mutableErrorVerify = MutableLiveData<Throwable>()
+    val errorVerify: LiveData<Throwable> get() = mutableErrorVerify
+
     private val _ticketModel = MutableLiveData<List<EventPDPTicketModel>>()
     val ticketModel: LiveData<List<EventPDPTicketModel>> get() = _ticketModel
 
@@ -66,7 +69,6 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
             val data = usecase.executeUseCase(rawQueryPDP, rawQueryContent, state, url)
             val dataHoliday = useCaseHoliday.execute()
             val selectedDate = removeTime(Date(selectedDateString.toLong() * SECOND_IN_MILIS))
-            throw RuntimeException("404")
             when (data) {
                 is Success -> {
                     productDetailEntityMutable.value = data.data.eventProductDetailEntity
@@ -122,10 +124,10 @@ class EventPDPTicketViewModel @Inject constructor(private val dispatcher: Corout
             if (data.eventVerify.error.isNullOrEmpty()) {
                 mutableVerifyResponse.value = data
             } else {
-                mutableError.value = MessageErrorException(data.eventVerify.errorDescription)
+                mutableErrorVerify.value = MessageErrorException(data.eventVerify.errorDescription)
             }
         }) {
-            mutableError.value = it
+            mutableErrorVerify.value = it
         }
     }
 

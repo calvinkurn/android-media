@@ -315,11 +315,11 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
         })
 
         viewModel.error.observe(viewLifecycleOwner, Observer {
-            val errorMessage = ErrorHandler.getErrorMessage(context, it)
-            NetworkErrorHelper.createSnackbarRedWithAction(activity, errorMessage) {
-                showViewBottom(false)
-                loadInitialData()
-            }.showRetrySnackbar()
+            showErrorState(it, false)
+        })
+
+        viewModel.errorVerify.observe(viewLifecycleOwner, Observer {
+            showErrorState(it, true)
         })
 
         viewModel.productDetailEntity.observe(viewLifecycleOwner, Observer {
@@ -345,6 +345,19 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
             listHoliday = it
             setupBottomSheet(pdpData.dates)
         })
+    }
+
+    private fun showErrorState(throwable: Throwable, isVerify: Boolean){
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        NetworkErrorHelper.createSnackbarRedWithAction(activity, errorMessage) {
+            showViewBottom(false)
+            loadInitialData()
+        }.showRetrySnackbar()
+        if(!isVerify) {
+            renderList(listOf())
+            activity?.txtUbah?.visibility = View.GONE
+            activity?.loaderUbah?.visibility = View.GONE
+        }
     }
 
     private fun showViewBottom(state: Boolean) {
