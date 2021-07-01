@@ -8,4 +8,11 @@ class ProductBundleViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
+    fun getProductInfo() {
+
+    }
+
+    fun getBundleInfo() {
+
+    }
 }
