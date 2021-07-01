@@ -89,7 +89,7 @@ fun withTotalItem(expectedCount: Int): BoundedMatcher<View, RecyclerView> {
 fun hasViewHolderOf(expectedClass: Class<*>): BoundedMatcher<View, RecyclerView> {
     return object : BoundedMatcher<View, RecyclerView>(RecyclerView::class.java) {
         override fun describeTo(description: Description?) {
-            description?.appendText("no view found for $expectedClass")
+            description?.appendText("recyclerview should has viewholder of $expectedClass")
         }
 
         override fun matchesSafely(item: RecyclerView?): Boolean {
@@ -102,6 +102,34 @@ fun hasViewHolderOf(expectedClass: Class<*>): BoundedMatcher<View, RecyclerView>
                 }
             }
             return isExpectedClassExist
+        }
+    }
+}
+
+/**
+ * Check if the given [position] in recyclerview is instance of [expectedClass]
+ *
+ * @param position the viewholder position in recyclerview
+ * @param expectedClass the expected instance of the viewholder
+ *
+ * Example usage:
+ * onView(withId(R.id.recycler_view)).check(
+ *      matches(
+ *          hasViewHolderItemAtPosition(6, NotificationTopAdsBannerViewHolder::class.java)
+ *      )
+ * )
+ */
+fun hasViewHolderItemAtPosition(
+    position: Int, expectedClass: Class<*>
+): BoundedMatcher<View, RecyclerView> {
+    return object : BoundedMatcher<View, RecyclerView>(RecyclerView::class.java) {
+        override fun describeTo(description: Description?) {
+            description?.appendText("$expectedClass should be found at position $position")
+        }
+
+        override fun matchesSafely(item: RecyclerView?): Boolean {
+            val vh = item!!.findViewHolderForAdapterPosition(position)
+            return expectedClass.isInstance(vh)
         }
     }
 }
