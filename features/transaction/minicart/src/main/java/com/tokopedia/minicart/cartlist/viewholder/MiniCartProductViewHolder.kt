@@ -97,7 +97,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 textQtyLeft.text = element.productQtyLeft
                 textQtyLeft.show()
                 if (element.productVariantName.isNotBlank()) {
-                    textQtyLeft.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), itemView.resources.getDimensionPixelOffset(R.dimen.dp_2), 0, 0)
+                    textQtyLeft.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_4), itemView.resources.getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_2), 0, 0)
                 } else {
                     textQtyLeft.setPadding(0, 0, 0, 0)
                 }
@@ -267,6 +267,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 textFieldNotes.textFieldInput.setOnEditorActionListener { v, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         KeyboardHandler.DropKeyboard(it, v)
+                        textFieldNotes.textFieldInput.clearFocus()
                         if (element.productNotes.isNotBlank()) {
                             renderProductNotesFilled(element)
                         } else {
@@ -366,6 +367,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
             }
 
             qtyEditorProduct.show()
+            qtyEditorProduct.editText.clearFocus()
             if (qtyTextWatcher != null) {
                 // reset listener
                 qtyEditorProduct.editText.removeTextChangedListener(qtyTextWatcher)
@@ -411,6 +413,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                     qtyEditorProduct.editText.context?.let {
                         KeyboardHandler.DropKeyboard(it, v)
                     }
+                    qtyEditorProduct.editText.clearFocus()
                     true
                 } else false
             }
@@ -472,7 +475,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 }
             }
             textProductUnavailableAction.context?.let {
-                textProductUnavailableAction.setTextColor(ContextCompat.getColor(it, R.color.Unify_N700_68))
+                textProductUnavailableAction.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             }
             textProductUnavailableAction.show()
         }
@@ -481,7 +484,6 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
     private fun renderProductAlpha(element: MiniCartProductUiModel) {
         with(viewBinding) {
             if (element.isProductDisabled) {
-                listener.onShowUnavailableItem(element)
                 imageProduct.alpha = 0.5f
                 textProductName.alpha = 0.5f
                 textProductVariant.alpha = 0.5f

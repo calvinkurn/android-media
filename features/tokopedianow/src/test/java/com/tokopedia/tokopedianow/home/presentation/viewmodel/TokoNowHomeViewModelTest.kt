@@ -144,7 +144,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when getting data for mini cart should run and give success result`(){
         onGetMiniCart_thenReturn(createMiniCartSimplifier())
 
-        viewModelTokoNow.getMiniCart(shopId = listOf("123"))
+        viewModelTokoNow.getMiniCart(shopId = listOf("123"), "233")
 
         verifyMiniCartResponseSuccess(createMiniCartSimplifier())
     }
@@ -153,7 +153,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when getting data for mini cart empty category should run`(){
         onGetMiniCart_thenReturn(createMiniCartSimplifier())
 
-        viewModelTokoNow.getMiniCart(shopId = listOf())
+        viewModelTokoNow.getMiniCart(shopId = listOf(), "233")
 
         verifyMiniCartNullResponse()
     }
@@ -162,7 +162,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when getting data for mini cart should throw mini cart exception`(){
         onGetMiniCart_thenReturn(Exception())
 
-        viewModelTokoNow.getMiniCart(shopId = listOf("123"))
+        viewModelTokoNow.getMiniCart(shopId = listOf("123"), "233")
 
         verifyMiniCartFail()
     }

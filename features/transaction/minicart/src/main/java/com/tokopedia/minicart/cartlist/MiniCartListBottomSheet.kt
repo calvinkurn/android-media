@@ -242,6 +242,12 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 if (overweightData != null) {
                     analytics.eventViewErrorTickerOverweightInMiniCart(overweightData.warningMessage)
                 }
+                val tickerErrorUiModel = it.getMiniCartTickerErrorUiModel()
+                if (tickerErrorUiModel != null) {
+                    val message = bottomSheet?.context?.getString(R.string.mini_cart_message_ticker_error, tickerErrorUiModel.unavailableItemCount)
+                            ?: ""
+                    analytics.eventViewTickerErrorUnavailableProduct(message)
+                }
             }
 
             if (it.needToCalculateAfterLoad) {
@@ -377,7 +383,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     private fun validateTotalAmountView(context: Context, viewBinding: LayoutBottomsheetMiniCartListBinding) {
         with(viewBinding) {
-            val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, R.color.Unify_GN500))
+            val chatIcon = getIconUnifyDrawable(context, IconUnify.CHAT, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             totalAmount.setAdditionalButton(chatIcon)
             totalAmount.totalAmountAdditionalButton.setOnClickListener {
                 analytics.eventClickChatOnMiniCart()
@@ -406,6 +412,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 amountCtaView.isEnabled = true
                 enableAmountChevron(true)
             }
+            amountCtaView.layoutParams.width = resources.getDimensionPixelSize(R.dimen.mini_cart_button_buy_width)
+            amountCtaView.requestLayout()
         }
         setTotalAmountLoading(viewBinding, false)
     }
@@ -537,10 +545,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     override fun onChangeNotesClicked() {
         analytics.eventClickChangeNotes()
-    }
-
-    override fun onShowUnavailableItem(element: MiniCartProductUiModel) {
-        analytics.eventViewTickerErrorUnavailableProduct(element.errorType)
     }
 
 }

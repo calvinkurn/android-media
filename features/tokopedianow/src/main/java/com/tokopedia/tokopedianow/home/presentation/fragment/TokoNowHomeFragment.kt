@@ -129,7 +129,15 @@ class TokoNowHomeFragment: Fragment(),
     private var isFirstImpressionOnBanner = false
 
     private val homeMainToolbarHeight: Int
-        get() = navToolbar?.height ?: resources.getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height)
+        get() {
+            val defaultHeight = resources.getDimensionPixelSize(
+                R.dimen.tokopedianow_default_toolbar_status_height)
+            val height = (navToolbar?.height ?: defaultHeight)
+            val padding = resources.getDimensionPixelSize(
+                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+
+            return height + padding
+        }
     private val spaceZero: Int
         get() = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0).toInt()
 
@@ -188,6 +196,7 @@ class TokoNowHomeFragment: Fragment(),
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
         }
+        setupPadding(miniCartSimplifiedData)
     }
 
     override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
@@ -263,6 +272,7 @@ class TokoNowHomeFragment: Fragment(),
     private fun showEmptyState(id: String) {
         rvLayoutManager?.setScrollEnabled(false)
         viewModelTokoNow.getEmptyState(id)
+        miniCartWidget?.hide()
     }
 
     private fun showFailedToFetchData() {
@@ -323,7 +333,7 @@ class TokoNowHomeFragment: Fragment(),
         navToolbar?.let { toolbar ->
             viewLifecycleOwner.lifecycle.addObserver(toolbar)
             //  because searchHint has not been discussed so for current situation we only use hardcoded placeholder
-            setHint(SearchPlaceholder(Data(null, "Cari di TokoNOW!","")))
+            setHint(SearchPlaceholder(Data(null, resources.getString(R.string.tokopedianow_search_bar_hint),"")))
             addNavBarScrollListener()
             activity?.let {
                 toolbar.setupToolbarWithStatusBar(it)
@@ -439,6 +449,7 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.miniCart) {
             if(it is Success) {
                 setupMiniCart(it.data)
+                setupPadding(it.data)
             }
         }
 
@@ -484,6 +495,18 @@ class TokoNowHomeFragment: Fragment(),
             miniCartWidget.show()
         } else {
             miniCartWidget.hide()
+        }
+    }
+
+    private fun setupPadding(data: MiniCartSimplifiedData) {
+        miniCartWidget.post {
+            val paddingBottom = if(data.isShowMiniCartWidget) {
+                miniCartWidget.height
+            } else {
+                activity?.resources?.getDimensionPixelSize(
+                    com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).orZero()
+            }
+            swipeLayout?.setPadding(0, 0, 0, paddingBottom)
         }
     }
 
@@ -616,7 +639,9 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun getMiniCart()  {
-        viewModelTokoNow.getMiniCart(listOf(localCacheModel?.shop_id.orEmpty()))
+        val shopId = listOf(localCacheModel?.shop_id.orEmpty())
+        val warehouseId = localCacheModel?.warehouse_id
+        viewModelTokoNow.getMiniCart(shopId, warehouseId)
     }
 
     private fun loadLayout() {

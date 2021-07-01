@@ -110,6 +110,7 @@ class TokoNowSearchFragment: BaseSearchCategoryFragment(), SuggestionListener {
             productItemListener = this,
             emptyProductListener = this,
             suggestionListener = this,
+            outOfCoverageListener = this,
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page

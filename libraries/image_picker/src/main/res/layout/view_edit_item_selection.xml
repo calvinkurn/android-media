@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/unify_space_8">
+
+    <FrameLayout
+        android:id="@+id/selection_container"
+        android:layout_width="@dimen/image_editor_main_height"
+        android:layout_height="@dimen/image_editor_main_height"
+        android:layout_margin="@dimen/dp_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/img_item_selection"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_1"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/thumbnail_image_watermark_preview"
+            tools:src="@tools:sample/avatars" />
+
+        <ImageView
+            android:id="@+id/img_item_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_1"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:contentDescription="@string/placeholder_image_watermark_preview"
+            tools:src="@tools:sample/avatars"
+            tools:visibility="visible" />
+
+        <View
+            android:id="@+id/view_selection"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/image_picker_rect_stroke_green" />
+
+    </FrameLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_placeholder"
+        style="@style/TextView.Micro.BlackSecondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:maxWidth="@dimen/unify_space_64"
+        android:maxLength="10"
+        android:ellipsize="end"
+        android:textColor="@color/Unify_N0"
+        android:textStyle="bold"
+        app:typographyType="heading_6"
+        android:rotation="-45"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/selection_container"
+        app:layout_constraintEnd_toEndOf="@+id/selection_container"
+        app:layout_constraintStart_toStartOf="@+id/selection_container"
+        app:layout_constraintTop_toTopOf="@+id/selection_container"
+        tools:visibility="visible"
+        tools:text="Nama Toko Apa aja boleh" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_item"
+        style="@style/TextView.Micro.BlackSecondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:gravity="center_horizontal"
+        android:textColor="@color/Unify_N700"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selection_container"
+        app:typographyType="body_3"
+        tools:text="Nama Menu Item" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

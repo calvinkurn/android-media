@@ -23,7 +23,6 @@ object AtcVariantHelper {
     const val PDP_PARCEL_KEY_RESULT = "pdp_page_result"
 
     const val ATC_VARIANT_CACHE_ID = "atc_variant_cache_id"
-    const val PDP_PAGE_SOURCE = "pdp"
 
     const val ATC_VARIANT_RESULT_CODE = 19202
 
@@ -68,7 +67,7 @@ object AtcVariantHelper {
 
         val parcelData = ProductVariantBottomSheetParams(
                 productId = productInfoP1.basic.productID,
-                pageSource = PDP_PAGE_SOURCE,
+                pageSource = PDP_PAGESOURCE,
                 whId = warehouseId,
                 pdpSession = pdpSession,
                 isTokoNow = isTokoNow,
@@ -90,7 +89,7 @@ object AtcVariantHelper {
         )
         cacheManager.put(PDP_PARCEL_KEY_RESPONSE, parcelData)
 
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productInfoP1.basic.productID, PDP_PAGESOURCE, "", "", "")
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATC_VARIANT, productInfoP1.basic.productID, "", PDP_PAGESOURCE, "", "", "")
                 .putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
         startActivitResult.invoke(intent, ATC_VARIANT_RESULT_CODE)
     }

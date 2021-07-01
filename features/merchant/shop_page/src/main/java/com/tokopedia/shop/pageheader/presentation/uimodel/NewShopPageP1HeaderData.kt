@@ -1,8 +1,5 @@
 package com.tokopedia.shop.pageheader.presentation.uimodel
 
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 
 data class NewShopPageP1HeaderData(

@@ -111,6 +111,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val mvcSummaryData: ProductMerchantVoucherSummaryDataModel?
         get() = mapOfData[ProductDetailConstant.MVC] as? ProductMerchantVoucherSummaryDataModel
 
+    val bestSellerData: BestSellerInfoDataModel?
+        get() = mapOfData[ProductDetailConstant.BEST_SELLER] as? BestSellerInfoDataModel
+
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, loadInitialData: Boolean = false) {
         dataP1?.let {
 
@@ -205,6 +208,32 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.SHIPMENT, loadInitialData) {
                 shipmentData?.isTokoNow = it.basic.isTokoNow
+            }
+
+            val productId = it.basic.productID
+            dataP1.bestSellerContent?.let { bestSellerInfoContent ->
+                if (bestSellerInfoContent.contains(productId)) {
+                    updateBestSellerData(dataP1 = dataP1, productId = productId)
+                } else {
+                    updateBestSellerData()
+                }
+            }
+        }
+    }
+
+    private fun updateBestSellerData(
+        dataP1: DynamicProductInfoP1? = null,
+        productId: String? = null
+    ) {
+        updateData(ProductDetailConstant.BEST_SELLER) {
+            bestSellerData?.run {
+                if (dataP1 == null) {
+                    this.bestSellerInfoContent = null
+                } else {
+                    dataP1.bestSellerContent?.let {
+                        this.bestSellerInfoContent = it[productId]
+                    }
+                }
             }
         }
     }

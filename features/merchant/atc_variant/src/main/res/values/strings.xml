@@ -7,6 +7,7 @@
 
     <string name="atc_variant_option_builder_1">Pilih %1$s: </string>
     <string name="atc_variant_option_builder_2">%1$d varian</string>
+    <string name="atc_variant_option_builder_3">%1$s: </string>
     <string name="atc_variant_guideline">Lihat Panduan</string>
 
     <string name="atc_variant_quantity_label">Jumlah Barang: </string>

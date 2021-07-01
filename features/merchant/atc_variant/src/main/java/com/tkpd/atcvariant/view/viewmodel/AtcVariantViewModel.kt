@@ -258,7 +258,7 @@ class AtcVariantViewModel @Inject constructor(
             )
             aggregatorData = result.variantAggregator
             minicartData = result.miniCartData?.toMutableMap()
-            if (aggregatorParams.pageSource == AtcVariantHelper.PDP_PAGE_SOURCE) {
+            if (aggregatorParams.pageSource == AtcVariantHelper.PDP_PAGESOURCE) {
                 updateActivityResult(shouldRefreshPreviousPage = true)
             }
         } else {

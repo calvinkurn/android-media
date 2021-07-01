@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
 import android.view.View
+import android.view.ViewStub
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,6 +31,7 @@ class HomeCategoryGridViewHolder(
         private const val GRID_SPAN_COUNT = 2
     }
 
+    private var vsTitle: ViewStub? = null
     private var tvTitle: Typography? = null
     private var tvSeeAll: Typography? = null
     private var llCategory: LocalLoad? = null
@@ -56,7 +58,8 @@ class HomeCategoryGridViewHolder(
 
     private fun initView() {
         itemView.apply {
-            tvTitle = findViewById(R.id.tv_title)
+            vsTitle = findViewById(R.id.vs_title)
+            tvTitle = vsTitle?.inflate()?.findViewById(R.id.channel_title)
             tvSeeAll = findViewById(R.id.tv_see_all)
             llCategory = findViewById(R.id.ll_category)
             rvCategory = findViewById(R.id.rv_category)
@@ -65,10 +68,10 @@ class HomeCategoryGridViewHolder(
     }
 
     private fun showLoadingState(data: HomeCategoryGridUiModel) {
+        tvTitle?.text = data.title
         llCategory?.hide()
         rvCategory?.hide()
         categoryShimmering?.show()
-        tvTitle?.text = data.title
     }
 
     private fun showCategoryGrid(data: HomeCategoryGridUiModel) {
