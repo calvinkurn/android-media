@@ -20,6 +20,8 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.NullPointerException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class EventCheckoutViewModel @Inject constructor(private val dispatcher: CoroutineDispatcher,
@@ -39,10 +41,6 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     val errorGeneralValue: LiveData<Throwable>
         get() = errorGeneralValueMutable
 
-    private val errorValueMutable = MutableLiveData<String>()
-    val errorValue: LiveData<String>
-        get() = errorValueMutable
-
     private val eventCheckoutResponseMutable = MutableLiveData<EventCheckoutResponse>()
     val eventCheckoutResponse: LiveData<EventCheckoutResponse>
         get() = eventCheckoutResponseMutable
@@ -52,7 +50,7 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         get() = eventCheckoutInstantResponseMutable
 
     fun getDataProductDetail(rawQueryPDP: String, rawQueryContent: String, urlPdp: String) {
-        launch {
+        launchCatchError(block =  {
             val result = usecase.executeUseCase(rawQueryPDP, rawQueryContent, true, urlPdp)
             when (result) {
                 is Success -> {
@@ -62,6 +60,8 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                     isErrorMutable.value = EventPDPErrorEntity(true, result.throwable)
                 }
             }
+        }){
+            isErrorMutable.value = EventPDPErrorEntity(true, it)
         }
     }
 
