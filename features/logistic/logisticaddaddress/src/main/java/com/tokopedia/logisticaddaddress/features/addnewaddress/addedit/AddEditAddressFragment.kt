@@ -577,7 +577,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.length < 9 && s.isNotEmpty()) {
+                if (s.isNotEmpty() && s.length < 9) {
                     setWrapperError(wrapper, textWatcher)
                 } else {
                     setWrapperError(wrapper, null)
@@ -795,7 +795,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     private fun showDistrictRecommendationBottomSheet() {
         val districtRecommendationBottomSheetFragment =
-                DiscomBottomSheetFragment.newInstance(isLogisticLabel, isAnaRevamp = false, isPinpoint = false)
+                DiscomBottomSheetFragment.newInstance(isLogisticLabel, false, null)
         districtRecommendationBottomSheetFragment.setActionListener(this)
         fragmentManager?.run {
             districtRecommendationBottomSheetFragment.show(this, "")
