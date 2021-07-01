@@ -6,6 +6,8 @@ import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.data.*
+import com.tokopedia.play.data.interactive.ChannelInteractive
+import com.tokopedia.play.data.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.websocket.WebSocketResponse
 import java.lang.reflect.Type
@@ -54,6 +56,12 @@ class PlaySocketMapper(
             PlaySocketType.MerchantVoucher.value -> {
                 return MerchantVoucher(mapToMerchantVoucher())
             }
+            PlaySocketType.ChannelInteractiveStatus.value -> {
+                return mapToChannelInteractiveStatus()
+            }
+            PlaySocketType.ChannelInteractive.value -> {
+                return mapToChannelInteractive()
+            }
         }
         return null
     }
@@ -92,6 +100,14 @@ class PlaySocketMapper(
 
     private fun mapToMerchantVoucher(): List<Voucher> {
         return convertToModel(webSocketResponse.jsonArray, voucherListType)?: listOf()
+    }
+
+    private fun mapToChannelInteractiveStatus(): ChannelInteractiveStatus? {
+        return convertToModel(webSocketResponse.jsonObject, ChannelInteractiveStatus::class.java)
+    }
+
+    private fun mapToChannelInteractive(): ChannelInteractive? {
+        return convertToModel(webSocketResponse.jsonObject, ChannelInteractive::class.java)
     }
 
     private fun <T> convertToModel(jsonElement: JsonElement?, classOfT: Class<T>): T? {

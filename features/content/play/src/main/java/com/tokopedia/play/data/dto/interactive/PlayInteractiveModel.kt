@@ -1,17 +1,17 @@
-package com.tokopedia.play.view.uimodel.engagement
+package com.tokopedia.play.data.dto.interactive
 
 /**
  * Created by jegul on 28/06/21
  */
-sealed class PlayInteractiveUiModel {
+sealed class PlayInteractiveModel {
 
     abstract val hasInteractive: Boolean
 
-    data class Incomplete(override val hasInteractive: Boolean) : PlayInteractiveUiModel()
-    data class Complete(override val hasInteractive: Boolean, ) : PlayInteractiveUiModel()
+    data class Incomplete(override val hasInteractive: Boolean) : PlayInteractiveModel()
+    data class Complete(override val hasInteractive: Boolean, ) : PlayInteractiveModel()
 }
 
-data class PlayCurrentInteractiveUiModel(
+data class PlayCurrentInteractiveModel(
         val id: Long,
         val type: InteractiveType,
         val title: String,

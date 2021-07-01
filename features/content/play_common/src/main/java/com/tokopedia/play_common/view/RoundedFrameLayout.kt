@@ -9,14 +9,15 @@ import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewOutlineProvider
+import android.widget.FrameLayout
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.play_common.R
 
 /**
- * Created by jegul on 21/10/20
+ * Created by jegul on 30/06/21
  */
-class RoundedConstraintLayout : ConstraintLayout {
+class RoundedFrameLayout : FrameLayout {
 
     private val roundedHelper = RoundedLayoutHelper()
 
@@ -30,10 +31,10 @@ class RoundedConstraintLayout : ConstraintLayout {
 
     private fun initAttrs(context: Context, attrs: AttributeSet?) {
         if (attrs != null) {
-            val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.RoundedConstraintLayout)
+            val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.RoundedFrameLayout)
 
             roundedHelper.setCornerRadius(
-                    attributeArray.getDimension(R.styleable.RoundedConstraintLayout_cornerRadius, 0f)
+                    attributeArray.getDimension(R.styleable.RoundedFrameLayout_cornerRadius, 0f)
             )
             attributeArray.recycle()
         }

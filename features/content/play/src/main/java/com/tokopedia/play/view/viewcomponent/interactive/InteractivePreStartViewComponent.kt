@@ -1,5 +1,6 @@
-package com.tokopedia.play.view.viewcomponent
+package com.tokopedia.play.view.viewcomponent.interactive
 
+import android.os.CountDownTimer
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -13,26 +14,29 @@ import java.util.*
 /**
  * Created by jegul on 28/06/21
  */
-class EngagementToolsPreStartViewComponent(
+class InteractivePreStartViewComponent(
         container: ViewGroup,
         listener: Listener
-) : ViewComponent(container, R.id.view_engagement_prestart) {
+) : ViewComponent(container, R.id.view_interactive_prestart) {
 
-    private val btnEngagementFollow = findViewById<UnifyButton>(R.id.btn_engagement_follow)
-    private val tvEngagementTitle = findViewById<Typography>(R.id.tv_engagement_title)
+    private val btnInteractiveFollow = findViewById<UnifyButton>(R.id.btn_interactive_follow)
+    private val tvInteractiveTitle = findViewById<Typography>(R.id.tv_interactive_title)
     private val timerPreStart = findViewById<TimerUnifySingle>(R.id.timer_prestart)
 
     init {
-        btnEngagementFollow.setOnClickListener {
+        btnInteractiveFollow.setOnClickListener {
             listener.onFollowButtonClicked(this)
         }
     }
 
     fun setTitle(title: String) {
-        tvEngagementTitle.text = title
+        tvInteractiveTitle.text = title
     }
 
-    fun setTimer(durationInMs: Long, onFinished: () -> Unit) {
+    fun setTimer(
+            durationInMs: Long,
+            onFinished: () -> Unit
+    ) {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MILLISECOND, durationInMs.toInt())
 
@@ -44,9 +48,9 @@ class EngagementToolsPreStartViewComponent(
 
     fun showFollowButton(shouldShow: Boolean) {
         if (shouldShow) {
-            btnEngagementFollow.show()
+            btnInteractiveFollow.show()
         } else {
-            btnEngagementFollow.hide()
+            btnInteractiveFollow.hide()
         }
     }
 
@@ -57,6 +61,6 @@ class EngagementToolsPreStartViewComponent(
 
     interface Listener {
 
-        fun onFollowButtonClicked(view: EngagementToolsPreStartViewComponent)
+        fun onFollowButtonClicked(view: InteractivePreStartViewComponent)
     }
 }

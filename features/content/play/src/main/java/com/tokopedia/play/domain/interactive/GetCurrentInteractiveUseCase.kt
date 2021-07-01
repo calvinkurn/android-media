@@ -1,11 +1,10 @@
-package com.tokopedia.play.domain.engagement
+package com.tokopedia.play.domain.interactive
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.data.engagement.GetCurrentInteractiveResponse
-import com.tokopedia.play.domain.GetChannelStatusUseCase
+import com.tokopedia.play.data.interactive.GetCurrentInteractiveResponse
 import javax.inject.Inject
 
 /**
@@ -21,12 +20,12 @@ class GetCurrentInteractiveUseCase @Inject constructor(
             channelID: ${"$$PARAM_CHANNEL_ID"}
           }){
             interactive {
-              interactiveID
-              interactiveType
+              interactive_id: interactiveID
+              interactive_type: interactiveType
               title
               status
-              countdownStart
-              countdownEnd
+              countdown_start: countdownStart
+              countdown_end: countdownEnd
             }
           }
         }
