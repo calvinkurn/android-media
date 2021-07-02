@@ -86,7 +86,9 @@ fun hasTotalItemOf(expectedCount: Int): BoundedMatcher<View, RecyclerView> {
  *      )
  * )
  */
-fun hasViewHolderOf(expectedClass: Class<*>): BoundedMatcher<View, RecyclerView> {
+fun hasViewHolderOf(
+    expectedClass: Class<out RecyclerView.ViewHolder>
+): BoundedMatcher<View, RecyclerView> {
     return object : BoundedMatcher<View, RecyclerView>(RecyclerView::class.java) {
         override fun describeTo(description: Description?) {
             description?.appendText("recyclerview should has viewholder of $expectedClass")
@@ -119,7 +121,7 @@ fun hasViewHolderOf(expectedClass: Class<*>): BoundedMatcher<View, RecyclerView>
  * )
  */
 fun hasViewHolderItemAtPosition(
-    position: Int, expectedClass: Class<*>
+    position: Int, expectedClass: Class<out RecyclerView.ViewHolder>
 ): BoundedMatcher<View, RecyclerView> {
     return object : BoundedMatcher<View, RecyclerView>(RecyclerView::class.java) {
         override fun describeTo(description: Description?) {
