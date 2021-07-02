@@ -17,11 +17,12 @@ import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewItemL
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewAttachedImages
+import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewProductInfo
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewSellerResponse
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ReadReviewProductViewHolder(view: View, private val readReviewItemListener: ReadReviewItemListener, private val attachedImagesClickListener: ReadReviewAttachedImagesListener) : AbstractViewHolder<ReadReviewUiModel>(view) {
+class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadReviewItemListener, private val attachedImagesClickListener: ReadReviewAttachedImagesListener) : AbstractViewHolder<ReadReviewUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_read_review
@@ -30,6 +31,7 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
         private const val MAX_LINES_REVIEW = 3
     }
 
+    private var productInfo: ReadReviewProductInfo? = null
     private var basicInfo: ReviewBasicInfoWidget? = null
     private var reportOption: IconUnify? = null
     private var likeImage: ImageUnify? = null
@@ -43,6 +45,9 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
     override fun bind(element: ReadReviewUiModel) {
         bindViews()
         with(element.reviewData) {
+            if (element.isShopViewHolder) {
+                setProductInfo(element.productImage, element.productName, isReportable, feedbackID, element.shopId)
+            }
             setRating(productRating)
             setCreateTime(reviewCreateTimestamp)
             setReviewerName(user.fullName)
@@ -55,6 +60,7 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
     }
 
     private fun bindViews() {
+        productInfo = itemView.findViewById(R.id.read_review_product_info)
         basicInfo = itemView.findViewById(R.id.read_review_basic_info)
         reportOption = itemView.findViewById(R.id.read_review_item_three_dots)
         reviewMessage = itemView.findViewById(R.id.read_review_item_review)
@@ -64,6 +70,14 @@ class ReadReviewProductViewHolder(view: View, private val readReviewItemListener
         showResponseText = itemView.findViewById(R.id.read_review_show_response)
         showResponseChevron = itemView.findViewById(R.id.read_review_show_response_chevron)
         sellerResponse = itemView.findViewById(R.id.read_review_seller_response)
+    }
+
+    private fun setProductInfo(productImageUrl: String, productName: String, isReportable: Boolean, reviewId: String, shopId: String) {
+        productInfo?.apply {
+            setProductInfo(productImageUrl, productName)
+            setListener(isReportable, reviewId, shopId, readReviewItemListener)
+            show()
+        }
     }
 
     private fun setRating(rating: Int) {

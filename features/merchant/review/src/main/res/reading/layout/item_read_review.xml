@@ -3,15 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/layout_lvl2">
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewProductInfo
+        android:id="@+id/read_review_product_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
         android:id="@+id/read_review_basic_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/layout_lvl1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/read_review_product_info" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/read_review_item_three_dots"
@@ -42,11 +49,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
-        android:visibility="gone"
         android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/read_review_item_review"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/read_review_like_button"
@@ -103,14 +110,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="read_review_seller_response, read_review_like_button"/>
+        app:constraint_referenced_ids="read_review_seller_response, read_review_like_button" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@color/Unify_N75"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/read_review_item_barrier"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:background="@color/Unify_N75"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_review_item_barrier" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

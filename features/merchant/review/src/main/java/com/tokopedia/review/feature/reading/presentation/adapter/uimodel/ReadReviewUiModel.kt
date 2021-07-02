@@ -8,7 +8,9 @@ data class ReadReviewUiModel(
         val reviewData: ProductReview,
         val isShopViewHolder: Boolean,
         val shopId: String,
-        val shopName: String
+        val shopName: String,
+        val productImage: String = "",
+        val productName: String = "",
 ) : Visitable<ReadReviewAdapterTypeFactory> {
 
     override fun type(typeFactory: ReadReviewAdapterTypeFactory): Int {
