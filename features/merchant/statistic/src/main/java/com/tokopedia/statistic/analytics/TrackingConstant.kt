@@ -31,6 +31,7 @@ object TrackingConstant {
     const val PROMO_VIEW = "promoView"
     const val PROMO_CLICK = "promoClick"
     const val VIEW_STATISTIC_IRIS = "viewStatistikIris"
+    const val VIEW_HOMEPAGE_IRIS = "viewHomepageIris"
     const val CLICK_STATISTIC = "clickStatistik"
     const val VIEW_PRODUCT_INSIGHT_IRIS = "viewProductInsightIris"
     const val CLICK_PRODUCT_INSIGHT = "clickProductInsight"

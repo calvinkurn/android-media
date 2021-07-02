@@ -362,6 +362,8 @@ class AddEditProductDetailViewModelTest {
         val resultMessage = listOf("indodax")
         val errorMessage = "error blacklist"
 
+        viewModel.usingNewProductTitleRequest = true
+
         coEvery {
             getProductTitleValidationUseCase.getDataModelOnBackground()
         } returns TitleValidationModel(
@@ -386,6 +388,7 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `validateProductNameInput should valid when product name no error`() = coroutineTestRule.runBlockingTest {
         val productNameInput = "indomilk"
+        viewModel.usingNewProductTitleRequest = true
 
         coEvery {
             getProductTitleValidationUseCase.getDataModelOnBackground()
@@ -1114,6 +1117,17 @@ class AddEditProductDetailViewModelTest {
         viewModel.updateSpecificationByAnnotationCategory(annotationCategoryData)
         val specificationText = viewModel.specificationText.getOrAwaitValue()
         Assert.assertTrue(specificationText.isEmpty())
+    }
+
+    @Test
+    fun `when getMaxProductPhotos, expect correct max product picture`() {
+        every { userSession.isShopOfficialStore } returns true
+        var maxPicture = viewModel.getMaxProductPhotos()
+        assertEquals(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS_OS, maxPicture)
+
+        every { userSession.isShopOfficialStore } returns false
+        maxPicture = viewModel.getMaxProductPhotos()
+        assertEquals(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS, maxPicture)
     }
 
     @Test

@@ -5,9 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_ACTIVITY_PREPARE
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
+import com.tokopedia.shop.pageheader.presentation.fragment.NewShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.test.R
 
@@ -20,7 +19,7 @@ class InstrumentationShopPageTestActivity : AppCompatActivity(), ShopPagePerform
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_instrumentation_shop_page_test)
 
-        val shopPageFragment: Fragment = ShopPageFragment()
+        val shopPageFragment: Fragment = NewShopPageFragment()
         val fragmentTransaction = supportFragmentManager
                 .beginTransaction()
         fragmentTransaction

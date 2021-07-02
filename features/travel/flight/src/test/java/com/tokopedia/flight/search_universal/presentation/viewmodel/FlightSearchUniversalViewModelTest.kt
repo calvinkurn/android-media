@@ -1,10 +1,10 @@
 package com.tokopedia.flight.search_universal.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.shouldBe
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,7 +28,7 @@ class FlightSearchUniversalViewModelTest {
     @Test
     fun generatePairOfMinMaxDateForDeparture_shouldReturnPairOfMinMaxForDeparture() {
         // given
-        val minDate = FlightDateUtil.getCurrentDate()
+        val minDate = FlightDateUtil.currentDate
         val maxDate = FlightDateUtil.addTimeToSpesificDate(
                 FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
                 Calendar.DATE,
@@ -48,7 +48,7 @@ class FlightSearchUniversalViewModelTest {
     @Test
     fun generatePairOfMinMaxDateForReturn_shouldReturnPairOfMinMaxForReturn() {
         // given
-        val departureDate = FlightDateUtil.getCurrentDate()
+        val departureDate = FlightDateUtil.currentDate
         val maxDate = FlightDateUtil.addTimeToSpesificDate(
                 FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, FlightSearchUniversalViewModel.MAX_YEAR_FOR_FLIGHT),
                 Calendar.DATE,

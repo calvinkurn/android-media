@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="@dimen/dp_120"
+        android:layout_height="104dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:background="@drawable/bg_card_recharge_widget"
+        android:orientation="vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/categoryName"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:gravity="right"
+            app:typographyType="small"
+            android:textAllCaps="true"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:letterSpacing="0.02"
+            android:layout_gravity="end"
+            android:visibility="gone"
+            tools:text="PAKET DATA"
+            tools:visibility="visible"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/productName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:maxLines="1"
+                android:ellipsize="end"
+                app:typographyType="heading_6"
+                android:visibility="gone"
+                tools:text="BRONET 4G OWS"
+                tools:visibility="visible"
+                />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/clientNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/productName"
+                android:layout_marginTop="@dimen/dp_2"
+                android:maxLines="1"
+                android:ellipsize="end"
+                app:typographyType="body_3"
+                android:lineSpacingExtra="@dimen/sp_6"
+                android:visibility="gone"
+                tools:text="081234567890"
+                tools:visibility="visible"
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <include layout="@layout/layout_template_icon_recharge_widget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        />
+
+</FrameLayout>

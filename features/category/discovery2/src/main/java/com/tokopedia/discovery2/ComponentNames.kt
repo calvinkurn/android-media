@@ -19,7 +19,6 @@ enum class ComponentNames(val componentName: String) {
     Tokopoints("tokopoints"),
     TokopointsItem("tokopoints_item"),
     LihatSemua("lihat_semua"),
-    CpmTopAds("topads"),
     Video("video"),
     Notifier("notifier"),
     TitleImage("title_image"),
@@ -82,5 +81,7 @@ enum class ComponentNames(val componentName: String) {
     //Category Best Seller
     CategoryBestSeller("product-card-horizontal-scroll"),
 
+    //Topads Headline View
+    TopadsHeadlineView("topads"),
 
 }

@@ -19,6 +19,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
@@ -48,11 +50,11 @@ import com.tokopedia.buyerorder.detail.view.adapter.BuyerListOfProductsBottomShe
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelReasonBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.adapter.GetCancelSubReasonBottomSheetAdapter
 import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerCancellationViewModel
-import com.tokopedia.buyerorder.list.common.OrderListContants
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.trackingoptimizer.gson.GsonSingleton
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -64,7 +66,6 @@ import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel.view.*
 import kotlinx.android.synthetic.main.fragment_buyer_request_cancel.*
 import java.io.Serializable
 import javax.inject.Inject
-
 
 /**
  * Created by fwidjaja on 08/06/20.
@@ -92,6 +93,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var statusId = ""
     private var statusInfo = ""
     private var listProductsSerializable : Serializable? = null
+    private var listProductsJsonString : String? = null
     private var listProduct = emptyList<Items>()
     private var cancelReasonResponse = BuyerGetCancellationReasonData.Data.GetCancellationReason()
     private var instantCancelResponse = BuyerInstantCancelData.Data.BuyerInstantCancel()
@@ -105,6 +107,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var currentReasonStr = ""
     private var userSession: UserSession? = null
 
+    private val productListTypeToken by lazy {
+        object : TypeToken<List<Items>>() {}.type
+    }
+
     private val buyerCancellationViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[BuyerCancellationViewModel::class.java]
     }
@@ -116,7 +122,8 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 arguments = Bundle().apply {
                     putString(BuyerConsts.PARAM_SHOP_NAME, bundle.getString(BuyerConsts.PARAM_SHOP_NAME))
                     putString(BuyerConsts.PARAM_INVOICE, bundle.getString(BuyerConsts.PARAM_INVOICE))
-                    putSerializable(BuyerConsts.PARAM_LIST_PRODUCT, bundle.getSerializable(BuyerConsts.PARAM_LIST_PRODUCT))
+                    putSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT, bundle.getSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT))
+                    putString(BuyerConsts.PARAM_JSON_LIST_PRODUCT, bundle.getString(BuyerConsts.PARAM_JSON_LIST_PRODUCT))
                     putString(BuyerConsts.PARAM_ORDER_ID, bundle.getString(BuyerConsts.PARAM_ORDER_ID))
                     putString(BuyerConsts.PARAM_URI, bundle.getString(BuyerConsts.PARAM_URI))
                     putBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED, bundle.getBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED))
@@ -139,8 +146,11 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         if (arguments != null) {
             shopName = arguments?.getString(BuyerConsts.PARAM_SHOP_NAME).toString()
             invoiceNum = arguments?.getString(BuyerConsts.PARAM_INVOICE).toString()
-            listProductsSerializable = arguments?.getSerializable(BuyerConsts.PARAM_LIST_PRODUCT)
-            listProduct = listProductsSerializable as List<Items>
+            listProductsSerializable = arguments?.getSerializable(BuyerConsts.PARAM_SERIALIZABLE_LIST_PRODUCT)
+            listProductsJsonString = arguments?.getString(BuyerConsts.PARAM_JSON_LIST_PRODUCT)
+            listProduct = (listProductsSerializable as? List<Items>) ?: listProductsJsonString.takeIf { !it.isNullOrBlank() }?.let {
+                GsonSingleton.instance.fromJson(it, productListTypeToken) as? List<Items>
+            } ?: emptyList()
             orderId = arguments?.getString(BuyerConsts.PARAM_ORDER_ID).toString()
             uri = arguments?.getString(BuyerConsts.PARAM_URI).toString()
             isCancelAlreadyRequested = arguments?.getBoolean(BuyerConsts.PARAM_IS_CANCEL_ALREADY_REQUESTED) ?: false
@@ -176,6 +186,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         observingCancelReasons()
         observingInstantCancel()
         observingRequestCancel()
+        observeBuyerRequestCancelReasonValidationResult()
 
         btn_req_cancel?.isEnabled = false
         tf_choose_sub_reason?.textFieldInput?.isFocusable = false
@@ -497,31 +508,12 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             tf_choose_sub_reason_editable?.textFieldInput?.isSingleLine = false
             tf_choose_sub_reason_editable?.textFieldInput?.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
             tf_choose_sub_reason_editable?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                    //Before user enters the text
-                }
+                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
-                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                    //On user changes the text
-                    btn_req_cancel?.isEnabled = s.toString().trim { it <= ' ' }.isNotEmpty()
-                }
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
 
                 override fun afterTextChanged(s: Editable) {
-                    //After user is done entering the text
-                    when {
-                        s.length < 15 -> {
-                            tf_choose_sub_reason_editable?.setError(true)
-                            tf_choose_sub_reason_editable?.setMessage(getString(R.string.min_char_reason_lainnya))
-                        }
-                        s.length > 160 -> {
-                            tf_choose_sub_reason_editable?.setError(true)
-                            tf_choose_sub_reason_editable?.setMessage(getString(R.string.max_char_reason_lainnya))
-                        }
-                        else -> {
-                            tf_choose_sub_reason_editable?.setError(false)
-                            tf_choose_sub_reason_editable?.setMessage("")
-                        }
-                    }
+                    buyerCancellationViewModel.validateBuyerRequestCancelReason(s.toString())
                 }
             })
         } else {
@@ -606,6 +598,14 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     showToaster(getString(R.string.fail_cancellation), Toaster.TYPE_ERROR)
                 }
             }
+        })
+    }
+
+    private fun observeBuyerRequestCancelReasonValidationResult() {
+        buyerCancellationViewModel.buyerRequestCancelReasonValidationResult.observe(viewLifecycleOwner, {
+            tf_choose_sub_reason_editable?.setMessage(it.inputFieldMessage)
+            tf_choose_sub_reason_editable?.setError(it.isError)
+            btn_req_cancel?.isEnabled = it.isButtonEnable
         })
     }
 

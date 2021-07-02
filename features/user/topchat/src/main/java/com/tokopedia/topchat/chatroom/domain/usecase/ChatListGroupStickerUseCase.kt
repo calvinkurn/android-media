@@ -60,6 +60,7 @@ open class ChatListGroupStickerUseCase @Inject constructor(
                 },
                 { exception ->
                     withContext(dispatchers.main) {
+                        exception.printStackTrace()
                         onError(exception)
                     }
                 }

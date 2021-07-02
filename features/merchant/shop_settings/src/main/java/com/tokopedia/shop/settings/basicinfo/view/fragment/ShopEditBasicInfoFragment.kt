@@ -235,15 +235,17 @@ class ShopEditBasicInfoFragment: Fragment() {
             }
 
             override fun afterTextChanged(s: Editable) {
-                if (!isNameStillSame()) {
-                    val input = s.toString()
-                    if (input.isBlank()) {
-                        val message = context?.getString(R.string.error_validation_shop_name_empty).orEmpty()
-                        showShopNameInputError(message)
-                    } else {
-                        resetShopNameInput()
-                        viewModel.validateShopName(input)
-                    }
+                val input = s.toString()
+                if (input.isBlank()) {
+                    val message = context?.getString(R.string.error_validation_shop_name_empty).orEmpty()
+                    showShopNameInputError(message)
+                } else if (!isNameStillSame()) {
+                    resetShopNameInput()
+                    viewModel.validateShopName(input)
+                    viewModel.setShopName(input)
+                } else {
+                    resetShopNameInput()
+                    viewModel.setShopName(input)
                 }
             }
 
@@ -258,15 +260,15 @@ class ShopEditBasicInfoFragment: Fragment() {
             }
 
             override fun afterTextChanged(s: Editable) {
-                if (!isDomainStillSame()) {
-                    val input = s.toString()
-                    if (input.isBlank()) {
-                        val message = context?.getString(R.string.error_validation_shop_domain_empty).orEmpty()
-                        showShopDomainInputError(message)
-                    } else {
-                        resetShopDomainInput()
-                        viewModel.validateShopDomain(input)
-                    }
+                val input = s.toString()
+                if (input.isBlank()) {
+                    val message = context?.getString(R.string.error_validation_shop_domain_empty).orEmpty()
+                    showShopDomainInputError(message)
+                } else if (!isDomainStillSame()) {
+                    resetShopDomainInput()
+                    viewModel.validateShopDomain(input)
+                } else {
+                    resetShopNameInput()
                 }
             }
 

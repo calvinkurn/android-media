@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.search.domain.FlightComboKeyUseCase
 import com.tokopedia.flight.search.domain.FlightSearchJouneyByIdUseCase
@@ -56,11 +57,11 @@ class FlightSearchReturnViewModel @Inject constructor(private val flightSearchJo
                                adapterPosition: Int = -1) {
         if (adapterPosition == -1) {
             flightAnalytics.eventSearchProductClickV2FromList(flightSearchPassData, journeyModel,
-                    FlightAnalytics.Screen.SEARCH,
+                    FlightAnalyticsScreenName.SEARCH,
                     if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
         } else {
             flightAnalytics.eventSearchProductClickV2FromList(flightSearchPassData, journeyModel,
-                    adapterPosition, FlightAnalytics.Screen.SEARCH,
+                    adapterPosition, FlightAnalyticsScreenName.SEARCH,
                     if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
         }
 
