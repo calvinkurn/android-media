@@ -46,7 +46,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.data.HotelTypeEnum
-import com.tokopedia.hotel.common.util.HotelSearchMapQuery
+import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.*
@@ -482,7 +482,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
     }
 
     override fun loadData(page: Int) {
-        val searchQuery = HotelSearchMapQuery.propertySearchInput
+        val searchQuery = HotelGqlQuery.PROPERTY_SEARCH
         hotelSearchMapViewModel.searchProperty(page, searchQuery)
     }
 
