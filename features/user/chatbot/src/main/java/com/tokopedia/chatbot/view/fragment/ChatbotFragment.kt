@@ -157,6 +157,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var replyText = ""
     private var isStickyButtonClicked = false
     private var isChatRefreshed = false
+    private var isFirstPage = true
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -333,7 +334,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun startNewSession() {
         presenter.connectWebSocket(messageId)
-        getViewState().OnConnectWebSocket()
+        getViewState().onConnectWebSocket()
     }
 
     override fun onCreateViewState(view: View): BaseChatViewState {
@@ -421,7 +422,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onSwipeRefresh() {
-        if (!isChatRefreshed){
+        if (!isChatRefreshed && isFirstPage){
             hideSnackBarRetry()
             loadInitialData()
             swipeToRefresh.isRefreshing = true
@@ -850,6 +851,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view)?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                isFirstPage = false
                 showLoading()
                 loadData(page + FIRST_PAGE)
             }

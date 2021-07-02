@@ -101,7 +101,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         checkShowQuickReply(chatroomViewModel)
     }
 
-    override fun OnConnectWebSocket() {
+    override fun onConnectWebSocket() {
         showReplyBox(true)
     }
 

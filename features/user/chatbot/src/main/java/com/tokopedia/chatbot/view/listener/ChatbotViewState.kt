@@ -67,7 +67,7 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun hideHelpfullOptions()
 
-    fun OnConnectWebSocket()
+    fun onConnectWebSocket()
 
     fun clearChatOnLoadChatHistory()
 
