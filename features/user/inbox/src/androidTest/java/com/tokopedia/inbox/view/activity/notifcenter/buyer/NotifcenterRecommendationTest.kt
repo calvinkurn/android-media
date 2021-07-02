@@ -6,6 +6,8 @@ import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAssertion
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.RecommendationTitleViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.RecommendationViewHolder
 import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
+import com.tokopedia.test.application.matcher.hasViewHolderOf
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
 class NotifcenterRecommendationTest : InboxNotifcenterTest() {
@@ -72,6 +74,21 @@ class NotifcenterRecommendationTest : InboxNotifcenterTest() {
         )
     }
 
-    //TODO: should hide product recom when user has notification filter
+    @Test
+    fun should_hide_product_recom_when_user_has_notification_filter() {
+        // Given
+        inboxNotifcenterDep.apply {
+            getRecommendationUseCase.response = getRecommendationUseCase.defaultResponse
+        }
+        startInboxActivity()
+
+        // When
+        NotifcenterAction.clickFilterAt(0)
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            not(hasViewHolderOf(RecommendationTitleViewHolder::class.java))
+        )
+    }
 
 }
