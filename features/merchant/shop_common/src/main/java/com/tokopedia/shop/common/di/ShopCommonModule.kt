@@ -23,15 +23,9 @@ import com.tokopedia.shop.common.constant.GqlQueryConstant.getShopInfoQuery
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
 import com.tokopedia.shop.common.constant.ShopCommonUrl
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor
-import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl
-import com.tokopedia.shop.common.data.source.ShopCommonDataSource
-import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource
-import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.shop.common.domain.repository.ShopCommonRepository
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -117,31 +111,6 @@ class ShopCommonModule {
     @Named(GQLQueryNamedConstant.GQL_GET_SHOP_OPERATIONAL_HOUR_STATUS)
     fun provideGqlQueryShopOperationalHourStatus(@ApplicationContext context: Context?): String {
         return GQL_GET_SHOP_OPERATIONAL_HOUR_STATUS_QUERY_STRING
-    }
-
-    @Provides
-    fun provideGetShopInfoByDomainUseCase(shopCommonRepository: ShopCommonRepository?): GetShopInfoByDomainUseCase {
-        return GetShopInfoByDomainUseCase(shopCommonRepository!!)
-    }
-
-    @Provides
-    fun provideShopCommonRepository(shopInfoDataSource: ShopCommonDataSource?): ShopCommonRepository {
-        return ShopCommonRepositoryImpl(shopInfoDataSource!!)
-    }
-
-    @Provides
-    fun provideShopCommonCloudDataSource(shopCommonApi: ShopCommonApi?): ShopCommonCloudDataSource {
-        return ShopCommonCloudDataSource(shopCommonApi)
-    }
-
-    @Provides
-    fun provideShopCommonDataSource(shopInfoCloudDataSource: ShopCommonCloudDataSource?): ShopCommonDataSource {
-        return ShopCommonDataSource(shopInfoCloudDataSource)
-    }
-
-    @Provides
-    fun provideShopCommonApi(@ShopQualifier retrofit: Retrofit): ShopCommonApi {
-        return retrofit.create(ShopCommonApi::class.java)
     }
 
     @ShopQualifier

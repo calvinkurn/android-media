@@ -18,11 +18,10 @@ import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseTopContentQualifier
 import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.common.di.module.ShopModule
 import com.tokopedia.shop.common.di.scope.ShopScope
+import com.tokopedia.shop.common.domain.GetShopReputationUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.shop.common.domain.GetShopReputationUseCase
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -44,7 +43,6 @@ interface ShopComponent {
     fun headerErrorResponseInterceptor(): HeaderErrorResponseInterceptor
     fun httpLoggingInterceptor(): HttpLoggingInterceptor
     fun gqlGetShopInfoUseCase(): GQLGetShopInfoUseCase
-    val shopInfoByDomainUseCase: GetShopInfoByDomainUseCase
     fun toggleFavouriteShopUseCase(): ToggleFavouriteShopUseCase
     val gQLGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase
     val shopReputationUseCase: GetShopReputationUseCase
