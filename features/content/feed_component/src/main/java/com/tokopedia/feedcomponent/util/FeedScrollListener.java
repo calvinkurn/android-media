@@ -54,7 +54,8 @@ public class FeedScrollListener {
         if (view != null) {
             view.getGlobalVisibleRect(rowRect);
             Rect videoViewRect = new Rect();
-            view.findViewById(R.id.image).getGlobalVisibleRect(videoViewRect);
+            if (view.findViewById(R.id.image) != null)
+                view.findViewById(R.id.image).getGlobalVisibleRect(videoViewRect);
             View imageView = view.findViewById(R.id.image);
             if (imageView != null) {
                 int percentVideo;

@@ -298,7 +298,7 @@ class GetDynamicFeedNewUseCase @Inject constructor(graphqlRepository: GraphqlRep
             DynamicFeedDomainModel {
         this.setParams(cursor, limit)
         val dynamicFeedResponse = executeOnBackground()
-        return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome)
+        return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome, cursor)
     }
 
 }
