@@ -243,27 +243,28 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>) {
+        val cleanResult = ArrayList(cleanProductPhotoUrl(imagePickerResult, originalImageUrl))
         productInputModel.value?.let {
             val pictureList = it.detailInputModel.pictureList.filter { pictureInputModel ->
-                originalImageUrl.contains(pictureInputModel.urlOriginal)
-            }.filterIndexed { index, _ -> !editted[index] }
+                cleanResult.contains(pictureInputModel.urlOriginal)
+            }
 
-            val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
+            val imageUrlOrPathList = cleanResult.mapIndexed { index, urlOrPath ->
                 if (!editted[index]) {
-                    val picture = pictureList.find { pict -> pict.urlOriginal == originalImageUrl[index] }?.urlThumbnail.toString()
+                    val picture = pictureList.find { pict -> pict.urlOriginal == cleanResult[index] }?.urlThumbnail.toString()
                     if(picture != "null" && picture.isNotBlank()) {
                         return@mapIndexed picture
                     }
                 }
                 urlOrPath
-            }.toMutableList()
+            }
 
             this.detailInputModel.value = it.detailInputModel.apply {
                 this.pictureList = pictureList
                 this.imageUrlOrPathList = imageUrlOrPathList
             }
 
-            this.mImageUrlOrPathList.value = imageUrlOrPathList
+            this.mImageUrlOrPathList.value = imageUrlOrPathList.toMutableList()
         }
     }
 
@@ -520,6 +521,17 @@ class AddEditProductPreviewViewModel @Inject constructor(
                     mIsProductManageAuthorized.value = Fail(it)
                 }
         )
+    }
+
+    private fun cleanProductPhotoUrl(imagePickerResult: ArrayList<String>,
+                                     originalImageUrl: ArrayList<String>): List<String> {
+        return imagePickerResult.mapIndexed { index, input ->
+            if (input.endsWith(".0")) {
+                originalImageUrl[index]
+            } else {
+                imagePickerResult[index]
+            }
+        }
     }
 
 }
