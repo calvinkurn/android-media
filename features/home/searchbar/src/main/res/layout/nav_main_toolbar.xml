@@ -97,10 +97,10 @@
                     android:layout_width="@dimen/dp_14"
                     android:layout_height="@dimen/dp_14"/>
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:layout_gravity="center"
+                    app:typographyType="body_2"
                     android:id="@+id/et_search"
-                    android:contentDescription="@string/content_desc_et_search"
                     android:gravity="center_vertical"
                     android:layout_marginStart="@dimen/dp_4"
                     android:layout_width="0dp"
