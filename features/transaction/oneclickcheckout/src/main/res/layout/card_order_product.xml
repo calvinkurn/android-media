@@ -32,8 +32,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_product_image"
-        android:layout_width="46dp"
-        android:layout_height="46dp"
+        android:layout_width="@dimen/layout_lvl7"
+        android:layout_height="@dimen/layout_lvl7"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:scaleType="fitCenter"
@@ -143,6 +143,13 @@
         app:layout_constraintStart_toEndOf="@+id/iv_product_image"
         app:layout_constraintTop_toBottomOf="@+id/flexbox_order_product_prices" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_product_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="iv_product_image, flexbox_order_product_info"/>
+
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tf_note"
         android:layout_width="0dp"
@@ -153,7 +160,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flexbox_order_product_info"
+        app:layout_constraintTop_toBottomOf="@+id/barrier_product_info"
         app:text_field_counter="144"
         app:text_field_input_type="text"
         app:text_field_label="@string/label_note_for_seller" />

@@ -26,7 +26,9 @@
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12"
-        android:visibility="gone"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        app:layout_constraintEnd_toStartOf="@+id/tv_shop_name"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="@+id/tv_header"
         app:layout_constraintTop_toBottomOf="@+id/tv_header" />
 
@@ -34,7 +36,6 @@
         android:id="@+id/tv_shop_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:ellipsize="end"
@@ -96,7 +97,7 @@
         app:flow_wrapMode="chain"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_shop_badge" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_shop_name" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/ticker_order_shop"
