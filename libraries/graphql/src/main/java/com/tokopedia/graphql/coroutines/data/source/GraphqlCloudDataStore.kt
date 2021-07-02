@@ -72,7 +72,7 @@ class GraphqlCloudDataStore @Inject constructor(
             }
             header[QUERY_HASHING_HEADER] = queryHashingHeaderValue.toString()
         }
-        return api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+        return api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
     }
 
     override suspend fun getResponse(
@@ -143,7 +143,7 @@ class GraphqlCloudDataStore @Inject constructor(
                                             "key" to requests[0].md5,
                                             "hash" to queryHashValues.toString()
                                     ))
-                            api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+                            api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
                         }
                         if (result.code() != Const.GQL_RESPONSE_HTTP_OK) {
                             LoggingUtils.logGqlResponseCode(result.code(), requests.toString(), gResponse.originalResponse.toString())

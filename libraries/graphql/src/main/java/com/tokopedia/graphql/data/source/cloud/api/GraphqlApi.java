@@ -26,6 +26,5 @@ public interface GraphqlApi {
     @Headers(ANDROID_FLAG)
     Observable<Response<JsonArray>> getResponse(@Body List<GraphqlRequest> requestObject,
                                                 @HeaderMap Map<String, String> headerMap,
-                                                @Header(GraphqlConstant.GqlApiKeys.CACHE) String values,
-                                                @Header(GraphqlConstant.GqlApiKeys.QUERY_IDENTIFIER) String queryIdentifier);
+                                                @Header(GraphqlConstant.GqlApiKeys.CACHE) String values);
 }
