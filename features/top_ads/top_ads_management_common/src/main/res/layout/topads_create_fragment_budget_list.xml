@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N0" >
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loading"
@@ -20,6 +21,7 @@
         android:id="@+id/coordinator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -27,7 +29,8 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:elevation="@dimen/dp_4"
+            android:background="@color/Unify_N0"
+            app:elevation="@dimen/dp_8"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -37,7 +40,8 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:background="@color/Unify_N0">
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/txtInfo"
@@ -100,10 +104,10 @@
                         app:layout_constraintBottom_toBottomOf="@id/selected_keyword"
                         app:layout_constraintTop_toTopOf="@id/selected_keyword" />
 
-                    <View
+                    <com.tokopedia.unifycomponents.DividerUnify
                         android:id="@+id/div"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_1"
+                        android:layout_height="@dimen/dp_2"
                         android:layout_marginTop="@dimen/dp_12"
                         app:layout_constraintTop_toBottomOf="@id/selected_keyword" />
 
@@ -163,6 +167,7 @@
             android:clipToPadding="false"
             android:nestedScrollingEnabled="true"
             android:paddingBottom="@dimen/dp_120"
+            android:background="@color/Unify_N0"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:itemCount="4"
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
