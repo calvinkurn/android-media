@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'embrace-swazzler'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'kotlin-android'
 if (project.hasProperty("enable-shrinkresource")) {
@@ -85,7 +84,6 @@ buildscript {
         }
     }
     dependencies {
-        classpath('io.embrace:embrace-swazzler:4.8.10')
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
         classpath rootProject.ext.gradlePlugin.googleServices
