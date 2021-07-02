@@ -90,8 +90,7 @@ object NotifcenterAssertion {
     }
 
     fun assertItemListSize(size: Int) {
-        onView(withId(R.id.recycler_view))
-            .check(matches(hasTotalItemOf(size)))
+        assertRecyclerviewItem(hasTotalItemOf(size))
     }
 
     fun assertRecyclerviewItem(matcher: Matcher<in View>) {
