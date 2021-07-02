@@ -62,6 +62,10 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     val seamlessFavNumberUpdateData: LiveData<Result<UpdateFavoriteDetail>>
         get() = _seamlessFavNumberUpdateData
 
+    private val _seamlessFavNumberDeleteData = MutableLiveData<Result<UpdateFavoriteDetail>>()
+    val seamlessFavNumberDeleteData: LiveData<Result<UpdateFavoriteDetail>>
+        get() = _seamlessFavNumberDeleteData
+
     private val _checkVoucherData = MutableLiveData<Result<PromoData>>()
     val checkVoucherData : LiveData<Result<PromoData>>
         get() = _checkVoucherData
@@ -161,16 +165,24 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         }
     }
 
-    fun updateSeamlessFavoriteNumber(rawQuery: String, mapParam: Map<String, Any>) {
+    fun updateSeamlessFavoriteNumber(rawQuery: String, mapParam: Map<String, Any>, isDelete: Boolean = false) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsSeamlessFavNumberModData::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TopupBillsSeamlessFavNumberModData>()
 
-            _seamlessFavNumberUpdateData.postValue(Success(data.updateFavoriteDetail))
+            if (isDelete) {
+                _seamlessFavNumberDeleteData.postValue(Success(data.updateFavoriteDetail))
+            } else {
+                _seamlessFavNumberUpdateData.postValue(Success(data.updateFavoriteDetail))
+            }
         }) {
-            _seamlessFavNumberUpdateData.postValue(Fail(it))
+            if (isDelete) {
+                _seamlessFavNumberDeleteData.postValue(Fail(it))
+            } else {
+                _seamlessFavNumberUpdateData.postValue(Fail(it))
+            }
         }
     }
 
@@ -287,7 +299,8 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
             productId: Int,
             clientNumber: String,
             totalTransaction: Int,
-            label: String
+            label: String,
+            updateStatus: Boolean
     ): Map<String, Any> {
         return mapOf(
                FAVORITE_NUMBER_PARAM_UPDATE_REQUEST to mapOf(
@@ -298,7 +311,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
                        FAVORITE_NUMBER_PARAM_TOTAL_TRANSACTION to totalTransaction,
                        FAVORITE_NUMBER_PARAM_UPDATE_LAST_ORDER_DATE to false,
                        FAVORITE_NUMBER_PARAM_SOURCE to "PDP",
-                       FAVORITE_NUMBER_PARAM_UPDATE_STATUS to false,
+                       FAVORITE_NUMBER_PARAM_UPDATE_STATUS to updateStatus,
                        FAVORITE_NUMBER_PARAM_WISHLIST to false
                )
         )

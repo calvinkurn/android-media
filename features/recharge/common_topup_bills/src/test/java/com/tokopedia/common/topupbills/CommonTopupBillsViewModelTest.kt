@@ -7,6 +7,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryQuery
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumberData
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberData
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberModData
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.response.CommonTopupbillsDummyData
@@ -309,6 +310,58 @@ class CommonTopupBillsViewModelTest {
 
         // Then
         val actualData = topupBillsViewModel.seamlessFavNumberData.value
+        assertNotNull(actualData)
+        assert(actualData is Fail)
+
+        val error = (actualData as Fail).throwable
+        Assert.assertEquals(errorGql.message, error.message)
+    }
+
+    @Test
+    fun deleteSeamlessFavoriteNumber_returnSuccessResponse() {
+        // Given
+        val deletePosition = 0
+        val data = CommonTopupbillsDummyData.deleteSeamlessFavoriteNumberSuccess()
+        val result = HashMap<Type, Any>()
+        result[TopupBillsSeamlessFavNumberModData::class.java] = data
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        // When
+        topupBillsViewModel.updateSeamlessFavoriteNumber("", deletePosition, hashMapOf(), isDelete = true)
+
+        // Then
+        val actualData = topupBillsViewModel.seamlessFavNumberDeleteData.value
+        assertNotNull(actualData)
+        assert(actualData is Success)
+
+        val resultData = (actualData as Success).data
+        assertNotNull(resultData)
+
+        print(resultData.second)
+        print(resultData.first)
+
+        assertTrue(resultData.second == deletePosition)
+        assertTrue(resultData.first == data.updateFavoriteDetail)
+    }
+
+    @Test
+    fun deleteSeamlessFavoriteNumber_returnFailedResponse() {
+        // Given
+        val deletePosition = 0
+        val errorGql = GraphqlError()
+        errorGql.message = "Error gql"
+
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[TopupBillsSeamlessFavNumberModData::class.java] = listOf(errorGql)
+        val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+
+        // When
+        topupBillsViewModel.updateSeamlessFavoriteNumber("", deletePosition, hashMapOf(), isDelete = true)
+
+        // Then
+        val actualData = topupBillsViewModel.seamlessFavNumberDeleteData.value
         assertNotNull(actualData)
         assert(actualData is Fail)
 
