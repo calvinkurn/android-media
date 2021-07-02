@@ -142,6 +142,11 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
         filterData.forEachIndexed { index, _ ->
             (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightCheckbox?.isChecked = false
         }
+        clearAllFilters()
+    }
+
+    private fun clearAllFilters() {
+        selectedFilters = setOf()
     }
 
     private fun isSortMode(): Boolean {

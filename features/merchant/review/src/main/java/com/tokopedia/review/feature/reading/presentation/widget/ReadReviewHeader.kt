@@ -76,7 +76,7 @@ class ReadReviewHeader : BaseCustomView {
             filter.add(topicFilter)
         }
         val sortOption = getSortFilterItem(context.getString(R.string.review_reading_sort_most_helpful))
-        sortOption.listener = { listener.onSortClicked(sortOption.title.toString()) }
+        setListenerAndChevronListener(sortOption) { listener.onSortClicked(sortOption.title.toString()) }
         filter.add(sortOption)
         return filter
     }

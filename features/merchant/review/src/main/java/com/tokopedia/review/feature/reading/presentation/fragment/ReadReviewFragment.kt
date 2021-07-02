@@ -71,6 +71,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         const val SHOP_ID_KEY = "ShopId"
         const val PRODUCT_ID_KEY = "ProductId"
         const val EMPTY_FILTERED_STATE_IMAGE_URL = "https://images.tokopedia.net/img/android/others/review-reading-filtered-empty.png"
+        const val GALLERY_ACTIVITY_CODE = 420
         fun createNewInstance(productId: String): ReadReviewFragment {
             return ReadReviewFragment().apply {
                 arguments = Bundle().apply {
@@ -215,7 +216,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             cacheManager.put(INDEX_KEY, positionClicked)
             cacheManager.put(SHOP_ID_KEY, shopId)
             cacheManager.put(PRODUCT_ID_KEY, viewModel.getProductId())
-            startActivity(ReviewGalleryActivity.getIntent(it, cacheManager.id ?: ""))
+            startActivityForResult(ReviewGalleryActivity.getIntent(it, cacheManager.id ?: ""), GALLERY_ACTIVITY_CODE)
         }
     }
 
