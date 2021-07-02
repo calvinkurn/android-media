@@ -5,11 +5,9 @@ ext.projectOrAar = { moduleName ->
     }
     if (rootProject.ext.useAARForDevBuild && !rootProject.ext.inDevModules.contains(nameTrim)) {
         def moduleAarName = nameTrim.replace(":", "_")
-        print ("HENDRY - use aar - " + moduleAarName + "\n")
         println("${rootProject.ext.localAARPublishConfig.groupId}:$moduleAarName:${rootProject.ext.localAARPublishConfig.version}")
         return "${rootProject.ext.localAARPublishConfig.groupId}:$moduleAarName:${rootProject.ext.localAARPublishConfig.version}"
     } else {
-        print ("HENDRY - use project - " + nameTrim + "\n")
         return project("$moduleName")
     }
 }

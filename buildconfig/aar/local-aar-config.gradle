@@ -7,7 +7,7 @@ Publish only dev modules to local maven repository
 */
 
 ext {
-    localAARPublishConfig = [groupId: "com.sample", version: "1.0"]
+    localAARPublishConfig = [groupId: "com.tokopedia", version: "1.0"]
 }
 
 // Load local.properties if it is found
