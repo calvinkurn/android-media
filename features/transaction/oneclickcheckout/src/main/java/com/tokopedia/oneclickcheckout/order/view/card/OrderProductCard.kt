@@ -4,7 +4,6 @@ import android.graphics.Paint
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -128,12 +127,13 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 showNotesTextField()
                 return@apply
             }
+            tfNote.gone()
             if (product.notes.isEmpty()) {
-                tfNote.gone()
                 tvProductNotesPreview.gone()
                 tvProductNotesEdit.gone()
                 tvProductNotesPlaceholder.visible()
                 tvProductNotesPlaceholder.setOnClickListener {
+                    orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
                     showNotesTextField()
                 }
                 return@apply
@@ -143,7 +143,9 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             tvProductNotesPreview.visible()
             tvProductNotesEdit.visible()
             tvProductNotesEdit.setOnClickListener {
+                orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
                 showNotesTextField()
+                tfNote.textFieldInput.setSelection(tfNote.textFieldInput.length())
             }
         }
     }
@@ -155,15 +157,16 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             tvProductNotesEdit.gone()
             tfNote.visible()
             product.isEditingNotes = true
+            tfNote.requestFocus()
             tfNote.textFieldInput.textSize = 16f
             tfNote.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
             tfNote.setCounter(MAX_NOTES_LENGTH)
             tfNote.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
-            tfNote.textFieldInput.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
-                }
-            }
+//            tfNote.textFieldInput.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+//                if (hasFocus) {
+//                    orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
+//                }
+//            }
             if (noteTextWatcher != null) {
                 tfNote.textFieldInput.removeTextChangedListener(noteTextWatcher)
             }
@@ -183,10 +186,11 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 }
             }
             tfNote.textFieldInput.addTextChangedListener(noteTextWatcher)
-            tfNote.textFieldInput.setOnEditorActionListener { _, actionId, _ ->
+            tfNote.textFieldInput.setOnEditorActionListener { v, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     product.isEditingNotes = false
                     renderNotes()
+                    v.clearFocus()
                     KeyboardHandler.DropKeyboard(binding.tfNote.context, itemView)
                     true
                 } else false
