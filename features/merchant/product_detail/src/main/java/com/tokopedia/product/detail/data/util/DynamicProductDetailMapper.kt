@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
 import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.track.TrackApp
 import com.tokopedia.variant_common.model.*
 import com.tokopedia.variant_common.model.ThematicCampaign
@@ -55,7 +56,12 @@ object DynamicProductDetailMapper {
                     )
                 }
                 ProductDetailConstant.PRODUCT_LIST -> {
-                    listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
+                    when (component.componentName) {
+                        PDP_7 ->
+                            listOfComponent.add(ProductRecomWidgetDataModel(type = component.type, name = component.componentName, position = index))
+                        else ->
+                            listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
+                    }
                 }
                 ProductDetailConstant.SHOP_VOUCHER -> {
                     listOfComponent.add(ProductMerchantVoucherDataModel(type = component.type, name = component.componentName))
