@@ -11,7 +11,11 @@ import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderboardResponse
+import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -25,6 +29,7 @@ class PlayUiModelMapper @Inject constructor(
         private val chatMapper: PlayChatUiMapper,
         private val channelStatusMapper: PlayChannelStatusMapper,
         private val channelInteractiveMapper: PlayChannelInteractiveMapper,
+        private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
 ) {
 
     fun mapProductTags(input: List<Product>): List<PlayProductUiModel> {
@@ -50,5 +55,9 @@ class PlayUiModelMapper @Inject constructor(
 
     fun mapInteractive(input: ChannelInteractive): PlayCurrentInteractiveModel {
         return channelInteractiveMapper.mapInteractive(input)
+    }
+
+    fun mapInteractiveLeaderboard(input: GetInteractiveLeaderboardResponse): PlayLeaderboardInfoUiModel {
+        return interactiveLeaderboardMapper.mapLeaderboard(input)
     }
 }

@@ -3,17 +3,25 @@ package com.tokopedia.play.view.viewmodel
 import android.net.Uri
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play.R
 import com.tokopedia.play.data.*
+import com.tokopedia.play.data.dto.interactive.PlayCurrentInteractiveModel
+import com.tokopedia.play.data.dto.interactive.PlayInteractiveTimeStatus
+import com.tokopedia.play.data.dto.interactive.isScheduled
+import com.tokopedia.play.data.interactive.ChannelInteractive
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.data.websocket.revamp.WebSocketAction
 import com.tokopedia.play.data.websocket.revamp.WebSocketClosedReason
 import com.tokopedia.play.domain.*
+import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
@@ -26,29 +34,22 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
+import com.tokopedia.play.view.uimodel.action.*
+import com.tokopedia.play.view.uimodel.event.HideCoachMarkWinnerEvent
+import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
+import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
+import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
+import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
+import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayPreference
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.play.data.dto.interactive.PlayCurrentInteractiveModel
-import com.tokopedia.play.data.dto.interactive.PlayInteractiveTimeStatus
-import com.tokopedia.play.data.dto.interactive.isScheduled
-import com.tokopedia.play.data.interactive.ChannelInteractive
-import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
-import com.tokopedia.play.view.uimodel.action.*
-import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
-import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
-import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
-import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
-import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
-import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
@@ -467,6 +468,29 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
+    private fun showLeaderboardSheet(estimatedHeight: Int) {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.LeaderboardSheet] =
+                BottomInsetsState.Shown(
+                        estimatedInsetsHeight = estimatedHeight,
+                        isPreviousStateSame = insetsMap[BottomInsetsType.LeaderboardSheet]?.isShown == true
+                )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
+    private fun hideLeaderboardSheet() {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.LeaderboardSheet] =
+                BottomInsetsState.Hidden(
+                        isPreviousStateSame = insetsMap[BottomInsetsType.LeaderboardSheet]?.isHidden == true
+                )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
     fun hideInsets(isKeyboardHandled: Boolean) {
         val defaultBottomInsets = getDefaultBottomInsetsMapState()
         _observableBottomInsetsState.value = if (isKeyboardHandled) {
@@ -492,10 +516,12 @@ class PlayViewModel @Inject constructor(
         val defaultKeyboardState = currentBottomInsetsMap?.get(BottomInsetsType.Keyboard)?.isHidden ?: true
         val defaultProductSheetState = currentBottomInsetsMap?.get(BottomInsetsType.ProductSheet)?.isHidden ?: true
         val defaultVariantSheetState = currentBottomInsetsMap?.get(BottomInsetsType.VariantSheet)?.isHidden ?: true
+        val defaultLeaderboardSheetState = currentBottomInsetsMap?.get(BottomInsetsType.LeaderboardSheet)?.isHidden ?: true
         return mapOf(
                 BottomInsetsType.Keyboard to BottomInsetsState.Hidden(defaultKeyboardState),
                 BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(defaultProductSheetState),
-                BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(defaultVariantSheetState)
+                BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(defaultVariantSheetState),
+                BottomInsetsType.LeaderboardSheet to BottomInsetsState.Hidden(defaultLeaderboardSheetState),
         )
     }
     //endregion
@@ -537,8 +563,9 @@ class PlayViewModel @Inject constructor(
         when (action) {
             InteractivePreStartFinishedAction -> handleInteractivePreStartFinished()
             InteractiveOngoingFinishedAction -> handleInteractiveOngoingFinished()
-            InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked()
+            is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
             InteractiveTapTapAction -> handleTapTapAction()
+            ClickCloseLeaderboardSheetAction -> handleCloseLeaderboardSheet()
         }
     }
 
@@ -691,6 +718,7 @@ class PlayViewModel @Inject constructor(
             BottomInsetsType.Keyboard -> onKeyboardHidden()
             BottomInsetsType.ProductSheet -> onHideProductSheet()
             BottomInsetsType.VariantSheet -> onHideVariantSheet()
+            BottomInsetsType.LeaderboardSheet -> hideLeaderboardSheet()
         }
         return shownBottomSheets.isNotEmpty()
     }
@@ -1026,13 +1054,13 @@ class PlayViewModel @Inject constructor(
         if (interactive.timeStatus is PlayInteractiveTimeStatus.Scheduled || interactive.timeStatus is PlayInteractiveTimeStatus.Live) {
             interactiveRepo.setActive(interactive.id.toString())
         } else {
-            interactiveRepo.setInactive(interactive.id.toString())
+            interactiveRepo.setFinished(interactive.id.toString())
         }
         setUiState {
             copy(interactive = interactiveUiState)
         }
         if (interactive.timeStatus is PlayInteractiveTimeStatus.Finished) {
-            interactiveRepo.setInactive(interactive.id.toString())
+            interactiveRepo.setFinished(interactive.id.toString())
             //TODO("Get Leaderboard")
         }
     }
@@ -1195,30 +1223,39 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleInteractiveOngoingFinished() {
-        //TODO("Mock")
         viewModelScope.launch {
-            setUiState {
-                copy(interactive = PlayInteractiveUiState.Finished(
-                        info = "Game selesai!",
-                ))
-            }
+            val channelId = mChannelData?.id ?: return@launch
 
-            delay(1500)
+            val activeInteractiveId = interactiveRepo.getActiveInteractiveId() ?: return@launch
+            interactiveRepo.setFinished(activeInteractiveId)
 
             setUiState {
                 copy(interactive = PlayInteractiveUiState.Finished(
-                        info = "Memilih pemenang..",
+                        info = R.string.play_interactive_finish_initial_text,
                 ))
             }
 
-            //TODO("Get leaderboard")
-            delay(2000)
+            delay(1000)
 
-            _uiEvent.emit(
-                    ShowWinningDialogEvent("", "Selamat kamu pemenangnya", "Tunggu seller chat kamu untuk konfirmasi")
-            )
+            setUiState {
+                copy(interactive = PlayInteractiveUiState.Finished(
+                        info = R.string.play_interactive_finish_loading_winner_text,
+                ))
+            }
 
-            delay(2000)
+            val interactiveLeaderboard = interactiveRepo.getInteractiveLeaderboard(channelId)
+            val currentLeaderboard = interactiveLeaderboard.leaderboardWinner.first()
+            val userInLeaderboard = currentLeaderboard.winners.find { it.id == userSession.userId }
+
+            if (userInLeaderboard != null) {
+                _uiEvent.emit(
+                        ShowWinningDialogEvent(
+                                userInLeaderboard.imageUrl,
+                                interactiveLeaderboard.config.winnerMessage,
+                                interactiveLeaderboard.config.winnerDetail
+                        )
+                )
+            }
 
             setUiState {
                 copy(
@@ -1228,19 +1265,29 @@ class PlayViewModel @Inject constructor(
             }
 
             _uiEvent.emit(
-                    ShowCoachMarkWinnerEvent("Pemenangnya Eggy!", "Coba ikut main lagi nanti, ya. Siapa tahu kamu yang menang.")
+                    ShowCoachMarkWinnerEvent(
+                            interactiveLeaderboard.config.loserMessage,
+                            interactiveLeaderboard.config.loserDetail
+                    )
             )
         }
     }
 
-    private fun handleWinnerBadgeClicked() {
-        //TODO("Show Leaderboard")
+    private fun handleWinnerBadgeClicked(height: Int) {
+        showLeaderboardSheet(height)
+        viewModelScope.launch {
+            _uiEvent.emit(HideCoachMarkWinnerEvent)
+        }
     }
 
     private fun handleTapTapAction() {
         viewModelScope.launch {
             interactiveFlow.emit(Unit)
         }
+    }
+
+    private fun handleCloseLeaderboardSheet() {
+        hideLeaderboardSheet()
     }
 
     companion object {

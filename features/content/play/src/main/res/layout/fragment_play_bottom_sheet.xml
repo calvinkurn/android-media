@@ -15,4 +15,8 @@
         layout="@layout/view_variant_sheet"
         />
 
+    <include
+        layout="@layout/view_play_engagement_leaderboard"
+        />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

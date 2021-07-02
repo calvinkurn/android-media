@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.uimodel.state
 
+import androidx.annotation.StringRes
+
 /**
  * Created by jegul on 28/06/21
  */
@@ -25,7 +27,7 @@ sealed class PlayInteractiveUiState {
     ) : PlayInteractiveUiState()
 
     data class Finished(
-            val info: String,
+            @StringRes val info: Int,
     ) : PlayInteractiveUiState()
 }
 

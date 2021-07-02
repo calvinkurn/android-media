@@ -63,6 +63,7 @@ import com.tokopedia.play.view.uimodel.action.InteractiveOngoingFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractivePreStartFinishedAction
 import com.tokopedia.play.view.uimodel.action.InteractiveTapTapAction
 import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
+import com.tokopedia.play.view.uimodel.event.HideCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
@@ -155,8 +156,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val container: View
         get() = requireView()
 
-    private val productSheetMaxHeight: Int
-        get() = (requireView().height * PERCENT_PRODUCT_SHEET_HEIGHT).toInt()
+    private val bottomSheetMaxHeight: Int
+        get() = (requireView().height * PERCENT_BOTTOMSHEET_HEIGHT).toInt()
 
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
@@ -457,7 +458,7 @@ class PlayUserInteractionFragment @Inject constructor(
      * InteractiveWinnerBadge View Component Listener
      */
     override fun onBadgeClicked(view: InteractiveWinnerBadgeViewComponent) {
-        playViewModel.submitAction(InteractiveWinnerBadgeClickedAction)
+        playViewModel.submitAction(InteractiveWinnerBadgeClickedAction(bottomSheetMaxHeight))
     }
     //endregion
 
@@ -864,6 +865,9 @@ class PlayUserInteractionFragment @Inject constructor(
                         if (interactiveWinnerBadgeView?.isHidden() == true) return@collect
                         interactiveWinnerBadgeView?.showCoachMark(event.title, event.subtitle)
                     }
+                    HideCoachMarkWinnerEvent -> {
+                        interactiveWinnerBadgeView?.hideCoachMark()
+                    }
                 }
             }
         }
@@ -1088,7 +1092,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun openProductSheet() {
-        playViewModel.onShowProductSheet(productSheetMaxHeight)
+        playViewModel.onShowProductSheet(bottomSheetMaxHeight)
     }
 
     private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
@@ -1419,7 +1423,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 interactivePreStartView?.hide()
                 interactiveTapView?.hide()
 
-                interactiveFinishedView?.setInfo(state.info)
+                interactiveFinishedView?.setInfo(getString(state.info))
                 interactiveFinishedView?.show()
             }
             else -> {
@@ -1513,7 +1517,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
         private const val REQUEST_CODE_LOGIN = 192
 
-        private const val PERCENT_PRODUCT_SHEET_HEIGHT = 0.6
+        private const val PERCENT_BOTTOMSHEET_HEIGHT = 0.6
 
         private const val VISIBLE_ALPHA = 1f
 
