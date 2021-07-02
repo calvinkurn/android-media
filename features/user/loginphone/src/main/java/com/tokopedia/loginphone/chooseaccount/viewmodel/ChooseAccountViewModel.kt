@@ -35,16 +35,9 @@ open class ChooseAccountViewModel @Inject constructor(
         private val getAccountsListPojoUseCase: GraphqlUseCase<AccountsDataModel>,
         @param:Named(SessionModule.SESSION_MODULE) private val userSessionInterface: UserSessionInterface,
         private val loginTokenUseCase: LoginTokenUseCase,
-        getProfileUseCase: GetProfileUseCase,
-        getAdminTypeUseCase: GetAdminTypeUseCase,
         private val rawQueries: Map<String, String>,
         dispatcher: CoroutineDispatchers
-) : BaseChooseAccountViewModel(
-    userSessionInterface,
-    getProfileUseCase,
-    getAdminTypeUseCase,
-    dispatcher
-) {
+) : BaseChooseAccountViewModel(dispatcher) {
 
     private val mutableGetAccountListFBResponse = MutableLiveData<Result<AccountListDataModel>>()
     val getAccountListDataModelFBResponse: LiveData<Result<AccountListDataModel>>

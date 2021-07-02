@@ -11,12 +11,8 @@ import com.tokopedia.loginphone.chooseaccount.domain.subscriber.LoginFacebookSub
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
-import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
-import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -28,7 +24,6 @@ import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,10 +40,6 @@ class ChooseAccountViewModelTest {
     @RelaxedMockK
     lateinit var loginTokenUseCase: LoginTokenUseCase
     @RelaxedMockK
-    lateinit var getProfileUseCase: GetProfileUseCase
-    @RelaxedMockK
-    lateinit var getAdminTypeUseCase: GetAdminTypeUseCase
-    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
     @RelaxedMockK
     lateinit var getAccountListDataModelFBResponseObserver: Observer<Result<AccountListDataModel>>
@@ -57,17 +48,11 @@ class ChooseAccountViewModelTest {
     @RelaxedMockK
     lateinit var loginPhoneNumberResponseObserver: Observer<Result<LoginToken>>
     @RelaxedMockK
-    lateinit var getUserInfoResponseObserver: Observer<Result<ProfileInfo>>
-    @RelaxedMockK
     lateinit var goToActivationPageObserver: Observer<Result<MessageErrorException>>
     @RelaxedMockK
     lateinit var goToSecurityQuestionObserver: Observer<Result<String>>
-    @RelaxedMockK
-    lateinit var showLocationAdminPopUpObserver: Observer<Result<Boolean>>
 
     private lateinit var viewmodel: ChooseAccountViewModel
-
-    private val testDispatcher = TestCoroutineDispatcher()
 
     private val rawQueries = mapOf(
             ChooseAccountQueryConstant.QUERY_GET_ACCOUNT_LIST to ChooseAccountQueryConstant.QUERY_GET_ACCOUNT_LIST
@@ -80,8 +65,6 @@ class ChooseAccountViewModelTest {
                 getAccountsListUseCase,
                 userSession,
                 loginTokenUseCase,
-                getProfileUseCase,
-                getAdminTypeUseCase,
                 rawQueries,
                 CoroutineTestDispatchersProvider
         )
@@ -276,75 +259,6 @@ class ChooseAccountViewModelTest {
 
         val result = viewmodel.getAccountListDataModelFBResponse.value as Fail
         assertEquals(throwable, result.throwable)
-    }
-
-    @Test
-    fun `Success get user info`() {
-        viewmodel.getUserInfoResponse.observeForever(getUserInfoResponseObserver)
-
-        coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileSubscriber>().onSuccessGetProfile.invoke(successGetUserInfoResponse)
-        }
-
-        viewmodel.getUserInfo()
-
-        verify { getUserInfoResponseObserver.onChanged(any<Success<ProfileInfo>>()) }
-        assert(viewmodel.getUserInfoResponse.value is Success)
-
-        val result = viewmodel.getUserInfoResponse.value as Success<ProfileInfo>
-        assert(result.data == successGetUserInfoResponse.profileInfo)
-    }
-
-    @Test
-    fun `Failed get user info`() {
-        viewmodel.getUserInfoResponse.observeForever(getUserInfoResponseObserver)
-
-        coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileSubscriber>().onErrorGetProfile.invoke(throwable)
-        }
-
-        viewmodel.getUserInfo()
-
-        verify { getUserInfoResponseObserver.onChanged(any<Fail>()) }
-        assert(viewmodel.getUserInfoResponse.value is Fail)
-
-        val result = viewmodel.getUserInfoResponse.value as Fail
-        assertEquals(throwable, result.throwable)
-    }
-
-    @Test
-    fun `when getUserInfo success should set show location admin pop up true`() {
-        viewmodel.showAdminLocationPopUp.observeForever(showLocationAdminPopUpObserver)
-
-        coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileSubscriber>().getAdminTypeUseCase?.let { getAdminTypeUseCase = it }
-            firstArg<GetProfileSubscriber>().showLocationAdminPopUp?.invoke()
-        }
-
-        viewmodel.getUserInfo()
-
-        val expectedLocationAdmin = true
-        val actualLocationAdmin = (viewmodel.showAdminLocationPopUp.value as? Success)?.data
-
-        verify { showLocationAdminPopUpObserver.onChanged(any<Success<Boolean>>()) }
-        assertEquals(expectedLocationAdmin, actualLocationAdmin)
-    }
-
-    @Test
-    fun `when getUserInfo error should set show location admin pop up fail`() {
-        viewmodel.showAdminLocationPopUp.observeForever(showLocationAdminPopUpObserver)
-
-        coEvery { getProfileUseCase.execute(any()) } coAnswers {
-            firstArg<GetProfileSubscriber>().showErrorGetAdminType?.invoke(throwable)
-        }
-
-        viewmodel.getUserInfo()
-
-        val expectedError = throwable
-        val actualError = (viewmodel.showAdminLocationPopUp.value as? Fail)?.throwable
-
-        verify { showLocationAdminPopUpObserver.onChanged(any<Success<Boolean>>()) }
-        assertEquals(expectedError, actualError)
     }
 
     companion object {

@@ -12,8 +12,10 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-class GetAccountListUseCase(val graphqlUseCase: GraphqlUseCase<AccountsDataModel>,
-                            var dispatchers: CoroutineDispatchers): CoroutineScope {
+class GetAccountListUseCase(
+        val graphqlUseCase: GraphqlUseCase<AccountsDataModel>,
+        var dispatchers: CoroutineDispatchers
+): CoroutineScope {
 
     override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
 

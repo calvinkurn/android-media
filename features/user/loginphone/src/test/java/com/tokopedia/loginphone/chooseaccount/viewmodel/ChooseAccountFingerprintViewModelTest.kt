@@ -6,13 +6,10 @@ import com.tokopedia.loginphone.chooseaccount.data.AccountListDataModel
 import com.tokopedia.loginphone.chooseaccount.data.AccountsDataModel
 import com.tokopedia.loginphone.chooseaccount.data.ErrorResponseDataModel
 import com.tokopedia.loginphone.chooseaccount.domain.usecase.GetAccountListUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
-import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -31,9 +28,6 @@ class ChooseAccountFingerprintViewModelTest {
     lateinit var viewModel: ChooseAccountFingerprintViewModel
 
     val getAccountListUseCase = mockk<GetAccountListUseCase>(relaxed = true)
-    val userSessionInterface = mockk<UserSessionInterface>(relaxed = true)
-    val getProfileUseCase = mockk<GetProfileUseCase>(relaxed = true)
-    val getAdminTypeUseCase = mockk<GetAdminTypeUseCase>(relaxed = true)
 
     private var getAccountListObserver = mockk<Observer<Result<AccountListDataModel>>>(relaxed = true)
 
@@ -41,9 +35,6 @@ class ChooseAccountFingerprintViewModelTest {
     fun setUp() {
         viewModel = ChooseAccountFingerprintViewModel(
             getAccountListUseCase,
-            userSessionInterface,
-            getProfileUseCase,
-            getAdminTypeUseCase,
             CoroutineTestDispatchersProvider
         )
         viewModel.getAccountListDataModelResponse.observeForever(getAccountListObserver)
