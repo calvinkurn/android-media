@@ -96,10 +96,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private final Activity context;
     private final DeepLinkView viewListener;
     private final FirebaseCrashlytics crashlytics;
-    private final FirebaseRemoteConfigImpl remoteConfig;
-
-    @Inject
-    GetShopInfoByDomainUseCase getShopInfoUseCase;
 
     @Inject
     GqlGetShopIdByDomainUseCaseRx gqlGetShopIdByDomainUseCaseRx;
@@ -111,7 +107,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         this.viewListener = activity;
         this.context = activity;
         this.crashlytics = FirebaseCrashlytics.getInstance();
-        this.remoteConfig = new FirebaseRemoteConfigImpl(activity);
         initInjection(activity);
     }
 
@@ -525,14 +520,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openShopInfo(final List<String> linkSegment, final Uri uriData, Bundle bundle) {
-        if (remoteConfig.getBoolean(KEY_ENABLE_SHOP_INFO_GQL, true)) {
-            gqlGetShopIdByDomainUseCaseRx.execute(
-                    GqlGetShopIdByDomainUseCaseRx.createParams(linkSegment.get(0)),
-                    getOpenShopInfoSubscriber(linkSegment, uriData, bundle)
-            );
-        } else {
-            openShopInfoRest(linkSegment, uriData, bundle);
-        }
+        gqlGetShopIdByDomainUseCaseRx.execute(
+                GqlGetShopIdByDomainUseCaseRx.createParams(linkSegment.get(0)),
+                getOpenShopInfoSubscriber(linkSegment, uriData, bundle)
+        );
     }
 
     private Subscriber<String> getOpenShopInfoSubscriber(final List<String> linkSegment,
@@ -621,87 +612,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         };
     }
 
-    private void openShopInfoRest(final List<String> linkSegment, final Uri uriData, Bundle bundle) {
-        getShopInfoUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(linkSegment.get(0), userSession.getUserId(), userSession.getDeviceId()), new Subscriber<ShopInfo>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (context != null) {
-                    prepareOpenWebView(uriData);
-                }
-                if (e instanceof ResponseV4ErrorException) {
-                    Map<String, String> messageMap = new HashMap<>();
-                    messageMap.put("type", "OneSegment");
-                    messageMap.put("link_segment", linkSegment.get(0));
-                    messageMap.put("uri", uriData.toString());
-                    ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
-                }
-            }
-
-            @Override
-            public void onNext(ShopInfo shopInfo) {
-                if (context != null) {
-                    if (shopInfo != null && shopInfo.getInfo() != null) {
-                        String shopId = shopInfo.getInfo().getShopId();
-                        String lastSegment = linkSegment.get(linkSegment.size() - 1);
-                        if (isEtalase(linkSegment)) {
-                            RouteManager.route(context,
-                                    bundle,
-                                    ApplinkConst.SHOP_ETALASE,
-                                    shopId,
-                                    lastSegment);
-                        } else if (lastSegment.equals("info")) {
-                            RouteManager.route(context,
-                                    bundle,
-                                    ApplinkConst.SHOP_INFO,
-                                    shopId);
-                        } else if (isShopHome(linkSegment)) {
-                            RouteManager.route(context,
-                                    bundle,
-                                    ApplinkConst.SHOP_HOME,
-                                    shopId);
-                        } else if (isShopReview(linkSegment)) {
-                            RouteManager.route(context,
-                                    bundle,
-                                    ApplinkConst.SHOP_REVIEW,
-                                    shopId);
-                        } else if (isShopProduct(linkSegment)) {
-                            RouteManager.route(context,
-                                    bundle,
-                                    ApplinkConst.SHOP_PRODUCT,
-                                    shopId);
-                        } else if (isShopFeed(linkSegment)) {
-                            RouteManager.route(context,
-                                    bundle,
-                                    ApplinkConst.SHOP_FEED,
-                                    shopId);
-                        } else {
-                            Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP, shopId);
-                            intent.putExtras(bundle);
-                            context.startActivity(intent);
-                        }
-
-                        context.finish();
-                    } else {
-                        Map<String, String> messageMap = new HashMap<>();
-                        messageMap.put("type", "OneSegment");
-                        messageMap.put("link_segment", linkSegment.get(0));
-                        messageMap.put("uri", uriData.toString());
-                        ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
-                        if (!GlobalConfig.DEBUG) {
-                            crashlytics.recordException(new ShopNotFoundException(linkSegment.get(0)));
-                        }
-                        prepareOpenWebView(uriData);
-                    }
-                }
-            }
-        });
-    }
-
     private boolean isEtalase(List<String> linkSegment) {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
         return lastSegment.equals("preorder")
@@ -757,14 +667,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openProduct(final List<String> linkSegment, final Uri uriData) {
-        if (remoteConfig.getBoolean(KEY_ENABLE_SHOP_INFO_GQL, true)) {
-            gqlGetShopIdByDomainUseCaseRx.execute(
-                    GqlGetShopIdByDomainUseCaseRx.createParams(linkSegment.get(0)),
-                    getOpenProductSubscriber(linkSegment, uriData)
-            );
-        } else {
-            openProductRest(linkSegment, uriData);
-        }
+        gqlGetShopIdByDomainUseCaseRx.execute(
+                GqlGetShopIdByDomainUseCaseRx.createParams(linkSegment.get(0)),
+                getOpenProductSubscriber(linkSegment, uriData)
+        );
     }
 
     private Subscriber<String> getOpenProductSubscriber(final List<String> linkSegment,
@@ -844,78 +750,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 }
             }
         };
-    }
-
-    private void openProductRest(final List<String> linkSegment, final Uri uriData) {
-        RequestParams params = RequestParams.create();
-        params.putString("shop_domain", linkSegment.get(0));
-        getShopInfoUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(linkSegment.get(0), userSession.getUserId(), userSession.getDeviceId()), new Subscriber<ShopInfo>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (context != null) {
-                    Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(), true);
-                    context.startActivity(intent);
-                    context.finish();
-                }
-                if (e instanceof ResponseV4ErrorException) {
-                    Map<String, String> messageMap = new HashMap<>();
-                    messageMap.put("type", "TwoSegments");
-                    messageMap.put("link_segment", linkSegment.get(0) + "/" + linkSegment.get(1));
-                    messageMap.put("uri", uriData.toString());
-                    ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
-                }
-            }
-
-            @Override
-            public void onNext(ShopInfo shopInfo) {
-                if (context != null) {
-                    if (shopInfo != null && shopInfo.getInfo() != null) {
-                        //Add Affiliate string for tracking
-                        String affiliateString = "";
-                        String affiliateUUID = "";
-                        String layoutTesting = "";
-                        if (!TextUtils.isEmpty(uriData.getQueryParameter("aff"))) {
-                            affiliateString = uriData.getQueryParameter("aff");
-                        }
-
-                        if (!TextUtils.isEmpty(uriData.getQueryParameter("aff_unique_id"))) {
-                            affiliateUUID = uriData.getQueryParameter("aff_unique_id");
-                        }
-
-                        if (!TextUtils.isEmpty(uriData.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_LAYOUT_ID))) {
-                            layoutTesting = uriData.getQueryParameter(ApplinkConstInternalMarketplace.ARGS_LAYOUT_ID);
-                        }
-
-                        Intent productIntent = RouteManager.getIntent(context,
-                                ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE,
-                                linkSegment.get(0),
-                                linkSegment.get(1),
-                                affiliateString,
-                                affiliateUUID);
-                        productIntent.putExtra("layoutID", layoutTesting);
-                        context.startActivity(productIntent);
-                    } else {
-                        Map<String, String> messageMap = new HashMap<>();
-                        messageMap.put("type", "TwoSegments");
-                        messageMap.put("link_segment", linkSegment.get(0) + "/" + linkSegment.get(1));
-                        messageMap.put("uri", uriData.toString());
-                        ServerLogger.log(Priority.P1, "DEEPLINK_OPEN_WEBVIEW", messageMap);
-                        if (!GlobalConfig.DEBUG) {
-                            crashlytics.recordException(new ShopNotFoundException(linkSegment.get(0)));
-                            crashlytics.recordException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
-                        }
-                        Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(), true);
-                        context.startActivity(intent);
-                    }
-                    context.finish();
-                }
-            }
-        });
     }
 
     private String getApplinkWithUriQueryParams(Uri uri, String applink) {
