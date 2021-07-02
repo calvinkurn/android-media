@@ -71,6 +71,16 @@ fun disableCoachMark(context: Context){
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_BALANCE, true)
 }
 
+fun enableCoachMark(context: Context){
+    enableOnboarding(context)
+    enableChooseAddressCoachmark(context)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK, false)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_NAV, false)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_INBOX, false)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS, false)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_BALANCE, false)
+}
+
 fun setCoachmarkSharedPrefValue(context: Context, key: String, value: Boolean) {
     val sharedPrefs = context.getSharedPreferences(PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)
     sharedPrefs.edit().putBoolean(key, value).apply()
@@ -82,10 +92,22 @@ fun disableChooseAddressCoachmark(context: Context) {
             CHOOSE_ADDRESS_EXTRA_IS_COACHMARK, false).apply()
 }
 
+fun enableChooseAddressCoachmark(context: Context) {
+    val sharedPrefs = context.getSharedPreferences(CHOOSE_ADDRESS_PREFERENCE_NAME, Context.MODE_PRIVATE)
+    sharedPrefs.edit().putBoolean(
+        CHOOSE_ADDRESS_EXTRA_IS_COACHMARK, true).apply()
+}
+
 fun disableOnboarding(context: Context) {
     val sharedPrefs = context.getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
     sharedPrefs.edit().putBoolean(
             NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false).apply()
+}
+
+fun enableOnboarding(context: Context) {
+    val sharedPrefs = context.getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
+    sharedPrefs.edit().putBoolean(
+        NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, true).apply()
 }
 
 fun waitForData() {

@@ -15,12 +15,15 @@ import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.test.R
 import com.tokopedia.home.beranda.presentation.view.listener.FramePerformanceIndexInterface
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
+import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 
 class InstrumentationHomeRevampTestActivity : AppCompatActivity(),
         MainParentStatusBarListener,
         EspressoPerformanceActivity,
-        HomePerformanceMonitoringListener {
+        HomePerformanceMonitoringListener,
+        MainParentStateListener
+{
 
     private var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
     private var fragmentFramePerformanceIndexMonitoring: FragmentFramePerformanceIndexMonitoring? = null
@@ -102,5 +105,9 @@ class InstrumentationHomeRevampTestActivity : AppCompatActivity(),
         )
         pageLoadTimePerformanceInterface?.startMonitoring("start monitoring")
         pageLoadTimePerformanceInterface?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun isNavigationRevamp(): Boolean {
+        return true
     }
 }
