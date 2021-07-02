@@ -93,15 +93,14 @@ fun hasViewHolderOf(expectedClass: Class<*>): BoundedMatcher<View, RecyclerView>
         }
 
         override fun matchesSafely(item: RecyclerView?): Boolean {
-            var isExpectedClassExist = false
             val itemCount = item!!.adapter!!.itemCount
             for (i in 0 until itemCount) {
                 val adapter = item.findViewHolderForAdapterPosition(i)
                 if (expectedClass.isInstance(adapter)) {
-                    isExpectedClassExist = true
+                    return true
                 }
             }
-            return isExpectedClassExist
+            return false
         }
     }
 }
