@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
@@ -95,7 +96,7 @@ class ItemDetailPerformanceViewHolder(view: View,
         try {
             with(itemView) {
                 context?.let {
-                    cardItemDetailShopPerformance?.setBackgroundColor(ContextCompat.getColor(context, R.color.shop_score_penalty_dms_container))
+                    cardItemDetailShopPerformance?.setBackgroundColor(it.getResColor(R.color.shop_score_penalty_dms_container))
                 }
             }
         } catch (e: Resources.NotFoundException) {
