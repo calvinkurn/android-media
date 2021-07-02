@@ -89,6 +89,7 @@ object ProductDetailConstant {
     const val MINI_VARIANT_OPTIONS = "mini_variant_options"
     const val VARIANT = "variant"
     const val PDP_3 = "pdp_3"
+    const val PDP_7 = "pdp_7"
     const val PRODUCT_VARIANT_INFO = "variant"
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"

@@ -24,6 +24,7 @@ import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -542,12 +543,27 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateRecommendationData(data: RecommendationWidget) {
         updateData(data.pageName) {
-            (mapOfData[data.pageName] as? ProductRecommendationDataModel)?.run {
-                recomWidgetData = data
-                cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
-                filterData = mapToAnnotateChip(data)
+            when (data.pageName) {
+                PDP_7 -> {
+                    (mapOfData[data.pageName] as? ProductRecomWidgetDataModel)?.run {
+                        recomWidgetData = data
+                        cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
+                        filterData = mapToAnnotateChip(data)
+                    }
+                }
+                else -> {
+                    (mapOfData[data.pageName] as? ProductRecommendationDataModel)?.run {
+                        recomWidgetData = data
+                        cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
+                        filterData = mapToAnnotateChip(data)
+                    }
+                }
             }
         }
+    }
+
+    fun removeEmptyRecommendation(data: RecommendationWidget) {
+        removeComponent(data.pageName)
     }
 
     fun updateComparisonDataModel(data: RecommendationWidget) {
