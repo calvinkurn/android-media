@@ -10,7 +10,7 @@ data class ResponseBidInfo(
         val result: Result = Result()
 ) {
     data class Result(
-            @field:SerializedName("topadsBidInfo")
+            @field:SerializedName("topadsBidInfoV2")
             val topadsBidInfo: TopadsBidInfo = TopadsBidInfo()
     )
 }

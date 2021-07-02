@@ -83,6 +83,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     public static final String STAGING = "staging";
     public static final String LIVE = "live";
     public static final String CHANGEURL = "changeurl";
+    public static final String URI_HOME_MACROBENCHMARK = "home-macrobenchmark";
     public static final String URI_COACHMARK = "coachmark";
     public static final String URI_COACHMARK_ENABLE = "enable";
     public static final String URI_COACHMARK_DISABLE = "disable";
@@ -101,6 +102,9 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
+
+    String EXP_TOP_NAV = AbTestPlatform.NAVIGATION_EXP_TOP_NAV;
+    String VARIANT_REVAMP = AbTestPlatform.NAVIGATION_VARIANT_REVAMP;
 
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
@@ -180,6 +184,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             Uri uri = null;
             boolean isChangeUrlApplink = false;
             boolean isCoachmarkApplink = false;
+            boolean isHomeMacrobenchmarkApplink = false;
             if (intent != null) {
                 uri = intent.getData();
                 if (uri != null) {
@@ -187,11 +192,15 @@ public class DeveloperOptionActivity extends BaseActivity {
                             uri.getPathSegments().get(1).equals(CHANGEURL);
                     isCoachmarkApplink = (uri.getPathSegments().size() == 3) &&
                             uri.getPathSegments().get(1).equals(URI_COACHMARK);
+                    isHomeMacrobenchmarkApplink = (uri.getPathSegments().size() == 3) &&
+                            uri.getPathSegments().get(1).equals(URI_HOME_MACROBENCHMARK);
                 }
             }
             if (isChangeUrlApplink) {
                 handleUri(uri);
-            }else if (isCoachmarkApplink) {
+            } else if (isHomeMacrobenchmarkApplink) {
+                handleHomeMacrobenchmarkUri(userSession);
+            } else if (isCoachmarkApplink) {
                 handleCoachmarkUri(uri);
             } else {
                 setContentView(R.layout.activity_developer_options);
@@ -228,6 +237,21 @@ public class DeveloperOptionActivity extends BaseActivity {
                     .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true).apply();
         }
         finish();
+    }
+
+    private void handleHomeMacrobenchmarkUri(UserSessionInterface userSession) {
+        CoachMark2.Companion.setCoachmmarkShowAllowed(false);
+
+        SharedPreferences sharedPrefs = getSharedPreferences(
+                KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE);
+        sharedPrefs.edit().putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false)
+                .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1, false)
+                .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, false)
+                .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true).apply();
+
+        userSession.setFirstTimeUserOnboarding(false);
+
+        RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_REVAMP);
     }
 
     /**

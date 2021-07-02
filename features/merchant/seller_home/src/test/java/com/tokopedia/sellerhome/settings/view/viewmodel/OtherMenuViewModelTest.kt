@@ -2,7 +2,6 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.gm.common.constant.END_PERIOD
-import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.network.exception.ResponseErrorException
@@ -37,7 +36,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.*
+import org.junit.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
@@ -91,6 +90,8 @@ class OtherMenuViewModelTest {
 
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
+
+    private lateinit var isToasterAlreadyShownField: Field
 
     private lateinit var mViewModel: OtherMenuViewModel
 
