@@ -625,7 +625,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
 
-    private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+    private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)
 
     private fun setTitleTextColorBasedOnTheme() {
         toolbarThemeCondition(

@@ -215,12 +215,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val REQUEST_CODE_REVIEW = 999
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
-        private const val UTM_SOURCE = "utm_source"
+        private const val SOURCE = "source"
         private const val EXTRA_URL = "url"
         private const val EXTRA_TITLE = "core_web_view_extra_title"
         private const val EXTRA_MESSAGE = "EXTRA_MESSAGE"
         private const val SEND_SCREEN_MIN_INTERVAL_MILLIS: Long = 1000
-        private const val DEFAULT_UTM_SOURCE = "home_notif"
+        private const val DEFAULT_SOURCE = "home_notif"
         private const val SEE_ALL_CARD = "android_mainapp_home_see_all_card_config"
         private const val REQUEST_CODE_PLAY_ROOM = 256
         private const val REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET = 258
@@ -2533,7 +2533,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             val newAppLink = Uri.parse(applink)
                     .buildUpon()
                     .appendQueryParameter(REVIEW_CLICK_AT, clickReviewAt.toString())
-                    .appendQueryParameter(UTM_SOURCE, DEFAULT_UTM_SOURCE)
+                    .appendQueryParameter(SOURCE, DEFAULT_SOURCE)
                     .build().toString()
             val intent = RouteManager.getIntent(context, newAppLink)
             startActivityForResult(intent, REQUEST_CODE_REVIEW)

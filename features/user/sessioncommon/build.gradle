@@ -43,6 +43,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.dialog
 
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+
     //Test
     androidTestImplementation project(rootProject.ext.libraries.tkpddesign)
     testImplementation project(rootProject.ext.libraries.tkpddesign)
