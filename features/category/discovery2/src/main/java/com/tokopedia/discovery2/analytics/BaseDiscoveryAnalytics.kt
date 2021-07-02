@@ -87,6 +87,6 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun getHostTrackingSource() : String {return ""}
     open fun getEventLabel() : String {return ""}
     open fun onTopadsHeadlineImpression(cpmModel: CpmModel, adapterPosition: Int) {}
-    open fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, it: CpmData) {}
-
+    open fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData, components: ComponentsItem, userLoggedIn: Boolean) {}
+    open fun onTopAdsProductItemListener(position: Int, product: Product, cpmData: CpmData, components: ComponentsItem, userLoggedIn: Boolean) {}
 }

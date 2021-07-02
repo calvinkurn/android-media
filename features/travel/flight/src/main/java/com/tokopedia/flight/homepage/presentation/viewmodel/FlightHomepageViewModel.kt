@@ -15,6 +15,7 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.homepage.data.cache.FlightDashboardCache
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
@@ -155,7 +156,7 @@ class FlightHomepageViewModel @Inject constructor(
 
     fun onBannerClicked(position: Int, banner: TravelCollectiveBannerModel.Banner) {
         flightAnalytics.eventPromotionClick(position + 1, banner,
-                FlightAnalytics.Screen.HOMEPAGE,
+                FlightAnalyticsScreenName.HOMEPAGE,
                 if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
     }
 
@@ -257,7 +258,7 @@ class FlightHomepageViewModel @Inject constructor(
     fun onSearchTicket(flightSearchData: FlightSearchPassDataModel) {
         launch(dispatcherProvider.main) {
             flightAnalytics.eventSearchClick(mapSearchPassDataToDashboardModel(flightSearchData),
-                    FlightAnalytics.Screen.HOMEPAGE,
+                    FlightAnalyticsScreenName.HOMEPAGE,
                     if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
             deleteAllFlightSearchDataUseCase.execute()
         }
@@ -273,7 +274,7 @@ class FlightHomepageViewModel @Inject constructor(
 
     fun sendTrackingPromoScrolled(position: Int) {
         getBannerData(position)?.let {
-            flightAnalytics.eventPromoImpression(position, it, FlightAnalytics.Screen.HOMEPAGE,
+            flightAnalytics.eventPromoImpression(position, it, FlightAnalyticsScreenName.HOMEPAGE,
                     if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
         }
     }
@@ -296,12 +297,12 @@ class FlightHomepageViewModel @Inject constructor(
             currentHomepageData.clone() as FlightHomepageModel
 
     fun sendTrackingVideoBannerImpression(travelVideoBannerModel: TravelVideoBannerModel){
-        flightAnalytics.eventVideoBannerImpression(travelVideoBannerModel, FlightAnalytics.Screen.HOMEPAGE,
+        flightAnalytics.eventVideoBannerImpression(travelVideoBannerModel, FlightAnalyticsScreenName.HOMEPAGE,
                 if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
     }
 
     fun sendTrackingVideoBannerClick(travelVideoBannerModel: TravelVideoBannerModel){
-        flightAnalytics.eventVideoBannerClick(travelVideoBannerModel, FlightAnalytics.Screen.HOMEPAGE,
+        flightAnalytics.eventVideoBannerClick(travelVideoBannerModel, FlightAnalyticsScreenName.HOMEPAGE,
                 if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
     }
 

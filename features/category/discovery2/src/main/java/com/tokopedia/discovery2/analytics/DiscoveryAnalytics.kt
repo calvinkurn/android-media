@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.data.quickcouponresponse.ClickCouponData
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
@@ -1161,5 +1162,27 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
 
     override fun getHostTrackingSource(): String {
         return Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
+    }
+
+    override fun onTopAdsProductItemListener(position: Int, product: Product, cpmData: CpmData, components: ComponentsItem, userLoggedIn: Boolean) {
+        val cpmProductPosition = position - 1
+
+        if (cpmProductPosition >= 0) {
+            if (position == 1) {
+                trackEventImpressionTopAdsShop(components, cpmData)
+                trackTopAdsProductImpression(components, cpmData, components.position, cpmProductPosition, userLoggedIn)
+            } else {
+                trackTopAdsProductImpression(components, cpmData, components.position, cpmProductPosition, userLoggedIn)
+            }
+        }
+    }
+
+    override fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData, components: ComponentsItem, userLoggedIn: Boolean) {
+        val cpmProductPosition = position - 1
+        if (position == 0) {
+            trackClickTopAdsShop(components, cpmData)
+        } else if (cpmProductPosition >= 0) {
+            trackClickTopAdsProducts(components, cpmData, components.position, cpmProductPosition, userLoggedIn)
+        }
     }
 }

@@ -24,5 +24,4 @@ apply from: "buildconfig/appcompile/compile-customerapp_pro.gradle"
 apply from: "buildconfig/appcompile/compile-sellerapp.gradle"
 //apply from: "buildconfig/appcompile/compile-sellerapp-no-op.gradle"
 //apply from: "buildconfig/appcompile/compile-testapp.gradle"
-
 apply from: "tools/composite_build_settings.gradle"
