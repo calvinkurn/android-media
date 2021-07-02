@@ -385,7 +385,7 @@ public class KolCommentFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void reportAction(int adapterposition, boolean canDeleteComment, String id, String reasonType, String commentId) {
+    public void onMenuClicked(String id, boolean canDeleteComment, int adapterPosition) {
 
     }
 

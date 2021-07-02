@@ -80,6 +80,8 @@ class FeedViewModel @Inject constructor(
 ) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
+        private const val ERROR_UNFOLLOW_MESSAGE = "Oops, gagal meng-unfollow."
+        private const val ERROR_FOLLOW_MESSAGE = "“Oops, gagal mem-follow."
         const val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
         const val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"
         private const val ERROR_CUSTOM_MESSAGE = "Terjadi kesalahan koneksi. Silakan coba lagi."
@@ -112,14 +114,14 @@ class FeedViewModel @Inject constructor(
     private val pagingHandler: PagingHandler = PagingHandler()
 
     fun getOnboardingData(source: String) {
-            getInterestPickUseCase.apply {
-                clearRequest()
-                addRequestWithParam(source)
-            }.execute({
-                onboardingResp.value = Success(it.convertToViewModel())
-            }, {
-                onboardingResp.value = Fail(it)
-            })
+        getInterestPickUseCase.apply {
+            clearRequest()
+            addRequestWithParam(source)
+        }.execute({
+            onboardingResp.value = Success(it.convertToViewModel())
+        }, {
+            onboardingResp.value = Fail(it)
+        })
     }
 
     fun sendReport(
@@ -241,7 +243,7 @@ class FeedViewModel @Inject constructor(
             }
             followKolResp.value = Success(results)
         }) {
-            followKolResp.value = Fail(it)
+            followKolResp.value = Fail(Exception(ERROR_FOLLOW_MESSAGE))
         }
     }
 
@@ -252,7 +254,7 @@ class FeedViewModel @Inject constructor(
             }
             followKolResp.value = Success(results)
         }) {
-            followKolResp.value = Fail(it)
+            followKolResp.value = Fail(Exception(ERROR_UNFOLLOW_MESSAGE))
         }
     }
 
@@ -335,7 +337,8 @@ class FeedViewModel @Inject constructor(
     fun doToggleFavoriteShop(
         rowNumber: Int,
         adapterPosition: Int,
-        shopId: String
+        shopId: String,
+        follow: Boolean = true
     ) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
@@ -343,7 +346,11 @@ class FeedViewModel @Inject constructor(
             }
             toggleFavoriteShopResp.value = Success(results)
         }) {
-            toggleFavoriteShopResp.value = Fail(it)
+            if (follow)
+                toggleFavoriteShopResp.value = Fail(Exception(ERROR_UNFOLLOW_MESSAGE))
+            else
+                toggleFavoriteShopResp.value = Fail(Exception(ERROR_FOLLOW_MESSAGE))
+
         }
     }
 

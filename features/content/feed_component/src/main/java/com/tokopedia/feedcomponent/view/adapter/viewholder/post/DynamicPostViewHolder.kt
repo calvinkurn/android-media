@@ -640,22 +640,11 @@ open class DynamicPostViewHolder(v: View,
             authorType: String
         )
 
-        fun onTagSheetItemBuy(
-            activityId: Int,
-            positionInFeed: Int,
-            item: FeedXProduct,
-            shopId: String,
-            type: String,
-            isFollowed: Boolean,
-        )
-
         fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel)
 
         fun onReadMoreClicked(trackingPostModel: TrackingPostModel)
 
         fun onImageClicked(activityId: String, type: String, isFollowed: Boolean)
-
-        fun addToWishList(activityId: Int, productId: String, type: String, isFollowed: Boolean)
 
         fun onTagClicked(
             postId: Int,
@@ -664,17 +653,6 @@ open class DynamicPostViewHolder(v: View,
             id: String,
             type: String,
             isFollowed: Boolean,
-        )
-
-        fun onShareProduct(
-            id: Int,
-            title: String,
-            description: String,
-            url: String,
-            imageUrl: String,
-            activityId: Int,
-            type: String,
-            isFollowed: Boolean
         )
 
         fun onReadMoreClicked(postId: String)

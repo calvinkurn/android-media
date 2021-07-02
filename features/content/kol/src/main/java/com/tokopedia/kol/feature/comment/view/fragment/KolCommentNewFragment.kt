@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -18,6 +19,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.bottomsheets.MenuOptionsBottomSheet
+import com.tokopedia.feedcomponent.bottomsheets.ReportBottomSheet
 import com.tokopedia.feedcomponent.util.MentionTextHelper.createValidMentionText
 import com.tokopedia.feedcomponent.view.adapter.mention.MentionableUserAdapter
 import com.tokopedia.feedcomponent.view.adapter.mention.MentionableUserAdapter.MentionAdapterListener
@@ -95,7 +98,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val parentView: View = inflater.inflate(R.layout.fragment_kol_comment_new, container, false)
         listComment = parentView.findViewById(R.id.comment_list)
         kolComment = parentView.findViewById(R.id.new_comment)
@@ -115,7 +118,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     companion object {
-        fun createInstance(bundle: Bundle?): KolCommentNewFragment? {
+        fun createInstance(bundle: Bundle?): KolCommentNewFragment {
             val fragment = KolCommentNewFragment()
             fragment.arguments = bundle
             return fragment
@@ -135,7 +138,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun onErrorDeleteComment(errorMessage: String?) {
-        showToastMessage(errorMessage ?: getString(R.string.kol_deleting_comment_error))
+        showToastMessage(getString(R.string.kol_deleting_comment_error))
     }
 
     override fun onDeleteCommentKol(
@@ -144,30 +147,35 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         adapterPosition: Int
     ): Boolean {
         if (canDeleteComment || isInfluencer()) {
-            deleteComment(adapterPosition)
-            var toBeDeleted = true
-            view?.let {
-                Toaster.toasterCustomCtaWidth = com.tokopedia.unifyprinciples.R.dimen.unify_space_96
-                Toaster.build(
-                    it,
-                    getString(R.string.kol_delete_1_comment),
-                    3000,
-                    Toaster.TYPE_NORMAL,
-                    getString(R.string.kol_delete_comment_ok)
-                ) {
-                    feedAnalytics.clickKembalikanCommentPage(ARGS_ID)
-                    adapter?.clearList()
-                    presenter.getCommentFirstTime(arguments?.getInt(ARGS_ID) ?: 0)
-                    toBeDeleted = false
-                }.show()
-                val coroutineScope = CoroutineScope(Dispatchers.Main)
-                coroutineScope.launch {
-                    delay(3000L)
-                    if (activity != null && isAdded) {
-                        if (toBeDeleted)
-                            presenter.deleteComment(id, adapterPosition)
+            if (userSession != null && userSession?.isLoggedIn != false) {
+                deleteComment(adapterPosition)
+                var toBeDeleted = true
+                view?.let {
+                    Toaster.toasterCustomCtaWidth =
+                        com.tokopedia.unifyprinciples.R.dimen.unify_space_96
+                    Toaster.build(
+                        it,
+                        getString(R.string.kol_delete_1_comment),
+                        3000,
+                        Toaster.TYPE_NORMAL,
+                        getString(R.string.kol_delete_comment_ok)
+                    ) {
+                        feedAnalytics.clickKembalikanCommentPage(ARGS_ID)
+                        adapter?.clearList()
+                        presenter.getCommentFirstTime(arguments?.getInt(ARGS_ID) ?: 0)
+                        toBeDeleted = false
+                    }.show()
+                    val coroutineScope = CoroutineScope(Dispatchers.Main)
+                    coroutineScope.launch {
+                        delay(3000L)
+                        if (activity != null && isAdded) {
+                            if (toBeDeleted)
+                                presenter.deleteComment(id, adapterPosition)
+                        }
                     }
                 }
+            } else {
+                RouteManager.route(context, ApplinkConst.LOGIN)
             }
             return true
         } else {
@@ -180,9 +188,8 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 && userSession?.userId == header?.userId)
     }
 
-    override fun reportAction(
+    fun reportAction(
         adapterPosition: Int,
-        canDeleteComment: Boolean,
         id: String,
         reasonType: String,
         reasonDesc: String
@@ -191,6 +198,45 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         this.adapterPosition = adapterPosition
         this.commentId = id
         feedAnalytics.clickReportCommentPage(commentId)
+    }
+
+    override fun onMenuClicked(
+        id: String,
+        canDeleteComment: Boolean,
+        adapterPosition: Int
+    ) {
+        val sheet = MenuOptionsBottomSheet.newInstance(
+            isReportable = !canDeleteComment,
+            canUnfollow = false,
+            isDeletable = canDeleteComment
+        )
+        sheet.show((context as FragmentActivity).supportFragmentManager, "")
+        sheet.onReport = {
+            if (userSession?.isLoggedIn == true) {
+                ReportBottomSheet.newInstance(
+                    id.toInt(),
+                    context = object : ReportBottomSheet.OnReportOptionsClick {
+                        override fun onOption1(reasonType: String, reasonDesc: String) {
+                            reportAction(
+                                adapterPosition,
+                                id,
+                                reasonType,
+                                reasonDesc
+                            )
+                        }
+                    }).show((context as FragmentActivity).supportFragmentManager, "")
+            } else {
+                RouteManager.route(context, ApplinkConst.LOGIN)
+            }
+        }
+        sheet.onDelete = {
+            if (userSession?.isLoggedIn == true) {
+                onDeleteCommentKol(id, canDeleteComment, adapterPosition)
+            } else {
+                RouteManager.route(context, ApplinkConst.LOGIN)
+
+            }
+        }
     }
 
     override fun replyToUser(user: MentionableUserViewModel?) {
@@ -284,7 +330,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         activity?.setResult(Activity.RESULT_OK, getReturnIntent(totalNewComment))
     }
 
-    private fun getReturnIntent(totalNewComment: Int): Intent? {
+    private fun getReturnIntent(totalNewComment: Int): Intent {
         val intent = Intent()
         val arguments = arguments
         if (arguments != null && arguments.size() > 0) intent.putExtras(arguments)
@@ -297,7 +343,6 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 
     override fun onSuccessDeleteComment(adapterPosition: Int) {
         if (adapterPosition < adapter?.itemCount ?: 0) {
-            adapter?.deleteItem(adapterPosition)
             totalNewComment -= 1
             activity?.setResult(Activity.RESULT_OK, getReturnIntent(totalNewComment))
         }
@@ -324,7 +369,6 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
     }
 
     override fun onSuccessSendReport() {
-        onDeleteCommentKol(commentId, true, adapterPosition)
     }
 
     override fun onErrorSendReport(message: String) {

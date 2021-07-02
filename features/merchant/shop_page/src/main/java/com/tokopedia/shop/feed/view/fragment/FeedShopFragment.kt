@@ -691,15 +691,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         presenter.addPostTagItemToCart(postTagItem)
     }
 
-    override fun onTagSheetItemBuy(
-        activityId: Int,
-        positionInFeed: Int,
-        item: FeedXProduct,
-        shopId: String,
-        type: String,
-        isFollowed: Boolean
-    ) {
-    }
 
     override fun onActionPopup() {
     }
@@ -732,7 +723,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun userGridPostImpression(positionInFeed: Int, activityId: String, postType: String) {
-        TODO("Not yet implemented")
     }
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
@@ -836,7 +826,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         price: String,
         positionInFeed: Int,
     ) {
-        TODO("Not yet implemented")
     }
 
     override fun onVideoPlayerClicked(positionInFeed: Int, contentPosition: Int, postId: String, redirectUrl: String) {
@@ -878,14 +867,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onImageClicked(activityId: String, type: String, isFollowed: Boolean) {
     }
 
-    override fun addToWishList(
-        activityId: Int,
-        productId: String,
-        type: String,
-        isFollowed: Boolean
-    ) {
-    }
-
     override fun onTagClicked(
         postId: Int,
         products: List<FeedXProduct>,
@@ -896,24 +877,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     ) {
     }
 
-    override fun onShareProduct(
-        id: Int,
-        title: String,
-        description: String,
-        url: String,
-        imageUrl: String,
-        activityId: Int,
-        type: String,
-        isFollowed: Boolean
-    ) {
-        TODO("Not yet implemented")
-    }
-
     override fun onBottomSheetMenuClicked(
         item: ProductPostTagViewModelNew,
         context: Context
     ) {
-        TODO("Not yet implemented")
     }
 
     private fun showBottomSheetSellerMigration() {

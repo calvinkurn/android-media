@@ -16,12 +16,8 @@ class KolCommentHeaderNewViewHolder(itemView: View, private val viewListener: Ko
     private val progressBar: ProgressBarUnify = itemView.findViewById(R.id.progress_bar)
     private val commentViewListener: KolCommentNewCardView.Listener =
         object : KolCommentNewCardView.Listener {
-            override fun onReport(
-                reasonType: String,
-                reasonDesc: String,
-                id: String,
-                canDeleteComment: Boolean
-            ) {
+
+            override fun onMenuClicked(id: String?, canDeleteComment: Boolean) {
             }
 
             override fun onHashtagClicked(hashtag: String, id: String) {
@@ -29,14 +25,11 @@ class KolCommentHeaderNewViewHolder(itemView: View, private val viewListener: Ko
 
             }
 
-            override fun onAvatarClicked(profileUrl: String, shop: Boolean) {
+            override fun onAvatarClicked(profileUrl: String) {
                 viewListener.openRedirectUrl(profileUrl)
             }
 
             override fun onMentionedProfileClicked(authorId: String) {}
-            override fun onDeleteComment(commentId: String, canDeleteComment: Boolean): Boolean {
-                return false
-            }
 
             override fun onTokopediaUrlClicked(url: String) {
                 viewListener.openRedirectUrl(url)

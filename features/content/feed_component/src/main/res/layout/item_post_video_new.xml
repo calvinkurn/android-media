@@ -47,6 +47,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="null"
             app:srcCompat="@drawable/ic_play_button" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
@@ -57,7 +58,6 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:visibility="gone"
             app:loader_type="circular_white" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -65,33 +65,34 @@
     <FrameLayout
         android:id="@+id/frame_video"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.tokopedia.videoplayer.view.widget.VideoPlayerView
+        <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/layout_video"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            app:autoSize="true" />
+            app:keep_content_on_player_reset="true"
+            app:show_timeout="3000"
+            app:surface_type="texture_view"
+            app:use_controller="false" />
     </FrameLayout>
 
-    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/timer_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
-        android:visibility="gone"
+        android:textColor="@color/Unify_N50"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="@id/layout_main"
         app:layout_constraintTop_toTopOf="parent"
-        app:timer_unify_single_remainingSeconds="59"
-        app:timer_unify_single_showClockIcon="false"
-        app:timer_unify_single_variant="informative" />
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/product_tagging_parent"
@@ -149,10 +150,8 @@
         android:layout_height="@dimen/dp_24"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        android:visibility="gone"
         app:icon_name="VOLUME_MUTE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

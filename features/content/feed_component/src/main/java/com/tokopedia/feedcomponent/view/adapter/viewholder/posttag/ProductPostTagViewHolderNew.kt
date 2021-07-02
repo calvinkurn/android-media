@@ -9,10 +9,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -83,7 +81,7 @@ class ProductPostTagViewHolderNew(
             )
         )
         menuBtn.setOnClickListener {
-            listener.onBottomSheetMenuClicked(item,mainView.context)
+            listener.onBottomSheetMenuClicked(item, mainView.context)
         }
         rating.text = String.format("%.1f", item.rating.toDouble() / RATING_FORMAT)
         val soldInfoText = getString(R.string.feed_common_terjual) + " " + item.totalSold.toString()
@@ -106,26 +104,10 @@ class ProductPostTagViewHolderNew(
         listener: DynamicPostViewHolder.DynamicPostListener,
         positionInFeed: Int,
         item: FeedXProduct, itemPosition: Int
-    )   : View.OnClickListener {
+    ): View.OnClickListener {
         return View.OnClickListener {
             listener.onPostTagItemBSClick(positionInFeed, item.appLink, item, itemPosition)
-            //   listener.onAffiliateTrackClicked(mappingTracking(item.tracking), true)
         }
-    }
-
-    private fun mappingTracking(trackListPojo: List<Tracking>): MutableList<TrackingViewModel> {
-        val trackList = ArrayList<TrackingViewModel>()
-        for (trackPojo: Tracking in trackListPojo) {
-            trackList.add(
-                TrackingViewModel(
-                    trackPojo.clickURL,
-                    trackPojo.viewURL,
-                    trackPojo.type,
-                    trackPojo.source
-                )
-            )
-        }
-        return trackList
     }
 
     companion object {

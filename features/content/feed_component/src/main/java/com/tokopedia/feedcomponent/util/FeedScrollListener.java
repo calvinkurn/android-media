@@ -1,9 +1,10 @@
 package com.tokopedia.feedcomponent.util;
 
 import android.graphics.Rect;
+import android.view.View;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.feedcomponent.R;
@@ -49,29 +50,32 @@ public class FeedScrollListener {
         Rect rvRect = new Rect();
         recyclerView.getGlobalVisibleRect(rvRect);
         Rect rowRect = new Rect();
-        layoutManager.findViewByPosition(i).getGlobalVisibleRect(rowRect);
-        Rect videoViewRect = new Rect();
-        layoutManager.findViewByPosition(i).findViewById(R.id.image).getGlobalVisibleRect(videoViewRect);
-        View imageView = layoutManager.findViewByPosition(i).findViewById(R.id.image);
-        if (imageView != null) {
-            int percentVideo = 0;
-            if (rowRect.bottom >= rvRect.bottom) {
-                int visibleVideo = rvRect.bottom - videoViewRect.top;
+        View view = layoutManager.findViewByPosition(i);
+        if (view != null) {
+            view.getGlobalVisibleRect(rowRect);
+            Rect videoViewRect = new Rect();
+            view.findViewById(R.id.image).getGlobalVisibleRect(videoViewRect);
+            View imageView = view.findViewById(R.id.image);
+            if (imageView != null) {
+                int percentVideo;
+                int visibleVideo;
+                if (rowRect.bottom >= rvRect.bottom) {
+                    visibleVideo = rvRect.bottom - videoViewRect.top;
+                } else {
+                    visibleVideo = videoViewRect.bottom - rvRect.top;
+                }
                 percentVideo = (visibleVideo * 100) / imageView.getHeight();
-            } else {
-                int visibleVideo = videoViewRect.bottom - rvRect.top;
-                percentVideo = (visibleVideo * 100) / imageView.getHeight();
-            }
-            boolean isStateChanged = false;
-            if (percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN) {
-                if (!item.getCanPlayVideo()) isStateChanged = true;
-                item.setCanPlayVideo(true);
-            } else {
-                if (item.getCanPlayVideo()) isStateChanged = true;
-                item.setCanPlayVideo(false);
-            }
-            if (isStateChanged) {
-                recyclerView.getAdapter().notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO);
+                boolean isStateChanged = false;
+                if (percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN) {
+                    if (!item.getCanPlayVideo()) isStateChanged = true;
+                    item.setCanPlayVideo(true);
+                } else {
+                    if (item.getCanPlayVideo()) isStateChanged = true;
+                    item.setCanPlayVideo(false);
+                }
+                if (isStateChanged) {
+                    recyclerView.getAdapter().notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO);
+                }
             }
         }
     }
@@ -80,29 +84,32 @@ public class FeedScrollListener {
         Rect rvRect = new Rect();
         recyclerView.getGlobalVisibleRect(rvRect);
         Rect rowRect = new Rect();
-        layoutManager.findViewByPosition(i).getGlobalVisibleRect(rowRect);
-        Rect videoViewRect = new Rect();
-        View imageView = layoutManager.findViewByPosition(i).findViewById(R.id.image);
-        imageView.getGlobalVisibleRect(videoViewRect);
-        if (imageView != null && imageView.getHeight() != 0) {
-            int percentVideo = 0;
-            if (rowRect.bottom >= rvRect.bottom) {
-                int visibleVideo = rvRect.bottom - videoViewRect.top;
+        View view = layoutManager.findViewByPosition(i);
+        if (view != null) {
+            view.getGlobalVisibleRect(rowRect);
+            Rect videoViewRect = new Rect();
+            View imageView = view.findViewById(R.id.image);
+            imageView.getGlobalVisibleRect(videoViewRect);
+            if (imageView != null && imageView.getHeight() != 0) {
+                int percentVideo;
+                int visibleVideo;
+                if (rowRect.bottom >= rvRect.bottom) {
+                    visibleVideo = rvRect.bottom - videoViewRect.top;
+                } else {
+                    visibleVideo = videoViewRect.bottom - rvRect.top;
+                }
                 percentVideo = (visibleVideo * 100) / imageView.getHeight();
-            } else {
-                int visibleVideo = videoViewRect.bottom - rvRect.top;
-                percentVideo = (visibleVideo * 100) / imageView.getHeight();
-            }
-            boolean isStateChanged = false;
-            if (percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN) {
-                if (!item.isCanPlayVideo()) isStateChanged = true;
-                item.setCanPlayVideo(true);
-            } else {
-                if (item.isCanPlayVideo()) isStateChanged = true;
-                item.setCanPlayVideo(false);
-            }
-            if (isStateChanged) {
-                recyclerView.getAdapter().notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO);
+                boolean isStateChanged = false;
+                if (percentVideo > THRESHOLD_VIDEO_HEIGHT_SHOWN) {
+                    if (!item.isCanPlayVideo()) isStateChanged = true;
+                    item.setCanPlayVideo(true);
+                } else {
+                    if (item.isCanPlayVideo()) isStateChanged = true;
+                    item.setCanPlayVideo(false);
+                }
+                if (isStateChanged && recyclerView.getAdapter() != null) {
+                    recyclerView.getAdapter().notifyItemChanged(i, DynamicPostViewHolder.PAYLOAD_PLAY_VIDEO);
+                }
             }
         }
     }
@@ -110,16 +117,16 @@ public class FeedScrollListener {
     private static boolean isVideoCard(List<Visitable> list, int position) {
         return list.size() > position
                 && list.get(position) instanceof DynamicPostViewModel
-                && ((DynamicPostViewModel)list.get(position)).getContentList().size() == 1
-                && (((DynamicPostViewModel)list.get(position)).getContentList().get(0) instanceof VideoViewModel
-                    || ((((DynamicPostViewModel)list.get(position)).getContentList().get(0) instanceof MultimediaGridViewModel)
-                        && ((MultimediaGridViewModel)((DynamicPostViewModel)list.get(position)).getContentList().get(0)).getMediaItemList().size() == 1
-                        && ((MultimediaGridViewModel)((DynamicPostViewModel)list.get(position)).getContentList().get(0)).getMediaItemList().get(0).getType().equalsIgnoreCase(TYPE_VIDEO)));
+                && ((DynamicPostViewModel) list.get(position)).getContentList().size() == 1
+                && (((DynamicPostViewModel) list.get(position)).getContentList().get(0) instanceof VideoViewModel
+                || ((((DynamicPostViewModel) list.get(position)).getContentList().get(0) instanceof MultimediaGridViewModel)
+                && ((MultimediaGridViewModel) ((DynamicPostViewModel) list.get(position)).getContentList().get(0)).getMediaItemList().size() == 1
+                && ((MultimediaGridViewModel) ((DynamicPostViewModel) list.get(position)).getContentList().get(0)).getMediaItemList().get(0).getType().equalsIgnoreCase(TYPE_VIDEO)));
     }
 
     private static VideoViewModel getVideoCardViewModel(List<Visitable> list, int position) {
         try {
-            return (VideoViewModel) ((DynamicPostViewModel)list.get(position)).getContentList().get(0);
+            return (VideoViewModel) ((DynamicPostViewModel) list.get(position)).getContentList().get(0);
         } catch (Exception e) {
             e.getLocalizedMessage();
         }
@@ -127,12 +134,12 @@ public class FeedScrollListener {
     }
 
     private static MediaItem getVideoCardItemViewModel(List<Visitable> list, int position) {
-        return ((MultimediaGridViewModel)((DynamicPostViewModel)list.get(position)).getContentList().get(0)).getMediaItemList().get(0);
+        return ((MultimediaGridViewModel) ((DynamicPostViewModel) list.get(position)).getContentList().get(0)).getMediaItemList().get(0);
     }
 
     private static boolean canAutoplayVideo(RecyclerView recyclerView) {
         RemoteConfig config = new FirebaseRemoteConfigImpl(recyclerView.getContext());
-        return config.getBoolean(RemoteConfigKey.CONFIG_AUTOPLAY_VIDEO_WIFI,false);
+        return config.getBoolean(RemoteConfigKey.CONFIG_AUTOPLAY_VIDEO_WIFI, false);
     }
 
 }

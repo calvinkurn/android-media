@@ -1090,16 +1090,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         presenter.addPostTagItemToCart(postTagItem)
     }
 
-    override fun onTagSheetItemBuy(
-        activityId: Int,
-        positionInFeed: Int,
-        item: FeedXProduct,
-        shopId: String,
-        type: String,
-        isFollowed: Boolean
-    ) {
-    }
-
     override fun onYoutubeThumbnailClick(
         positionInFeed: Int,
         contentPosition: Int,
@@ -1220,14 +1210,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onImageClicked(activityId: String, type: String, isFollowed: Boolean) {
     }
 
-    override fun addToWishList(
-        activityId: Int,
-        productId: String,
-        type: String,
-        isFollowed: Boolean
-    ) {
-    }
-
     override fun onTagClicked(
         postId: Int,
         products: List<FeedXProduct>,
@@ -1236,19 +1218,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         type: String,
         isFollowed: Boolean
     ) {
-    }
-
-    override fun onShareProduct(
-        id: Int,
-        title: String,
-        description: String,
-        url: String,
-        imageUrl: String,
-        activityId: Int,
-        type: String,
-        isFollowed: Boolean
-    ) {
-        TODO("Not yet implemented")
     }
 
     override fun onBottomSheetMenuClicked(item: ProductPostTagViewModelNew, context: Context) {

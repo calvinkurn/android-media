@@ -154,4 +154,16 @@ object TimeConverter {
     private fun getDifference(currentTime: Date, postDate: Date): Long {
         return (currentTime.time - postDate.time) / 1000
     }
+
+    fun convertSecondsToHrMmSs(timerValue: Long): Calendar {
+        val seconds = timerValue.rem(60)
+        val minutes = (timerValue.rem((60 * 60))).div(60)
+        val hours = timerValue.div((60 * 60))
+        val cal = Calendar.getInstance()
+        cal.add(Calendar.HOUR, hours.toInt())
+        cal.add(Calendar.MINUTE, minutes.toInt())
+        cal.add(Calendar.SECOND, seconds.toInt())
+
+        return cal
+    }
 }

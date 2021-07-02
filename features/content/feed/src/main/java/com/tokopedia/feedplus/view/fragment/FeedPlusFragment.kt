@@ -400,12 +400,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                 )
                             }
                         } else {
-                            data.errorMessage = getString(R.string.default_request_error_unknown)
+                            if (data.isFollow)
+                                data.errorMessage =
+                                    getString(R.string.feed_component_unfollow_fail_toast)
+                            else
+                                data.errorMessage =
+                                    getString(R.string.feed_component_follow_fail_toast)
                             onErrorFollowUnfollowKol(data)
                         }
                     }
                     is Fail -> {
-                        val message = getString(R.string.default_request_error_unknown)
+                        val message = it.throwable.message
+                            ?: getString(R.string.default_request_error_unknown)
                         showToast(message, Toaster.TYPE_ERROR)
                     }
                 }
@@ -478,9 +484,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                     Toaster.TYPE_NORMAL,
                                     getString(R.string.feed_go_to_cart),
                                     View.OnClickListener {
-                                        onAddToCartSuccess(data.activityId,
+                                        feedAnalytics.eventOnTagSheetItemBuyClicked(
+                                            data.activityId,
                                             data.postType,
-                                            data.isFollowed)
+                                            data.isFollowed
+                                        )
+                                        onAddToCartSuccess()
                                     }).show()
                             }
                             data.errorMsg.isNotEmpty() -> {
@@ -514,7 +523,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         }
                     }
                     is Fail -> {
-                        val message = getString(R.string.default_request_error_unknown)
+                        val message = it.throwable.message
+                            ?: getString(R.string.default_request_error_unknown)
                         showToast(message, Toaster.TYPE_ERROR)
                     }
                 }
@@ -658,15 +668,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                 }
 
                                 val item: Visitable<*> = adapter.getlist()[position]
-
-//                                if (item is DynamicPostUiModel) {
-//                                    if (item.feedXCard.typename == TYPE_FEED_X_CARD_POST) {
-//                                        if(item.feedXCard.media.first().type!== TYPE_IMAGE)
-//                                    }
-//                                }
                                 FeedScrollListenerNew.onFeedScrolled(recyclerView,adapter.getList())
-                            //    FeedScrollListener.onFeedScrolled(recyclerView, adapter.getlist())
-
                             }
                         }
                     }
@@ -1346,7 +1348,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
 
             } else if (type == FollowCta.AUTHOR_SHOP) {
-                feedViewModel.doToggleFavoriteShop(positionInFeed, 0, id)
+                feedViewModel.doToggleFavoriteShop(positionInFeed, 0, id, isFollow)
             }
 
             if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
@@ -1643,7 +1645,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
     }
 
-    override fun onTagSheetItemBuy(
+    fun onTagSheetItemBuy(
         activityId: Int,
         positionInFeed: Int,
         postTagItem: FeedXProduct,
@@ -1731,17 +1733,19 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedAnalytics.eventImageClicked(activityId, type, isFollowed)
     }
 
-    override fun addToWishList(postId: Int, productId: String, type: String, isFollowed: Boolean) {
+    fun addToWishList(postId: Int, productId: String, type: String, isFollowed: Boolean) {
 
         feedAnalytics.eventAddToWishlistClicked(postId.toString(), productId, type, isFollowed)
 
         productTagBS.dismiss()
-        feedViewModel.addWishlist(productId,
+        feedViewModel.addWishlist(
+            productId,
             0,
             type,
             isFollowed,
             ::onWishListFail,
-            ::onWishListSuccess)
+            ::onWishListSuccess
+        )
     }
 
     private fun onWishListFail(s: String) {
@@ -1756,7 +1760,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             Toaster.TYPE_NORMAL,
             getString(R.string.feed_go_to_wishlist),
             View.OnClickListener {
-                onAddToCartSuccess(activityId, type, isFollowed)
+                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed)
+                RouteManager.route(context, ApplinkConst.WISHLIST)
             }).show()
     }
 
@@ -1778,7 +1783,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onShareProduct(
+    private fun onShareProduct(
         id: Int,
         title: String,
         description: String,
@@ -1788,7 +1793,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         type: String,
         isFollowed: Boolean
     ) {
-        feedAnalytics.eventonShareProductClicked(activityId.toString(),
+        feedAnalytics.eventonShareProductClicked(
+            activityId.toString(),
             id.toString(),
             type,
             isFollowed)
@@ -1818,8 +1824,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
         item: ProductPostTagViewModelNew,
         context: Context
     ) {
-        feedAnalytics.eventClickBottomSheetMenu(item.postId.toString(),item.postType,item.isFollowed)
-        val sheet = ProductActionBottomSheet.newInstance()
+        feedAnalytics.eventClickBottomSheetMenu(
+            item.postId.toString(),
+            item.postType,
+            item.isFollowed
+        )
+        val bundle = Bundle()
+        bundle.putBoolean("isLogin", userSession.isLoggedIn)
+        val sheet = ProductActionBottomSheet.newInstance(bundle)
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
         sheet.shareProductCB = {
             onShareProduct(
@@ -1871,11 +1883,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (activity != null) {
             onGoToLink(redirectUrl)
         }
-
-//        if (adapter.getlist()[positionInFeed] is DynamicPostUiModel) {
-//            //  val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostUiModel
-//            // trackCardPostClick(positionInFeed, trackingPostModel)
-//        }
     }
 
     override fun onInterestPickItemClicked(item: InterestPickDataViewModel) {
@@ -2154,8 +2161,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             })
     }
 
-    private fun onAddToCartSuccess(activityId: String, type: String, isFollowed: Boolean) {
-        feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed)
+    private fun onAddToCartSuccess() {
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
 
@@ -2574,16 +2580,16 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onFollowClick(positionInFeed: Int, shopId: String, adId: String) {
-        var eventLabel = "$adId - $shopId"
+        val eventLabel = "$adId - $shopId"
 
-        var eventAction = CLICK_FOLLOW_TOPADS
+        val eventAction = CLICK_FOLLOW_TOPADS
         analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
         feedViewModel.doToggleFavoriteShop(positionInFeed, 0, shopId)
     }
 
     override fun onTopAdsHeadlineImpression(position: Int, cpmModel: CpmModel) {
-        var eventLabel = "${cpmModel.data[0].id} - ${cpmModel.data[0].cpm.cpmShop.id}"
-        var eventAction = IMPRESSION_CARD_TOPADS
+        val eventLabel = "${cpmModel.data[0].id} - ${cpmModel.data[0].cpm.cpmShop.id}"
+        val eventAction = IMPRESSION_CARD_TOPADS
 
         analytics.sendFeedTopAdsHeadlineAdsImpression(
             eventAction,
@@ -2596,9 +2602,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onTopAdsProductItemListsner(position: Int, product: Product, cpmData: CpmData) {
 
-        var eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
-        var eventAction = IMPRESSION_PRODUCT_TOPADS
-        var productList: MutableList<Product> = mutableListOf()
+        val eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
+        val eventAction = IMPRESSION_PRODUCT_TOPADS
+        val productList: MutableList<Product> = mutableListOf()
         productList.clear()
         productList.add(product)
         analytics.sendFeedTopAdsHeadlineProductImpression(
@@ -2614,7 +2620,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         RouteManager.route(context, applink)
 
         var eventAction = ""
-        var eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
+        val eventLabel = "${cpmData.id} - ${cpmData.cpm.cpmShop.id}"
 
         if (applink?.contains("shop") == true && position == 0) {
             eventAction = CLICK_CEK_SEKARANG
@@ -2623,9 +2629,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
             eventAction = CLICK_SHOP_TOPADS
             analytics.sendTopAdsHeadlineClickevent(eventAction, eventLabel, userSession.userId)
         } else {
-            var productId = applink?.substring(applink.lastIndexOf("/") + 1)
+            val productId = applink?.substring(applink.lastIndexOf("/") + 1)
             eventAction = CLICK_PRODUCT_TOPADS
-            var clickedProducts: MutableList<Product> = mutableListOf()
+            val clickedProducts: MutableList<Product> = mutableListOf()
             for ((index, productItem) in cpmData.cpm.cpmShop.products.withIndex()) {
                 if (productId.equals(productItem.id)) {
                     clickedProducts.clear()
@@ -2653,8 +2659,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             action = Intent.ACTION_SEND
             type = TYPE
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            putExtra(Intent.EXTRA_REFERRER, shareData.uri)
             putExtra(Intent.EXTRA_TITLE, shareData.name)
+            putExtra(Intent.EXTRA_SUBJECT, shareData.name)
             putExtra(Intent.EXTRA_TEXT, shareData.description + "\n" + shareData.uri)
         }
     }

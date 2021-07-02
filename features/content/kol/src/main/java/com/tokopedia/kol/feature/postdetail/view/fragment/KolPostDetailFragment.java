@@ -450,7 +450,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void reportAction(int adapterposition, boolean canDeleteComment, String id, String reasonType, String commentId) {
+    public void onMenuClicked(String id, boolean canDeleteComment, int adapterPosition) {
 
     }
 
@@ -1019,21 +1019,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void userCarouselImpression(int positionInFeed, @NotNull List<FeedXMedia> media, String type, boolean isFollowed) {
-
-    }
-
-    @Override
-    public void onTagSheetItemBuy(int activityId, int positionInFeed, @NotNull FeedXProduct item, @NotNull String shopId, @NotNull String type, boolean isFollowed) {
-
-    }
-
-    @Override
-    public void addToWishList(int activityId, @NotNull String productId, @NotNull String type, boolean isFollowed) {
-
-    }
-
-    @Override
-    public void onShareProduct(int id, @NotNull String title, @NotNull String description, @NotNull String url, @NotNull String imageUrl, int activityId, @NotNull String type, boolean isFollowed) {
 
     }
 
