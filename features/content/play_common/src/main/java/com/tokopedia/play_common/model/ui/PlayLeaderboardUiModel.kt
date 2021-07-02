@@ -4,6 +4,11 @@ package com.tokopedia.play_common.model.ui
 /**
  * Created by mzennis on 30/06/21.
  */
+data class PlayLeaderboardInfoUiModel(
+        val leaderboardWinner: List<PlayLeaderboardUiModel>,
+        val config: PlayLeaderboardConfigUiModel
+)
+
 data class PlayLeaderboardUiModel(
     val title: String,
     val winners: List<PlayWinnerUiModel>,
@@ -16,4 +21,12 @@ data class PlayWinnerUiModel(
     val name: String,
     val imageUrl: String,
     val allowChat: Boolean
+)
+
+data class PlayLeaderboardConfigUiModel(
+        val sellerMessage: String,
+        val winnerMessage: String,
+        val winnerDetail: String,
+        val loserMessage: String,
+        val loserDetail: String,
 )

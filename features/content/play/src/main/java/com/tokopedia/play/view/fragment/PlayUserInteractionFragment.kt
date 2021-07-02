@@ -1423,7 +1423,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 interactivePreStartView?.hide()
                 interactiveTapView?.hide()
 
-                interactiveFinishedView?.setInfo(state.info)
+                interactiveFinishedView?.setInfo(getString(state.info))
                 interactiveFinishedView?.show()
             }
             else -> {

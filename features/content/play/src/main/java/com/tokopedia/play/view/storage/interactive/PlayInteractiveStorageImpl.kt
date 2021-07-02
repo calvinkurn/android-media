@@ -29,7 +29,7 @@ class PlayInteractiveStorageImpl @Inject constructor() : PlayInteractiveStorage 
         }
     }
 
-    override fun setInactive(interactiveId: String) {
+    override fun setFinished(interactiveId: String) {
         if (interactiveStatusMap.containsKey(interactiveId)) {
             val currentStatus = interactiveStatusMap[interactiveId]!!
             interactiveStatusMap[interactiveId] = currentStatus.copy(isActive = false)

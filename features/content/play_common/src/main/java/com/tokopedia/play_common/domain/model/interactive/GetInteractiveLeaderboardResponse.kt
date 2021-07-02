@@ -15,7 +15,10 @@ data class GetInteractiveLeaderboardResponse(
             val data: List<Data> = emptyList(),
 
             @SerializedName("config")
-            val config: Config = Config()
+            val config: Config = Config(),
+
+            @SerializedName("summary")
+            val summary: Summary = Summary()
     )
 
     data class Data(
@@ -27,6 +30,9 @@ data class GetInteractiveLeaderboardResponse(
 
             @SerializedName("otherParticipantCountText")
             val otherParticipantCountText: String = "",
+
+            @SerializedName("otherParticipantCount")
+            val otherParticipantCount: Int = 0,
     )
 
     data class Winner(
@@ -55,5 +61,10 @@ data class GetInteractiveLeaderboardResponse(
 
             @SerializedName("loserDetail")
             val loserDetail: String = ""
+    )
+
+    data class Summary(
+            @SerializedName("totalParticipant")
+            val totalParticipant: Int = 0
     )
 }

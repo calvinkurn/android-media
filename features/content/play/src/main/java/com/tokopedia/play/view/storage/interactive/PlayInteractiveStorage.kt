@@ -11,7 +11,7 @@ interface PlayInteractiveStorage {
 
     fun setActive(interactiveId: String)
 
-    fun setInactive(interactiveId: String)
+    fun setFinished(interactiveId: String)
 
     fun setJoined(interactiveId: String)
 

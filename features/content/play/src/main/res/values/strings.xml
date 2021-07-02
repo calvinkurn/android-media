@@ -65,6 +65,9 @@
 
     <string name="play_interactive_live_timer_text">Berakhir dalam:</string>
 
+    <string name="play_interactive_finish_initial_text">Game selesai!</string>
+    <string name="play_interactive_finish_loading_winner_text">Memilih pemenang…</string>
+
     <string name="play_interactive_tap_action_tap_text">Tap terus!</string>
     <string name="play_interactive_tap_action_follow_text">Follow dulu</string>
 

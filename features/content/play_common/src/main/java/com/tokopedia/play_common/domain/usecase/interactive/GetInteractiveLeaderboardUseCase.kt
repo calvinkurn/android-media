@@ -5,11 +5,12 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderboardResponse
+import javax.inject.Inject
 
 /**
  * Created by jegul on 02/07/21
  */
-class GetInteractiveLeaderboardUseCase(
+class GetInteractiveLeaderboardUseCase @Inject constructor(
         gqlRepository: GraphqlRepository
 ) : GraphqlUseCase<GetInteractiveLeaderboardResponse>(gqlRepository) {
 
@@ -26,6 +27,7 @@ class GetInteractiveLeaderboardUseCase(
                 imageURL
               }
               otherParticipantCountText
+              otherParticipantCount
             }
             config {
                 sellerMessage
@@ -33,6 +35,9 @@ class GetInteractiveLeaderboardUseCase(
                 winnerDetail
                 loserMessage
                 loserDetail
+            }
+            summary {
+                totalParticipant
             }
           }
         }
