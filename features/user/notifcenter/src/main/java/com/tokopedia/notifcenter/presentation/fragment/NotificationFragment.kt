@@ -101,7 +101,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     private var recommendationLifeCycleAware: RecommendationLifeCycleAware? = null
     private var trackingQueue: TrackingQueue? = null
     private val viewHolderLoading = ArrayMap<Any, ViewHolderState>()
-    private var scrollState = ScrollToBottomState()
+    private val scrollState = ScrollToBottomState()
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(NotificationViewModel::class.java)
