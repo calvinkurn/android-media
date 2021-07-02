@@ -8,12 +8,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tokomartCategoryChooserRecyclerView"
+        android:id="@+id/tokoNowCategoryChooserRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/tokomartCategoryChooserButtonApply"
+        android:id="@+id/tokoNowCategoryChooserButtonApply"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"

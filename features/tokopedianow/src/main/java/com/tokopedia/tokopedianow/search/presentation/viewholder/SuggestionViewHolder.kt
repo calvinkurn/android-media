@@ -22,7 +22,7 @@ class SuggestionViewHolder(
     }
 
     private val suggestionText: Typography? =
-            itemView.findViewById(R.id.tokomartSearchSuggestionText)
+            itemView.findViewById(R.id.tokoNowSearchSuggestionText)
 
     override fun bind(element: SuggestionDataView) {
         bindSuggestionView(element)

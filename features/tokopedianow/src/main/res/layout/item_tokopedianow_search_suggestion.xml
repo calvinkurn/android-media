@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/tokomartSearchSuggestionText"
+    android:id="@+id/tokoNowSearchSuggestionText"
     android:background="@color/Unify_Background"
     android:textColor="@color/Unify_N700_96"
     app:typographyType="body_2"

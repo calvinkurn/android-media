@@ -26,11 +26,11 @@ class CategoryAisleViewHolder(
     override fun bind(aisle: CategoryAisleDataView) {
         when (aisle.items.size) {
             0 -> {
-                val aisleContainer = itemView.findViewById<ConstraintLayout?>(R.id.tokomartSearchCategoryAisleContainer)
+                val aisleContainer = itemView.findViewById<ConstraintLayout?>(R.id.tokoNowSearchCategoryAisleContainer)
                 aisleContainer?.visibility = View.GONE
             }
             1 -> {
-                val rightAisleCard = itemView.findViewById<Group?>(R.id.tokomartSearchCategoryAisleGroupRight)
+                val rightAisleCard = itemView.findViewById<Group?>(R.id.tokoNowSearchCategoryAisleGroupRight)
                 rightAisleCard?.visibility = View.INVISIBLE
                 bindLeftAisle(aisle.items[0])
             }
@@ -42,15 +42,15 @@ class CategoryAisleViewHolder(
     }
 
     private fun bindLeftAisle(item: CategoryAisleItemDataView) {
-        val txtCategoryNameLeft = itemView.findViewById<TextView?>(R.id.tokomartSearchCategoryAisleNameLeft)
-        val imgCategoryLeft = itemView.findViewById<ImageUnify?>(R.id.tokomartSearchCategoryAisleImageLeft)
+        val txtCategoryNameLeft = itemView.findViewById<TextView?>(R.id.tokoNowSearchCategoryAisleNameLeft)
+        val imgCategoryLeft = itemView.findViewById<ImageUnify?>(R.id.tokoNowSearchCategoryAisleImageLeft)
 
         bindNavigationItem(item, txtCategoryNameLeft, imgCategoryLeft)
     }
 
     private fun bindRightAisle(item: CategoryAisleItemDataView) {
-        val txtCategoryNameRight = itemView.findViewById<TextView?>(R.id.tokomartSearchCategoryAisleNameRight)
-        val imgCategoryRight = itemView.findViewById<ImageUnify?>(R.id.tokomartSearchCategoryAisleImageRight)
+        val txtCategoryNameRight = itemView.findViewById<TextView?>(R.id.tokoNowSearchCategoryAisleNameRight)
+        val imgCategoryRight = itemView.findViewById<ImageUnify?>(R.id.tokoNowSearchCategoryAisleImageRight)
 
         bindNavigationItem(item, txtCategoryNameRight, imgCategoryRight)
     }

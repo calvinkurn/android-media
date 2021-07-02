@@ -17,7 +17,7 @@ class ProductCountViewHolder(itemView: View): AbstractViewHolder<ProductCountDat
     private var totalDataText: Typography? = null
 
     init {
-        totalDataText = itemView.findViewById<Typography?>(R.id.tokomartSearchCategoryProductCount)
+        totalDataText = itemView.findViewById<Typography?>(R.id.tokoNowSearchCategoryProductCount)
     }
 
     override fun bind(element: ProductCountDataView?) {

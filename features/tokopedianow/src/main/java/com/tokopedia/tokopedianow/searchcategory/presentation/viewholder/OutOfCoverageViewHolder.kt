@@ -20,8 +20,8 @@ class OutOfCoverageViewHolder(
     }
 
     override fun bind(element: OutOfCoverageDataView?) {
-        itemView.tokomartSearchCategoryOutOfCoverageView?.setDescriptionCityName(getString(R.string.tokopedianow_city_name_empty_state_no_address))
-        itemView.tokomartSearchCategoryOutOfCoverageView?.actionListener = object: NoAddressEmptyStateView.ActionListener {
+        itemView.tokoNowSearchCategoryOutOfCoverageView?.setDescriptionCityName(getString(R.string.tokopedianow_city_name_empty_state_no_address))
+        itemView.tokoNowSearchCategoryOutOfCoverageView?.actionListener = object: NoAddressEmptyStateView.ActionListener {
             override fun onChangeAddressClicked() {
                 outOfCoverageListener.onChangeAddressClicked()
             }

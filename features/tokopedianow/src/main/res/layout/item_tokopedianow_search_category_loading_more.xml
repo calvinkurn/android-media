@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/tokomartSearchCategoryLoaderUnify"
+        android:id="@+id/tokoNowSearchCategoryLoaderUnify"
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"
         android:layout_margin="@dimen/dp_10"
