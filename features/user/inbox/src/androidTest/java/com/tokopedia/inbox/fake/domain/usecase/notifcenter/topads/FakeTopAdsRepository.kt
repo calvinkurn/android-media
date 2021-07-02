@@ -10,6 +10,12 @@ import com.tokopedia.topads.sdk.repository.TopAdsRepository
 
 class FakeTopAdsRepository : TopAdsRepository() {
 
+    var isError = false
+        set(value) {
+            field = value
+            repository.isError = value
+        }
+
     var response = TopAdsmageViewResponse(null, null, null)
         set(value) {
             field = value

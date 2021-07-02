@@ -51,7 +51,27 @@ class NotifcenterRecommendationTest : InboxNotifcenterTest() {
         )
     }
 
-    //TODO: should show product recom when TDN load is error
+    @Test
+    fun should_show_product_recom_when_TDN_load_is_error() {
+        // Given
+        inboxNotifcenterDep.apply {
+            topAdsRepository.isError = true
+            getRecommendationUseCase.response = getRecommendationUseCase.defaultResponse
+        }
+        startInboxActivity()
+
+        // When
+        NotifcenterAction.scrollNotificationToPosition(8)
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(6, RecommendationTitleViewHolder::class.java)
+        )
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(7, RecommendationViewHolder::class.java)
+        )
+    }
+
     //TODO: should hide product recom when user has notification filter
 
 }
