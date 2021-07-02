@@ -153,7 +153,10 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flexbox_order_product_info" />
+        app:layout_constraintTop_toBottomOf="@+id/flexbox_order_product_info"
+        app:text_field_counter="144"
+        app:text_field_input_type="text"
+        app:text_field_label="@string/label_note_for_seller" />
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
         android:id="@+id/qty_editor_product"

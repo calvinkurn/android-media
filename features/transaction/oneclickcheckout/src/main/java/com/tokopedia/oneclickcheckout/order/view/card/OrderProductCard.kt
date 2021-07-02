@@ -156,7 +156,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             tfNote.visible()
             product.isEditingNotes = true
             tfNote.textFieldInput.textSize = 16f
-            tfNote.textFieldInput.isSingleLine = false
+            tfNote.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
             tfNote.setCounter(MAX_NOTES_LENGTH)
             tfNote.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
             tfNote.textFieldInput.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
@@ -186,6 +186,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             tfNote.textFieldInput.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     product.isEditingNotes = false
+                    renderNotes()
                     KeyboardHandler.DropKeyboard(binding.tfNote.context, itemView)
                     true
                 } else false
