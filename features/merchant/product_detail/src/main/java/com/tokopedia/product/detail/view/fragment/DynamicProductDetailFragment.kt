@@ -290,6 +290,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var toasterWishlistText = ""
 
     private var buttonActionType: Int = 0
+    private var isTopadsDynamicsSlottingAlreadyCharged = false
 
     private val tradeinDialog: ProductAccessRequestDialogFragment? by lazy {
         setupTradeinDialog()
@@ -1262,22 +1263,24 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun observeTopAdsIsChargeData() {
         viewLifecycleOwner.observe(viewModel.topAdsRecomChargeData) {data ->
             data.doSuccessOrFail({topAdsData ->
-                context?.let {
-                    TopAdsUrlHitter(it).hitImpressionUrl(
-                            this::class.java.name,
-                            topAdsData.data.product.image.m_url,
-                            topAdsData.data.product.id,
-                            topAdsData.data.product.name,
-                            topAdsData.data.product.image.m_ecs)
+                if (!isTopadsDynamicsSlottingAlreadyCharged) {
+                    context?.let {
+                        TopAdsUrlHitter(it).hitImpressionUrl(
+                                this::class.java.name,
+                                topAdsData.data.product.image.m_url,
+                                topAdsData.data.product.id,
+                                topAdsData.data.product.name,
+                                topAdsData.data.product.image.m_ecs)
 
-                    TopAdsUrlHitter(it).hitClickUrl(
-                            this::class.java.name,
-                            topAdsData.data.product.image.m_url,
-                            topAdsData.data.product.id,
-                            topAdsData.data.product.name,
-                            topAdsData.data.product.image.m_ecs)
+                        TopAdsUrlHitter(it).hitClickUrl(
+                                this::class.java.name,
+                                topAdsData.data.product.image.m_url,
+                                topAdsData.data.product.id,
+                                topAdsData.data.product.name,
+                                topAdsData.data.product.image.m_ecs)
+                        isTopadsDynamicsSlottingAlreadyCharged = true
+                    }
                 }
-
             },
             {
                 logException(it)
