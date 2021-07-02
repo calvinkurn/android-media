@@ -626,11 +626,13 @@ abstract class BaseSearchCategoryFragment:
             clickListener: (View) -> Unit = { },
     ) {
         val view = view ?: return
+        val context = context ?: return
         message ?: return
         if (message.isEmpty()) return
 
+        val defaultHeight = context.resources.getDimensionPixelSize(R.dimen.tokopedianow_searchcategory_minicart_widget_height)
         val miniCartWidget = miniCartWidget
-        miniCartWidget?.height?.let { Toaster.toasterCustomBottomHeight = it }
+        Toaster.toasterCustomBottomHeight = miniCartWidget?.height ?: defaultHeight
 
         Toaster.build(
                 view,
