@@ -626,11 +626,13 @@ abstract class BaseSearchCategoryFragment:
             clickListener: (View) -> Unit = { },
     ) {
         val view = view ?: return
+        val context = context ?: return
         message ?: return
         if (message.isEmpty()) return
 
+        val defaultHeight = context.resources.getDimensionPixelSize(R.dimen.tokopedianow_searchcategory_minicart_widget_height)
         val miniCartWidget = miniCartWidget
-        miniCartWidget?.height?.let { Toaster.toasterCustomBottomHeight = it }
+        Toaster.toasterCustomBottomHeight = miniCartWidget?.height ?: defaultHeight
 
         Toaster.build(
                 view,
@@ -648,6 +650,7 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun updateHeaderBackgroundVisibility(isVisible: Boolean) {
         if (!isVisible) headerBackground?.setImageResource(R.color.tokopedianow_dms_transparent)
+        else headerBackground?.setImageResource(R.drawable.tokopedianow_ic_header_background)
         headerBackground?.showWithCondition(isVisible)
     }
 
