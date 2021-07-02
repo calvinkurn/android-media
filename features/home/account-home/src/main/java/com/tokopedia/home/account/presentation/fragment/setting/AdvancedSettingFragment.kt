@@ -17,6 +17,8 @@ import com.tokopedia.home.account.R
 import com.tokopedia.home.account.analytics.AccountAnalytics
 import com.tokopedia.home.account.constant.SettingConstant
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import java.util.*
 
 class AdvancedSettingFragment : BaseGeneralSettingFragment() {
@@ -25,8 +27,13 @@ class AdvancedSettingFragment : BaseGeneralSettingFragment() {
 
     private lateinit var accountAnalytics: AccountAnalytics
 
+    private var isShowScreenRecorder = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        context?.let {
+            isShowScreenRecorder = FirebaseRemoteConfigImpl(it).getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
+        }
         accountAnalytics = AccountAnalytics(context)
     }
 
@@ -34,8 +41,10 @@ class AdvancedSettingFragment : BaseGeneralSettingFragment() {
         val settingItems = ArrayList<SettingItemViewModel>()
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_ADVANCED_CLEAR_CACHE,
                 getString(R.string.title_app_advanced_clear_cache)))
-        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_ADVANCED_SCREEN_RECORDER,
-                getString(R.string.title_app_advanced_screen_recorder)))
+        if (isShowScreenRecorder) {
+            settingItems.add(SettingItemViewModel(SettingConstant.SETTING_APP_ADVANCED_SCREEN_RECORDER,
+                    getString(R.string.title_app_advanced_screen_recorder)))
+        }
         return settingItems
     }
 
