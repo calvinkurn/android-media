@@ -2,6 +2,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     >
@@ -36,31 +37,44 @@
             >
 
             <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/img_crown"
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:src="@drawable/ic_play_crown"
+                tools:visibility="visible"
+                />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/img_user"
                 android:layout_width="@dimen/layout_lvl4"
                 android:layout_height="@dimen/layout_lvl4"
-                android:layout_marginTop="@dimen/spacing_lvl3"
+                app:unify_image_type="circle"
+                tools:src="@tools:sample/avatars"
                 />
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl3"
-                android:text="Selamat kamu pemenangnya!"
                 android:textAlignment="center"
                 android:textColor="@color/Unify_Static_White"
                 app:typographyType="body_3"
                 app:typographyWeight="bold"
+                tools:text="Selamat kamu pemenangnya!"
                 />
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:layout_marginBottom="@dimen/spacing_lvl4"
-                android:text="Tunggu seller chat kamu untuk konfirmasi."
                 android:textAlignment="center"
                 android:textColor="@color/Unify_Static_White"
                 app:typographyType="body_3"
+                tools:text="Tunggu seller chat kamu untuk konfirmasi."
                 />
 
         </LinearLayout>

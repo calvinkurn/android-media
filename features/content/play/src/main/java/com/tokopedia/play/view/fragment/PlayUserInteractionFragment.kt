@@ -859,7 +859,9 @@ class PlayUserInteractionFragment @Inject constructor(
             playViewModel.uiEvent.collect { event ->
                 when (event) {
                     is ShowWinningDialogEvent -> {
-                        getInteractiveWinningDialog().show(childFragmentManager)
+                        getInteractiveWinningDialog().apply {
+                            setData(imageUrl = event.userImageUrl, title = event.dialogTitle, subtitle = event.dialogSubtitle)
+                        }.show(childFragmentManager)
                     }
                     is ShowCoachMarkWinnerEvent -> {
                         if (interactiveWinnerBadgeView?.isHidden() == true) return@collect
@@ -1509,7 +1511,7 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     private fun getInteractiveWinningDialog(): InteractiveWinningDialogFragment {
         val existing = InteractiveWinningDialogFragment.get(childFragmentManager)
-        return existing ?: InteractiveWinningDialogFragment.newInstance()
+        return existing ?: childFragmentManager.fragmentFactory.instantiate(requireActivity().classLoader, InteractiveWinningDialogFragment::class.java.name) as InteractiveWinningDialogFragment
     }
 
     companion object {

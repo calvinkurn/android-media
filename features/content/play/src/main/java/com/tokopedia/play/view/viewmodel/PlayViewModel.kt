@@ -1260,7 +1260,8 @@ class PlayViewModel @Inject constructor(
             setUiState {
                 copy(
                         showWinningBadge = true,
-                        interactive = PlayInteractiveUiState.NoInteractive
+                        interactive = PlayInteractiveUiState.NoInteractive,
+                        winnerLeaderboard = interactiveLeaderboard.leaderboardWinner
                 )
             }
 

@@ -40,6 +40,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
+import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.ui.leaderboard.PlayEngagementLeaderboardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
@@ -230,6 +231,8 @@ class PlayBottomSheetFragment @Inject constructor(
         observeBottomInsetsState()
         observeBuyEvent()
         observeStatusInfo()
+
+        observeUiState()
     }
 
     private fun initAnalytic() {
@@ -502,6 +505,12 @@ class PlayBottomSheetFragment @Inject constructor(
         })
     }
 
+    private fun observeUiState() {
+        playViewModel.uiState.observe(viewLifecycleOwner) { state ->
+            renderLeaderboardView(state.winnerLeaderboard)
+        }
+    }
+
     private fun trackImpressedProduct(products: List<Pair<PlayProductUiModel.Product, Int>> = productSheetView.getVisibleProducts()) {
         if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedProducts(products)
     }
@@ -510,4 +519,10 @@ class PlayBottomSheetFragment @Inject constructor(
         if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
     }
 
+    /**
+     * View
+     */
+    private fun renderLeaderboardView(winnerLeaderboards: List<PlayLeaderboardUiModel>) {
+        leaderboardSheetView.setData(winnerLeaderboards)
+    }
 }

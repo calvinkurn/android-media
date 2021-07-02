@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.viewcomponent.interactive
 
-import android.os.CountDownTimer
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -36,6 +35,7 @@ class InteractivePreStartViewComponent(
 
     fun setTitle(title: String) {
         tvInteractiveTitle.text = title
+        tvInteractiveTitle.lineHeight = 100
     }
 
     fun setTimer(
