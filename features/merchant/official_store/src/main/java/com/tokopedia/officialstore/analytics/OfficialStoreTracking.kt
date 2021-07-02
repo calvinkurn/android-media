@@ -103,7 +103,7 @@ class OfficialStoreTracking(context: Context) {
 
     private val EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID = "recommendation page with product id"
     private val SLASH_OFFICIAL_STORE = "/official-store"
-    private val SLASH_OFFICIAL_STORE_WITHCATEGORY = "/official-store/%s"
+    private val SLASH_OFFICIAL_STORE_WITHOUT_CATEGORY = "/official-store/"
     private val SKEL_APPLINK = "{&data}"
     private val SKEL_APPLINK_DATA = "&data"
 
@@ -884,7 +884,7 @@ class OfficialStoreTracking(context: Context) {
             DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
-        val list = mutableListOf(String.format(SLASH_OFFICIAL_STORE_WITHCATEGORY, categoryName))
+        val list = mutableListOf(SLASH_OFFICIAL_STORE_WITHOUT_CATEGORY)
         if (valueDynamicMix.isNotEmpty())
             list.add(valueDynamicMix)
         if (!isLogin)
