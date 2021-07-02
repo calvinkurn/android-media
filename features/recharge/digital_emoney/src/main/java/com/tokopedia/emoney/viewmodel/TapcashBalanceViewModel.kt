@@ -140,12 +140,11 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
         }
     }
 
-    private fun recheckBalanceSecurePurse(tapcash: BalanceTapcash, terminalRandomNumber: ByteArray) {
+    fun recheckBalanceSecurePurse(tapcash: BalanceTapcash, terminalRandomNumber: ByteArray) {
         if (::isoDep.isInitialized && isoDep.isConnected) {
             try {
                 val result = isoDep.transceive(COMMAND_GET_CHALLENGE)
                 val secureResult = isoDep.transceive(secureReadPurse(terminalRandomNumber))
-                Log.d("TAPCASH_RECHECK", NFCUtils.toHex(secureResult))
                 if (isCommandFailed(secureResult)) {
                     ServerLogger.log(Priority.P2, TAPCASH_TAG, mapOf("err" to "TAPCASH_ERROR_RECHECK_BALANCE_SECURE_PURSE_FAILED"))
                     errorCardMessageMutable.postValue(MessageErrorException(NfcCardErrorTypeDef.FAILED_READ_CARD))

@@ -13,6 +13,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
+import junit.framework.Assert
 import kotlinx.coroutines.Dispatchers
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -326,5 +327,13 @@ class EmoneyBalanceViewModelTest {
         //then
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
         assertEquals(NfcCardErrorTypeDef.FAILED_READ_CARD, (emoneyBalanceViewModel.errorCardMessage.value as Throwable).message)
+    }
+
+    @Test
+    fun getIsoDep() {
+        //when
+        emoneyBalanceViewModel.isoDep = isoDep
+        //then
+        Assert.assertEquals(emoneyBalanceViewModel.isoDep, isoDep)
     }
 }

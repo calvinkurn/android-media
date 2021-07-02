@@ -4,6 +4,7 @@ import android.nfc.tech.IsoDep
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
+import com.tokopedia.common_electronic_money.data.EmoneyInquiryResponse
 
 import com.tokopedia.common_electronic_money.util.NFCUtils
 import com.tokopedia.emoney.data.BalanceTapcash
@@ -46,6 +47,7 @@ class TapcashBalanceViewModelTest {
     val terminalRandomNumber = "EFCE6ACABEA98BF9"
     val writeRequest = "90361401250314021403EFCE6ACABEA98BF985A00E33BD0F26DFDB71CA6C6CBCE500000000000000000018"
     val writeResult = "06D514A3859256C46C23792A757F400F3C258FB7A98578D9009C40B65448823BB65448823B30FA7200000400000400009000"
+    val writeResultV6 = "B355A77642F7813455FA4ED002E4B75231448D24A509D85F9000"
     val writeResultFailedSize = "0614A3859256C46C23792A757F400F3C258FB7A98578D9009C40B65448823BB65448823B30FA7200000400000400009000"
 
     val dummyResponseNoCrypto = """
@@ -278,7 +280,7 @@ class TapcashBalanceViewModelTest {
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
         //then
-        checkAssertEmoneyInquiry((tapcashBalanceViewModel.tapcashInquiry.value as EmoneyInquiry), mapTapcashtoEmoney(balanceTapcash))
+        checkAssertEmoneyInquiry((tapcashBalanceViewModel.tapcashInquiry.value as EmoneyInquiry), mapTapcashtoEmoney(balanceTapcash, ))
     }
 
     @Test
@@ -307,6 +309,62 @@ class TapcashBalanceViewModelTest {
 
         //then
         checkAssertEmoneyInquiry((tapcashBalanceViewModel.tapcashInquiry.value as EmoneyInquiry), mapTapcashtoEmoney(balanceTapcash))
+    }
+
+    @Test
+    fun processTagIntent_WriteBalanceTapcash_SuccessWithCryptoSuccessWriteV6() {
+        //given
+        initSuccessData()
+        val secureByteRequest = NFCUtils.stringToByteArrayRadix(secureRequest)
+        val secureByteResult =
+                NFCUtils.stringToByteArrayRadix(secureResult)
+
+        val writeByteRequest = NFCUtils.stringToByteArrayRadix(writeRequest)
+        val writeByteResult = NFCUtils.stringToByteArrayRadix(writeResultV6)
+        every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultSuccess
+        every { tapcashBalanceViewModel.getRandomString() } returns terminalRandomNumber
+        every { isoDep.transceive(secureByteRequest) } returns secureByteResult
+        every { isoDep.transceive(writeByteRequest) } returns writeByteResult
+
+        val balanceTapcash = Gson().fromJson(dummyResponseWithCrypto, BalanceTapcash::class.java)
+        val result = HashMap<Type, Any>()
+        result[BalanceTapcash::class.java] = balanceTapcash
+        val gqlResponseWriteBalanceSuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseWriteBalanceSuccess
+        //when
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
+
+        //then
+        checkAssertEmoneyInquiry((tapcashBalanceViewModel.tapcashInquiry.value as EmoneyInquiry), mapTapcashtoEmoney(balanceTapcash, "004E20"))
+    }
+
+
+    @Test
+    fun processTagIntent_WriteBalanceTapcash_FailedGetData() {
+        //given
+        initSuccessData()
+        val secureByteRequest = NFCUtils.stringToByteArrayRadix(secureRequest)
+        val secureByteResult =
+                NFCUtils.stringToByteArrayRadix(secureResult)
+
+        every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultSuccess
+        every { tapcashBalanceViewModel.getRandomString() } returns terminalRandomNumber
+        every { isoDep.transceive(secureByteRequest) } returns secureByteResult
+
+        val errorGql = GraphqlError()
+        errorGql.message = "Error get balance"
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[BalanceTapcash::class.java] = listOf(errorGql)
+
+        val gqlResponseWriteBalanceFailed = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseWriteBalanceFailed
+        //when
+        tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
+
+        //then
+        assertEquals((tapcashBalanceViewModel.errorInquiry.value)?.message, "Error get balance")
     }
 
     @Test
@@ -417,6 +475,78 @@ class TapcashBalanceViewModelTest {
     }
 
     @Test
+    fun processTagIntent_RecheckBalanceTapcash_IsodepNotConnected() {
+        //given
+        initSuccessData()
+        tapcashBalanceViewModel.isoDep = isoDep
+
+        val balanceTapcash = Gson().fromJson(dummyResponseWithCrypto, BalanceTapcash::class.java)
+        val terminalRandomNumberByte = NFCUtils.hexStringToByteArray(terminalRandomNumber)
+
+        every { isoDep.isConnected } returns false
+
+        //when
+        tapcashBalanceViewModel.recheckBalanceSecurePurse(balanceTapcash, terminalRandomNumberByte)
+
+        //then
+        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+    }
+
+    @Test
+    fun processTagIntent_RecheckBalanceTapcash_IsodepNotInitialez() {
+        //given
+        initSuccessData()
+
+        val balanceTapcash = Gson().fromJson(dummyResponseWithCrypto, BalanceTapcash::class.java)
+        val terminalRandomNumberByte = NFCUtils.hexStringToByteArray(terminalRandomNumber)
+
+        //when
+        tapcashBalanceViewModel.recheckBalanceSecurePurse(balanceTapcash, terminalRandomNumberByte)
+
+        //then
+        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+    }
+
+    @Test
+    fun processTagIntent_RecheckBalanceTapcash_IsodepIOException() {
+        //given
+        initSuccessData()
+        tapcashBalanceViewModel.isoDep = isoDep
+        val recheckSecureByteRequest = NFCUtils.stringToByteArrayRadix(secureRequest)
+        val recheckSecureByteResult = NFCUtils.stringToByteArrayRadix(secureResult)
+        val balanceTapcash = Gson().fromJson(dummyResponseWithCrypto, BalanceTapcash::class.java)
+        val terminalRandomNumberByte = NFCUtils.stringToByteArrayRadix(terminalRandomNumber)
+
+        every { isoDep.transceive(recheckSecureByteRequest) } returns recheckSecureByteResult
+        every { isoDep.transceive(COMMAND_GET_CHALLENGE) } answers  { throw IOException()}
+        //when
+        tapcashBalanceViewModel.recheckBalanceSecurePurse(balanceTapcash, terminalRandomNumberByte)
+
+        //then
+        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+    }
+
+    @Test
+    fun processTagIntent_RecheckBalanceTapcash_SecurePurseFailed() {
+        //given
+        initSuccessData()
+        tapcashBalanceViewModel.isoDep = isoDep
+        val recheckSecureByteRequest = NFCUtils.stringToByteArrayRadix(secureRequest)
+        val recheckSecureByteResult = NFCUtils.stringToByteArrayRadix(challangeFail)
+        val balanceTapcash = Gson().fromJson(dummyResponseWithCrypto, BalanceTapcash::class.java)
+        val terminalRandomNumberByte = NFCUtils.stringToByteArrayRadix(terminalRandomNumber)
+
+        every { isoDep.transceive(recheckSecureByteRequest) } returns recheckSecureByteResult
+        every { isoDep.transceive(COMMAND_GET_CHALLENGE) } returns challangeResultSuccess
+        //when
+        tapcashBalanceViewModel.recheckBalanceSecurePurse(balanceTapcash, terminalRandomNumberByte)
+
+        //then
+        assertEquals(((tapcashBalanceViewModel.errorCardMessage.value) as Throwable).message, "Maaf, cek saldo belum berhasil")
+    }
+
+
+    @Test
     fun processTagIntent_GetStringFromPosition_Succes() {
         //given
         val secureData = "ABCDEF12345678"
@@ -438,6 +568,14 @@ class TapcashBalanceViewModelTest {
 
         //then
         assertEquals(expected, "CD")
+    }
+
+    @Test
+    fun getIsoDep() {
+        //when
+        tapcashBalanceViewModel.isoDep = isoDep
+        //then
+        assertEquals(tapcashBalanceViewModel.isoDep, isoDep)
     }
 
     private fun checkAssertEmoneyInquiry(expected: EmoneyInquiry, actual: EmoneyInquiry){
