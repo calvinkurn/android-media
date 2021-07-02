@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -50,8 +49,10 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
     override fun getScreenName() = null
     override fun initInjector() = getComponent(PmsComponent::class.java).inject(this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         return inflater.inflate(R.layout.fragment_payment_list, container, false)
     }
 
@@ -196,9 +197,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     private fun redirectToHowToPay(model: BasePaymentModel) {
         sendEventToAnalytics(PmsEvents.HowToPayRedirectionEvent(15))
-        val codePair = model.extractValues()
-        RouteManager.route(context, ApplinkConstInternalPayment.INTERNAL_HOW_TO_PAY +
-                "?transaction_id=${codePair.first}&merchant_code=${codePair.second}")
+        RouteManager.route(context, model.howtoPayAppLink)
     }
 
     private fun checkAndOpenInvoiceDetail(model: BasePaymentModel) {
@@ -214,7 +213,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
         transactionId: String,
         merchantCode: String,
         productName: String?
-    )  = viewModel.getCancelPaymentDetail(transactionId, merchantCode, productName)
+    ) = viewModel.getCancelPaymentDetail(transactionId, merchantCode, productName)
 
     private fun openActionBottomSheet(model: BasePaymentModel) {
         val bundle = Bundle()

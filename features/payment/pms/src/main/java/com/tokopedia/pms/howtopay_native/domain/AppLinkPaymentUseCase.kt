@@ -25,8 +25,7 @@ class AppLinkPaymentUseCase @Inject constructor() : UseCase<AppLinkPaymentInfo>(
             val keys = bundle.keySet()
             for (key in keys)
                 json.put(key, bundle.getString(key, ""))
-            val appLinkPaymentInfo: AppLinkPaymentInfo = Gson().fromJson(json.toString(), AppLinkPaymentInfo::class.java)
-            return appLinkPaymentInfo
+            return Gson().fromJson(json.toString(), AppLinkPaymentInfo::class.java)
         } catch (e: Exception) {
             throw InvalidAppLinkException()
         }
