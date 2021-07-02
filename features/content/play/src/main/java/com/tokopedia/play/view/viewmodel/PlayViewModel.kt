@@ -43,6 +43,7 @@ import com.tokopedia.play.data.dto.interactive.isScheduled
 import com.tokopedia.play.data.interactive.ChannelInteractive
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.view.uimodel.action.*
+import com.tokopedia.play.view.uimodel.event.HideCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
@@ -467,6 +468,29 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
+    private fun showLeaderboardSheet(estimatedHeight: Int) {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.LeaderboardSheet] =
+                BottomInsetsState.Shown(
+                        estimatedInsetsHeight = estimatedHeight,
+                        isPreviousStateSame = insetsMap[BottomInsetsType.LeaderboardSheet]?.isShown == true
+                )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
+    private fun hideLeaderboardSheet() {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.LeaderboardSheet] =
+                BottomInsetsState.Hidden(
+                        isPreviousStateSame = insetsMap[BottomInsetsType.LeaderboardSheet]?.isHidden == true
+                )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
     fun hideInsets(isKeyboardHandled: Boolean) {
         val defaultBottomInsets = getDefaultBottomInsetsMapState()
         _observableBottomInsetsState.value = if (isKeyboardHandled) {
@@ -492,10 +516,12 @@ class PlayViewModel @Inject constructor(
         val defaultKeyboardState = currentBottomInsetsMap?.get(BottomInsetsType.Keyboard)?.isHidden ?: true
         val defaultProductSheetState = currentBottomInsetsMap?.get(BottomInsetsType.ProductSheet)?.isHidden ?: true
         val defaultVariantSheetState = currentBottomInsetsMap?.get(BottomInsetsType.VariantSheet)?.isHidden ?: true
+        val defaultLeaderboardSheetState = currentBottomInsetsMap?.get(BottomInsetsType.LeaderboardSheet)?.isHidden ?: true
         return mapOf(
                 BottomInsetsType.Keyboard to BottomInsetsState.Hidden(defaultKeyboardState),
                 BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(defaultProductSheetState),
-                BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(defaultVariantSheetState)
+                BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(defaultVariantSheetState),
+                BottomInsetsType.LeaderboardSheet to BottomInsetsState.Hidden(defaultLeaderboardSheetState),
         )
     }
     //endregion
@@ -537,8 +563,9 @@ class PlayViewModel @Inject constructor(
         when (action) {
             InteractivePreStartFinishedAction -> handleInteractivePreStartFinished()
             InteractiveOngoingFinishedAction -> handleInteractiveOngoingFinished()
-            InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked()
+            is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
             InteractiveTapTapAction -> handleTapTapAction()
+            ClickCloseLeaderboardSheetAction -> handleCloseLeaderboardSheet()
         }
     }
 
@@ -691,6 +718,7 @@ class PlayViewModel @Inject constructor(
             BottomInsetsType.Keyboard -> onKeyboardHidden()
             BottomInsetsType.ProductSheet -> onHideProductSheet()
             BottomInsetsType.VariantSheet -> onHideVariantSheet()
+            BottomInsetsType.LeaderboardSheet -> hideLeaderboardSheet()
         }
         return shownBottomSheets.isNotEmpty()
     }
@@ -1233,14 +1261,21 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun handleWinnerBadgeClicked() {
-        //TODO("Show Leaderboard")
+    private fun handleWinnerBadgeClicked(height: Int) {
+        showLeaderboardSheet(height)
+        viewModelScope.launch {
+            _uiEvent.emit(HideCoachMarkWinnerEvent)
+        }
     }
 
     private fun handleTapTapAction() {
         viewModelScope.launch {
             interactiveFlow.emit(Unit)
         }
+    }
+
+    private fun handleCloseLeaderboardSheet() {
+        hideLeaderboardSheet()
     }
 
     companion object {

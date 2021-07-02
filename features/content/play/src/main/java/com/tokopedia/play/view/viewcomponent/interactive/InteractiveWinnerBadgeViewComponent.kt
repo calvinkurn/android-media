@@ -40,6 +40,10 @@ class InteractiveWinnerBadgeViewComponent(
         )
     }
 
+    fun hideCoachMark() {
+        coachMark.dismissCoachMark()
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
         coachMark.dismissCoachMark()

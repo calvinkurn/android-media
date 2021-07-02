@@ -8,6 +8,8 @@ sealed class PlayViewerNewAction
 object InteractivePreStartFinishedAction : PlayViewerNewAction()
 object InteractiveOngoingFinishedAction : PlayViewerNewAction()
 
-object InteractiveWinnerBadgeClickedAction : PlayViewerNewAction()
+data class InteractiveWinnerBadgeClickedAction(val height: Int) : PlayViewerNewAction()
 
 object InteractiveTapTapAction : PlayViewerNewAction()
+
+object ClickCloseLeaderboardSheetAction : PlayViewerNewAction()

@@ -3,6 +3,7 @@ package com.tokopedia.play_common.ui.leaderboard
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.play_common.R
@@ -16,7 +17,7 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 /**
  * Created by mzennis on 29/06/21.
  */
-class PlayEngagementLeaderboardView(
+class PlayEngagementLeaderboardViewComponent(
     container: ViewGroup,
     listener: Listener
 ) : ViewComponent(container, R.id.cl_leaderboard_sheet) {
@@ -27,7 +28,7 @@ class PlayEngagementLeaderboardView(
 
     private val leaderboardAdapter = PlayEngagementLeaderboardAdapter(object : PlayEngagementLeaderboardViewHolder.Listener{
         override fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int) {
-            listener.onChatWinnerButtonClicked(this@PlayEngagementLeaderboardView, winner, position)
+            listener.onChatWinnerButtonClicked(this@PlayEngagementLeaderboardViewComponent, winner, position)
         }
     })
 
@@ -65,6 +66,16 @@ class PlayEngagementLeaderboardView(
         leaderboardAdapter.setItems(leaderboards)
     }
 
+    fun showWithHeight(height: Int) {
+        if (rootView.height != height) {
+            val layoutParams = rootView.layoutParams as CoordinatorLayout.LayoutParams
+            layoutParams.height = height
+            rootView.layoutParams = layoutParams
+        }
+
+        show()
+    }
+
     override fun show() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
@@ -74,7 +85,7 @@ class PlayEngagementLeaderboardView(
     }
 
     interface Listener {
-        fun onCloseButtonClicked(view: PlayEngagementLeaderboardView)
-        fun onChatWinnerButtonClicked(view: PlayEngagementLeaderboardView, winner: PlayWinnerUiModel, position: Int)
+        fun onCloseButtonClicked(view: PlayEngagementLeaderboardViewComponent)
+        fun onChatWinnerButtonClicked(view: PlayEngagementLeaderboardViewComponent, winner: PlayWinnerUiModel, position: Int)
     }
 }
