@@ -14,15 +14,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
-import com.tokopedia.feedcomponent.bottomsheets.MenuOptionsBottomSheet
-import com.tokopedia.feedcomponent.bottomsheets.ReportBottomSheet
 import com.tokopedia.feedcomponent.util.MentionTextHelper
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
@@ -109,8 +106,7 @@ class KolCommentNewCardView : LinearLayout {
             val profileUrl = element.userUrl
             listener?.onAvatarClicked(
                 if (!profileUrl.isNullOrEmpty()) profileUrl
-                else constructProfileApplink(element.isShop, element.userId ?: "0"),
-                element.isShop
+                else constructProfileApplink(element.isShop, element.userId ?: "0")
             )
         }
 
@@ -174,7 +170,6 @@ class KolCommentNewCardView : LinearLayout {
         listener?.onHashtagClicked(hashtag, id)
     }
 
-
     @SuppressLint("ClickableViewAccessibility")
     private fun handleGeneralComment(element: KolCommentNewModel) {
         btnReply.visible()
@@ -198,29 +193,7 @@ class KolCommentNewCardView : LinearLayout {
         )
 
         setOnLongClickListener {
-            val sheet = MenuOptionsBottomSheet.newInstance(
-                isReportable = true,
-                canUnfollow = false,
-                isDeletable = element.canDeleteComment()
-            )
-            sheet.show((context as FragmentActivity).supportFragmentManager, "")
-            sheet.onReport = {
-                ReportBottomSheet.newInstance(element.id?.toInt()
-                    ?: 0, context = object : ReportBottomSheet.OnReportOptionsClick {
-                    override fun onOption1(reasonType: String, reasonDesc: String) {
-                        listener?.onReport(
-                            reasonType,
-                            reasonDesc,
-                            element.id ?: "0",
-                            element.canDeleteComment()
-                        )
-                    }
-                }).show((context as FragmentActivity).supportFragmentManager, "")
-            }
-            sheet.onDelete = {
-                listener?.onDeleteComment(element.id ?: "0", element.canDeleteComment())
-                    ?: false
-            }
+            listener?.onMenuClicked(element.id, element.canDeleteComment())
             false
         }
 
@@ -234,7 +207,6 @@ class KolCommentNewCardView : LinearLayout {
     private val colorLinkHashtag: Int
         get() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
 
-
     private fun constructProfileApplink(isShop: Boolean, userId: String): String {
         return if (!isShop) {
             ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId)
@@ -245,11 +217,10 @@ class KolCommentNewCardView : LinearLayout {
 
     interface Listener {
         fun onHashtagClicked(hashtag: String, id: String)
-        fun onAvatarClicked(profileUrl: String, shop: Boolean)
+        fun onAvatarClicked(profileUrl: String)
         fun onMentionedProfileClicked(authorId: String)
-        fun onDeleteComment(commentId: String, canDeleteComment: Boolean): Boolean
         fun onTokopediaUrlClicked(url: String)
         fun onReplyClicked(mentionableUser: MentionableUserViewModel)
-        fun onReport(reasonType: String, reasonDesc: String, id: String, canDeleteComment: Boolean)
+        fun onMenuClicked(id: String?, canDeleteComment: Boolean)
     }
 }

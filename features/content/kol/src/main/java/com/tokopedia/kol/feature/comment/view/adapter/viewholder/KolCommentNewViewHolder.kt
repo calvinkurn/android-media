@@ -16,34 +16,20 @@ class KolCommentNewViewHolder(
     private val commentView: KolCommentNewCardView = itemView.findViewById(R.id.kcv_comment)
     private val commentViewListener: KolCommentNewCardView.Listener =
         object : KolCommentNewCardView.Listener {
-            override fun onReport(
-                reasonType: String,
-                reasonDesc: String,
-                id: String,
-                canDeleteComment: Boolean
-            ) {
-                viewListener.reportAction(
-                    adapterPosition,
-                    canDeleteComment,
-                    id,
-                    reasonType,
-                    reasonDesc
-                )
+
+            override fun onMenuClicked(id: String?, canDeleteComment: Boolean) {
+                viewListener.onMenuClicked(id, canDeleteComment, adapterPosition)
             }
 
             override fun onHashtagClicked(hashtag: String, id: String) {
             }
 
-            override fun onAvatarClicked(profileUrl: String, shop: Boolean) {
+            override fun onAvatarClicked(profileUrl: String) {
                 viewListener.onGoToProfile(profileUrl)
             }
 
             override fun onMentionedProfileClicked(authorId: String) {
                 viewListener.onClickMentionedProfile(authorId)
-            }
-
-            override fun onDeleteComment(commentId: String, canDeleteComment: Boolean): Boolean {
-                return viewListener.onDeleteCommentKol(commentId, canDeleteComment, adapterPosition)
             }
 
             override fun onTokopediaUrlClicked(url: String) {}

@@ -119,6 +119,8 @@
 
     <!--Follow Functionalities ASSETS-->
     <string name="feed_component_unfollow_success_toast">Berhasil berhenti mengikuti toko ini</string>
+    <string name="feed_component_unfollow_fail_toast">Oops, gagal meng-unfollow.</string>
+    <string name="feed_component_follow_fail_toast">Oops, gagal mem-follow.</string>
     <string name="feed_header_separator" formatted="false"><![CDATA["<font color='#31353B'><b> · </b></font> ]]></string>
     <string name="kol_action_follow_color"><![CDATA["<font color='#03AC0E'><b>Follow</b></font> ]]></string>
     <string name="kol_Action_following_color"><![CDATA["<font color='#6D7588'><b>Following</b></font> ]]></string>

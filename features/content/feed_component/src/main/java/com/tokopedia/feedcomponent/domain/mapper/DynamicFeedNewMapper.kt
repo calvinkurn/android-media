@@ -25,6 +25,8 @@ const val TYPE_IMAGE = "image"
 
 object DynamicFeedNewMapper {
 
+    var isFirst = true
+
     fun map(feedXHome: FeedXHome): DynamicFeedDomainModel {
         val posts: MutableList<Visitable<*>> = ArrayList()
         var firstPageCursor = ""
@@ -34,7 +36,8 @@ object DynamicFeedNewMapper {
                 TYPE_FEED_X_CARD_PLACEHOLDER -> {
                     if (it.type == TYPE_TOPADS_HEADLINE) {
                         mapCardHeadline(posts)
-                    } else if (it.type == TYPE_CARD_PLAY_CAROUSEL) {
+                    } else if (it.type == TYPE_CARD_PLAY_CAROUSEL && isFirst) {
+                        isFirst = false
                         mapCardCarousel(posts)
                     }
                 }

@@ -16,7 +16,7 @@ data class FeedXCard(
     @SerializedName("reportable")
     var reportable: Boolean = true,
     @SerializedName("editable")
-    var editable: Boolean = true,
+    var editable: Boolean = false,
     @SerializedName("deletable")
     var deletable: Boolean = false,
     @SerializedName("mods")
@@ -81,6 +81,7 @@ data class FeedXCard(
             products = products,
             subTitle = subTitle,
             text = text,
+            deletable = deletable,
             appLink = appLink,
             webLink = webLink,
             actionButtonLabel = actionButtonLabel,

@@ -1,9 +1,8 @@
 package com.tokopedia.feedcomponent.view.widget
 
-import android.app.Activity
 import android.content.Context
-import android.media.MediaPlayer
-import android.net.Uri
+import android.media.MediaMetadataRetriever
+import android.os.CountDownTimer
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -20,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
@@ -28,7 +28,6 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
-import com.tokopedia.feedcomponent.util.ContentNetworkListener
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.util.util.productThousandFormatted
@@ -44,17 +43,25 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.videoplayer.utils.Video
 import kotlinx.android.synthetic.main.item_post_image_new.view.*
 import kotlinx.android.synthetic.main.item_post_video_new.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.net.URLEncoder
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
 private const val SPAN_SIZE_FULL = 6
 private const val SPAN_SIZE_HALF = 3
 private const val SPAN_SIZE_SINGLE = 2
-
+private val scope = CoroutineScope(Dispatchers.Main)
+private var productVideoJob: Job? = null
 
 class PostDynamicViewNew @JvmOverloads constructor(
     context: Context,
@@ -91,7 +98,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private lateinit var imagePostListener: ImagePostViewHolder.ImagePostListener
     private var positionInFeed: Int = 0
     var isPlaying = false
-
+    private var videoPlayer: FeedExoPlayer? = null
 
     init {
         val view =
@@ -169,7 +176,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
     }
 
     fun bindLike(feedXCard: FeedXCard) {
-        bindLike(feedXCard.like, feedXCard.id.toIntOrZero(), feedXCard.typename, feedXCard.followers.isFollowed)
+        bindLike(
+            feedXCard.like,
+            feedXCard.id.toIntOrZero(),
+            feedXCard.typename,
+            feedXCard.followers.isFollowed
+        )
     }
 
     fun bindFollow(feedXCard: FeedXCard) {
@@ -571,10 +583,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     pageControl.hide()
                 }
                 media.forEach { feedMedia ->
-                    imagePostListener.userCarouselImpression(positionInFeed,
+                    imagePostListener.userCarouselImpression(
+                        positionInFeed,
                         media,
                         feedXCard.typename,
-                        feedXCard.followers.isFollowed)
+                        feedXCard.followers.isFollowed
+                    )
 
                     if (feedMedia.type == TYPE_IMAGE) {
                         val imageItem = View.inflate(context, R.layout.item_post_image_new, null)
@@ -611,9 +625,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 context,
                                 object : GestureDetector.SimpleOnGestureListener() {
                                     override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
-                                        listener?.onImageClicked(postId.toString(),
+                                        listener?.onImageClicked(
+                                            postId.toString(),
                                             feedXCard.typename,
-                                            feedXCard.followers.isFollowed)
+                                            feedXCard.followers.isFollowed
+                                        )
                                         if (!productTagText.isVisible)
                                             productTagText.visible()
                                         else
@@ -720,10 +736,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
 
-    private fun canPlayVideo(element: FeedXMedia): Boolean {
-        return element.canPlayVideo && ContentNetworkListener.isWifiEnabled(context)
-    }
-
     private fun setVideoCarouselView(
         feedMedia: FeedXMedia,
         postId: String,
@@ -735,40 +747,21 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val videoItem = View.inflate(context, R.layout.item_post_video_new, null)
         val param = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.MATCH_PARENT
         )
-        videoItem.layoutParams = param
-        videoItem.run {
-            videoPreviewImage.viewTreeObserver.addOnGlobalLayoutListener {
-                object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        val viewTreeObserver = videoPreviewImage.viewTreeObserver
-                        viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        videoPreviewImage.maxHeight = videoPreviewImage.width
-                        videoPreviewImage.requestLayout()
-                    }
-                }
-            }
-
-            videoPreviewImage.setImageUrl(feedMedia.coverUrl)
-            videoPreviewImage.setOnClickListener {
-                playVideo(feedMedia, videoItem)
-            }
+        videoItem?.layoutParams = param
+        setVideoControl(videoItem,feedMedia)
+        videoItem?.run {
             video_tag_text.visible()
-            if (!feedMedia.mediaUrl.contains(VideoViewHolder.STRING_DEFAULT_TRANSCODING)) {
-                setOnClickListener {
-                    if (feedMedia.mediaUrl.isNotEmpty()) {
-                        videoListener?.onVideoPlayerClicked(
-                            positionInFeed,
-                            0,
-                            postId,
-                            feedMedia.mediaUrl
-                        )
-                    }
-
+            setOnClickListener {
+                if (feedMedia.mediaUrl.isNotEmpty()) {
+                    videoListener?.onVideoPlayerClicked(
+                        positionInFeed,
+                        0,
+                        postId,
+                        feedMedia.appLink
+                    )
                 }
-            } else {
-                ic_play?.gone()
             }
             video_tag_text?.setOnClickListener {
                 listener?.let { listener ->
@@ -782,74 +775,88 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     )
                 }
             }
-            video_tag_button?.setOnClickListener {
-                listener?.let { listener ->
-                    listener.onTagClicked(
-                        postId.toIntOrZero(),
-                        products,
-                        listener,
-                        id,
-                        type,
-                        isFollowed
-                    )
-                }
-            }
-            if (canPlayVideo(feedMedia))
-                playVideo(feedMedia, videoItem)
-            else {
-                stopVideo()
+            volumeIcon.setOnClickListener {
+                toggleVolume(videoPlayer?.isMute() != true)
             }
         }
         return (videoItem)
     }
 
-    private fun stopVideo() {
-        if (isPlaying) {
-            layout_video?.stopPlayback()
-            layout_video?.gone()
-            isPlaying = false
+    private fun setVideoControl(videoItem: View?, feedMedia: FeedXMedia) {
+        videoItem?.run {
+            layout_video?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FILL
+            videoPreviewImage.setImageUrl(feedMedia.coverUrl)
+            productVideoJob?.cancel()
+            productVideoJob = scope.launch {
+                if (videoPlayer == null)
+                    videoPlayer = FeedExoPlayer(context)
+                var time = getVideoDuration(feedMedia)
+                layout_video?.player = videoPlayer?.getExoPlayer()
+                videoPlayer?.start(feedMedia.mediaUrl, feedMedia.isMute)
+                videoPlayer?.setVideoStateListener(object : VideoStateListener {
+                    override fun onInitialStateLoading() {}
+
+                    override fun onVideoReadyToPlay() {
+                        hideVideoLoading(videoItem)
+                        object : CountDownTimer(3000, 1000) {
+                            override fun onTick(millisUntilFinished: Long) {
+                                time = time/1000 -1
+                                timer_view.text = SimpleDateFormat("mm:ss").format(
+                                    Date(time)
+                                )
+                            }
+                            override fun onFinish() {
+                                timer_view.gone()
+                            }
+                        }.start()
+                    }
+
+                    override fun configureVolume(isMute: Boolean) {
+                        setupVolume(isMute)
+                    }
+
+                    override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
+                    }
+
+                })
+
+            }
+
+        }
+
+    }
+
+    private fun hideVideoLoading(videoItem: View) {
+        videoItem.run {
+            loader?.gone()
+            ic_play?.gone()
+            timer_view?.visible()
+            videoPreviewImage?.gone()
+        }
+
+    }
+
+    private fun showVideoLoading(videoItem: View) {
+        videoItem.run {
+            loader?.animate()
+            loader?.visible()
+            ic_play?.visible()
         }
     }
 
-    private fun playVideo(feedMedia: FeedXMedia, videoItem: View) {
-        videoItem.run {
-            if (!isPlaying) {
-                frame_video?.invisible()
-                layout_video?.setVideoURI(Uri.parse(feedMedia.mediaUrl))
-                layout_video?.setOnPreparedListener(object :
-                    MediaPlayer.OnPreparedListener {
-                    override fun onPrepared(mp: MediaPlayer) {
-                        context?.let {
-                            val videoSize =
-                                Video.resize(it as Activity, mp.videoWidth, mp.videoHeight)
-                            layout_video?.setSize(videoSize.videoWidth, videoSize.videoHeight)
-                            layout_video?.holder?.setFixedSize(
-                                videoSize.videoWidth,
-                                videoSize.videoHeight
-                            )
-                        }
-                        mp.isLooping = true
-                        ic_play?.gone()
-                        videoPreviewImage?.gone()
-                        mp.setOnInfoListener(object : MediaPlayer.OnInfoListener {
-                            override fun onInfo(
-                                mp: MediaPlayer?,
-                                what: Int,
-                                extra: Int
-                            ): Boolean {
-                                if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-                                    frame_video.visibility = View.VISIBLE
-                                    return true
-                                }
-                                return false
-                            }
-                        })
-                    }
-                })
-                layout_video?.start()
-                isPlaying = true
-            }
-        }
+    private fun getVideoDuration(feedMedia: FeedXMedia): Long {
+        val retriever = MediaMetadataRetriever()
+        retriever.setDataSource(feedMedia.mediaUrl, HashMap())
+        val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+        return time.toLong()
+    }
+
+    private fun toggleVolume(isMute: Boolean) {
+        videoPlayer?.toggleVideoVolume(isMute)
+    }
+
+    private fun setupVolume(isMute: Boolean) {
+        volumeIcon?.setImage(if (!isMute) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
     }
 
     private fun setGridASGCLayout(feedXCard: FeedXCard) {
@@ -873,9 +880,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
         gridList.layoutManager = layoutManager
 
-        imagePostListener.userGridPostImpression(positionInFeed, feedXCard.id,
-            feedXCard.typename)
-
+        imagePostListener.userGridPostImpression(
+            positionInFeed, feedXCard.id,
+            feedXCard.typename
+        )
         val adapter = GridPostAdapter(
             0,
             getGridPostModel(feedXCard, feedXCard.products),

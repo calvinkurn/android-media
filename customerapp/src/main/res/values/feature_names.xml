@@ -54,6 +54,11 @@
     <!--    Dynamic feature for Liveness Detection-->
     <string name="title_liveness_detection">Liveness Detection</string>
 
+    <!--    Dynamic feature for Login Fingerprint-->
+    <string name="title_feature_login_fingerprint_setting">Sidik Jari</string>
+    <string name="title_login_fingerprint">Masuk dengan Sidik Jari</string>
+    <string name="title_base_login_fingerprint">Masuk dengan Sidik Jari</string>
+
     <!--    Change Phone Number-->
     <string name="change_phone_number_app_module_name">changephonenumber</string>
 
@@ -202,6 +207,10 @@
     <string name="title_shipping_editor">Pengiriman</string>
 
     <string name="label_image_preview">Gambar Bukti</string>
+
+    <string name="title_pinpoint_new">Tentukan Pinpoint Lokasi</string>
+
+    <string name="title_address_form">Detail Alamat</string>
 
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>

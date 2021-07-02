@@ -23,13 +23,6 @@ class InitialSearchAdapter(initialSearchAdapterTypeFactory: InitialSearchAdapter
         }
     }
 
-    fun addMinCharState() {
-        if (visitables.getOrNull(lastIndex) !is SellerSearchMinCharUiModel) {
-            visitables.add(SellerSearchMinCharUiModel())
-            notifyItemInserted(lastIndex)
-        }
-    }
-
     fun addNoHistoryState() {
         if (visitables.getOrNull(lastIndex) !is SellerSearchNoHistoryUiModel) {
             visitables.add(SellerSearchNoHistoryUiModel())

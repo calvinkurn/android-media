@@ -93,7 +93,7 @@
     <string name="feed_delete_post">Ingin hapus postingan ini?</string>
     <string name="feed_after_delete_cant">Postingan yang dihapus akan hilang
 dari Feed.</string>
-    <string name="feed_post_deleted">Post berhasil dihapus</string>
+    <string name="feed_post_deleted">Post Kamu Berhasil di Hapus</string>
     <string name="feed_msg_remove_wishlist">Sukses menghapus wishlist</string>
     <string name="feed_msg_add_wishlist">Sukses menambah wishlist</string>
 
@@ -110,8 +110,8 @@ dari Feed.</string>
     <string name="feed_like_error_message">Oops, tidak bisa memberi suka.</string>
 
     <!--Toaster -->
-    <string name="feed_go_to_cart">Lihat Wishlist</string>
-    <string name="feed_go_to_wishlist">Lihat Keranjang</string>
+    <string name="feed_go_to_cart">Lihat Keranjang</string>
+    <string name="feed_go_to_wishlist">Lihat Wishlist</string>
     <string name="feed_added_to_wishlist">Sukses menambah wishlist.</string>
     <string name="feed_added_to_cart">Barang berhasil ditambahkan.</string>
 

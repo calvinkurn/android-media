@@ -20,7 +20,8 @@ data class FeedXMedia(
     @SerializedName("mods")
     var mods: List<String>,
 
-    var canPlayVideo: Boolean = false
+    var canPlayVideo: Boolean = false,
+    var isMute: Boolean = true
 
 )
 

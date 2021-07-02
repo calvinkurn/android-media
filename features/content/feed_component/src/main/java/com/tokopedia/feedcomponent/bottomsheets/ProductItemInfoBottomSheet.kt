@@ -74,27 +74,27 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         val itemList: MutableList<BasePostTagViewModel> = ArrayList()
         for (postTagItem in postTagItemList) {
             val item = ProductPostTagViewModelNew(
-                    postTagItem.id,
-                    postTagItem.name,
-                    postTagItem.coverURL,
-                    postTagItem.price.toString(),
-                    postTagItem.priceFmt,
-                    postTagItem.isDiscount,
-                    postTagItem.discountFmt,
-                    "product",
-                    postTagItem.appLink,
-                    postTagItem.webLink,
-                    postTagItem,
-                    postTagItem.isBebasOngkir,
-                    postTagItem.bebasOngkirStatus,
-                    postTagItem.bebasOngkirURL,
-                    postTagItem.priceOriginal,
-                    postTagItem.priceOriginalFmt,
-                    postTagItem.priceDiscountFmt,
-                    postTagItem.totalSold,
-                    postTagItem.star,
-                    postTagItem.mods,
-                shopId
+                postTagItem.id,
+                postTagItem.name,
+                postTagItem.coverURL,
+                postTagItem.price.toString(),
+                postTagItem.priceFmt,
+                postTagItem.isDiscount,
+                postTagItem.discountFmt,
+                "product",
+                postTagItem.appLink,
+                postTagItem.webLink,
+                postTagItem,
+                postTagItem.isBebasOngkir,
+                postTagItem.bebasOngkirStatus,
+                postTagItem.bebasOngkirURL,
+                postTagItem.priceOriginal,
+                postTagItem.priceOriginalFmt,
+                postTagItem.priceDiscountFmt,
+                postTagItem.totalSold,
+                postTagItem.star,
+                postTagItem.mods,
+                shopId,
             )
             item.feedType = "product"
             item.postId = postId
@@ -113,7 +113,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         postId: Int,
         shopId: String,
         type: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
     ) {
         this.listProducts = products
         this.listener = dynamicPostListener
