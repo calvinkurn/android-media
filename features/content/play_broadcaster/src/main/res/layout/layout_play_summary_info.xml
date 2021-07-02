@@ -1,44 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/layout_summary_content"
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/ll_meta"
+        android:orientation="vertical"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
         android:paddingStart="@dimen/layout_lvl2"
-        android:paddingLeft="@dimen/layout_lvl2"
         android:paddingTop="@dimen/spacing_lvl2"
         android:paddingEnd="@dimen/layout_lvl2"
-        android:paddingRight="@dimen/layout_lvl2"
         android:paddingBottom="@dimen/play_dp_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.tokopedia.unifycomponents.ticker.Ticker
-            android:id="@+id/ticker_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tickerShapeType="loose" />
-
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_cover"
             android:layout_width="@dimen/play_summary_cover_width"
             android:layout_height="@dimen/play_summary_cover_height"
             android:scaleType="centerInside"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:unify_image_corner_radius="3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title"
@@ -47,9 +34,6 @@
             android:layout_marginTop="@dimen/play_summary_margin"
             android:gravity="center"
             android:textColor="@color/Unify_Static_White"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_cover"
             app:typographyType="heading_5"
             tools:text="Sneakers Hypebeast with Cashback 10%" />
 
@@ -67,19 +51,16 @@
             android:text="@string/mock_report_live_duration"
             android:textColor="@color/Unify_Static_White"
             app:drawableLeftCompat="@drawable/ic_play_duration_white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_title"
             app:typographyType="body_3"
             tools:text="28:42" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <View
         android:id="@+id/overflow"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/play_dms_N700_68"
+        android:background="@color/Unify_N600"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_meta" />
@@ -88,12 +69,10 @@
         android:id="@+id/fl_info"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        android:background="@color/play_dms_N700_68"
+        android:background="@color/Unify_N600"
         android:paddingStart="@dimen/spacing_lvl4"
-        android:paddingLeft="@dimen/spacing_lvl4"
         android:paddingTop="@dimen/play_dp_12"
         android:paddingEnd="@dimen/spacing_lvl4"
-        android:paddingRight="@dimen/spacing_lvl4"
         android:paddingBottom="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
