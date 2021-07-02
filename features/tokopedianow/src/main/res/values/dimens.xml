@@ -10,4 +10,6 @@
     <dimen name="tokopedianow_shimmering_lego_rect_height">200dp</dimen>
     <dimen name="tokopedianow_shimmering_margin_bottom">20dp</dimen>
     <dimen name="tokopedianow_shimmering_divider_loader_height">1dp</dimen>
+
+    <dimen name="tokopedianow_searchcategory_minicart_widget_height">78dp</dimen>
 </resources>

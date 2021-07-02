@@ -66,6 +66,9 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                     description
                     buttons {
                       id
+                      code
+                      message
+                      color
                     }
                   }
                   max_char_note

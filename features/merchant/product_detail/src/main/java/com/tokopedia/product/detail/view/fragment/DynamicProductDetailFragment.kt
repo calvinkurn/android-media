@@ -144,6 +144,7 @@ import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormReque
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
@@ -475,9 +476,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     if (requestCode == ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT) {
                         updateCartNotification()
                     }
+                    val isSelectedTheSame = pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.values?.containsAll(mapOfSelectedVariantOption?.values
+                            ?: mutableListOf()) ?: false // means selected variant in bottom sheet is the same in pdp
                     if (pdpUiUpdater?.productSingleVariant == null
                             || pdpUiUpdater?.productSingleVariant?.isVariantError == true
-                            || mapOfSelectedVariantOption == null) return@onActivityResultAtcVariant
+                            || mapOfSelectedVariantOption == null || isSelectedTheSame) return@onActivityResultAtcVariant
                     pdpUiUpdater?.updateVariantSelected(mapOfSelectedVariantOption)
                     val variantLevelOne = ProductDetailVariantLogic.determineVariant(mapOfSelectedVariantOption
                             ?: mapOf(), viewModel.variantData)
@@ -884,6 +887,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     productName,
                     productImageUrl
             )
+        }
+    }
+
+    override fun onChannelRecommendationEmpty(channelPosition: Int, data: RecommendationWidget?) {
+        data?.let {
+            pdpUiUpdater?.removeEmptyRecommendation(it)
+            updateUi()
         }
     }
 
