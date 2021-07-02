@@ -19,7 +19,7 @@ import com.tokopedia.inbox.view.activity.base.InboxTest
 import com.tokopedia.test.application.matcher.withTotalItem
 import org.hamcrest.Matcher
 
-open class InboxNotifcenterTest : InboxTest() {
+abstract class InboxNotifcenterTest : InboxTest() {
 
     protected val inboxNotifcenterDep = InboxNotifcenterFakeDependency()
 
@@ -53,6 +53,9 @@ open class InboxNotifcenterTest : InboxTest() {
 
 }
 
+/**
+ * All user action goes here
+ */
 object NotifcenterAction {
     fun scrollNotificationToPosition(position: Int) {
         onView(withId(R.id.recycler_view)).perform(
@@ -68,6 +71,9 @@ object NotifcenterAction {
     }
 }
 
+/**
+ * All assertion goes here
+ */
 object NotifcenterAssertion {
     fun assertNotifWidgetMsg(position: Int, msg: String) {
         onView(
