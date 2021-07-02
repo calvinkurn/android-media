@@ -3,15 +3,17 @@ package com.tokopedia.common_digital.common.data.api;
 import android.content.Context;
 import android.util.Log;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.authentication.AuthKey;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.url.Env;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
@@ -30,8 +32,17 @@ public class DigitalInterceptor extends TkpdAuthInterceptor {
     public DigitalInterceptor(@ApplicationContext Context context,
                               NetworkRouter networkRouter,
                               UserSessionInterface userSessionInterface) {
-        super(context, networkRouter, userSessionInterface, AuthUtil.KEY.KEY_WSV4);
+        super(context, networkRouter, userSessionInterface);
+        this.authKey = getDigitalAuthKey();
         this.context = context;
+    }
+
+    public String getDigitalAuthKey() {
+        if (TokopediaUrl.getInstance().getTYPE() == Env.STAGING) {
+            return AuthKey.RECHARGE_HMAC_API_KEY_STAGING;
+        } else {
+            return AuthKey.RECHARGE_HMAC_API_KEY_PROD;
+        }
     }
 
     @Override
