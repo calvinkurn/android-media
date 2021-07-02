@@ -57,6 +57,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+
 /**
  * Created by Ade Fulki on 02/06/20.
  */
@@ -87,8 +88,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     protected var isMoreThanOneMethod = true
     protected var clear: Boolean = false
     protected var done = false
-    protected var isLoginRegisterFlow = false
-
+    private var isLoginRegisterFlow = false
     private var tempOtp: CharSequence? = null
     private var indexTempOtp = 0
     private val delayAnimateText: Long = 350
@@ -146,6 +146,16 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         analytics.trackScreen(screenName)
     }
 
+    override fun onStop() {
+        clearOtpLogin()
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        clearOtpLogin()
+        super.onDestroy()
+    }
+
     override fun onResume() {
         super.onResume()
         showKeyboard()
@@ -156,18 +166,13 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         hideKeyboard()
     }
 
-    override fun onDestroy() {
-        if (::countDownTimer.isInitialized) {
-            countDownTimer.cancel()
-        }
+    private fun clearOtpLogin() {
         clear = remoteConfig.getBoolean(RemoteConfigKey.PRE_OTP_LOGIN_CLEAR, true)
         if (clear) {
-            //if user interrupted login / register otp flow (not done), delete the token
             if (!done && isLoginRegisterFlow) {
                 userSession.setToken(null, null, null)
             }
         }
-        super.onDestroy()
     }
 
     override fun onBackPressed(): Boolean {

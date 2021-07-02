@@ -26,14 +26,14 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
-import com.tokopedia.otp.common.analytics.TrackingOtpConstant
-import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant
+import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.adapter.VerificationMethodAdapter
@@ -111,20 +111,26 @@ class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         analytics.trackScreen(screenName)
     }
 
+    override fun onStop() {
+        clearOtpLogin()
+        super.onStop()
+    }
+
     override fun onDestroy() {
-        viewmodel.getVerificationMethodResult.removeObservers(this)
-        viewmodel.flush()
-        clear = remoteConfig.getBoolean(RemoteConfigKey.PRE_OTP_LOGIN_CLEAR, true)
-        if (clear) {
-            //if user interrupted login / register otp flow (not done), delete the token
-            if (!done && isLoginRegisterFlow) {
-                userSession.setToken(null, null, null)
-            }
-        }
+        clearOtpLogin()
         super.onDestroy()
     }
 
     override fun onBackPressed(): Boolean = true
+
+    private fun clearOtpLogin() {
+        clear = remoteConfig.getBoolean(RemoteConfigKey.PRE_OTP_LOGIN_CLEAR, true)
+        if (clear) {
+            if (!done && isLoginRegisterFlow) {
+                userSession.setToken(null, null, null)
+            }
+        }
+    }
 
     private fun initView() {
         setTitle()
