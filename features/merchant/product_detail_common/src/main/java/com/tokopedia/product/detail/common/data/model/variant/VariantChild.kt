@@ -95,6 +95,9 @@ data class VariantChild(
     val isBuyable: Boolean
         get() = getVariantFinalStock() > 0 && stock?.isBuyable ?: false
 
+    val isInactive:Boolean
+        get() = getVariantFinalStock() > 0 && stock?.isBuyable == false
+
     val isFlashSale: Boolean
         get() = campaign?.isActive == true
 

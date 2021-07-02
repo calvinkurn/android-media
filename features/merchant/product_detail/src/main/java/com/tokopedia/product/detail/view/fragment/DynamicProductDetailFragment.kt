@@ -475,9 +475,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     if (requestCode == ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT) {
                         updateCartNotification()
                     }
+                    val isSelectedTheSame = pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.values?.containsAll(mapOfSelectedVariantOption?.values
+                            ?: mutableListOf()) ?: false // means selected variant in bottom sheet is the same in pdp
                     if (pdpUiUpdater?.productSingleVariant == null
                             || pdpUiUpdater?.productSingleVariant?.isVariantError == true
-                            || mapOfSelectedVariantOption == null) return@onActivityResultAtcVariant
+                            || mapOfSelectedVariantOption == null || isSelectedTheSame) return@onActivityResultAtcVariant
                     pdpUiUpdater?.updateVariantSelected(mapOfSelectedVariantOption)
                     val variantLevelOne = ProductDetailVariantLogic.determineVariant(mapOfSelectedVariantOption
                             ?: mapOf(), viewModel.variantData)

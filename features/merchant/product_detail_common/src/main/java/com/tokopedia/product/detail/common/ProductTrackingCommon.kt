@@ -127,7 +127,7 @@ object ProductTrackingCommon {
     }
 
     fun eventEcommerceAtcError(errorMessage: String, productId: String, userId: String, pageSource: String) {
-        val mapEvent = TrackAppUtils.gtmData(ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
+        val mapEvent = TrackAppUtils.gtmData(ProductTrackingConstant.PDP.EVENT_VIEW_PDP_IRIS,
                 "$pageSource - global variant bottomsheet",
                 ProductTrackingConstant.Action.ACTION_VIEW_ERROR_WHEN_ADD_TO_CART,
                 "not success - $errorMessage")
