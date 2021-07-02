@@ -10,8 +10,9 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
 import com.tokopedia.seller.menu.common.domain.entity.UserShopInfoResponse
-import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
+import com.tokopedia.seller.menu.common.domain.usecase.*
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopBadgeUiModel
@@ -21,12 +22,15 @@ import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.ShopOperationalUiModel
 import com.tokopedia.sellerhome.utils.observeAwaitValue
 import com.tokopedia.sellerhome.utils.observeOnce
+import com.tokopedia.sellerhome.utils.verifyStateErrorEquals
+import com.tokopedia.sellerhome.utils.verifyStateSuccessEquals
 import com.tokopedia.shop.common.data.source.cloud.model.FreeOngkir
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoFreeShipping
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -59,6 +63,24 @@ class OtherMenuViewModelTest {
     lateinit var getShopOperationalUseCase: GetShopOperationalUseCase
 
     @RelaxedMockK
+    lateinit var balanceInfoUseCase: BalanceInfoUseCase
+
+    @RelaxedMockK
+    lateinit var getShopBadgeUseCase: GetShopBadgeUseCase
+
+    @RelaxedMockK
+    lateinit var getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase
+
+    @RelaxedMockK
+    lateinit var getUserShopInfoUseCase: GetUserShopInfoUseCase
+
+    @RelaxedMockK
+    lateinit var topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase
+
+    @RelaxedMockK
+    lateinit var topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase
+
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
@@ -69,8 +91,6 @@ class OtherMenuViewModelTest {
 
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
-
-    protected lateinit var isToasterAlreadyShownField: Field
 
     private lateinit var mViewModel: OtherMenuViewModel
 
@@ -85,6 +105,12 @@ class OtherMenuViewModelTest {
                         getShopFreeShippingInfoUseCase,
                         getShopOperationalUseCase,
                         getShopInfoPeriodUseCase,
+                        balanceInfoUseCase,
+                        getShopBadgeUseCase,
+                        getShopTotalFollowersUseCase,
+                        getUserShopInfoUseCase,
+                        topAdsAutoTopupUseCase,
+                        topAdsDashboardDepositUseCase,
                         userSession,
                         remoteConfig
                 )
@@ -100,8 +126,7 @@ class OtherMenuViewModelTest {
         )
         val partialTopAdsSuccess = PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo(
                 OthersBalance(),
-                anyFloat(),
-                anyBoolean()
+                anyFloat()
         )
         val successPair = Pair(partialShopInfoSuccess, partialTopAdsSuccess)
 
@@ -111,14 +136,11 @@ class OtherMenuViewModelTest {
 
         mViewModel.getAllSettingShopInfo()
 
-        coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             getAllShopInfoUseCase.executeOnBackground()
         }
 
         assertEquals((mViewModel.settingShopInfoLiveData.value as? Success)?.data?.shopBadgeUiModel, ShopBadgeUiModel(partialShopInfoSuccess.shopBadgeUrl))
-        assertEquals((mViewModel.settingShopInfoLiveData.value as? Success)?.data?.topadsBalanceUiModel?.isTopAdsUser, partialTopAdsSuccess.isTopAdsAutoTopup)
     }
 
     @Test
@@ -131,14 +153,11 @@ class OtherMenuViewModelTest {
 
         mViewModel.getAllSettingShopInfo()
 
-        coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             getAllShopInfoUseCase.executeOnBackground()
         }
 
         assert(mViewModel.settingShopInfoLiveData.value == Fail(throwable))
-
     }
 
     @Test
@@ -148,7 +167,7 @@ class OtherMenuViewModelTest {
 
             mockViewModel.getAllSettingShopInfo(true)
 
-            coVerify {
+            verify {
                 mockViewModel["checkDelayErrorResponseTrigger"]()
             }
 
@@ -173,14 +192,16 @@ class OtherMenuViewModelTest {
 
     @Test
     fun `will not change live data value if toaster is already shown`() {
-        isToasterAlreadyShownField = mViewModel::class.java.getDeclaredField("_isToasterAlreadyShown").apply {
-            isAccessible = true
-        }
-        isToasterAlreadyShownField.set(mViewModel, NonNullLiveData(true))
-
-        mViewModel.getAllSettingShopInfo(true)
-        mViewModel.isToasterAlreadyShown.value?.let {
-            assert(it)
+        coroutineTestRule.runBlockingTest {
+            mViewModel.getAllSettingShopInfo(true)
+            mViewModel.isToasterAlreadyShown.observeOnce {
+                assertTrue(it)
+            }
+            advanceTimeBy(10L)
+            mViewModel.getAllSettingShopInfo(true)
+            mViewModel.isToasterAlreadyShown.observeOnce {
+                assertTrue(it)
+            }
         }
     }
 
@@ -287,10 +308,10 @@ class OtherMenuViewModelTest {
 
         mViewModel.getShopOperational()
 
-        val expectedResult = Success(uiModel)
+        val expectedResult = SettingResponseState.SettingSuccess(uiModel)
 
-        mViewModel.shopOperational
-            .verifySuccessEquals(expectedResult)
+        mViewModel.shopOperationalLiveData
+            .verifyStateSuccessEquals(expectedResult)
     }
 
     @Test
@@ -303,9 +324,66 @@ class OtherMenuViewModelTest {
 
         mViewModel.getShopOperational()
 
-        val expectedResult = Fail(error)
+        val expectedResult = SettingResponseState.SettingError(error)
 
-        mViewModel.shopOperational
-            .verifyErrorEquals(expectedResult)
+        mViewModel.shopOperationalLiveData
+            .verifyStateErrorEquals(expectedResult)
     }
+
+    private suspend fun onGetShopBadge_thenReturn(shopBadge: String) {
+        coEvery { getShopBadgeUseCase.executeOnBackground() } returns shopBadge
+    }
+
+    private suspend fun onGetShopBadge_thenThrow(exception: Exception) {
+        coEvery { getShopBadgeUseCase.executeOnBackground() } throws exception
+    }
+
+    private suspend fun onGetShopTotalFollowers_thenReturn(totalFollowers: Long) {
+        coEvery { getShopTotalFollowersUseCase.executeOnBackground() } returns totalFollowers
+    }
+
+    private suspend fun onGetShopTotalFollowers_thenThrow(exception: Exception) {
+        coEvery { getShopTotalFollowersUseCase.executeOnBackground() } throws exception
+    }
+
+    private suspend fun onGetUserShopInfo_thenReturn(shopInfo: UserShopInfoWrapper) {
+        coEvery { getUserShopInfoUseCase.executeOnBackground() } returns shopInfo
+    }
+
+    private suspend fun onGetUserShopInfo_thenThrow(exception: Exception) {
+        coEvery { getUserShopInfoUseCase.executeOnBackground() } throws exception
+    }
+
+    private suspend fun onGetShopOperational_thenReturn(shopOperational: ShopOperationalUiModel) {
+        coEvery { getShopOperationalUseCase.executeOnBackground() } returns shopOperational
+    }
+
+    private suspend fun onGetShopOperational_thenThrow(exception: Exception) {
+        coEvery { getShopOperationalUseCase.executeOnBackground() } throws exception
+    }
+
+    private suspend fun onGetBalance_thenReturn(balance: OthersBalance) {
+        coEvery { balanceInfoUseCase.executeOnBackground() } returns balance
+    }
+
+    private suspend fun onGetBalance_thenThrow(exception: Exception) {
+        coEvery { balanceInfoUseCase.executeOnBackground() } throws exception
+    }
+
+    private suspend fun onGetTopAdsKredit_thenReturn(kredit: Float) {
+        coEvery { topAdsDashboardDepositUseCase.executeOnBackground() } returns kredit
+    }
+
+    private suspend fun onGetTopAdsKredit_thenThrow(exception: Exception) {
+        coEvery { topAdsDashboardDepositUseCase.executeOnBackground() } throws exception
+    }
+
+    private suspend fun onGetTopAdsAutoTopup_thenReturn(isAutoTopup: Boolean) {
+        coEvery { topAdsAutoTopupUseCase.executeOnBackground() } returns isAutoTopup
+    }
+
+    private suspend fun onGetTopAdsAutoTopup_thenThrow(exception: Exception) {
+        coEvery { topAdsAutoTopupUseCase.executeOnBackground() } throws exception
+    }
+
 }

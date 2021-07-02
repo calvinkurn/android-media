@@ -17,7 +17,6 @@ class GetAllShopInfoUseCase constructor(
         private val getShopBadgeUseCase: GetShopBadgeUseCase,
         private val getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
         private val getUserShopInfoUseCase: GetUserShopInfoUseCase,
-        private val topAdsAutoTopupUseCase: TopAdsAutoTopupUseCase,
         private val topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
         private val dispatchers: CoroutineDispatchers
 ) : UseCase<Pair<PartialSettingResponse, PartialSettingResponse>>() {
@@ -50,11 +49,9 @@ class GetAllShopInfoUseCase constructor(
     private suspend fun getPartialTopAdsData(shopId: String): PartialSettingResponse {
         return try {
             topAdsDashboardDepositUseCase.params = TopAdsDashboardDepositUseCase.createRequestParams(shopId.toInt())
-            topAdsAutoTopupUseCase.params = TopAdsAutoTopupUseCase.createRequestParams(shopId)
             PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo(
                     balanceInfoUseCase.executeOnBackground(),
-                    topAdsDashboardDepositUseCase.executeOnBackground(),
-                    topAdsAutoTopupUseCase.executeOnBackground())
+                    topAdsDashboardDepositUseCase.executeOnBackground())
         } catch (exception: Exception) {
             getPartialFailResponse(exception)
         }

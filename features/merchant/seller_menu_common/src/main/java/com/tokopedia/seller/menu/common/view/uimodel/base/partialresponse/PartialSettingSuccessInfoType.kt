@@ -8,9 +8,7 @@ sealed class PartialSettingSuccessInfoType: PartialSettingResponse {
 
     data class PartialTopAdsSettingSuccessInfo(
             val othersBalance: OthersBalance,
-            val topAdsBalance: Float,
-            val isTopAdsAutoTopup: Boolean
-    ) : PartialSettingSuccessInfoType()
+            val topAdsBalance: Float) : PartialSettingSuccessInfoType()
 
     data class PartialShopSettingSuccessInfo(
             val userShopInfoWrapper: UserShopInfoWrapper,
