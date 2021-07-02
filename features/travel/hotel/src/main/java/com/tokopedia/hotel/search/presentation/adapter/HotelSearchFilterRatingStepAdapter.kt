@@ -1,8 +1,8 @@
 package com.tokopedia.hotel.search.presentation.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import kotlinx.android.synthetic.main.item_hotel_filter_rating_step.view.*

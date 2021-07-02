@@ -9,10 +9,8 @@ import android.widget.TextView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.FilterRatingEnum
 import com.tokopedia.hotel.search.data.model.FilterV2
-import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultFilterV2Adapter
 import kotlinx.android.synthetic.main.layout_hotel_filter_selection_range.view.*
-import kotlinx.android.synthetic.main.layout_hotel_filter_selection_range.view.base_rating_step
 
 /**
  * @author by jessica on 12/08/20

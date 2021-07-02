@@ -2,12 +2,11 @@ package com.tokopedia.hotel.search.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.FilterV2
-import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultFilterAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultFilterV2Adapter
-import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import kotlinx.android.synthetic.main.layout_hotel_filter_selection.view.*
 
 /**

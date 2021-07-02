@@ -14,7 +14,6 @@ import android.widget.AutoCompleteTextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.activity.HotelContactDataActivity
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel

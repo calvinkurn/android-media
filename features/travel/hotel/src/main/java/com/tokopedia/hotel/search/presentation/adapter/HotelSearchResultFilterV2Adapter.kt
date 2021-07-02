@@ -3,7 +3,6 @@ package com.tokopedia.hotel.search.presentation.adapter
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.FilterV2
 import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.adapter.viewholder.*

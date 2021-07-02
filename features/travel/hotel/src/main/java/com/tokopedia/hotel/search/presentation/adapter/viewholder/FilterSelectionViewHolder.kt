@@ -7,7 +7,6 @@ import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.SpanningLinearLayoutManager
 import com.tokopedia.hotel.search.data.model.FilterStarEnum
 import com.tokopedia.hotel.search.data.model.FilterV2
-import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultFilterAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultFilterV2Adapter
 import kotlinx.android.synthetic.main.layout_hotel_filter_selection.view.*

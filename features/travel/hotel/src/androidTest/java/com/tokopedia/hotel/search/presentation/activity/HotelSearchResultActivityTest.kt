@@ -13,7 +13,8 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -28,9 +29,9 @@ import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragmen
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
 import org.junit.After
+import org.junit.Assert.assertThat
 import org.junit.Rule
 import org.junit.Test
-import org.junit.Assert.assertThat
 
 /**
  * @author by jessica on 07/08/20

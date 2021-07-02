@@ -3,7 +3,6 @@ package com.tokopedia.hotel.search.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.FilterV2
-import com.tokopedia.hotel.search.data.model.params.ParamFilterV2
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultFilterV2Adapter
 import com.tokopedia.hotel.search.presentation.widget.HotelFilterPriceRangeSlider
 import com.tokopedia.kotlin.extensions.view.toIntOrZero

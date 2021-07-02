@@ -6,7 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.data.model.PropertyPrice
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.item_property_search_result_horizontal.view.*
 
 class HotelSearchMapItemViewHolder(view: View) : AbstractViewHolder<Property>(view) {
