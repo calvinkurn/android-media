@@ -331,7 +331,10 @@ class MiniCartWidget @JvmOverloads constructor(
         }
     }
 
-    private fun showMiniCartListBottomSheet(fragment: Fragment) {
+    /*
+    * Function to show mini cart bottom sheet
+    * */
+    fun showMiniCartListBottomSheet(fragment: Fragment) {
         viewModel?.let {
             miniCartListBottomSheet.show(fragment.context, fragment.parentFragmentManager, fragment.viewLifecycleOwner, it, this)
         }
