@@ -16,7 +16,7 @@ import com.tokopedia.inbox.common.viewmatcher.withRecyclerView
 import com.tokopedia.inbox.fake.InboxNotifcenterFakeDependency
 import com.tokopedia.inbox.fake.di.notifcenter.DaggerFakeNotificationComponent
 import com.tokopedia.inbox.view.activity.base.InboxTest
-import com.tokopedia.test.application.matcher.withTotalItem
+import com.tokopedia.test.application.matcher.hasTotalItemOf
 import org.hamcrest.Matcher
 
 abstract class InboxNotifcenterTest : InboxTest() {
@@ -91,7 +91,7 @@ object NotifcenterAssertion {
 
     fun assertItemListSize(size: Int) {
         onView(withId(R.id.recycler_view))
-            .check(matches(withTotalItem(size)))
+            .check(matches(hasTotalItemOf(size)))
     }
 
     fun assertRecyclerviewItem(matcher: Matcher<in View>) {

@@ -61,7 +61,7 @@ class RecyclerViewMatcher(private val recyclerViewId: Int) {
  * Example usage:
  * onView(withId(R.id.recyclerview)).check(matches(withTotalItem(1)))
  */
-fun withTotalItem(expectedCount: Int): BoundedMatcher<View, RecyclerView> {
+fun hasTotalItemOf(expectedCount: Int): BoundedMatcher<View, RecyclerView> {
     return object : BoundedMatcher<View, RecyclerView>(RecyclerView::class.java) {
         override fun describeTo(description: Description?) {
             description?.appendText("$expectedCount child-count")
