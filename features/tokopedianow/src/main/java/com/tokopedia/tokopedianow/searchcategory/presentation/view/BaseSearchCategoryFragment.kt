@@ -648,6 +648,7 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun updateHeaderBackgroundVisibility(isVisible: Boolean) {
         if (!isVisible) headerBackground?.setImageResource(R.color.tokopedianow_dms_transparent)
+        else headerBackground?.setImageResource(R.drawable.tokopedianow_ic_header_background)
         headerBackground?.showWithCondition(isVisible)
     }
 
