@@ -536,8 +536,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private Subscriber<String> getOpenShopInfoSubscriber(final List<String> linkSegment,
-                                                                           final Uri uriData,
-                                                                           Bundle bundle) {
+                                                         final Uri uriData,
+                                                         Bundle bundle) {
         return new Subscriber<String>() {
             @Override
             public void onCompleted() {
@@ -598,7 +598,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                     ApplinkConst.SHOP_FEED,
                                     shopId);
                         } else {
-                            Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP, shopId);
+                            Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP,
+                                    shopId);
                             intent.putExtras(bundle);
                             context.startActivity(intent);
                         }
@@ -767,7 +768,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private Subscriber<String> getOpenProductSubscriber(final List<String> linkSegment,
-                                                                          final Uri uriData) {
+                                                        final Uri uriData) {
         return new Subscriber<String>() {
             @Override
             public void onCompleted() {
@@ -781,7 +782,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         crashlytics.recordException(new RuntimeException(e));
                     }
 
-                    Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(), true);
+                    Intent intent = BaseDownloadAppLinkActivity.newIntent(context,
+                            uriData.toString(), true);
                     context.startActivity(intent);
                     context.finish();
                 }
