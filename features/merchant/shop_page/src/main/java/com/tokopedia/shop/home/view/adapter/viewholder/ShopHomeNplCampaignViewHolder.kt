@@ -307,7 +307,8 @@ class ShopHomeNplCampaignViewHolder(
             (colonMinuteView as? Typography)?.setWeight(Typography.BOLD)
             (colonMinuteView as? Typography)?.setType(Typography.SMALL)
             onFinish = {
-                shopHomeCampaignNplWidgetListener.onTimerFinished(model)
+                if(remainingMilliseconds >= 0)
+                    shopHomeCampaignNplWidgetListener.onTimerFinished(model)
             }
             show()
         }
