@@ -15,6 +15,15 @@ import java.net.UnknownHostException;
 public class ErrorHandler {
 
     public static String getErrorMessage(final Context context, Throwable e) {
+        String errorMessageString = getErrorMessageString(context, e);
+        String errorCodeNative = ExceptionDictionary.Companion.getErrorCodeSimple(e);
+        String errorCodeHTTP = getErrorMessageHTTP(context, e);
+
+        String errorMessage = errorMessageString + " " + errorCodeNative;
+        return errorMessage;
+    }
+
+    public static String getErrorMessageString(final Context context, Throwable e) {
         if (context == null || e == null) {
             return "Terjadi kesalahan. Ulangi beberapa saat lagi";
         }
@@ -57,6 +66,14 @@ public class ErrorHandler {
             return context.getString(R.string.default_request_error_internal_server);
         } else {
             return context.getString(R.string.default_request_error_unknown);
+        }
+    }
+
+    public static String getErrorMessageHTTP(final Context context, Throwable e) {
+        if (e instanceof MessageErrorException && !TextUtils.isEmpty(e.getMessage())) {
+            return ((MessageErrorException) e).getErrorCode();
+        } else {
+            return "000";
         }
     }
 }
