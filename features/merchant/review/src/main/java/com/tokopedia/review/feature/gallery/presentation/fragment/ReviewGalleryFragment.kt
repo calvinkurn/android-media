@@ -14,8 +14,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
@@ -26,6 +27,7 @@ import com.tokopedia.review.feature.gallery.presentation.activity.ReviewGalleryA
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryImagesAdapter
 import com.tokopedia.review.feature.gallery.presentation.di.DaggerReviewGalleryComponent
 import com.tokopedia.review.feature.gallery.presentation.di.ReviewGalleryComponent
+import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryImageListener
 import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryImageSwipeListener
 import com.tokopedia.review.feature.gallery.presentation.listener.SnapPagerScrollListener
 import com.tokopedia.review.feature.gallery.presentation.viewmodel.ReviewGalleryViewModel
@@ -37,7 +39,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryComponent>, ReviewReportBottomSheetListener, ReviewGalleryImageSwipeListener {
+class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryComponent>, ReviewReportBottomSheetListener, ReviewGalleryImageSwipeListener, ReviewGalleryImageListener {
 
     companion object {
         fun newInstance(cacheManagerId: String): ReviewGalleryFragment {
@@ -57,7 +59,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     private var imagesRecyclerView: RecyclerView? = null
     private var reviewDetail: ReviewGalleryReviewDetailWidget? = null
     private val adapter by lazy {
-        ReviewGalleryImagesAdapter()
+        ReviewGalleryImagesAdapter(this)
     }
     private var expandedReviewBottomSheet: ReviewGalleryExpandedReviewBottomSheet? = null
 
@@ -110,6 +112,14 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         goToReportReview(reviewId, shopId)
     }
 
+    override fun onImageClicked() {
+        if (areComponentsHidden) {
+            showComponents()
+        } else {
+            hideComponentsButImage()
+        }
+    }
+
     private fun getDataFromArguments() {
         arguments?.getString(ReviewGalleryActivity.EXTRA_CACHE_MANAGER_ID)?.let {
             context?.let { context ->
@@ -143,13 +153,6 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         imagesRecyclerView?.apply {
             adapter = this@ReviewGalleryFragment.adapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-            setOnClickListener {
-                if (areComponentsHidden) {
-                    showComponents()
-                } else {
-                    hideComponentsButImage()
-                }
-            }
         }
         addPagerSnapHelperToRecyclerView()
         adapter.setData(productReview.imageAttachments.map { it.imageUrl })
@@ -176,6 +179,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
                 }
                 setLikeButtonImage(likeDislike.isLiked())
             }
+            setThreeDotsVisibility(isReportable)
         }
     }
 
@@ -200,6 +204,10 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         // No Op
     }
 
+    private fun setThreeDotsVisibility(isReportable: Boolean) {
+        menuButton?.showWithCondition(isReportable)
+    }
+
     private fun updateLikeButton(isLiked: Boolean) {
         reviewDetail?.setLikeButtonImage(isLiked)
     }
@@ -220,14 +228,18 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     }
 
     private fun hideComponentsButImage() {
-        closeButton?.hide()
-        menuButton?.hide()
+        closeButton?.invisible()
+        menuButton?.invisible()
+        reviewDetail?.invisible()
         areComponentsHidden = true
     }
 
     private fun showComponents() {
         closeButton?.show()
-        menuButton?.show()
+        if (productReview.isReportable) {
+            menuButton?.show()
+        }
+        reviewDetail?.show()
         areComponentsHidden = false
     }
 

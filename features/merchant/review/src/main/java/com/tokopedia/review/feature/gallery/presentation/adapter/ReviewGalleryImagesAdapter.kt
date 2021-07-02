@@ -5,8 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.gallery.presentation.adapter.viewholder.ReviewGalleryImagesViewHolder
+import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryImageListener
 
-class ReviewGalleryImagesAdapter : RecyclerView.Adapter<ReviewGalleryImagesViewHolder>() {
+class ReviewGalleryImagesAdapter(private val imageListener: ReviewGalleryImageListener) : RecyclerView.Adapter<ReviewGalleryImagesViewHolder>() {
 
     private var images: List<String> = listOf()
 
@@ -20,7 +21,7 @@ class ReviewGalleryImagesAdapter : RecyclerView.Adapter<ReviewGalleryImagesViewH
     }
 
     override fun onBindViewHolder(holder: ReviewGalleryImagesViewHolder, position: Int) {
-        holder.bind(images[position])
+        holder.bind(images[position], imageListener)
     }
 
     fun setData(images: List<String>) {

@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
+import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryImageListener
 import com.tokopedia.unifycomponents.ImageUnify
 
 class ReviewGalleryImagesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -14,7 +15,12 @@ class ReviewGalleryImagesViewHolder(view: View) : RecyclerView.ViewHolder(view) 
         image = view.findViewById(R.id.review_gallery_image)
     }
 
-    fun bind(imageUrl: String) {
-        image?.loadImage(imageUrl)
+    fun bind(imageUrl: String, imageListener: ReviewGalleryImageListener) {
+        image?.apply {
+            loadImage(imageUrl)
+            setOnClickListener {
+                imageListener.onImageClicked()
+            }
+        }
     }
 }
