@@ -3,22 +3,15 @@ package com.tokopedia.loginphone.chooseaccount.view.general
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.text.format.DateFormat
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.util.LetUtil
-import com.tokopedia.linker.LinkerConstants
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.linker.model.UserData
 import com.tokopedia.loginphone.chooseaccount.data.AccountListDataModel
 import com.tokopedia.loginphone.chooseaccount.data.UserDetailDataModel
 import com.tokopedia.loginphone.chooseaccount.di.DaggerChooseAccountComponent
@@ -28,16 +21,12 @@ import com.tokopedia.loginphone.chooseaccount.viewmodel.ChooseAccountViewModel
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.di.SessionModule
-import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
-import kotlin.collections.HashMap
 
 /**
  * @author by nisie on 12/4/17.
