@@ -30,7 +30,27 @@ class NotifcenterRecommendationTest : InboxNotifcenterTest() {
         )
     }
 
-    //TODO: should show product recom when TDN does not has ad
+    @Test
+    fun should_show_product_recom_when_TDN_does_not_has_ad() {
+        // Given
+        inboxNotifcenterDep.apply {
+            topAdsRepository.response = topAdsRepository.noDataResponse
+            getRecommendationUseCase.response = getRecommendationUseCase.defaultResponse
+        }
+        startInboxActivity()
+
+        // When
+        NotifcenterAction.scrollNotificationToPosition(8)
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(6, RecommendationTitleViewHolder::class.java)
+        )
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(7, RecommendationViewHolder::class.java)
+        )
+    }
+
     //TODO: should show product recom when TDN load is error
     //TODO: should hide product recom when user has notification filter
 
