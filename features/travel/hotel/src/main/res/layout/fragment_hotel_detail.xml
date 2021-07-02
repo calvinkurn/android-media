@@ -491,6 +491,7 @@
                         android:id="@+id/container_facilities"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/layout_lvl1"
                         android:orientation="vertical">
 
                         <LinearLayout
