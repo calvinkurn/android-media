@@ -203,7 +203,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         viewModel.clearFilters()
         viewModel.setSort(SortTypeConstants.MOST_HELPFUL_PARAM)
         viewModel.getSelectedRatingFilter()
-        with(viewModel.getRatingAndTopics()) {
+        with(getRatingAndTopics()) {
             reviewHeader?.setAvailableFilters(topics, availableFilters, this@ReadReviewFragment)
         }
     }
@@ -466,11 +466,15 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     }
 
     private fun getReviewStatistics(): List<ProductReviewDetail> {
-        return viewModel.getReviewStatistics()
+        return (viewModel.ratingAndTopic.value as? Success)?.data?.rating?.detail ?: listOf()
     }
 
     private fun getSatisfactionRate(): String {
-        return viewModel.getReviewSatisfactionRate()
+        return (viewModel.ratingAndTopic.value as? Success)?.data?.rating?.satisfactionRate ?: ""
+    }
+
+    private fun getRatingAndTopics(): ProductrevGetProductRatingAndTopic {
+        return (viewModel.ratingAndTopic.value as? Success)?.data ?: ProductrevGetProductRatingAndTopic()
     }
 
     private fun goToReportReview(reviewId: String, shopId: String) {

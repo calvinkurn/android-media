@@ -7,7 +7,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.common.domain.usecase.ToggleLikeReviewUseCase
-import com.tokopedia.review.feature.reading.data.*
+import com.tokopedia.review.feature.reading.data.ProductReview
+import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
+import com.tokopedia.review.feature.reading.data.ProductrevGetProductReviewList
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductRatingAndTopicsUseCase
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductReviewListUseCase
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
@@ -62,14 +64,6 @@ class ReadReviewViewModel @Inject constructor(
 
     fun getProductId(): String {
         return this.productId.value ?: ""
-    }
-
-    fun getReviewStatistics(): List<ProductReviewDetail> {
-        return (ratingAndTopic.value as? Success)?.data?.rating?.detail ?: listOf()
-    }
-
-    fun getReviewSatisfactionRate(): String {
-        return (ratingAndTopic.value as? Success)?.data?.rating?.satisfactionRate ?: ""
     }
 
     fun setPage(page: Int) {
@@ -206,9 +200,5 @@ class ReadReviewViewModel @Inject constructor(
 
     private fun getTopicsMap(): Map<String, String> {
         return (_ratingAndTopics.value as? Success)?.data?.getTopicsMap() ?: mapOf()
-    }
-
-    fun getRatingAndTopics(): ProductrevGetProductRatingAndTopic {
-        return (_ratingAndTopics.value as? Success)?.data ?: ProductrevGetProductRatingAndTopic()
     }
 }

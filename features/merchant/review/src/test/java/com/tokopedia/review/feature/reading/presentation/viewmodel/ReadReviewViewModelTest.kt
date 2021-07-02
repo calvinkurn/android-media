@@ -48,14 +48,10 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         onGetProductRatingAndTopicsSuccess_thenReturn(expectedResponse)
 
         viewModel.setProductId(productId)
-        val actualSatisfactionRate = viewModel.getReviewSatisfactionRate()
-        val actualStatistics = viewModel.getReviewStatistics()
         val actualProductId = viewModel.getProductId()
 
         verifyGetProductRatingAndTopicsUseCaseExecuted()
         verifyRatingAndTopicSuccessEquals(Success(expectedResponse.productrevGetProductRatingAndTopics))
-        Assert.assertEquals(expectedSatisfactionRate, actualSatisfactionRate)
-        Assert.assertEquals(expectedStatistics, actualStatistics)
         Assert.assertEquals(productId, actualProductId)
     }
 
@@ -69,13 +65,9 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
         onGetProductRatingAndTopicsFail_thenReturn(expectedResponse)
 
         viewModel.setProductId(productId)
-        val actualSatisfactionRate = viewModel.getReviewSatisfactionRate()
-        val actualStatistics = viewModel.getReviewStatistics()
 
         verifyGetProductRatingAndTopicsUseCaseExecuted()
         verifyRatingAndTopicErrorEquals(Fail(expectedResponse))
-        Assert.assertEquals(expectedSatisfactionRate, actualSatisfactionRate)
-        Assert.assertEquals(expectedStatistics, actualStatistics)
     }
 
     @Test
