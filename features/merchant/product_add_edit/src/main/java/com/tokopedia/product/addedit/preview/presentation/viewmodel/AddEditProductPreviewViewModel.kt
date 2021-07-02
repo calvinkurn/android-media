@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEMP_IMAGE_EXTENSION
 import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
@@ -526,7 +527,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private fun cleanProductPhotoUrl(imagePickerResult: ArrayList<String>,
                                      originalImageUrl: ArrayList<String>): List<String> {
         return imagePickerResult.mapIndexed { index, input ->
-            if (input.endsWith(".0")) {
+            if (input.endsWith(TEMP_IMAGE_EXTENSION)) {
                 originalImageUrl[index]
             } else {
                 imagePickerResult[index]
