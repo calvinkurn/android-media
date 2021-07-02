@@ -174,7 +174,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             noteTextWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     product.notes = s?.toString() ?: ""
-                    listener.onProductChange(product, false)
+                    listener.onProductChange(product, productIndex, false)
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -192,6 +192,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                     renderNotes()
                     v.clearFocus()
                     KeyboardHandler.DropKeyboard(binding.tfNote.context, itemView)
+                    listener.forceUpdateCart()
                     true
                 } else false
             }
@@ -219,7 +220,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 // prevent multiple callback with same newValue
                 if (product.quantity.orderQuantity != newValue) {
                     product.quantity.orderQuantity = newValue
-                    listener.onProductChange(product)
+                    listener.onProductChange(product, productIndex)
                     renderPrice()
                 }
             }
@@ -296,13 +297,15 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
 
     private fun handleOnPurchaseProtectionCheckedChange(tmpIsChecked: Boolean) {
         product.purchaseProtectionPlanData.stateChecked = if (tmpIsChecked) PurchaseProtectionPlanData.STATE_TICKED else PurchaseProtectionPlanData.STATE_UNTICKED
-        listener.onProductChange(product, false)
+        listener.onProductChange(product, productIndex, false)
         listener.onPurchaseProtectionCheckedChange(tmpIsChecked, product.productId)
     }
 
     interface OrderProductCardListener {
 
-        fun onProductChange(product: OrderProduct, shouldReloadRates: Boolean = true)
+        fun onProductChange(product: OrderProduct, productIndex: Int, shouldReloadRates: Boolean = true)
+
+        fun forceUpdateCart()
 
         fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionTitle: String)
 

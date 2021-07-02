@@ -39,7 +39,6 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
-import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheet
@@ -529,7 +528,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                                 } else {
                                     orderSummaryAnalytics.eventClickSimilarProductEmptyStock()
                                 }
-                                RouteManager.route(context, ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, viewModel.orderProduct.productId.toString())
+                                RouteManager.route(context, ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, viewModel.orderProducts.value.first().productId.toString())
                                 activity?.finish()
                             }
                         })
@@ -911,7 +910,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private fun getOrderTotalPaymentCardListener(): OrderTotalPaymentCard.OrderTotalPaymentCardListener {
         return object : OrderTotalPaymentCard.OrderTotalPaymentCardListener {
             override fun onOrderDetailClicked(orderCost: OrderCost) {
-                orderSummaryAnalytics.eventClickRingkasanBelanjaOSP(viewModel.orderProduct.productId.toString(), orderCost.totalPrice.toInt().toString())
+                orderSummaryAnalytics.eventClickRingkasanBelanjaOSP(viewModel.orderProducts.value.first().productId.toString(), orderCost.totalPrice.toInt().toString())
                 OrderPriceSummaryBottomSheet().show(this@OrderSummaryPageFragment, orderCost)
             }
 
@@ -1004,8 +1003,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun getOrderProductCardListener(): OrderProductCard.OrderProductCardListener = object : OrderProductCard.OrderProductCardListener {
-        override fun onProductChange(product: OrderProduct, shouldReloadRates: Boolean) {
-            viewModel.updateProduct(product, shouldReloadRates)
+        override fun onProductChange(product: OrderProduct, productIndex: Int, shouldReloadRates: Boolean) {
+            viewModel.updateProduct(product, productIndex, shouldReloadRates)
+        }
+
+        override fun forceUpdateCart() {
+            viewModel.updateCart()
         }
 
         override fun onPurchaseProtectionInfoClicked(url: String, categoryId: String, protectionTitle: String) {

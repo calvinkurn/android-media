@@ -29,7 +29,7 @@ class GetOccCartMapper @Inject constructor() {
                 tickerMessage = mapProductTickerMessage(data.tickerMessage)
                 purchaseProtectionPlanData = mapPurchaseProtectionPlanData(cart.purchaseProtectionPlanDataResponse)
             }
-            products = listOf(
+            products = arrayListOf(
                     generateOrderProduct(cart.product).apply {
                         quantity = mapQuantity(data)
                         tickerMessage = mapProductTickerMessage(data.tickerMessage)

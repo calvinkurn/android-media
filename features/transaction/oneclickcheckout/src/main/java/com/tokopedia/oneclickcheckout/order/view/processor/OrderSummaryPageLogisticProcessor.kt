@@ -48,7 +48,6 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         return ShippingParam().apply {
             val address = orderPreference.preference.address
             val orderShop = orderCart.shop
-            val orderProduct = orderCart.product
             val orderProducts = orderCart.products
             val orderKero = orderCart.kero
 
@@ -56,6 +55,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             var totalWeightActual = 0.0
             var totalValue = 0L
             var productFInsurance = 0
+            var preOrder = false
+            var productPreOrderDuration = 0
             orderProducts.forEach {
                 if (!it.isError) {
                     totalWeight += it.quantity.orderQuantity * it.weight
@@ -64,6 +65,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     if (it.productFinsurance == 1) {
                         productFInsurance = 1
                     }
+                    preOrder = it.isPreOrder != 0
+                    productPreOrderDuration = it.preOrderDuration
                 }
             }
 
@@ -80,7 +83,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             token = orderKero.keroToken
             ut = orderKero.keroUT
             insurance = 1
-            isPreorder = orderProduct.isPreOrder != 0
+            isPreorder = preOrder
             categoryIds = orderProducts.joinToString(",") { it.categoryId }
             uniqueId = orderCart.cartString
             addressId = address.addressId.toString()
@@ -90,7 +93,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             productInsurance = productFInsurance
             orderValue = totalValue
             isFulfillment = orderShop.isFulfillment
-            preOrderDuration = orderProduct.preOrderDuration
+            preOrderDuration = productPreOrderDuration
         }
     }
 

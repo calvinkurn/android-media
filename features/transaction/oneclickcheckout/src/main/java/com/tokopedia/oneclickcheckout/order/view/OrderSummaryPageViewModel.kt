@@ -146,8 +146,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    fun updateProduct(product: OrderProduct, shouldReloadRates: Boolean = true) {
-        orderCart.product = product
+    fun updateProduct(product: OrderProduct, productIndex: Int, shouldReloadRates: Boolean = true) {
+        orderCart.products[productIndex] = product
         if (shouldReloadRates) {
             if (!product.quantity.isStateError) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
@@ -454,7 +454,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
         if (orderTotal.value.buttonState == OccButtonState.NORMAL) {
             globalEvent.value = OccGlobalEvent.Loading
-            val product = orderProduct
             val shop = orderShop
             val pref = _orderPreference
             if (pref.isValid && _orderShipment.getRealShipperProductId() > 0) {
@@ -465,7 +464,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         finalUpdateJob = launch(executorDispatchers.immediate) {
                             val (isSuccess, errorGlobalEvent) = cartProcessor.finalUpdateCart(param)
                             if (isSuccess) {
-                                finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
+                                finalValidateUse(orderCart.products, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
                                 return@launch
                             }
                             globalEvent.value = errorGlobalEvent
@@ -478,7 +477,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    private fun finalValidateUse(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
+    private fun finalValidateUse(products: List<OrderProduct>, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
         val validateUsePromoRequest = generateValidateUsePromoRequest()
         if (!skipCheckIneligiblePromo && promoProcessor.hasPromo(validateUsePromoRequest)) {
             launch(executorDispatchers.immediate) {
@@ -487,20 +486,20 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     validateUsePromoRevampUiModel = resultValidateUse
                     updatePromoState(resultValidateUse.promoUiModel)
                     if (isSuccess) {
-                        doCheckout(product, shop, pref, onSuccessCheckout)
+                        doCheckout(products, shop, pref, onSuccessCheckout)
                         return@launch
                     }
                 }
                 globalEvent.value = newGlobalEvent
             }
         } else {
-            doCheckout(product, shop, pref, onSuccessCheckout)
+            doCheckout(products, shop, pref, onSuccessCheckout)
         }
     }
 
-    private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
+    private fun doCheckout(products: List<OrderProduct>, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
         launch(executorDispatchers.immediate) {
-            val (checkoutOccResult, globalEventResult) = checkoutProcessor.doCheckout(validateUsePromoRevampUiModel, orderCart, product, shop, pref, _orderShipment, orderTotal.value, userSession.userId, generateOspEeBody(emptyList()))
+            val (checkoutOccResult, globalEventResult) = checkoutProcessor.doCheckout(validateUsePromoRevampUiModel, orderCart, products, shop, pref, _orderShipment, orderTotal.value, userSession.userId, generateOspEeBody(emptyList()))
             if (checkoutOccResult != null) {
                 onSuccessCheckout(checkoutOccResult)
             } else if (globalEventResult != null) {

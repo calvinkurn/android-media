@@ -5,7 +5,7 @@ data class OrderCart(
         var cartString: String = "",
         var paymentProfile: String = "",
         var product: OrderProduct = OrderProduct(),
-        var products: List<OrderProduct> = emptyList(),
+        var products: MutableList<OrderProduct> = ArrayList(),
         var shop: OrderShop = OrderShop(),
         var kero: OrderKero = OrderKero()
 )

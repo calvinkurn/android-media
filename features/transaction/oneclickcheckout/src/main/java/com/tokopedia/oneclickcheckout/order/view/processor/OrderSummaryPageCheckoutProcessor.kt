@@ -47,7 +47,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
 
     suspend fun doCheckout(finalPromo: ValidateUsePromoRevampUiModel?,
                            orderCart: OrderCart,
-                           product: OrderProduct,
+                           products: List<OrderProduct>,
                            shop: OrderShop,
                            pref: OrderPreference,
                            orderShipment: OrderShipment,
@@ -59,23 +59,23 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
             val shopPromos = generateShopPromos(finalPromo, orderCart)
             val checkoutPromos = generateCheckoutPromos(finalPromo)
             val allPromoCodes = checkoutPromos.map { it.code } + shopPromos.map { it.code }
-            val isPPPChecked = product.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
+            val isPPPChecked = products.first().purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
             val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                     pref.preference.address.addressId,
                     listOf(
                             ShopProduct(
                                     shopId = shop.shopId,
-                                    isPreorder = product.isPreOrder,
-                                    warehouseId = product.warehouseId,
+                                    isPreorder = products.first().isPreOrder,
+                                    warehouseId = products.first().warehouseId,
                                     finsurance = if (orderShipment.isCheckInsurance) 1 else 0,
-                                    productData = listOf(
-                                            ProductData(
-                                                    product.productId,
-                                                    product.quantity.orderQuantity,
-                                                    product.notes,
-                                                    isPPPChecked
-                                            )
-                                    ),
+                                    productData = products.map {
+                                        ProductData(
+                                                it.productId,
+                                                it.quantity.orderQuantity,
+                                                it.notes,
+                                                it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED
+                                        )
+                                    },
                                     shippingInfo = ShippingInfo(
                                             orderShipment.getRealShipperId(),
                                             orderShipment.getRealShipperProductId(),
@@ -96,13 +96,15 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
                         if (paymentType.isBlank()) {
                             paymentType = OrderSummaryPageEnhanceECommerce.DEFAULT_EMPTY_VALUE
                         }
-                        if (product.purchaseProtectionPlanData.isProtectionAvailable) {
-                            orderSummaryAnalytics.eventPPClickBayar(userId,
-                                    product.categoryId,
-                                    "",
-                                    product.purchaseProtectionPlanData.protectionTitle,
-                                    isPPPChecked,
-                                    orderSummaryPageEnhanceECommerce.buildForPP(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION))
+                        products.forEach {
+                            if (it.purchaseProtectionPlanData.isProtectionAvailable) {
+                                orderSummaryAnalytics.eventPPClickBayar(userId,
+                                        it.categoryId,
+                                        "",
+                                        it.purchaseProtectionPlanData.protectionTitle,
+                                        isPPPChecked,
+                                        orderSummaryPageEnhanceECommerce.buildForPP(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION))
+                            }
                         }
                         orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.isButtonChoosePayment,
                                 userId,
