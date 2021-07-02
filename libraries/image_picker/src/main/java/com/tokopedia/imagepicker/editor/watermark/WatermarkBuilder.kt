@@ -137,12 +137,6 @@ open class WatermarkBuilder {
     companion object {
 
         @JvmStatic
-        fun createWithSize(context: Context): WatermarkBuilder {
-            val bitmap = createBitmap(2000, 2000, ARGB_8888)
-            return WatermarkBuilder(context, bitmap)
-        }
-
-        @JvmStatic
         fun create(context: Context, backgroundImg: Bitmap): WatermarkBuilder {
             return WatermarkBuilder(context, backgroundImg)
         }

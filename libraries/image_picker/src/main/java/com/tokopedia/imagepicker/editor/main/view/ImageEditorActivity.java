@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.URLUtil;
@@ -27,7 +28,7 @@ import com.tokopedia.imagepicker.editor.main.Constant;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
-import com.tokopedia.imagepicker.editor.widget.ItemSelection;
+import com.tokopedia.imagepicker.editor.data.ItemSelection;
 import com.tokopedia.imagepicker.editor.widget.ItemSelectionWidget;
 import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
@@ -526,8 +527,11 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     tvActionTitle.setText(getString(R.string.rotate));
                     break;
                 case ACTION_WATERMARK:
+                    if (fragment != null) {
+                        fragment.setWatermark();
+                    }
+
                     hideAllControls();
-                    setupWatermarkWidget();
                     setLastStateWatermarkImage();
                     layoutWatermark.setVisibility(View.VISIBLE);
                     tvActionTitle.setText(getString(R.string.watermark));
@@ -698,27 +702,32 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         }
     }
 
-    private void setupWatermarkWidget() {
-        List<ItemSelection> items = new ArrayList<>();
+    /**
+     * getCurrentBitmap is a method to get bitmap pooling active on gestureImageView from
+     * [ImageEditPreviewFragment], this is for saving last state of bitmap temporarily on memory.
+     * @param bitmap
+     */
+    @Override
+    public void getCurrentBitmap(Bitmap bitmap) {
+        itemSelectionWatermarkWidget(bitmap);
+    }
+
+    private void itemSelectionWatermarkWidget(Bitmap placeholder) {
         ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
 
         if (imageEditPreviewFragment == null) return;
 
         String preview = edittedImagePaths.get(currentImageIndex).get(getCurrentStepForCurrentImage());
 
-        items.add(
-                new ItemSelection(
+        watermarkItemSelection.setData(
+                ItemSelection.createWithPlaceholderBitmap(
                         getString(R.string.editor_watermark_item),
                         preview,
-                        "",
-                        R.drawable.watermark_bg_item_selection,
+                        placeholder,
                         Constant.TYPE_WATERMARK_TOPED,
                         true
                 )
         );
-
-        watermarkItemSelection.setData(items, null);
-        imageEditPreviewFragment.setWatermark();
     }
 
     @Override
@@ -819,7 +828,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         showDoneLoading();
 
         initImageCropPresenter();
-        imageRatioCropPresenter.cropBitmapToExpectedRatio(resultList, ratioResultList, true, convertToWebp);
+        imageRatioCropPresenter.cropBitmapToExpectedRatio(resultList, ratioResultList, true, false);
     }
 
     @Override

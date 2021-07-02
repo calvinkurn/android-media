@@ -100,6 +100,8 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         boolean canRedo(int imageIndex);
 
         ImageRatioType getCurrentRatio();
+
+        void getCurrentBitmap(Bitmap bitmap);
     }
 
     public static ImageEditPreviewFragment newInstance(
@@ -393,6 +395,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     @Override
     public void onSuccessGetWatermarkImage(Bitmap bitmap) {
         gestureCropImageView.setImageBitmap(bitmap);
+        onImageEditPreviewFragmentListener.getCurrentBitmap(bitmap);
     }
 
     private void initProgressBar(View view) {

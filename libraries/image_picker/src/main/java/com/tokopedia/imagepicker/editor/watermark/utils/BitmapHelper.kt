@@ -112,10 +112,10 @@ object BitmapHelper {
         return bitmapResult
     }
 
-    fun Bitmap.resizeBitmap(size: Float, background: Bitmap): Bitmap {
+    fun Bitmap.resizeBitmap(size: Float, backgroundWidth: Int): Bitmap {
         val bitmapWidth = this.width
         val bitmapHeight = this.height
-        val scale = (background.width * size) / bitmapWidth
+        val scale = (backgroundWidth * size) / bitmapWidth
 
         val matrix = Matrix()
         matrix.postScale(scale, scale)
@@ -157,7 +157,7 @@ object BitmapHelper {
         return Bitmap.createBitmap(this, 0, 0, this.width, this.height, matrix, true)
     }
 
-    fun Bitmap.combine(other: Bitmap): Bitmap {
+    fun Bitmap.combineBitmapWithPadding(other: Bitmap): Bitmap {
         val thresholdSpace = 170 // space between first bitmap to other bitmap
         val otherBitmap = other.addPadding(thresholdSpace, 0, thresholdSpace, 0)
 
@@ -173,7 +173,7 @@ object BitmapHelper {
         return resultBitmap
     }
 
-    private fun Bitmap.addPadding(
+    fun Bitmap.addPadding(
         left:Int = 0,
         top:Int = 0,
         right:Int = 0,
@@ -211,14 +211,19 @@ object BitmapHelper {
         return bitmap
     }
 
-    private fun downscaleToScaledAllowedDimension(
-        watermarkBitmap: Bitmap,
-        mainBitmap: Bitmap
-    ): Bitmap? {
-        val ratioThreshold = mainBitmap.scaleByDividedOfThreesHold()
+    /**
+     * resize the watermark bitmap by scaling with specific condition
+     * if text length (the user info name) have length more than 25,
+     * the size of watermark bitmap it will be resizing into (width / 2)
+     * otherwise, the scaling will be perform (width / 3) or (height / 4) based on orientation.
+     *
+     * the scaling will be calculate it on [scaleByDividedOfThreesHold]
+     */
+    fun Bitmap.downscaleToScaledAllowedDimension(mainBitmap: Bitmap, textLength: Int): Bitmap? {
+        val ratioThreshold = mainBitmap.scaleByDividedOfThreesHold(textLength)
 
-        val inWidth = watermarkBitmap.width
-        val inHeight = watermarkBitmap.height
+        val inWidth = this.width
+        val inHeight = this.height
 
         val outWidth: Int
         val outHeight: Int
@@ -233,59 +238,21 @@ object BitmapHelper {
         }
 
         return Bitmap.createScaledBitmap(
-            watermarkBitmap,
+            this,
             outWidth,
             outHeight,
             false
         )
     }
 
-    private fun Bitmap.scaleByDividedOfThreesHold(): Int {
-        val threesHold = 3
+    private fun Bitmap.scaleByDividedOfThreesHold(textLength: Int): Int {
+        if (textLength >= 13) return this.width / 2
 
-        return if (this.width > this.height) {
-            this.width / threesHold
+        return if (this.width > this.height || this.width == this.height) {
+            this.width / 3
         } else {
-            this.height / threesHold
+            this.height / 4
         }
-    }
-
-    /**
-     * This is the temporary solution for watermark feature
-     * the result will generate square (1:1) watermark, and
-     * merge into main bitmap.
-     */
-    @JvmStatic
-    fun resultWatermarkImage(watermarkBitmap: Bitmap?, mainBitmap: Bitmap): Bitmap {
-        // get the width size of main bitmap for resizing the watermark container
-        val widthMainBitmap = mainBitmap.width
-        val heightMainBitmap = mainBitmap.height
-
-        // scaled resize the watermark container with divided by three
-        val scaledWatermarkBitmap = downscaleToScaledAllowedDimension(watermarkBitmap!!, mainBitmap)
-
-        // merge the main bitmap with scaled watermark bitmap
-        val resultBitmap = Bitmap.createBitmap(
-            widthMainBitmap,
-            heightMainBitmap,
-            mainBitmap.config
-        )
-
-        val canvas = Canvas(resultBitmap)
-        canvas.drawBitmap(mainBitmap, 0f, 0f, null)
-
-        val paint = Paint()
-
-        paint.shader = BitmapShader(
-            scaledWatermarkBitmap!!,
-            Shader.TileMode.REPEAT,
-            Shader.TileMode.REPEAT
-        )
-
-        val bitmapShaderRect = canvas.clipBounds
-        canvas.drawRect(bitmapShaderRect, paint)
-
-        return resultBitmap
     }
 
 }

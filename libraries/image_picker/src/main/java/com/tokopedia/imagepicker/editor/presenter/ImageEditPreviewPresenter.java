@@ -9,9 +9,7 @@ import android.graphics.ColorMatrixColorFilter;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.R;
-import com.tokopedia.imagepicker.editor.watermark.Watermark;
 import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
-import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
 import java.io.File;
@@ -305,22 +303,15 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                         getView().getContext().getResources(),
                         R.drawable.watermark_ic_tokopedia_logo
                 )
-        ).flatMap((Func1<Bitmap, Observable<Watermark>>) tokopediaLogoBitmap -> {
+        ).flatMap((Func1<Bitmap, Observable<Bitmap>>) tokopediaLogoBitmap -> {
             // create watermark with transparent container (empty) bitmap
-            Watermark watermark = WatermarkBuilder
-                    .createWithSize(getView().getContext())
+            Bitmap watermark = WatermarkBuilder
+                    .create(getView().getContext(), mainBitmap)
                     .loadOnlyWatermarkTextImage(userInfoName, tokopediaLogoBitmap)
-                    .getWatermark();
+                    .getWatermark()
+                    .getOutputImage();
 
             return Observable.just(watermark);
-        }).flatMap((Func1<Watermark, Observable<Bitmap>>) watermark -> {
-            // merge the watermark and main bitmap
-            Bitmap resultBitmap = BitmapHelper.resultWatermarkImage(
-                    watermark.getOutputImage(),
-                    mainBitmap
-            );
-
-            return Observable.just(resultBitmap);
         }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(bitmap -> getView().onSuccessGetWatermarkImage(bitmap));
