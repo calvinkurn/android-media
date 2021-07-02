@@ -23,8 +23,8 @@ class TitleViewHolder(
     private var seeAllCategory: Typography? = null
 
     init {
-        titleText = itemView.findViewById<Typography?>(R.id.tokomartSearchCategoryTitle)
-        seeAllCategory = itemView.findViewById<Typography?>(R.id.tokomartSearchCategorySeeAllCategory)
+        titleText = itemView.findViewById<Typography?>(R.id.tokoNowSearchCategoryTitle)
+        seeAllCategory = itemView.findViewById<Typography?>(R.id.tokoNowSearchCategorySeeAllCategory)
     }
 
     override fun bind(element: TitleDataView?) {

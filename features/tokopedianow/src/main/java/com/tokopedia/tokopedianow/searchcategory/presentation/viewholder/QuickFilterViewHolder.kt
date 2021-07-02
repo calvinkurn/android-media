@@ -22,7 +22,7 @@ class QuickFilterViewHolder(
     private var unifySortFilter: SortFilter? = null
 
     init {
-        unifySortFilter = itemView.findViewById<SortFilter?>(R.id.tokomartSearchCategoryQuickFilter)
+        unifySortFilter = itemView.findViewById<SortFilter?>(R.id.tokoNowSearchCategoryQuickFilter)
     }
 
     override fun bind(element: QuickFilterDataView?) {

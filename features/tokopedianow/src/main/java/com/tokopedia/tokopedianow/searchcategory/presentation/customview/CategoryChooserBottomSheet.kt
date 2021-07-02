@@ -55,8 +55,8 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
     private fun findViews() {
         val categoryChooserView = categoryChooserView ?: return
 
-        recyclerView = categoryChooserView.findViewById(R.id.tokomartCategoryChooserRecyclerView)
-        buttonApply = categoryChooserView.findViewById(R.id.tokomartCategoryChooserButtonApply)
+        recyclerView = categoryChooserView.findViewById(R.id.tokoNowCategoryChooserRecyclerView)
+        buttonApply = categoryChooserView.findViewById(R.id.tokoNowCategoryChooserButtonApply)
     }
 
     private fun configureViews() {
@@ -159,9 +159,9 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
             private val optionRadioListener: OptionRadioListener,
     ): RecyclerView.ViewHolder(view) {
 
-        private val container: ConstraintLayout? = itemView.findViewById(R.id.tokomartCategoryChooserItemContainer)
-        private val title: TextView? = itemView.findViewById(R.id.tokomartCategoryChooserItemTitle)
-        private val radio: RadioButtonUnify? = itemView.findViewById(R.id.tokomartCategoryChooserItemRadio)
+        private val container: ConstraintLayout? = itemView.findViewById(R.id.tokoNowCategoryChooserItemContainer)
+        private val title: TextView? = itemView.findViewById(R.id.tokoNowCategoryChooserItemTitle)
+        private val radio: RadioButtonUnify? = itemView.findViewById(R.id.tokoNowCategoryChooserItemRadio)
 
         fun bind(item: Option) {
             val checkedOption = optionRadioListener.getCheckedOption()

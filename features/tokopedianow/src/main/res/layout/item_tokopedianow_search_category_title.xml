@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tokomartSearchCategoryTitle"
+        android:id="@+id/tokoNowSearchCategoryTitle"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
@@ -14,7 +14,7 @@
         android:layout_marginEnd="@dimen/dp_4"
         android:layout_marginBottom="@dimen/dp_8"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tokomartSearchCategorySeeAllCategory"
+        app:layout_constraintEnd_toStartOf="@id/tokoNowSearchCategorySeeAllCategory"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_goneMarginEnd="@dimen/dp_16"
@@ -23,7 +23,7 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tokomartSearchCategorySeeAllCategory"
+        android:id="@+id/tokoNowSearchCategorySeeAllCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"

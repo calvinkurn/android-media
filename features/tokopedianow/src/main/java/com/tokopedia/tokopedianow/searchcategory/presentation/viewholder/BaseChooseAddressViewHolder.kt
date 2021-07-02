@@ -25,7 +25,7 @@ abstract class BaseChooseAddressViewHolder(
     protected abstract val trackingSource: String
 
     init {
-        chooseAddressWidget = itemView.findViewById(R.id.tokomartSearchCategoryChooseAddress)
+        chooseAddressWidget = itemView.findViewById(R.id.tokoNowSearchCategoryChooseAddress)
         chooseAddressWidget?.bindChooseAddress(object: ChooseAddressWidget.ChooseAddressWidgetListener {
             override fun onLocalizingAddressUpdatedFromWidget() {
                 chooseAddressListener.onLocalizingAddressSelected()

@@ -20,5 +20,5 @@ abstract class CategoryListViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(TokoNowCategoryListViewModel::class)
-    internal abstract fun tokoMartCategoryListViewModel(viewModelTokoNow: TokoNowCategoryListViewModel): ViewModel
+    internal abstract fun tokoNowCategoryListViewModel(viewModelTokoNow: TokoNowCategoryListViewModel): ViewModel
 }
