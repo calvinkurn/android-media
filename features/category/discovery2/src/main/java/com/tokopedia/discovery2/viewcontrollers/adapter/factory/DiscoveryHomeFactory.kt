@@ -96,6 +96,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewModel
 
 class DiscoveryHomeFactory {
 
@@ -176,6 +178,8 @@ class DiscoveryHomeFactory {
 
             //Play Widget
             initializeComponent(ComponentsList.DiscoPlayWidgetView, ::DiscoveryPlayWidgetViewHolder, ::DiscoveryPlayWidgetViewModel)
+
+            initializeComponent(ComponentsList.DiscoTDNBanner, ::DiscoveryTDNBannerViewHolder,::DiscoveryTDNBannerViewModel)
 
             initializeComponent(ComponentsList.CarouselErrorLoad, ::CarouselErrorLoadViewHolder, ::CarouselErrorLoadViewModel)
             initializeComponent(ComponentsList.ProductListErrorLoad, ::ErrorLoadViewHolder, ::ErrorLoadViewModel)
