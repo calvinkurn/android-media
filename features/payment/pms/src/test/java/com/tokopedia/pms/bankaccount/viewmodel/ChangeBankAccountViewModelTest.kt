@@ -26,7 +26,6 @@ class ChangeBankAccountViewModelTest {
 
 
     private val fetchFailedErrorMessage = "Fetch Failed"
-    private val nullDataErrorMessage = "NULL DATA"
     private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
 
 

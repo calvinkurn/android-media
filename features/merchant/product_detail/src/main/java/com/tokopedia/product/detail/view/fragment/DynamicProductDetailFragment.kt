@@ -144,6 +144,7 @@ import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormReque
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
@@ -886,6 +887,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     productName,
                     productImageUrl
             )
+        }
+    }
+
+    override fun onChannelRecommendationEmpty(channelPosition: Int, data: RecommendationWidget?) {
+        data?.let {
+            pdpUiUpdater?.removeEmptyRecommendation(it)
+            updateUi()
         }
     }
 
