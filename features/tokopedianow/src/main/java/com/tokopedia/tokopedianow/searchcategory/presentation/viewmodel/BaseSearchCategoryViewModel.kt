@@ -717,17 +717,11 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onViewResumed() {
-        val tes = shouldRefreshMiniCart()
         refreshMiniCart()
 
         val isChooseAddressUpdated = getIsChooseAddressUpdated()
         if (isChooseAddressUpdated)
             onViewReloadPage()
-    }
-
-    private fun shouldRefreshMiniCart(): Boolean {
-        val isMiniCartVisible = isShowMiniCartLiveData.value
-        return isMiniCartVisible == true
     }
 
     protected open fun refreshMiniCart() {
@@ -938,7 +932,6 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     fun onLocalizingAddressSelected() {
-        val tes = shouldRefreshMiniCart()
         onViewReloadPage()
     }
 
