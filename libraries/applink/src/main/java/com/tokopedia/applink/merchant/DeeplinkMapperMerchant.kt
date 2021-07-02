@@ -20,7 +20,7 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 object DeeplinkMapperMerchant {
 
     private const val PARAM_RATING = "rating"
-    private const val PARAM_UTM_SOURCE = "utm_source"
+    private const val PARAM_SOURCE = "source"
     private const val ACTION_REVIEW = "review"
     private const val PRODUCT_SEGMENT = "product"
     private const val FEED_SEGMENT = "feed"
@@ -104,7 +104,7 @@ object DeeplinkMapperMerchant {
     fun getRegisteredNavigationProductReview(uri: Uri): String {
         val segments = uri.pathSegments
         val rating = uri.getQueryParameter(PARAM_RATING) ?: "5"
-        val utmSource = uri.getQueryParameter(PARAM_UTM_SOURCE) ?: ""
+        val utmSource = uri.getQueryParameter(PARAM_SOURCE) ?: ""
 
         val reputationId = segments[segments.size - 2]
         val productId = segments.last()
@@ -112,7 +112,7 @@ object DeeplinkMapperMerchant {
         return Uri.parse(newUri)
                 .buildUpon()
                 .appendQueryParameter(PARAM_RATING, rating)
-                .appendQueryParameter(PARAM_UTM_SOURCE, utmSource)
+                .appendQueryParameter(PARAM_SOURCE, utmSource)
                 .build()
                 .toString()
     }
