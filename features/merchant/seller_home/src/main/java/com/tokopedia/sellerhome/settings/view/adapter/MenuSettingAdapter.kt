@@ -18,6 +18,7 @@ import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.MenuSettingAcc
 
 class MenuSettingAdapter(private val context: Context?,
                          private val listener: Listener,
+                         private val isShowScreenRecorder: Boolean,
                          typeFactory: OtherMenuAdapterTypeFactory): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>(typeFactory) {
 
     companion object {
@@ -25,6 +26,7 @@ class MenuSettingAdapter(private val context: Context?,
         private const val PASSWORD_ALIAS = "password"
 
         private const val DEVELOPER_OPTION_INDEX_FROM_LAST = 4
+        private const val SCREEN_RECORDER_INDEX_FROM_LAST = 3
     }
 
     private val otherSettingList = listOf(
@@ -52,10 +54,6 @@ class MenuSettingAdapter(private val context: Context?,
                     clickApplink = ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER,
                     settingTypeInfix = SettingTrackingConstant.APP_SETTING),
             MenuItemUiModel(
-                    context?.getString(R.string.setting_screen_recorder).orEmpty(),
-                    clickApplink = ApplinkConstInternalGlobal.SCREEN_RECORDER,
-                    settingTypeInfix = SettingTrackingConstant.APP_SETTING),
-            MenuItemUiModel(
                     context?.getString(R.string.setting_menu_share_app).orEmpty(),
                     settingTypeInfix = SettingTrackingConstant.APP_SETTING) { listener.onShareApplication() },
             MenuItemUiModel(
@@ -72,6 +70,11 @@ class MenuSettingAdapter(private val context: Context?,
             menuList.add(SettingLoadingUiModel)
         }
         menuList.addAll(otherSettingList)
+        if (isShowScreenRecorder)
+            menuList.add(menuList.size - SCREEN_RECORDER_INDEX_FROM_LAST, MenuItemUiModel(
+                    context?.getString(R.string.setting_screen_recorder).orEmpty(),
+                    clickApplink = ApplinkConstInternalGlobal.SCREEN_RECORDER,
+                    settingTypeInfix = SettingTrackingConstant.APP_SETTING))
         if (GlobalConfig.isAllowDebuggingTools())
             menuList.add(menuList.size - DEVELOPER_OPTION_INDEX_FROM_LAST, MenuItemUiModel(
                     context?.getString(R.string.setting_menu_developer_options).orEmpty(),
