@@ -17,7 +17,7 @@
                 android:angle="-90"
                 />
             <corners
-                android:radius="@dimen/play_interactive_prestart_radius"
+                android:radius="@dimen/play_interactive_common_radius"
                 />
         </shape>
     </item>

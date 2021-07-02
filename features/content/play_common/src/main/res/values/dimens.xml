@@ -23,4 +23,7 @@
     <dimen name="play_bottom_sheet_radius">10dp</dimen>
     <dimen name="play_bottom_sheet_title_margin_start">12dp</dimen>
 
+    <!--Engagement Tools-->
+    <dimen name="play_interactive_common_radius">12dp</dimen>
+
 </resources>

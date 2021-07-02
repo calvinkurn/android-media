@@ -6,7 +6,7 @@
     android:layout_width="@dimen/play_interactive_finish_width"
     android:layout_height="@dimen/play_interactive_finish_height"
     android:background="@drawable/bg_play_interactive"
-    app:cornerRadius="@dimen/play_interactive_prestart_radius"
+    app:cornerRadius="@dimen/play_interactive_common_radius"
     >
 
     <androidx.appcompat.widget.AppCompatImageView
