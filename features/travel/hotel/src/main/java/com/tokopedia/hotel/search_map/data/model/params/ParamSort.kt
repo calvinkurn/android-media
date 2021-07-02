@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.search_map.data.model.params
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -8,6 +9,7 @@ data class ParamSort(
         @Expose
         var popularity: Boolean = false,
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         var price: Boolean = false,

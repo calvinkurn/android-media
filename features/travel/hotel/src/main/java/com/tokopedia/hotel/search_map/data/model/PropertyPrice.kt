@@ -1,9 +1,11 @@
 package com.tokopedia.hotel.search_map.data.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class PropertyPrice(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
         @Expose
         val price: String = "",
@@ -56,6 +58,7 @@ data class PropertyPrice(
             @Expose
             val type: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",
@@ -70,6 +73,7 @@ data class PropertyPrice(
             @Expose
             val tagging: String = "",
 
+            @SuppressLint("Invalid Data Type")
             @SerializedName("price")
             @Expose
             val price: String = "",
