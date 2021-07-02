@@ -193,8 +193,9 @@ class PushController(val context: Context) : CoroutineScope {
     }
 
     private fun goToOtpPushNotifReceiver(applink: String?) {
+        val intentHome = RouteManager.getIntent(context, ApplinkConst.HOME)
         val intent = RouteManager.getIntent(context, applink)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        context.startActivity(intent)
+        intentHome.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        context.startActivities(arrayOf(intentHome, intent))
     }
 }
