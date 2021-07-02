@@ -1,7 +1,5 @@
 package com.tokopedia.sellerorder.list.presentation.models
 
-import com.google.gson.annotations.SerializedName
-
 data class MultiShippingStatusUiModel(
         val total_order: Long = 0,
         val processed: Long = 0,
@@ -11,9 +9,7 @@ data class MultiShippingStatusUiModel(
         val listError: List<ErrorMultiShippingStatusUiModel> = emptyList()
 ) {
     data class ErrorMultiShippingStatusUiModel(
-            @SerializedName("message")
             val message: String = "",
-            @SerializedName("order_id")
             val orderId: Long = 0
     )
 }

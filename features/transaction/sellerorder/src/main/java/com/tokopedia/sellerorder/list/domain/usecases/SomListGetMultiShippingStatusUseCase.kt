@@ -34,9 +34,9 @@ class SomListGetMultiShippingStatusUseCase @Inject constructor(
         }
     }
 
-    fun setParams(jobId: String) {
+    fun setParams(batchId: String) {
         params = RequestParams.create().apply {
-            putObject(SomConsts.PARAM_INPUT, SomListGetMultiShippingParam(jobId))
+            putObject(SomConsts.PARAM_INPUT, SomListGetMultiShippingParam(batchId))
         }
     }
 

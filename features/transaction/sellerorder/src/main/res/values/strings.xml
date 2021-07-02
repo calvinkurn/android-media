@@ -275,4 +275,18 @@
 
     <string name="som_request_pickup_bottomsheet_title">Jadwal Pickup</string>
     <string name="label_welcome_to_som_page">Selamat datang di halaman penjualan</string>
+
+    <!-- Bulk Request Pickup -->
+    <string name="som_list_bulk_request_pickup_loading">Sedang meminta pick-up untuk %s pesanan</string>
+
+    <string name="som_list_bulk_request_pickup_title_success">Berhasil meminta pick-up %s pesanan</string>
+    <string name="som_list_bulk_request_pickup_desc_success">Yay, sekarang kamu cukup tunggu hingga semua pesanan dipick-up.</string>
+    <string name="som_list_bulk_request_pickup_partial_all_fail_success">Ada %1s pesanan yang tidak bisa dipick-up dan %2s pesanan yang belum terproses, nih.</string>
+    <string name="som_list_bulk_request_pickup_partial_partial_fail_success">Ada %s pesanan yang belum terproses, nih.</string>
+
+    <string name="som_list_bulk_request_pickup_title_fail">Yaah, gagal minta pick-up</string>
+    <string name="som_list_bulk_request_pickup_desc_fail_error">Sedang ada gangguan. Coba lagi atau cek ulang pesananmu, ya.</string>
+    <string name="som_list_bulk_request_pickup_desc_fail_all_validation">Belum ada pesanan yang siap untuk dipick-up.</string>
+    <string name="som_list_bulk_request_pickup_desc_fail_partial">Ada pesanan yang tidak bisa dipick-up.</string>
+
 </resources>

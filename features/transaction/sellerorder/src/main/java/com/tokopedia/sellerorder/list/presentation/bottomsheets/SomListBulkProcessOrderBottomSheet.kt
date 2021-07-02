@@ -98,6 +98,7 @@ class SomListBulkProcessOrderBottomSheet(
 
     interface SomListBulkProcessOrderBottomSheetListener {
         fun onBulkProcessOrderButtonClicked()
+        fun onBulksRequestPickupButtonClicked()
         fun onMenuItemClicked(keyAction: String)
     }
 

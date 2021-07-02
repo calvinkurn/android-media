@@ -24,7 +24,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -46,6 +45,8 @@ class SomListViewModel @Inject constructor(
         private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
         private val bulkAcceptOrderStatusUseCase: SomListGetBulkAcceptOrderStatusUseCase,
         private val bulkAcceptOrderUseCase: SomListBulkAcceptOrderUseCase,
+        private val bulkRequestPickupUseCase: SomListBulkRequestPickupUseCase,
+        private val bulkShippingStatusUseCase: SomListGetMultiShippingStatusUseCase,
         authorizeSomListAccessUseCase: AuthorizeAccessUseCase,
         authorizeMultiAcceptAccessUseCase: AuthorizeAccessUseCase
 ) : SomOrderBaseViewModel(dispatcher, userSession, somAcceptOrderUseCase, somRejectOrderUseCase,
@@ -54,10 +55,15 @@ class SomListViewModel @Inject constructor(
 
     companion object {
         private const val MAX_RETRY_GET_ACCEPT_ORDER_STATUS = 20
+        private const val MAX_RETRY_GET_REQUEST_PICKUP_STATUS = 10
         private const val DELAY_GET_ACCEPT_ORDER_STATUS = 1000L
+        private const val DELAY_GET_MULTI_SHIPPING_STATUS = 1000L
     }
 
     private var retryCount = 0
+
+    private var retryRequestPickup = 0
+    private var orderIdsRequestPickup = listOf<String>()
 
     private var getOrderListJob: Job? = null
     private var getFiltersJob: Job? = null
@@ -90,6 +96,10 @@ class SomListViewModel @Inject constructor(
     private val _bulkAcceptOrderResult = MutableLiveData<Result<SomListBulkAcceptOrderUiModel>>()
     val bulkAcceptOrderResult: LiveData<Result<SomListBulkAcceptOrderUiModel>>
         get() = _bulkAcceptOrderResult
+
+    private val _bulkRequestPickupResult = MutableLiveData<Result<SomListBulkRequestPickupUiModel>>()
+    val bulkRequestPickupResult: LiveData<Result<SomListBulkRequestPickupUiModel>>
+        get() = _bulkRequestPickupResult
 
     private val _isLoadingOrder = MutableLiveData<Boolean>()
     val isLoadingOrder: LiveData<Boolean>
@@ -130,6 +140,18 @@ class SomListViewModel @Inject constructor(
         }
     }
 
+    val bulkRequestPickupFinalResult = MediatorLiveData<Result<BulkRequestPickupFinalResult>>()
+
+    private val _bulkRequestPickupStatusResult = MediatorLiveData<Result<MultiShippingStatusUiModel>>().apply {
+        addSource(_bulkRequestPickupResult) {
+            when (it) {
+                is Success -> {
+                    getMultiShippingStatus(it.data.data.jobId, 0L)
+                }
+            }
+        }
+    }
+
     init {
         bulkAcceptOrderStatusResult.apply {
             addSource(_bulkAcceptOrderStatusResult) {
@@ -157,6 +179,36 @@ class SomListViewModel @Inject constructor(
                         } else {
                             bulkAcceptOrderStatusResult.postValue(lastBulkAcceptOrderStatusSuccessResult)
                         }
+                    }
+                }
+            }
+        }
+
+        bulkRequestPickupFinalResult.addSource(_bulkRequestPickupStatusResult) {
+            when (it) {
+                is Success -> {
+                    val requestPickupUiModel = (_bulkRequestPickupResult.value as? Success)?.data
+
+                    if (it.data.success == it.data.total_order) {
+                        val bulkRequestPickupFinalResult = BulkRequestPickupFinalResult(
+                                orderIdsParam = orderIdsRequestPickup,
+                                bulkRequestPickupUiModel = requestPickupUiModel,
+                                multiShippingStatusUiModel = it.data,
+                                canRetry = false
+                        )
+                    }
+                    else if (retryRequestPickup < MAX_RETRY_GET_REQUEST_PICKUP_STATUS) {
+                        retryCount++
+                        getMultiShippingStatus(requestPickupUiModel?.data?.jobId.orEmpty(), DELAY_GET_MULTI_SHIPPING_STATUS)
+                    }
+                    else if (retryRequestPickup > MAX_RETRY_GET_REQUEST_PICKUP_STATUS) {
+                        // can retry
+                        val bulkRequestPickupFinalResult = BulkRequestPickupFinalResult(
+                                orderIdsParam = orderIdsRequestPickup,
+                                bulkRequestPickupUiModel = requestPickupUiModel,
+                                canRetry = true,
+                                multiShippingStatusUiModel = it.data
+                        )
                     }
                 }
             }
@@ -213,6 +265,16 @@ class SomListViewModel @Inject constructor(
         })
     }
 
+    private fun getMultiShippingStatus(batchId: String, wait: Long) {
+        launchCatchError(block = {
+            delay(wait)
+            bulkShippingStatusUseCase.setParams(batchId)
+            _bulkRequestPickupStatusResult.postValue(Success(bulkShippingStatusUseCase.executeOnBackground()))
+        }, onError = {
+            _bulkRequestPickupStatusResult.postValue(Fail(it))
+        })
+    }
+
     private fun cancelAllRefreshOrderJobs() {
         refreshOrderJobs.forEach { it.job.cancel() }
         refreshOrderJobs.clear()
@@ -234,6 +296,31 @@ class SomListViewModel @Inject constructor(
                 _isLoadingOrder.value = false
             })
         }
+    }
+
+
+    fun bulkRequestPickup(orderIds: List<String>) {
+        launchCatchError(block = {
+            orderIdsRequestPickup = orderIds
+            retryCount = 0
+            //
+            bulkRequestPickupUseCase.setParams(orderIds)
+            _bulkRequestPickupResult.postValue(Success(bulkRequestPickupUseCase.executeOnBackground()))
+        }, onError = {
+            _bulkRequestPickupResult.postValue(Fail(it))
+        })
+    }
+
+    fun retryGetBulkMultiShippingStatus() {
+        launchCatchError(block = {
+            val bulkAcceptResult = _bulkRequestPickupResult.value
+            if (bulkAcceptResult is Success) {
+                retryCount = 0
+                getMultiShippingStatus(bulkAcceptResult.data.data.jobId, 0L)
+            }
+        }, onError = {
+            _bulkAcceptOrderStatusResult.postValue(Fail(it))
+        })
     }
 
     fun bulkAcceptOrder(orderIds: List<String>) {
