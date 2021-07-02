@@ -261,7 +261,7 @@ class MiniCartWidget @JvmOverloads constructor(
                 fragment.context?.let {
                     globalErrorBottomSheet.show(fragment.parentFragmentManager, it, GlobalError.SERVER_ERROR, outOfService, object : GlobalErrorBottomSheetActionListener {
                         override fun onGoToHome() {
-                            // No-op
+                            RouteManager.route(context, ApplinkConst.HOME)
                         }
 
                         override fun onRefreshErrorPage() {
