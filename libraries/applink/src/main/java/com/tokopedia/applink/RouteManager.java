@@ -189,16 +189,8 @@ public class RouteManager {
 //        if(!isModuleInstalled){
 //            DeeplinkDFMapper.installMissingModule(moduleName);
 //        }
-        if (false) {
-            if (isClassExist(className)) {
-                Fragment fragment = activity.getSupportFragmentManager().getFragmentFactory().instantiate(ClassLoader.getSystemClassLoader(), className);
-                if (extras != null) {
-                    fragment.setArguments(extras);
-                }
-                return fragment;
-            } else {
-                return null;
-            }
+        if (isModuleInstalled) {
+            return instantiateFragment(activity, className, extras);
         } else {
             return DeeplinkDFMapper.getFragmentDFDownloader(activity,"", fragmentContainerResourceId);
         }
