@@ -44,6 +44,7 @@ private const val CLICK_BELUM_DIIKLANKAN = "click - belum diiklankan"
 private const val CLICK_SUDAH_DIIKLANKAN = "click - sudah diiklankan"
 private const val CLICK_SORT = "click - sort"
 private const val CLICK_FILTER = "click - filter"
+private const val PRODUCT_EDIT_NAME = "android.topads_edit"
 class ProductAdsListFragment : BaseDaggerFragment() {
 
     private lateinit var sortProductList: ProductSortSheetList
@@ -195,7 +196,8 @@ class ProductAdsListFragment : BaseDaggerFragment() {
                 getSelectedSortId(),
                 getPromoted(),
                 ROW,
-                START, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
+                START,
+                PRODUCT_EDIT_NAME, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
     }
 
 

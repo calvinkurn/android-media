@@ -37,15 +37,13 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.CloseComplainBottomShe
 import com.tokopedia.contactus.inboxticket2.view.fragment.CloseComplainBottomSheet.CloseComplainBottomSheetListner
 import com.tokopedia.contactus.inboxticket2.view.fragment.HelpFullBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.fragment.HelpFullBottomSheet.CloseSHelpFullBottomSheet
-import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment
-import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment.Companion.newInstance
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.fragment.ServicePrioritiesBottomSheet.CloseServicePrioritiesBottomSheet
 import com.tokopedia.contactus.inboxticket2.view.listeners.InboxDetailListener
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.imagepicker.common.ImagePickerBuilder
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -95,9 +93,9 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     private lateinit var layoutManager: LinearLayoutManager
     private var mCommentID: String? = null
     private var isCustomReason = false
-    private var helpFullBottomSheet: CloseableBottomSheetDialog? = null
-    private var closeComplainBottomSheet: CloseableBottomSheetDialog? = null
-    private var servicePrioritiesBottomSheet: CloseableBottomSheetDialog? = null
+    private var helpFullBottomSheet: HelpFullBottomSheet? = null
+    private var closeComplainBottomSheet: CloseComplainBottomSheet? = null
+    private var servicePrioritiesBottomSheet: ServicePrioritiesBottomSheet? = null
     private val commentsItems: MutableList<CommentsItem> by lazy { mutableListOf<CommentsItem>() }
     private var iscloseAllow = false
     private var isSendButtonEnabled = false
@@ -323,8 +321,9 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     override fun showNoTicketView(messageError: List<String?>?) {
+        hideProgressBar()
         noTicketFound.show()
-        tvNoTicket.text = messageError?.get(0) ?: ""
+        tvNoTicket.text = messageError?.getOrNull(0) ?: ""
         tvOkButton.setOnClickListener { finish() }
     }
 
@@ -336,11 +335,13 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     private fun sendMessage() {
         (mPresenter as InboxDetailContract.Presenter).sendMessage()
         edMessage.setHint(R.string.contact_us_type_here)
-        ContactUsTracking.sendGTMInboxTicket(this, "",
-                InboxTicketTracking.Category.EventInboxTicket,
-                InboxTicketTracking.Action.EventClickSubmitReply,
-                "")
+        ContactUsTracking.sendGTMInboxTicket(this, InboxTicketTracking.Event.Event,
+                InboxTicketTracking.Category.EventCategoryInbox,
+                InboxTicketTracking.Action.EventClickReplyTicket,
+                getTicketId())
     }
+
+    private fun getTicketId(): String = commentsItems.getOrNull(0)?.ticketId ?: ""
 
     private fun onClickListener(v: View) {
         val id = v.id
@@ -454,16 +455,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     override fun showImagePreview(position: Int, imagesURL: ArrayList<String>) {
-        var imageViewerFragment = supportFragmentManager.findFragmentByTag(ImageViewerFragment.TAG) as ImageViewerFragment?
-        if (imageViewerFragment == null) {
-            imageViewerFragment = newInstance(position, imagesURL)
-        } else {
-            imageViewerFragment.setImageData(position, imagesURL)
-        }
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.fragment_container, imageViewerFragment, ImageViewerFragment.TAG)
-        transaction.addToBackStack(ImageViewerFragment.TAG)
-        transaction.commit()
+        startActivity(ImagePreviewActivity.getCallingIntent(this, imagesURL, null, position))
     }
 
     override fun setCurrentRes(currentRes: Int) {
@@ -484,7 +476,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     override fun setSubmitButtonEnabled(enabled: Boolean) {
         isSendButtonEnabled = enabled
         if (enabled) {
-            ivSendButton.setColorFilter(ContextCompat.getColor(this, com.tokopedia.design.R.color.green_nob))
+            ivSendButton.setColorFilter(ContextCompat.getColor(this, R.color.contact_us_green_nob))
         } else {
             ivSendButton.clearColorFilter()
         }
@@ -557,9 +549,9 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
                     viewReplyButton.hide()
                     textToolbar.show()
                 } else {
-                    helpFullBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity())
-                    helpFullBottomSheet?.setCustomContentView(HelpFullBottomSheet(this@InboxDetailActivity, this), "", true)
-                    helpFullBottomSheet?.show()
+                    helpFullBottomSheet = HelpFullBottomSheet(this@InboxDetailActivity, this)
+                    helpFullBottomSheet?.show(supportFragmentManager, "helpFullBottomSheet")
+
                     viewReplyButton.hide()
                     textToolbar.show()
                 }
@@ -582,17 +574,19 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
             viewReplyButton.hide()
             (mPresenter as InboxDetailContract.Presenter).onClick(true, commentPosition, item?.id ?: "")
             helpFullBottomSheet?.dismiss()
+
+            sendGTmEvent(InboxTicketTracking.Label.EventLabelYa,
+                    InboxTicketTracking.Action.EventRatingCsatOnSlider)
+
             if (iscloseAllow) {
-                sendGTmEvent(InboxTicketTracking.Label.EventHelpful,
-                        InboxTicketTracking.Action.EventRatingCsatOnSlider)
-                closeComplainBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity())
-                closeComplainBottomSheet?.setCustomContentView(CloseComplainBottomSheet(this@InboxDetailActivity, this), "", false)
-                closeComplainBottomSheet?.show()
+                closeComplainBottomSheet = CloseComplainBottomSheet(this@InboxDetailActivity, this)
+                closeComplainBottomSheet?.show(supportFragmentManager, "closeComplainBottomSheet")
+
             } else {
                 textToolbar.show()
             }
         } else {
-            sendGTmEvent(InboxTicketTracking.Label.EventNotHelpful,
+            sendGTmEvent(InboxTicketTracking.Label.EventLabelTidak,
                     InboxTicketTracking.Action.EventRatingCsatOnSlider)
             (mPresenter as InboxDetailContract.Presenter).onClick(false, commentPosition, item?.id ?: "")
             textToolbar.show()
@@ -608,18 +602,17 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     override fun onClickComplain(agreed: Boolean) {
+        closeComplainBottomSheet?.dismiss()
         if (agreed) {
-            sendGTmEvent(InboxTicketTracking.Label.EventYes,
+            sendGTmEvent(InboxTicketTracking.Label.EventLabelYaTutup,
                     InboxTicketTracking.Action.EventClickCloseTicket)
             (mPresenter as InboxDetailContract.Presenter).closeTicket()
-            closeComplainBottomSheet?.dismiss()
         } else {
-            sendGTmEvent(InboxTicketTracking.Label.EventNo,
+            sendGTmEvent(InboxTicketTracking.Label.EventLabelBatal,
                     InboxTicketTracking.Action.EventClickCloseTicket)
             viewReplyButton.hide()
             viewHelpRate.hide()
             textToolbar.show()
-            closeComplainBottomSheet?.dismiss()
         }
     }
 
@@ -655,16 +648,16 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     private fun sendGTmEvent(eventLabel: String, action: String) {
-        ContactUsTracking.sendGTMInboxTicket(this, InboxTicketTracking.Event.EventName,
-                InboxTicketTracking.Category.EventHelpMessageInbox,
+        ContactUsTracking.sendGTMInboxTicket(this, InboxTicketTracking.Event.Event,
+                InboxTicketTracking.Category.EventCategoryInbox,
                 action,
-                eventLabel)
+                "${getTicketId()} - $eventLabel")
+
     }
 
     override fun onPriorityLabelClick() {
-        servicePrioritiesBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity())
-        servicePrioritiesBottomSheet?.setCustomContentView(ServicePrioritiesBottomSheet(this@InboxDetailActivity, this@InboxDetailActivity), "", false)
-        servicePrioritiesBottomSheet?.show()
+        servicePrioritiesBottomSheet = ServicePrioritiesBottomSheet(this@InboxDetailActivity, this)
+        servicePrioritiesBottomSheet?.show(supportFragmentManager, "servicePrioritiesBottomSheet")
     }
 
     override fun onTransactionDetailsClick() {

@@ -21,6 +21,7 @@ import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -104,6 +105,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val mvcSummaryData: ProductMerchantVoucherSummaryDataModel?
         get() = mapOfData[ProductDetailConstant.MVC] as? ProductMerchantVoucherSummaryDataModel
 
+    val bestSellerData: BestSellerInfoDataModel?
+        get() = mapOfData[ProductDetailConstant.BEST_SELLER] as? BestSellerInfoDataModel
+
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, loadInitialData: Boolean = false) {
         dataP1?.let {
 
@@ -178,6 +182,32 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 productReviewMap?.run {
                     totalRating = it.basic.stats.countReview.toIntOrZero()
                     ratingScore = it.basic.stats.rating
+                }
+            }
+
+            val productId = it.basic.productID
+            dataP1.bestSellerContent?.let { bestSellerInfoContent ->
+                if (bestSellerInfoContent.contains(productId)) {
+                    updateBestSellerData(dataP1 = dataP1, productId = productId)
+                } else {
+                    updateBestSellerData()
+                }
+            }
+        }
+    }
+
+    private fun updateBestSellerData(
+        dataP1: DynamicProductInfoP1? = null,
+        productId: String? = null
+    ) {
+        updateData(ProductDetailConstant.BEST_SELLER) {
+            bestSellerData?.run {
+                if (dataP1 == null) {
+                    this.bestSellerInfoContent = null
+                } else {
+                    dataP1.bestSellerContent?.let {
+                        this.bestSellerInfoContent = it[productId]
+                    }
                 }
             }
         }
@@ -475,12 +505,27 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     fun updateRecommendationData(data: RecommendationWidget) {
         updateData(data.pageName) {
-            (mapOfData[data.pageName] as? ProductRecommendationDataModel)?.run {
-                recomWidgetData = data
-                cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
-                filterData = mapToAnnotateChip(data)
+            when (data.pageName) {
+                PDP_7 -> {
+                    (mapOfData[data.pageName] as? ProductRecomWidgetDataModel)?.run {
+                        recomWidgetData = data
+                        cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
+                        filterData = mapToAnnotateChip(data)
+                    }
+                }
+                else -> {
+                    (mapOfData[data.pageName] as? ProductRecommendationDataModel)?.run {
+                        recomWidgetData = data
+                        cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
+                        filterData = mapToAnnotateChip(data)
+                    }
+                }
             }
         }
+    }
+
+    fun removeEmptyRecommendation(data: RecommendationWidget) {
+        removeComponent(data.pageName)
     }
 
     fun updateComparisonDataModel(data: RecommendationWidget) {
