@@ -57,8 +57,8 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         launch {
             getHotelInfo(hotelInfoQuery, propertyId, source)
             getHotelReview(hotelReviewQuery, propertyId)
-            getRoomList(roomListQuery, searchParam)
             getNearbyLandmarks(hotelNearbyLandmarksQuery, propertyId)
+            getRoomList(roomListQuery, searchParam)
         }
     }
 
