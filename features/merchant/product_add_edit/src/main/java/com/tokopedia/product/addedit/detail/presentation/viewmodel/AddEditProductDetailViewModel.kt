@@ -675,6 +675,13 @@ class AddEditProductDetailViewModel @Inject constructor(
         return result.trim().replace("\\s+".toRegex(), " ")
     }
 
+    /**
+     * This method purpose is to cleanse imagePickerResult from cache url
+     * If we input web url link to imagePicker usually imagePicker will return a temporary URL with "*.0" extension in imagePickerResult array
+     * Therefore, we should cleanse URL by changing temporary URL to original web url
+     * @param imagePickerResult is the list of product photo paths that returned from imagePicker (it will have different value if the user do addition, removal or edit any images that are previously added)
+     * @param originalImageUrl is the list of original product photo paths that input to imagePicker (it doesn't contain image path of any added or edited image)
+     **/
     private fun cleanProductPhotoUrl(imagePickerResult: MutableList<String>,
                                      originalImageUrl: MutableList<String>): List<String> {
         return imagePickerResult.mapIndexed { index, input ->
