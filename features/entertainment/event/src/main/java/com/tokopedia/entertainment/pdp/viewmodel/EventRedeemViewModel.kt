@@ -2,8 +2,10 @@ package com.tokopedia.entertainment.pdp.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.entertainment.pdp.data.redeem.ErrorRedeem
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.EventRedeem
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.EventRedeemedData
 import com.tokopedia.entertainment.pdp.network_api.GetEventRedeemUseCase
@@ -11,6 +13,7 @@ import com.tokopedia.entertainment.pdp.network_api.RedeemTicketEventUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
@@ -36,10 +39,17 @@ class EventRedeemViewModel @Inject constructor(private val dispatcher: Coroutine
     fun getDataRedeem(urlRedeem : String) {
         launchCatchError(block = {
             usecase.setUrlRedeem(urlRedeem)
-            val result = withContext(dispatcher){
-                convertToRedeemResponse(usecase.executeOnBackground())
+           withContext(dispatcher){
+                val data = usecase.executeOnBackground()
+                val value = data[EventRedeem::class.java]
+                if (value?.code == 200 && !value.isError) {
+                    val result = convertToRedeemResponse(data)
+                    eventRedeemMutable.value = result
+                } else {
+                    val errorMessage = convertToErrorResponse(data)
+                    isErrorMutable.value = MessageErrorException(errorMessage)
+                }
             }
-            eventRedeemMutable.value = result
         }, onError = {
             isErrorMutable.value = it
         })
@@ -48,10 +58,17 @@ class EventRedeemViewModel @Inject constructor(private val dispatcher: Coroutine
     fun redeemData(urlRedeem: String){
         launchCatchError(block = {
             useCaseRedeem.setUrlRedeem(urlRedeem)
-            val result = withContext(dispatcher){
-                convertToRedeemedResponse(useCaseRedeem.executeOnBackground())
+            withContext(dispatcher){
+                val data = usecase.executeOnBackground()
+                val value = data[EventRedeemedData::class.java]
+                if (value?.code == 200 && !value.isError) {
+                    val result = convertToRedeemedResponse(data)
+                    eventRedeemedMutable.value = result
+                } else {
+                    val errorMessage = convertToErrorResponse(data)
+                    isErrorMutable.value = MessageErrorException(errorMessage)
+                }
             }
-            eventRedeemedMutable.value = result
         }, onError = {
             isErrorMutable.value = it
         })
@@ -59,6 +76,12 @@ class EventRedeemViewModel @Inject constructor(private val dispatcher: Coroutine
 
     private fun convertToRedeemResponse(typeRestResponseMap: Map<Type, RestResponse?>): EventRedeem {
         return typeRestResponseMap[EventRedeem::class.java]?.getData() as EventRedeem
+    }
+
+    private fun convertToErrorResponse(typeRestResponseMap: Map<Type, RestResponse?>): String? {
+        val errorBody = typeRestResponseMap[EventRedeem::class.java]?.errorBody ?: ""
+        val errorRedeem = Gson().fromJson(errorBody, ErrorRedeem::class.java)
+        return errorRedeem.messageError.firstOrNull()
     }
 
     private fun convertToRedeemedResponse(typeRestResponseMap: Map<Type, RestResponse?>): EventRedeemedData {

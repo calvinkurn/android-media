@@ -165,4 +165,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
+
+    <LinearLayout
+        android:id="@+id/container_error_event_redeem"
+        android:background="@color/Unify_Background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:background="@color/Unify_Background"
+        android:id="@+id/global_error_redeem_event"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone" />
 </FrameLayout>
