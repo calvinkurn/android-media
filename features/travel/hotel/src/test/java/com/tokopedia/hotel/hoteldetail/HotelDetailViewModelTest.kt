@@ -8,9 +8,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
+import com.tokopedia.hotel.hoteldetail.data.entity.HotelNearbyLandmark
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
+import com.tokopedia.hotel.hoteldetail.usecase.GetHotelNearbyLandMark
 import com.tokopedia.hotel.roomlist.usecase.GetHotelRoomListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -18,7 +20,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
-import kotlinx.coroutines.channels.ticker
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,10 +46,13 @@ class HotelDetailViewModelTest {
     @RelaxedMockK
     lateinit var getHotelRoomListUseCase: GetHotelRoomListUseCase
 
+    @RelaxedMockK
+    lateinit var getHotelNearbyLandMark: GetHotelNearbyLandMark
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        hotelDetailViewModel = HotelDetailViewModel(graphqlRepository, dispatcher, getHotelRoomListUseCase, travelTickerCoroutineUseCase)
+        hotelDetailViewModel = HotelDetailViewModel(graphqlRepository, dispatcher, getHotelRoomListUseCase, getHotelNearbyLandMark, travelTickerCoroutineUseCase)
     }
 
     @Test
@@ -72,13 +76,18 @@ class HotelDetailViewModelTest {
             getHotelRoomListUseCase.execute(any(), any(), any())
         } returns Success(mutableListOf())
 
+        coEvery {
+            getHotelNearbyLandMark.execute(any() as String,any())
+        } returns Success(HotelNearbyLandmark())
+
         //when
-        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel(), "")
+        hotelDetailViewModel.getHotelDetailData("", "", "", "",0, HotelHomepageModel(), "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Success)
         assert(hotelDetailViewModel.hotelReviewResult.value is Success)
         assert(hotelDetailViewModel.roomListResult.value is Success)
+        assert(hotelDetailViewModel.hotelNearbyLandmarks.value is Success)
     }
 
     @Test
@@ -102,13 +111,18 @@ class HotelDetailViewModelTest {
             getHotelRoomListUseCase.execute(any(), any(), any())
         } returns Success(mutableListOf())
 
+        coEvery {
+            getHotelNearbyLandMark.execute(any() as String, any())
+        } returns Success(HotelNearbyLandmark())
+
         //when
-        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel(), "")
+        hotelDetailViewModel.getHotelDetailData("", "", "", "",0, HotelHomepageModel(), "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Fail)
         assert(hotelDetailViewModel.hotelReviewResult.value is Success)
         assert(hotelDetailViewModel.roomListResult.value is Success)
+        assert(hotelDetailViewModel.hotelNearbyLandmarks.value is Success)
     }
 
     @Test
@@ -132,13 +146,18 @@ class HotelDetailViewModelTest {
             getHotelRoomListUseCase.execute(any(), any(), any())
         } returns Success(mutableListOf())
 
+        coEvery {
+            getHotelNearbyLandMark.execute(any() as String, any())
+        } returns Success(HotelNearbyLandmark())
+
         //when
-        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel(), "")
+        hotelDetailViewModel.getHotelDetailData("", "", "", "",0, HotelHomepageModel(), "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Success)
         assert(hotelDetailViewModel.hotelReviewResult.value is Fail)
         assert(hotelDetailViewModel.roomListResult.value is Success)
+        assert(hotelDetailViewModel.hotelNearbyLandmarks.value is Success)
     }
 
     @Test
@@ -163,7 +182,7 @@ class HotelDetailViewModelTest {
         } returns Fail(Throwable())
 
         //when
-        hotelDetailViewModel.getHotelDetailData("", "", "", 0, HotelHomepageModel(), "")
+        hotelDetailViewModel.getHotelDetailData("", "", "", "",0, HotelHomepageModel(), "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Success)
@@ -189,7 +208,7 @@ class HotelDetailViewModelTest {
         } returnsMany listOf(graphqlSuccessResponse, graphqlSuccessResponse1)
 
         //when
-        hotelDetailViewModel.getHotelDetailDataWithoutRoom("", "", 0, "")
+        hotelDetailViewModel.getHotelDetailDataWithoutRoom("", "", "",0, "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Success)
