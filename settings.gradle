@@ -17,8 +17,8 @@ gradleEnterprise {
             if (System.getenv('NODE_NAME')) {
                 def nodeName = System.getenv('NODE_NAME')
                 def agentName = nodeName
-                if (nodeName.contains("kube-build")) {
-                    agentName = "kube-node"
+                if (nodeName.startsWith("kube")) {
+                    agentName = "kube-"+nodeName.split('-')[1]
                 } else if (nodeName == 'master') {
                     agentName = "master-node"
                 }
