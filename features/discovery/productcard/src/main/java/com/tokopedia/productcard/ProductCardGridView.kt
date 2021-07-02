@@ -277,18 +277,11 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     private fun renderChooseVariant(productCardModel: ProductCardModel) {
-        buttonAddVariant?.shouldShowWithAction(productCardModel.hasVariant()) {
-            renderButtonAddVariant(productCardModel)
-        }
+        buttonAddVariant?.showWithCondition(productCardModel.hasVariant())
 
         textVariantQuantity?.shouldShowWithAction(productCardModel.hasVariantWithQuantity()) {
             productCardModel.variant?.let { renderTextVariantQuantity(it.quantity) }
         }
-    }
-
-    private fun renderButtonAddVariant(productCardModel: ProductCardModel) {
-        if (productCardModel.hasVariantWithQuantity()) buttonAddVariant?.text = context.getString(R.string.product_card_text_add_other_variant_grid)
-        else buttonAddVariant?.text = context.getString(R.string.product_card_text_add_variant_grid)
     }
 
     private fun renderTextVariantQuantity(quantity: Int) {

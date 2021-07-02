@@ -68,6 +68,22 @@ class GetMiniCartListTest {
     }
 
     @Test
+    fun `WHEN reload mini cart list error THEN global state should not be updated`() {
+        //given
+        coEvery { getMiniCartListUseCase.setParams(any()) } just Runs
+        coEvery { getMiniCartListUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(ResponseErrorException())
+        }
+        viewModel.initializeGlobalState()
+
+        //when
+        viewModel.getCartList()
+
+        //then
+        assert(viewModel.globalEvent.value?.state == 0)
+    }
+
+    @Test
     fun `WHEN first load mini cart list success with all item available THEN bottom sheet title should not be empty`() {
         //given
         val mockResponse = DataProvider.provideGetMiniCartListSuccessAllAvailable()

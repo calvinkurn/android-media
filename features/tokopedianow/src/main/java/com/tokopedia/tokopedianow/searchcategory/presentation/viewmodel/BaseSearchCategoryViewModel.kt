@@ -243,6 +243,7 @@ abstract class BaseSearchCategoryViewModel(
     private fun showOutOfCoverage() {
         updateRecyclerViewScrollable(false)
         updateHeaderBackgroundVisibility(false)
+        updateMiniCartVisibility(false)
 
         createVisitableListWithOutOfCoverageView()
         clearVisitableListLiveData()
@@ -565,6 +566,8 @@ abstract class BaseSearchCategoryViewModel(
         updateHeaderBackgroundVisibility(!isEmptyProductList)
         updateRecyclerViewScrollable(!isEmptyProductList)
 
+        if (isEmptyProductList) updateMiniCartVisibility(!isEmptyProductList)
+
         showPageContent()
     }
 
@@ -823,7 +826,11 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     private fun onGetMiniCartDataFailed(throwable: Throwable) {
-        isShowMiniCartMutableLiveData.value = false
+        updateMiniCartVisibility(false)
+    }
+
+    private fun updateMiniCartVisibility(isVisible: Boolean) {
+        isShowMiniCartMutableLiveData.value = isVisible
     }
 
     private fun getIsChooseAddressUpdated(): Boolean {
@@ -859,8 +866,8 @@ abstract class BaseSearchCategoryViewModel(
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
             sendAddToCartTracking(quantity, it.data.cartId, productItem)
-            updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
             onAddToCartSuccess(productItem, it.data.quantity, )
+            updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
         }, {
             onAddToCartFailed(it)
         })

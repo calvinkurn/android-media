@@ -198,7 +198,7 @@ object AtcCommonMapper {
                         position = idCounter,
                         listOfVariantCategory = processedVariant,
                         mapOfSelectedVariant = initialSelectedVariant,
-                        isEmptyStock = totalStock == 0 || selectedChild?.isBuyable == false,
+                        isEmptyStock = (totalStock == 0 || (selectedChild?.isBuyable == false) && !selectedChild.isInactive),
                         isTokoCabang = selectedProductFulfillment)
         ).also {
             idCounter += 1
@@ -223,7 +223,6 @@ object AtcCommonMapper {
                         processedVariant: List<VariantCategory>?,
                         isPartiallySelected: Boolean,
                         selectedVariantIds: MutableMap<String, String>?,
-                        allChildEmpty: Boolean,
                         selectedVariantChild: VariantChild?,
                         variantImage: String,
                         selectedProductFulfillment: Boolean,
@@ -236,7 +235,7 @@ object AtcCommonMapper {
                     it.copy(listOfVariantCategory = processedVariant,
                             mapOfSelectedVariant = selectedVariantIds
                                     ?: mutableMapOf(),
-                            isEmptyStock = allChildEmpty,
+                            isEmptyStock = selectedVariantChild?.isBuyable == false && !selectedVariantChild.isInactive,
                             isTokoCabang = selectedProductFulfillment)
                 }
                 is VariantQuantityDataModel -> {

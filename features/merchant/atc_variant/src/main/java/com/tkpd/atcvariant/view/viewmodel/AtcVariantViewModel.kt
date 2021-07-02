@@ -31,7 +31,6 @@ import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantA
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
@@ -119,7 +118,6 @@ class AtcVariantViewModel @Inject constructor(
                     processedVariant = processedVariant,
                     isPartiallySelected = isPartiallySelected,
                     selectedVariantIds = selectedVariantIds,
-                    allChildEmpty = getVariantData()?.getBuyableVariantCount() == 0,
                     selectedVariantChild = selectedVariantChild,
                     variantImage = variantImage,
                     selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
@@ -134,7 +132,6 @@ class AtcVariantViewModel @Inject constructor(
                 // this validation only be execute when user clicked variant and fully clicked 2 of 2 variant or 1 of 1
                 _buttonData.postValue(cartData.asSuccess())
                 updateActivityResult(
-                        listVariant = processedVariant,
                         selectedProductId = selectedVariantChild?.productId ?: "",
                         mapOfSelectedVariantOption = selectedVariantIds)
             }
@@ -159,8 +156,7 @@ class AtcVariantViewModel @Inject constructor(
         return variantDataModel?.mapOfSelectedVariant
     }
 
-    fun updateActivityResult(listVariant: List<VariantCategory>? = null,
-                             selectedProductId: String? = null,
+    fun updateActivityResult(selectedProductId: String? = null,
                              mapOfSelectedVariantOption: MutableMap<String, String>? = null,
                              atcSuccessMessage: String? = null,
                              shouldRefreshPreviousPage: Boolean? = null,
@@ -224,6 +220,9 @@ class AtcVariantViewModel @Inject constructor(
             if (visitables != null) {
                 _titleVariantName.postValue(AtcVariantMapper.getSelectedVariantName(processedVariant, selectedChild))
                 _initialData.postValue(visitables.asSuccess())
+                updateActivityResult(
+                        selectedProductId = selectedChild?.productId ?: "",
+                        mapOfSelectedVariantOption = initialSelectedOptionIds)
             } else {
                 _initialData.postValue(Throwable().asFail())
             }

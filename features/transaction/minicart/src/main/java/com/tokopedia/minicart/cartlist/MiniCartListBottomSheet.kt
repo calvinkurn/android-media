@@ -236,20 +236,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 dismiss()
             }
 
-            if (it.isFirstLoad) {
-                analytics.eventLoadMiniCartBottomSheetSuccess(it.getMiniCartProductUiModelList())
-                val overweightData = it.getMiniCartTickerWarningUiModel()
-                if (overweightData != null) {
-                    analytics.eventViewErrorTickerOverweightInMiniCart(overweightData.warningMessage)
-                }
-                val tickerErrorUiModel = it.getMiniCartTickerErrorUiModel()
-                if (tickerErrorUiModel != null) {
-                    val message = bottomSheet?.context?.getString(R.string.mini_cart_message_ticker_error, tickerErrorUiModel.unavailableItemCount)
-                            ?: ""
-                    analytics.eventViewTickerErrorUnavailableProduct(message)
-                }
-            }
-
             if (it.needToCalculateAfterLoad) {
                 calculateProduct()
             } else {
@@ -265,7 +251,26 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 }
                 updateTotalAmount(viewBinding, it.miniCartWidgetUiModel)
                 adjustRecyclerViewPaddingBottom(viewBinding)
+
+                if (it.isFirstLoad) {
+                    sendFirstLoadAnalytics(it)
+                    it.isFirstLoad = false
+                }
             }
+        }
+    }
+
+    private fun sendFirstLoadAnalytics(miniCartListUiModel: MiniCartListUiModel) {
+        analytics.eventLoadMiniCartBottomSheetSuccess(miniCartListUiModel.getMiniCartProductUiModelList())
+        val overweightData = miniCartListUiModel.getMiniCartTickerWarningUiModel()
+        if (overweightData != null) {
+            analytics.eventViewErrorTickerOverweightInMiniCart(overweightData.warningMessage)
+        }
+        val tickerErrorUiModel = miniCartListUiModel.getMiniCartTickerErrorUiModel()
+        if (tickerErrorUiModel != null) {
+            val message = bottomSheet?.context?.getString(R.string.mini_cart_message_ticker_error, tickerErrorUiModel.unavailableItemCount)
+                    ?: ""
+            analytics.eventViewTickerErrorUnavailableProduct(message)
         }
     }
 

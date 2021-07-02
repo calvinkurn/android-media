@@ -272,6 +272,7 @@ class TokoNowHomeFragment: Fragment(),
     private fun showEmptyState(id: String) {
         rvLayoutManager?.setScrollEnabled(false)
         viewModelTokoNow.getEmptyState(id)
+        miniCartWidget?.hide()
     }
 
     private fun showFailedToFetchData() {
@@ -638,7 +639,9 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun getMiniCart()  {
-        viewModelTokoNow.getMiniCart(listOf(localCacheModel?.shop_id.orEmpty()))
+        val shopId = listOf(localCacheModel?.shop_id.orEmpty())
+        val warehouseId = localCacheModel?.warehouse_id
+        viewModelTokoNow.getMiniCart(shopId, warehouseId)
     }
 
     private fun loadLayout() {

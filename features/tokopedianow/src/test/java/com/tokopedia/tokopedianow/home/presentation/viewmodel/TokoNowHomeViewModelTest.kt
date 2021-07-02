@@ -8,14 +8,12 @@ import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.tokopedianow.data.*
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutState
+import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokopedianow.home.domain.mapper.TickerMapper.mapTickerData
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeCategoryGridUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeCategoryItemUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyString
@@ -27,7 +25,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetTicker_thenReturn(createTicker())
         onGetHomeLayout_thenReturn(createHomeLayoutList())
 
-        viewModelTokoNow.getHomeLayout(hasTickerBeenRemoved = false)
+        viewModel.getHomeLayout(hasTickerBeenRemoved = false)
 
         val expectedResponse = HomeLayoutListUiModel(
                 result = mapHomeLayoutList(
@@ -46,9 +44,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayout_thenReturn(createHomeLayoutListForBannerOnly())
         onGetHomeLayoutData_thenReturn(createHomeLayoutData())
 
-        viewModelTokoNow.getHomeLayout(hasTickerBeenRemoved = true)
+        viewModel.getHomeLayout(hasTickerBeenRemoved = true)
 
-        viewModelTokoNow.getInitialLayoutData(1, "1", true)
+        viewModel.getInitialLayoutData(1, "1", true)
 
         val expectedResponse = HomeLayoutItemUiModel(
             BannerDataModel(
@@ -70,7 +68,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `when getting loadingState should run and give the success result`() {
-        viewModelTokoNow.getLoadingState()
+        viewModel.getLoadingState()
 
         val expectedResponse = createLoadingState()
 
@@ -81,7 +79,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when getting emptyState should run and give the success result`() {
         val idEmptyState = EMPTY_STATE_NO_ADDRESS
 
-        viewModelTokoNow.getEmptyState(idEmptyState)
+        viewModel.getEmptyState(idEmptyState)
 
         val expectedResponse = createEmptyState(idEmptyState)
 
@@ -93,7 +91,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when getting keywordSearch should run and give the success result`() {
         onGetKeywordSearch_thenReturn(createKeywordSearch())
 
-        viewModelTokoNow.getKeywordSearch(anyBoolean(), anyString(), anyString())
+        viewModel.getKeywordSearch(anyBoolean(), anyString(), anyString())
 
         verifyGetKeywordSearchUseCaseCalled()
 
@@ -105,7 +103,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when getting chooseAddress should run and give the success result`() {
         onGetChooseAddress_thenReturn(createChooseAddress())
 
-        viewModelTokoNow.getChooseAddress(SOURCE)
+        viewModel.getChooseAddress(SOURCE)
 
         verifyGetChooseAddress()
 
@@ -117,7 +115,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when getting homeLayout should throw ticker's exception and get the failed result`() {
         onGetTicker_thenReturn(Exception())
 
-        viewModelTokoNow.getHomeLayout(hasTickerBeenRemoved = false)
+        viewModel.getHomeLayout(hasTickerBeenRemoved = false)
 
         verifyGetHomeLayoutResponseFail()
     }
@@ -126,7 +124,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when getting homeLayout should throw homeLayout's exception and get the failed result`() {
         onGetHomeLayout_thenReturn(Exception())
 
-        viewModelTokoNow.getHomeLayout(hasTickerBeenRemoved = false)
+        viewModel.getHomeLayout(hasTickerBeenRemoved = false)
 
         verifyGetHomeLayoutResponseFail()
     }
@@ -135,7 +133,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when getting chooseAddress should throw chooseAddress's exception and get failed result`() {
         onGetChooseAddress_thenReturn(Exception())
 
-        viewModelTokoNow.getChooseAddress(SOURCE)
+        viewModel.getChooseAddress(SOURCE)
 
         verifyGetChooseAddressFail()
     }
@@ -144,27 +142,36 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when getting data for mini cart should run and give success result`(){
         onGetMiniCart_thenReturn(createMiniCartSimplifier())
 
-        viewModelTokoNow.getMiniCart(shopId = listOf("123"))
+        viewModel.getMiniCart(shopId = listOf("123"), "233")
 
         verifyMiniCartResponseSuccess(createMiniCartSimplifier())
-    }
-
-    @Test
-    fun `when getting data for mini cart empty category should run`(){
-        onGetMiniCart_thenReturn(createMiniCartSimplifier())
-
-        viewModelTokoNow.getMiniCart(shopId = listOf())
-
-        verifyMiniCartNullResponse()
     }
 
     @Test
     fun `when getting data for mini cart should throw mini cart exception`(){
         onGetMiniCart_thenReturn(Exception())
 
-        viewModelTokoNow.getMiniCart(shopId = listOf("123"))
+        viewModel.getMiniCart(shopId = listOf("123"), "233")
 
         verifyMiniCartFail()
+    }
+
+    @Test
+    fun `when shopId is empty should get null for category livedata`(){
+        onGetMiniCart_thenReturn(createMiniCartSimplifier())
+
+        viewModel.getMiniCart(shopId = listOf(), "233")
+
+        verifyMiniCartNullResponse()
+    }
+
+    @Test
+    fun `when warehouseId is zero should get null for category livedata`(){
+        onGetMiniCart_thenReturn(createMiniCartSimplifier())
+
+        viewModel.getMiniCart(shopId = listOf("123"), "0")
+
+        verifyMiniCartNullResponse()
     }
 
     @Test
@@ -174,10 +181,10 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetCategoryList_thenReturn(createCategoryGridListFirstFetch())
 
         //fetch homeLayout
-        viewModelTokoNow.getHomeLayout(true)
+        viewModel.getHomeLayout(true)
 
         //fetch widget one by one
-        viewModelTokoNow.getInitialLayoutData(1, "1", true)
+        viewModel.getInitialLayoutData(1, "1", true)
 
         //set second mock data to replace first mock data category list
         onGetCategoryList_thenReturn(createCategoryGridListSecondFetch())
@@ -190,7 +197,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 state=HomeLayoutState.SHOW
         )
 
-        viewModelTokoNow.getCategoryGrid(model, "1")
+        viewModel.getCategoryGrid(model, "1")
 
         //prepare model for expectedResult
         val expectedResponse = HomeLayoutItemUiModel(
@@ -221,10 +228,10 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetCategoryList_thenReturn(createCategoryGridListFirstFetch())
 
         //fetch homeLayout
-        viewModelTokoNow.getHomeLayout(true)
+        viewModel.getHomeLayout(true)
 
         //fetch widget one by one
-        viewModelTokoNow.getInitialLayoutData(1, "1", true)
+        viewModel.getInitialLayoutData(1, "1", true)
 
         //set second mock data to replace first mock data category list
         onGetCategoryList_thenReturn(Exception())
@@ -237,7 +244,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 state=HomeLayoutState.SHOW
         )
 
-        viewModelTokoNow.getCategoryGrid(model, "1")
+        viewModel.getCategoryGrid(model, "1")
 
         //prepare model for expectedResult
         val expectedResponse = HomeLayoutItemUiModel(
@@ -254,5 +261,55 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         verifyGetCategoryListResponseSuccess(expectedResponse)
         verifyGetCategoryListUseCaseCalled()
         verifyGetHomeLayoutUseCaseCalled()
+    }
+
+    @Test
+    fun `when getting moreLayoutData should run and give the success result`() {
+        //set mock data
+        onGetTicker_thenReturn(createTicker())
+        onGetHomeLayout_thenReturn(createHomeLayoutList())
+        onGetCategoryList_thenReturn(createCategoryGridListFirstFetch())
+
+        //fetch homeLayout
+        viewModel.getHomeLayout(true)
+
+        viewModel.getMoreLayoutData("1", 2, 2)
+
+        //prepare model for expectedResult
+        val expectedResponse = HomeLayoutItemUiModel(
+                HomeCategoryGridUiModel(
+                        id="11111",
+                        title="Category Tokonow",
+                        categoryList = listOf(HomeCategoryItemUiModel(
+                                id="3",
+                                title="Category 3",
+                                imageUrl="tokopedia://",
+                                appLink="tokoepdia://"
+                        )),
+                        state=HomeLayoutState.SHOW
+                ),
+                HomeLayoutItemState.LOADED
+        )
+
+        // verify use case called and response
+        verifyGetCategoryListResponseSuccess(expectedResponse)
+        verifyGetCategoryListUseCaseCalled()
+        verifyGetHomeLayoutUseCaseCalled()
+    }
+
+    @Test
+    fun `when getting moreLayoutData should not run and homeLayout livedata is null`() {
+        val homeLayout = createHomeLayoutItemUiModelList()
+
+        privateHomeLayoutItemList.set(viewModel, homeLayout)
+
+        viewModel.getMoreLayoutData("1", 0, 0)
+        verifyGetHomeLayoutNullResponse()
+
+        viewModel.getMoreLayoutData("1", 1, 1)
+        verifyGetHomeLayoutNullResponse()
+
+        viewModel.getMoreLayoutData("1", 2, 2)
+        verifyGetHomeLayoutNullResponse()
     }
 }
