@@ -93,6 +93,13 @@ object NotifcenterAssertion {
         assertRecyclerviewItem(hasTotalItemOf(size))
     }
 
+    fun assertSectionTitleTextAt(position: Int, title: String) {
+        onView(
+            withRecyclerView(R.id.recycler_view)
+                .atPositionOnView(position, R.id.txt_section_title)
+        ).check(matches(withText(title)))
+    }
+
     fun assertRecyclerviewItem(matcher: Matcher<in View>) {
         onView(withId(R.id.recycler_view))
             .check(matches(matcher))

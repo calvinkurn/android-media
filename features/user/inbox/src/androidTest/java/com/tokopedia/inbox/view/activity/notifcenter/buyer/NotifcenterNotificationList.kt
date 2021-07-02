@@ -1,8 +1,30 @@
 package com.tokopedia.inbox.view.activity.notifcenter.buyer
 
-class NotifcenterNotificationList {
+import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
+import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAssertion
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SectionTitleViewHolder
+import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
+import org.junit.Test
 
-    // TODO: should show new list title
+class NotifcenterNotificationList : InboxNotifcenterTest() {
+
+    @Test
+    fun should_show_new_list_title() {
+        // Given
+        inboxNotifcenterDep.apply {
+            notifcenterDetailUseCase.response = notifcenterDetailUseCase.newListOnly
+        }
+        startInboxActivity()
+
+        // Then
+        NotifcenterAssertion.assertRecyclerviewItem(
+            hasViewHolderItemAtPosition(
+                1, SectionTitleViewHolder::class.java
+            )
+        )
+        NotifcenterAssertion.assertSectionTitleTextAt(1, "Terbaru")
+    }
+
     // TODO: should show new list section load more button when new list section has next true
     // TODO: should hide new list section load more button when new list section has next false
     // TODO: should show new list section next page when load more button success clicked
