@@ -138,10 +138,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
         val filterNearby = HotelNearbyLandmarkParam.FilterNearbyLandmark(propertyId)
         val nearbyLandmarkParam = HotelNearbyLandmarkParam(template = HotelNearbyLandmarkTemplate.HOTEL_PDP.value, filter = filterNearby)
 
-        launch {
-            val data = hotelNearbyLandmark.execute(rawQuery, nearbyLandmarkParam)
-            hotelNearbyLandmarks.postValue(data)
-        }
+        hotelNearbyLandmarks.postValue(hotelNearbyLandmark.execute(rawQuery, nearbyLandmarkParam))
     }
 
     companion object {
