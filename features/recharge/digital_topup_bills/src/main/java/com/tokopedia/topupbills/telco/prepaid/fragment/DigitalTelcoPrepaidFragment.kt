@@ -468,14 +468,17 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
             telcoClientNumberWidget.clearFocusAutoComplete()
 
-            // TODO: [Misael] Toggle
             if (isSeamlessFavoriteNumber) {
                 startActivityForResult(activity?.let {
                     TopupBillsFavoriteNumberActivity.getCallingIntent(it,
                         ClientNumberType.TYPE_INPUT_TEL,
                         clientNumber,
                         seamlessFavNumberList,
-                        TelcoCategoryType.CATEGORY_PASCABAYAR
+                        arrayListOf(
+                                TelcoCategoryType.CATEGORY_PULSA.toString(),
+                                TelcoCategoryType.CATEGORY_PAKET_DATA.toString(),
+                                TelcoCategoryType.CATEGORY_ROAMING.toString()
+                        )
                     )
                 },
                         REQUEST_CODE_DIGITAL_SEARCH_NUMBER)

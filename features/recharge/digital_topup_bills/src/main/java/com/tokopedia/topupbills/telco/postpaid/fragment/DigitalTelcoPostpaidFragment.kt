@@ -316,7 +316,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                             ClientNumberType.TYPE_INPUT_TEL,
                             clientNumber,
                             seamlessFavNumberList,
-                            TelcoCategoryType.CATEGORY_PULSA
+                            arrayListOf(TelcoCategoryType.CATEGORY_PULSA.toString())
                         )
                     },
                             REQUEST_CODE_DIGITAL_SEARCH_NUMBER)

@@ -20,7 +20,7 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
     protected lateinit var clientNumberType: String
     protected lateinit var number: String
     protected lateinit var numberList: List<TopupBillsSeamlessFavNumberItem>
-    protected var categoryId by Delegates.notNull<Int>()
+    protected lateinit var dgCategoryIds: ArrayList<String>
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_digital_search_number_rev
@@ -48,7 +48,7 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
             this.clientNumberType = extras.getString(EXTRA_CLIENT_NUMBER, "")
             this.number = extras.getString(EXTRA_NUMBER, "")
             this.numberList = extras.getParcelableArrayList(EXTRA_NUMBER_LIST) ?: listOf()
-            this.categoryId = extras.getInt(EXTRA_CATEGORY_ID, 0)
+            this.dgCategoryIds = extras.getStringArrayList(EXTRA_DG_CATEGORY_IDS) ?: arrayListOf()
         }
         super.onCreate(savedInstanceState)
         updateTitle(getString(R.string.common_topup_title_fav_number))
@@ -62,7 +62,7 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
 
     override fun getNewFragment(): androidx.fragment.app.Fragment {
         return TopupBillsFavoriteNumberFragment
-                .newInstance(clientNumberType, number, numberList, categoryId)
+                .newInstance(clientNumberType, number, numberList, dgCategoryIds)
     }
 
     companion object {
@@ -70,16 +70,16 @@ class TopupBillsFavoriteNumberActivity : BaseSimpleActivity(), HasComponent<Comm
         const val EXTRA_NUMBER_LIST = "EXTRA_NUMBER_LIST"
         const val EXTRA_CLIENT_NUMBER = "EXTRA_CLIENT_NUMBER"
         const val EXTRA_NUMBER = "EXTRA_NUMBER"
-        const val EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID"
+        const val EXTRA_DG_CATEGORY_IDS = "EXTRA_DG_CATEGORY_IDS"
 
         fun getCallingIntent(context: Context, clientNumberType: String,
                              number: String, numberList: List<TopupBillsSeamlessFavNumberItem>,
-                             categoryId: Int
+                             digitalCategoryIds: ArrayList<String>
         ): Intent {
             val intent = Intent(context, TopupBillsFavoriteNumberActivity::class.java)
             intent.putExtra(EXTRA_CLIENT_NUMBER, clientNumberType)
             intent.putExtra(EXTRA_NUMBER, number)
-            intent.putExtra(EXTRA_CATEGORY_ID, categoryId)
+            intent.putExtra(EXTRA_DG_CATEGORY_IDS, digitalCategoryIds)
             intent.putParcelableArrayListExtra(EXTRA_NUMBER_LIST, numberList as ArrayList<out Parcelable>)
             return intent
         }

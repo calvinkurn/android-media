@@ -58,8 +58,8 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     val seamlessFavNumberData: LiveData<Result<TopupBillsSeamlessFavNumber>>
         get() = _seamlessFavNumberData
 
-    private val _seamlessFavNumberUpdateData = MutableLiveData<Result<Pair<UpdateFavoriteDetail, Int>>>()
-    val seamlessFavNumberUpdateData: LiveData<Result<Pair<UpdateFavoriteDetail, Int>>>
+    private val _seamlessFavNumberUpdateData = MutableLiveData<Result<UpdateFavoriteDetail>>()
+    val seamlessFavNumberUpdateData: LiveData<Result<UpdateFavoriteDetail>>
         get() = _seamlessFavNumberUpdateData
 
     private val _checkVoucherData = MutableLiveData<Result<PromoData>>()
@@ -161,14 +161,14 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         }
     }
 
-    fun updateSeamlessFavoriteNumber(rawQuery: String, position: Int, mapParam: Map<String, Any>) {
+    fun updateSeamlessFavoriteNumber(rawQuery: String, mapParam: Map<String, Any>) {
         launchCatchError(block = {
             val data = withContext(dispatcher.io) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TopupBillsSeamlessFavNumberModData::class.java, mapParam)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<TopupBillsSeamlessFavNumberModData>()
 
-            _seamlessFavNumberUpdateData.postValue(Success(data.updateFavoriteDetail to position))
+            _seamlessFavNumberUpdateData.postValue(Success(data.updateFavoriteDetail))
         }) {
             _seamlessFavNumberUpdateData.postValue(Fail(it))
         }

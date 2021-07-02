@@ -30,6 +30,7 @@ import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.utils.covertContactUriToContactData
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsFavoriteNumberListAdapter
@@ -72,7 +73,7 @@ class TopupBillsFavoriteNumberFragment :
     private lateinit var numberListAdapter: TopupBillsFavoriteNumberListAdapter
     private lateinit var clientNumbers: List<TopupBillsSeamlessFavNumberItem>
     private lateinit var clientNumberType: String
-    private var categoryId by Delegates.notNull<Int>()
+    private lateinit var dgCategoryIds: ArrayList<String>
 
     private var number: String = ""
     protected lateinit var inputNumberActionType: InputNumberActionType
@@ -92,7 +93,7 @@ class TopupBillsFavoriteNumberFragment :
             clientNumberType = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER, "")
             number = arguments.getString(ARG_PARAM_EXTRA_NUMBER, "")
             clientNumbers = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST) ?: listOf()
-            categoryId = arguments.getInt(ARG_PARAM_CATEGORY_ID, 0) // TODO: [Misael] categoryid default apa?
+            dgCategoryIds = arguments.getStringArrayList(ARG_PARAM_DG_CATEGORY_IDS) ?: arrayListOf()
         }
     }
 
@@ -174,15 +175,35 @@ class TopupBillsFavoriteNumberFragment :
                     totalTransaction = 0,
                     wishlist = true
             )
-//            when (it) {
-//                is Success -> onSuccessUpdateClientName(it.data.first, it.data.second)
-//                is Fail -> onFailedUpdateClientName()
-//            }
             when (it) {
-                is Success -> onSuccessUpdateClientName(dummy, it.data.second)
-                is Fail -> onSuccessUpdateClientName(dummy, INDEX++)
+                is Success -> onSuccessUpdateClientName()
+                is Fail -> onFailedUpdateClientName()
+            }
+//            when (it) {
+//                is Success -> onSuccessUpdateClientName(dummy, it.data.second)
+//                is Fail -> onSuccessUpdateClientName(dummy, INDEX++)
+//            }
+        })
+
+        topUpBillsViewModel.seamlessFavNumberData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessGetFavoriteNumber(it.data.favoriteNumbers)
+                is Fail -> onFailedGetFavoriteNumber()
             }
         })
+    }
+
+    private fun onSuccessGetFavoriteNumber(newClientNumbers: List<TopupBillsSeamlessFavNumberItem>) {
+        clientNumbers = newClientNumbers
+        numberListAdapter.setNumbers(CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(
+                clientNumbers
+        ))
+    }
+
+    private fun onFailedGetFavoriteNumber() {
+        view?.let {
+            Toaster.build(it, "anjay gagal", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+        }
     }
 
     private val getFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
@@ -331,12 +352,11 @@ class TopupBillsFavoriteNumberFragment :
         }
     }
 
-    private fun onSuccessUpdateClientName(client: UpdateFavoriteDetail, position: Int) {
-        // TODO: [Misael] ini mending fetch ulang atau update locally aja ya?
-        clientNumbers.get(position).clientName = client.label
-        numberListAdapter.setNumbers(CommonTopupBillsDataMapper.mapSeamlessFavNumberItemToDataView(
-                clientNumbers
-        ))
+    private fun onSuccessUpdateClientName() {
+        topUpBillsViewModel.getSeamlessFavoriteNumbers(
+                CommonTopupBillsGqlQuery.rechargeFavoriteNumber,
+                topUpBillsViewModel.createSeamlessFavoriteNumberParams(dgCategoryIds)
+        )
 
         view?.let {
             Toaster.build(it, "Oke, nama berhasil diubah.", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
@@ -345,7 +365,7 @@ class TopupBillsFavoriteNumberFragment :
 
     private fun onFailedUpdateClientName() {
         view?.let {
-            Toaster.build(it, "Maaf, belum berhasil diubah. Coba lagi, ya.")
+            Toaster.build(it, "Maaf, belum berhasil diubah. Coba lagi, ya.", Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -365,12 +385,8 @@ class TopupBillsFavoriteNumberFragment :
     }
 
     override fun onChangeName(newName: String, favNumberItem: TopupBillsSeamlessFavNumberItem) {
-        // TODO: [Misael] ini rawan sekaly
-        val position = clientNumbers.indices.firstOrNull { idx  ->
-             clientNumbers[idx] == favNumberItem } ?: -1
         topUpBillsViewModel.updateSeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
-                position,
                 topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
                         categoryId = favNumberItem.categoryId,
                         productId = favNumberItem.productId,
@@ -411,17 +427,17 @@ class TopupBillsFavoriteNumberFragment :
         const val ARG_PARAM_EXTRA_NUMBER_LIST = "ARG_PARAM_EXTRA_NUMBER_LIST"
         const val ARG_PARAM_EXTRA_NUMBER = "ARG_PARAM_EXTRA_NUMBER"
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER"
-        const val ARG_PARAM_CATEGORY_ID = "ARG_PARAM_CATEGORY_ID"
+        const val ARG_PARAM_DG_CATEGORY_IDS = "ARG_PARAM_DG_CATEGORY_IDS"
 
         fun newInstance(clientNumberType: String, number: String,
                         numberList: List<TopupBillsSeamlessFavNumberItem>,
-                        categoryId: Int
+                        digitalCategoryIds: ArrayList<String>
         ): Fragment {
             val fragment = TopupBillsFavoriteNumberFragment()
             val bundle = Bundle()
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumberType)
             bundle.putString(ARG_PARAM_EXTRA_NUMBER, number)
-            bundle.putInt(ARG_PARAM_CATEGORY_ID, categoryId)
+            bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
             bundle.putParcelableArrayList(ARG_PARAM_EXTRA_NUMBER_LIST, numberList as ArrayList<out Parcelable>)
             fragment.arguments = bundle
             return fragment
