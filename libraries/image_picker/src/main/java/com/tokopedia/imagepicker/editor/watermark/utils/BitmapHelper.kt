@@ -219,8 +219,8 @@ object BitmapHelper {
      *
      * the scaling will be calculate it on [scaleByDividedOfThreesHold]
      */
-    fun Bitmap.downscaleToScaledAllowedDimension(mainBitmap: Bitmap, textLength: Int): Bitmap? {
-        val ratioThreshold = mainBitmap.scaleByDividedOfThreesHold(textLength)
+    fun Bitmap.downscaleToAllowedDimension(mainBitmap: Bitmap, textLength: Int): Bitmap? {
+        val ratioThreshold = mainBitmap.scaleByDividedOfThreesHold(textLength).toInt()
 
         val inWidth = this.width
         val inHeight = this.height
@@ -245,13 +245,14 @@ object BitmapHelper {
         )
     }
 
-    private fun Bitmap.scaleByDividedOfThreesHold(textLength: Int): Int {
-        if (textLength >= 13) return this.width / 2
+    private fun Bitmap.scaleByDividedOfThreesHold(textLength: Int): Float {
+        if (textLength >= 13) return this.width / 2f
+        if (this.width == this.height) return this.width / 2f
 
-        return if (this.width > this.height || this.width == this.height) {
-            this.width / 3
+        return if (this.width > this.height) {
+            this.width / 3f
         } else {
-            this.height / 4
+            this.height / 3.5f
         }
     }
 

@@ -301,7 +301,7 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                 // tokopedia's logo
                 BitmapFactory.decodeResource(
                         getView().getContext().getResources(),
-                        R.drawable.watermark_ic_tokopedia_logo
+                        R.drawable.watermark_logo_tokopedia
                 )
         ).flatMap((Func1<Bitmap, Observable<Bitmap>>) tokopediaLogoBitmap -> {
             // create watermark with transparent container (empty) bitmap

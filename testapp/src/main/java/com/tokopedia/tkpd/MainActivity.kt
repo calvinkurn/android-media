@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.application.MyApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
 import com.tokopedia.tkpd.helper.logout
 import com.tokopedia.tkpd.network.DataSource
@@ -104,5 +105,6 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
+        startActivity(RouteManager.getIntent(applicationContext, MERCHANT_OPEN_PRODUCT_PREVIEW))
     }
 }

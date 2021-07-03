@@ -15,7 +15,7 @@ open class TextDefault(
     override var textShadowBlurRadius: Float = 0f,
     override var textShadowXOffset: Float = 0f,
     override var textShadowYOffset: Float = 0f,
-    override var textAlpha: Int = 80,
+    override var textAlpha: Int = 50,
     override var textSize: Int = 24,
     override var text: String = "",
 ) : TextUIModel, PositionDefault()

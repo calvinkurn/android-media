@@ -2,7 +2,6 @@ package com.tokopedia.imagepicker.editor.watermark
 
 import android.content.Context
 import android.graphics.*
-import android.widget.ImageView
 import com.tokopedia.imagepicker.editor.watermark.entity.BaseWatermark
 import com.tokopedia.imagepicker.editor.watermark.entity.ImageUIModel
 import com.tokopedia.imagepicker.editor.watermark.entity.TextAndImageUIModel
@@ -10,7 +9,7 @@ import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.addPadding
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.adjustRotation
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.combineBitmapWithPadding
-import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.downscaleToScaledAllowedDimension
+import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.downscaleToAllowedDimension
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.resizeBitmap
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.textAsBitmap
 import android.graphics.Bitmap.createBitmap as createBitmap
@@ -211,7 +210,7 @@ data class Watermark (
 
         // scaled resize the watermark container with divided by three
         val scaledWatermarkBitmap =
-            watermarkBitmap!!.downscaleToScaledAllowedDimension(
+            watermarkBitmap!!.downscaleToAllowedDimension(
                 mainBitmap = backgroundImg!!,
                 textLength = textLength
             )?.addPadding(left = 10)
