@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tokopedia.tkpd.ErrorMessageActivity"
+    android:padding="@dimen/unify_space_24"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/button_npe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Null Pointer Exception"/>
+
+    <Button
+        android:id="@+id/button_ioob"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Index Out of Bounds Exception"/>
+
+    <Button
+        android:id="@+id/button_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Number Format Exception"/>
+
+    <Button
+        android:id="@+id/button_unknown_host"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Unknown Host Exception"/>
+
+    <Button
+        android:id="@+id/button_message_403"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Message Error 403"/>
+
+    <Button
+        android:id="@+id/button_message_504"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Message Error 504"/>
+</LinearLayout>

@@ -16,11 +16,19 @@ public class ErrorHandler {
 
     public static String getErrorMessage(final Context context, Throwable e) {
         String errorMessageString = getErrorMessageString(context, e);
-        String errorCodeNative = ExceptionDictionary.Companion.getErrorCodeSimple(e);
-        String errorCodeHTTP = getErrorMessageHTTP(context, e);
+        String errorCode;
+        if(e instanceof MessageErrorException) {
+            //http
+            errorCode = getErrorMessageHTTP(context, e);
+        } else {
+            // native
+            errorCode = ExceptionDictionary.Companion.getErrorCodeSimple(e);
+        }
 
-        String errorMessage = errorMessageString + " " + errorCodeNative;
+        String errorIdentifier = ExceptionDictionary.Companion.getRandomString(4);
+        String errorMessage = errorMessageString + " <" + errorCode +"-"+ errorIdentifier+">";
         return errorMessage;
+
     }
 
     public static String getErrorMessageString(final Context context, Throwable e) {

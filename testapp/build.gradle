@@ -121,4 +121,6 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+	implementation project(rootProject.ext.features.developerOptionsNoop)
+	implementation project(rootProject.ext.features.developerOptions)
 }

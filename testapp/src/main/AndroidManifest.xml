@@ -28,6 +28,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="com.tokopedia.tkpd.ErrorMessageActivity"/>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_goe_api_key_ma"
