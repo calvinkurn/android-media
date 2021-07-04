@@ -22,7 +22,6 @@ import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
-
 class SingleProductBundleFragment : BaseDaggerFragment() {
 
     @Inject

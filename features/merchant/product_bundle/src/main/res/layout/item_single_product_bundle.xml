@@ -62,39 +62,16 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_item_title"
         app:spinner_placeholder_text="Pilih Varian" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_item_price"
+    <com.tokopedia.product_bundle.common.customview.DiscountPriceView
+        android:id="@+id/discountview_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        tool:text="Rp36.000"
-        android:textColor="@color/Unify_N700"
+        app:discountprice_discount_amount="0%"
+        app:discountprice_price="Rp0"
+        app:discountprice_slashprice="Rp0"
         app:layout_constraintStart_toEndOf="@+id/iv_item_image"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_item_variant"
-        app:typographyWeight="bold" />
-
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/label_item_discount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        tool:labelTitle="30%"
-        app:labelType="general_light_red"
-        app:layout_constraintStart_toEndOf="@+id/tv_item_price"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_item_variant" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_item_slash_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        tool:text="Rp36.000"
-        android:textColor="@color/Unify_N700_44"
-        app:typographyType="body_2"
-        app:layout_constraintStart_toEndOf="@+id/label_item_discount"
         app:layout_constraintTop_toBottomOf="@+id/spinner_item_variant" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,4 +3,9 @@
     <declare-styleable name="SpinnerView">
         <attr name="spinner_placeholder_text" format="string" />
     </declare-styleable>
+    <declare-styleable name="DiscountPriceView">
+        <attr name="discountprice_price" format="string" />
+        <attr name="discountprice_discount_amount" format="string" />
+        <attr name="discountprice_slashprice" format="string" />
+    </declare-styleable>
 </resources>
