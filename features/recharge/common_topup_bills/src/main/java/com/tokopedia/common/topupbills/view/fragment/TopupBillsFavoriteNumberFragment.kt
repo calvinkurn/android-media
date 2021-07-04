@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.databinding.FragmentFavoriteNumberBinding
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
@@ -43,6 +44,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.util.ArrayList
 import javax.inject.Inject
@@ -51,6 +53,12 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
 
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
+
+    @Inject
+    lateinit var commonTopupBillsAnalytics: CommonTopupBillsAnalytics
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private lateinit var numberListAdapter: TopupBillsFavoriteNumberListAdapter
     private lateinit var clientNumbers: List<TopupBillsSeamlessFavNumberItem>
@@ -89,6 +97,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         initView()
         binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.requestFocus()
         KeyboardHandler.showSoftKeyboard(activity)
+        commonTopupBillsAnalytics.eventImpressionFavoriteNumberEmptyState("", "")
         if (!getLocalCache(CACHE_SHOW_COACH_MARK_KEY) && clientNumbers.isNotEmpty()) {
             showCoachmark()
         }
