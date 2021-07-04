@@ -33,6 +33,7 @@ const val GQL_CPM: String = """query DisplayAds(${'$'}params: String) {
     city
     gold_shop
     gold_shop_badge
+    pm_pro_shop
     shop_is_official
     product {
         id
@@ -44,6 +45,16 @@ const val GQL_CPM: String = """query DisplayAds(${'$'}params: String) {
             product_name
             image_url
             image_click_url
+        }
+        label_group {
+            title
+            position
+            type
+            url
+        }
+        free_ongkir {
+            is_active
+            img_url
         }
     }
     image_shop {

@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.gm.common.utils.PMCommonUtils
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
@@ -76,15 +75,15 @@ class RecommendationViewHolder(
             containerShcRecommendationSuccess.visible()
 
             tvShcRecommendationTitle.text = element.title
-            val level = element.data?.progressLevel?.bar?.value.orZero()
-            slvShcShopLevel.show(level)
+            val progressLevel = element.data?.progressLevel
+            slvShcShopLevel.show(progressLevel?.text.orEmpty(), progressLevel?.bar?.value.orZero())
 
             setupTicker(element.data?.ticker)
             setupRecommendations(element)
 
             val progressBar = element.data?.progressBar
             val progressTitle = progressBar?.text.orEmpty()
-            val currentProgressText = PMCommonUtils.getShopScoreFmt(progressBar?.bar?.value.orZero())
+            val currentProgressText = progressBar?.bar?.valueToDisplay.orEmpty()
             val setMaxProgressText = progressBar?.bar?.maxValue.orZero().toString()
             val currentProgressValue = progressBar?.bar?.value.orZero()
             val setMaxProgressValue = progressBar?.bar?.maxValue.orZero()
@@ -115,7 +114,7 @@ class RecommendationViewHolder(
             ticker?.let {
                 tickerShcRecommendation.visible()
                 tickerShcRecommendation.setHtmlDescription(ticker.text)
-                tickerShcRecommendation.tickerType = when(ticker.type) {
+                tickerShcRecommendation.tickerType = when (ticker.type) {
                     RecommendationTickerUiModel.TYPE_ERROR -> Ticker.TYPE_ERROR
                     RecommendationTickerUiModel.TYPE_INFO -> Ticker.TYPE_INFORMATION
                     RecommendationTickerUiModel.TYPE_WARNING -> Ticker.TYPE_WARNING

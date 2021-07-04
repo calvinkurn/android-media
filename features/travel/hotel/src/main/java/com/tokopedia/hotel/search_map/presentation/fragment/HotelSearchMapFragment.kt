@@ -176,7 +176,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 is Success -> {
                     showCollapsingHeader()
                     onSuccessGetResult(it.data)
-                    if (!it.data.properties.isNullOrEmpty()) {
+                    if (!it.data.properties.isNullOrEmpty() && currentPage == defaultInitialPage) {
                         changeMarkerState(cardListPosition)
                     } else {
                         hideLoader()
@@ -411,7 +411,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 cardListPosition = it.tag as Int
                 rvHorizontalPropertiesHotelSearchMap.scrollToCenterPosition(cardListPosition)
                 changeMarkerState(cardListPosition)
-                putPriceMarkerOnTop(cardListPosition)
                 if (cardListPosition != -1 &&
                         cardListPosition != lastHorizontalTrackingPositionSent &&
                         adapterCardList.data[cardListPosition] is Property && !adapterCardList.data.isNullOrEmpty()) {
@@ -605,7 +604,9 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 val opacity = 1f - (slideOffset * 3f)
-                rvHorizontalPropertiesHotelSearchMap.alpha = opacity
+                rvHorizontalPropertiesHotelSearchMap?.let {
+                    rvHorizontalPropertiesHotelSearchMap.alpha = opacity
+                }
             }
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -627,21 +628,24 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                         if (searchPropertiesMap.isNullOrEmpty()) {
                             googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_OUT))
                         } else {
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchPropertiesMap[0],
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[0]))
+                            val newLatLng = getMapCenter(searchPropertiesMap[0])
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(newLatLng,
                                     MAPS_ZOOM_OUT))
                         }
                         setupContentMargin(false)
-                        googleMap.uiSettings.setAllGesturesEnabled(false)
-
+                        if(containerEmptyResultState.isVisible){
+                            googleMap.uiSettings.setAllGesturesEnabled(false)
+                           enabledMapsClick()
+                        }else{
+                            enabledMapsGesture()
+                        }
                     }
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAPS_ZOOM_IN))
                         setupContentMargin(false)
 
-                        googleMap.uiSettings.isZoomGesturesEnabled = true
-                        googleMap.uiSettings.isRotateGesturesEnabled = false
-                        googleMap.uiSettings.isScrollGesturesEnabled = true
-                        googleMap.uiSettings.isTiltGesturesEnabled = false
+                        enabledMapsGesture()
 
                         if (!isViewFullMap) {
                             trackingHotelUtil.searchViewFullMap(context,
@@ -774,7 +778,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     cardListPosition = getCurrentItemCardList()
                     changeMarkerState(cardListPosition)
-                    putPriceMarkerOnTop(cardListPosition)
                 }
             }
 
@@ -815,21 +818,35 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
             googleMap.setOnMarkerClickListener(this)
             googleMap.setOnCameraMoveStartedListener(this)
+            enabledMapsClick()
+        }
+    }
 
-            mapHotelSearchMap.setOnTouchListener(object : View.OnTouchListener {
-                override fun onTouch(v: View, motionEvent: MotionEvent): Boolean {
-                    when (motionEvent.action) {
-                        MotionEvent.ACTION_DOWN -> v.performClick()
-                    }
-                    return true
+    fun enabledMapsClick(){
+        mapHotelSearchMap.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View, motionEvent: MotionEvent): Boolean {
+                when (motionEvent.action) {
+                    MotionEvent.ACTION_DOWN -> v.performClick()
                 }
-            })
-            mapHotelSearchMap.setOnClickListener {
-                collapseBottomSheet()
+                return true
             }
+        })
+        mapHotelSearchMap.setOnClickListener {
+            collapseBottomSheet()
+        }
+        if(::googleMap.isInitialized) {
             googleMap.setOnMapClickListener {
                 collapseBottomSheet()
             }
+        }
+    }
+
+    fun enabledMapsGesture(){
+        if(::googleMap.isInitialized){
+            googleMap.uiSettings.isZoomGesturesEnabled = true
+            googleMap.uiSettings.isRotateGesturesEnabled = false
+            googleMap.uiSettings.isScrollGesturesEnabled = true
+            googleMap.uiSettings.isTiltGesturesEnabled = false
         }
     }
 
@@ -914,10 +931,13 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         resetMarkerState()
         try {
             if (!allMarker.isNullOrEmpty()) {
-                if (cardListPosition == position && !searchPropertiesMap.isNullOrEmpty()) {
+                if (cardListPosition == position && !searchPropertiesMap.isNullOrEmpty() && position < searchPropertiesMap.size) {
                     allMarker[position].setIcon(createCustomMarker(requireContext(), HOTEL_PRICE_ACTIVE_PIN, allMarker[position].title))
+                    putPriceMarkerOnTop(position)
                     if (cardListPosition == SELECTED_POSITION_INIT) {
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLng(searchPropertiesMap[position]))
+                        val newLatLng = getMapCenter(searchPropertiesMap[position])
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLng(newLatLng))
                     } else {
                         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(searchPropertiesMap[position], MAPS_STREET_LEVEL_ZOOM))
                     }
@@ -925,6 +945,18 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
             }
         } catch (t: Throwable) {
             t.printStackTrace()
+        }
+    }
+
+    fun getMapCenter(latLng: LatLng): LatLng{
+        return try{
+            val mapCenter: Double = googleMap.cameraPosition.target.latitude
+            val southMap: Double = googleMap.projection.visibleRegion.latLngBounds.southwest.latitude
+            val diff = (mapCenter - southMap) / 4
+            val newLat: Double = latLng.latitude - diff
+            LatLng(newLat, latLng.longitude)
+        }catch (t: Throwable) {
+            latLng
         }
     }
 
@@ -1453,7 +1485,7 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
 
     private fun putPriceMarkerOnTop(position: Int){
         resetStackPriceMarker()
-        if(!allMarker.isNullOrEmpty() && position != -1){
+        if(!allMarker.isNullOrEmpty() && position != -1 && position < allMarker.size){
             allMarker[position].zIndex = 1.0f
         }
     }

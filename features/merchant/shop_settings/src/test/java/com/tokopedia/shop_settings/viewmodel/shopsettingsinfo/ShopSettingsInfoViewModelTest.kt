@@ -1,11 +1,11 @@
 package com.tokopedia.shop_settings.viewmodel.shopsettingsinfo
 
-import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
+import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
+import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopOsUseCase
+import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
-import com.tokopedia.shop.settings.basicinfo.domain.CheckOfficialStoreTypeUseCase
 import com.tokopedia.shop_settings.common.util.LiveDataUtil.observeAwaitValue
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Success
@@ -21,7 +21,7 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
     @Test
     fun `when validate os merchant type with provided shopId should return success`() {
         runBlocking {
-            mockkObject(CheckOfficialStoreTypeUseCase)
+            mockkObject(GqlGetIsShopOsUseCase)
             onCheckOsMerchantType_thenReturn()
 
             val shopId: Int = 123456
@@ -29,7 +29,7 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
 
             verifySuccessCheckOsMerchantTypeCalled(shopId)
 
-            val expectedValue = Success(CheckShopIsOfficialModel())
+            val expectedValue = Success(GetIsShopOfficialStore())
             assertTrue(shopSettingsInfoViewModel.checkOsMerchantTypeData.value is Success)
             shopSettingsInfoViewModel.checkOsMerchantTypeData.verifySuccessEquals(expectedValue)
         }
@@ -43,16 +43,21 @@ class ShopSettingsInfoViewModelTest : ShopSettingsInfoViewModelTestFixture() {
             val includeOs: Boolean = false
             val sampleShopBadgeValue = "shop_badge"
             val shopBasicData = ShopBasicDataModel()
-            val goldGetPmOsStatus = GoldGetPmOsStatus()
+            val pmOsStatus = PMStatusUiModel()
             val shopInfo = ShopInfo(
                     goldOS = ShopInfo.GoldOS(badge = sampleShopBadgeValue)
             )
             coEvery {
                 getShopInfoUseCase.executeOnBackground()
             } returns shopInfo
+
+            coEvery {
+                getShopStatusUseCase.executeOnBackground()
+            } returns pmOsStatus
+
             shopSettingsInfoViewModel.getShopData(shopId, includeOs)
             val expectedResultShopBasicData = Success(shopBasicData)
-            val expectedResultGoldGetPmOsStatus = Success(goldGetPmOsStatus)
+            val expectedResultGoldGetPmOsStatus = Success(pmOsStatus)
             assertTrue(shopSettingsInfoViewModel.shopBadgeData.value is Success)
             shopSettingsInfoViewModel.shopBadgeData
                     .verifySuccessEquals(Success(sampleShopBadgeValue))

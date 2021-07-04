@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
@@ -364,11 +365,19 @@ class AddressListFragment : BaseDaggerFragment(), AddressListItemAdapter.OnSelec
     }
 
     private fun goToPickLocation(requestCode: Int) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-        intent.putExtra(EXTRA_IS_FULL_FLOW, true)
-        intent.putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-        intent.putExtra(KERO_TOKEN, viewModel.token)
-        startActivityForResult(intent, requestCode)
+        if (LogisticCommonUtil.isRollOutUserANARevamp()) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+            intent.putExtra(EXTRA_IS_FULL_FLOW, true)
+            intent.putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+            intent.putExtra(KERO_TOKEN, viewModel.token)
+            startActivityForResult(intent, requestCode)
+        } else {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+            intent.putExtra(EXTRA_IS_FULL_FLOW, true)
+            intent.putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+            intent.putExtra(KERO_TOKEN, viewModel.token)
+            startActivityForResult(intent, requestCode)
+        }
     }
 
     private fun goToNextStep() {
