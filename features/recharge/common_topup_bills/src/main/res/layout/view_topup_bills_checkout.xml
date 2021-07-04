@@ -6,10 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/Unify_N0"
+    android:elevation="@dimen/spacing_lvl3"
     android:paddingBottom="@dimen/unify_space_12"
     android:visibility="gone"
-    tools:visibility="visible"
-    android:elevation="@dimen/spacing_lvl3">
+    tools:ignore="Overdraw"
+    tools:visibility="visible">
 
     <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
         android:id="@+id/recharge_checkout_promo_ticker"
