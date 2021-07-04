@@ -73,6 +73,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_NAME;
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_POSITION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_SHOP_ID;
 import static com.tokopedia.home.account.AccountConstants.Analytics.FIELD_USER_ID;
+import static com.tokopedia.home.account.AccountConstants.Analytics.FINGERPRINT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.IDR;
 import static com.tokopedia.home.account.AccountConstants.Analytics.IMPRESSIONS;
 import static com.tokopedia.home.account.AccountConstants.Analytics.INBOX;
@@ -225,6 +226,21 @@ public class AccountAnalytics {
                 AccountConstants.Analytics.CLICK_ON_PASSWORD,
                 ""
         ));
+    }
+
+    public void eventClickFingerprint() {
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        Map<String, Object> data = TrackAppUtils.gtmData(
+                AccountConstants.Analytics.CLICK_ACCOUNT_SETTING,
+                String.format("%s %s", ACCOUNT, SETTING),
+                String.format("%s %s", ACCOUNT, SETTING),
+                String.format("%s - %s", CLICK, FINGERPRINT)
+        );
+
+        data.put(BUSINESS_UNIT, USER_PLATFORM);
+        data.put(CURRENT_SITE, TOKOPEDIA_MARKETPLACE);
+        analytics.sendGeneralEvent(data);
     }
 
     public void eventClickShopSetting(String item) {
