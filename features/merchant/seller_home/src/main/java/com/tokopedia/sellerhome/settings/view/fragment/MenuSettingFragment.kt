@@ -101,15 +101,6 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         adapter as? MenuSettingAdapter
     }
 
-    private var isShowScreenRecorder = false
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        context?.let {
-            isShowScreenRecorder = FirebaseRemoteConfigImpl(it).getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_menu_setting, container, false)
     }
@@ -127,6 +118,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this)
 
     override fun createAdapterInstance(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory> {
+        var isShowScreenRecorder = false
+        context?.let {
+            isShowScreenRecorder = FirebaseRemoteConfigImpl(it).getBoolean(RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER, false)
+        }
         return MenuSettingAdapter(context, this, isShowScreenRecorder, adapterTypeFactory)
     }
 
