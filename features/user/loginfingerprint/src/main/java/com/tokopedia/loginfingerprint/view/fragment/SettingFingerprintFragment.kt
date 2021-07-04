@@ -20,6 +20,7 @@ import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
 import com.tokopedia.loginfingerprint.di.LoginFingerprintComponent
+import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.loginfingerprint.viewmodel.SettingFingerprintViewModel
@@ -42,6 +43,9 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var tracker: BiometricTracker
 
     private var enableSwitch = true
 
@@ -70,8 +74,10 @@ class SettingFingerprintFragment: BaseDaggerFragment() {
                         switch.isChecked = false
                         enableSwitch = true
                         showBiometricPrompt()
+                        tracker.trackClickBiometricSwitch(isEnable)
                     } else {
                         viewModel.removeFingerprint()
+                        tracker.trackClickBiometricSwitch(isEnable)
                     }
                 }
             }

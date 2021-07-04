@@ -16,6 +16,7 @@ import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.data.model.VerifyFingerprint
 import com.tokopedia.loginfingerprint.di.DaggerLoginFingerprintComponent
 import com.tokopedia.loginfingerprint.di.LoginFingerprintSettingModule
+import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.loginfingerprint.view.dialog.FingerprintDialogHelper
 import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.loginfingerprint.viewmodel.FingerprintLandingViewModel
@@ -29,6 +30,9 @@ class VerifyFingerprintActivity: BaseActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var tracker: BiometricTracker
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
 
     private val viewModel by lazy { viewModelProvider.get(FingerprintLandingViewModel::class.java) }
@@ -39,8 +43,10 @@ class VerifyFingerprintActivity: BaseActivity() {
         initComponents()
         initObserver()
         if(BiometricPromptHelper.isBiometricAvailable(this)) {
+            tracker.trackOpenVerifyFingerprint()
             showBiometricPrompt()
         } else {
+            tracker.trackOpenVerifyFingerprintBiometricUnavailable()
             FingerprintDialogHelper.showNotRegisteredFingerprintDialog(this, onPositiveButtonClick = {
                 finishWithCanceled()
             }, onDismiss = { finishWithCanceled() })
@@ -65,18 +71,23 @@ class VerifyFingerprintActivity: BaseActivity() {
         viewModel.verifyFingerprint.observe(this, androidx.lifecycle.Observer {
             when(it){
                 is Success -> onSuccessVerifyFingerprint(it.data)
-                is Fail -> onErrorVerifyFingerprint()
+                is Fail -> {
+                    tracker.trackClickOnLoginWithFingerprintFailedBackend(it.throwable.message ?: "")
+                    onErrorVerifyFingerprint()
+                }
             }
         })
     }
 
     private fun onSuccessVerifyFingerprint(data: VerifyFingerprint) {
         if(data.isSuccess) {
+            tracker.trackClickOnLoginWithFingerprintSuccessBackend()
             val intent = Intent().apply {
                 putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, data.validateToken)
             }
             setResult(Activity.RESULT_OK, intent)
         } else {
+            tracker.trackClickOnLoginWithFingerprintFailedBackend("isSuccess: ${data.isSuccess}")
             setResult(Activity.RESULT_CANCELED)
         }
         finish()
@@ -89,8 +100,18 @@ class VerifyFingerprintActivity: BaseActivity() {
 
     private fun showBiometricPrompt() {
         BiometricPromptHelper.showBiometricPrompt(this,
-            onSuccess = { verifyFingerprint() }, onFailed = {},
+            onSuccess = {
+                tracker.trackClickOnLoginWithFingerprintSuccessDevice()
+                verifyFingerprint()
+            }, onFailed = {
+                tracker.trackClickOnLoginWithFingerprintFailedDevice("")
+            },
             onError = {
+                if(it == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
+                    tracker.trackButtonCloseVerify()
+                } else {
+                    tracker.trackClickOnLoginWithFingerprintFailedDevice("error code: $it")
+                }
                 if(it == BiometricPrompt.ERROR_LOCKOUT) {
                     FingerprintDialogHelper.showFingerprintLockoutDialog(this, onPositiveButtonClick = {
                         onErrorVerifyFingerprint()
