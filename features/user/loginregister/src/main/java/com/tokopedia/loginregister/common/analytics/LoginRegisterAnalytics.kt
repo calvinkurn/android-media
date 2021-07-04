@@ -942,7 +942,27 @@ class LoginRegisterAnalytics @Inject constructor(
         ))
     }
 
+    fun trackClickBiometricLoginBtn(){
+        val data = TrackAppUtils.gtmData(
+            EVENT_CLICK_LOGIN,
+            CATEGORY_LOGIN_PAGE,
+            ACTION_CLICK_BIOMETRIC_LOGIN,
+            "")
+
+        data[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
+        data[KEY_CURRENT_SITE] = CURRENT_SITE
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+
+    }
+
     companion object {
+
+        private const val KEY_BUSINESS_UNIT = "businessUnit"
+        private const val KEY_CURRENT_SITE = "currentSite"
+
+        private const val BUSSINESS_UNIT = "user platform"
+        private const val CURRENT_SITE = "tokopediamarketplace"
+
 
         val SCREEN_LOGIN = "Login page"
         val SCREEN_ACCOUNT_ACTIVATION = "Account Activation Page"
@@ -970,7 +990,7 @@ class LoginRegisterAnalytics @Inject constructor(
         private val CATEGORY_LOGIN_PAGE = "login page"
         private val CATEGORY_LOGIN_PAGE_SMART_LOCK = "login page smart lock"
 
-
+        const val ACTION_CLICK_BIOMETRIC_LOGIN = "click on metode biometric"
         private val ACTION_REGISTER = "Register"
         private val ACTION_LOGIN_ERROR = "Login Error"
         private val ACTION_LOGIN_SUCCESS = "Login Success"

@@ -700,6 +700,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             setLeftDrawableForFingerprint()
             show()
             setOnClickListener {
+                analytics.trackClickBiometricLoginBtn()
                 gotoVerifyFingerprint()
             }
         }
