@@ -2,8 +2,8 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
         android:startColor="@color/play_dms_interactive_common_bg_g1"
-        android:centerColor="@color/play_dms_interactive_common_bg_g1"
         android:endColor="@color/play_dms_interactive_common_bg_g2"
+        android:centerX="0.65"
         android:angle="90"
         />
     <corners
