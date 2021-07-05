@@ -204,7 +204,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             if (updateCartRequestList.isNotEmpty()) {
                 val requestParams = RequestParams.create()
-                requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, cartItemDataList)
+                requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
 
                 compositeSubscription.add(
                         updateCartUseCase?.createObservable(requestParams)
