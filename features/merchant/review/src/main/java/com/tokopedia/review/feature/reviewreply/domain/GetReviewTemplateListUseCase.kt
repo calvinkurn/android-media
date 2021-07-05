@@ -35,7 +35,7 @@ class GetReviewTemplateListUseCase @Inject constructor(
         """
 
         @JvmStatic
-        fun createParams(shopId: Int): Map<String, Any> = mapOf(SHOP_ID to shopId)
+        fun createParams(shopId: Long): Map<String, Any> = mapOf(SHOP_ID to shopId)
     }
 
     var params = mapOf<String, Any>()

@@ -68,6 +68,7 @@
 
     <!-- Dynamic feature for Fintech-->
     <string name="saldo_deposit_app_name">Saldo</string>
+    <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
     <string name="ovop2p_app_name">Saldo</string>
     <string name="title_kyc_info_simple">Dokumen Data Diri</string>
 
@@ -196,6 +197,10 @@
 
     <string name="label_image_preview">Gambar Bukti</string>
 
+    <string name="title_pinpoint_new">Tentukan Pinpoint Lokasi</string>
+
+    <string name="title_address_form">Detail Alamat</string>
+
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
 
@@ -305,7 +310,7 @@
     <string name="checkout_module_title_activity_checkout">Pengiriman</string>
     <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
     <string name="title_one_click_checkout">Beli Langsung</string>
-    <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
+    <string name="title_one_click_checkout_choose_payment_method">Pilih Metode Pembayaran</string>
     <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
     <string name="title_one_click_checkout_top_up_ovo">Top-up OVO</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>

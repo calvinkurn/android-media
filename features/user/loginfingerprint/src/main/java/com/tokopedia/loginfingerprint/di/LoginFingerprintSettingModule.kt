@@ -8,8 +8,6 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
-import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
-import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
 import com.tokopedia.user.session.UserSession
@@ -33,10 +31,6 @@ class LoginFingerprintSettingModule(val context: Context) {
     @LoginFingerprintSettingScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @LoginFingerprintSettingScope
-    @Provides
-    fun providePreferenceHelper(@LoginFingerprintContext context: Context): FingerprintSetting = FingerprintPreferenceHelper(context)
 
     @LoginFingerprintSettingScope
     @Provides

@@ -674,7 +674,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     protected boolean shouldOverrideUrlLoading(@Nullable WebView webview, @NonNull String url) {
-        if (getActivity() == null) {
+        Activity activity = getActivity();
+        if (activity == null) {
             return false;
         }
         if ("".equals(url)) {
@@ -685,6 +686,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             return false;
         }
         if (goToLoginGoogle(uri)) return true;
+        if (uri.getHost() == null) {
+            return false;
+        }
 
         String queryParam = null;
         String headerText = null;
@@ -764,8 +768,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             }
             return true;
         }
+
         if (isLinkAjaAppLink(url)) {
-            return redirectToLinkAjaApp(url);
+            return redirectToExternalAppAndFinish(activity, uri);
         }
         if (url.startsWith(ApplinkConst.KYC_FORM_ONLY_NO_PARAM)) {
             Intent intent  = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY_NO_PARAM);
@@ -795,6 +800,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private boolean redirectToExternalAppAndFinish(Activity activity, Uri uri) {
+        Intent intent = WebViewHelper.actionViewIntent(activity, uri);
+        if (intent != null) {
+            startActivity(intent);
+            activity.finish();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void routeToNativeBrowser(String browserUrl){
@@ -864,21 +880,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private boolean isLinkAjaAppLink(String url) {
         return url.contains(LINK_AJA_APP_LINK);
-    }
-
-    private boolean redirectToLinkAjaApp(String url) {
-        Uri uri = Uri.parse(url);
-        Intent linkAjaIntent = new Intent(Intent.ACTION_VIEW, uri);
-        List<ResolveInfo> activities = getActivity().getPackageManager()
-                .queryIntentActivities(linkAjaIntent, 0);
-        boolean isIntentSafe = activities.isEmpty();
-        if (!isIntentSafe) {
-            startActivity(linkAjaIntent);
-            getActivity().finish();
-            return true;
-        } else
-            return false;
-
     }
 
     // If back pressed is disabled and the webview has moved to a native page,

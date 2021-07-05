@@ -4,12 +4,13 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.localizationchooseaddress.R
 import com.tokopedia.localizationchooseaddress.analytics.ChooseAddressTracking
 import com.tokopedia.localizationchooseaddress.di.ChooseAddressComponent
@@ -43,6 +44,8 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
     private var chooseAddressWidgetListener: ChooseAddressWidgetListener? = null
     private var textChosenAddress: Typography? = null
+    private var iconChooseAddress: IconUnify? = null
+    private var iconChevronChooseAddress: IconUnify? = null
     private var buttonChooseAddress: ConstraintLayout? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
     private var hasClicked: Boolean? = false
@@ -58,6 +61,8 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
 
         textChosenAddress = findViewById(R.id.text_chosen_address)
         buttonChooseAddress = findViewById(R.id.choose_address_widget)
+        iconChooseAddress = findViewById(R.id.icon_location)
+        iconChevronChooseAddress = findViewById(R.id.btn_arrow)
 
         checkRollence()
     }
@@ -130,6 +135,14 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
     }
 
     fun updateWidget(){
+        val textColor = chooseAddressWidgetListener?.onChangeTextColor()
+        if (textColor != null) {
+            val newColor = ContextCompat.getColor(context, textColor)
+            textChosenAddress?.setTextColor(newColor)
+            iconChooseAddress?.setImage(null, newColor, newColor, newColor, newColor)
+            iconChevronChooseAddress?.setImage(null, newColor, newColor, newColor, newColor)
+
+        }
         val data = ChooseAddressUtils.getLocalizingAddressData(context)
         if (data?.city_id?.isEmpty() == true) {
             textChosenAddress?.text = data.label
@@ -269,6 +282,12 @@ class ChooseAddressWidget: ConstraintLayout, ChooseAddressBottomSheet.ChooseAddr
         fun getEventLabelHostPage(): String {
             return ""
         }
-    }
 
+        /**
+         * Int Color for Text label
+         */
+        fun onChangeTextColor(): Int {
+            return com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+        }
+    }
 }

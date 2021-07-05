@@ -9,7 +9,7 @@ data class CheckWishlistResult(
         val isWishlist: Boolean = false
 ){
     data class Response(
-            @SerializedName("checkWishlist")
+            @SerializedName("checkWishlistV2")
             val checkWishlist: List<CheckWishlistResult> = listOf()
 
     )

@@ -52,6 +52,7 @@ public interface ApplinkConst {
     String PRODUCT_IMAGE_REVIEW = "tokopedia://product/{product_id}/imagereview";
     String PRODUCT_REVIEW = "tokopedia://product/{id}/review";
     String ADD_PATH = "add";
+    String AFFILIATE_UNIQUE_ID = "aff_unique_id";
     String PRODUCT_ADD = "tokopedia://product/add";
     String DEFAULT_RECOMMENDATION_PAGE = "tokopedia://rekomendasi/";
     String RECOMMENDATION_PAGE = "tokopedia://rekomendasi/{product_id}/?ref={ref}";
@@ -194,7 +195,9 @@ public interface ApplinkConst {
     String HOTEL_ORDER = "tokopedia://hotel/order";
     String HOTEL_HOST = "hotel";
     String HOTEL = "tokopedia://hotel";
+    String HOTEL_DASHBOARD = "tokopedia://hotel/dashboard";
     String HOTEL_SRP = "tokopedia://hotel/result";
+    String HOTEL_DETAIL = "tokopedia://hotel/detail";
     String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
     String TRAVEL_SUBHOMEPAGE_HOME = "tokopedia://travelentertainment/home";
 
@@ -390,6 +393,7 @@ public interface ApplinkConst {
 
     String ACCOUNT_HOST = "account";
     String ACCOUNT = "tokopedia://account";
+    String MARKETPLACE_ONBOARDING = "tokopedia://marketplace/onboarding";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
@@ -630,6 +634,7 @@ public interface ApplinkConst {
         String VALUE_ROLE_SELLER = "seller";
 
         String PARAM_SOURCE = "source";
+        String PARAM_SHOW_BOTTOM_NAV = "show_bottom_nav";
     }
 
     interface GeneralInfo {
