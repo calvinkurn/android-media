@@ -1,7 +1,9 @@
 package com.tokopedia.review.feature.reading.presentation.fragment
 
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -292,6 +294,13 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun showEmpty() {
         // No Op
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == GALLERY_ACTIVITY_CODE && resultCode == Activity.RESULT_OK) {
+            loadInitialData()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun getProductIdFromArguments() {

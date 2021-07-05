@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.gallery.presentation.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +24,7 @@ import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.data.ToggleProductReviewLike
 import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheetListener
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
+import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.feature.gallery.presentation.activity.ReviewGalleryActivity
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryImagesAdapter
 import com.tokopedia.review.feature.gallery.presentation.di.DaggerReviewGalleryComponent
@@ -39,7 +41,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryComponent>, ReviewReportBottomSheetListener, ReviewGalleryImageSwipeListener, ReviewGalleryImageListener {
+class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryComponent>, ReviewReportBottomSheetListener,
+        ReviewGalleryImageSwipeListener, ReviewGalleryImageListener, OnBackPressedListener {
 
     companion object {
         fun newInstance(cacheManagerId: String): ReviewGalleryFragment {
@@ -68,6 +71,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     private var shopId: String = ""
     private var productId: String = ""
     private var areComponentsHidden = false
+    private var isLikeValueChange: Boolean = false
 
     override fun getScreenName(): String {
         return ""
@@ -120,6 +124,10 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
         }
     }
 
+    override fun onBackPressed() {
+        finishActivity()
+    }
+
     private fun getDataFromArguments() {
         arguments?.getString(ReviewGalleryActivity.EXTRA_CACHE_MANAGER_ID)?.let {
             context?.let { context ->
@@ -142,7 +150,9 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
     }
 
     private fun setupCloseButton() {
-        closeButton?.setOnClickListener { activity?.finish() }
+        closeButton?.setOnClickListener {
+            finishActivity()
+        }
     }
 
     private fun setupThreeDots() {
@@ -197,6 +207,7 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
             updateLikeCount(totalLike)
             updateLikeButton(isLiked())
             updateLikeStatus(likeStatus)
+            isLikeValueChange = true
         }
     }
 
@@ -258,6 +269,14 @@ class ReviewGalleryFragment : BaseDaggerFragment(), HasComponent<ReviewGalleryCo
             showKnob = true
             showCloseIcon = false
             clearContentPadding = true
+            isDragable = true
+        }
+    }
+
+    private fun finishActivity() {
+        activity?.apply {
+            if (isLikeValueChange) setResult(Activity.RESULT_OK)
+            finish()
         }
     }
 }

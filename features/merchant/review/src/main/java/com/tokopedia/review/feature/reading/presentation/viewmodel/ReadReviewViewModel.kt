@@ -60,6 +60,8 @@ class ReadReviewViewModel @Inject constructor(
 
     fun setProductId(productId: String) {
         this.productId.value = productId
+        filter.clear()
+        sort = SortTypeConstants.MOST_HELPFUL_PARAM
     }
 
     fun getProductId(): String {

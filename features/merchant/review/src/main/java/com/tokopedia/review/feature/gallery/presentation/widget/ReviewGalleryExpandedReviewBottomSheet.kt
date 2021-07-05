@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -43,8 +42,6 @@ class ReviewGalleryExpandedReviewBottomSheet : BottomSheetUnify() {
         bindViews(view)
         setBasicInfo()
         setReview()
-//        setStateChangeListener()
-        setDefaultState()
     }
 
     private fun setBasicInfo() {
@@ -62,23 +59,5 @@ class ReviewGalleryExpandedReviewBottomSheet : BottomSheetUnify() {
     private fun bindViews(view: View) {
         basicInfoWidget = view.findViewById(R.id.review_gallery_expanded_review_detail_basic_info)
         review = view.findViewById(R.id.review_gallery_expanded_review)
-    }
-
-    private fun setDefaultState() {
-       bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    private fun setStateChangeListener() {
-        bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                // No Op
-            }
-
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if(newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    isFullpage = true
-                }
-            }
-        })
     }
 }

@@ -51,13 +51,18 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         bindViews(view)
         setListUnifyData()
-        setSubmitButton()
-        setResetButton()
-        listUnify?.onLoadFinish {
-            if (isSortMode()) {
-                setSelectedSort()
-            } else {
-                setSelectedFilter()
+        if (isSortMode()) {
+            setSortItemListener()
+            setSubmitSortButton()
+            listUnify?.onLoadFinish {
+                configSortData()
+            }
+        } else {
+            setFilterItemListener()
+            setSubmitFilterButton()
+            setResetButton()
+            listUnify?.onLoadFinish {
+                configFilterData()
             }
         }
     }
@@ -68,60 +73,61 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
     }
 
     private fun setListUnifyData() {
-        listUnify?.apply {
-            setData(filterData)
-            setOnItemClickListener { _, _, position, _ ->
-                if (isSortMode()) {
-                    val selectedSortOption = (listUnify?.adapter?.getItem(position) as? ListItemUnify)
-                    selectedSortOption?.listRightRadiobtn?.toggle()
-                    if (selectedSortOption?.listRightRadiobtn?.isChecked == true) {
-                        latestSelectedSortOption = selectedSortOption
-                    }
-                    clearOtherItems(position)
-                } else {
-                    (listUnify?.adapter?.getItem(position) as? ListItemUnify)?.let {
-                        it.listRightCheckbox?.let { checkbox ->
-                            selectedFilters = if(!checkbox.isChecked) {
-                                selectedFilters.plus(it)
-                            } else {
-                                selectedFilters.minus(it)
-                            }
-                            checkbox.toggle()
-                        }
-                    }
+        listUnify?.setData(filterData)
+    }
+
+    private fun setSortItemListener() {
+        listUnify?.setOnItemClickListener { _, _, position, _ ->
+            val selectedSortOption = (listUnify?.adapter?.getItem(position) as? ListItemUnify)
+            selectedSortOption?.listRightRadiobtn?.toggle()
+        }
+    }
+
+    private fun setFilterItemListener() {
+        listUnify?.setOnItemClickListener { _, _, position, _ ->
+            (listUnify?.adapter?.getItem(position) as? ListItemUnify)?.let {
+                it.listRightCheckbox?.let { checkbox ->
+                    checkbox.toggle()
                 }
             }
         }
     }
 
-    private fun setSubmitButton() {
-        submitButton?.setOnClickListener {
-            dismiss()
-            if (isSortMode()) {
-                listener?.onSortSubmitted(latestSelectedSortOption)
-            } else {
-                listener?.onFilterSubmitted(selectedFilters, sortFilterBottomSheetType
-                        ?: SortFilterBottomSheetType.RatingFilterBottomSheet, index)
-            }
-        }
-    }
-
-    private fun setSelectedSort() {
-        if (previouslySelectedSortOption.isBlank()) return
+    private fun configSortData() {
         filterData.forEachIndexed { index, listItemUnify ->
-            if (listItemUnify.listTitleText == previouslySelectedSortOption) {
+            (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
+                onSortCheckChange(isChecked, listItemUnify, index)
+            }
+            if (listItemUnify.listTitleText == previouslySelectedSortOption && previouslySelectedSortOption.isNotBlank()) {
                 (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightRadiobtn?.isChecked = true
             }
         }
     }
 
-    private fun setSelectedFilter() {
-        if(previouslySelectedFilter.isEmpty()) return
+    private fun configFilterData() {
         filterData.forEachIndexed { index, listItemUnify ->
-            if (previouslySelectedFilter.contains(listItemUnify.listTitleText)) {
+            (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightCheckbox?.setOnCheckedChangeListener { _, isChecked ->
+                onFilterCheckChange(isChecked, listItemUnify)
+            }
+            if (previouslySelectedFilter.contains(listItemUnify.listTitleText) && previouslySelectedFilter.isNotEmpty()) {
                 selectedFilters = selectedFilters.plus(listItemUnify)
                 (listUnify?.adapter?.getItem(index) as? ListItemUnify)?.listRightCheckbox?.isChecked = true
             }
+        }
+    }
+
+    private fun setSubmitSortButton() {
+        submitButton?.setOnClickListener {
+            dismiss()
+            listener?.onSortSubmitted(latestSelectedSortOption)
+        }
+    }
+
+    private fun setSubmitFilterButton() {
+        submitButton?.setOnClickListener {
+            dismiss()
+            listener?.onFilterSubmitted(selectedFilters, sortFilterBottomSheetType
+                    ?: SortFilterBottomSheetType.RatingFilterBottomSheet, index)
         }
     }
 
@@ -134,7 +140,6 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
     }
 
     private fun setResetButton() {
-        if (isSortMode()) return
         setAction(getString(R.string.review_reading_reset_filter)) { resetFilters() }
     }
 
@@ -151,5 +156,20 @@ class ReadReviewFilterBottomSheet : BottomSheetUnify() {
 
     private fun isSortMode(): Boolean {
         return sortFilterBottomSheetType is SortFilterBottomSheetType.SortBottomSheet
+    }
+
+    private fun onFilterCheckChange(isChecked: Boolean, itemUnify: ListItemUnify) {
+        selectedFilters = if (isChecked) {
+            selectedFilters.plus(itemUnify)
+        } else {
+            selectedFilters.minus(itemUnify)
+        }
+    }
+
+    private fun onSortCheckChange(isChecked: Boolean, selectedSortOption: ListItemUnify, position: Int) {
+        if (isChecked) {
+            latestSelectedSortOption = selectedSortOption
+            clearOtherItems(position)
+        }
     }
 }
