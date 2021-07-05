@@ -801,9 +801,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         object : CountDownTimer(3000, 1000) {
                             override fun onTick(millisUntilFinished: Long) {
                                 time = time/1000 -1
-                                timer_view.text = SimpleDateFormat("mm:ss").format(
-                                    Date(time)
-                                )
+                                timer_view.text = String.format("%02d:%02d", (time / 60) % 60, time % 60);
                             }
                             override fun onFinish() {
                                 timer_view.gone()

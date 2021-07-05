@@ -4,15 +4,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCardDataItem
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXHome
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 private const val TYPE_FEED_X_CARD_PLACEHOLDER: String = "FeedXCardPlaceholder"
 private const val TYPE_FEED_X_CARD_BANNERS: String = "FeedXCardBanners"
@@ -25,9 +22,7 @@ const val TYPE_IMAGE = "image"
 
 object DynamicFeedNewMapper {
 
-    var isFirst = true
-
-    fun map(feedXHome: FeedXHome): DynamicFeedDomainModel {
+    fun map(feedXHome: FeedXHome, cursor: String): DynamicFeedDomainModel {
         val posts: MutableList<Visitable<*>> = ArrayList()
         var firstPageCursor = ""
 
@@ -36,8 +31,7 @@ object DynamicFeedNewMapper {
                 TYPE_FEED_X_CARD_PLACEHOLDER -> {
                     if (it.type == TYPE_TOPADS_HEADLINE) {
                         mapCardHeadline(posts)
-                    } else if (it.type == TYPE_CARD_PLAY_CAROUSEL && isFirst) {
-                        isFirst = false
+                    } else if (it.type == TYPE_CARD_PLAY_CAROUSEL && cursor.isEmpty()) {
                         mapCardCarousel(posts)
                     }
                 }
@@ -97,38 +91,4 @@ object DynamicFeedNewMapper {
     }
 }
 
-private fun mapHighlightContent(cardHighlight: FeedXCard): MutableList<HighlightCardViewModel> {
-    val list: MutableList<HighlightCardViewModel> = ArrayList()
-    for (item in cardHighlight.products) {
-        list.add(HighlightCardViewModel(
-                item.id.toIntOrZero(),
-                0,
-                item.coverURL,
-                item.appLink,
-                "",
-                header = getHeader(cardHighlight),
-                footer = getFooter(cardHighlight)
-        ))
-    }
-    return list
-}
-
-private fun getFooter(feedXCard: FeedXCard): Footer {
-    return Footer(like = Like(fmt = feedXCard.like.label, value = feedXCard.like.count, isChecked = feedXCard.like.isLiked),
-            comment = Comment(feedXCard.comments.label, feedXCard.comments.count),
-            share = Share(description = feedXCard.share.label, url = feedXCard.share.operation))
-    //need to confirm for share and button cta
-}
-
-private fun getHeader(feedXCard: FeedXCard): Header {
-    return Header(avatar = feedXCard.author.logoURL, avatarApplink = feedXCard.author.appLink,
-            avatarBadgeImage = feedXCard.author.badgeURL, avatarTitle = feedXCard.author.name,
-            avatarDescription = feedXCard.author.description, avatarWeblink = feedXCard.author.webLink,
-            followCta = FollowCta(authorID = feedXCard.author.id, isFollow = feedXCard.followers.isFollowed,
-                    authorType = if (feedXCard.author.type == 1) {
-                        FollowCta.AUTHOR_USER
-                    } else {
-                        FollowCta.AUTHOR_SHOP
-                    }))
-}
 
