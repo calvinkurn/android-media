@@ -46,18 +46,20 @@ class GetPaymentListingParamUseCaseImpl @Inject constructor(private val graphqlU
 
     private val QUERY = """
         query getListingParams(
-          ${"$"}merchantCode : String!
-          ${"$"}profileCode : String!
-          ${"$"}callbackURL : String!
-          ${"$"}addressID : String!
-          ${"$"}version: String
+          ${"$"}merchantCode : String!,
+          ${"$"}profileCode : String!,
+          ${"$"}callbackURL : String!,
+          ${"$"}addressID : String!,
+          ${"$"}version: String,
+          ${"$"}bid: String
         ) {
           getListingParams(
-            merchantCode: ${"$"}merchantCode
-            profileCode: ${"$"}profileCode
-            callbackURL: ${"$"}callbackURL
-            addressID: ${"$"}addressID
-            version: ${"$"}version
+            merchantCode: ${"$"}merchantCode,
+            profileCode: ${"$"}profileCode,
+            callbackURL: ${"$"}callbackURL,
+            addressID: ${"$"}addressID,
+            version: ${"$"}version,
+            bid: ${"$"}bid
           ) {
             success
             message
@@ -71,6 +73,7 @@ class GetPaymentListingParamUseCaseImpl @Inject constructor(private val graphqlU
               customer_msisdn
               customer_name
               address_id
+              bid
             }
           }
         }

@@ -210,12 +210,11 @@ class GetOccCartMapper @Inject constructor() {
 
     private fun mapOrderPayment(data: GetOccCartData): OrderPayment {
         val payment = data.profileResponse.payment
-        // is it okay to fill with null?
         return OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName,
                 payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
                 mapPaymentCreditCard(payment, data), mapPaymentErrorMessage(payment.errorMessage), mapPaymentRevampErrorMessage(payment.occRevampErrorMessage), data.errorTicker,
                 payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign, mapPaymentOvoData(payment.ovoAdditionalData, data), null,
-                null, payment.bid, 2, mapPaymentWalletData(payment.walletAdditionalData, data.paymentAdditionalData.callbackUrl))
+                null, payment.bid, payment.specificGatewayCampaignOnlyType, mapPaymentWalletData(payment.walletAdditionalData, data.paymentAdditionalData.callbackUrl))
     }
 
     private fun mapPaymentErrorMessage(errorMessage: PaymentErrorMessage): OrderPaymentErrorMessage {

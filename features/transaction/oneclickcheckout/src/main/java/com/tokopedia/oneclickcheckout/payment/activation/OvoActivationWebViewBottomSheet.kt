@@ -17,7 +17,7 @@ import com.tokopedia.oneclickcheckout.databinding.BottomSheetWebViewBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.webview.ext.encodeOnce
+import com.tokopedia.webview.TkpdWebView
 import timber.log.Timber
 
 class OvoActivationWebViewBottomSheet(private val activationUrl: String,
@@ -98,10 +98,16 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
     }
 
     private fun generateUrl(userSession: UserSessionInterface): String {
+        // Uri should automatically encode
+        val url = generateUrl()
         return URLGenerator.generateURLSessionLogin(
-                "$activationUrl?$REDIRECT_URL_QUERY=${generateRedirectUrl()}".encodeOnce(),
+                url,
                 userSession.deviceId,
                 userSession.userId)
+    }
+
+    private fun generateUrl(): String {
+        return Uri.parse(activationUrl).buildUpon().appendQueryParameter(REDIRECT_URL_QUERY, generateRedirectUrl()).build().toString()
     }
 
     private fun generateRedirectUrl(): String {

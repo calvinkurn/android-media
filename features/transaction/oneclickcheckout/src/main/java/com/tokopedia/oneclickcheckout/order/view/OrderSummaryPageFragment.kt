@@ -427,6 +427,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private fun observeOrderPayment() {
         viewModel.orderPayment.observe(viewLifecycleOwner) {
             //            newOrderPreferenceCard.setPayment(it)
+            if (shouldShowToaster) showToasterSuccess()
             adapter.payment = it
             if (binding.rvOrderSummaryPage.isComputingLayout) {
                 binding.rvOrderSummaryPage.post {
@@ -721,8 +722,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 //        } else {
 //            binding.layoutNewOccOnboarding.root.gone()
 //        }
-
-        if (shouldShowToaster) showToasterSuccess()
     }
 
 //    private fun showPreferenceTicker(preference: OrderPreference) {
@@ -1126,7 +1125,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             val currentGatewayCode = preference.preference.payment.gatewayCode
             orderSummaryAnalytics.eventClickArrowToChangePaymentOption(currentGatewayCode, userSession.get().userId)
             val intent = Intent(context, PaymentListingActivity::class.java).apply {
-                putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, preference.preference.address.addressId)
+                putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, preference.preference.address.addressId.toString())
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
                 val orderCost = viewModel.orderTotal.value.orderCost
                 val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
@@ -1478,10 +1477,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun showToasterSuccess() {
-        view?.let {
-            it.post {
-                Toaster.build(it, viewModel.getActivationData().successToaster,
-                    actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+        shouldShowToaster = false
+        if (viewModel.orderPreference.value is OccState.FirstLoad) {
+            view?.let {
+                it.post {
+                    val successToaster = viewModel.getActivationData().successToaster
+                    if (successToaster.isNotBlank()) {
+                        Toaster.build(it, successToaster, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+                    }
+                }
             }
         }
     }
