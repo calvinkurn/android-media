@@ -1,6 +1,8 @@
 package com.tokopedia.play.view.uimodel.state
 
 import androidx.annotation.StringRes
+import com.tokopedia.play.view.type.BottomInsetsState
+import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 
 /**
@@ -12,6 +14,7 @@ data class PlayViewerNewUiState(
         val toolbarFollowStatus: PlayToolbarFollowUiState = PlayToolbarFollowUiState.Hide,
         val showWinningBadge: Boolean = false,
         val winnerLeaderboard: List<PlayLeaderboardUiModel> = emptyList(),
+        val bottomInsets: Map<BottomInsetsType, BottomInsetsState> = emptyMap()
 )
 
 sealed class PlayInteractiveUiState {

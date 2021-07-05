@@ -35,9 +35,6 @@
     <color name="play_dms_interactive_live_bg_1">#FFC400</color>
     <color name="play_dms_interactive_live_bg_2">#FF8B00</color>
 
-    <color name="play_dms_interactive_timer_prestart_bg">#E5E7E9</color>
-    <color name="play_dms_interactive_timer_prestart_text">#F531353B</color>
-
     <color name="play_dms_interactive_winner_badge_bg">#AD31353B</color>
 
     <!--General Color-->
