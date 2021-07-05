@@ -100,7 +100,10 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActiv
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.*
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
+import com.tokopedia.sellerorder.detail.presentation.model.BaseProductUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
+import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -547,9 +550,21 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun renderProducts() {
         // products
         detailResponse?.run {
-            val dataProducts = SomDetailProducts(listProduct, flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat)
+            val nonBundleProducts = listProduct.map { NonProductBundleUiModel(it) }
+            val productBundleDummy = mutableListOf<BaseProductUiModel>()
+            productBundleDummy.addAll(getDummyBundle(listProduct))
+            productBundleDummy.addAll(nonBundleProducts)
+            val dataProducts = SomDetailProducts(productBundleDummy, flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat)
             listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
         }
+    }
+
+    private fun getDummyBundle(listProducts: List<SomDetailOrder.Data.GetSomDetail.Products>): List<ProductBundleUiModel> {
+        return listOf(ProductBundleUiModel(
+                "Bundle Name",
+                listProducts,
+                "Rp5.000.000"
+        ))
     }
 
     private fun renderShipment() {

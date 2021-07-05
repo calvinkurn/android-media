@@ -274,4 +274,5 @@
 
     <string name="som_request_pickup_bottomsheet_title">Jadwal Pickup</string>
     <string name="label_welcome_to_som_page">Selamat datang di halaman penjualan</string>
+    <string name="som_total_price">Total Harga Paket</string>
 </resources>

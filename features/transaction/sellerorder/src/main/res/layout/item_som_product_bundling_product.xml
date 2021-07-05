@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgSomBundleProduct"
+        android:layout_width="@dimen/som_list_product_image_size"
+        android:layout_height="@dimen/som_list_product_image_size"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSomBundleProductName"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgSomBundleProduct"
+        app:layout_constraintTop_toTopOf="@+id/imgSomBundleProduct"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Kaos Kaki Nike - High knee" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSomBundlePrice"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="@+id/tvSomBundleProductName"
+        app:layout_constraintStart_toStartOf="@+id/tvSomBundleProductName"
+        app:layout_constraintTop_toBottomOf="@+id/tvSomBundleProductName"
+        app:typographyType="body_3"
+        tools:text="1 x Rp 50.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSomBundleNotes"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:textColor="@color/Unify_N700_68"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgSomBundleProduct"
+        app:typographyType="body_3"
+        tools:text="Coba dibuat lebih keren nanti kotak nya yah.. jangan penyok" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerSomBundle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvSomBundleNotes" />
+</androidx.constraintlayout.widget.ConstraintLayout>
