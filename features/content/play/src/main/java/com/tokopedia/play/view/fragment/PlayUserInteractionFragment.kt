@@ -36,6 +36,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.measureWithTimeout
+import com.tokopedia.play.util.observer.CachedObserver
 import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
@@ -68,6 +69,7 @@ import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
+import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewcomponent.interactive.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
@@ -834,10 +836,10 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun observeUiState() {
-        playViewModel.uiState.observe(viewLifecycleOwner) { state ->
-            renderInteractiveView(state.interactive, state.showInteractiveFollow)
-            renderWinnerBadgeView(state.showWinningBadge)
-        }
+        playViewModel.uiState.observe(viewLifecycleOwner, CachedObserver { prevState, state ->
+            renderInteractiveView(isValueChanged(PlayViewerNewUiState::interactive), state.interactive, state.showInteractiveFollow, state.bottomInsets)
+            renderWinnerBadgeView(state.showWinningBadge, state.bottomInsets)
+        })
     }
 
     private fun observeUiEvent() {
@@ -1383,31 +1385,50 @@ class PlayUserInteractionFragment @Inject constructor(
         else pipView?.hide()
     }
 
-    private fun renderInteractiveView(state: PlayInteractiveUiState, showFollowButton: Boolean) {
-        when (state) {
-            is PlayInteractiveUiState.PreStart -> {
-                interactiveView?.showPreStart(title = state.title, timeToStartInMs = state.timeToStartInMs) {
-                    playViewModel.submitAction(InteractivePreStartFinishedAction)
+    private fun renderInteractiveView(
+            isStateChanged: Boolean,
+            state: PlayInteractiveUiState,
+            showFollowButton: Boolean,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
+    ) {
+        if (isStateChanged) {
+            when (state) {
+                is PlayInteractiveUiState.PreStart -> {
+                    interactiveView?.setPreStart(title = state.title, timeToStartInMs = state.timeToStartInMs) {
+                        playViewModel.submitAction(InteractivePreStartFinishedAction)
+                    }
                 }
-            }
-            is PlayInteractiveUiState.Ongoing -> {
-                interactiveView?.showTapTap(durationInMs = state.timeRemainingInMs) {
-                    playViewModel.submitAction(InteractiveOngoingFinishedAction)
+                is PlayInteractiveUiState.Ongoing -> {
+                    interactiveView?.setTapTap(durationInMs = state.timeRemainingInMs) {
+                        playViewModel.submitAction(InteractiveOngoingFinishedAction)
+                    }
                 }
-            }
-            is PlayInteractiveUiState.Finished -> {
-                interactiveView?.showFinish(info = getString(state.info))
-            }
-            else -> {
-                interactiveView?.hide()
+                is PlayInteractiveUiState.Finished -> {
+                    interactiveView?.setFinish(info = getString(state.info))
+                }
+                else -> {}
             }
         }
 
         interactiveView?.showFollowMode(showFollowButton)
+
+        when {
+            bottomInsets.isAnyShown -> {
+                /**
+                 * Invisible because when unify timer is set during gone, it's not gonna get rounded when it's shown :x
+                 */
+                interactiveView?.invisible()
+            }
+            state is PlayInteractiveUiState.NoInteractive -> interactiveView?.hide()
+            else -> interactiveView?.show()
+        }
     }
 
-    private fun renderWinnerBadgeView(shouldShow: Boolean) {
-        if (shouldShow) interactiveWinnerBadgeView?.show()
+    private fun renderWinnerBadgeView(
+            shouldShow: Boolean,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState>
+    ) {
+        if (!bottomInsets.isAnyShown && shouldShow) interactiveWinnerBadgeView?.show()
         else interactiveWinnerBadgeView?.hide()
     }
     //endregion

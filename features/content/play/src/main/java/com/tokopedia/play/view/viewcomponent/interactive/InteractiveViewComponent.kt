@@ -34,7 +34,7 @@ class InteractiveViewComponent(
         }
     }
 
-    fun showPreStart(
+    fun setPreStart(
             title: String,
             timeToStartInMs: Long,
             onFinished: () -> Unit
@@ -43,27 +43,21 @@ class InteractiveViewComponent(
         setTimer(timeToStartInMs, onFinished)
 
         setListener(preStartListener)
-
-        show()
     }
 
-    fun showTapTap(
+    fun setTapTap(
             durationInMs: Long,
             onFinished: () -> Unit
     ) = setChildView { InteractiveTapView(parent.context) }.apply {
         setTimer(durationInMs, onFinished)
 
         setListener(tapTapListener)
-
-        show()
     }
 
-    fun showFinish(
+    fun setFinish(
             info: String
     ) = setChildView { InteractiveFinishedView(parent.context) }.apply {
         setInfo(info)
-
-        show()
     }
 
     fun showFollowMode(shouldShow: Boolean) {

@@ -22,6 +22,7 @@ import com.tokopedia.play.data.websocket.revamp.WebSocketAction
 import com.tokopedia.play.data.websocket.revamp.WebSocketClosedReason
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
+import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
@@ -286,6 +287,12 @@ class PlayViewModel @Inject constructor(
         addSource(_observablePartnerInfo) { partner ->
             viewModelScope.launch {
                 setUiState { copy(showInteractiveFollow = partner.isFollowable && !partner.isFollowed) }
+            }
+        }
+        addSource(_observableBottomInsetsState) { insets ->
+            viewModelScope.launch {
+                setUiState { copy(bottomInsets = insets) }
+                if (insets.isAnyShown) _uiEvent.emit(HideCoachMarkWinnerEvent)
             }
         }
     }
@@ -1276,9 +1283,6 @@ class PlayViewModel @Inject constructor(
 
     private fun handleWinnerBadgeClicked(height: Int) {
         showLeaderboardSheet(height)
-        viewModelScope.launch {
-            _uiEvent.emit(HideCoachMarkWinnerEvent)
-        }
     }
 
     private fun handleTapTapAction() {
