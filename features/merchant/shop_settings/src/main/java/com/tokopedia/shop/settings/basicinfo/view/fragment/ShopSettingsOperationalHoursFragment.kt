@@ -31,6 +31,8 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.remoteconfig.ShopAbTestPlatform
 import com.tokopedia.shop.common.util.OperationalHoursUtil
 import com.tokopedia.shop.settings.R
+import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
+import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsOperationalHoursActivity
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsSetOperationalHoursActivity
 import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopSettingsOperationalHoursListAdapter
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsOperationalHoursViewModel
@@ -40,6 +42,7 @@ import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -59,7 +62,19 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     companion object {
 
         @JvmStatic
-        fun createInstance(): ShopSettingsOperationalHoursFragment = ShopSettingsOperationalHoursFragment()
+        fun createInstance(
+                isCloseNow: Boolean,
+                isActionEdit: Boolean,
+                isOpenSchBottomSheet: Boolean,
+                cacheIdForOldFragment: String
+        ): ShopSettingsOperationalHoursFragment = ShopSettingsOperationalHoursFragment().apply {
+            arguments = Bundle().apply {
+                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_CLOSE_NOW, isCloseNow)
+                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_ACTION_EDIT, isActionEdit)
+                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_OPEN_SCH_BOTTOMSHEET, isOpenSchBottomSheet)
+                putString(ShopSettingsOperationalHoursActivity.KEY_CACHE_ID, cacheIdForOldFragment)
+            }
+        }
 
         @LayoutRes
         val FRAGMENT_LAYOUT = R.layout.fragment_shop_settings_operational_hours
@@ -113,6 +128,9 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var isShopOnScheduledHoliday: Boolean = false
     private var isShouldShowHolidaySchedule: Boolean = false
     private var isActionEdit: Boolean = false
+    private var isCloseNow: Boolean = false
+    private var isOpenSchBottomSheet: Boolean = false
+    private var cacheIdForOldFragment: String = "0"
     private var setShopHolidayScheduleStatusMessage: String = ""
     private var setShopHolidayScheduleStatusType: Int = 0
     private var startHolidayDateMilliseconds: Long = 0L
@@ -124,6 +142,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getArgumentsData()
         checkAbTestRollenceVariant()
     }
 
@@ -141,7 +160,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         initListener()
         observeLiveData()
         showLoader()
-        getInitialData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -173,6 +191,15 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         component?.inject(this)
     }
 
+    private fun getArgumentsData() {
+        arguments?.let {
+            isCloseNow = it.getBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_CLOSE_NOW, false)
+            isActionEdit = it.getBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_ACTION_EDIT, false)
+            isOpenSchBottomSheet = it.getBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_OPEN_SCH_BOTTOMSHEET, false)
+            cacheIdForOldFragment = it.getString(ShopSettingsOperationalHoursActivity.KEY_CACHE_ID, "0")
+        }
+    }
+
     private fun checkAbTestRollenceVariant() {
         shopAbTestPlatform = ShopAbTestPlatform(requireContext()).apply {
             requestParams = ShopAbTestPlatform.createRequestParam(
@@ -185,8 +212,12 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                         val variantType = getString(AB_TEST_EXPERIMENT_KEY_OPS_HOUR, "")
                         if (variantType.isEmpty() || variantType != AB_TEST_EXPERIMENT_KEY_OPS_HOUR) {
                             // redirect to old shop ops hour settings
-                            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+                            startActivity(ShopEditScheduleActivity.createIntent(requireContext(), cacheIdForOldFragment))
                             activity?.finish()
+                        }
+                        else {
+                            // stay to this new page
+                            getInitialData()
                         }
                     }
                 }
@@ -288,6 +319,21 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
             setupActionBottomSheet()
             showActionBottomSheet()
         }
+
+        // setup holiday ticker
+        autoChatTicker?.setHtmlDescription(getString(
+                R.string.shop_operational_hour_ticker_description_auto_chat,
+                getString(R.string.shop_operational_hour_ticker_description_auto_chat_dummy_url)
+        ))
+        autoChatTicker?.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                if (linkUrl == getString(R.string.shop_operational_hour_ticker_description_auto_chat_dummy_url)) {
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SETTING)
+                }
+            }
+
+            override fun onDismiss() {}
+        })
     }
 
     private fun setupToolbar() {
@@ -313,6 +359,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         observe(shopSettingsOperationalHoursViewModel.shopSettingsOperationalHoursListUiModel) { result ->
             if (result is Success) {
                 hideLoader()
+
                 val opsHourListUiModel = result.data
                 val holidayInfo = opsHourListUiModel.closeInfo
 
@@ -329,6 +376,19 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
                 // holiday schedule is on going
                 isShopOnScheduledHoliday = holidayInfo.closeDetail.status == ShopStatusDef.CLOSED
+
+                // check if from applink to auto open the calendar picker
+                if (isOpenSchBottomSheet && !isActionEdit) {
+                    resetSelectedDates(isActionEdit)
+                    setupHolidayCalendarPickerBottomSheet()
+                    showHolidayBottomSheet()
+                }
+                if (isOpenSchBottomSheet && isActionEdit) {
+                    resetSelectedDates(isActionEdit)
+                    setupEditHolidayCalendarPickerBottomSheet()
+                    showHolidayBottomSheet()
+                }
+                isOpenSchBottomSheet = false
 
                 // render UI for holiday section
                 renderHolidaySection()
@@ -368,7 +428,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private fun deleteShopHolidaySchedule() {
         // delete upcoming/ongoing holiday schedule
         shopSettingsOperationalHoursViewModel.setShopCloseSchedule(
-                action = ShopScheduleActionDef.ABORT,
+                action = ShopScheduleActionDef.ABORT
         )
     }
 
@@ -552,6 +612,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                         }
                     }
                 }
+                isChecked = isCloseNow
             }
         }
     }

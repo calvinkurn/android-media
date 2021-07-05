@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import android.text.*
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
@@ -29,7 +31,7 @@ import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.analytics.ShopSettingsTracking
-import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
+import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsOperationalHoursActivity
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
@@ -66,6 +68,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     lateinit var shopSettingsInfoViewModel: ShopSettingsInfoViewModel
 
     private var needReload: Boolean = false
+    private var extraIsActionEdit: Boolean = false
     private var shopBasicDataModel: ShopBasicDataModel? = null
     private var bottomSheet: MenuBottomSheet? = null
     private var snackbar: Snackbar? = null
@@ -92,16 +95,19 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         shopBasicDataModel?.let { shopBasicDataModel ->
             val itemList = ArrayList<String>()
             if (shopBasicDataModel.isOpen) {
-                if (isEmptyNumber(shopBasicDataModel.closeSchedule)) {
+                extraIsActionEdit = if (isEmptyNumber(shopBasicDataModel.closeSchedule)) {
                     itemList.add(getString(R.string.schedule_your_shop_close))
+                    false
                 } else {
                     itemList.add(getString(R.string.change_schedule))
                     itemList.add(getString(R.string.remove_schedule))
+                    true
                 }
                 itemList.add(getString(R.string.label_close_shop_now))
             } else {
                 itemList.add(getString(R.string.change_schedule))
                 itemList.add(getString(R.string.label_open_shop_now))
+                extraIsActionEdit = true
             }
             bottomSheet = MenuBottomSheet.newInstance(itemList)
             bottomSheet?.setTitle(getString(R.string.shop_settings_manage_status))
@@ -121,7 +127,13 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         bottomSheet?.dismiss()
         when(text) {
             getString(R.string.label_close_shop_now) -> {
-                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, true) }
+                shopBasicDataModel?.let {
+                    moveToShopOpsHourSettings(
+                            shopBasicDataModel = it,
+                            isClosedNow = true,
+                            isActionEdit = extraIsActionEdit
+                    )
+                }
             }
             getString(R.string.remove_schedule) -> {
                 activity?.let { it ->
@@ -160,7 +172,13 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
             }
             else -> {
-                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, shopBasicDataModel?.isClosed ?: false) }
+                shopBasicDataModel?.let {
+                    moveToShopOpsHourSettings(
+                            shopBasicDataModel = it,
+                            isClosedNow = it.isClosed,
+                            isActionEdit = extraIsActionEdit
+                    )
+                }
             }
         }
     }
@@ -255,13 +273,24 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         NavigationController.navigate(this@ShopSettingsInfoFragment, destination)
     }
 
-    private fun moveToShopEditScheduleFragment(shopBasicDataModel: ShopBasicDataModel, isClosedNow: Boolean) {
+    private fun moveToShopOpsHourSettings(
+            shopBasicDataModel: ShopBasicDataModel,
+            isClosedNow: Boolean,
+            isActionEdit: Boolean
+    ) {
         val cacheManager = SaveInstanceCacheManager(requireContext(), true).apply {
             put(EXTRA_SHOP_BASIC_DATA_MODEL, shopBasicDataModel)
             put(EXTRA_IS_CLOSED_NOW, isClosedNow)
         }
-        val intent = ShopEditScheduleActivity.createIntent(requireContext(), cacheManager.id ?: "0")
-        startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
+        startActivity(RouteManager.getIntent(requireContext(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS).apply {
+            putExtra(ShopSettingsOperationalHoursActivity.KEY_EXTRA_BUNDLE, Bundle().apply {
+                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_ACTION_EDIT, isActionEdit)
+                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_CLOSE_NOW, isClosedNow)
+                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_OPEN_SCH_BOTTOMSHEET, true)
+                putString(ShopSettingsOperationalHoursActivity.KEY_CACHE_ID, cacheManager.id ?: "0")
+            })
+        })
+        activity?.finish()
     }
 
     private fun observeUpdateScheduleData() {
