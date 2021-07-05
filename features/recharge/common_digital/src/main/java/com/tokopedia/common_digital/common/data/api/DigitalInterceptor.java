@@ -27,6 +27,7 @@ import okhttp3.Response;
 public class DigitalInterceptor extends TkpdAuthInterceptor {
 
     private static final String TAG = DigitalInterceptor.class.getSimpleName();
+    private static final String DEFAULT_TOKOPEDIA_ORGANIZATION_NAME = "Tokopedia";
     private Context context;
 
     public DigitalInterceptor(@ApplicationContext Context context,
@@ -91,9 +92,20 @@ public class DigitalInterceptor extends TkpdAuthInterceptor {
     protected Map<String, String> getHeaderMap(
             String path, String strParam, String method, String authKey, String contentTypeHeader
     ) {
-        return AuthUtil.generateHeadersWithXUserId(
-                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession
-        );
+        Map<String, String> header = AuthUtil.generateHeadersWithXUserId(
+                path, strParam, method, authKey, contentTypeHeader, userSession.getUserId(), userSession);
+
+        //replace organization name, default: Tokopedia
+        header.put(AuthUtil.HEADER_AUTHORIZATION, header.get(AuthUtil.HEADER_AUTHORIZATION)
+                .replace(DEFAULT_TOKOPEDIA_ORGANIZATION_NAME, getDigitalAuthOrganization()));
+        return header;
     }
 
+    private String getDigitalAuthOrganization() {
+        if (TokopediaUrl.getInstance().getTYPE() == Env.STAGING) {
+            return AuthKey.RECHARGE_HMAC_API_ORGANIZATION_STAGING;
+        } else {
+            return AuthKey.RECHARGE_HMAC_API_ORGANIZATION_PROD;
+        }
+    }
 }
