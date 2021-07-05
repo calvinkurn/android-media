@@ -3,6 +3,7 @@ package com.tokopedia.logisticcart.utils
 import com.google.gson.Gson
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 
 internal object RatesParamHelper {
 
@@ -56,4 +57,12 @@ internal object RatesParamHelper {
         return json.replace("\n", "")
     }
 
+    fun generateBoMetadata(boMetadata: BoMetadata?): String {
+        if (boMetadata != null) {
+            val gson = Gson()
+            val json = gson.toJson(mapOf("bo_metadata" to boMetadata))
+            return json.replace("\n", "")
+        }
+        return ""
+    }
 }

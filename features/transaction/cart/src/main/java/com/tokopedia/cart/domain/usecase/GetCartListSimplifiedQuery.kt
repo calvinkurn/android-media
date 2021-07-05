@@ -9,6 +9,7 @@ fun getQueryCartRevamp(): String {
             status
             data {
               errors
+              popup_error_message
               pop_up_message
               localization_choose_address {
                 address_id
@@ -35,6 +36,10 @@ fun getQueryCartRevamp(): String {
                 type
                 state
                 state_detail
+                tokonow {
+                  shop_id
+                  warehouse_id
+                }
               }
               empty_cart {
                 title
@@ -122,6 +127,10 @@ fun getQueryCartRevamp(): String {
                     }
                   }
                   shop {
+                    shop_ticker
+                    maximum_weight_wording
+                    maximum_shipping_weight
+                    is_tokonow
                     shop_alert_message
                     shop_id
                     admin_ids
@@ -366,6 +375,7 @@ fun getQueryCartRevamp(): String {
                   }
                   shop {
                     shop_alert_message
+                    is_tokonow
                     shop_id
                     admin_ids
                     shop_name
