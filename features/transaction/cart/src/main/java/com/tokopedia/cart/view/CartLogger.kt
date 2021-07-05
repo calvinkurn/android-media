@@ -21,7 +21,7 @@ object CartLogger {
                     mapOf(
                             LoggerConstant.Key.TYPE to LoggerConstant.Type.LOAD_CART_PAGE_ERROR,
                             LoggerConstant.Key.MESSAGE to errorMessage,
-                            LoggerConstant.Key.STACK_TRACE to throwable.stackTrace.toString().substring(0, 50)
+                            LoggerConstant.Key.STACK_TRACE to throwable.stackTrace.toString()
                     )
             )
         }
@@ -41,7 +41,7 @@ object CartLogger {
                             LoggerConstant.Key.TYPE to LoggerConstant.Type.UPDATE_CART_FOR_CHECKOUT_ERROR,
                             LoggerConstant.Key.MESSAGE to errorMessage,
                             LoggerConstant.Key.PRODUCT_ID_LIST to productIdList.joinToString(","),
-                            LoggerConstant.Key.STACK_TRACE to throwable.stackTrace.toString().substring(0, 50)
+                            LoggerConstant.Key.STACK_TRACE to throwable.stackTrace.toString()
                     )
             )
         }

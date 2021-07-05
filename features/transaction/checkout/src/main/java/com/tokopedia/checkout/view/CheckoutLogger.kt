@@ -8,8 +8,28 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.purchase_platform.common.constant.LoggerConstant
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import java.util.*
 
 object CheckoutLogger {
+
+    fun logOnErrorLoadCheckoutPage(throwable: Throwable, isOneClickShipment: Boolean, isTradeIn: Boolean, isTradeInByDropOff: Boolean) {
+        if (shouldTriggerLog(throwable)) {
+            val errorMessage = throwable.message ?: "unknown exception"
+
+            ServerLogger.log(
+                    Priority.P1,
+                    LoggerConstant.Tag.P2_BUYER_FLOW_CART,
+                    mapOf(
+                            LoggerConstant.Key.TYPE to LoggerConstant.Type.LOAD_CHECKOUT_PAGE_ERROR,
+                            LoggerConstant.Key.IS_OCS to isOneClickShipment.toString(),
+                            LoggerConstant.Key.IS_TRADE_IN to isTradeIn.toString(),
+                            LoggerConstant.Key.IS_TRADE_IN_INDOPAKET to isTradeInByDropOff.toString(),
+                            LoggerConstant.Key.MESSAGE to errorMessage,
+                            LoggerConstant.Key.STACK_TRACE to Arrays.toString(throwable.getStackTrace())
+                    )
+            )
+        }
+    }
 
     fun logOnErrorLoadCourier(throwable: Throwable, shipmentCartItemModel: ShipmentCartItemModel, isOneClickShipment: Boolean, isTradeIn: Boolean, isTradeInByDropOff: Boolean) {
         if (shouldTriggerLog(throwable)) {
@@ -29,7 +49,7 @@ object CheckoutLogger {
                             LoggerConstant.Key.IS_TRADE_IN_INDOPAKET to isTradeInByDropOff.toString(),
                             LoggerConstant.Key.PRODUCT_ID_LIST to productIds.toString(),
                             LoggerConstant.Key.MESSAGE to errorMessage,
-                            LoggerConstant.Key.STACK_TRACE to throwable.stackTrace.toString().substring(0, 50)
+                            LoggerConstant.Key.STACK_TRACE to throwable.stackTrace.toString()
                     )
             )
         }
@@ -48,7 +68,7 @@ object CheckoutLogger {
                             LoggerConstant.Key.IS_TRADE_IN_INDOPAKET to isTradeInByDropOff.toString(),
                             LoggerConstant.Key.REQUEST to request,
                             LoggerConstant.Key.MESSAGE to errorMessage,
-                            LoggerConstant.Key.STACK_TRACE to throwable.stackTrace.toString().substring(0, 50)
+                            LoggerConstant.Key.STACK_TRACE to throwable.stackTrace.toString()
                     )
             )
         }

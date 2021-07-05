@@ -3056,20 +3056,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void logOnErrorLoadCheckoutPage(Throwable throwable) {
-        String errorMessage = getErrorMessage(throwable);
-
-        Map<String, String> payload = new HashMap<>();
-        payload.put(LoggerConstant.Key.TYPE, LoggerConstant.Type.LOAD_CHECKOUT_PAGE_ERROR);
-        payload.put(LoggerConstant.Key.IS_OCS, String.valueOf(isOneClickShipment()));
-        payload.put(LoggerConstant.Key.IS_TRADE_IN, String.valueOf(isTradeIn()));
-        payload.put(LoggerConstant.Key.IS_TRADE_IN_INDOPAKET, String.valueOf(isTradeInByDropOff()));
-        payload.put(LoggerConstant.Key.MESSAGE, !errorMessage.isEmpty() ? errorMessage : "unknown exception");
-        payload.put(LoggerConstant.Key.STACK_TRACE, Arrays.toString(throwable.getStackTrace()).substring(0, 50));
-        ServerLogger.log(
-                Priority.P1,
-                LoggerConstant.Tag.P2_BUYER_FLOW_CART,
-                payload
-        );
+        CheckoutLogger.INSTANCE.logOnErrorLoadCheckoutPage(throwable, isOneClickShipment(), isTradeIn(), isTradeInByDropOff());
     }
 
     @Override
