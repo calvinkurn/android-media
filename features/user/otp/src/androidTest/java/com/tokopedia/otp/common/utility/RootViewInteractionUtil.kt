@@ -30,6 +30,6 @@ object RootViewInteractionUtil {
                 }
                 sleep(waitMillisPerTry)
             }
-        throw Exception("Error finding a view matching $viewMatcher")
+        throw Exception("Error finding a view matching view matcher")
     }
 }
