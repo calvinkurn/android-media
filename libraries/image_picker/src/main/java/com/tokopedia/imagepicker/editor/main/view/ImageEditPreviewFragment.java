@@ -101,7 +101,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
         ImageRatioType getCurrentRatio();
 
-        void getCurrentBitmap(Bitmap bitmap);
+        void itemSelectionWidgetPreview(Bitmap bitmap);
     }
 
     public static ImageEditPreviewFragment newInstance(
@@ -395,7 +395,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     @Override
     public void onSuccessGetWatermarkImage(Bitmap bitmap) {
         gestureCropImageView.setImageBitmap(bitmap);
-        onImageEditPreviewFragmentListener.getCurrentBitmap(bitmap);
+        onImageEditPreviewFragmentListener.itemSelectionWidgetPreview(bitmap);
     }
 
     private void initProgressBar(View view) {

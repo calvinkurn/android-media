@@ -713,11 +713,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
      * @param bitmap
      */
     @Override
-    public void getCurrentBitmap(Bitmap bitmap) {
-        itemSelectionWatermarkWidget(bitmap);
-    }
-
-    private void itemSelectionWatermarkWidget(Bitmap placeholder) {
+    public void itemSelectionWidgetPreview(Bitmap bitmap) {
         ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
 
         if (imageEditPreviewFragment == null) return;
@@ -728,7 +724,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 ItemSelection.createWithPlaceholderBitmap(
                         getString(R.string.editor_watermark_item),
                         preview,
-                        placeholder,
+                        bitmap, // placeholder preview
                         Constant.TYPE_WATERMARK_TOPED,
                         true
                 )

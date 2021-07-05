@@ -145,7 +145,7 @@ data class Watermark (
 
         bitmap.adjustRotation(config.position.rotation).also {
             watermarkBitmap = it
-        }.let {
+        }.also {
             val watermarkWithAlphaBitmap = createBitmap(it.width, it.height, it.config)
             val canvas = Canvas(watermarkWithAlphaBitmap)
             canvas.drawBitmap(it, 0f, 0f, paint)
@@ -222,16 +222,19 @@ data class Watermark (
             backgroundImg!!.config
         )
 
-        val canvas = Canvas(resultBitmap)
+        Canvas(resultBitmap).apply {
+            // first, draw the main bitmap into canvas
+            drawBitmap(backgroundImg!!, 0f, 0f, null)
 
-        canvas.drawBitmap(backgroundImg!!, 0f, 0f, null)
-        canvas.drawRect(canvas.clipBounds, Paint().apply {
-            shader = BitmapShader(
-                scaledWatermarkBitmap!!,
-                Shader.TileMode.REPEAT,
-                Shader.TileMode.REPEAT
-            )
-        })
+            // afterwards, draw tiles mode of watermark
+            drawRect(this.clipBounds, Paint().apply {
+                shader = BitmapShader(
+                    scaledWatermarkBitmap!!,
+                    Shader.TileMode.REPEAT,
+                    Shader.TileMode.REPEAT
+                )
+            })
+        }
 
         return resultBitmap
     }

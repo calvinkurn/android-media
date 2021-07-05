@@ -87,15 +87,15 @@ class EditorItemSelectionAdapter constructor(
             // handling the placeholder of item
             when {
                 item.placeholderBitmap != null -> {
-                    imgItemPlaceholder.loadImageRounded(item.placeholderBitmap, radius.toFloat()) { centerCrop() }
+                    imgItemPlaceholder.loadImageRounded(item.placeholderBitmap, radius.toFloat()) {
+                        centerCrop()
+                    }
                 }
                 item.placeholderResId != 0 -> {
                     imgItemPlaceholder.loadImage(item.placeholderResId)
                 }
                 item.placeholderText.isNotEmpty() -> {
-                    if (item.placeholderText.isNotEmpty()) {
-                        txtPlaceholder.show()
-                    }
+                    txtPlaceholder.show()
                     txtPlaceholder.text = item.placeholderText.take(6)
                 }
             }
