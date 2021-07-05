@@ -1,9 +1,9 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
+import android.text.Spannable
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.presentation.model.CopyableKeyValueUiModel
@@ -30,8 +30,8 @@ open class CopyableKeyValueViewHolder<T : CopyableKeyValueUiModel>(itemView: Vie
         element?.let {
             this.element = it
             setupLabel(it.label)
-            setupCopyIcon(it.copyableText.isNotBlank())
-            setupTextToShow(it.copyableTextToShow)
+            setupCopyIcon(it.copyLabel)
+            setupTextToShow(it.copyableText)
         }
     }
 
@@ -51,17 +51,20 @@ open class CopyableKeyValueViewHolder<T : CopyableKeyValueUiModel>(itemView: Vie
         tvBuyerOrderDetailCopyableLabel?.text = label
     }
 
-    private fun setupCopyIcon(copyable: Boolean) {
-        icBuyerOrderDetailCopy?.showWithCondition(copyable)
+    private fun setupCopyIcon(copyLabel: String) {
+        icBuyerOrderDetailCopy?.apply {
+            tag = copyLabel
+            showWithCondition(copyLabel.isNotBlank())
+        }
     }
 
-    private fun setupTextToShow(text: String) {
-        tvBuyerOrderDetailCopyableValue?.text = MethodChecker.fromHtml(text)
+    private fun setupTextToShow(text: Spannable) {
+        tvBuyerOrderDetailCopyableValue?.text = text
     }
 
     protected open fun copyText() {
         element?.let {
-            Utils.copyText(itemView.context, it.copyLabel, it.copyableText)
+            Utils.copyText(itemView.context, it.copyLabel, it.copyableText.toString())
             showToaster(it.copyMessage)
         }
     }

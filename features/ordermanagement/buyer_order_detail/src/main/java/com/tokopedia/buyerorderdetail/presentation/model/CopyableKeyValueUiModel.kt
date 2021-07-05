@@ -1,12 +1,13 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
+import android.text.Spannable
+import android.text.SpannableString
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.kotlin.extensions.view.orZero
 
 open class CopyableKeyValueUiModel(
-        open val copyableText: String = "",
-        open val copyableTextToShow: String = "",
+        open val copyableText: Spannable = SpannableString(""),
         open val copyLabel: String = "",
         open val copyMessage: String = "",
         open val label: String = ""
@@ -16,6 +17,6 @@ open class CopyableKeyValueUiModel(
     }
 
     fun shouldShow(): Boolean {
-        return copyableTextToShow.isNotBlank()
+        return copyableText.isNotBlank()
     }
 }

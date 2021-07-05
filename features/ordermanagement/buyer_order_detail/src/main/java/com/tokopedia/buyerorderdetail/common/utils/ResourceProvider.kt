@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import javax.inject.Inject
 
 class ResourceProvider @Inject constructor(@ApplicationContext private val context: Context?) {
@@ -58,13 +57,5 @@ class ResourceProvider @Inject constructor(@ApplicationContext private val conte
 
     fun getCopyLabelAwb(): String {
         return getString(R.string.copy_label_awb_number).orEmpty()
-    }
-    
-    fun formatReceiverAddressValue(receiver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Receiver, receiverAddress: String): String {
-        return getString(R.string.buyer_order_detail_receiver_address_format, receiver.name, receiver.phone, receiverAddress).orEmpty()
-    }
-
-    fun formatDropshipperValue(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): String {
-        return getString(R.string.buyer_order_detail_dropship_format, dropship.name, dropship.phoneNumber).orEmpty()
     }
 }
