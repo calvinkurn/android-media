@@ -65,6 +65,7 @@ import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -774,9 +775,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                     recommendationFilterChips = recomFilterList,
                                     pageName = pageName
                             )
-                            recomWidget.recommendationItemList.forEach { item ->
-                                _p2Data.value?.miniCart?.let {
-                                    item.updateItemCurrentStock(it[item.productId.toString()]?.quantity ?: 0)
+                            if (recomWidget.layoutType == LAYOUTTYPE_HORIZONTAL_ATC) {
+                                recomWidget.recommendationItemList.forEach { item ->
+                                    _p2Data.value?.miniCart?.let {
+                                        item.updateItemCurrentStock(it[item.productId.toString()]?.quantity
+                                                ?: 0)
+                                    }
                                 }
                             }
                         }
@@ -969,9 +973,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun onAtcNonVariantQuantityChanged(recomItem: RecommendationItem, quantity: Int) {
-        if (recomItem.currentStock == quantity) return
+        if (recomItem.quantity == quantity) return
         launchCatchError(block = {
-            if (recomItem.currentStock == 0) {
+            if (recomItem.quantity == 0) {
                 atcNonVariant(recomItem, quantity)
             } else {
                 updateCartNonVariant(recomItem, quantity)
