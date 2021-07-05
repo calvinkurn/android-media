@@ -22,52 +22,29 @@ class AuthKey {
         private val RAW_RECHARGE_HMAC_API_KEY_STAGING = intArrayOf(119, 119, 106, 118, 89, 83, 74, 101, 53, 101, 70, 65, 71, 72, 68, 102, 74, 116, 69, 110, 74, 118, 97, 116, 103, 57, 51, 77, 90, 99)
         private val RAW_RECHARGE_HMAC_API_KEY_PROD = intArrayOf(67, 107, 88, 117, 121, 65, 53, 112, 57, 76, 77, 98, 53, 106, 102, 106, 104, 84, 88, 77, 68, 70, 65, 68, 84, 83, 122, 120, 52, 69, 84, 88, 121, 107, 85, 67, 53, 113, 106, 75)
 
-        @JvmField
-        val KEY_WSV4_NEW = encodeKey(RAW_KEY_WSV4)
-        @JvmField
-        val KEY_WSV4 = "web_service_v4"
-        @JvmField
-        val KEY_MOJITO = "mojito_api_v1"
-        @JvmField
-        val KEY_KEROPPI = "Keroppi"
-        @JvmField
-        val TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj"
-        @JvmField
-        val KEY_CREDIT_CARD_VAULT = encodeKey(RAW_SCROOGE_KEY)
-        @JvmField
-        val ZEUS_WHITELIST = encodeKey(RAW_ZEUS_KEY)
-        @JvmField
-        val KEY_NOTP = encodeKey(RAW_NOTP_KEY)
-        @JvmField
-        val KEY_BRANCHIO = encodeKey(RAW_BRANCHIO_KEY_ID)
-        @JvmField
-        val ALIYUN_SECRET_KEY = encodeKey(RAW_ALIYUN_SECRET_KEY)
-        @JvmField
-        val ALIYUN_ACCESS_KEY_ID = encodeKey(RAW_ALIYUN_ACCESS_KEY_ID)
-        @JvmField
-        val INDI_API_KEY = encodeKey(RAW_INDI_API_KEY)
-        @JvmField
-        val API_KEY_INSTANT_DEBIT_BCA = encodeKey(RAW_API_KEY_INSTANT_DEBIT_BCA)
-        @JvmField
-        val API_SEED_INSTANT_DEBIT_BCA = encodeKey(RAW_API_SECRET_INSTANT_DEBIT_BCA)
-        @JvmField
-        val INSTANT_DEBIT_BCA_MERCHANT_ID = encodeKey(RAW_INSTANT_DEBIT_BCA_MERCHANT_ID)
-        @JvmField
-        val INSTANT_DEBIT_BCA_BANK_CODE = encodeKey(RAW_INSTANT_DEBIT_BCA_BANK_CODE)
-        @JvmField
-        val INSTANT_DEBIT_BCA_MERCHANT_CODE = encodeKey(RAW_INSTANT_DEBIT_BCA_MERCHANT_CODE)
-        @JvmField
-        val INSTANT_DEBIT_BCA_PROFILE_CODE = encodeKey(RAW_INSTANT_DEBIT_BCA_PROFILE_CODE)
-        @JvmField
-        val BRIZZI_CLIENT_SECRET = encodeKey(RAW_BRIZZI_CLIENT_SECRET)
-        @JvmField
-        val BRIZZI_CLIENT_ID = encodeKey(RAW_BRIZZI_CLIENT_ID)
-        @JvmField
-        val SAFETYNET_KEY_TRADE_IN = encodeKey(RAW_SAFETYNET_KEY_TRADE_IN)
-        @JvmField
-        val RECHARGE_HMAC_API_KEY_STAGING = encodeKey(RAW_RECHARGE_HMAC_API_KEY_STAGING)
-        @JvmField
-        val RECHARGE_HMAC_API_KEY_PROD = encodeKey(RAW_RECHARGE_HMAC_API_KEY_PROD)
+        @JvmField val KEY_WSV4_NEW = encodeKey(RAW_KEY_WSV4)
+        @JvmField val KEY_WSV4 = "web_service_v4"
+        @JvmField val KEY_MOJITO = "mojito_api_v1"
+        @JvmField val KEY_KEROPPI = "Keroppi"
+        @JvmField val TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj"
+        @JvmField val KEY_CREDIT_CARD_VAULT = encodeKey(RAW_SCROOGE_KEY)
+        @JvmField val ZEUS_WHITELIST = encodeKey(RAW_ZEUS_KEY)
+        @JvmField val KEY_NOTP = encodeKey(RAW_NOTP_KEY)
+        @JvmField val KEY_BRANCHIO = encodeKey(RAW_BRANCHIO_KEY_ID)
+        @JvmField val ALIYUN_SECRET_KEY = encodeKey(RAW_ALIYUN_SECRET_KEY)
+        @JvmField val ALIYUN_ACCESS_KEY_ID = encodeKey(RAW_ALIYUN_ACCESS_KEY_ID)
+        @JvmField val INDI_API_KEY = encodeKey(RAW_INDI_API_KEY)
+        @JvmField val API_KEY_INSTANT_DEBIT_BCA = encodeKey(RAW_API_KEY_INSTANT_DEBIT_BCA)
+        @JvmField val API_SEED_INSTANT_DEBIT_BCA = encodeKey(RAW_API_SECRET_INSTANT_DEBIT_BCA)
+        @JvmField val INSTANT_DEBIT_BCA_MERCHANT_ID = encodeKey(RAW_INSTANT_DEBIT_BCA_MERCHANT_ID)
+        @JvmField val INSTANT_DEBIT_BCA_BANK_CODE = encodeKey(RAW_INSTANT_DEBIT_BCA_BANK_CODE)
+        @JvmField val INSTANT_DEBIT_BCA_MERCHANT_CODE = encodeKey(RAW_INSTANT_DEBIT_BCA_MERCHANT_CODE)
+        @JvmField val INSTANT_DEBIT_BCA_PROFILE_CODE = encodeKey(RAW_INSTANT_DEBIT_BCA_PROFILE_CODE)
+        @JvmField val BRIZZI_CLIENT_SECRET = encodeKey(RAW_BRIZZI_CLIENT_SECRET)
+        @JvmField val BRIZZI_CLIENT_ID = encodeKey(RAW_BRIZZI_CLIENT_ID)
+        @JvmField val SAFETYNET_KEY_TRADE_IN = encodeKey(RAW_SAFETYNET_KEY_TRADE_IN)
+        @JvmField val RECHARGE_HMAC_API_KEY_STAGING = encodeKey(RAW_RECHARGE_HMAC_API_KEY_STAGING)
+        @JvmField val RECHARGE_HMAC_API_KEY_PROD = encodeKey(RAW_RECHARGE_HMAC_API_KEY_PROD)
 
         private fun encodeKey(keys: IntArray): String {
             return keys.joinToString(separator = "") { it.toChar().toString() }
