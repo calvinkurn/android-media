@@ -91,7 +91,7 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         initView()
         binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.requestFocus()
         KeyboardHandler.showSoftKeyboard(activity)
-        if (!getLocalCache(CACHE_SHOW_COACH_MARK_KEY) && clientNumbers.isNotEmpty()) {
+        if (!getLocalCache(CACHE_SHOW_COACH_MARK_KEY) && numberListAdapter.visitables.isNotEmpty()) {
             if (numberListAdapter.visitables[0] is TopupBillsFavNumberDataView) {
                 showCoachmark()
             }
