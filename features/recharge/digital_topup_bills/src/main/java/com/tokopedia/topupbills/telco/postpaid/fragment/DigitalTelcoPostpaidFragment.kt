@@ -193,6 +193,9 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             }
             //initiate impression promo
             sendImpressionPromo()
+        } else {
+            separator.hide()
+            tabLayout.hide()
         }
     }
 
@@ -422,7 +425,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
                     validatePhoneNumber(operatorData, postpaidClientNumberWidget)
                 }
             }
-        } catch (exception: Exception) {
+        } catch (exception: NoSuchElementException) {
             postpaidClientNumberWidget.setErrorInputNumber(
                     getString(R.string.telco_number_error_not_found))
         }
