@@ -23,7 +23,7 @@ class HomeChooseAddressWidgetViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_choose_address_widget
-        const val ENABLE_CHOOSE_ADDRESS_WIDGET = "android_tokomart_enable_choose_address_widget_on_home_page"
+        const val ENABLE_CHOOSE_ADDRESS_WIDGET = "android_tokopedianow_enable_choose_address_widget_on_home_page"
     }
 
     private var chooseAddressWidget: ChooseAddressWidget? = null

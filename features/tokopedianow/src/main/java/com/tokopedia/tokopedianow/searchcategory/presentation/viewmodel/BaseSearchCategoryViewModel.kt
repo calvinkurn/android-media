@@ -748,7 +748,11 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun updateMiniCartWidgetData(miniCartSimplifiedData: MiniCartSimplifiedData) {
         miniCartWidgetMutableLiveData.value = miniCartSimplifiedData
-        isShowMiniCartMutableLiveData.value = miniCartSimplifiedData.isShowMiniCartWidget
+        isShowMiniCartMutableLiveData.value = miniCartSimplifiedData.isShowMiniCartWidget && !isEmptyStateOrOutOfCoverage()
+    }
+
+    private fun isEmptyStateOrOutOfCoverage(): Boolean {
+        return visitableList.find { it is EmptyProductDataView || it is OutOfCoverageDataView} != null
     }
 
     private suspend fun updateMiniCartInBackground(

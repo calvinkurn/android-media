@@ -161,7 +161,6 @@ class MiniCartWidget @JvmOverloads constructor(
     private fun onFailedUpdateCartForCheckout(globalEvent: GlobalEvent, fragment: Fragment) {
         hideProgressLoading()
         setTotalAmountLoading(true)
-        viewModel?.getLatestWidgetState()
         fragment.context?.let { context ->
             handleFailedUpdateCartForCheckout(view, context, fragment.parentFragmentManager, globalEvent)
         }
@@ -194,6 +193,13 @@ class MiniCartWidget @JvmOverloads constructor(
                 })
                 analytics.eventClickBuyThenGetBottomSheetError(data.outOfService.description)
             } else {
+                // Reload data
+                if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_WIDGET) {
+                    viewModel?.getLatestWidgetState()
+                } else if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
+                    viewModel?.getCartList()
+                }
+
                 // Show toaster error if have no out of service data
                 var ctaText = context.getString(R.string.mini_cart_cta_ok)
                 if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {

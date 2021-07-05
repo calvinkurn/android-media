@@ -283,7 +283,6 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
     private fun onFailedUpdateCartForCheckout(viewBinding: LayoutBottomsheetMiniCartListBinding, globalEvent: GlobalEvent, viewModel: MiniCartViewModel, fragmentManager: FragmentManager) {
         if (globalEvent.observer == GlobalEvent.OBSERVER_MINI_CART_LIST_BOTTOM_SHEET) {
             hideProgressLoading()
-            viewModel.getCartList()
             viewBinding.bottomsheetContainer.let { view ->
                 bottomSheetListener?.onBottomSheetFailedUpdateCartForCheckout(view, fragmentManager, globalEvent)
             }

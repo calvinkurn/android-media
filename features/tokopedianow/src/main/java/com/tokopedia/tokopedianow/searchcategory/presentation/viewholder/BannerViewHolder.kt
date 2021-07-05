@@ -157,7 +157,6 @@ class BannerViewHolder(
         val adapter = BannerChannelAdapter(list, this)
         rvBanner.adapter = adapter
         adapter.setItemList(list)
-        adapter.setImageRatio(imageRatio)
     }
 
     private fun setScrollListener() {

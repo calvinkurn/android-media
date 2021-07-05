@@ -26,7 +26,7 @@ class CategoryFilterViewHolder(
     }
 
     private val filterRecyclerView: RecyclerView? = itemView.findViewById(
-            R.id.tokomartSearchCategoryCategoryFilterRecyclerView
+            R.id.tokoNowSearchCategoryCategoryFilterRecyclerView
     )
 
     override fun bind(element: CategoryFilterDataView) {
@@ -87,7 +87,7 @@ class CategoryFilterViewHolder(
         }
 
         private val filterChip: FilterChip? = itemView.findViewById(
-                R.id.tokomartSearchCategoryCategoryFilterChip
+                R.id.tokoNowSearchCategoryCategoryFilterChip
         )
 
         fun bind(categoryFilterItemDataView: CategoryFilterItemDataView) {
