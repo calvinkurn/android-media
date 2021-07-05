@@ -15,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.KycUrl
 import com.tokopedia.kyc_centralized.R
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -48,7 +47,7 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
             loader = it.findViewById(R.id.uii_simple_loader)
 
             mainView?.hide()
-            mainImage?.loadImage(KycUrl.ICON_WAITING)
+            mainImage?.urlSrc = KycUrl.ICON_WAITING
             button?.setOnClickListener { _ ->
                 it.setResult(Activity.RESULT_OK)
                 it.finish()
