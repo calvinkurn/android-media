@@ -35,8 +35,10 @@ import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateLis
 import com.tokopedia.common.topupbills.view.bottomsheet.FavoriteNumberMenuBottomSheet
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberMenuListener
 import com.tokopedia.common.topupbills.view.listener.OnFavoriteNumberClickListener
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberEmptyDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberNotFoundDataView
+import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberShimmerDataView
 import com.tokopedia.common.topupbills.view.typefactory.FavoriteNumberTypeFactoryImpl
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.iconunify.IconUnify
@@ -89,8 +91,10 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
         initView()
         binding?.commonTopupbillsSearchNumberInputView?.searchBarTextField?.requestFocus()
         KeyboardHandler.showSoftKeyboard(activity)
-        if (!getLocalCache(CACHE_SHOW_COACH_MARK_KEY) && clientNumbers.isNotEmpty()) {
-            showCoachmark()
+        if (!getLocalCache(CACHE_SHOW_COACH_MARK_KEY) && numberListAdapter.visitables.isNotEmpty()) {
+            if (numberListAdapter.visitables[0] is TopupBillsFavNumberDataView) {
+                showCoachmark()
+            }
         }
     }
 
@@ -112,7 +116,6 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
                 }
             }
         }
-        val typeFactory = FavoriteNumberTypeFactoryImpl(this, this)
 
         binding?.commonTopupbillsSearchNumberInputView?.run {
             searchBarTextField.addTextChangedListener(getSearchTextWatcher)
@@ -130,6 +133,11 @@ class TopupBillsFavoriteNumberFragment : BaseDaggerFragment(), OnFavoriteNumberC
             inputNumberActionType = InputNumberActionType.CONTACT
             navigateContact()
         }
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView() {
+        val typeFactory = FavoriteNumberTypeFactoryImpl(this, this)
 
         if (clientNumbers.isNotEmpty()) {
             numberListAdapter = TopupBillsFavoriteNumberListAdapter(

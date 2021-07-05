@@ -57,6 +57,7 @@ dependencies {
     implementation (rootProject.ext.miscDependencies.viewPager2)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
 
     //Unit Test
     testImplementation rootProject.ext.testDependencies.mockk
