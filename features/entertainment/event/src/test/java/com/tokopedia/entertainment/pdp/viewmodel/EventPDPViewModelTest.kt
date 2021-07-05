@@ -296,6 +296,37 @@ class EventPDPViewModelTest {
     }
 
     @Test
+    fun `PDPandHolidayData_ShouldReturnPDPandHoliday_ContentNull`(){
+        //given
+        eventPDPViewModel.getIntialList()
+        val pdpMock = Gson().fromJson(getJson("pdp_null_facilities_mock.json"), EventProductDetailEntity::class.java)
+        val contentMock = Gson().fromJson(getJson("content_null_data_mock.json"), EventContentByIdEntity::class.java)
+
+        val eventCombined = EventPDPContentCombined(contentMock, pdpMock)
+
+        val travelHoliday = TravelCalendarHoliday(id = "123123", attribute = TravelCalendarHoliday.HolidayAttribute("2020-01-01", label = "LabelTest"))
+        val travelHolidayData = TravelCalendarHoliday.HolidayData(listOf(travelHoliday))
+
+        coEvery {
+            eventProductDetailUseCase.executeUseCase("", "", true, "")
+        } returns Success(eventCombined)
+
+        coEvery {
+            usecaseHoliday.execute()
+        } returns Success(travelHolidayData)
+
+        //when
+        eventPDPViewModel.getDataProductDetail("", "", "")
+
+        //then
+        assertNotNull(eventPDPViewModel.eventProductDetail.value)
+        assertNotNull(eventPDPViewModel.eventHoliday.value)
+        assertNull(eventPDPViewModel.isError.value)
+
+        assertEquals(eventPDPViewModel.eventProductDetail.value, eventCombined)
+    }
+
+    @Test
     fun `PDPHighlightMapper_ShouldReturnHighlightMapper_ShowNullResult`(){
         //given
         val eventHighlight = EventPDPHighlightEntity("aaa", "bbb", listOf())
@@ -367,6 +398,21 @@ class EventPDPViewModelTest {
     fun `DynamicTabsTitle_ShouldReturnTabsTitleList_ShowResultNull`(){
         //given
         val pdpMock = Gson().fromJson(getJson("pdp_null_mock.json"), EventProductDetailEntity::class.java)
+        val contentMock = Gson().fromJson(getJson("content_null_mock.json"), EventContentByIdEntity::class.java)
+
+        val eventCombined = EventPDPContentCombined(contentMock, pdpMock)
+        val expectedTitle = listOf<EventPDPTabEntity>()
+        //when
+        val tabsTitle = eventPDPViewModel.getTabsTitleData(eventCombined, "Tentang Kegiatan Ini", "Fasilitas", "Lokasi")
+        //then
+        assertNotNull(tabsTitle)
+        assertEquals(tabsTitle, expectedTitle)
+    }
+
+    @Test
+    fun `DynamicTabsTitle_ShouldReturnTabsTitleList_ShowLocationNull`(){
+        //given
+        val pdpMock = Gson().fromJson(getJson("pdp_null_location_mock.json"), EventProductDetailEntity::class.java)
         val contentMock = Gson().fromJson(getJson("content_null_mock.json"), EventContentByIdEntity::class.java)
 
         val eventCombined = EventPDPContentCombined(contentMock, pdpMock)

@@ -194,4 +194,16 @@ class EventSearchViewModelTest {
         //then
         assert(job.isCancelled)
     }
+
+    @Test
+    fun job_cancelJob_failed(){
+        //given
+        val job = Job()
+
+        //when
+        eventSearchViewModel.cancelRequest()
+
+        //then
+        assert(!job.isCancelled)
+    }
 }

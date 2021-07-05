@@ -89,6 +89,7 @@ class EventPDPTicketViewModelTest {
         assertEquals(eventPDPTicketViewModel.recommendationList, recommendationPackages)
         assertEquals(eventPDPTicketViewModel.recommendationTicketModel.value, eventPDPTicketViewModel.recommendationList)
         assertNotNull(eventPDPTicketViewModel.eventHoliday.value)
+        assertNotNull(eventPDPTicketViewModel.productDetailEntity.value)
     }
 
     @Test
@@ -190,5 +191,17 @@ class EventPDPTicketViewModelTest {
 
         //when
         assertEquals(eventPDPTicketViewModel.lists, listTicket)
+    }
+
+    @Test
+    fun recommendationList_SetRecommendationList_setEmptyRecommendationList() {
+        //given
+        val recommendationList = mutableListOf<EventPDPTicketModel>()
+
+        //then
+        eventPDPTicketViewModel.recommendationList = recommendationList
+
+        //when
+        assertEquals(eventPDPTicketViewModel.recommendationList, recommendationList)
     }
 }

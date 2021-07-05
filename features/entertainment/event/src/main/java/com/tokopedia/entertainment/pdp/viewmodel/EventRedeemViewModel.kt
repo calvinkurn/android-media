@@ -74,17 +74,19 @@ class EventRedeemViewModel @Inject constructor(private val dispatcher: Coroutine
         })
     }
 
-    private fun convertToRedeemResponse(typeRestResponseMap: Map<Type, RestResponse?>): EventRedeem {
-        return typeRestResponseMap[EventRedeem::class.java]?.getData() as EventRedeem
-    }
+    companion object{
+        private fun convertToRedeemResponse(typeRestResponseMap: Map<Type, RestResponse?>): EventRedeem {
+            return typeRestResponseMap[EventRedeem::class.java]?.getData() as EventRedeem
+        }
 
-    private fun convertToErrorResponse(typeRestResponseMap: Map<Type, RestResponse?>): String? {
-        val errorBody = typeRestResponseMap[EventRedeem::class.java]?.errorBody ?: ""
-        val errorRedeem = Gson().fromJson(errorBody, ErrorRedeem::class.java)
-        return errorRedeem.messageError.firstOrNull()
-    }
+        private fun convertToErrorResponse(typeRestResponseMap: Map<Type, RestResponse?>): String? {
+            val errorBody = typeRestResponseMap[EventRedeem::class.java]?.errorBody ?: ""
+            val errorRedeem = Gson().fromJson(errorBody, ErrorRedeem::class.java)
+            return errorRedeem.messageError.firstOrNull()
+        }
 
-    private fun convertToRedeemedResponse(typeRestResponseMap: Map<Type, RestResponse?>): EventRedeemedData {
-        return typeRestResponseMap[EventRedeemedData::class.java]?.getData() as EventRedeemedData
+        private fun convertToRedeemedResponse(typeRestResponseMap: Map<Type, RestResponse?>): EventRedeemedData {
+            return typeRestResponseMap[EventRedeemedData::class.java]?.getData() as EventRedeemedData
+        }
     }
 }
