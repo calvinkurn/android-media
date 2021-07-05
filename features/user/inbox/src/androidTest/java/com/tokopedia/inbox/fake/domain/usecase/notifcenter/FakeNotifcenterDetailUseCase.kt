@@ -112,4 +112,12 @@ class FakeNotifcenterDetailUseCase(
         )
     }
 
+    fun setResponseWithDelay(
+        response: NotifcenterDetailResponse,
+        delay: Long
+    ) {
+        this.response = response
+        gqlUseCase.delayMs = delay
+    }
+
 }
