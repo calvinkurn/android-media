@@ -36,7 +36,7 @@ class HotelGlobalSearchWidget @JvmOverloads constructor(context: Context, attrs:
                 globalSearchListener.onClick(HotelGlobalSearchActivity.getIntent(context,
                         checkInDate, checkOutDate, numOfGuests, numOfRooms, title))
             } else {
-                throw RuntimeException("${HotelGlobalSearchWidget::class.java.simpleName} click listener is not implemented")
+                throw UnsupportedOperationException("${HotelGlobalSearchWidget::class.java.simpleName} click listener is not implemented")
             }
         }
     }

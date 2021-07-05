@@ -185,14 +185,10 @@ object DateUtil {
 fun String?.toDate(format: String): Date {
     this?.let {
         val fromFormat: DateFormat = SimpleDateFormat(format, DateUtil.DEFAULT_LOCALE)
-        return try {
-            fromFormat.parse(it) ?: throw ParseException("Failed to parse", 0)
-        } catch (e: ParseException) {
-            e.printStackTrace()
-            throw RuntimeException("Date doesn't valid ($this) with format $format")
-        }
+        return fromFormat.parse(it)
+                ?: throw ParseException("Date doesn't valid ($this) with format $format", 0)
     }
-    throw RuntimeException("Date doesn't valid ($this) with format $format")
+    throw ParseException("Date doesn't valid ($this) with format $format", 0)
 }
 
 /**

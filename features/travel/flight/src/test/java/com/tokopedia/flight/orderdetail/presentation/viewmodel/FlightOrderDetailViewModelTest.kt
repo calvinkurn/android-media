@@ -1321,7 +1321,7 @@ class FlightOrderDetailViewModelTest {
     @Test
     fun buildPaymentDetailData_failedToFetchOrderDetail() {
         // given
-        coEvery { useCase.execute(any(), any()) } coAnswers { throw Throwable() }
+        coEvery { useCase.execute(any(), any()) } coAnswers { throw UnsupportedOperationException() }
 
         // when
         val paymentData = viewModel.buildPaymentDetailData()
@@ -1371,7 +1371,7 @@ class FlightOrderDetailViewModelTest {
     @Test
     fun buildAmenitiesPaymentDetailData_failedToFetchOrderDetail() {
         // given
-        coEvery { useCase.execute(any(), any()) } coAnswers { throw Throwable() }
+        coEvery { useCase.execute(any(), any()) } coAnswers { throw UnsupportedOperationException() }
 
         // when
         val paymentData = viewModel.buildAmenitiesPaymentDetailData()

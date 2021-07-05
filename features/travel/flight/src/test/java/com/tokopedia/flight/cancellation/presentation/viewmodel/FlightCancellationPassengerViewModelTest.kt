@@ -84,7 +84,7 @@ class FlightCancellationPassengerViewModelTest {
     @Test
     fun getCancellablePassenger_failToFetch_valueShouldBeNull() {
         // given
-        coEvery { cancellationPassengerUseCase.fetchCancellablePassenger(any()) } coAnswers { throw Throwable() }
+        coEvery { cancellationPassengerUseCase.fetchCancellablePassenger(any()) } coAnswers { throw NoSuchElementException() }
 
         // when
         viewModel.getCancellablePassenger("", arrayListOf())
