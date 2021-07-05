@@ -150,7 +150,7 @@ class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroadcastR
             spannable.setSpan(
                     object : ClickableSpan() {
                         override fun onClick(view: View) {
-                            viewModel.done = true
+                            done = true
                             analytics.trackClickUseOtherMethod(otpData, modeListData)
                             (activity as VerificationActivity).goToVerificationMethodPage()
                         }
