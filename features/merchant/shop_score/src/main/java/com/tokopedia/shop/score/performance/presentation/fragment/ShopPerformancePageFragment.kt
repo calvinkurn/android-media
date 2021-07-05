@@ -648,7 +648,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             hideLoading()
             when (it) {
                 is Success -> {
-                    shopPerformanceAdapter.setShopPerformanceData(it.data.first)
+                    rvShopPerformance?.post {
+                        shopPerformanceAdapter.setShopPerformanceData(it.data.first)
+                    }
                     this.shopScoreWrapperResponse = it.data.second
                     counterPenalty = it.data.first.filterIsInstance<HeaderShopPerformanceUiModel>().firstOrNull()?.scorePenalty.orZero()
                     showPenaltyBadge()
